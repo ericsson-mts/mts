@@ -37,10 +37,13 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
 import dk.i1.diameter.AVP_Address;
+import dk.i1.diameter.AVP_Float32;
+import dk.i1.diameter.AVP_Float64;
 import dk.i1.diameter.AVP_Grouped;
 import dk.i1.diameter.AVP_Integer32;
 import dk.i1.diameter.AVP_Integer64;
 import dk.i1.diameter.AVP_OctetString;
+import dk.i1.diameter.AVP_Time;
 import dk.i1.diameter.AVP_Unsigned32;
 import dk.i1.diameter.AVP_Unsigned64;
 import dk.i1.diameter.Message;
@@ -49,6 +52,7 @@ import dk.i1.diameter.MessageHeader;
 import java.net.InetAddress;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.dom4j.Element;
 
 /**
@@ -205,7 +209,7 @@ public class MsgDiameterParser
     /** Parses an element <avp>; recursively if it contains other AVPs, used by parseMessage */
     private AVP parseAvp(Element element) throws Exception
     {
-        AVP avp ;
+        AVP avp;
         
         // avp attributes
         String code_str      = element.attributeValue("code");
@@ -233,15 +237,12 @@ public class MsgDiameterParser
         boolean private_bool = false ;
         
         // error if no code is specified
-        if(null == code_str) throw new ParsingException("In element :" + element + "\n" + "no avp code");
-        
-        // flags attribute is not used
-        if(null != element.attributeValue("flags")) throw new ParsingException("In element :" + element + "\n" + "flags attribute is currently not supported in avp tag");
-        
-        // vendorSpecific attribute is not used
-        if(null != element.attributeValue("vendorSpecific")) throw new ParsingException("In element :" + element + "\n" + "VendorSpecific attribute is currently not supported in avp tag");
-        
-        if(null == type) {
+        if(null == code_str)
+        {
+        	throw new ParsingException("In element :" + element + "\n" + "there is no avp code attribute");
+        }        
+        if(null == type) 
+        {
         	type="OctetString";
         }
         
@@ -303,7 +304,11 @@ public class MsgDiameterParser
             //
             // Error if no value is specified
             //
-            if(null == value) throw new ParsingException("In element :" + element + "\n" + "AVP of code " + code_str + " should have a value since it is not a grouped AVP");
+            if(null == value) 
+            {	
+            	throw new ParsingException("In element :" + element + "\n" + "AVP of code " + code_str + " should have a value since it is not a grouped AVP");
+            }
+            
             //
             // Create the AVP
             //
@@ -318,7 +323,7 @@ public class MsgDiameterParser
                     avp = new AVP_OctetString(code, value.getBytes());
                 }
             }
-            else if(type.equalsIgnoreCase("IPAddress"))
+            else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
             {
                 avp = new AVP_OctetString(code, InetAddress.getByName(value).getAddress());
             }
@@ -343,6 +348,21 @@ public class MsgDiameterParser
             {
                 UnsignedInt64 unsignedInt64 = new UnsignedInt64(value);
                 avp = new AVP_Unsigned64(code,unsignedInt64.longValue());
+            }
+            else if(type.equalsIgnoreCase("Float32"))
+            {
+                Float float32 = Float.parseFloat(value);
+                avp = new AVP_Float32(code, float32);
+            }
+            else if(type.equalsIgnoreCase("Float64"))
+            {
+                Float float64 = Float.parseFloat(value);
+                avp = new AVP_Float64(code, float64);
+            }
+            else if(type.equalsIgnoreCase("Time"))
+            {
+            	UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
+                avp = new AVP_Time(code,unsignedInt32.intValue());
             }
             else
             {

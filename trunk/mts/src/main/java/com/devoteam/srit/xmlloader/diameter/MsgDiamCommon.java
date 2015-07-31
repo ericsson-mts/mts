@@ -28,24 +28,17 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.AvpDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.VendorDef;
-import com.devoteam.srit.xmlloader.sip.light.StackSip;
-import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
-import com.devoteam.srit.xmlloader.core.coding.text.TextMessage;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.UnsignedInt32;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
 import dk.i1.diameter.AVPInterface;
-import dk.i1.diameter.AVP_Address;
 import dk.i1.diameter.AVP_Float32;
 import dk.i1.diameter.AVP_Float64;
 import dk.i1.diameter.AVP_Grouped;
@@ -851,7 +844,31 @@ public class MsgDiamCommon extends Msg
             {
                 Iterator<AVP> iterator = baseAvps.iterator();
                 while(iterator.hasNext()) var.add(Integer.toString(iterator.next().vendor_id));
-            } 
+            }
+            else if(params[params.length-1].equalsIgnoreCase("vendorFlag"))
+            {
+                Iterator<AVP> iterator = baseAvps.iterator();
+                while(iterator.hasNext())
+                {             	
+                	var.add(new AVP_OctetString(iterator.next()).isVendorSpecific());
+                }
+            }
+            else if(params[params.length-1].equalsIgnoreCase("mandatory"))
+            {
+                Iterator<AVP> iterator = baseAvps.iterator();
+                while(iterator.hasNext())
+                {             	
+                	var.add(new AVP_OctetString(iterator.next()).isMandatory());
+                }
+            }
+            else if(params[params.length-1].equalsIgnoreCase("private"))
+            {
+                Iterator<AVP> iterator = baseAvps.iterator();
+                while(iterator.hasNext())
+                {             	
+                	var.add(new AVP_OctetString(iterator.next()).isPrivate());
+                }
+            }
             else
             {
             	Parameter.throwBadPathKeywordException(path);
@@ -939,13 +956,7 @@ public class MsgDiamCommon extends Msg
         	byte[] result = new AVP_OctetString(avp).queryValue();
         	return Utils.toBinaryString(result, false);
         }
-        else if(type.equalsIgnoreCase("IPAddress"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	String strRes = InetAddress.getByAddress(result).getHostAddress();
-        	return strRes;
-        }
-        else if(type.equalsIgnoreCase("Address"))
+        else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
         {
         	byte[] result = new AVP_OctetString(avp).queryValue();
         	String strRes = InetAddress.getByAddress(result).getHostAddress();

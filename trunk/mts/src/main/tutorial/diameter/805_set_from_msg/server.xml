@@ -11,9 +11,6 @@
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
     
-    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>
-    <test parameter="[avp1code]" condition="string.equals" value="1024"/>
-
     <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
     <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
@@ -70,17 +67,23 @@
     <test parameter="[request1]" condition="string.equals" value="true"/>
     <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>
     <test parameter="[code]" condition="string.equals" value="506"/>
-    <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>
-    <test parameter="[error]" condition="string.equals" value="false"/>
     <parameter name="[appId]" operation="protocol.setFromMessage" value="header.applicationId"/>
     <test parameter="[appId]" condition="string.equals" value="[applicationID]"/>
+    <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+    <test parameter="[hopByHop]" condition="number.equals" value="[newHopByHop]"/>
+    <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+    <test parameter="[endToEnd]" condition="number.equals" value="[newEndToEnd]"/>
+    <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>
+    <test parameter="[error]" condition="string.equals" value="true"/>
     <parameter name="[proxiable]" operation="protocol.setFromMessage" value="header.proxiable"/>
-    <test parameter="[proxiable]" condition="string.equals" value="false"/>
+    <test parameter="[proxiable]" condition="string.equals" value="true"/>
     <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>
-    <test parameter="[retransmit]" condition="string.equals" value="false"/>
+    <test parameter="[retransmit]" condition="string.equals" value="true"/>
     
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.code"/>
     <test parameter="[avp1code]" condition="number.equals" value="1018"/>
+    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>
+    <test parameter="[avp1code]" condition="string.equals" value="1024"/>
     <parameter name="[avp1value]" operation="protocol.setFromMessage" value="avp.1018.value"/>
     <test parameter="[avp1value]" condition="string.equals" value="grouped"/>
     <parameter name="[avp1binary]" operation="protocol.setFromMessage" value="avp.1018.binary"/>
@@ -173,7 +176,7 @@
     <parameter name="[avp13bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.binary"/>
     <test parameter="[avp13bin]" condition="binary.equals" value="[avp13val]"/>
     <parameter name="[avp13vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.vendorId"/>
-    <test parameter="[avp13vendor]" condition="number.equals" value="10415"/>
+    <test parameter="[avp13vendor]" condition="number.equals" value="10415"/>    
 
     <parameter name="[avp14code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.code"/>
     <test parameter="[avp14code]" condition="number.equals" value="1024"/>
@@ -185,6 +188,12 @@
     <test parameter="[avp14bin]" condition="binary.equals" value="[avp14val]"/>
     <parameter name="[avp14vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.vendorId"/>
     <test parameter="[avp14vendor]" condition="number.equals" value="10415"/>
+    <parameter name="[avp14vFlag]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.vendorFlag"/>
+    <test parameter="[avp14vFlag]" condition="boolean.equals" value="true"/>
+    <parameter name="[avp14mand]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.mandatory"/>
+    <test parameter="[avp14mand]" condition="boolean.equals" value="true"/>
+    <parameter name="[avp14priv]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.private"/>
+    <test parameter="[avp14priv]" condition="boolean.equals" value="true"/>
 
     <parameter name="[avp15code]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.code"/>
     <test parameter="[avp15code]" condition="number.equals" value="260"/>
@@ -209,8 +218,25 @@
     <parameter name="[avp16vendor]" operation="protocol.setFromMessage" value="avp.99999999.vendorId"/>
     <test parameter="[avp16vendor]" condition="number.equals" value="10415"/>
 
+    <parameter name="[avp17code]" operation="protocol.setFromMessage" value="avp.Public-Identity.code"/>
+    <test parameter="[avp17code]" condition="number.equals" value="2"/>
+    <parameter name="[avp17val]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
+    <!--test parameter="[avp17val]" condition="binary.equals" value="ffff"/-->
+    <parameter name="[avp17bin]" operation="protocol.setFromMessage" value="avp.Public-Identity.binary"/>
+    <!--test parameter="[avp17bin]" condition="binary.equals" value="ffff"/-->
+    <parameter name="[avp17vendor]" operation="protocol.setFromMessage" value="avp.Public-Identity.vendorId"/>
+    <test parameter="[avp17vendor]" condition="number.equals" value="10415"/>
+    <parameter name="[avp17VFlag]" operation="protocol.setFromMessage" value="avp.Public-Identity.vendorFlag"/>
+    <test parameter="[avp17VFlag]" condition="boolean.equals" value="true"/>
+    <parameter name="[avp17mand]" operation="protocol.setFromMessage" value="avp.Public-Identity.mandatory"/>
+    <test parameter="[avp17mand]" condition="boolean.equals" value="false"/>
+    <parameter name="[avp17priv]" operation="protocol.setFromMessage" value="avp.Public-Identity.private"/>
+    <test parameter="[avp17priv]" condition="boolean.equals" value="false"/>
+
     <sendMessageDIAMETER name="SendAnswerMAA">
-        <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationID]"  
+                hopByHop="[hopByHop]" endToEnd="[endToEnd]"
+                proxiable="false" error="false" retransmit="false"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[remoteHostDIAM]"/>
         <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>

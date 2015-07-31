@@ -7,7 +7,7 @@
 	            <xs:extension base="operationType">
         	        <xs:sequence>
         	        	<xs:element name="nodeSettings"     type="nodeSettingsType"       minOccurs="0" maxOccurs="1" />
-                    	 	<xs:element name="avp"     type="avpType"       minOccurs="0" maxOccurs="unbounded" />
+                    	 	<xs:element name="avp"     type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
                     	</xs:sequence>
 				<xs:attribute name="localHost" type="xs:string" use="optional">
 					<xs:annotation>
@@ -116,8 +116,8 @@
         <xs:complexContent>
             <xs:extension base="operationType">
                 <xs:sequence>
-                    <xs:element name="header"  type="headerAAAType" />
-                    <xs:element name="avp"     type="avpType"       minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="header"  type="headerDIAMType" />
+                    <xs:element name="avp"     type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
             			<xs:attribute name="listenpoint" type="xs:string" use="optional">
 					<xs:annotation>
@@ -245,7 +245,7 @@
     </xs:complexType>
 
 <!--                                                                                   header -->
-    <xs:complexType name="headerAAAType">
+    <xs:complexType name="headerDIAMType">
         <xs:attribute name="request" type="xs:string">
     		<xs:annotation>
 	    		<xs:appinfo>Boolean</xs:appinfo>
@@ -297,16 +297,16 @@
     </xs:complexType>
 
 <!--                                                                                         avp -->
-    <xs:complexType name="avpType">
+    <xs:complexType name="avpDIAMType">
         <xs:sequence>
-            <xs:element name="avp"  type="avpType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="avp"  type="avpDIAMType"  minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="code"           type="xs:string" use="required" />
         <xs:attribute name="value"          type="xs:string" />
         <xs:attribute name="type"           type="xs:string" />
+        <xs:attribute name="vendorId"       type="xs:string" />
         <xs:attribute name="mandatory"      type="xs:string" />
         <xs:attribute name="private"        type="xs:string" />
-        <xs:attribute name="vendorId"       type="xs:string" />
         <xs:attribute name="state"          type="xs:string" />        
     </xs:complexType>
 
@@ -319,8 +319,8 @@
         <xs:complexContent>
             <xs:extension base="operationType">
                 <xs:sequence>
-                    <xs:element name="header"  type="headerAAAType" />
-                    <xs:element name="avp"        type="avpType"       minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="header"  type="headerDIAMType" />
+                    <xs:element name="avp"        type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
                 <xs:attribute name="server"       type="xs:string" />
                 <xs:attribute name="destScenario" type="xs:string" />
@@ -333,8 +333,8 @@
         <xs:complexContent>
             <xs:extension base="operationType">
                 <xs:sequence>
-                    <xs:element name="header"  type="headerAAAType" />
-                    <xs:element name="avp"        type="avpType"       minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="header"  type="headerDIAMType" />
+                    <xs:element name="avp"        type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
                 <!--
                 <xs:attribute name="server"       type="xs:string" />

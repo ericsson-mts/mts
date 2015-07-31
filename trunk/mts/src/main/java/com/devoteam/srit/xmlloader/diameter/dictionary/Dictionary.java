@@ -32,7 +32,6 @@ import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 
-import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,7 @@ public class Dictionary
     static private Dictionary _dictionary ;
     
     // harcoded path of dictionary.xml
-    static private String DICTIONARY_PATH="../conf/diameter/dictionary.xml" ;
+    static private String DICTIONARY_PATH = "../conf/diameter/dictionary.xml" ;
     
     // hashmaps
     private HashMap<String, Application>  applicationByName ;
@@ -101,7 +100,7 @@ public class Dictionary
     	// case the path dictionary is the default one (../conf/diameter/dictionary)
     	else
     	{
-    		filePathURI = new URI("../conf/diameter/dictionary.xml");
+    		filePathURI = new URI(DICTIONARY_PATH);
     	}
         dictionaryDocument.setXMLFile(filePathURI);
         dictionaryDocument.parse();
