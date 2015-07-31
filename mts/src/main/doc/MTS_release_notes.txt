@@ -7,6 +7,11 @@
 			Version : 6.1.0 (revision SVN ????) le ??/??/2015
 
 Evolutions :
+  * Prise en compte lors de la recherche d'un AVP dans le dictionnaire du 
+    vendorId en particulier lors du parsing du fichier XML lors de l'émission 
+    d'un message et lors de l'écriture des logs en réception d'un message.
+    Si non trouvé en utilisant le vendorId de l'AVP alors on recherche sans celui-ci
+    c.a.d. comme avant pour éviter les régressions. 
   * Changement de l'interprétation du paramètre de config dictionary.PATH 
     dans le fichier diameter.properties : il est considéré comme relatif 
     par rapport au répertoire dans lequel se trouve le ficheir de test. 
