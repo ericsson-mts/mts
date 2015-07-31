@@ -52,6 +52,7 @@ public class Application
     private HashMap<String, VendorDef>    vendorDefByCode ;
     
     private HashMap<String, AvpDef>       avpDefByName ;
+    private HashMap<String, AvpDef>       avpDefByNameVendorId ;
     private HashMap<String, AvpDef>       avpDefByCode ;
     
     
@@ -61,13 +62,14 @@ public class Application
     {
         this._name = name ;
         this._id = id ;
-        this.commandDefByName= new HashMap<String, CommandDef>();
-        this.commandDefByCode= new HashMap<String, CommandDef>();
-        this.typeDefByName   = new HashMap<String, TypeDef>();
+        this.commandDefByName = new HashMap<String, CommandDef>();
+        this.commandDefByCode = new HashMap<String, CommandDef>();
+        this.typeDefByName = new HashMap<String, TypeDef>();
         this.vendorDefByName = new HashMap<String, VendorDef>();
         this.vendorDefByCode = new HashMap<String, VendorDef>();
-        this.avpDefByName    = new HashMap<String, AvpDef>();
-        this.avpDefByCode    = new HashMap<String, AvpDef>();
+        this.avpDefByNameVendorId = new HashMap<String, AvpDef>();
+        this.avpDefByName = new HashMap<String, AvpDef>();
+        this.avpDefByCode = new HashMap<String, AvpDef>();
     }
     
     
@@ -267,6 +269,14 @@ public class Application
         
         avpDefByName.put(avpDef.get_name(), avpDef);
         avpDefByCode.put(Integer.toString(avpDef.get_code()), avpDef);
+        
+        // index with the avp.name and the avp.vendorId.code
+        VendorDef vendorDef = avpDef.get_vendor_id();
+        if (vendorDef != null)
+        {
+        	String key = avpDef.get_name() + "_" + vendorDef.get_code();
+        	avpDefByNameVendorId.put(key, avpDef);
+        }
     }
     
     private void parseCommand(Element root) throws ParsingException
@@ -343,14 +353,21 @@ public class Application
         while(iterator.hasNext())
         {
             AvpDef avpDef = iterator.next();
+
+            // get the vendorId code
+            VendorDef vendorDef = avpDef.get_vendor_id();
+            String vendorIdCode = null;
+            if (vendorDef !=  null)
+            {
+            	vendorIdCode = Integer.toString(vendorDef.get_code());
+            }
             
             Iterator<String> gIterator = avpDef.getGroupedAvpNameList().iterator();
             while(gIterator.hasNext())
             {
                 String gAvpDefName = gIterator.next();
                 
-                AvpDef gAvpDef = Dictionary.getInstance().getAvpDefByName(gAvpDefName, _name);
-                
+                AvpDef gAvpDef = Dictionary.getInstance().getAvpDefByName(gAvpDefName, _name, vendorIdCode);             
                 if(null != gAvpDef)
                 {
                 	avpDef.addGroupedAvpDef(gAvpDef);
@@ -392,10 +409,25 @@ public class Application
     {
         return avpDefByCode.get(Integer.toString(code));
     }
-    
+
     public AvpDef getAvpDefByName(String name)
     {
         return avpDefByName.get(name);
+    }
+    
+    public AvpDef getAvpDefByName(String name, String vendorId)
+    {
+    	AvpDef avpDef = null;
+    	if (vendorId != null)
+    	{
+	    	String key = name + "_" + vendorId;
+	        avpDef = avpDefByNameVendorId.get(key);
+    	}
+    	if (avpDef == null)
+    	{
+    		avpDef = getAvpDefByName(name);
+    	}
+    	return avpDef;
     }
     
     public int get_id()

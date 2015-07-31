@@ -402,6 +402,19 @@ public class MsgDiameterParser
             boolean isTypeVendorId = false ;
             String attributeValue;
             
+            // get the vendorDef object and get the code
+            String vendorIdAttr = root.attributeValue("vendorId");
+            VendorDef vendorDef = null;
+            if(!Utils.isInteger(vendorIdAttr))
+            {
+            	vendorDef = Dictionary.getInstance().getVendorDefByName(vendorIdAttr, applicationId);
+            }
+            else
+            {
+            	int vendorIdCode = Integer.parseInt(vendorIdAttr);
+            	vendorDef = Dictionary.getInstance().getVendorDefByCode(vendorIdCode, applicationId);
+            }
+
             attributeValue = root.attributeValue("code");
             //
             // Set default values implied by code in XMLTree from dictionnary
@@ -411,7 +424,12 @@ public class MsgDiameterParser
                 AvpDef avpDef ;
                 if(!Utils.isInteger(attributeValue))
                 {
-                    avpDef = Dictionary.getInstance().getAvpDefByName(attributeValue, applicationId);
+                	String vendorIdCode = null;
+                	if (vendorDef != null)
+                	{
+                		vendorIdCode = Integer.toString(vendorDef.get_code());
+                	}
+                    avpDef = Dictionary.getInstance().getAvpDefByName(attributeValue, applicationId, vendorIdCode);
                 }
                 else
                 {
@@ -457,7 +475,7 @@ public class MsgDiameterParser
                 //
                 if(null == root.attribute("vendorId") && null != avpDef)
                 {
-                    VendorDef vendorDef = avpDef.get_vendor_id();
+                    vendorDef = avpDef.get_vendor_id();
                     if(null != vendorDef)
                     {
                         root.addAttribute("vendorId", Integer.toString(vendorDef.get_code()));
@@ -520,7 +538,7 @@ public class MsgDiameterParser
             {
                 if(!Utils.isInteger(attributeValue))
                 {
-                    VendorDef vendorDef = Dictionary.getInstance().getVendorDefByName(attributeValue, applicationId);
+                    vendorDef = Dictionary.getInstance().getVendorDefByName(attributeValue, applicationId);
                     if(null != vendorDef)
                     {
                         root.attribute("vendorId").setValue(Integer.toString(vendorDef.get_code()));
@@ -583,10 +601,10 @@ public class MsgDiameterParser
                 }
                 if(isTypeVendorId)
                 {
-                    VendorDef vendorDef = Dictionary.getInstance().getVendorDefByName(attributeValue, applicationId);
-                    if(null != vendorDef)
+                    VendorDef vendorDefValue = Dictionary.getInstance().getVendorDefByName(attributeValue, applicationId);
+                    if(null != vendorDefValue)
                     {
-                        root.attribute("value").setValue(Integer.toString(vendorDef.get_code()));
+                        root.attribute("value").setValue(Integer.toString(vendorDefValue.get_code()));
                     }
                 }
             }

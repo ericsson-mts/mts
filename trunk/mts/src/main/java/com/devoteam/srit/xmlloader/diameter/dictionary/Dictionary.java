@@ -399,7 +399,7 @@ public class Dictionary
         return null;
     }
     
-    public AvpDef getAvpDefByName(String name, String applicationId )
+    public AvpDef getAvpDefByName(String name, String applicationId, String vendorId )
     {
         AvpDef result = null ;
         
@@ -408,19 +408,19 @@ public class Dictionary
         if(null != application)
         {
             applicationId = application.get_name();
-            result = application.getAvpDefByName(name);
+            result = application.getAvpDefByName(name, vendorId);
         }
         if(null != result) return result ;
         
         // try with base application
         Application applicationBase = getApplication("0");
-        if(null != applicationBase) result = applicationBase.getAvpDefByName(name);
+        if(null != applicationBase) result = applicationBase.getAvpDefByName(name, vendorId);
         if(null != result) return result ;
         
         // try with other applications
         for(Application a:applicationByName.values())
         {
-            if(a !=application && a != applicationBase) result = a.getAvpDefByName(name);
+            if(a !=application && a != applicationBase) result = a.getAvpDefByName(name, vendorId);
             if(null != result)
             {
                 traceWarning("got AVP definition for " + result.get_name() + " not from specified application (" + applicationId + ") nor base AVPs but " + a.get_name());
