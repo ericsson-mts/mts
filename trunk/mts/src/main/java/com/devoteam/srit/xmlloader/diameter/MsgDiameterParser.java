@@ -422,18 +422,19 @@ public class MsgDiameterParser
             if(null != attributeValue)
             {
                 AvpDef avpDef ;
+            	// get the vendorId code
+                String vendorIdCode = null;
+            	if (vendorDef != null)
+            	{
+            		vendorIdCode = Integer.toString(vendorDef.get_code());
+            	}
                 if(!Utils.isInteger(attributeValue))
                 {
-                	String vendorIdCode = null;
-                	if (vendorDef != null)
-                	{
-                		vendorIdCode = Integer.toString(vendorDef.get_code());
-                	}
                     avpDef = Dictionary.getInstance().getAvpDefByName(attributeValue, applicationId, vendorIdCode);
                 }
                 else
                 {
-                    avpDef = Dictionary.getInstance().getAvpDefByCode(Integer.parseInt(attributeValue), applicationId);
+                    avpDef = Dictionary.getInstance().getAvpDefByCode(Integer.parseInt(attributeValue), applicationId, vendorIdCode);
                 }
                 
                 if(null == avpDef)
