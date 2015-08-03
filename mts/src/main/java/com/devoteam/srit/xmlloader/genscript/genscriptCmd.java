@@ -134,7 +134,7 @@ public class genscriptCmd {
                 Element root = docProbe.addElement("root");
                 root.addAttribute("filename", src);
                 // String captureFilter = "host " + fg.getHostName() + " and port " + fg.getHostPort().toString();
-                String captureFilter = "host " + fg.getHostName() + " and (port " + fg.getHostPort().toString() + " or not (ip[6:2] & 0x1FFF = 0)) and ip";
+                String captureFilter = "host " + fg.getHostName() + " and (port " + fg.getHostPort().toString() + " or not (ip[6:2] & 0x1fff == 0)) and ip";
                 root.addAttribute("captureFilter", captureFilter);
 
                 // Création de l'objet Probe
