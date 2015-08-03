@@ -374,8 +374,8 @@ public class Probe
         String capFilter = root.attributeValue("captureFilter");
         if (capFilter != null)
         {
-	        capFilter = Utils.replaceNoRegex(capFilter, "[", "");
-	        capFilter = Utils.replaceNoRegex(capFilter, "]", "");
+	        //capFilter = Utils.replaceNoRegex(capFilter, "[", "");
+	        //capFilter = Utils.replaceNoRegex(capFilter, "]", "");
         }
         this.captureFilter = capFilter;
         this.filename = root.attributeValue("filename");
