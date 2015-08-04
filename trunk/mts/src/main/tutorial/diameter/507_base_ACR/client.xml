@@ -46,6 +46,7 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
     <parameter name="[timestamp]" operation="system.timestamp" value="1900"/>
     <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
     <parameter name="[timestamp]" operation="number.round" value="[timestamp]"/>
+    <parameter name="[date]" operation="number.toDate" value="[timestamp]"/>    
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request ACR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="Accounting" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
@@ -106,7 +107,7 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
         <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="0"/>
 
         <!-- The Event-Timestamp MAY be included in an Accounting-Request and Accounting-Answer messages to record the time that the reported event occurred, in seconds sinceJanuary 1, 1900 00:00 UTC. -->
-        <avp code="Event-Timestamp" mandatory="false" type="Time" value="[timestamp]"/>
+        <avp code="Event-Timestamp" mandatory="false" type="Time" value="[date]"/>
 
         <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
         <!-- The Proxy-State AVP contains state local information. -->
