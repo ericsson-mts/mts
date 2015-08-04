@@ -203,12 +203,12 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_N_TODATE)) {
                 	if (null != operands.get("value2")) {
-                		Date date = new Date(Long.parseLong((String) param1.get(i)));
+                		Date date = new Date(Long.parseLong((String) param1.get(i).toString()));
                 		Parameter param2 = assertAndGetParameter(operands, "value2");
                     	result.add((new SimpleDateFormat(param2.get(i).toString())).format(date));
                 	}
                 	else {
-                		Date date = new Date(Long.parseLong((String) param1.get(i)));
+                		Date date = new Date(Long.parseLong((String) param1.get(i).toString()));
                     	result.add((new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(date)));
                 	}
                 }

@@ -69,10 +69,12 @@ public class PluggableParameterOperatorListFind extends AbstractPluggableParamet
 
         if (name.equalsIgnoreCase(NAME_FIND) || name.equalsIgnoreCase(NAME_L_FIND))
         {
+        	String p = param2.get(0).toString();
             int len = param1.length();
             for (int i = 0; i < len; i++)
             {
-                if(param1.get(i).equals(param2.get(0)))
+            	String str = param1.get(i).toString();
+                if(str.equals(p))
                 {
                     result.add(String.valueOf(i));
                 }
