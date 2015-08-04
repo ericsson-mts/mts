@@ -402,24 +402,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 {
                 	String val1 = param_1.get(i).toString();
                 	byte[] bytesVal1 = DefaultArray.fromHexString(val1).getBytes();
-                	if (bytesVal1.length == 16)
-                	{
-                		
-                	}
-                	InetAddress inetAddr = InetAddress.getByAddress(bytesVal1);
-                	String strRes = inetAddr.getHostAddress();
-                	if (bytesVal1.length == 16)
-                	{
-                		strRes = "[" + strRes + "]";
-                	}
-                	strRes = strRes.replaceFirst(":0:", "::");
-                	strRes = strRes.replaceFirst(":0:", ":");
-                	strRes = strRes.replaceFirst(":0:", ":");
-                	strRes = strRes.replaceFirst(":0:", ":");
-                	strRes = strRes.replaceFirst(":0:", ":");
-                	strRes = strRes.replaceFirst(":0:", ":");
-                	strRes = strRes.replaceFirst(":0:", ":");
-                	strRes = strRes.replaceFirst(":0:", ":");
+                	String strRes = Utils.toIPAddress(bytesVal1);
                 	result.add(strRes);
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TONUMBER))

@@ -35,6 +35,8 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.utils.UnsignedInt32;
+import com.devoteam.srit.xmlloader.core.utils.UnsignedInt64;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
@@ -53,8 +55,12 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import javolution.io.Struct.Unsigned32;
 
 import org.dom4j.Element;
 /**
@@ -434,19 +440,74 @@ public class MsgDiamCommon extends Msg
         String value = "";
         try
         {
-            if(type.equalsIgnoreCase("grouped"))          value = "grouped" ;
-            else if(type.equalsIgnoreCase("Integer32"))   value = Long.toString((new AVP_Integer32(avp)).queryValue());
-            else if(type.equalsIgnoreCase("Integer64"))   value = Long.toString((new AVP_Integer64(avp)).queryValue());
-            else if(type.equalsIgnoreCase("Unsigned32"))  value = Long.toString((new AVP_Unsigned32(avp)).queryValue());
-            else if(type.equalsIgnoreCase("Unsigned64"))  value = Long.toString((new AVP_Unsigned64(avp)).queryValue());
-            else if(type.equalsIgnoreCase("OctetString")) value = Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
-            else if(type.equalsIgnoreCase("IPAddress"))   value = InetAddress.getByAddress((new AVP_OctetString(avp)).queryValue()).getHostAddress();
-            else if(type.equalsIgnoreCase("UTF8String"))  value = new String((new AVP_OctetString(avp)).queryValue());
+            if(type.equalsIgnoreCase("grouped"))
+            {
+            	value = "grouped" ;
+            }
+            else if(type.equalsIgnoreCase("Integer32"))
+            {
+            	long val = new AVP_Integer32(avp).queryValue();
+            	value = Long.toString(val);
+            }
+            else if(type.equalsIgnoreCase("Integer64"))
+            {
+            	long val = new AVP_Integer64(avp).queryValue();
+            	value = Long.toString(val);
+            }
+            else if(type.equalsIgnoreCase("Unsigned32"))
+            {
+            	long val = new AVP_Unsigned32(avp).queryValue() & 0xffffffffL;
+            	value = Long.toString(val);
+        	}
+            else if(type.equalsIgnoreCase("Unsigned64"))
+            {
+            	long val = new AVP_Unsigned64(avp).queryValue() & 0xffffffffffffffffL;
+            	value = Long.toString(val);
+            }
+            else if(type.equalsIgnoreCase("OctetString"))
+            {
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	value = Utils.toBinaryString(val, false);
+            }
+            else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("IPAddress"))
+            {
+            	byte[] val = (new AVP_OctetString(avp)).queryValue();
+            	value = Utils.toIPAddress(val);
+            }
+            else if(type.equalsIgnoreCase("UTF8String"))
+            {
+            	byte[] val = (new AVP_OctetString(avp)).queryValue();
+            	value = new String(val);
+            }
+            else if(type.equalsIgnoreCase("Float32"))
+            {
+            	float result = new AVP_Float32(avp).queryValue();
+            	value = Float.toString(result);
+            }
+            else if(type.equalsIgnoreCase("Float64"))
+            {
+            	double result = new AVP_Float64(avp).queryValue();
+            	value = Double.toString(result);
+            }
+            else if(type.equalsIgnoreCase("Time"))
+            {
+            	// this method is buggous !
+            	//Date date = new AVP_Time(avp).queryDate();
+            	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
+            	Date date = new Date(secondSince1970 * 1000);
+            	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
+            	value = format.format(date);
+            }
+            else
+            {
+            	// case when there is a decoding problem : we assume type=OctetString
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	value = Utils.toBinaryString(val, false);
+            }
         }
         catch(Exception e)
         {
-        	// case when there is a decoding problem : 
-        	// usually the dictionary is not wrong according to the received data
+        	// case when there is a decoding problem : we assume type=OctetString
         	value = Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
         }
 
@@ -581,29 +642,59 @@ public class MsgDiamCommon extends Msg
         String value = "";
         try
         {
-            if(type.equalsIgnoreCase("grouped"))          value = "grouped" ;
-            else if(type.equalsIgnoreCase("Integer32")){
-                int tmp = (new AVP_Integer32(avp)).queryValue();
-                value = Long.toString(tmp);
+            if(type.equalsIgnoreCase("grouped"))
+            {
+            	value = "grouped" ;
             }
-            else if(type.equalsIgnoreCase("Integer64")){
-            	value = Long.toString((new AVP_Integer64(avp)).queryValue());
+            else if(type.equalsIgnoreCase("Integer32"))
+            {
+                int val = (new AVP_Integer32(avp)).queryValue();
+                value = Long.toString(val);
             }
-            else if(type.equalsIgnoreCase("Unsigned32")){
-            	Long l = new Long(new AVP_Unsigned32(avp).queryValue() & 0xffffffffl); 
-            	value = Long.toString(l);
+            else if(type.equalsIgnoreCase("Integer64"))
+            {
+            	long val = (new AVP_Integer64(avp)).queryValue();
+            	value = Long.toString(val);
             }
-            else if(type.equalsIgnoreCase("Unsigned64")){
-            	value = Long.toString((new AVP_Unsigned64(avp)).queryValue() & 0xffffffffffffffffl);
+            else if(type.equalsIgnoreCase("Unsigned32"))
+            {
+            	long val = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
+            	value = Long.toString(val);
             }
-            else if(type.equalsIgnoreCase("OctetString")){
-            	value = Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
+            else if(type.equalsIgnoreCase("Unsigned64"))
+            {
+            	long val = new AVP_Unsigned64(avp).queryValue() & 0xFFFFFFFFFFFFFFFFL;
+            	value = Long.toString(val);
             }
-            else if(type.equalsIgnoreCase("IPAddress")){
-            	value = InetAddress.getByAddress((new AVP_OctetString(avp)).queryValue()).getHostAddress();
+            else if(type.equalsIgnoreCase("OctetString"))
+            {
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	value = Utils.toBinaryString(val, false);
             }
-            else if(type.equalsIgnoreCase("UTF8String")){
-            	value = new String((new AVP_OctetString(avp)).queryValue());
+            else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
+            {
+            	byte[] val = (new AVP_OctetString(avp)).queryValue();
+            	value = Utils.toIPAddress(val);
+            }
+            else if(type.equalsIgnoreCase("UTF8String"))
+            {
+            	byte[] val = (new AVP_OctetString(avp)).queryValue();
+            	value = new String(val);
+            }
+            else if(type.equalsIgnoreCase("Time"))
+            {
+            	// this method is buggous !
+            	//Date date = new AVP_Time(avp).queryDate();
+            	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
+            	Date date = new Date(secondSince1970 * 1000);
+            	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
+            	return format.format(date);
+            }
+            else
+            {
+            	// case when there is a decoding problem : we assume type=OctetString
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	value = Utils.toBinaryString(val, false);
             }
         }
         catch(Exception e)
@@ -943,12 +1034,12 @@ public class MsgDiamCommon extends Msg
         }
         else if(type.equalsIgnoreCase("Unsigned32"))
         {
-        	long result = new AVP_Unsigned32(avp).queryValue();
+        	long result = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
         	return Long.toString(result);
         }
         else if(type.equalsIgnoreCase("Unsigned64"))
         {
-        	long result = new AVP_Unsigned64(avp).queryValue();
+        	long result = new AVP_Unsigned64(avp).queryValue()& 0xFFFFFFFFFFFFFFFFL;
         	return Long.toString(result);
         }
         else if(type.equalsIgnoreCase("OctetString"))
@@ -959,7 +1050,7 @@ public class MsgDiamCommon extends Msg
         else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
         {
         	byte[] result = new AVP_OctetString(avp).queryValue();
-        	String strRes = InetAddress.getByAddress(result).getHostAddress();
+        	String strRes = Utils.toIPAddress(result);
         	return strRes;
         }
         else if(type.equalsIgnoreCase("UTF8String"))
@@ -979,12 +1070,18 @@ public class MsgDiamCommon extends Msg
         }
         else if(type.equalsIgnoreCase("Time"))
         {
-        	int result = new AVP_Time(avp).queryValue();
-        	return Integer.toString(result);
+        	// this method is buggous !
+        	//Date date = new AVP_Time(avp).queryDate();
+        	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
+        	Date date = new Date(secondSince1970 * 1000);
+        	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
+        	return format.format(date);
         }
         else
         {
-        	return null ;
+        	// case when there is a decoding problem : we assume type=OctetString
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	return Utils.toBinaryString(result, false);
         }
     }
 
