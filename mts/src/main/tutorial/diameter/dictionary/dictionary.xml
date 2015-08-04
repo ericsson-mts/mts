@@ -22,7 +22,7 @@
 	<!ENTITY sip			SYSTEM "sip.xml">
 	<!ENTITY gqpolicy		SYSTEM "gqpolicy.xml">
 	<!ENTITY etsie2e4		SYSTEM "etsie2e4.xml">
-	<!--ENTITY Ericsson		SYSTEM "Ericsson.xml"-->
+	<!ENTITY Ericsson		SYSTEM "Ericsson.xml">
 	<!ENTITY ericssonIMT30Charging SYSTEM "ericssonIMT30Charging.xml">
 	<!ENTITY ericssonIMT30Cx SYSTEM "ericssonIMT30Cx.xml">
 	<!ENTITY imscxdx SYSTEM "imscxdx.xml">
@@ -314,6 +314,7 @@
 			For example, diameter-host.abc.com would be expanded to
 			aaa://diameter/diameter-host.abc.com:TBD;protocol=sctp.
 		-->
+    <typedefn type-name="DiameterURI" type-parent="UTF8String"/>
 		<typedefn type-name="IPFilterRule" type-parent="UTF8String"/>
 		<!--
 			The IPFilterRule format is derived from the OctetString AVP
@@ -592,7 +593,9 @@
 			most significant octets returned from NTP [18], in network byte
 			order.
 		-->
-		<typedefn type-name="Time" type-parent="Unsigned32"/>
+    <!-- FH Modified -->
+    <typedefn type-name="Time"/>
+		<!--typedefn type-name="Time" type-parent="Unsigned32"/-->
 		<!--
 			The Time format is derived from the Unsigned32 AVP Base Format.
 			This is 32 bit unsigned value containing the four most
@@ -612,8 +615,6 @@
 			field MUST be set to 16 (20 if the 'V' bit is enabled).
 		-->
 		<typedefn type-name="Enumerated" type-parent="Integer32"/>
-		<typedefn type-name="DiameterURI" type-parent="UTF8String"/>
-    
     <!-- FH added : missing -->
     <typedefn type-name="Float32"/>
     <typedefn type-name="Float64"/>

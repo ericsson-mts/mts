@@ -53,6 +53,12 @@
 	<parameter name="[power]" operation="number.power" value="0.25" value2="-0.5" />
 	<test parameter="[power]" condition="number.equals" value="2" />
 
+    <!-- test with complete date-->
+    <parameter name="[date]" operation="number.parseDate" value="20/02/11 17:35:56" />
+    <test parameter="[date]" condition="string.equals" value="1298219756000" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/02/2011 17:35:56" />
+
     <!-- my test on hour -->
     <parameter name="[date]" operation="number.parseDate" value="20" />
     <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
@@ -214,12 +220,6 @@
     <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
     <!--BUG test parameter="[dateInString]" condition="string.contains" value="/2012" /-->
     <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
-
-
-    <!-- test with complete date-->
-    <parameter name="[date]" operation="number.parseDate" value="20/02/11 17:35:56" />
-    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
-    <test parameter="[dateInString]" condition="string.contains" value="20/02/2011 17:35:56" />
 
     <!-- end of my test-->
 	<parameter name="[futureDate1]" operation="number.toDate" value="1299900000001" value2="dd/MM/yyyy HH:mm:ss:SSS" />

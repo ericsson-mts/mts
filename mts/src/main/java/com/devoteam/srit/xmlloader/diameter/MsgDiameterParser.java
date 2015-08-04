@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.VendorDef;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.utils.DateUtils;
 import com.devoteam.srit.xmlloader.core.utils.UnsignedInt32;
 import com.devoteam.srit.xmlloader.core.utils.UnsignedInt64;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -50,6 +51,7 @@ import dk.i1.diameter.Message;
 import dk.i1.diameter.MessageHeader;
 
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -356,13 +358,14 @@ public class MsgDiameterParser
             }
             else if(type.equalsIgnoreCase("Float64"))
             {
-                Float float64 = Float.parseFloat(value);
-                avp = new AVP_Float64(code, float64);
+                double double64 = Double.parseDouble(value);
+                avp = new AVP_Float64(code, double64);
             }
             else if(type.equalsIgnoreCase("Time"))
             {
-            	UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
-                avp = new AVP_Time(code,unsignedInt32.intValue());
+            	long time = DateUtils.parseDate(value);
+            	Date date = new Date (time);
+                avp = new AVP_Time(code, date);
             }
             else
             {

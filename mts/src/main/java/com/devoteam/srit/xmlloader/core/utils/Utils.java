@@ -1547,4 +1547,22 @@ public class Utils
     	return null;
     }
 
+    public static String toIPAddress(byte[] data) throws Exception
+    {	
+		InetAddress inetAddr = InetAddress.getByAddress(data);
+		String strRes = inetAddr.getHostAddress();
+		if (data.length == 16)
+		{
+			strRes = "[" + strRes + "]";
+		}
+		strRes = strRes.replaceFirst(":0:", "::");
+		strRes = strRes.replaceFirst(":0:", ":");
+		strRes = strRes.replaceFirst(":0:", ":");
+		strRes = strRes.replaceFirst(":0:", ":");
+		strRes = strRes.replaceFirst(":0:", ":");
+		strRes = strRes.replaceFirst(":0:", ":");
+		strRes = strRes.replaceFirst(":0:", ":");
+		strRes = strRes.replaceFirst(":0:", ":");
+		return strRes;
+    }
 }
