@@ -11,6 +11,11 @@
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
+    <parameter name="[avp16val]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
+    <test parameter="[avp16val]" condition="string.equals" value="h73 h69 h70 h3a h2b h33 h33 h38 h37 h35 h36 h33 h31 h39 h37 h35 h40 h73 h69 h70 h2e h70 h66 h64 h65 h76 h2e h66 h72 "/>
+    <parameter name="[avp16bin]" operation="protocol.setFromMessage" value="avp.Public-Identity.binary"/>
+    <test parameter="[avp16bin]" condition="binary.equals" value="7369703a2b3333383735363331393735407369702e70666465762e6672"/>
+
     <!-- type = Integer64 -->
     <parameter name="[avp21val]" operation="protocol.setFromMessage" value="avp.447.value"/>
     <!--test parameter="[avp21val(0)]" condition="number.equals" value="-2000000000000000000"/>
@@ -67,7 +72,7 @@
     <parameter name="[avp1binary]" operation="protocol.setFromMessage" value="avp.1018.binary"/>
     <!--test parameter="[avp1binary]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/-->
     <parameter name="[avp1vendor]" operation="protocol.setFromMessage" value="avp.1018.vendorId"/>
-    <test parameter="[avp1vendor]" condition="string.equals" value="[vendorID]"/>
+    <test parameter="[avp1vendor]" condition="string.equals" value="0"/>
     
     <parameter name="[avp2code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>
     <test parameter="[avp2code]" condition="number.equals" value="1024"/>
@@ -76,7 +81,7 @@
     <parameter name="[avp2binary]" operation="protocol.setFromMessage" value="avp.1018.1024.binary"/>
     <test parameter="[avp2binary]" condition="string.equals" value="494e56495445"/>    
     <parameter name="[avp2vendor]" operation="protocol.setFromMessage" value="avp.1018.1024.vendorId"/>
-    <test parameter="[avp2vendor]" condition="string.equals" value="[vendorID]"/>
+    <test parameter="[avp2vendor]" condition="string.equals" value="0"/>
         
     <parameter name="[avp3code]" operation="protocol.setFromMessage" value="avp.283.code"/>
     <test parameter="[avp3code]" condition="string.equals" value="283"/>
@@ -112,7 +117,7 @@
     <parameter name="[avp10bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Item-Number.binary"/>
     <test parameter="[avp10bin]" condition="binary.equals" value="00000000"/>
     <parameter name="[avp10vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Item-Number.vendorId"/>
-    <test parameter="[avp10vendor]" condition="number.equals" value="10415"/>
+    <test parameter="[avp10vendor]" condition="number.equals" value="0"/>
 
     <parameter name="[avp11code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.code"/>
     <test parameter="[avp11code]" condition="number.equals" value="1020"/>
@@ -121,7 +126,7 @@
     <parameter name="[avp11bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.binary"/>
     <test parameter="[avp11bin]" condition="binary.equals" value="00000002"/>
     <parameter name="[avp11vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.vendorId"/>
-    <test parameter="[avp11vendor]" condition="number.equals" value="10415"/>
+    <test parameter="[avp11vendor]" condition="number.equals" value="0"/>
 
     <parameter name="[avp12code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.code"/>
     <test parameter="[avp12code]" condition="number.equals" value="1019"/>
@@ -132,7 +137,7 @@
     <parameter name="[avp12bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.binary"/>
     <test parameter="[avp12bin]" condition="binary.equals" value="[avp12val]"/>
     <parameter name="[avp12vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authenticate.vendorId"/>
-    <test parameter="[avp12vendor]" condition="number.equals" value="10415"/>    
+    <test parameter="[avp12vendor]" condition="number.equals" value="0"/>    
 
     <parameter name="[avp13code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.code"/>
     <test parameter="[avp13code]" condition="number.equals" value="1024"/>
@@ -143,9 +148,9 @@
     <parameter name="[avp13bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.binary"/>
     <test parameter="[avp13bin]" condition="binary.equals" value="[avp13val]"/>
     <parameter name="[avp13vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.vendorId"/>
-    <test parameter="[avp13vendor]" condition="number.equals" value="10415"/>
+    <test parameter="[avp13vendor]" condition="number.equals" value="0"/>
     <parameter name="[avp13vFlag]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.vendorFlag"/>
-    <test parameter="[avp13vFlag]" condition="boolean.equals" value="true"/>
+    <test parameter="[avp13vFlag]" condition="boolean.equals" value="false"/>
     <parameter name="[avp13mand]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.mandatory"/>
     <test parameter="[avp13mand]" condition="boolean.equals" value="true"/>
     <parameter name="[avp13priv]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.private"/>
@@ -163,7 +168,10 @@
     <test parameter="[avp14VendorId]" condition="number.equals" value="10415"/>        
     <parameter name="[avp14999]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.999999999.binary"/>
     <test parameter="[avp14999]" condition="list.size" value="4"/>    
-    <test parameter="[avp14999]" condition="binary.equals" value="499602d2"/>    
+    <test parameter="[avp14999(0)]" condition="binary.equals" value="069f6bC7"/>    
+    <test parameter="[avp14999(1)]" condition="binary.equals" value="05e30a78"/>
+    <test parameter="[avp14999(2)]" condition="binary.equals" value="499602D2"/>
+    <test parameter="[avp14999(3)]" condition="binary.equals" value="3b9Ac9ff"/>
 
     <parameter name="[avp15code]" operation="protocol.setFromMessage" value="avp.99999999.code"/>
     <test parameter="[avp15code]" condition="number.equals" value="99999999"/>

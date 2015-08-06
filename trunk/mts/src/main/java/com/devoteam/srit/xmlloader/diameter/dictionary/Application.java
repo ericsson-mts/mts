@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 import org.dom4j.Element;
 
 /**
@@ -263,27 +264,31 @@ public class Application
             }
         }
         
-        if(null != getAvpDefByCode(avpDef.get_code())) Dictionary.traceWarning("AvpDef of code " + avpDef.get_code() + " already exists, overwriting");
-        if(null != getAvpDefByName(avpDef.get_name())) Dictionary.traceWarning("AvpDef of name " + avpDef.get_name() + " already exists, overwriting");
+        VendorDef vendorDef = avpDef.get_vendor_id();
+        String vendorId = "0";
+        if (vendorDef != null)
+        {
+        	vendorId = Long.toString(vendorDef.get_code());
+        }
+        if(null != getAvpDefByCodeVendorId(avpDef.get_code(), vendorId)) Dictionary.traceWarning("AvpDef of code " + avpDef.get_code() + " already exists, overwriting");
+        if(null != getAvpDefByNameVendorId(avpDef.get_name(), vendorId)) Dictionary.traceWarning("AvpDef of name " + avpDef.get_name() + " already exists, overwriting");
         
         String avpName = avpDef.get_name();
         avpDefByName.put(avpName, avpDef);
+        System.out.println("avpName=" + avpName + " for applicationId=" + this._name);
         String avpCode = Integer.toString(avpDef.get_code());
+        System.out.println("avpCode=" + avpCode + " for applicationId=" + this._name);
         avpDefByCode.put(avpCode, avpDef);
         
-        VendorDef vendorDef = avpDef.get_vendor_id();
+    	String keyName = avpName + "_" + vendorId;
         // index with the avp.name and the avp.vendorId.code
-        if (vendorDef != null)
-        {
-        	String key = avpName + "_" + vendorDef.get_code();
-        	avpDefByNameVendorId.put(key, avpDef);
-        }
+    	avpDefByNameVendorId.put(keyName, avpDef);
+    	System.out.println("keyName=" + keyName + " for applicationId=" + this._name);
+
+    	String keyCode = avpCode + "_" + vendorId;
         // index with the avp.code and the avp.vendorId.code
-        if (vendorDef != null)
-        {
-        	String key = avpCode + "_" + vendorDef.get_code();
-        	avpDefByCodeVendorId.put(key, avpDef);
-        }
+    	avpDefByCodeVendorId.put(keyCode, avpDef);
+    	System.out.println("keyCode=" + keyCode + " for applicationId=" + this._name);
     }
     
     private void parseCommand(Element root) throws ParsingException
@@ -374,7 +379,7 @@ public class Application
             {
                 String gAvpDefName = gIterator.next();
                 
-                AvpDef gAvpDef = Dictionary.getInstance().getAvpDefByName(gAvpDefName, _name, vendorIdCode);             
+                AvpDef gAvpDef = Dictionary.getInstance().getAvpDefByNameVendorIdORName(gAvpDefName, _name, vendorIdCode);             
                 if(null != gAvpDef)
                 {
                 	avpDef.addGroupedAvpDef(gAvpDef);
@@ -412,12 +417,7 @@ public class Application
         return commandDefByCode.get(Integer.toString(code));
     }
     
-    public AvpDef getAvpDefByCode(int code)
-    {
-        return avpDefByCode.get(Integer.toString(code));
-    }
-
-    public AvpDef getAvpDefByCode(int code, String vendorId)
+    public AvpDef getAvpDefByCodeVendorId(int code, String vendorId)
     {
     	AvpDef avpDef = null;
     	if (vendorId != null)
@@ -425,19 +425,14 @@ public class Application
 	    	String key = code + "_" + vendorId;
 	        avpDef = avpDefByCodeVendorId.get(key);
     	}
-    	if (avpDef == null)
+    	else
     	{
-    		avpDef = getAvpDefByCode(code);
+    		avpDef = avpDefByCode.get(Integer.toString(code));
     	}
     	return avpDef;
     }
-
-    public AvpDef getAvpDefByName(String name)
-    {
-        return avpDefByName.get(name);
-    }
     
-    public AvpDef getAvpDefByName(String name, String vendorId)
+    public AvpDef getAvpDefByNameVendorId(String name, String vendorId)
     {
     	AvpDef avpDef = null;
     	if (vendorId != null)
@@ -445,9 +440,9 @@ public class Application
 	    	String key = name + "_" + vendorId;
 	        avpDef = avpDefByNameVendorId.get(key);
     	}
-    	if (avpDef == null)
+    	else
     	{
-    		avpDef = getAvpDefByName(name);
+    		avpDef = avpDefByName.get(name);
     	}
     	return avpDef;
     }
