@@ -445,7 +445,7 @@ public class MsgDiameterParser
             if(null != attributeValue)
             {
             	// get the vendorId code
-                String vendorIdCode = null;
+                String vendorIdCode = "0";
             	if (vendorDef != null)
             	{
             		vendorIdCode = Integer.toString(vendorDef.get_code());
@@ -459,6 +459,7 @@ public class MsgDiameterParser
                 {
                     avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(Integer.parseInt(attributeValue), applicationId, vendorIdCode);
                 }
+
                 
                 if(null == avpDef)
                 {

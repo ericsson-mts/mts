@@ -383,6 +383,11 @@ public class Dictionary
     private AvpDef getAvpDefByCodeVendorId(int code, String applicationId, String vendorId)
     {
         AvpDef result = null ;
+                
+        // try with base application
+        Application applicationBase = getApplication("0");
+        if(null != applicationBase) result = applicationBase.getAvpDefByCodeVendorId(code, vendorId);
+        if(null != result) return result ;
         
         // try with specified application
         Application application = getApplication(applicationId);
@@ -392,12 +397,7 @@ public class Dictionary
             result = application.getAvpDefByCodeVendorId(code, vendorId);
         }
         if (null != result) return result ;
-        
-        // try with base application
-        Application applicationBase = getApplication("0");
-        if(null != applicationBase) result = applicationBase.getAvpDefByCodeVendorId(code, vendorId);
-        if(null != result) return result ;
-        
+
         // try with other applications
         for(Application a:applicationByName.values())
         {
@@ -429,6 +429,11 @@ public class Dictionary
     private AvpDef getAvpDefByNameVendorId(String name, String applicationId, String vendorId )
     {
         AvpDef result = null ;
+                
+        // try with base application
+        Application applicationBase = getApplication("0");
+        if(null != applicationBase) result = applicationBase.getAvpDefByNameVendorId(name, vendorId);
+        if(null != result) return result ;
         
         // try with specified application
         Application application = getApplication(applicationId);
@@ -438,12 +443,7 @@ public class Dictionary
             result = application.getAvpDefByNameVendorId(name, vendorId);
         }
         if(null != result) return result ;
-        
-        // try with base application
-        Application applicationBase = getApplication("0");
-        if(null != applicationBase) result = applicationBase.getAvpDefByNameVendorId(name, vendorId);
-        if(null != result) return result ;
-        
+
         // try with other applications
         for(Application a:applicationByName.values())
         {

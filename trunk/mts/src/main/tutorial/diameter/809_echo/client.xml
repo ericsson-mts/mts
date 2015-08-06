@@ -4,12 +4,12 @@
 <scenario>
 
     <parameter name="[codePublicIdentity]" operation="set" value="601"/>
-    <parameter name="[codePrivateIdentity]" operation="set" value="3"/>
+    <parameter name="[codeUserName]" operation="set" value="1"/>
     <parameter name="[publicIdentity]" operation="set" value="sip:+330000@sip.pfdev.fr"/>
-    <parameter name="[privateIdentity]" operation="set" value="bla1[publicIdentity]1, [unKnown]"/>
-    <parameter name="[privateIdentity]" operation="list.addLast" value="[privateIdentity]" value2="bla2[publicIdentity]2, [unKnown(1)]"/>
-    <parameter name="[privateIdentity]" operation="list.addLast" value="[privateIdentity]" value2="bla3[publicIdentity]3, [unKnown(2)]"/>
-    <parameter name="[privateIdentity]" operation="list.addLast" value="[privateIdentity]" value2="bla4[publicIdentity]4, [unKnown(3)]"/>
+    <parameter name="[userName]" operation="set" value="bla1[publicIdentity]1, [unKnown]"/>
+    <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla2[publicIdentity]2, [unKnown(1)]"/>
+    <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla3[publicIdentity]3, [unKnown(2)]"/>
+    <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla4[publicIdentity]4, [unKnown(3)]"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
@@ -24,14 +24,14 @@
               	<avp code="Auth-Application-Id" value="[applicationID]"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]"/>
-        <avp code="[codePublicIdentity]" value="[publicIdentity]"/>
-        <avp code="[codePublicIdentity]" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]"/>
-        <avp code="[codePublicIdentity]" value="[unKnown]"/>
-        <!--<avp code="[codePrivateIdentity]" value="bla[privateIdentity(0)]bla"/>-->
-        <avp code="[codePrivateIdentity(0)]" value="[privateIdentity]"/>
-        <avp code="Number-Authentication-Items" value="1"/>
-        <avp code="Auth-Data-Item">
+        <avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]" vendorId="TGPP"/>
+        <avp code="[codePublicIdentity]" value="[publicIdentity]" vendorId="TGPP"/>
+        <avp code="[codePublicIdentity]" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]" vendorId="TGPP"/>
+        <avp code="[codePublicIdentity]" value="[unKnown]" vendorId="TGPP"/>
+        <!--<avp code="[codeUserName]" value="bla[privateIdentity(0)]bla" vendorId="TGPP"/>-->
+        <avp code="[codeUserName(0)]" value="[userName]" mandatory="false" private="false"/>
+        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Auth-Data-Item"  vendorId="TGPP">
             <avp code="Item-Number" value="0"/>
             <avp code="Authentication-Scheme" value="DIGEST"/>
             <avp code="Authentication-Scheme" value="666"/>
@@ -42,9 +42,9 @@
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001">
-        <parameter name="lastParam" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
-        <parameter name="lastPublicIdentity" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
-        <parameter name="lastPrivateIdentity" operation="protocol.setFromMessage" value="avp.3.value"/>
+        <parameter name="[lastParam]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
+        <parameter name="[lastPublicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
+        <parameter name="[lastUserName]" operation="protocol.setFromMessage" value="avp.User-Name.value"/>
     </receiveMessageDIAMETER>
 
     <test parameter="[lastPublicIdentity]" condition="list.size" value="5"/>
@@ -53,9 +53,7 @@
     <test parameter="[lastPublicIdentity(2)]" condition="string.equals" value="sip:+330000@sip.pfdev.fr"/>
     <test parameter="[lastPublicIdentity(3)]" condition="string.equals" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]"/>        		
     <test parameter="[lastPublicIdentity(4)]" condition="string.equals" value="[unKnown]"/>
-    <parameter name="[lastPrivateIdentityBinary]" operation="binary.parse" value="[lastPrivateIdentity]"/>
-    <parameter name="[lastPrivateIdentityBinary]" operation="binary.toString" value="[lastPrivateIdentityBinary]"/>
-    <test parameter="[lastPrivateIdentityBinary]" condition="string.equals" value="[privateIdentity]"/>
+    <test parameter="[lastUserName]" condition="string.equals" value="[userName]"/>
     <test parameter="[lastParam(0)]" condition="string.equals" value="12346665"/>
     <test parameter="[lastParam(1)]" condition="string.equals" value="1666346665"/>
     <test parameter="[lastParam(2)]" condition="string.equals" value="1999346665"/>

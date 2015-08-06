@@ -10,7 +10,7 @@
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
         <parameter name="[param]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
         <parameter name="[publicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
-        <parameter name="[privateIdentity]" operation="protocol.setFromMessage" value="avp.3.value"/>
+        <parameter name="[privateIdentity]" operation="protocol.setFromMessage" value="avp.User-Name.value"/>
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
     
@@ -20,7 +20,7 @@
     <sendMessageDIAMETER name="SendAnswerMAA">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Public-Identity" value="[PublicIdentity]1" />
+        <avp code="Public-Identity" value="[PublicIdentity]1" vendorId="10415"/>
         <avp code="Origin-Host" value="[remoteHostDIAM]"/>
         <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
         <avp code="Vendor-Specific-Application-Id">
@@ -29,8 +29,8 @@
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
         <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-        <avp code="Public-Identity" value="[publicIdentity]"/>
-        <avp code="3" value="[privateIdentity]"/>
+        <avp code="Public-Identity" value="[publicIdentity]" vendorId="TGPP"/>
+        <avp code="User-Name" value="[privateIdentity]"/>
         <avp code="Number-Authentication-Items" value="1"/>
         <avp code="[code]">
             <avp code="Item-Number" value="0"/>
