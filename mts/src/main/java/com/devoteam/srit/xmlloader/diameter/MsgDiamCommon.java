@@ -173,7 +173,7 @@ public class MsgDiamCommon extends Msg
         Parameter var = getParameter("avp.268.value");
         if ((var != null) && (var.length() > 0)) {
         	String valueInt = (String) var.get(0);
-            AvpDef avpDef = Dictionary.getInstance().getAvpDefByCode(268, applicationId, null);
+            AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(268, applicationId, null);
         	String valueName = avpDef.getEnumNameByCode(valueInt);
             return valueName + ":" + valueInt;
         }
@@ -182,7 +182,7 @@ public class MsgDiamCommon extends Msg
         var = getParameter("avp.297.298.value");
         if ((var != null) && (var.length() > 0)) {
         	String valueInt = (String) var.get(0);
-            AvpDef avpDef = Dictionary.getInstance().getAvpDefByCode(298, applicationId, null);
+            AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(298, applicationId, null);
         	String valueName = avpDef.getEnumNameByCode(valueInt);
             return valueName + ":" + valueInt;
         }
@@ -404,7 +404,7 @@ public class MsgDiamCommon extends Msg
         String vendorIdCode = Integer.toString(avp.vendor_id);
         
         // retrieve the type of avp
-        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCode(avp.code, applicationId, vendorIdCode);
+        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
         
         // retrieve the top-parent type
         TypeDef typeDef = null;
@@ -539,7 +539,10 @@ public class MsgDiamCommon extends Msg
         
         ret += " value=\"" + value + "\"";
         ret += " type=\"" + type + "\"";
-        ret += " vendorId=\"" + avp.vendor_id + "\"";
+        if (avp.vendor_id != 0)
+        {
+        	ret += " vendorId=\"" + avp.vendor_id + "\"";
+        }
         ret += " v=\"" + avp.isVendorSpecific() +"\"";
         ret += " m=\"" + avp.isMandatory() + "\"";
         ret += " p=\"" + avp.isPrivate() + "\"";
@@ -603,7 +606,7 @@ public class MsgDiamCommon extends Msg
         String vendorIdCode = Integer.toString(avp.vendor_id);
 
         // retrieve the type of avp
-        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCode(avp.code, applicationId, vendorIdCode);
+        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
                 
         // retrieve the top-parent type
         TypeDef typeDef = null;
@@ -980,7 +983,7 @@ public class MsgDiamCommon extends Msg
         }
         else
         {
-        	avpCode = Dictionary.getInstance().getAvpDefByName(code, Integer.toString(message.hdr.application_id), null).get_code();
+        	avpCode = Dictionary.getInstance().getAvpDefByNameVendorIdORName(code, Integer.toString(message.hdr.application_id), null).get_code();
         }
         while(avps.hasNext())
         {
@@ -999,7 +1002,7 @@ public class MsgDiamCommon extends Msg
         String vendorIdCode = Integer.toString(avp.vendor_id);
 
         // retrieve the type of avp
-        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCode(avp.code, applicationId, vendorIdCode);
+        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
         
         // retrieve the top-parent type
         TypeDef typeDef = null;
