@@ -672,12 +672,21 @@ public class MsgDiamCommon extends Msg
             else if(type.equalsIgnoreCase("OctetString"))
             {
             	byte[] val = new AVP_OctetString(avp).queryValue();
-            	value = Utils.toBinaryString(val, false);
+            	Array array = new DefaultArray(val);
+        		value = Array.toHexString(array);
             }
             else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
             {
-            	byte[] val = (new AVP_OctetString(avp)).queryValue();
-            	value = Utils.toIPAddress(val);
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	if (val.length == 4 || val.length == 16)
+            	{
+            		value = Utils.toIPAddress(val);
+            	}
+            	else
+            	{
+            		Array array = new DefaultArray(val);
+            		value = Array.toHexString(array);
+            	}
             }
             else if(type.equalsIgnoreCase("UTF8String"))
             {
@@ -691,21 +700,23 @@ public class MsgDiamCommon extends Msg
             	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
             	Date date = new Date(secondSince1970 * 1000);
             	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
-            	return format.format(date);
+            	value = format.format(date);
             }
             else
             {
             	// case when there is a decoding problem : we assume type=OctetString
             	byte[] val = new AVP_OctetString(avp).queryValue();
-            	value = Utils.toBinaryString(val, false);
+            	Array array = new DefaultArray(val);
+        		value = Array.toHexString(array);
             }
         }
         catch(Exception e)
         {
-            throw new Exception("Error while trying to decode AVP named " + name + " of code " + avp.code, e);
+        	byte[] val = new AVP_OctetString(avp).queryValue();
+        	Array array = new DefaultArray(val);
+    		value = Array.toHexString(array);
+        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while trying to decode AVP named " + name + " of code " + avp.code);
         }
-
-        
         
         ret += " value=\"" + value + "\"";
         ret += " type=\"" + type + "\"";
@@ -765,16 +776,16 @@ public class MsgDiamCommon extends Msg
         while(iterator.hasNext())
         {
             AVP avp = iterator.next();
-            try
-            {
+            //try
+            //{
                 
                 xml += avpToXml(avp,0, applicationId);
-            }
-            catch (Exception e)
-            {
-                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the DIAMETER message : ", xml);
-                e.printStackTrace();
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the DIAMETER message : ", xml);
+            //    e.printStackTrace();
+            //}
         }
         return xml;
     }
@@ -879,7 +890,7 @@ public class MsgDiamCommon extends Msg
             LinkedList<AVP> baseAvps = null ;
             LinkedList<AVP> tempAvps = null ;
             Iterator<AVP>   baseIterator = message.avps().iterator();
-            LinkedList validAvps = new LinkedList<AVP>();
+            LinkedList<AVP> validAvps = new LinkedList<AVP>();
             while(i<params.length-1)
             {
                 if(null != baseAvps)
