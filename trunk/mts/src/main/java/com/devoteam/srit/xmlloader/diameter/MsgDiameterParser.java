@@ -49,6 +49,7 @@ import dk.i1.diameter.AVP_Unsigned32;
 import dk.i1.diameter.AVP_Unsigned64;
 import dk.i1.diameter.Message;
 import dk.i1.diameter.MessageHeader;
+import gp.utils.arrays.Array;
 
 import java.net.InetAddress;
 import java.util.Date;
@@ -327,7 +328,17 @@ public class MsgDiameterParser
             }
             else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
             {
-                avp = new AVP_OctetString(code, InetAddress.getByName(value).getAddress());
+            	byte[] val = null;
+            	if (value.contains(".") || value.contains(":"))
+            	{
+            		val = InetAddress.getByName(value).getAddress();
+            	}
+            	else
+            	{
+            		Array array = Array.fromHexString(value);
+            		val = array.getBytes();
+            	}
+                avp = new AVP_OctetString(code, val);
             }
             else if(type.equalsIgnoreCase("UTF8String"))
             {

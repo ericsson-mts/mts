@@ -323,266 +323,6 @@ public class MsgDiamCommon extends Msg
 	    }
 	    return applicationIdString;
     }
-
-    /** Returns the string description of the message. Used for logging */
-    @Override
-    public String toString()
-    {
-    	String ret = " ";
-        try
-        {
-        	ret += headerToString();
-        }
-        catch (Exception e)
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the DIAMETER message : ", ret);
-            e.printStackTrace();
-        }
-        
-        String applicationId = Integer.toString(message.hdr.application_id);
-        Iterable<AVP> iterable = message.avps();
-        Iterator<AVP> iterator = iterable.iterator();
-        while(iterator.hasNext())
-        {
-            AVP avp = iterator.next();
-            try
-            {
-                ret += avpToString(avp,0, applicationId);
-            }
-            catch (Exception e)
-            {
-                GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the DIAMETER message : ", ret);
-                e.printStackTrace();
-            }
-        }
-
-		// cut if message is too long
-        if (ret.length() > MAX_STRING_LENGTH)
-        {
-        	ret = " {" + MAX_STRING_LENGTH + " of " + ret.length() + "}" + ret.substring(0, MAX_STRING_LENGTH);
-        }
-
-        ret += "\n\n";
-        // display transport info
-		if (channel != null)
-		{
-			ret += "<CHANNEL " + channel + ">\n";
-		}
-		if (listenpoint != null)
-		{
-			ret += "<LISTENPOINT " + listenpoint + ">\n";
-		}
-		if (probe != null)
-		{
-			ret += "<PROBE " + probe + ">\n";
-		}
-
-        return ret;
-    }
-
-    private String headerToString() throws Exception 
-    {          
-        String ret = "<header command=\"" + message.hdr.command_code + "\"" +
-        " applicationId=\"" + message.hdr.application_id + "\"" +
-        " hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\"" +
-        " endToEnd=\"" + message.hdr.end_to_end_identifier + "\"" +
-        " r=\"" + message.hdr.isRequest() + "\"" +
-        " p=\"" + message.hdr.isProxiable() + "\"" +
-        " e=\"" + message.hdr.isError() + "\"" +
-        " t=\"" + message.hdr.isRetransmit() + "\"" + "/>\n";
-        return ret;
-    }
-
-    /**
-     * prints as String an avp and it's sub-avps (recursive)
-     */
-    private static String avpToString(AVP avp, int indent, String applicationId) throws Exception
-    {
-        String ret = "" ;
-        
-        // retrieve the vendorId code
-        String vendorIdCode = Integer.toString(avp.vendor_id);
-        
-        // retrieve the type of avp
-        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
-        
-        // retrieve the top-parent type
-        TypeDef typeDef = null;
-        
-        boolean isTypeAppId = false;
-        boolean isTypeVendorId = false;
-        
-        if(null != avpDef)
-        {
-            typeDef = avpDef.get_type();
-            while(null != typeDef && null != typeDef.get_type_parent())
-            {
-                if(typeDef.get_type_name().equalsIgnoreCase("AppId"))     isTypeAppId = true;
-                if(typeDef.get_type_name().equalsIgnoreCase("VendorId"))  isTypeVendorId = true;
-                typeDef = typeDef.get_type_parent();
-            }
-            
-        }
-        
-        // determine the type name
-        String type = "unknown" ;
-        if(null != typeDef) type = typeDef.get_type_name();
-        if(null != avpDef && avpDef.getGroupedAvpNameList().size()!=0) type = "grouped";
-        
-        // retrieve the AVP name
-        String name = "unknown ";
-        if(null != avpDef) name = avpDef.get_name();
-        
-        ret += Utils.indent(indent) + "<avp";
-        ret += " name=\"" + name + "\"";
-        ret += " code=\"" + avp.code + "(0x" + Integer.toHexString(avp.code) +")\"";
-
-        String value = "";
-        try
-        {
-            if(type.equalsIgnoreCase("grouped"))
-            {
-            	value = "grouped" ;
-            }
-            else if(type.equalsIgnoreCase("Integer32"))
-            {
-            	long val = new AVP_Integer32(avp).queryValue();
-            	value = Long.toString(val);
-            }
-            else if(type.equalsIgnoreCase("Integer64"))
-            {
-            	long val = new AVP_Integer64(avp).queryValue();
-            	value = Long.toString(val);
-            }
-            else if(type.equalsIgnoreCase("Unsigned32"))
-            {
-            	long val = new AVP_Unsigned32(avp).queryValue() & 0xffffffffL;
-            	value = Long.toString(val);
-        	}
-            else if(type.equalsIgnoreCase("Unsigned64"))
-            {
-            	long val = new AVP_Unsigned64(avp).queryValue() & 0xffffffffffffffffL;
-            	value = Long.toString(val);
-            }
-            else if(type.equalsIgnoreCase("OctetString"))
-            {
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	value = Utils.toBinaryString(val, false);
-            }
-            else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("IPAddress"))
-            {
-            	byte[] val = (new AVP_OctetString(avp)).queryValue();
-            	value = Utils.toIPAddress(val);
-            }
-            else if(type.equalsIgnoreCase("UTF8String"))
-            {
-            	byte[] val = (new AVP_OctetString(avp)).queryValue();
-            	value = new String(val);
-            }
-            else if(type.equalsIgnoreCase("Float32"))
-            {
-            	float result = new AVP_Float32(avp).queryValue();
-            	value = Float.toString(result);
-            }
-            else if(type.equalsIgnoreCase("Float64"))
-            {
-            	double result = new AVP_Float64(avp).queryValue();
-            	value = Double.toString(result);
-            }
-            else if(type.equalsIgnoreCase("Time"))
-            {
-            	// this method is buggous !
-            	//Date date = new AVP_Time(avp).queryDate();
-            	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
-            	Date date = new Date(secondSince1970 * 1000);
-            	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
-            	value = format.format(date);
-            }
-            else
-            {
-            	// case when there is a decoding problem : we assume type=OctetString
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	value = Utils.toBinaryString(val, false);
-            }
-        }
-        catch(Exception e)
-        {
-        	// case when there is a decoding problem : we assume type=OctetString
-        	value = Utils.toBinaryString(new AVP_OctetString(avp).queryValue(), false);
-        }
-
-        try
-        {
-            if(null != avpDef)
-            {
-                String valueName = avpDef.getEnumNameByCode(value);
-                if(null == valueName)
-                {
-                    if(isTypeAppId)
-                    {
-                        Application app = Dictionary.getInstance().getApplication(value);
-                        if(null != app) valueName = app.get_name();
-                    }
-                    else if(isTypeVendorId && Utils.isInteger(value))
-                    {
-                        VendorDef vendorDef = Dictionary.getInstance().getVendorDefByCode(Integer.parseInt(value), applicationId);
-                        if(null != vendorDef) valueName = vendorDef.get_vendor_id();
-                    }
-                }
-                if(valueName != null) value = valueName + "(" + value + ")";
-            }
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-        
-        ret += " value=\"" + value + "\"";
-        ret += " type=\"" + type + "\"";
-        if (avp.vendor_id != 0)
-        {
-        	ret += " vendorId=\"" + avp.vendor_id + "\"";
-        }
-        ret += " v=\"" + avp.isVendorSpecific() +"\"";
-        ret += " m=\"" + avp.isMandatory() + "\"";
-        ret += " p=\"" + avp.isPrivate() + "\"";
-        
-        if(type.equalsIgnoreCase("grouped"))
-        {
-            ret += ">\n";
-            
-            AVP_Grouped gavp = null;
-            
-            try
-            {
-            	gavp = new AVP_Grouped(avp);
-            }
-            catch (Exception e)
-           
-            {
-            	throw e;
-            }
-            AVP[] tavp = gavp.queryAVPs();
-            for(int i=0; i<tavp.length; i++)
-            {
-                try
-                {
-                    ret += avpToString(tavp[i], indent+1, applicationId);
-                }
-                catch(Exception e)
-                {
-                    ret += avpToStringSafe(tavp[i], indent+1);
-                }
-            }
-            ret += Utils.indent(indent) + "</avp>\n";
-        }
-        else
-        {
-            ret += "/>\n";
-        }
-        
-        return ret ;
-    }
         
     private static String avpToStringSafe(AVP avp, int indent)
     {
@@ -590,8 +330,11 @@ public class MsgDiamCommon extends Msg
         ret += Utils.indent(indent);
         
         ret += "<avp code=\"" + avp.code + "\" type=\"OctetString\" ";
-        ret += "value=\"" + Utils.toBinaryString(AVPInterface.encode(avp)) + "\" />\n";
-        
+        ret += "value=\"";
+    	Array array = new DefaultArray(AVPInterface.encode(avp));
+		ret += Array.toHexString(array);
+		ret += "\" />\n";
+		
         return ret;
     }
     
@@ -622,8 +365,7 @@ public class MsgDiamCommon extends Msg
                 if(typeDef.get_type_name().equalsIgnoreCase("AppId"))     isTypeAppId = true;
                 if(typeDef.get_type_name().equalsIgnoreCase("VendorId"))  isTypeVendorId = true;
                 typeDef = typeDef.get_type_parent();
-            }
-            
+            }         
         }
         
         // determine the type name
@@ -692,6 +434,16 @@ public class MsgDiamCommon extends Msg
             {
             	byte[] val = (new AVP_OctetString(avp)).queryValue();
             	value = new String(val);
+            }
+            else if(type.equalsIgnoreCase("Float32"))
+            {
+            	float result = new AVP_Float32(avp).queryValue();
+            	value = Float.toString(result);
+            }
+            else if(type.equalsIgnoreCase("Float64"))
+            {
+            	double result = new AVP_Float64(avp).queryValue();
+            	value = Double.toString(result);
             }
             else if(type.equalsIgnoreCase("Time"))
             {

@@ -148,13 +148,19 @@ public class genscriptCmd {
                 stack.createProbe(probe, fg.getProtocole());
             }
 
+            Utils.pauseMilliseconds((long) 3000);
             // Attente de la fin de la capture à partir du fichier
             while (!listeProbe.get(0).getProbeJpcapThread().getStopPossible()) {
+            	//System.out.println("wait stopPossible=true");
             	Utils.pauseMilliseconds((long) 100);
             }
 
+            Utils.pauseMilliseconds((long) 1000);
+            
             generator.closeTest();
 
+            Utils.pauseMilliseconds((long) 0);
+            
             System.out.println("END => test file: " + args[args.length - 1] + "(See application.log)");
             GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "END => test file: " + args[args.length - 1] + "(See application.log)");
             

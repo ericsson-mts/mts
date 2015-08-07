@@ -199,11 +199,13 @@ public class PJpcapThread implements PacketReceiver, Runnable {
 
         startSemaphore.release();
 
-        while (!stopped) {
+        while (!stopped) 
+        {
             captor.processPacket(-1, this);
             synchronized (this) {
                 try {
                     wait(1000);
+                    //System.out.println("stopPossible = true");
                     stopPossible = true;
                 }
                 catch (InterruptedException ex) {

@@ -171,8 +171,9 @@ public class Scenario {
 
                 lastTimestamp = message.getTimestamp();            
 
-                // GESTION DES MESSAGES XML TAG wiuthout <parameters>
+                // GESTION DES MESSAGES XML TAG without <parameters>
                 String xml = message.toXml();
+                
                 // GESTION DES PARAMETRES         
                 String xmlWithParam = ParamGenerator.getInstance().applyParam(message.getPPP(), xml, message.getMsgSrc());
                                 
