@@ -42,7 +42,7 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777231"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
             <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
@@ -55,20 +55,21 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
-          <avp code="Globally-Unique-Address" mandatory="true"  vendorId="13019">
-            <avp code="Framed-IP-Address" type="OctetString" value="ToBeCompleted"/>
-            <avp code="Framed-IPv6-Prefix" type="OctetString" value="ToBeCompleted"/>
-            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="13019"/>
+          <avp code="Globally-Unique-Address" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Framed-IP-Address" type="Address" value="127.0.0.1"/>
+            <!-- bad format for the avp ? -->
+            <!--avp code="Framed-IPv6-Prefix" type="Address" value="fe80::"/-->
+            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="localhost" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
           <avp code="AF-Application-Identifier" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <!-- The Requested-Information AVP is of type Enumerated. -->
           <!-- Possible enumerated values : SUBSCRIBER-ID (0) / LOCATION-INFORMATION (1) / RACS-CONTACT-POINT (2) / ACCESS-NETWORK-TYPE (3) / TERMINAL-TYPE (4) / LOGICAL-ACCESS-ID (5) / PHYSICAL-ACCESS-ID (6) / ACCESS-NETWORK-TYPE (7) / INITIAL-GATE-SETTING (8) / QOS-PROFILE (9) / IP-CONNECTIVITY-STATUS (10). -->
-          <avp code="Requested-Information" type="Enumerated" value="SUBSCRIBER-ID" vendorId="13019"/>
+          <avp code="Requested-Information" type="Enumerated" value="SUBSCRIBER-ID" vendorId="[vendorID]"/>
 
           <avp code="Proxy-Info">
             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
