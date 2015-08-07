@@ -976,19 +976,29 @@ public class MsgDiamCommon extends Msg
     private LinkedList<AVP> getAvps(Iterator<AVP> avps, String code) throws ParsingException
     {
         LinkedList<AVP> result = new LinkedList<AVP>();
-        int avpCode = 0 ;
         if(Utils.isInteger(code))
         {
-        	avpCode = Integer.parseInt(code);
+            int avpCode = Integer.parseInt(code);
+            while(avps.hasNext())
+            {
+                AVP avp = avps.next();
+                if(avp.code == avpCode) result.add(avp);
+            }
         }
         else
         {
-        	avpCode = Dictionary.getInstance().getAvpDefByNameVendorIdORName(code, Integer.toString(message.hdr.application_id), null).get_code();
-        }
-        while(avps.hasNext())
-        {
-            AVP avp = avps.next();
-            if(avp.code == avpCode) result.add(avp);
+        	String appliIDCode = Integer.toString(message.hdr.application_id);
+            while(avps.hasNext())
+            {
+                AVP avp = avps.next();
+                String vendorIDCode = Integer.toString(avp.vendor_id);
+                AvpDef  avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, appliIDCode, vendorIDCode);
+                if (avpDef != null)
+                {
+		            String avpName = avpDef.get_name(); 
+		            if(code.equals(avpName)) result.add(avp);
+                }
+            }
         }
         return result ;
     }
