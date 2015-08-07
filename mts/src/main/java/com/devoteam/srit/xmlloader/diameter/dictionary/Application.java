@@ -275,20 +275,20 @@ public class Application
         
         String avpName = avpDef.get_name();
         avpDefByName.put(avpName, avpDef);
-        System.out.println("avpName=" + avpName + " for applicationId=" + this._name);
+        Dictionary.traceDebug("avpName=" + avpName + " for applicationId=" + this._name);
         String avpCode = Integer.toString(avpDef.get_code());
-        System.out.println("avpCode=" + avpCode + " for applicationId=" + this._name);
+        Dictionary.traceDebug("avpCode=" + avpCode + " for applicationId=" + this._name);
         avpDefByCode.put(avpCode, avpDef);
         
     	String keyName = avpName + "_" + vendorId;
         // index with the avp.name and the avp.vendorId.code
     	avpDefByNameVendorId.put(keyName, avpDef);
-    	System.out.println("keyName=" + keyName + " for applicationId=" + this._name);
+    	Dictionary.traceDebug("keyName=" + keyName + " for applicationId=" + this._name);
 
     	String keyCode = avpCode + "_" + vendorId;
         // index with the avp.code and the avp.vendorId.code
     	avpDefByCodeVendorId.put(keyCode, avpDef);
-    	System.out.println("keyCode=" + keyCode + " for applicationId=" + this._name);
+    	Dictionary.traceDebug("keyCode=" + keyCode + " for applicationId=" + this._name);
     }
     
     private void parseCommand(Element root) throws ParsingException

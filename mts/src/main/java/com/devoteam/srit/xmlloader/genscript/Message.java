@@ -212,8 +212,12 @@ public class Message implements Comparable{
                                 rec += p.toXml();
                          }
             		}
-                } catch (Exception ex) {
-                     GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Error while returning receive tag from xml");  }
+                } 
+                catch (Exception ex) 
+                {
+                	ex.printStackTrace();
+                    GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, ex, "Error while returning receive tag from xml");  
+                }
             }
         }
         
