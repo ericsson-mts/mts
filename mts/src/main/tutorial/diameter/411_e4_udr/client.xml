@@ -54,15 +54,16 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
-          <avp code="Globally-Unique-Address" mandatory="true"  vendorId="13019">
-            <avp code="Framed-IP-Address" type="OctetString" value="ToBeCompleted"/>
-            <avp code="Framed-IPv6-Prefix" type="OctetString" value="ToBeCompleted"/>
-            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="13019"/>
+          <avp code="Globally-Unique-Address" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Framed-IP-Address" type="Address" value="127.0.0.1"/>
+            <!-- bad format for the avp ? -->
+            <!--avp code="Framed-IPv6-Prefix" type="Address" value="fe80::"/-->
+            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="localhost" vendorId="[vendorID]"/>
           </avp>
           <avp code="AF-Application-Identifier" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
+          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
           <avp code="Proxy-Info">
             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
