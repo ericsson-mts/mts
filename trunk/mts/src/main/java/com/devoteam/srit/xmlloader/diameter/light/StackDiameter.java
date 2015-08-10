@@ -80,19 +80,20 @@ public class StackDiameter extends StackDiamCommon
     	// read the header
         byte[] tab = new byte[20];
         int done = Utils.readFromSocketStream(inputStream, tab);
-        
-        // get the length from the header
-        Array header = new DefaultArray(tab,0,done);
-        Array lengthArray = header.subArray(1,3);       
-        int length = 0;
-        length += (lengthArray.get(0) & 0xFF) << 16;
-        length += (lengthArray.get(1) & 0xFF) << 8;
-        length += lengthArray.get(2) & 0xFF;
-        length -= 20;
-        
-        // read the message payload
-        if (length > 0)
+
+        // read the message payload       
+        if (done >= 20)
         {
+
+		    // get the length from the header
+		    Array header = new DefaultArray(tab,0,done);
+		    Array lengthArray = header.subArray(1,3);       
+		    int length = 0;
+		    length += (lengthArray.get(0) & 0xFF) << 16;
+		    length += (lengthArray.get(1) & 0xFF) << 8;
+		    length += lengthArray.get(2) & 0xFF;
+		    length -= 20;
+        
 	        tab = new byte[length];
 	        done = Utils.readFromSocketStream(inputStream, tab);
 	        Array payload = new DefaultArray(tab,0,done);
