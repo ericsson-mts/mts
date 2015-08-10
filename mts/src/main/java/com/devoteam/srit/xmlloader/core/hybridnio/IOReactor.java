@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core.hybridnio;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -34,6 +35,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
+
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 
@@ -325,6 +327,16 @@ public class IOReactor
         }
     }
 
+    public void closeTCP(Socket channel, IOHandler handler) throws IOException
+    {
+        synchronized(selectorLock)
+        {
+	    	//channel.register(selector, 0, handler);
+	    	//selector.close();
+        }
+    	channel.close();
+    }
+
     public void openTCPServer(SocketAddress localSocketAddress, IOHandler handler) throws IOException
     {
         // Create a non-blocking socket channel
@@ -337,6 +349,19 @@ public class IOReactor
             this.selector.wakeup();
             handler.init(channel.register(selector, SelectionKey.OP_ACCEPT, handler), channel);
         }
+    }
+
+    public void closeTCPServer(ServerSocketChannel channelServer, IOHandler handler) throws IOException
+    {
+        synchronized(selectorLock)
+        {
+        	SelectionKey select = channelServer.register(selector, 0, handler);
+        	handler.init(select, channelServer);
+        	channelServer.register(selector, 0, handler);
+        	//selector.close();
+        }
+    	channelServer.close();
+    	//channelServer = null;
     }
 
     /**

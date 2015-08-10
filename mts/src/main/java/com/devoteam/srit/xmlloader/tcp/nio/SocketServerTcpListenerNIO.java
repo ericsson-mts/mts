@@ -90,7 +90,10 @@ public class SocketServerTcpListenerNIO implements IOHandler
     {
         try
         {
-            serverChannel.close();
+        	synchronized (this)
+            {
+        		IOReactor.instance().closeTCPServer(serverChannel, this);
+            }
         }
         catch (Exception e)
         {
