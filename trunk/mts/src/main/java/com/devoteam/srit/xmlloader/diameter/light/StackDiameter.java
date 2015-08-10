@@ -69,45 +69,7 @@ public class StackDiameter extends StackDiamCommon
     {
         return null;
     }
-    
-    /** 
-     * Creates a Msg specific to each Stack
-     * Use for TCP/TLS like protocol : to build incoming message
-     */
-    @Override
-    public byte[] readMessageFromStream(InputStream inputStream) throws Exception
-    {
-    	// read the header
-        byte[] tab = new byte[20];
-        int done = Utils.readFromSocketStream(inputStream, tab);
-
-        // read the message payload       
-        if (done >= 20)
-        {
-
-		    // get the length from the header
-		    Array header = new DefaultArray(tab,0,done);
-		    Array lengthArray = header.subArray(1,3);       
-		    int length = 0;
-		    length += (lengthArray.get(0) & 0xFF) << 16;
-		    length += (lengthArray.get(1) & 0xFF) << 8;
-		    length += lengthArray.get(2) & 0xFF;
-		    length -= 20;
-        
-	        tab = new byte[length];
-	        done = Utils.readFromSocketStream(inputStream, tab);
-	        Array payload = new DefaultArray(tab,0,done);
-	        
-	        // concat the header and the payload
-	        SupArray arrayMsg = new SupArray();
-	        arrayMsg.addFirst(header);
-	        arrayMsg.addLast(payload);
-	               
-	        return arrayMsg.getBytes();
-        }
-        return null;
-    }
-       
+           
     /** 
      * Returns the XML Element Replacer to replace the "[parameter]" string 
      * in the XML document by the parameter values.
