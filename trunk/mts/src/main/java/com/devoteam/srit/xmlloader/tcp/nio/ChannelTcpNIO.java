@@ -112,20 +112,22 @@ public class ChannelTcpNIO extends Channel
         {
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol());
     		this.startTimestamp = System.currentTimeMillis();
-        	
-            InetAddress localAddr = InetAddress.getByName(getLocalHost());
-
-            InetSocketAddress local  = new InetSocketAddress(localAddr, getLocalPort());
-            InetSocketAddress remote = new InetSocketAddress(getRemoteHost(), getRemotePort());
-            
             socketTcp = new SocketTcpNIO();
             HybridSocket hybridSocket = new HybridSocket(socketTcp);
             socketTcp.init(hybridSocket);
-
             socketTcp.setChannelTcp(this);
+            
+            InetSocketAddress local = null;
+    		if (getLocalHost() != null)
+    		{
+	            InetAddress localAddr = InetAddress.getByName(getLocalHost());
+	            local  = new InetSocketAddress(localAddr, getLocalPort());
+    		}
+            InetSocketAddress remote = new InetSocketAddress(getRemoteHost(), getRemotePort());
+    		
             IOReactor.instance().openTCP(local, remote, hybridSocket);
 
-    		// read all properties for the TCP socket 
+            // read all properties for the TCP socket 
     		Config.getConfigForTCPSocket(hybridSocket, false);
 
             this.localPort = hybridSocket.getLocalPort();

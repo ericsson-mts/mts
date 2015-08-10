@@ -16,6 +16,12 @@
                       <xs:documentation>The channel local port (sometimes called the source port) of the channel. The default value is chosen by the tool.</xs:documentation>
                   </xs:annotation>
               </xs:attribute>
+      				<xs:attribute name="localURL" type="xs:string" use="optional">
+      					<xs:annotation>
+      						<xs:appinfo>String (url)</xs:appinfo>
+      						<xs:documentation>The local URL of the channel (sometimes called the source information).</xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute>             
       				<xs:attribute name="remoteHost" type="xs:string" use="optional">
       					<xs:annotation>
       						<xs:appinfo>String</xs:appinfo>
@@ -60,12 +66,18 @@
 						<xs:documentation>The listenpoint local host i.e. the IP address we are listening to. It should of course be one of the local addresses of the host or a host name with a DNS resolution. The default value is configurable(ppp.properties/listenpoint.LOCAL_HOST)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="localPort" type="xs:string" use="required">
+				<xs:attribute name="localPort" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Integer</xs:appinfo>
 						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="localURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The listenpoint local URL we are listening to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>             
 				<xs:attribute name="listenUDP" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Boolean</xs:appinfo>

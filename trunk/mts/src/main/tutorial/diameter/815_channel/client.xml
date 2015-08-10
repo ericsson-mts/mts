@@ -81,7 +81,8 @@
     <pause name="pause" seconds="0.1"/>
 
     <!-- open a channel with all parameters -->
-    <openChannelDIAMETER name="channel_client" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"/>
+    <parameter name="[localPortDIAM]" operation="number.random" value="1025" value2="65535"/>
+    <openChannelDIAMETER name="channel_client" localURL="aaa://[localHostDIAM]:[localPortDIAM]/path" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"/>
 
     <finally>
         <closeChannelDIAMETER name="channel_client"/>
