@@ -361,15 +361,7 @@ public abstract class Msg extends MsgLight implements Removable
 	}
 	
 	public void setRemoteUrl(String remoteUrl) throws Exception {
-	    URI uri = null;
-	    try
-	    {
-	        uri = new URI(remoteUrl).normalize();
-	    }
-	    catch (Exception e)
-	    {
-	        throw new ExecutionException("Can't create URI from : " + remoteUrl, e);
-	    }
+	    URI uri = new URI(remoteUrl).normalize();
 	    this.remoteHost = uri.getHost();
 	    this.remotePort = uri.getPort();
 	    String scheme = uri.getScheme();

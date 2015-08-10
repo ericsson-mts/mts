@@ -296,6 +296,13 @@ public class Channel
         {
         	this.localPort = Integer.parseInt(localPort);
         }
+        String localURL = root.attributeValue("localURL");
+        if (localURL != null)
+        {
+        	URI uri = new URI(localURL).normalize();
+        	this.localHost = uri.getHost();
+        	this.localPort = uri.getPort();
+        }
         
         String remoteHost = root.attributeValue("remoteHost");
         if (remoteHost != null)
@@ -311,15 +318,7 @@ public class Channel
         String remoteURL = root.attributeValue("remoteURL");
         if (remoteURL != null)
         {
-        	URI uri = null;
-        	try
-    	    {
-    	        uri = new URI(remoteURL).normalize();
-    	    }
-    	    catch (Exception e)
-    	    {
-    	        throw new ExecutionException("Can't create URI from : " + remoteURL, e);
-    	    }
+        	URI uri = new URI(remoteURL).normalize();
         	this.remoteHost = uri.getHost();
         	this.remotePort = uri.getPort();
         }

@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.udp.ListenpointUdp;
 
+import java.net.URI;
 import java.util.HashMap;
 
 import org.dom4j.Element;
@@ -535,8 +536,7 @@ public class Listenpoint
         if (this.host == null || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
-        }        
-        
+        }                
         String portAttr = root.attributeValue("localPort");
         if (portAttr != null)
         {
@@ -545,6 +545,13 @@ public class Listenpoint
         else
         {
             this.port = 0;
+        }
+        String localURL = root.attributeValue("localURL");
+        if (localURL != null)
+        {
+        	URI uri = new URI(localURL).normalize();
+        	this.host = uri.getHost();
+        	this.port = uri.getPort();
         }
 
         String listenUDPAttr = root.attributeValue("listenUDP");
