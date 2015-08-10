@@ -23,6 +23,10 @@
 
 package com.devoteam.srit.xmlloader.diameter.dk;
 
+import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.diameter.StackDiamCommon;
 
 /**
@@ -38,4 +42,11 @@ public class StackDiameter extends StackDiamCommon
         super();
     }
             
+    /** Creates a channel specific to each Stack */
+    @Override
+    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
+    {
+        return null;
+    }
+
 }
