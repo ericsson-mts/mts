@@ -71,14 +71,7 @@ public class StackDiamCommon extends Stack
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "traceLevel : ", traceLevel);
         Node.logger.warning("traceLevel = " + traceLevel);
     }
-        
-    /** Creates a channel specific to each Stack */
-    @Override
-    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
-    {
-        return null;
-    }
-     
+             
     /** 
      * Creates a Msg specific to each Stack
      * Use for TCP/TLS like protocol : to build incoming message

@@ -1,5 +1,50 @@
 <!--                                                                       START OF DIAMETER PROTOCOL -->
 
+  <!--                                                                          openChannel -->
+  <xs:complexType name="openChannelDIAMETERType">
+      <xs:complexContent>
+          <xs:extension base="operationType">
+              <xs:attribute name="localHost" type="xs:string" use="optional">
+                  <xs:annotation>
+                      <xs:appinfo>String</xs:appinfo>
+                      <xs:documentation>The channel local host (sometimes called the source host) of the channel. It should of course be one of the local addresses of the host or a host name with a DNS resolution.</xs:documentation>
+                  </xs:annotation>
+              </xs:attribute>
+              <xs:attribute name="localPort" type="xs:string" use="optional">
+                  <xs:annotation>
+                      <xs:appinfo>Integer</xs:appinfo>
+                      <xs:documentation>The channel local port (sometimes called the source port) of the channel. The default value is chosen by the tool.</xs:documentation>
+                  </xs:annotation>
+              </xs:attribute>
+      				<xs:attribute name="remoteHost" type="xs:string" use="optional">
+      					<xs:annotation>
+      						<xs:appinfo>String</xs:appinfo>
+      						<xs:documentation>The channel remote host (sometimes called the destination host) of the channel. It could be an IP address or a host name with a DNS resolution.</xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute>
+      				<xs:attribute name="remotePort" type="xs:string" use="optional">
+      					<xs:annotation>
+      						<xs:appinfo>Integer</xs:appinfo>
+      						<xs:documentation>The channel remote port (sometimes called the destination port) of the channel.</xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute> 
+      				<xs:attribute name="remoteURL" type="xs:string" use="optional">
+      					<xs:annotation>
+      						<xs:appinfo>String (url)</xs:appinfo>
+      						<xs:documentation>The remote URL of the channel (sometimes called the destination information).</xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute>             
+          </xs:extension>
+      </xs:complexContent>
+  </xs:complexType>
+  
+  <!--                                                                         closeChannel -->
+  <xs:complexType name="closeChannelDIAMETERType">
+      <xs:complexContent>
+          <xs:extension base="operationType"/>
+      </xs:complexContent>
+  </xs:complexType>
+
 
 	<!--                                                                          createListenpoint -->
 	<xs:complexType name="createListenpointDIAMETERType">
@@ -119,12 +164,19 @@
                     <xs:element name="header"  type="headerDIAMType" />
                     <xs:element name="avp"     type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
-            			<xs:attribute name="listenpoint" type="xs:string" use="optional">
+  			<xs:attribute name="channel" type="xs:string" use="optional">
+  				<xs:annotation>
+  					<xs:appinfo>String</xs:appinfo>
+  					<xs:documentation>The name of the channel to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+  				</xs:annotation>
+  			</xs:attribute>
+        <xs:attribute name="listenpoint" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
 						<xs:documentation>The name of the listenpoint to transport the message. Don't use it with channel (incompatible)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+        
 				<xs:attribute name="remoteHost" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
@@ -176,6 +228,12 @@
                     <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
                 </xs:sequence>
+  			<xs:attribute name="channel" type="xs:string" use="optional">
+  				<xs:annotation>
+  					<xs:appinfo>String</xs:appinfo>
+  					<xs:documentation>The name of the channel to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+  				</xs:annotation>
+  			</xs:attribute>
 				<xs:attribute name="listenpoint" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>

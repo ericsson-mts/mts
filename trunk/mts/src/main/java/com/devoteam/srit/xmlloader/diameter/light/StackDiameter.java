@@ -62,14 +62,7 @@ public class StackDiameter extends StackDiamCommon
     {
         super();
     }
-        
-    /** Creates a channel specific to each Stack */
-    @Override
-    public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
-    {
-        return null;
-    }
-           
+                   
     /** 
      * Returns the XML Element Replacer to replace the "[parameter]" string 
      * in the XML document by the parameter values.

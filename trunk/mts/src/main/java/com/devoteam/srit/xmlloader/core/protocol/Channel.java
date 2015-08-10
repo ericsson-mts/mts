@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
@@ -32,6 +33,7 @@ import com.devoteam.srit.xmlloader.tls.ChannelTls;
 import com.devoteam.srit.xmlloader.udp.ChannelUdp;
 
 import java.net.InetAddress;
+import java.net.URI;
 
 import org.dom4j.Element;
 
@@ -305,6 +307,21 @@ public class Channel
         if (remotePort != null)
         {
         	this.remotePort = Integer.parseInt(remotePort);
+        }
+        String remoteURL = root.attributeValue("remoteURL");
+        if (remoteURL != null)
+        {
+        	URI uri = null;
+        	try
+    	    {
+    	        uri = new URI(remoteURL).normalize();
+    	    }
+    	    catch (Exception e)
+    	    {
+    	        throw new ExecutionException("Can't create URI from : " + remoteURL, e);
+    	    }
+        	this.remoteHost = uri.getHost();
+        	this.remotePort = uri.getPort();
         }
         
         String transport = root.attributeValue("transport");
