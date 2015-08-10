@@ -21,9 +21,10 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.diameter;
+package com.devoteam.srit.xmlloader.diameter.dk;
 
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 import dk.i1.diameter.node.ConnectionKey;
@@ -35,7 +36,12 @@ import dk.i1.diameter.node.Peer;
  */
 public class ChannelDiameter extends Channel
 {
-	
+    /** Creates a new instance of Channel */
+    public ChannelDiameter(Stack stack)
+    {
+    	super(stack);
+    }
+
 	private ConnectionKey connKey;
 	
 	/** Creates a new instance of Channel */

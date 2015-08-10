@@ -32,7 +32,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
-import com.devoteam.srit.xmlloader.diameter.ChannelDiameter;
+import com.devoteam.srit.xmlloader.diameter.dk.ChannelDiameter;
 import com.devoteam.srit.xmlloader.diameter.DiameterNodeManager;
 import com.devoteam.srit.xmlloader.diameter.ListenpointDiamCommon;
 

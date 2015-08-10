@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.diameter.dk.ChannelDiameter;
 import com.devoteam.srit.xmlloader.diameter.dk.MsgDiameter;
 
 import dk.i1.diameter.Message;

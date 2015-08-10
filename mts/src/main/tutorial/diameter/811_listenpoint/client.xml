@@ -8,8 +8,8 @@
     <createListenpointDIAMETER name="lp_client" localPort="[Listen-Client-Port]"/>
     
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]"
-        destScenario="server">
+    <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" 
+        remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
         <header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
@@ -66,7 +66,7 @@
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" destScenario="server" 
-        remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
+        remoteURL="diam://[Listen-Server-Host]:[Listen-Server-Port]/path;param=value">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
