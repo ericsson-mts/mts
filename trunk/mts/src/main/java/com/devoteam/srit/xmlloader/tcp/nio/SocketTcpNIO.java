@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.tcp.nio;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocketInputHandler;
+import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -37,6 +38,7 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 
 /**
  *
@@ -76,7 +78,8 @@ public class SocketTcpNIO implements HybridSocketInputHandler
         {
             synchronized (this)
             {
-                socket.close();
+        		//IOReactor.instance().closeTCP(socket, this);
+            	socket.close();
                 socket = null;
             }
         }
