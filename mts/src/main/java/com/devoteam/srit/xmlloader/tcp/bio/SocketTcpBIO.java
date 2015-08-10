@@ -120,12 +120,10 @@ public class SocketTcpBIO extends Thread
 	                    	startTlsAnswerReceived = true;
 			    		stack.getChannel(channel.getName()).receiveMessage(msg);
 			    	}
-			    	/*
 			    	else
 			    	{
 			    		exception = true;
 			    	}
-			    	*/
             	}
             	else
             	{
