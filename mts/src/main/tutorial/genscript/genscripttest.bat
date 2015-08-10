@@ -167,7 +167,9 @@ echo ------------------------------
 
 cd ..\bin
 
+set OPTIONS=-level:WARN -stor:file -gen:false -show:false
+
 set ARGS0="../tutorial/genscript/out/testout.xml"
-call startCmd.bat %ARGS0%
+call startCmd.bat %ARGS0% -seq %OPTIONS%
 
 pause
