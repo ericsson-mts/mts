@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 
 public class ListenpointTcpNIO extends Listenpoint
 {
@@ -66,7 +67,7 @@ public class ListenpointTcpNIO extends Listenpoint
     @Override
     public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
-        ChannelTcpNIO channel;
+        Channel channel;
 
         String keySocket = remoteHost + ":" + remotePort;
 
@@ -77,7 +78,7 @@ public class ListenpointTcpNIO extends Listenpoint
         }
         else
         {
-            channel = (ChannelTcpNIO) this.getChannel(keySocket);
+            channel = this.getChannel(keySocket);
         }
 
         return channel;
