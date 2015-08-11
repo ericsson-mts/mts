@@ -55,18 +55,20 @@ Authentication-Information-Request ::= < Diameter Header: 318, REQ, PXY, 1677725
     <parameter name="[Visited-PLMN-Id]" operation="set" value="20801"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestAIR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestAIR" channel="channel_client" destScenario="server">
         <header request="true" command="3GPP-Authentication-Information" applicationId="3GPP S6a/S6d"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP S6a"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="User-Name" value="[Imsi]"/>
         <avp code="Requested-EUTRAN-Authentication-Info">
             <avp code="Number-Of-Requested-Vectors" value="1"/>
@@ -76,7 +78,7 @@ Authentication-Information-Request ::= < Diameter Header: 318, REQ, PXY, 1677725
         <avp code="Visited-PLMN-Id" value="[Visited-PLMN-Id]"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerAIA" request="false" type="3GPP-Authentication-Information" result="DIAMETER_SUCCESS">
+    <receiveMessageDIAMETER name="ReceiveAnswerAIA" channel="channel_client" request="false" type="3GPP-Authentication-Information" result="DIAMETER_SUCCESS">
     </receiveMessageDIAMETER>
 
 

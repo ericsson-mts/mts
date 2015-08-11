@@ -48,12 +48,13 @@
     <sendMessageDIAMETER name="SendRequestAAR" listenpoint="lp_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="Scenario server">
         <header request="true" command="AA" applicationId="3GPP Rx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Auth-Application-Id" value="3GPP Rx"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        
         <avp code="Media-Component-Description">
             <avp code="Media-Component-Number" value="[Media-Component-Number]"/>
             <avp code="Media-Sub-Component">
@@ -132,6 +133,7 @@
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        
         <avp code="Termination-Cause" value="[Termination-Cause]"/>
     </sendMessageDIAMETER>
 

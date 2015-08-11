@@ -98,14 +98,16 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
     <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33672225555@orange.fr"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestAAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestAAR" channel="channel_client" destScenario="server">
         <header request="true" command="AA" applicationId="3GPP Rx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Auth-Application-Id" value="3GPP Rx"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        
+        <avp code="Auth-Application-Id" value="3GPP Rx"/>
+                
         <avp code="Media-Component-Description">
             <avp code="Media-Component-Number" value="[Media-Component-Number]"/>
             <avp code="Media-Sub-Component">
@@ -134,7 +136,7 @@ From 3GPP TS 29.214 V10.3.0 : AAR is sent by the AF to the PCRF in order to prov
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerAAA" request="false" type="AA" result="DIAMETER_SUCCESS">
+    <receiveMessageDIAMETER name="ReceiveAnswerAAA" channel="channel_client" request="false" type="AA" result="DIAMETER_SUCCESS">
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 

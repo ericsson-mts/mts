@@ -172,18 +172,20 @@ Insert-Subscriber-Data-Request ::= < Diameter Header: 319, REQ, PXY, 16777251 >
     <parameter name="[IDR-Flags]" operation="set" value="30"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestIDR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestIDR" channel="channel_client" destScenario="server">
         <header request="true" command="3GPP-Insert-Subscriber-Data" applicationId="3GPP S6a/S6d"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP S6a"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="User-Name" value="[Imsi]"/>
         <avp code="Subscription-Data">
             <avp code="Access-Restriction-Data" value="[Access-Restriction-Data]"/>
@@ -191,7 +193,7 @@ Insert-Subscriber-Data-Request ::= < Diameter Header: 319, REQ, PXY, 16777251 >
         <avp code="IDR-Flags" value="[IDR-Flags]"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerIDA" request="false" type="3GPP-Insert-Subscriber-Data" result="DIAMETER_SUCCESS">
+    <receiveMessageDIAMETER name="ReceiveAnswerIDA" channel="channel_client" request="false" type="3GPP-Insert-Subscriber-Data" result="DIAMETER_SUCCESS">
     </receiveMessageDIAMETER>
 
 

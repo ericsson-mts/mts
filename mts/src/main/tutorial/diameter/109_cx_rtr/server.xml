@@ -46,9 +46,14 @@ Registration-Termination-Request ::= < Diameter Header: 304, REQ, PXY, 16777216 
 -->
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/RTR" remoteURL="diameter://[remoteDIAM]" destScenario="client">
+    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/RTR" channel="channel_client" destScenario="client">
         <header request="true" command="Registration-Termination" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
@@ -58,11 +63,6 @@ Registration-Termination-Request ::= < Diameter Header: 304, REQ, PXY, 16777216 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
-
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
           <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
@@ -109,7 +109,7 @@ Registration-Termination-Request ::= < Diameter Header: 304, REQ, PXY, 16777216 
           <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer 3GPP/CX-DX/RTA" request="false" type="Registration-Termination:304" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/CX-DX/RTA" channel="channel_client" request="false" type="Registration-Termination:304" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
     
 </scenario>

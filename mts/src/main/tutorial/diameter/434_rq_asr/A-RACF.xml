@@ -29,10 +29,9 @@ Abort-Session-Request ::= < Diameter Header: 258, REQ, PXY >
 -->
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="Send Request ETSI/Rq/ASR" remoteURL="diameter://[remoteDIAM]" destScenario="SPDF">
+    <sendMessageDIAMETER name="Send Request ETSI/Rq/ASR" channel="channel_client" destScenario="SPDF">
         <header request="true" command="Abort-Session" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
@@ -62,7 +61,7 @@ Abort-Session-Request ::= < Diameter Header: 258, REQ, PXY >
           <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer ETSI/Rq/ASA" request="false" type="Abort-Session:274" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="Receive Answer ETSI/Rq/ASA" channel="channel_client" request="false" type="Abort-Session:274" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
     
 </scenario>
