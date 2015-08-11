@@ -4,6 +4,22 @@
 
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+
+    <receiveMessageDIAMETER name="ReceiveRequestECR" request="true" type="3GPP-ME-Identity-Check">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
 <!--
 From 3GPP TS 29.272 V9.1.0 :
 ME-Identity-Check-Answer ::= < Diameter Header: 324, REQ, PXY, 16777252 >
@@ -32,20 +48,6 @@ ME-Identity-Check-Answer ::= < Diameter Header: 324, REQ, PXY, 16777252 >
 
 -->
 
-
-    <receiveMessageDIAMETER name="ReceiveRequestECR" request="true" type="3GPP-ME-Identity-Check">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
-        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
-        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-    </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerECA">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>

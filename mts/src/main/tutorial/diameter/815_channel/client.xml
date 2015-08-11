@@ -5,10 +5,10 @@
 <scenario>
 
     <!-- open a channel with no parameter -->
-    <openChannelDIAMETER name="channel_client" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"/>
+    <openChannelDIAMETER name="channel" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"/>
     
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR" channel="channel_client" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestMAR" channel="channel" destScenario="server">
         <header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
@@ -39,19 +39,19 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer (MAA)" channel="channel_client" request="false" type="506" result="2001" >
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" channel="channel" request="false" type="506" result="2001" >
     </receiveMessageDIAMETER>
     
-    <closeChannelDIAMETER name="channel_client"/>
+    <closeChannelDIAMETER name="channel"/>
     <pause name="pause" seconds="0.1"/>
     
     <parameter name="[localPortDIAM]" operation="number.random" value="1025" value2="65535"/>
     <!-- open a channel with all parameters -->
-    <openChannelDIAMETER name="channel_client" localHost="[localHostDIAM]" localPort="[localPortDIAM]"
-        remoteURL="diam://[remoteHostDIAM]:[remotePortDIAM]"/>
+    <openChannelDIAMETER name="channel" localHost="[localHostDIAM]" localPort="[localPortDIAM]"
+        remoteURL="diam://[remoteHostDIAM]:[remotePortDIAM]" transport="[transport]"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR" channel="channel_client" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestMAR" channel="channel" destScenario="server">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
@@ -73,19 +73,20 @@
         </avp>
     </sendMessageDIAMETER>
     
-    <receiveMessageDIAMETER name="Receive Answer (MAA)" channel="channel_client" request="false" type="506" result="2001" >
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" channel="channel" request="false" type="506" result="2001" >
     </receiveMessageDIAMETER>
 
 
-    <closeChannelDIAMETER name="channel_client"/>
+    <closeChannelDIAMETER name="channel"/>
     <pause name="pause" seconds="0.1"/>
 
     <!-- open a channel with all parameters -->
     <parameter name="[localPortDIAM]" operation="number.random" value="1025" value2="65535"/>
-    <openChannelDIAMETER name="channel_client" localURL="aaa://[localHostDIAM]:[localPortDIAM]/path" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"/>
+    <openChannelDIAMETER name="channel" localURL="aaa://[localHostDIAM]:[localPortDIAM]/path" 
+                         remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]" transport="[transport]"/>
 
     <finally>
-        <closeChannelDIAMETER name="channel_client"/>
+        <closeChannelDIAMETER name="channel"/>
         <pause name="pause" seconds="0.1"/>
     </finally>
         

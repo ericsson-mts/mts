@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.diameter;
+package com.devoteam.srit.xmlloader.diameter.dk;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +32,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.diameter.MsgDiamCommon;
 import com.devoteam.srit.xmlloader.diameter.dk.ChannelDiameter;
 import com.devoteam.srit.xmlloader.diameter.dk.MsgDiameter;
 
@@ -123,7 +124,8 @@ public class DiameterNodeManager extends NodeManager {
      */    
     public synchronized boolean reset() 
     {
-        this.stop(0);        
+        this.stop(0);  
+        channels.clear();
         // noting to do
         return true;
     }

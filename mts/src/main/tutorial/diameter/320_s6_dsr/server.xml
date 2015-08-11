@@ -3,6 +3,23 @@
 <!-- name="3GPP S6 Delete Subscriber Data (DSR/DSA)" -->
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+
+    <receiveMessageDIAMETER name="ReceiveRequestDSR" request="true" type="3GPP-Delete-Subscriber-Data">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+    
+
 <!--
 From 3GPP TS 29.272 V9.1.0 : DSR from HSS to MME/SGSN to remove some or all data of the HSS user profile stored in the MME/SGSN
 Delete-Subscriber-Data-Answer ::= < Diameter Header: 320, PXY, 16777251 >
@@ -31,20 +48,6 @@ Delete-Subscriber-Data-Answer ::= < Diameter Header: 320, PXY, 16777251 >
                                                      * [ AVP ]
                                  *[ Route-Record ]
 -->
-
-    <receiveMessageDIAMETER name="ReceiveRequestDSR" request="true" type="3GPP-Delete-Subscriber-Data">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
-        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
-        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-    </receiveMessageDIAMETER>
    
     <!-- 
     	DSA-Flags: bitmask - 3GPP TS 29.272

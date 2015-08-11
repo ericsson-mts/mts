@@ -3,6 +3,22 @@
 <!-- name="3GPP S6 Insert Subscriber Data (IDR/IDA)" -->
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+    
+    <receiveMessageDIAMETER name="ReceiveRequestIDR" request="true" type="3GPP-Insert-Subscriber-Data">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
 <!--
 From 3GPP TS 29.272 V9.1.0 : IDR from HSS to MME/SGSN for updating and/or requesting certain user data in the MME or SGSN
 Insert-Subscriber-Data-Answer ::= < Diameter Header: 319, PXY, 16777251 >
@@ -69,20 +85,6 @@ Insert-Subscriber-Data-Answer ::= < Diameter Header: 319, PXY, 16777251 >
                                  *[ Route-Record ]
 
 -->
-
-    <receiveMessageDIAMETER name="ReceiveRequestIDR" request="true" type="3GPP-Insert-Subscriber-Data">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
-        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
-        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-    </receiveMessageDIAMETER>
    
     <!-- 
     	IMS-Voice-Over-PSSessions-Supported - enum: whether "IMS Voice over PS Sessions" is  supported by the UE's most 

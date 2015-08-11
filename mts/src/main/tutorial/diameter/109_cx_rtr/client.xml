@@ -3,6 +3,8 @@
 <!-- name="Send 3GPP Cx/Dx Registration-Termination answer (RTA)" -->
 <scenario>
     
+    <call name="diameter.RecCER_SendCEA"/>
+    
     <receiveMessageDIAMETER name="Receive Request 3GPP/CX-DX/RTR" request="true" type="Registration-Termination:304">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
