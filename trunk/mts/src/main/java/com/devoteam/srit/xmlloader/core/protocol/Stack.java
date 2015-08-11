@@ -92,11 +92,11 @@ public abstract class Stack
     private ExpireHashMap<SessionId, Sess> capSessions;
 
     /** list of channels object = channel transport**/
-    private Map<String, Channel> channels = null;    
+    protected Map<String, Channel> channels = null;    
     /** list of listenpoint object**/
-    private Map<String, Listenpoint> listenpoints = null;
+    protected Map<String, Listenpoint> listenpoints = null;
     /** list of probe object**/
-    private Map<String, Probe> probes = null;
+    protected Map<String, Probe> probes = null;
 
     /** counter for the generation of the unique transaction ID */
     private static long transId = 0;
@@ -308,6 +308,7 @@ public abstract class Stack
             	channels.remove(name);
             }
         }
+        
         return true;
     }
 

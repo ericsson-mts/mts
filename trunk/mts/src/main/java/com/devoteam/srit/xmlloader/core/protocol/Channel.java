@@ -212,7 +212,8 @@ public class Channel
     }
 
     /** Close a channel */
-    public boolean close(){
+    public boolean close()
+    {
         try 
         {
         	channel.close();

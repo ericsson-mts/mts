@@ -140,21 +140,6 @@ public class SocketSctp extends Thread {
 			GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Exception in SocketSctp");
 		}
 
-		//
-		// try to remove itself
-		//
-		try
-		{	
-			if(sctpSocket != null)
-			{ 
-				StackFactory.getStack(channelSctp.getProtocol()).closeChannel(channelSctp.getName());
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-
 		GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "SocketSctp receiver thread stopped");
 
 	}

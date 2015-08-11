@@ -23,6 +23,10 @@
 
 package com.devoteam.srit.xmlloader.diameter.dk;
 
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.diameter.StackDiamCommon;
 
 /**
@@ -37,5 +41,39 @@ public class StackDiameter extends StackDiamCommon
     {
         super();
     }
-            
+    
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+
+    /** Open a channel */
+    @Override
+    public boolean openChannel(Channel channel) throws Exception
+   {    	
+    	// channel are made by the dk stack
+        synchronized (channels)
+        {
+        	channels.put(channel.getName(), channel);
+	        if (channels.size() % 1000 == 999)
+	        {
+	            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Stack : List of channels : size = ", channels.size());
+	        }
+        }
+        GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Stack: put in channels list : size = ", channels.size(), " the channel \n", channel);
+    	return false;
+    }
+    
+    /** Close a channel */
+    @Override
+    public boolean closeChannel(String name) throws Exception
+    {
+        synchronized (channels)
+        {
+        	channels.remove(name);
+        }
+        return false;
+    }
+
+    
 }
