@@ -7,11 +7,12 @@
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        		
         <avp code="Vendor-Specific-Application-Id">
               <avp code="Vendor-Id" value="TGPP"/>
               <avp code="Auth-Application-Id" value="3GPP Cx"/>

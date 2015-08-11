@@ -43,25 +43,27 @@ ME-Identity-Check-Request ::= < Diameter Header: 324, REQ, PXY, 16777252 >
     <parameter name="[Software-Version]" operation="set" value="46"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestECR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestECR" channel="channel_client" destScenario="server">
         <header request="true" command="3GPP-ME-Identity-Check" applicationId="3GPP S13/S13'"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="Vendor-Specific-Application-Id">
               <avp code="Vendor-Id" value="TGPP"/>
               <avp code="Auth-Application-Id" value="3GPP S13"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="Terminal-Information">
               <avp code="IMEI" value="[IMEI]"/>
               <avp code="Software-Version" value="[Software-Version]"/>
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerECA" request="false" type="3GPP-ME-Identity-Check" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="ReceiveAnswerECA" channel="channel_client" request="false" type="3GPP-ME-Identity-Check" result="DIAMETER_SUCCESS:2001">
     		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 

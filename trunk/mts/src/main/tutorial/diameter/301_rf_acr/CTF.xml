@@ -270,13 +270,13 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
 -->
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="Send Request 3GPP/Rf/ACR" remoteURL="diameter://[remoteDIAM]" destScenario="CDF">
+    <sendMessageDIAMETER name="Send Request 3GPP/Rf/ACR" channel="channel_client" destScenario="CDF">
         <header request="true" command="Accounting" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
           <!-- The Accounting-Record-Type AVP contains the type of accounting record being sent. -->
           <!-- Possible enumerated values : EVENT_RECORD(1) / START_RECORD(2) / INTERIM_RECORD(3) / STOP_RECORD(4). -->
@@ -331,7 +331,7 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
 
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer 3GPP/Rf/ACA" request="false" type="Accounting:271" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/Rf/ACA" channel="channel_client" request="false" type="Accounting:271" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
     
 </scenario>

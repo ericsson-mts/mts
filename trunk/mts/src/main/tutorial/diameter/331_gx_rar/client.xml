@@ -161,14 +161,16 @@ From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provisi
     <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestRAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestRAR" channel="channel_client" destScenario="server">
         <header request="true" command="Re-Auth" applicationId="3GPP Gx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Auth-Application-Id" value="3GPP Gx"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        
+        <avp code="Auth-Application-Id" value="3GPP Gx"/>
+        
         <avp code="Origin-State-Id" value="[Origin-State-Id]"/>
         <avp code="Charging-Rule-Install">
             <avp code="Charging-Rule-Definition">
@@ -232,7 +234,7 @@ From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provisi
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerRAA" request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
+    <receiveMessageDIAMETER name="ReceiveAnswerRAA" channel="channel_client" request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 

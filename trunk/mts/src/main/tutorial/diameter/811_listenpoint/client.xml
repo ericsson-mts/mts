@@ -11,11 +11,12 @@
     <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
         <header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        		
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP Cx"/>
@@ -68,11 +69,12 @@
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" destScenario="server" 
         remoteURL="diam://[Listen-Server-Host]:[Listen-Server-Port]/path;param=value">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        		
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP Cx"/>

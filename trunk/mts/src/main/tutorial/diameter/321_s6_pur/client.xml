@@ -40,22 +40,24 @@ Purge-UE-Request ::= < Diameter Header: 321, REQ, PXY, 16777251 >
     <parameter name="[Imsi]" operation="set" value="208011045322746"/>
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestPUR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestPUR" channel="channel_client" destScenario="server">
         <header request="true" command="3GPP-Purge-UE" applicationId="3GPP S6a/S6d"/>
-        <avp code="Session-Id" value="[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP S6a"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="User-Name" value="[Imsi]"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerPUA" request="false" type="3GPP-Purge-UE" result="DIAMETER_SUCCESS">
+    <receiveMessageDIAMETER name="ReceiveAnswerPUA" channel="channel_client" request="false" type="3GPP-Purge-UE" result="DIAMETER_SUCCESS">
     </receiveMessageDIAMETER>
 
 

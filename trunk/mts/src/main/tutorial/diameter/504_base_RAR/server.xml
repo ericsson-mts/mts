@@ -29,15 +29,15 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
     <sendMessageDIAMETER name="Send Request RAR" remoteURL="diameter://[remoteDIAM]" destScenario="client">
         <header request="true" command="Re-Auth" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-        
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>        
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
-          <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          <!-- The Destination-Host AVP identifies the endpoint the message is to be routed to. -->            
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <!-- The Destination-Realm AVP contains the realm the message is to be routed to. -->
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
         
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="0"/-->

@@ -39,9 +39,14 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
 -->
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="Send Request ETSI/e4/UDR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+    <sendMessageDIAMETER name="Send Request ETSI/e4/UDR" channel="channel_client" destScenario="server">
         <header request="true" command="User-Data" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
@@ -51,11 +56,6 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (ETSI ES 283 035 V1.2.1 (2007-04)). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
-
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
           <avp code="Globally-Unique-Address" mandatory="true"  vendorId="[vendorID]">
             <avp code="Framed-IP-Address" type="Address" value="127.0.0.1"/>
@@ -85,7 +85,7 @@ User-Data-Request ::= < Diameter Header: 306, REQ, PXY, 16777231 >
           <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer ETSI/e4/UDA" request="false" type="User-Data:306" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="Receive Answer ETSI/e4/UDA" channel="channel_client" request="false" type="User-Data:306" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
     
 </scenario>

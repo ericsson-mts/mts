@@ -27,13 +27,13 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
 -->
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="Send Request ETSI/Gq'/STR" remoteURL="diameter://[remoteDIAM]" destScenario="SPDF">
+    <sendMessageDIAMETER name="Send Request ETSI/Gq'/STR" channel="channel_client" destScenario="SPDF">
         <header request="true" command="Session-Termination" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
 
           <!-- The Termination-Cause AVP is used to indicate the reason why a session was terminated on the access device. -->
           <!-- Possible enumerated values : DIAMETER_LOGOUT(1) / DIAMETER_SERVICE_NOT_PROVIDED(2) / DIAMETER_BAD_ANSWER(3) / DIAMETER_ADMINISTRATIVE(4) / DIAMETER_LINK_BROKEN(5) / DIAMETER_AUTH_EXPIRED(6) / DIAMETER_USER_MOVED(7) / DIAMETER_SESSION_TIMEOUT(8). -->
@@ -60,7 +60,7 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
           <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer ETSI/Gq'/STA" request="false" type="Session-Termination:275" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="Receive Answer ETSI/Gq'/STA" channel="channel_client" request="false" type="Session-Termination:275" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
     
 </scenario>
