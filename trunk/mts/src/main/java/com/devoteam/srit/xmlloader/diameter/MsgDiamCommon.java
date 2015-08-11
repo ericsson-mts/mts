@@ -504,14 +504,16 @@ public class MsgDiamCommon extends Msg
 
     private String headerToXml() throws Exception 
     {          
-        String ret = "<header command=\"" + message.hdr.command_code + "\"" +
-        " applicationId=\"" + message.hdr.application_id + "\"" +
-        " hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\"" +
-        " endToEnd=\"" + message.hdr.end_to_end_identifier + "\"" +
-        " request=\"" + message.hdr.isRequest() + "\"" +
-        " proxiable=\"" + message.hdr.isProxiable() + "\"" +
-        " error=\"" + message.hdr.isError() + "\"" +
-        " retransmit=\"" + message.hdr.isRetransmit() + "\"" + "/>\n";
+        String ret = "<header ";
+        ret += "request=\"" + message.hdr.isRequest() + "\" ";
+        ret += "command=\"" + message.hdr.command_code + "\" ";
+        ret += "applicationId=\"" + message.hdr.application_id + "\" ";
+        ret += "hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\" ";
+        ret += "endToEnd=\"" + message.hdr.end_to_end_identifier + "\" ";
+        ret += "proxiable=\"" + message.hdr.isProxiable() + "\" ";
+        ret += "error=\"" + message.hdr.isError() + "\" ";
+        ret += "retransmit=\"" + message.hdr.isRetransmit() + "\" ";
+        ret += "/>\n";
         return ret;
     }
     

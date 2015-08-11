@@ -3,6 +3,8 @@
 <!-- name="Send ETSI e2 User-Data answer (UDA)" -->
 <scenario>
     
+    <call name="diameter.RecCER_SendCEA"/>
+    
     <receiveMessageDIAMETER name="Receive Request ETSI/e4/UDR" request="true" type="User-Data:306">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>

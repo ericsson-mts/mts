@@ -3,6 +3,22 @@
 <!-- name="3GPP S6 Purge UE (PUR/PUA)" -->
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+
+    <receiveMessageDIAMETER name="ReceiveRequestPUR" request="true" type="3GPP-Purge-UE">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+    
 <!--
 From 3GPP TS 29.272 V9.1.0 : PUR from MME/GGSN to HSS to indicate that the subscriber's profile has been deleted 
 from the MME or SGSN either by an MMI interaction or automatically, e.g. because the UE has been inactive for 
@@ -33,22 +49,7 @@ Purge-UE-Answer ::= < Diameter Header: 321, PXY, 16777251 >
                                                      * [ AVP ]
                                  *[ Route-Record ]
 
--->
-
-    <receiveMessageDIAMETER name="ReceiveRequestPUR" request="true" type="3GPP-Purge-UE">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Vendor-Id.value"/>
-        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id.Auth-Application-Id.value"/>
-        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-    </receiveMessageDIAMETER>
-    
+-->    
 
     <!-- 
     	PUA-Flags : bitmask - 3GPP TS 29.272

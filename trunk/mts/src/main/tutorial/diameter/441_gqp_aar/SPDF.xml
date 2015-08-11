@@ -3,6 +3,8 @@
 <!-- name="Send ETSI Gq' AA answer (AAA)" -->
 <scenario>
     
+    <call name="diameter.RecCER_SendCEA"/>
+    
     <receiveMessageDIAMETER name="Receive Request ETSI/Gq'/AAR" request="true" type="AA:265">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>    
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>

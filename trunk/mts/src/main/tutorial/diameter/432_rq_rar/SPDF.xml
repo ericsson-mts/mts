@@ -2,7 +2,9 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <!-- name="Send ETSI Rq Re-Auth answer (RAA)" -->
 <scenario>
-    
+
+    <call name="diameter.RecCER_SendCEA"/>
+        
     <receiveMessageDIAMETER name="Receive Request ETSI/Rq/RAR" request="true" type="Re-Auth:258">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>

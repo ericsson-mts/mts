@@ -3,6 +3,19 @@
 <!-- name="3GPP Gx Re-Auth (RAR/RAA)" -->
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+    
+    <receiveMessageDIAMETER name="ReceiveRequestRAR" request="true" type="Re-Auth">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
 <!--
 From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provision unsollicited QoS rules, 
 	event triggers and event report indications for the session
@@ -29,18 +42,6 @@ From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provisi
 	  * [ Proxy-Info ] 
 	  * [ AVP ] 
 -->
-
-
-    <receiveMessageDIAMETER name="ReceiveRequestRAR" request="true" type="Re-Auth">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-    </receiveMessageDIAMETER>
 
     <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
       previous state, for example upon reboot

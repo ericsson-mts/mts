@@ -84,8 +84,8 @@ public class OperationCloseChannel extends Operation {
     	boolean closed = StackFactory.getStack(protocol).closeChannel(name);
     	if (closed)
     	{
-	        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>CLOSE ", protocol, "<CHANNEL name = \"", name, "\">");
-	        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, "<CHANNEL name = \"", name, "\">");
+	        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>CLOSE ", protocol, " <CHANNEL name = \"", name, "\">");
+	        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CLOSE ", protocol, " <CHANNEL name = \"", name, "\">");
     	}
         return null;
     }

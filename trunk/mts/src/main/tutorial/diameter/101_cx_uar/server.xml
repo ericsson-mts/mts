@@ -3,8 +3,12 @@
 <!-- name="Send 3GPP Cx/Dx User-Authorization answer (UAA)" -->
 
 <scenario>
+
+    <call name="diameter.RecCER_SendCEA"/>
     
     <receiveMessageDIAMETER name="Receive Request 3GPP/CX-DX/UAR" request="true" type="User-Authorization:300">
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
@@ -53,7 +57,7 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
                                  *[ Route-Record ]
 
 -->
-    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA">
+    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA" remoteHost="[remoteHost]" remotePort="[remotePort]">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
           <avp code="Vendor-Specific-Application-Id">

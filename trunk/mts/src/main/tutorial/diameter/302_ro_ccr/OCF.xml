@@ -3,6 +3,8 @@
 <!-- name="Send 3GPP Ro Credit-Control answer (CCA)"-->
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+
     <receiveMessageDIAMETER name="Receive Request 3GPP/Ro/CCR" request="true" type="Credit-Control:272">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>

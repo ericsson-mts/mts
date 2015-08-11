@@ -4,6 +4,22 @@
 
 <scenario>
 
+    <call name="diameter.RecCER_SendCEA"/>
+    
+    <receiveMessageDIAMETER name="ReceiveRequestCCR" request="true" type="Credit-Control">
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
+        <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type.value"/>
+        <parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    </receiveMessageDIAMETER>
+
 <!--
 From 3GPP TS 29.212 V9.3.0 : CCR is sent by the PCEF to the PCRF:
 	- to request PCC rules for a bearer
@@ -102,21 +118,6 @@ CC-Answer ::= < Diameter Header: 272, PXY >
 				   *[ Route-Record ] 
 				   *[ AVP ]
 -->
-
-
-    <receiveMessageDIAMETER name="ReceiveRequestCCR" request="true" type="Credit-Control">
-        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
-        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
-        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type.value"/>
-        <parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-    </receiveMessageDIAMETER>
 
     <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
       previous state, for example upon reboot

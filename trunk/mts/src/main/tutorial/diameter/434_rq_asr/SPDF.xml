@@ -2,7 +2,9 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <!-- name="Send ETSI Rq Abort-Session answer (ASA)" -->
 <scenario>
-    
+
+    <call name="diameter.RecCER_SendCEA"/>
+        
     <receiveMessageDIAMETER name="Receive Request ETSI/Gq'/ASR" request="true" type="Abort-Session:274">
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/> 
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
