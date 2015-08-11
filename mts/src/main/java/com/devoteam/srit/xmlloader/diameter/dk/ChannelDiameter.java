@@ -24,6 +24,8 @@
 package com.devoteam.srit.xmlloader.diameter.dk;
 
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
+import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
@@ -58,4 +60,25 @@ public class ChannelDiameter extends Channel
     	return this.connKey;
     }
     
+    
+    //---------------------------------------------------------------------
+    // methods for the transport
+    //---------------------------------------------------------------------
+        
+    /** Send a Msg through the channel */
+    @Override
+    public boolean sendMessage(Msg msg) throws Exception
+    {
+    	boolean ret;
+    	Listenpoint listenpoint = msg.getListenpoint();
+    	if (listenpoint != null)
+    	{
+            ret = listenpoint.sendMessage(msg, remoteHost, remotePort, transport);
+        }
+        else
+        {
+            throw new Exception("No listenpoint or channel to transport the message : \r\n" + msg.toString());
+        }
+    	return ret;
+    }
 }

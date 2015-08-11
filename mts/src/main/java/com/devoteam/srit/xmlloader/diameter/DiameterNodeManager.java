@@ -23,6 +23,9 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -42,15 +45,18 @@ public class DiameterNodeManager extends NodeManager {
     
     
     private Listenpoint listenpoint = null;
+    private Map<ConnectionKey, Channel> channels;
     
     /**
      * init the diameter Client.
      * @param    peer : the peer to connect to
      * @return 
      */
-    public DiameterNodeManager(NodeSettings node_settings, Listenpoint listenpoint) throws Exception {
+    public DiameterNodeManager(NodeSettings node_settings, Listenpoint listenpoint) throws Exception 
+    {
         super(node_settings);       
         this.listenpoint  = listenpoint;
+        this.channels = new HashMap<ConnectionKey, Channel>();
         // start the client             
          start();                
     }  
@@ -60,7 +66,8 @@ public class DiameterNodeManager extends NodeManager {
      * @param    request 
      * @return The answer to the request. Null if there is no answer (all peers down, or other error)
      */
-    public synchronized ConnectionKey getConnectionKey(Peer peer) throws Exception {        
+    public synchronized ConnectionKey getConnectionKey(Peer peer) throws Exception 
+    {        
 	    
 	    // find the connexion and establish it 
 	    ConnectionKey connkey = node().findConnection(peer);
@@ -70,7 +77,9 @@ public class DiameterNodeManager extends NodeManager {
 	        node().initiateConnection(peer, true);
 	        waitForConnection();
 	        Thread.sleep(200);
+	        connkey = node().findConnection(peer);
 	    }
+	    
 	return connkey;
     }
     
@@ -80,10 +89,16 @@ public class DiameterNodeManager extends NodeManager {
      * @param    request The request to send
      * @return The answer to the request. Null if there is no answer (all peers down, or other error)
      */
-    public synchronized boolean sendRequest(MsgDiamCommon msg, Peer peer) throws Exception { 	
-        ConnectionKey connkey = getConnectionKey(peer); 
-   	 	Channel channel = new ChannelDiameter(connkey, peer);
-        msg.setChannel(channel);
+    public synchronized boolean sendRequest(MsgDiamCommon msg, Peer peer) throws Exception 
+    { 	
+        ConnectionKey connkey = getConnectionKey(peer);
+        Channel channel = msg.getChannel();
+   	 	if (channel == null)
+   	 	{	
+   	 		channel = new ChannelDiameter(connkey, peer);
+   	 		msg.setChannel(channel);
+   	 	}
+	    channels.put(connkey, channel);
     	
     	// send the DIAMETER request       	            	            	
         this.sendRequest(msg.getMessage(), new Peer[]{peer}, null);
@@ -96,7 +111,8 @@ public class DiameterNodeManager extends NodeManager {
      * @param    connKey The transport connection to use to send the message
      * @return The status of the operation. false means an error occured.
      */
-    public synchronized boolean sendAnswer(Message message, ConnectionKey connKey) throws Exception {        
+    public synchronized boolean sendAnswer(Message message, ConnectionKey connKey) throws Exception 
+    {
         this.answer(message, connKey);                
                 
         return true;
@@ -105,7 +121,8 @@ public class DiameterNodeManager extends NodeManager {
     /**
      * Method to close properly the ressources
      */    
-    public synchronized boolean reset() {
+    public synchronized boolean reset() 
+    {
         this.stop(0);        
         // noting to do
         return true;
@@ -116,7 +133,8 @@ public class DiameterNodeManager extends NodeManager {
      * This implementation calls handleRequest(), or matches an answer to an outstanding request and calls handleAnswer().
      * Subclasses should not override this method.
      */     
-    public synchronized final boolean handle(Message message, ConnectionKey connkey, Peer peer) {
+    public synchronized final boolean handle(Message message, ConnectionKey connkey, Peer peer) 
+    {
         // appel de la methode de la pile pour libérer des listes internes
         super.handle(message, connkey, peer);
 
@@ -129,12 +147,14 @@ public class DiameterNodeManager extends NodeManager {
             
             msg.setListenpoint(listenpoint);
             GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, null, "peer = " + peer);
-            if (peer != null)
+           	 	
+            Channel channel = channels.get(connkey);
+            if (channel == null)
             {
-           	 	Channel channel = new ChannelDiameter(connkey, peer);
-                msg.setChannel(channel);
-            }
-                                                      
+            	channel = new ChannelDiameter(connkey, peer);       	 		
+       	 	}
+            msg.setChannel(channel);
+
             stack.receiveMessage(msg);
         }
         catch(Exception e)
@@ -161,7 +181,8 @@ public class DiameterNodeManager extends NodeManager {
      * @param connkey The connection from where the request came.
      * @param peer The peer that sent the request. This is not the originating peer but the peer directly connected to us that sent us the request.
      */
-    protected void handleRequest(Message request, ConnectionKey connkey, Peer peer) {        
+    protected void handleRequest(Message request, ConnectionKey connkey, Peer peer) 
+    {        
     }
 
     /**
@@ -178,7 +199,8 @@ public class DiameterNodeManager extends NodeManager {
      * @param answer_connkey The connection from where the answer came.
      * @param state The state object passed to sendRequest() or forwardRequest()
      */
-    protected void handleAnswer(Message answer, ConnectionKey answer_connkey, Object state) {        
+    protected void handleAnswer(Message answer, ConnectionKey answer_connkey, Object state) 
+    {        
     }
 
 }
