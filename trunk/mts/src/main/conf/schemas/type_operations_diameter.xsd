@@ -194,7 +194,6 @@
 						<xs:documentation>The name of the listenpoint to transport the message. Don't use it with channel (incompatible)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-        
 				<xs:attribute name="remoteHost" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
@@ -211,6 +210,12 @@
 					<xs:annotation>
 						<xs:appinfo>String (url)</xs:appinfo>
 						<xs:documentation>The remote URL to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
+						<xs:documentation>The protocol transport to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="destScenario" type="xs:string" use="optional">

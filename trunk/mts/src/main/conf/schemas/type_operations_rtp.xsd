@@ -8,7 +8,7 @@
 				<xs:sequence>
 					<xs:element name="srtpSender" 	type="srtpType"	minOccurs="0" maxOccurs="1" />
 					<xs:element name="srtpReceiver" type="srtpType"	minOccurs="0" maxOccurs="1" />
-                </xs:sequence>
+        </xs:sequence>
 				<xs:attribute name="localHost" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
@@ -21,6 +21,12 @@
 						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="localURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The listenpoint local URL we are listening to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>             
 				<xs:attribute name="listenUDP" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Boolean</xs:appinfo>
@@ -139,16 +145,16 @@
 						<xs:documentation>The remote port to send the message to. Don't use it with the channel (incompatible)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="transport" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
-						<xs:documentation>The protocol transport to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
 				<xs:attribute name="remoteURL" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String (url)</xs:appinfo>
 						<xs:documentation>The remote URL to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="transport" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>enumeration (UDP, TCP, SCTP, TLS)</xs:appinfo>
+						<xs:documentation>The protocol transport to send the message to. Don't use it with the channel (incompatible).</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="destScenario" type="xs:string" use="optional">
@@ -251,6 +257,12 @@
 						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="localURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The listenpoint local URL we are listening to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>             
 				<xs:attribute name="listenUDP" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Boolean</xs:appinfo>
@@ -287,20 +299,6 @@
 						<xs:documentation>The default transport when the listenpoint is used to send message. The default value is configurable(ppp.properties/listenpoint.TRANSPORT)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<!--xs:attribute name="timeToWaitBlankFlow" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:appinfo>Float</xs:appinfo>
-						<xs:appinfo>OBSOLETE</xs:appinfo>
-						<xs:documentation>Time in seconds to detect a blank flow and return a msgRtpFlow. The default value is configurable(rtp.properties/scheduler.TIME_TO_WAIT_BLANK_FLOW)</xs:documentation>
-					</xs:annotation>
-				</xs:attribute-->
-				<!--xs:attribute name="timeToWaitPeriodical" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:appinfo>Float</xs:appinfo>
-						<xs:appinfo>OBSOLETE</xs:appinfo>						
-						<xs:documentation>Time in seconds to return periodical msgRtpFlow since listenpoint creation. The default value is configurable(rtp.properties/scheduler.TIME_TO_WAIT_PERIODICAL)</xs:documentation>
-					</xs:annotation>
-				</xs:attribute-->
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -334,14 +332,9 @@
 		    	<xs:annotation>
 			    <xs:appinfo>Boolean</xs:appinfo>
 			    <xs:documentation>Ignore content fo the received messages (memory performances).
-The following path for setFromMessage will not work anymore :
-header.payloadType
-header.seqnum
-header.timestamp
-header.mark
-payload.xxx
-flow.payload.xxx
-</xs:documentation>
+The following path for setFromMessage will not work anymore : header.payloadType, header.seqnum, 
+header.timestamp, header.mark, payload.xxx, flow.payload.xxx
+          </xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>

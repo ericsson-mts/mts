@@ -16,6 +16,12 @@
 						<xs:documentation>The listenpoint local port i.e. the port we are listening to. The default value is configurable(ppp.properties/listenpoint.LOCAL_PORT)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="localURL" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String (url)</xs:appinfo>
+						<xs:documentation>The listenpoint local URL we are listening to.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>             
 				<xs:attribute name="listenUDP" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>Boolean</xs:appinfo>
@@ -52,7 +58,12 @@
 						<xs:documentation>The default transport when the listenpoint is used to send message. The default value is configurable(ppp.properties/listenpoint.TRANSPORT)</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-                <xs:attribute name="secret"         type="xs:string" use="required" />
+        <xs:attribute name="secret" type="xs:string" use="required" >
+					<xs:annotation>
+						<xs:appinfo>string</xs:appinfo>
+						<xs:documentation>The share secret to compute the Authenticator data.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
