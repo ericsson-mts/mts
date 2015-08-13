@@ -10,15 +10,18 @@ rm -rf ../logs/*
 
 echo ******************************************* protocol modules
 sh ./startCmd.sh ../tutorial/core/test.xml -sequential $OPTIONS
-sh ./startCmd.sh ../tutorial/diameter/test.xml %MODE1% $OPTIONS
-sh ./startCmd.sh ../tutorial/diameter/test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter %OPTIONS%
-sh ./startCmd.sh ../tutorial/sip/test.xml %MODE1% $OPTIONS
+sh ./startCmd.sh ../tutorial/diameter/test.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.dk.StackDiameter %OPTIONS%
+sh ./startCmd.sh ../tutorial/diameter/test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+false %OPTIONS%
+sh ./startCmd.sh ../tutorial/diameter/test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+true %OPTIONS%
+sh ./startCmd.sh ../tutorial/sip/test.xml %MODE1% -config:USE_NIO+false $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test.xml %MODE1% -config:USE_NIO+true $OPTIONS
 sh ./startCmd.sh ../tutorial/sip/test_jain.xml %MODE1% -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.light.StackJainSip %OPTIONS%
-sh ./startCmd.sh ../tutorial/rtp/test.xml %MODE1% $OPTIONS
-sh ./startCmd.sh ../tutorial/rtpflow/test.xml %MODE1% $OPTIONS
+sh ./startCmd.sh ../tutorial/rtp/test.xml %MODE1% -config:USE_NIO+false %OPTIONS%
+sh ./startCmd.sh ../tutorial/rtp/test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
+sh ./startCmd.sh ../tutorial/rtp/test.xml 001_jmf_noreg -config:protocol.STACK_CLASS_NAME_RTP+com.devoteam.srit.xmlloader.rtp.jmf.StackRtp %OPTIONS%
+sh ./startCmd.sh ../tutorial/rtpflow/test.xml %MODE1% -config:USE_NIO+false $OPTIONS
 sh ./startCmd.sh ../tutorial/rtpflow/test.xml %MODE1% -config:message.KEEP_SENT_MESSAGES+true $OPTIONS
-sh ./startCmd.sh ../tutorial/http/test.xml %MODE1% $OPTIONS
+sh ./startCmd.sh ../tutorial/http/test.xml %MODE1% -config:USE_NIO+false $OPTIONS
 sh ./startCmd.sh ../tutorial/http/test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 sh ./startCmd.sh ../tutorial/tcp/test.xml %MODE1% $OPTIONS
 sh ./startCmd.sh ../tutorial/udp/test.xml %MODE1% $OPTIONS

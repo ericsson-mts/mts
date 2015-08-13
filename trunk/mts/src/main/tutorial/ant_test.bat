@@ -10,17 +10,18 @@ del /Q/F/S ..\logs
 
 REM ******************************************* protocol modules
 call startCmd.bat ..\tutorial\core\test.xml %MODE1% %OPTIONS% -param:param_1+one -param:[param_2]+two -param:[param_3]+three
-call startCmd.bat ..\tutorial\diameter\test.xml %MODE1% %OPTIONS%
-call startCmd.bat ..\tutorial\diameter\test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter %OPTIONS%
-call startCmd.bat ..\tutorial\sip\test.xml %MODE1% %OPTIONS%
+call startCmd.bat ..\tutorial\diameter\test.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.dk.StackDiameter %OPTIONS%
+call startCmd.bat ..\tutorial\diameter\test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+false %OPTIONS%
+call startCmd.bat ..\tutorial\diameter\test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+true %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test.xml %MODE1% -config:USE_NIO+false %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\sip\test_jain.xml %MODE1% -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.jain.StackSip %OPTIONS%
-call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% %OPTIONS%
+call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% -config:USE_NIO+false %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml 001_jmf_noreg -config:protocol.STACK_CLASS_NAME_RTP+com.devoteam.srit.xmlloader.rtp.jmf.StackRtp %OPTIONS%
-call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% %OPTIONS%
+call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% -config:USE_NIO+false %OPTIONS%
 call startCmd.bat ..\tutorial\rtpflow\test.xml %MODE1% -config:USE_NIO+true -config:message.KEEP_SENT_MESSAGES+true %OPTIONS%
-call startCmd.bat ..\tutorial\http\test.xml %MODE1% %OPTIONS% 
+call startCmd.bat ..\tutorial\http\test.xml %MODE1% -config:USE_NIO+false %OPTIONS% 
 call startCmd.bat ..\tutorial\http\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\tcp\test.xml %MODE1% %OPTIONS%
 call startCmd.bat ..\tutorial\udp\test.xml %MODE1% %OPTIONS%
