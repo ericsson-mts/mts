@@ -382,7 +382,7 @@ public class MsgDiamCommon extends Msg
         if(null != avpDef) code = avpDef.get_code();
         
         ret += Utils.indent(indent) + "<avp";
-        ret += " code=\"" + code + "\"";
+        ret += " code=\"" + name + ":" + code + "\"";
 
         String value = "";
         try
@@ -515,7 +515,7 @@ public class MsgDiamCommon extends Msg
         ret += "retransmit=\"" + message.hdr.isRetransmit() + "\" ";
         ret += "/>\n";
         return ret;
-    }
+	}
     
     /** 
      * Convert the message to XML document 

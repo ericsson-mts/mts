@@ -7,14 +7,18 @@
     <call name="diameter.RecCER_SendCEA"/>
     
     <receiveMessageDIAMETER name="Receive Request 3GPP/CX-DX/UAR" request="true" type="User-Authorization:300">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
-
+        
 <!--
 From 3GPP TS 29.229 V7.5.0 :
 User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
@@ -57,14 +61,10 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
                                  *[ Route-Record ]
 
 -->
-    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA" remoteHost="[remoteHost]" remotePort="[remotePort]">
+    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePort]">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-          <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
-          </avp>
 
           <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
           <avp code="Experimental-Result">
@@ -72,12 +72,18 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
             <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001"/>
           </avp>
 
+          <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
+          </avp>
+
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Origin-Host" mandatory="tru" type="DiameterIdentity" value="[destinationHost]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
           <avp code="Supported-Features" vendorId="[vendorID]">
