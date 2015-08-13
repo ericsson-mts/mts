@@ -64,11 +64,19 @@ public class XMLElementDefaultParser implements XMLElementReplacer, Serializable
 
             LinkedList<String> parsedValue = parameterPool.parse(value);
 
-            if (parsedValue.size() != 1) {
+            if (parsedValue.size() > 1) 
+            {
                 throw new ExecutionException("Invalid size of variables in attribute " + value);
             }
 
-            attribute.setValue(parsedValue.getFirst());
+            if (parsedValue.size() == 1) 
+            {
+            	attribute.setValue(parsedValue.getFirst());
+            }
+            else
+            {
+            	newElement.remove(attribute);
+            }
         }
         return list;
     }

@@ -201,7 +201,7 @@ public class MsgDiameterParser
     	List<Element> avpList = root.elements("avp");
 	    for(Element avpElement:avpList)
 	    {
-	    	AVP avp = parseAvp(avpElement);
+	    	AVP avp = parseAvp(message, avpElement);
 	    	if (avp != null)
 	    	{
 	    		message.add(avp);
@@ -210,76 +210,105 @@ public class MsgDiameterParser
     }
     
     /** Parses an element <avp>; recursively if it contains other AVPs, used by parseMessage */
-    private AVP parseAvp(Element element) throws Exception
+    private AVP parseAvp(Message message, Element element) throws Exception
     {
         AVP avp;
-        
-        // avp attributes
-        String code_str      = element.attributeValue("code");
-        String value         = element.attributeValue("value");
-        String type          = element.attributeValue("type");
-        String vendor_id_str = element.attributeValue("vendorId");
-        String mandatory_str = element.attributeValue("mandatory");
-        String private_str   = element.attributeValue("private");
-        String state         = element.attributeValue("state");
-        
-        boolean bState = true;
-        if (state != null && state.equalsIgnoreCase("false"))
+
+        String applicationId= Integer.toString(message.hdr.application_id);
+                
+        // parse AVP state flag
+        String stateAttr = element.attributeValue("state");
+        boolean stateBool = true;
+        if (stateAttr != null)
         {
-        	bState = false;
+            stateBool = Boolean.parseBoolean(stateAttr);
         }
-        if (!bState)
+        if (!stateBool)
         {
         	return null;
-        }        
+        }
+
+        // parse AVP Vendor ID
+        String vendorId = element.attributeValue("vendorId");
+        int vendorIdCode = 0 ;
+        if(vendorId != null)
+        {
+            vendorIdCode = Integer.parseInt(vendorId);            
+        }         
+        else
+        {
+        	vendorId = "0";
+        }
         
-        int    vendor_id    = 0 ;
-        int    code         = 0 ;
-        
-        boolean mandatory_bool = false ;
-        boolean private_bool = false ;
-        
+        // parse AVP Code
+        String codeAttr = element.attributeValue("code");
         // error if no code is specified
-        if(null == code_str)
+        if(codeAttr == null)
         {
         	throw new ParsingException("In element :" + element + "\n" + "there is no avp code attribute");
-        }        
-        if(null == type) 
+        }                
+        int pos = codeAttr.lastIndexOf(":");
+        AvpDef avpDef = null;
+        int code = -1;
+        if (pos >= 0)
+        {
+        	String codeLabel = codeAttr.substring(0, pos);
+        	String codeInt = codeAttr.substring(pos + 1);
+        	code = Integer.parseInt(codeInt);
+            avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
+            if (!avpDef.get_name().equals(codeLabel))
+            {
+            	// TODO generate a warning
+            }
+        }
+        else
+        {
+            if(!Utils.isInteger(codeAttr))
+            {
+                avpDef = Dictionary.getInstance().getAvpDefByNameVendorIdORName(codeAttr, applicationId, vendorId);
+                if (avpDef == null)
+                {
+                	throw new ParsingException("In element :" + element + "\n" + "the avp is not found in the dictionary");        	
+                }
+            }
+            else
+            {
+            	code = Integer.parseInt(codeAttr);
+            	avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
+            }
+        }
+        if (avpDef != null)
+        {
+        	code = avpDef.get_code();
+        }
+           
+        // parse AVP type
+        String type = element.attributeValue("type");
+        boolean isTypeAppId    = false ;
+        boolean isTypeVendorId = false ;
+        if(null == type && null != avpDef)
+        {
+            TypeDef typeDef = avpDef.get_type();
+            if(null != typeDef)
+            {
+                while(null != typeDef.get_type_parent())
+                {
+                    if(typeDef.get_type_name().equalsIgnoreCase("AppId"))     isTypeAppId = true;
+                    if(typeDef.get_type_name().equalsIgnoreCase("VendorId"))  isTypeVendorId = true;
+                    typeDef = typeDef.get_type_parent();
+                }
+                type = typeDef.get_type_name();
+            }
+        }
+
+        // default value if the type is not specified and the AVP not nkown in the dictionary
+        if (type == null) 
         {
         	type="OctetString";
         }
-        
+
         //
-        // AVP Code
-        //
-        code = Integer.parseInt(code_str);
-        
-        //
-        // AVP Mandatory Flag
-        //
-        if(null != mandatory_str)
-        {
-            mandatory_bool = Boolean.parseBoolean(mandatory_str);
-        }
-        
-        //
-        // AVP Private Flag
-        //
-        if(null != private_str)
-        {
-            private_bool = Boolean.parseBoolean(private_str);
-        }
-        
-        //
-        // AVP Vendor ID
-        //
-        if(null != vendor_id_str)
-        {
-            vendor_id = Integer.parseInt(vendor_id_str);
-        }
-        
-        //
-        // Grouped AVP
+        // parse Grouped AVP
         //
         if(type.equalsIgnoreCase("grouped"))
         {
@@ -290,7 +319,7 @@ public class MsgDiameterParser
             List<Element> list = element.elements("avp");
             for(Element e:list)
             {
-    	    	AVP subAvp = parseAvp(e);
+    	    	AVP subAvp = parseAvp(message, e);
     	    	if (subAvp != null)
     	    	{
     	    		avpList.add(subAvp);
@@ -304,17 +333,14 @@ public class MsgDiameterParser
         }
         else
         {
-            //
-            // Error if no value is specified
-            //
+            // parse AVP value
+            String value = element.attributeValue("value");
             if(null == value) 
             {	
-            	throw new ParsingException("In element :" + element + "\n" + "AVP of code " + code_str + " should have a value since it is not a grouped AVP");
+            	throw new ParsingException("In element :" + element + "\n" + "AVP of code " + codeAttr + " should have a value since it is not a grouped AVP");
             }
             
-            //
             // Create the AVP
-            //
             if(type.equalsIgnoreCase("OctetString"))
             {
                 try
@@ -383,10 +409,24 @@ public class MsgDiameterParser
                 throw new ParsingException("no matching avp type in protocol stack for type " + type);
             }
         }
+        avp.vendor_id = vendorIdCode;
         
-        avp.vendor_id = vendor_id ;
-        avp.setMandatory(mandatory_bool);
-        avp.setPrivate(private_bool);
+        // parse AVP flags
+        String mandatoryAttr = element.attributeValue("mandatory");        
+        boolean mandatoryBool = false ;
+        if (mandatoryAttr != null)
+        {
+            mandatoryBool = Boolean.parseBoolean(mandatoryAttr);
+        }
+        avp.setMandatory(mandatoryBool);
+        
+        String privateAttr = element.attributeValue("private");
+        boolean privateBool = false ;
+        if (privateAttr != null)
+        {
+            privateBool = Boolean.parseBoolean(privateAttr);
+        }
+        avp.setPrivate(privateBool);        
         
         return avp ;
     }
@@ -449,6 +489,7 @@ public class MsgDiameterParser
             	vendorDef = Dictionary.getInstance().getVendorDefByCode(vendorIdCode, applicationId);
             }
 
+            ///*
             attributeValue = root.attributeValue("code");
             //
             // Set default values implied by code in XMLTree from dictionnary
@@ -485,9 +526,9 @@ public class MsgDiameterParser
                 //
                 if(null != avpDef)
                 {
-                    root.addAttribute("code", Integer.toString(avpDef.get_code()));
+                    //root.addAttribute("code", Integer.toString(avpDef.get_code()));
                 }
-                
+            
                 //
                 // Handle the type attribute
                 //
@@ -502,7 +543,7 @@ public class MsgDiameterParser
                             if(typeDef.get_type_name().equalsIgnoreCase("VendorId"))  isTypeVendorId = true;
                             typeDef = typeDef.get_type_parent();
                         }
-                        root.addAttribute("type", typeDef.get_type_name());
+                        //root.addAttribute("type", typeDef.get_type_name());
                     }
                 }
                 
@@ -517,7 +558,7 @@ public class MsgDiameterParser
                         root.addAttribute("vendorId", Integer.toString(vendorDef.get_code()));
                     }
                 }
-                
+
                 //
                 // Handle the mandatory attribute
                 //
@@ -546,8 +587,7 @@ public class MsgDiameterParser
                     {
                         root.addAttribute("private", "true");
                     }
-                }
-                
+                }               
                 //
                 // Parse the enumerated value that could be present in "value"
                 //
@@ -565,6 +605,7 @@ public class MsgDiameterParser
             {
                 throw new ParsingException("in element: " + unmodifiedRoot + "\n" + "code is a mandatory attribute");
             }
+            //*/
             
             //
             // Set the vendorId code (in case it isn't referenced by the avp Code via dictionnary, or overwritten).
