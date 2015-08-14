@@ -189,12 +189,12 @@ public class Dictionary
         application.fillGroupedAvpsReferences();
     }
     
-    private Application getApplicationById(int code)
+    public Application getApplicationById(int code)
     {
         return applicationById.get(Integer.toString(code));
     }
     
-    private Application getApplicationByName(String name)
+    public Application getApplicationByName(String name)
     {
         return applicationByName.get(name);
     }
