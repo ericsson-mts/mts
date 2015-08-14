@@ -302,12 +302,14 @@ public class MsgDiameterParser
         else
         {
             // parse AVP value
-            String value = element.attributeValue("value");
-            if(null == value) 
-            {	
-            	throw new ParsingException("The AVP of code \"" + code + "\" should have a value attribute because it is not a grouped AVP");
-            }
-            
+        	String value = element.attributeValue("value");
+            // error if not specified 
+            if (value == null)
+            {
+            	throw new ParsingException("There is no \"value\" attribute in the <avp> XML element : " + element);
+            }                
+
+                        
             // Create the AVP
             if(type.equalsIgnoreCase("OctetString"))
             {
@@ -340,19 +342,23 @@ public class MsgDiameterParser
             }
             else if(type.equalsIgnoreCase("Integer32"))
             {
+            	value = parse_EnumValue(value, avpDef);
                 avp = new AVP_Integer32(code,Integer.parseInt(value));
             }
             else if(type.equalsIgnoreCase("Integer64"))
             {
+            	value = parse_EnumValue(value, avpDef);
                 avp = new AVP_Integer64(code,Long.parseLong(value));
             }
             else if(type.equalsIgnoreCase("Unsigned32"))
             {
+            	value = parse_EnumValue(value, avpDef);
             	UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
                 avp = new AVP_Unsigned32(code,unsignedInt32.intValue());
             }
             else if(type.equalsIgnoreCase("Unsigned64"))
             {
+            	value = parse_EnumValue(value, avpDef);
                 UnsignedInt64 unsignedInt64 = new UnsignedInt64(value);
                 avp = new AVP_Unsigned64(code,unsignedInt64.longValue());
             }
@@ -550,7 +556,7 @@ public class MsgDiameterParser
                     vendorDef = avpDef.get_vendor_id();
                     if(null != vendorDef)
                     {
-                        root.addAttribute("vendorId", Integer.toString(vendorDef.get_code()));
+                        //root.addAttribute("vendorId", Integer.toString(vendorDef.get_code()));
                     }
                 }
 
@@ -592,7 +598,7 @@ public class MsgDiameterParser
                     long enumValue = avpDef.getEnumCodeByName(enumName);
                     if(enumValue != -1)
                     {
-                        root.attribute("value").setValue(Long.toString(enumValue));
+                        //root.attribute("value").setValue(Long.toString(enumValue));
                     }
                 }
             }
@@ -613,7 +619,7 @@ public class MsgDiameterParser
                     vendorDef = Dictionary.getInstance().getVendorDefByName(attributeValue, applicationId);
                     if(null != vendorDef)
                     {
-                        root.attribute("vendorId").setValue(Integer.toString(vendorDef.get_code()));
+                        //root.attribute("vendorId").setValue(Integer.toString(vendorDef.get_code()));
                     }
                     else
                     {
@@ -881,6 +887,46 @@ public class MsgDiameterParser
 	    return vendorDef;
     }
 
+    /** 
+     * Parses the AVP Enum value from XML element and perform dictionary change 
+     */
+    private String parse_EnumValue(String enumValue, AvpDef avpDef) throws Exception
+    {    
+	    int pos = enumValue.lastIndexOf(":");
+	    long code;
+	    if (pos >= 0)
+	    {
+	    	String codeLabel = enumValue.substring(0, pos);
+	    	String codeLong = enumValue.substring(pos + 1);
+	    	code = Long.parseLong(codeLong);
+	    	String name = avpDef.getEnumNameByCode(codeLong);
+	        if (!name.equals(codeLabel))
+	        {
+	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+	        		"For the AVP enumeration value, the label \"" + codeLabel + "\" does not match the code \"" + codeLong + "\" in the dictionary.");
+	        }
+	    }
+	    else
+	    {
+	        if(!Utils.isInteger(enumValue))
+	        {
+	        	code = avpDef.getEnumCodeByName(enumValue);
+	        	// no error if not specified for AVP which is not enumeration
+	            if (code < 0)
+	            {	            	 
+	            	return enumValue;
+	            	//throw new ParsingException("The AVP enum value \"" + enumAttr + "\" is not found in the dictionary.");        	
+	            } 
+	        }
+	        else
+	        {
+	        	code = Long.parseLong(enumValue);
+	        }
+	    }
+	    return Long.toString(code);
+    }
+
+    
 }
 
 
