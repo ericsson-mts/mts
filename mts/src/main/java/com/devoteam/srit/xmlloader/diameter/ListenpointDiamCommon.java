@@ -80,8 +80,6 @@ public class ListenpointDiamCommon extends Listenpoint
     public void parseFromXml(Element root, Runner runner) throws Exception
     {
 		super.parseFromXml(root, runner);
-
-		MsgDiameterParser.getInstance().doDictionnary(root, "0", true);
 		
 		Message capabilityMessage = new Message();
 		MsgDiameterParser.getInstance().parseAllAVPs(capabilityMessage, root);

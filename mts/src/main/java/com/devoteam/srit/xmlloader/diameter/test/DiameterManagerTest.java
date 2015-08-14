@@ -199,7 +199,6 @@ public class DiameterManagerTest extends TestCase {
         Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
         
         String applicationId = scElem.element("header").attributeValue("applicationId");
-        MsgDiameterParser.getInstance().doDictionnary(scElem, applicationId, true);
         Message message = MsgDiameterParser.getInstance().parseMsgFromXml(true, scElem);
         MsgDiamCommon request = new MsgDiamCommon(stack, message);
         int maxIter = Config.getConfigByName("diameter.properties").getInteger("NB_ITERATION");
