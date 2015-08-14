@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.VendorDef;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.DateUtils;
 import com.devoteam.srit.xmlloader.core.utils.UnsignedInt32;
 import com.devoteam.srit.xmlloader.core.utils.UnsignedInt64;
@@ -102,16 +103,19 @@ public class MsgDiameterParser
         //
         // header tag is mandatory
         //
-        if(null == element) throw new ParsingException("can't get header tag");
+        if(null == element)
+        {
+        	throw new ParsingException("The <header> XML tag is mandatory in a DIAMETER message.");
+        }
         
         //
-        // applicationId
+        // parse the Application id
         //
         String applicationId = element.attributeValue("applicationId");
-        messageHeader.application_id = Integer.parseInt(applicationId);
+        messageHeader.application_id = parse_ApplicationId(element);
         
         //
-        // Parse Command code
+        // parse the Command code
         messageHeader.command_code = parse_CommandCode(element, applicationId);
         
         //
@@ -227,15 +231,11 @@ public class MsgDiameterParser
         }
 
         // parse AVP Vendor ID
-        String vendorId = element.attributeValue("vendorId");
-        int vendorIdCode = 0 ;
-        if(vendorId != null)
+        VendorDef vendorDef = parse_VendorId(element, applicationId);
+        String vendorId = "0";				// use to make AVP search using vendorId
+        if (vendorDef != null)
         {
-            vendorIdCode = Integer.parseInt(vendorId);            
-        }         
-        else
-        {
-        	vendorId = "0";
+        	vendorId = Integer.toString(vendorDef.get_code());
         }
         
         // parse AVP Code
@@ -250,7 +250,7 @@ public class MsgDiameterParser
         	String codeAttr = element.attributeValue("code");
         	code = Integer.parseInt(codeAttr);
         }
-           
+        
         // parse AVP type
         String type = element.attributeValue("type");
         boolean isTypeAppId    = false ;
@@ -377,7 +377,20 @@ public class MsgDiameterParser
                 throw new ParsingException("no matching avp type in protocol stack for type " + type);
             }
         }
-        avp.vendor_id = vendorIdCode;
+        // if vendor Id is not specified then we take it from the avpDef (dictionary)
+        if (vendorDef ==  null)
+        {
+        	if (avpDef !=  null)
+        	{
+        		vendorDef = avpDef.get_vendor_id();
+        	}
+        }
+        // and set it in the avp object
+        avp.vendor_id = 0;
+        if (vendorDef !=  null)
+        {
+        	avp.vendor_id = vendorDef.get_code();
+        }
         
         // parse AVP flags
         String mandatoryAttr = element.attributeValue("mandatory");
@@ -419,7 +432,7 @@ public class MsgDiameterParser
         
         if(null == application)
         {
-           throw new ParsingException("Unknown \"applicationId\" attribute in header: " + applicationId) ;
+           //throw new ParsingException("Unknown \"applicationId\" attribute in header: " + applicationId) ;
         }
         
         Element unmodifiedRoot = root.createCopy();
@@ -434,7 +447,7 @@ public class MsgDiameterParser
             attributeValue = root.attributeValue("applicationId");
             if(!Utils.isInteger(attributeValue))
             {
-                root.attribute("applicationId").setValue(Integer.toString(application.get_id()));
+                //root.attribute("applicationId").setValue(Integer.toString(application.get_id()));
             }
             
             //
@@ -604,7 +617,7 @@ public class MsgDiameterParser
                     }
                     else
                     {
-                        throw new ParsingException("in element: " + unmodifiedRoot + "\n" + attributeValue + " is not a valid vendor id in element");
+                        //throw new ParsingException("in element: " + unmodifiedRoot + "\n" + attributeValue + " is not a valid vendor id in element");
                     }
                 }
             }
@@ -686,27 +699,31 @@ public class MsgDiameterParser
         }
     }
 
-    /** Parses the AVP code from XML element and perform dictionary change */
+    /** 
+     * Parses the AVP code from XML element and perform dictionary change 
+     */
     private AvpDef parseAVP_Code(Element element, String applicationId, String vendorId) throws Exception
     {    
         String codeAttr = element.attributeValue("code");
-        // error if no code is specified
-        if(codeAttr == null)
+        // error if not specified
+        if (codeAttr == null)
         {
-        	throw new ParsingException("There is no AVP code attribute in the <avp> XML element.");
+        	throw new ParsingException("There is \"code\" attribute in the <avp> XML element.");
         }                
 	    int pos = codeAttr.lastIndexOf(":");
 	    AvpDef avpDef = null;
-	    int code = -1;
 	    if (pos >= 0)
 	    {
 	    	String codeLabel = codeAttr.substring(0, pos);
 	    	String codeInt = codeAttr.substring(pos + 1);
-	    	code = Integer.parseInt(codeInt);
+	    	int code = Integer.parseInt(codeInt);
 	        avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
 	        if (!avpDef.get_name().equals(codeLabel))
 	        {
-	        	// TODO generate a warning
+	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+	        			"For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + avpDef.get_code() + "\" in the dictionary; " +
+	        			"we assume the code is \"" + avpDef.get_code() + " and we are waiting the label \"" + avpDef.get_name() + "\".");
+
 	        }
 	    }
 	    else
@@ -721,21 +738,23 @@ public class MsgDiameterParser
 	        }
 	        else
 	        {
-	        	code = Integer.parseInt(codeAttr);
+	        	int code = Integer.parseInt(codeAttr);
 	        	avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
 	        }
 	    }
 	    return avpDef;
     }
  
-    /** Parses the command code from XML element and perform dictionary change */
+    /** 
+     * Parses the Command code from XML element and perform dictionary change 
+     */
     private int parse_CommandCode(Element element, String applicationId) throws Exception
     {    
         String commandAttr = element.attributeValue("command");
-        // error if no code is specified
-        if(commandAttr == null)
+        // error if not specified
+        if (commandAttr == null)
         {
-        	throw new ParsingException("There is no command attribute in the <header> XML element.");
+        	throw new ParsingException("There is no \"command\" attribute in the <header> XML element.");
         }                
 
 	    int pos = commandAttr.lastIndexOf(":");
@@ -748,7 +767,8 @@ public class MsgDiameterParser
 	    	CommandDef commandDef = Dictionary.getInstance().getCommandDefByCode(code, applicationId);
 	        if (!commandDef.get_name().equals(codeLabel))
 	        {
-	        	// TODO generate a warning
+	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+	        		"For the header command code, the label \"" + codeLabel + "\" does not match the code \"" + commandDef.get_code() + "\" in the dictionary.");
 	        }
 	    }
 	    else
@@ -758,7 +778,7 @@ public class MsgDiameterParser
 	        	CommandDef commandDef = Dictionary.getInstance().getCommandDefByName(commandAttr, applicationId);
 	            if (commandDef == null)
 	            {
-	            	throw new ParsingException("the command code \"" + commandDef + "\" is not found in the dictionary.");        	
+	            	throw new ParsingException("The command code \"" + commandAttr + "\" is not found in the dictionary.");        	
 	            }
 	            code = commandDef.get_code(); 
 	        }
@@ -768,6 +788,97 @@ public class MsgDiameterParser
 	        }
 	    }
 	    return code;
+    }
+
+    /** 
+     * Parses the Application Id from XML element and perform dictionary change 
+     */
+    private int parse_ApplicationId(Element element) throws Exception
+    {    
+        String appliIdAttr = element.attributeValue("applicationId");
+        // error if not specified
+        if (appliIdAttr == null)
+        {
+        	throw new ParsingException("There is \"applicationId\" attribute in the <header> XML element.");
+        }                
+
+	    int pos = appliIdAttr.lastIndexOf(":");
+	    int code = -1;
+	    if (pos >= 0)
+	    {
+	    	String codeLabel = appliIdAttr.substring(0, pos);
+	    	String codeInt = appliIdAttr.substring(pos + 1);
+	    	code = Integer.parseInt(codeInt);
+	    	Application application = Dictionary.getInstance().getApplicationById(code);
+	        if (!application.get_name().equals(codeLabel))
+	        {
+	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+	        		"For the header application ID, the label \"" + codeLabel + "\" does not match the id \"" + application.get_id() + "\" in the dictionary.");
+	        }
+	    }
+	    else
+	    {
+	        if(!Utils.isInteger(appliIdAttr))
+	        {
+	        	Application application = Dictionary.getInstance().getApplicationByName(appliIdAttr);
+	            if (application == null)
+	            {
+	            	throw new ParsingException("The application id \"" + appliIdAttr + "\" is not found in the dictionary.");        	
+	            }
+	            code = application.get_id(); 
+	        }
+	        else
+	        {
+	        	code = Integer.parseInt(appliIdAttr);
+	        }
+	    }
+	    return code;
+    }
+
+    /** 
+     * Parses the AVP Vendor Id from XML element and perform dictionary change 
+     */
+    private VendorDef parse_VendorId(Element element, String applicationId) throws Exception
+    {    
+        String vendorIdAttr = element.attributeValue("vendorId");
+        // no error if not specified because vendorId attribute is optional
+        if (vendorIdAttr == null)
+        {
+        	return null;
+        	//throw new ParsingException("There is \"applicationId\" attribute in the <header> XML element.");
+        }                
+
+	    int pos = vendorIdAttr.lastIndexOf(":");
+	    VendorDef vendorDef = null;
+	    if (pos >= 0)
+	    {
+	    	String codeLabel = vendorIdAttr.substring(0, pos);
+	    	String codeInt = vendorIdAttr.substring(pos + 1);
+	    	int code = Integer.parseInt(codeInt);
+	    	vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
+	        if (!vendorDef.get_vendor_id().equals(codeLabel))
+	        {
+	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+	        		"For the AVP vendor ID, the label \"" + codeLabel + "\" does not match the id \"" + vendorDef.get_code() + "\" in the dictionary.");
+	        }
+	    }
+	    else
+	    {
+	        if(!Utils.isInteger(vendorIdAttr))
+	        {
+	        	vendorDef = Dictionary.getInstance().getVendorDefByName(vendorIdAttr, applicationId);
+	            if (vendorDef == null)
+	            {
+	            	throw new ParsingException("The vendor id \"" + vendorIdAttr + "\" is not found in the dictionary.");        	
+	            }
+	        }
+	        else
+	        {
+	        	int code = Integer.parseInt(vendorIdAttr);
+	        	vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
+	        }
+	    }
+	    return vendorDef;
     }
 
 }
