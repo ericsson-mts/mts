@@ -53,14 +53,6 @@ public class OperationSendMsg extends Operation {
 
         // deprecated message
         GlobalLogger.instance().logDeprecatedMessage(rootNode.getName() + " .../", "sendMessage" + protocol + " .../");
-
-        if (protocol.equals(StackFactory.PROTOCOL_DIAMETER)) {
-            //
-            // Read ApplicationId
-            //
-            String applicationId = rootNode.element("header").attributeValue("applicationId");
-            MsgDiameterParser.getInstance().doDictionnary(this.getRootElement(), applicationId, true);
-        }
     }
 
     /**
