@@ -95,32 +95,29 @@ public class MsgDiameterParser
     /** Parses then returns the header from the XML root element */
     private void parseMessageHeader(MessageHeader messageHeader, Boolean request, Element root) throws Exception
     {               
-        //
-        // Parse header tag
-        //
+        // Parse the header tag
         Element element = root.element("header");
         
-        //
         // header tag is mandatory
-        //
         if(null == element)
         {
         	throw new ParsingException("The <header> XML tag is mandatory in a DIAMETER message.");
         }
         
-        //
         // parse the Application id
-        //
         String applicationId = element.attributeValue("applicationId");
-        messageHeader.application_id = parse_ApplicationId(element);
+        // error if not specified
+        if (applicationId == null)
+        {
+        	throw new ParsingException("There is \"applicationId\" attribute in the <header> XML element.");
+        }                
+        Application appli = parse_ApplicationId(applicationId, true);
+        messageHeader.application_id = appli.get_id();
         
-        //
         // parse the Command code
         messageHeader.command_code = parse_CommandCode(element, applicationId);
         
-        //
-        // Request
-        //
+        // Parse the Request : DEPRECATED
     	String strRequest = element.attributeValue("request");
         if (strRequest != null)
         {
@@ -132,46 +129,40 @@ public class MsgDiameterParser
         }
         messageHeader.setRequest(request);
         
-        //
-        // Proxyable
-        //
+        // Parse the Proxyable
         String proxyable = element.attributeValue("proxiable");
         if (proxyable != null)
         {
         	messageHeader.setProxiable(Boolean.parseBoolean(proxyable));
         }
         
-        //
-        // Error
-        //
+        // Parse the Error
         String error = element.attributeValue("error");
         if (error != null)
         {
         	messageHeader.setError(Boolean.parseBoolean(error));
         }
         
-        //
-        // Retransmit
-        //
+        // Parse the Retransmit flag
         String retransmit = element.attributeValue("retransmit");
         if (retransmit != null)
         {
         	messageHeader.setRetransmit(Boolean.parseBoolean(retransmit));
         }
         
-        //
-        // Flags attribute is not used
-        //
-        if(null != element.attributeValue("flags")) throw new ParsingException("Flags attribute is currently not supported in <header> tag");
+        // Parse the Flags : NOT USED
+        if (element.attributeValue("flags") != null)
+        {
+        	throw new ParsingException("Flags attribute is currently not supported in <header> tag");
+        }
         
-        //
-        // Version attribute is not used
-        //
-        if(null != element.attributeValue("version")) throw new ParsingException("Version attribute is currently not supported in <header> tag");
+        // Parse the Version : NOT USED        
+        if(element.attributeValue("version") != null)
+        {
+        	throw new ParsingException("Version attribute is currently not supported in <header> tag");
+        }
         
-        //
-        // EndToEnd
-        //
+        // Parse the EndToEnd
         String endToEnd = element.attributeValue("endToEnd");
         if (endToEnd != null)
         {
@@ -182,9 +173,7 @@ public class MsgDiameterParser
         	messageHeader.end_to_end_identifier = IDProvider.nextId();
         }
 
-        //
-        // HopByHop
-        //
+        // Parse the HopByHop
         String hopByHop = element.attributeValue("hopByHop");
         if (hopByHop != null)
         {
@@ -218,7 +207,7 @@ public class MsgDiameterParser
 
         String applicationId= Integer.toString(message.hdr.application_id);
                 
-        // parse AVP state flag
+        // Parse the AVP state flag
         String stateAttr = element.attributeValue("state");
         boolean stateBool = true;
         if (stateAttr != null)
@@ -230,15 +219,16 @@ public class MsgDiameterParser
         	return null;
         }
 
-        // parse AVP Vendor ID
-        VendorDef vendorDef = parse_VendorId(element, applicationId);
+        // Parse the AVP Vendor ID
+        String vendorIdAttr = element.attributeValue("vendorId");
+        VendorDef vendorDef = parse_VendorId(vendorIdAttr, applicationId);
         String vendorId = "0";				// use to make AVP search using vendorId
         if (vendorDef != null)
         {
         	vendorId = Integer.toString(vendorDef.get_code());
         }
         
-        // parse AVP Code
+        // Parse the AVP Code
         AvpDef avpDef = parseAVP_Code(element, applicationId, vendorId);
         int code = -1;
         if (avpDef != null)
@@ -251,41 +241,36 @@ public class MsgDiameterParser
         	code = Integer.parseInt(codeAttr);
         }
         
-        // parse AVP type
+        // Parse the AVP type
         String type = element.attributeValue("type");
-        boolean isTypeAppId    = false ;
-        boolean isTypeVendorId = false ;
-        if(null == type && null != avpDef)
+        TypeDef typeDef = parse_AVPType(type, applicationId);
+        if (typeDef == null && avpDef != null)
         {
-            TypeDef typeDef = avpDef.get_type();
-            if(null != typeDef)
+        	typeDef = avpDef.get_type();
+        }
+        String typeBase = type;        
+        if (typeDef != null)
+        {
+        	type = typeDef.get_type_name();
+            while (typeDef.get_type_parent() != null)
             {
-                while(null != typeDef.get_type_parent())
-                {
-                    if(typeDef.get_type_name().equalsIgnoreCase("AppId"))     isTypeAppId = true;
-                    if(typeDef.get_type_name().equalsIgnoreCase("VendorId"))  isTypeVendorId = true;
-                    typeDef = typeDef.get_type_parent();
-                }
-                type = typeDef.get_type_name();
+                typeDef = typeDef.get_type_parent();
             }
+            typeBase = typeDef.get_type_name();
         }
         // default value if the type is not specified and the AVP not nkown in the dictionary
-        if (type == null) 
+        if (typeBase == null) 
         {
-        	type="OctetString";
+        	typeBase = "OctetString";
         }
 
-        //
-        // parse Grouped AVP
-        //
-        if(type.equalsIgnoreCase("grouped"))
+        List<Element> listSubAVPs = element.elements("avp");
+        // Parse the Grouped AVP
+        if (!listSubAVPs.isEmpty())
         {
-            //
-            // Parse child avps
-            //
-            List<AVP> avpList = new LinkedList<AVP>();
-            List<Element> list = element.elements("avp");
-            for(Element e:list)
+            // Parse child AVPs
+            List<AVP> avpList = new LinkedList<AVP>();        
+            for(Element e:listSubAVPs)
             {
     	    	AVP subAvp = parseAvp(message, e);
     	    	if (subAvp != null)
@@ -294,14 +279,13 @@ public class MsgDiameterParser
     	    	}
             }
             
-            // create the AVP
-            // add parsed childs to grouped AVP
+            // Create the AVP and add parsed childs to grouped AVP
             AVP_Grouped gAvp = new AVP_Grouped(code, avpList.toArray(new AVP[0]));
             avp = gAvp ;
         }
         else
         {
-            // parse AVP value
+            // Parse the AVP value
         	String value = element.attributeValue("value");
             // error if not specified 
             if (value == null)
@@ -309,9 +293,25 @@ public class MsgDiameterParser
             	throw new ParsingException("There is no \"value\" attribute in the <avp> XML element : " + element);
             }                
 
-                        
+            // Parse the value for the vendorId AVP
+            if (type != null && type.equalsIgnoreCase("VendorId"))
+            {
+            	VendorDef vendorDefValue = parse_VendorId(value, applicationId);
+            	value = Integer.toString(vendorDefValue.get_code());            	
+            }
+
+            if (type != null && type.equalsIgnoreCase("AppId"))
+            {
+            	Application applicationValue = parse_ApplicationId(value, false);
+            	if (applicationValue != null)
+            	{ 
+            		value = Integer.toString(applicationValue.get_id());
+            	}
+            	
+            }
+
             // Create the AVP
-            if(type.equalsIgnoreCase("OctetString"))
+            if (typeBase.equalsIgnoreCase("OctetString"))
             {
                 try
                 {
@@ -322,7 +322,7 @@ public class MsgDiameterParser
                     avp = new AVP_OctetString(code, value.getBytes());
                 }
             }
-            else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
+            else if (typeBase.equalsIgnoreCase("IPAddress") || typeBase.equalsIgnoreCase("Address"))
             {
             	byte[] val = null;
             	if (value.contains(".") || value.contains(":"))
@@ -336,43 +336,43 @@ public class MsgDiameterParser
             	}
                 avp = new AVP_OctetString(code, val);
             }
-            else if(type.equalsIgnoreCase("UTF8String"))
+            else if (typeBase.equalsIgnoreCase("UTF8String"))
             {
                 avp = new AVP_OctetString(code, value.getBytes());
             }
-            else if(type.equalsIgnoreCase("Integer32"))
+            else if (typeBase.equalsIgnoreCase("Integer32"))
             {
             	value = parse_EnumValue(value, avpDef);
                 avp = new AVP_Integer32(code,Integer.parseInt(value));
             }
-            else if(type.equalsIgnoreCase("Integer64"))
+            else if (typeBase.equalsIgnoreCase("Integer64"))
             {
             	value = parse_EnumValue(value, avpDef);
                 avp = new AVP_Integer64(code,Long.parseLong(value));
             }
-            else if(type.equalsIgnoreCase("Unsigned32"))
+            else if (typeBase.equalsIgnoreCase("Unsigned32"))
             {
             	value = parse_EnumValue(value, avpDef);
             	UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
                 avp = new AVP_Unsigned32(code,unsignedInt32.intValue());
             }
-            else if(type.equalsIgnoreCase("Unsigned64"))
+            else if	(typeBase.equalsIgnoreCase("Unsigned64"))
             {
             	value = parse_EnumValue(value, avpDef);
                 UnsignedInt64 unsignedInt64 = new UnsignedInt64(value);
                 avp = new AVP_Unsigned64(code,unsignedInt64.longValue());
             }
-            else if(type.equalsIgnoreCase("Float32"))
+            else if (typeBase.equalsIgnoreCase("Float32"))
             {
                 Float float32 = Float.parseFloat(value);
                 avp = new AVP_Float32(code, float32);
             }
-            else if(type.equalsIgnoreCase("Float64"))
+            else if	(typeBase.equalsIgnoreCase("Float64"))
             {
                 double double64 = Double.parseDouble(value);
                 avp = new AVP_Float64(code, double64);
             }
-            else if(type.equalsIgnoreCase("Time"))
+            else if	(typeBase.equalsIgnoreCase("Time"))
             {
             	long time = DateUtils.parseDate(value);
             	Date date = new Date (time);
@@ -398,7 +398,7 @@ public class MsgDiameterParser
         	avp.vendor_id = vendorDef.get_code();
         }
         
-        // parse AVP flags
+        // Parse AVP flags
         String mandatoryAttr = element.attributeValue("mandatory");
         boolean mandatoryBool = Boolean.parseBoolean(mandatoryAttr);
         if (mandatoryAttr == null)
@@ -434,6 +434,7 @@ public class MsgDiameterParser
     
     public void doDictionnary(Element root, String applicationId, boolean recurse) throws ParsingException
     {
+    	/*
         Application application = Dictionary.getInstance().getApplication(applicationId);
         
         if(null == application)
@@ -606,7 +607,7 @@ public class MsgDiameterParser
             {
                 throw new ParsingException("in element: " + unmodifiedRoot + "\n" + "code is a mandatory attribute");
             }
-            //*/
+            //
             
             //
             // Set the vendorId code (in case it isn't referenced by the avp Code via dictionnary, or overwritten).
@@ -652,7 +653,7 @@ public class MsgDiameterParser
                                 if(typeDef.get_type_name().equalsIgnoreCase("VendorId"))  isTypeVendorId = true;
                                 typeDef = typeDef.get_type_parent();
                             }
-                            root.attribute("type").setValue(typeDef.get_type_name());
+                            //root.attribute("type").setValue(typeDef.get_type_name());
                         }
                         else
                         {
@@ -674,7 +675,7 @@ public class MsgDiameterParser
                     Application anApplication = Dictionary.getInstance().getApplication(attributeValue);
                     if(null != anApplication)
                     {
-                        root.attribute("value").setValue(Integer.toString(anApplication.get_id()));
+                        //root.attribute("value").setValue(Integer.toString(anApplication.get_id()));
                     }
                 }
                 if(isTypeVendorId)
@@ -682,7 +683,7 @@ public class MsgDiameterParser
                     VendorDef vendorDefValue = Dictionary.getInstance().getVendorDefByName(attributeValue, applicationId);
                     if(null != vendorDefValue)
                     {
-                        root.attribute("value").setValue(Integer.toString(vendorDefValue.get_code()));
+                        //root.attribute("value").setValue(Integer.toString(vendorDefValue.get_code()));
                     }
                 }
             }
@@ -703,8 +704,9 @@ public class MsgDiameterParser
                 doDictionnary(element, applicationId, recurse);
             }
         }
+        */
     }
-
+    
     /** 
      * Parses the AVP code from XML element and perform dictionary change 
      */
@@ -724,7 +726,7 @@ public class MsgDiameterParser
 	    	String codeInt = codeAttr.substring(pos + 1);
 	    	int code = Integer.parseInt(codeInt);
 	        avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
-	        if (!avpDef.get_name().equals(codeLabel))
+	        if (avpDef != null && !codeLabel.equals(avpDef.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
 	        			"For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + avpDef.get_code() + "\" in the dictionary; " +
@@ -771,7 +773,7 @@ public class MsgDiameterParser
 	    	String codeInt = commandAttr.substring(pos + 1);
 	    	code = Integer.parseInt(codeInt);
 	    	CommandDef commandDef = Dictionary.getInstance().getCommandDefByCode(code, applicationId);
-	        if (!commandDef.get_name().equals(codeLabel))
+	        if (commandDef != null && !codeLabel.equals(commandDef.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
 	        		"For the header command code, the label \"" + codeLabel + "\" does not match the code \"" + commandDef.get_code() + "\" in the dictionary.");
@@ -799,24 +801,17 @@ public class MsgDiameterParser
     /** 
      * Parses the Application Id from XML element and perform dictionary change 
      */
-    private int parse_ApplicationId(Element element) throws Exception
+    private Application parse_ApplicationId(String appliIdAttr, boolean checkExist) throws Exception
     {    
-        String appliIdAttr = element.attributeValue("applicationId");
-        // error if not specified
-        if (appliIdAttr == null)
-        {
-        	throw new ParsingException("There is \"applicationId\" attribute in the <header> XML element.");
-        }                
-
+    	Application application = null;
 	    int pos = appliIdAttr.lastIndexOf(":");
-	    int code = -1;
 	    if (pos >= 0)
 	    {
 	    	String codeLabel = appliIdAttr.substring(0, pos);
 	    	String codeInt = appliIdAttr.substring(pos + 1);
-	    	code = Integer.parseInt(codeInt);
-	    	Application application = Dictionary.getInstance().getApplicationById(code);
-	        if (!application.get_name().equals(codeLabel))
+	    	int code = Integer.parseInt(codeInt);
+	    	application = Dictionary.getInstance().getApplicationById(code);
+	    	if (application != null && !codeLabel.equals(application.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
 	        		"For the header application ID, the label \"" + codeLabel + "\" does not match the id \"" + application.get_id() + "\" in the dictionary.");
@@ -826,34 +821,39 @@ public class MsgDiameterParser
 	    {
 	        if(!Utils.isInteger(appliIdAttr))
 	        {
-	        	Application application = Dictionary.getInstance().getApplicationByName(appliIdAttr);
-	            if (application == null)
+	        	application = Dictionary.getInstance().getApplicationByName(appliIdAttr);
+	            // not a problem because Application-Id is also an enumeration AVP
+	        	if (application == null)
 	            {
-	            	throw new ParsingException("The application id \"" + appliIdAttr + "\" is not found in the dictionary.");        	
-	            }
-	            code = application.get_id(); 
+	        		if (checkExist)
+	        		{
+	        			throw new ParsingException("The application id \"" + appliIdAttr + "\" is not found in the dictionary.");
+	        		}
+	        		else
+	        		{
+	        			return null;
+	        		}
+	            } 
 	        }
 	        else
 	        {
-	        	code = Integer.parseInt(appliIdAttr);
+	        	int code = Integer.parseInt(appliIdAttr);
+	        	application = Dictionary.getInstance().getApplicationById(code);
 	        }
 	    }
-	    return code;
+	    return application;
     }
 
     /** 
      * Parses the AVP Vendor Id from XML element and perform dictionary change 
      */
-    private VendorDef parse_VendorId(Element element, String applicationId) throws Exception
+    private VendorDef parse_VendorId(String vendorIdAttr, String applicationId) throws Exception
     {    
-        String vendorIdAttr = element.attributeValue("vendorId");
-        // no error if not specified because vendorId attribute is optional
-        if (vendorIdAttr == null)
-        {
-        	return null;
-        	//throw new ParsingException("There is \"applicationId\" attribute in the <header> XML element.");
-        }                
-
+    	if (vendorIdAttr == null)
+    	{
+    		return null;
+    	}
+    	
 	    int pos = vendorIdAttr.lastIndexOf(":");
 	    VendorDef vendorDef = null;
 	    if (pos >= 0)
@@ -862,7 +862,7 @@ public class MsgDiameterParser
 	    	String codeInt = vendorIdAttr.substring(pos + 1);
 	    	int code = Integer.parseInt(codeInt);
 	    	vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
-	        if (!vendorDef.get_vendor_id().equals(codeLabel))
+	        if (vendorDef != null && !codeLabel.equals(vendorDef.get_vendor_id()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
 	        		"For the AVP vendor ID, the label \"" + codeLabel + "\" does not match the id \"" + vendorDef.get_code() + "\" in the dictionary.");
@@ -900,7 +900,7 @@ public class MsgDiameterParser
 	    	String codeLong = enumValue.substring(pos + 1);
 	    	code = Long.parseLong(codeLong);
 	    	String name = avpDef.getEnumNameByCode(codeLong);
-	        if (!name.equals(codeLabel))
+	        if (!codeLabel.equals(name))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
 	        		"For the AVP enumeration value, the label \"" + codeLabel + "\" does not match the code \"" + codeLong + "\" in the dictionary.");
@@ -911,11 +911,9 @@ public class MsgDiameterParser
 	        if(!Utils.isInteger(enumValue))
 	        {
 	        	code = avpDef.getEnumCodeByName(enumValue);
-	        	// no error if not specified for AVP which is not enumeration
 	            if (code < 0)
 	            {	            	 
-	            	return enumValue;
-	            	//throw new ParsingException("The AVP enum value \"" + enumAttr + "\" is not found in the dictionary.");        	
+	            	throw new ParsingException("The AVP enum value \"" + enumValue + "\" is not found in the dictionary.");        	
 	            } 
 	        }
 	        else
@@ -924,6 +922,23 @@ public class MsgDiameterParser
 	        }
 	    }
 	    return Long.toString(code);
+    }
+
+    /** 
+     * Parses the AVP Vendor Id from XML element and perform dictionary change 
+     */
+    private TypeDef parse_AVPType(String typeAttr, String applicationId) throws Exception
+    {    
+    	if (typeAttr == null)
+    	{
+    		return  null;
+    	}
+    	TypeDef typeDef = Dictionary.getInstance().getTypeDefByName(typeAttr, applicationId);
+        if (typeDef == null && !typeAttr.equalsIgnoreCase("Grouped"))
+        {
+        	throw new ParsingException("The type id \"" + typeAttr + "\" is not found in the dictionary.");        	
+        }
+	    return typeDef;
     }
 
     

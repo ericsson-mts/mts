@@ -343,7 +343,8 @@ public class Utils
         }
         for (int i = 0; i < string.length(); i++)
         {
-            if (!Character.isDigit(string.charAt(i)))
+        	char ch = string.charAt(i);
+            if (!Character.isDigit(ch) && (i != 0 || ch != '-'))
             {
                 return false;
             }
