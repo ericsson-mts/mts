@@ -15,7 +15,7 @@ Evolutions :
   * Changement de l'interprétation du paramètre de config dictionary.PATH 
     dans le fichier diameter.properties : il est considéré comme relatif 
     par rapport au répertoire dans lequel se trouve le ficheir de test. 
-    Avant il était en relatif par rapoort à l'application (réperoire bin).  
+    Avant il était en relatif par rapport à l'application (répertoire bin).  
   * Implémentation d'un nouvelle pile DIAMETER qui permet d'envoyer les messages
     CER/CEA, DWR/DWA, DPR/DPA en transportant les messages sur les couches 
     génériques de MTS et en se basant sur le l'encodage/décodage de la pile DK.
@@ -27,10 +27,10 @@ Evolutions :
     
 Fault report :
 
-Migration :                                                            
-  * Si vous avez spécifié le chemin du répertoire DIAMETER par configuration
-    vous devez modifié ce chemin car il est maintenant relatif au test et non 
-    plus à l'application                 
+Migration :   
+  * Pour le protocole DIAMETER, si des AVPs ne sont plus bien traduits du fait 
+    de la modifiaction de l'algorithme de recherche d'un AVP (prise en compte du
+    vendorId) alors il faut modifier le code pour tenir compte.                                                           
   * For SMTP protocol the deprecated grammar is now not supported; please use 
     the unified grammar  
     For basic transport protocol (TCP, UDP, SCTP, TLS) the deprecated grammar 

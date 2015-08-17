@@ -61,22 +61,37 @@ public class Dictionary
      * Returns the current instance of Dictionary.
      * Creates one if it does not already exists.
      */
-    static public synchronized Dictionary getInstance() throws ParsingException
+    static public synchronized Dictionary getInstance() throws Exception
     {
         // creates an instance if needed
         {
             if(_dictionary==null)
             {
                 _dictionary = new Dictionary();
-                try
-                {
-                	String dictionaryPath = Config.getConfigByName("diameter.properties").getString("dictionary.PATH", DICTIONARY_PATH);
-                    _dictionary.parseFromFile(dictionaryPath);
-                }
-                catch(Exception e)
-                {
-                    throw new ParsingException(e);
-                }
+	        	String dictionaryPath = Config.getConfigByName("diameter.properties").getString("dictionary.PATH", DICTIONARY_PATH);
+	        	URI filePathURI = null;
+	        	// case the path dictionary is test specific
+	        	if (dictionaryPath != null && dictionaryPath.length() > 0)
+	        	{
+	        		filePathURI = URIRegistry.MTS_TEST_HOME.resolve(dictionaryPath.trim());
+	        	}
+	        	// case the path dictionary is the default one (../conf/diameter/dictionary)
+	        	else
+	        	{
+	        		filePathURI = new URI(DICTIONARY_PATH);
+	        	}
+
+	        	try
+	        	{
+	        		_dictionary.parseFromFile(filePathURI);
+	        	}
+	        	// for compatibility reason with old version (before MTS 6.1.0)
+            	// case the path is relative to the current directory
+	        	catch (Exception e)
+	        	{
+	        		filePathURI = new URI(dictionaryPath.trim());
+	        		_dictionary.parseFromFile(filePathURI);
+	        	}
             }
         }
         
@@ -87,21 +102,10 @@ public class Dictionary
     /**
      * Parse the dictionary from a file.
      */
-    private void parseFromFile(String path) throws Exception
+    private void parseFromFile(URI filePathURI) throws Exception
     {
         XMLDocument dictionaryDocument = new XMLDocument();
         dictionaryDocument.setXMLSchema(URIFactory.newURI("../conf/schemas/diameter-dictionary.xsd"));
-    	URI filePathURI = null;
-    	// case the path dictionary is test specific
-    	if (path != null && path.length() > 0)
-    	{
-    		filePathURI = URIRegistry.MTS_TEST_HOME.resolve(path.trim());
-    	}
-    	// case the path dictionary is the default one (../conf/diameter/dictionary)
-    	else
-    	{
-    		filePathURI = new URI(DICTIONARY_PATH);
-    	}
         dictionaryDocument.setXMLFile(filePathURI);
         dictionaryDocument.parse();
         
@@ -131,7 +135,7 @@ public class Dictionary
         }
     }
     
-    private void parseApplication(Element root) throws ParsingException
+    private void parseApplication(Element root) throws Exception
     {
         boolean isBase = false ;
         if(root.getName().equals("base"))
