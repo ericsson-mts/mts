@@ -9,9 +9,9 @@
     <parameter name="[stateValue]" operation="set" value="true"/>
 
     <parameter name="[stateValue]" operation="set" value="true"/>
-    <parameter name="[testcase:newHopByHop]" operation="number.random" value="1000000000"/>
-    <parameter name="[testcase:newEndToEnd]" operation="number.random" value="1000000000"/>
-    <parameter name="[testcase:sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[testcase:newHopByHop]" operation="set" value="111111111"/>
+    <parameter name="[testcase:newEndToEnd]" operation="set" value="222222222"/>
+    <parameter name="[testcase:sessionId]" operation="set" value="12345678901234567890"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
           <header request="true" command="Multimedia-Authentitcation" applicationId="4321"
                   hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]"/>
@@ -91,7 +91,7 @@
         <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
     </receiveMessageDIAMETER>
 
-        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
+    <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
     <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
     <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>
@@ -132,5 +132,15 @@
     <test parameter="[proxiable]" condition="string.equals" value="true"/>
     <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>
     <test parameter="[retransmit]" condition="string.equals" value="true"/>
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <parameter name="[subBinary1]" operation="binary.subBinary" value="[binary]" value2="0" value3="12"/>    
+    <test parameter="[subBinary1]" condition="binary.equals" value="01000238700001fa000010e1"/>
+    <parameter name="[subBinary2]" operation="binary.subBinary" value="[binary]" value2="20"/>    
+    <test parameter="[subBinary2]" condition="binary.equals" value="000001074000002a3136342e34382e3231392e32393b3132333435363738393031323334353637383930000000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e6672000000000001044000005c3b9ac9ff6000000c499602d2000001034000000c000010e13b9ac9ff6000000c499602d2000001024000000c000010e13b9ac9ff6000000c499602d20000010a6000000c000028af3b9ac9ff6000000c499602d2000001156000000c000000010000010c4000000c000007d100000002600000257369703a2b3333383735363331393735407369702e70666465762e6672000000000004026000000c00000001000003fa60000124000003fd6000000c00000000000003fc6000000c00000002000003fb600000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
+    <parameter name="[text]" operation="protocol.setFromMessage" value="message.text"/>
+    <parameter name="[toBinary]" operation="string.toBinary" value="[text]"/>
+    <test parameter="[toBinary]" condition="binary.equals" value="[binary]"/>    
+
 
 </scenario>

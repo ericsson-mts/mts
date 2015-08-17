@@ -4,10 +4,11 @@
 
 <scenario>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[sessionId]" operation="set" value="9876543210"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"
         destScenario="server">
-        <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 301 - Cx:4321"/>
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 301 - Cx:4321"
+                hopByHop="333333333" endToEnd="444444444"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]" type="OctetString" mandatory="true"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="OctetString" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
@@ -31,5 +32,9 @@
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="506" result="2001" >
     </receiveMessageDIAMETER>
+    
+    <!-- check binary message data -->
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
+    <test parameter="[binary]" condition="binary.equals" value="010001f4400001fa000010e113de43551a7daf1c00000107400000203136342e34382e3231392e32393b3938373635343332313000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c000000010000010c4000000c000007d100000002e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000124000003fd2000000c00000000000003fc2000000c00000002000003fb200000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
 
 </scenario>

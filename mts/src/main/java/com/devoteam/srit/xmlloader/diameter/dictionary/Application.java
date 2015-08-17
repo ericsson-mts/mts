@@ -73,7 +73,7 @@ public class Application
     }
     
     
-    public void parseApplication(Element root) throws ParsingException
+    public void parseApplication(Element root) throws Exception
     {
         List<Element> elements;
         
@@ -103,7 +103,7 @@ public class Application
         }
     }
     
-    private void parseVendor(Element root) throws ParsingException
+    private void parseVendor(Element root) throws Exception
     {
         
         int code = -1 ;
@@ -146,7 +146,7 @@ public class Application
         
     }
     
-    private void parseAvp(Element root) throws ParsingException
+    private void parseAvp(Element root) throws Exception
     {
         String name = null ;
         String description = null ;
@@ -291,7 +291,7 @@ public class Application
     	Dictionary.traceDebug("keyCode=" + keyCode + " for applicationId=" + this._name);
     }
     
-    private void parseCommand(Element root) throws ParsingException
+    private void parseCommand(Element root) throws Exception
     {
         int code = -1 ;
         try
@@ -329,7 +329,7 @@ public class Application
         commandDefByCode.put(Integer.toString(code), commandDef);
     }
     
-    private void parseType(Element root) throws ParsingException
+    private void parseType(Element root) throws Exception
     {
         TypeDef type_parent = null ;
         if(null != root.attributeValue("type-parent"))
@@ -358,7 +358,7 @@ public class Application
         typeDefByName.put(name, typeDef);
     }
     
-    public void fillGroupedAvpsReferences() throws ParsingException
+    public void fillGroupedAvpsReferences() throws Exception
     {
         Collection<AvpDef> collection = avpDefByName.values() ;
         Iterator<AvpDef> iterator = collection.iterator();

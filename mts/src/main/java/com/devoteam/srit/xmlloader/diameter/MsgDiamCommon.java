@@ -795,7 +795,7 @@ public class MsgDiamCommon extends Msg
         return var;
     }
     
-    private LinkedList<AVP> getAvps(Iterator<AVP> avps, String code) throws ParsingException
+    private LinkedList<AVP> getAvps(Iterator<AVP> avps, String code) throws Exception
     {
         LinkedList<AVP> result = new LinkedList<AVP>();
         if(Utils.isInteger(code))
