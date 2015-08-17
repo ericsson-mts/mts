@@ -171,7 +171,7 @@ public class Dictionary
         
         if(isBase)
         {
-            name = "0" ;
+            name = "Diameter Common Messages";
             id = 0;
         }
         
