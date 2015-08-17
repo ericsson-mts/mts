@@ -35,7 +35,7 @@ public class MsgLight implements Removable
 	
 	protected String protocol;
     protected boolean isRequest;
-    protected String type;
+    //protected String type;  // not USED
     protected String typeComplete;
     protected String result;
     protected String resultComplete;

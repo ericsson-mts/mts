@@ -66,29 +66,27 @@ public class MsgRtsp extends Msg
 	@Override
     public String getType() 
 	{
-        if(null == type)
+		String type = null;
+        if (isRequest())
         {
-            if (isRequest())
+            FirstLine firstline = ((FirstLine)(this.message.getGenericfirstline()));
+            type = firstline.getMethod();
+        }
+        else 
+        {               
+            try 
             {
-                FirstLine firstline = ((FirstLine)(this.message.getGenericfirstline()));
-                type = firstline.getMethod();
+                //get transaction with transactionId associated to the request
+                Msg msgTemp = null;
+                Trans tr = this.stack.getOutTransaction(getTransactionId());
+                if(tr != null)
+                    msgTemp = tr.getBeginMsg();
+                else
+                    msgTemp = this.stack.getInTransaction(getTransactionId()).getBeginMsg();    
+                type = msgTemp.getType();
             }
-            else 
-            {               
-                try 
-                {
-                    //get transaction with transactionId associated to the request
-                    Msg msgTemp = null;
-                    Trans tr = this.stack.getOutTransaction(getTransactionId());
-                    if(tr != null)
-                        msgTemp = tr.getBeginMsg();
-                    else
-                        msgTemp = this.stack.getInTransaction(getTransactionId()).getBeginMsg();    
-                    type = msgTemp.getType();
-                }
-                catch(Exception e)
-                {}
-            }
+            catch(Exception e)
+            {}
         }
         return type;
 	}

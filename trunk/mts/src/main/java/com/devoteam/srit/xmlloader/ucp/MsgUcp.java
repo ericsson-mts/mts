@@ -84,11 +84,7 @@ public class MsgUcp extends Msg
 	@Override
     public String getType()
     {
-        if(type == null)
-        {
-            type = ucpMessage.getName();
-        }
-        return type;
+        return ucpMessage.getName();
     }
 
     /** Get the complete type (with dictionary conversion) of this message */

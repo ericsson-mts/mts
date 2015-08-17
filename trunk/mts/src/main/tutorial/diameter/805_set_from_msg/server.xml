@@ -60,6 +60,17 @@
     <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>
     <test parameter="[retransmit]" condition="string.equals" value="false"/>
     
+    <parameter name="[avp0code]" operation="protocol.setFromMessage" value="avp.Session-Id.code"/>
+    <test parameter="[avp0code]" condition="number.equals" value="263"/>
+    <parameter name="[avp0code]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+    <test parameter="[avp0code]" condition="string.equals" value="[localHostDIAM];[testcase:sessionId]"/>
+    <parameter name="[avp0value]" operation="protocol.setFromMessage" value="avp.263.value"/>
+    <test parameter="[avp0value]" condition="string.equals" value="[localHostDIAM];[testcase:sessionId]"/>
+    <parameter name="[avp0binary]" operation="protocol.setFromMessage" value="avp.Session-Id.binary"/>
+    <!--test parameter="[avp0binary]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/-->
+    <parameter name="[avp0vendor]" operation="protocol.setFromMessage" value="avp.Session-Id.vendorId"/>
+    <test parameter="[avp0vendor]" condition="string.equals" value="0"/>
+    
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.code"/>
     <test parameter="[avp1code]" condition="number.equals" value="1018"/>
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.1024.code"/>
