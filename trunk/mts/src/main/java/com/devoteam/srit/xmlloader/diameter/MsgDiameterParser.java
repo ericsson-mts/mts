@@ -268,6 +268,14 @@ public class MsgDiameterParser
         // Parse the Grouped AVP
         if (!listSubAVPs.isEmpty())
         {
+        	// Parse the AVP value
+        	String value = element.attributeValue("value");
+            //error if specified 
+            if (value != null)
+            {
+            	throw new ParsingException("You should not have a \"value\" attribute because the AVP is grouped in the XML element : " + element);
+            }                
+
             // Parse child AVPs
             List<AVP> avpList = new LinkedList<AVP>();        
             for(Element e:listSubAVPs)
@@ -284,13 +292,13 @@ public class MsgDiameterParser
             avp = gAvp ;
         }
         else
-        {
-            // Parse the AVP value
+        {            
+        	// Parse the AVP value
         	String value = element.attributeValue("value");
-            // error if not specified 
+            //error if not specified 
             if (value == null)
             {
-            	throw new ParsingException("There is no \"value\" attribute in the <avp> XML element : " + element);
+            	throw new ParsingException("The \"value\" attribute is mandatory because the AVP is not grouped in the XML element : " + element);
             }                
 
             // Parse the value for the vendorId AVP

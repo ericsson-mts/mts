@@ -780,7 +780,8 @@ public abstract class Msg extends MsgLight implements Removable
             }
             else if (params[1].equalsIgnoreCase("xml"))
             {
-            	var.add(toXml());
+            	String xml = "<msg>" + toXml() + "</msg>";
+            	var.add(xml);
             }
             else
             {
