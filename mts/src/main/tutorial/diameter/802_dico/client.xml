@@ -4,12 +4,12 @@
 
 <scenario>
 
-    <parameter name="[sessionId]" operation="set" value="9876543210"/>
+    <parameter name="[testcase:newSessionId]" operation="set" value="9876543210"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"
         destScenario="server">
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 301 - Cx:4321"
                 hopByHop="333333333" endToEnd="444444444"/>
-        <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]" type="OctetString" mandatory="true"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]" type="OctetString" mandatory="true"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="OctetString" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
         <avp code="Destination-Host:293" value="[remoteHostDIAM]" type="OctetString" mandatory="true"/>
@@ -21,11 +21,11 @@
         </avp>
         <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1" type="Integer32" mandatory="true"/>
         <avp code="Public-Identity:2" value="sip:+33875610603@sip.france.fr" vendorId="TGPP:10415" type="OctetString" mandatory="true"/>
-        <avp code="Number-Authentication-Items:1026" value="1" type="Integer32" mandatory="true"/>
+        <avp code="Number-Authentication-Items:1026" value="1" type="Unsigned32" mandatory="true"/>
         <avp code="Auth-Data-Item:1018" type="Grouped" mandatory="true">
-            <avp code="Item-Number:1021" value="0" type="Integer32" mandatory="true"/>
-            <avp code="Authentication-Scheme:1020" value="DIGEST:2" type="Integer32" mandatory="true"/>
-            <avp code="Authenticate:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' type="OctetString"/>
+            <avp code="Item-Number:1021" value="0" type="Unsigned32" mandatory="true"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST:2" type="Unsigned32" mandatory="true"/>
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' type="OctetString"/>
             <avp code="Authentication-Context:1024" value="INVITE" type="OctetString"/>
         </avp>
     </sendMessageDIAMETER>
@@ -35,6 +35,106 @@
     
     <!-- check binary message data -->
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
-    <test parameter="[binary]" condition="binary.equals" value="010001f4400001fa000010e113de43551a7daf1c00000107400000203136342e34382e3231392e32393b3938373635343332313000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c000000010000010c4000000c000007d100000002e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000124000003fd2000000c00000000000003fc2000000c00000002000003fb200000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
+    <test parameter="[binary]" condition="binary.equals" value="010001f4400001fa000010e113de43551a7daf1c00000107400000203136342e34382e3231392e32393b3938373635343332313000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c000000010000010c4000000c000007d100000002e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000124000003fd2000000c00000000000003fc2000000c00000002000003fe200000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
 
+    <!-- check xml message data -->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <parameter name="[request]" operation="string.xpath" value="[xml]" value2="//header/attribute::request"/>
+    <test parameter="[request]" condition="boolean.equals" value="false"/>
+    <parameter name="[command]" operation="string.xpath" value="[xml]" value2="//header/@command"/>
+    <test parameter="[command]" condition="string.equals" value="Multimedia-Authentitcation:506"/>
+    <parameter name="[applicationId]" operation="string.xpath" value="[xml]" value2="//header/@applicationId"/>
+    <test parameter="[applicationId]" condition="string.equals" value="Ericsson IMT 30 - Cx:4321"/>
+    <parameter name="[hopByHop]" operation="string.xpath" value="[xml]" value2="//header/@hopByHop"/>
+    <test parameter="[hopByHop]" condition="number.equals" value="333333333"/>
+    <parameter name="[endToEnd]" operation="string.xpath" value="[xml]" value2="//header/@endToEnd"/>
+    <test parameter="[endToEnd]" condition="number.equals" value="444444444"/>
+    <parameter name="[proxiable]" operation="string.xpath" value="[xml]" value2="//header/@proxiable"/>
+    <test parameter="[proxiable]" condition="boolean.equals" value="true"/>
+    <parameter name="[error]" operation="string.xpath" value="[xml]" value2="//header/@error"/>
+    <test parameter="[error]" condition="boolean.equals" value="false"/>
+    <parameter name="[retransmit]" operation="string.xpath" value="[xml]" value2="//header/@retransmit"/>
+    <test parameter="[retransmit]" condition="boolean.equals" value="false"/>
+    <parameter name="[sessionIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Session-Id:263']/@value"/>
+    <test parameter="[sessionIdValue]" condition="string.equals" value="[localHostDIAM];[newSessionId]"/>
+    <parameter name="[sessionIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Session-Id:263']/@type"/>
+    <test parameter="[sessionIdType]" condition="string.equals" value="UTF8String"/>
+    <parameter name="[originHostValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Origin-Host:264']/@value"/>
+    <test parameter="[originHostValue]" condition="string.equals" value="[localHostDIAM]"/>
+    <parameter name="[originHostType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Origin-Host:264']/@type"/>
+    <test parameter="[originHostType]" condition="string.equals" value="DiameterIdentity"/>
+    <parameter name="[originRealmValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Origin-Realm:296']/@value"/>
+    <test parameter="[originRealmValue]" condition="string.equals" value="[localRealmDIAM]"/>
+    <parameter name="[originRealmType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Origin-Realm:296']/@type"/>
+    <test parameter="[originRealmType]" condition="string.equals" value="DiameterIdentity"/>
+    <!--parameter name="[destHostValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Destination-Host:293']/@value"/>
+    <test parameter="[destHostValue]" condition="string.equals" value="[remoteHostDIAM]"/>
+    <parameter name="[destHostType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Destination-Host:293']/@type"/>
+    <test parameter="[destHostType]" condition="string.equals" value="DiameterIdentity"/>
+    <parameter name="[destRealmValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Destination-Realm:283']/@value"/>
+    <test parameter="[destRealmValue]" condition="string.equals" value="[remoteRealmDIAM]"/>
+    <parameter name="[destRealmType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Destination-Realm:283']/@type"/>
+    <test parameter="[destRealmType]" condition="string.equals" value="DiameterIdentity"/-->
+
+    <parameter name="[vendorSpecType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/@type"/>
+    <test parameter="[vendorSpecType]" condition="string.equals" value="Grouped"/>
+    <parameter name="[vendorIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@value"/>
+    <test parameter="[vendorIdValue]" condition="string.equals" value="3GPP:10415"/>
+    <parameter name="[vendorIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@type"/>
+    <test parameter="[vendorIdType]" condition="string.equals" value="VendorId"/>
+    <parameter name="[applicationIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Auth-Application-Id:258']/@value"/>
+    <test parameter="[applicationIdValue]" condition="string.equals" value="3GPP Cx:16777216"/>
+    <parameter name="[applicationIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Auth-Application-Id:258']/@type"/>
+    <test parameter="[applicationIdType]" condition="string.equals" value="AppId"/>
+
+    <parameter name="[authSessionStateValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Session-State:277']/@value"/>
+    <test parameter="[authSessionStateValue]" condition="string.equals" value="NO_STATE_MAINTAINED:1"/>
+    <parameter name="[authSessionStateType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Session-State:277']/@type"/>
+    <test parameter="[authSessionStateType]" condition="string.equals" value="Unsigned32"/>
+    <parameter name="[authSessionStateVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Session-State:277']/@vendorId"/>
+    <test parameter="[authSessionStateVendorId]" condition="list.isEmpty"/>
+
+    <parameter name="[TGPPChargingIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@value"/>
+    <!--test parameter="[TGPPChargingIdValue]" condition="string.equals" value="TODO"/-->
+    <parameter name="[TGPPChargingIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@type"/>
+    <test parameter="[TGPPChargingIdType]" condition="string.equals" value="OctetString"/>
+    <parameter name="[TGPPChargingIdVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@vendorId"/>
+    <test parameter="[TGPPChargingIdVendorId]" condition="String.equals" value="3GPP:10415"/>
+
+    <parameter name="[nbAuthItemsValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@value"/>
+    <test parameter="[nbAuthItemsValue]" condition="number.equals" value="1"/>
+    <parameter name="[nbAuthItemsType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@type"/>
+    <test parameter="[nbAuthItemsType]" condition="string.equals" value="Unsigned32"/>
+    <parameter name="[nbAuthItemsVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@vendorId"/>
+    <test parameter="[nbAuthItemsVendorId]" condition="list.isEmpty"/>
+    
+    <parameter name="[authDataItemType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Data-Item:1018']/@type"/>
+    <test parameter="[authDataItemType]" condition="string.equals" value="Grouped"/>
+    <parameter name="[authDataItemVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Data-Item:1018']/@vendorId"/>
+    <test parameter="[authDataItemVendorId]" condition="list.isEmpty"/>
+    <parameter name="[authDataItemValue]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Item-Number:1021']/@value"/>
+    <test parameter="[authDataItemValue]" condition="number.equals" value="0"/>
+    <parameter name="[authDataItemType]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Item-Number:1021']/@type"/>
+    <test parameter="[authDataItemType]" condition="string.equals" value="Unsigned32"/>
+    <parameter name="[authDataItemVendorId]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Item-Number:1021']/@vendorId"/>
+    <test parameter="[authDataItemVendorId]" condition="list.isEmpty"/>
+    <parameter name="[authSchemeValue]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authentication-Scheme:1020']/@value"/>
+    <test parameter="[authSchemeValue]" condition="string.equals" value="DIGEST:2"/>
+    <parameter name="[authSchemeType]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authentication-Scheme:1020']/@type"/>
+    <test parameter="[authSchemeType]" condition="string.equals" value="Unsigned32"/>
+    <parameter name="[authSchemeVendorId]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authentication-Scheme:1020']/@vendorId"/>
+    <test parameter="[authSchemeVendorId]" condition="list.isEmpty"/>
+    <parameter name="[authorizationValue]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authorization:1022']/@value"/>
+    <!--test parameter="[authorizationValue]" condition="string.equals" value="TODO"/-->
+    <parameter name="[authorizationType]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authorization:1022']/@type"/>
+    <test parameter="[authorizationType]" condition="string.equals" value="OctetString"/>
+    <parameter name="[authorizationVendorId]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authorization:1022']/@vendorId"/>
+    <test parameter="[authorizationVendorId]" condition="list.isEmpty"/>
+    <parameter name="[authContextValue]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authentication-Context:1024']/@value"/>
+    <test parameter="[authContextValue]" condition="binary.equals" value="494e56495445"/>
+    <parameter name="[authContextType]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authentication-Context:1024']/@type"/>
+    <test parameter="[authContextType]" condition="string.equals" value="OctetString"/>
+    <parameter name="[authContextVendorId]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Authentication-Context:1024']/@vendorId"/>
+    <test parameter="[authContextVendorId]" condition="list.isEmpty"/>
+    
 </scenario>

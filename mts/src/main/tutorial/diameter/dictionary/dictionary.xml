@@ -255,66 +255,76 @@
     <!-- FH added : missing -->
     <typedefn type-name="Address"/>
 		<typedefn type-name="DiameterIdentity" type-parent="UTF8String"/>
-		<!--
-			The DiameterIdentity format is derived from the OctetString AVP
-			Base Format.  It uses the UTF-8 encoding and has the same
-			requirements as the UTF8String.  In addition, it must follow
-			the Uniform Resource Identifiers (URI) syntax [29] rules
-			specified below:
-
-			   Diameter-Identity  = fqdn [ port ] [ transport ]
-						[ protocol ]
-
-			   aaa-protocol       = ( "diameter" | "radius" | "tacacs+" )
-
-			   protocol           = ";protocol=" aaa-protocol
-						; If absent, the default AAA protocol
-						; is diameter.
-
-			   fqdn               = Fully Qualified Host Name
-
-			   port               = ":" 1*DIGIT
-						; One of the ports used to listen for
-						; incoming connections. ; If absent,
-						; the default Diameter port (TBD) is
-						; assumed.
-
-			   transport-protocol = ( "tcp" | "sctp" | "udp" )
-
-			   transport          = ";transport=" transport-protocol
-
-						; One of the transports used to listen
-						; for incoming connections. If absent,
-						; the default SCTP [26] protocol is
-						; assumed. UDP MUST NOT be used when
-						; the aaa-protocol field is set to
-						; diameter.
-
-			   The following are examples of valid Diameter host
-			   identities:
-
-			      host.abc.com;transport=tcp
-			      host.abc.com:6666;transport=tcp
-			      aaa://host.abc.com;protocol=diameter
-			      aaa://host.abc.com:6666;protocol=diameter
-			      aaa://host.abc.com:6666;transport=tcp;protocol=diameter
-			      aaa://host.abc.com:1813;transport=udp;protocol=radius
-
-			Since multiple Diameter processes on a single host cannot
-			listen for incoming connections on the same port on a given
-			protocol, the DiameterIdentity is guaranteed to be unique per
-			host.
-
-			A Diameter node MAY advertise different identities on each
-			connection, via the CER and CEA's Origin-Host AVP, but the same
-			identity MUST be used throughout the duration of a connection.
-
-			When comparing AVPs of this format, it is necessary to add any
-			absent fields with the default values prior to the comparison.
-			For example, diameter-host.abc.com would be expanded to
-			aaa://diameter/diameter-host.abc.com:TBD;protocol=sctp.
-		-->
+    <!-- 
+    DiameterIdentity
+        The DiameterIdentity format is derived from the OctetString AVP
+        Base Format.
+  
+           DiameterIdentity  = FQDN
+  
+        DiameterIdentity value is used to uniquely identify a Diameter
+        node for purposes of duplicate connection and routing loop
+        detection.
+  
+        The contents of the string MUST be the FQDN of the Diameter node.
+        If multiple Diameter nodes run on the same host, each Diameter
+        node MUST be assigned a unique DiameterIdentity.  If a Diameter
+        node can be identified by several FQDNs, a single FQDN should be
+        picked at startup, and used as the only DiameterIdentity for that
+        node, whatever the connection it is sent on.
+    -->
     <typedefn type-name="DiameterURI" type-parent="UTF8String"/>
+    <!-- 
+    DiameterURI
+
+      The DiameterURI MUST follow the Uniform Resource Identifiers (URI)
+      syntax [URI] rules specified below:
+
+      "aaa://" FQDN [ port ] [ transport ] [ protocol ]
+
+                      ; No transport security
+
+      "aaas://" FQDN [ port ] [ transport ] [ protocol ]
+
+                      ; Transport security used
+
+      FQDN               = Fully Qualified Host Name
+
+      port               = ":" 1*DIGIT
+
+                      ; One of the ports used to listen for
+                      ; incoming connections.
+                      ; If absent,
+                      ; the default Diameter port (3868) is
+                      ; assumed.
+
+      transport          = ";transport=" transport-protocol
+
+                      ; One of the transports used to listen
+                      ; for incoming connections.  If absent,
+                      ; the default SCTP [SCTP] protocol is
+                      ; assumed.  UDP MUST NOT be used when
+                      ; the aaa-protocol field is set to
+                      ; diameter.
+
+      transport-protocol = ( "tcp" / "sctp" / "udp" )
+
+      protocol           = ";protocol=" aaa-protocol
+
+                      ; If absent, the default AAA protocol
+                      ; is diameter.
+
+      aaa-protocol       = ( "diameter" / "radius" / "tacacs+" )
+
+      The following are examples of valid Diameter host identities:
+
+      aaa://host.example.com;transport=tcp
+      aaa://host.example.com:6666;transport=tcp
+      aaa://host.example.com;protocol=diameter
+      aaa://host.example.com:6666;protocol=diameter
+      aaa://host.example.com:6666;transport=tcp;protocol=diameter
+      aaa://host.example.com:1813;transport=udp;protocol=radius
+    -->    
 		<typedefn type-name="IPFilterRule" type-parent="UTF8String"/>
 		<!--
 			The IPFilterRule format is derived from the OctetString AVP
@@ -615,6 +625,14 @@
 			field MUST be set to 16 (20 if the 'V' bit is enabled).
 		-->
 		<typedefn type-name="Enumerated" type-parent="Integer32"/>
+    <!--
+    Enumerated
+      Enumerated is derived from the Integer32 AVP Base Format.  The
+      definition contains a list of valid values and their
+      interpretation and is described in the Diameter application
+      introducing the AVP.
+    -->
+    
     <!-- FH added : missing -->
     <typedefn type-name="Float32"/>
     <typedefn type-name="Float64"/>
