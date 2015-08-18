@@ -327,18 +327,7 @@ public class MsgDiameterParser
             }
 
             // Create the AVP
-            if (typeBase.equalsIgnoreCase("OctetString"))
-            {
-                try
-                {
-                    avp = new AVP_OctetString(code, Utils.parseBinaryString(value));
-                }
-                catch(Exception e)
-                {
-                    avp = new AVP_OctetString(code, value.getBytes());
-                }
-            }
-            else if (typeBase.equalsIgnoreCase("IPAddress") || typeBase.equalsIgnoreCase("Address"))
+            if ("IPAddress".equalsIgnoreCase(type) || "IPAddress".equalsIgnoreCase(typeBase))
             {
             	byte[] val = null;
             	if (value.contains(".") || value.contains(":"))
@@ -352,47 +341,74 @@ public class MsgDiameterParser
             	}
                 avp = new AVP_OctetString(code, val);
             }
-            else if (typeBase.equalsIgnoreCase("UTF8String"))
+            // Create the AVP
+            else if ("Address".equalsIgnoreCase(type) || "Address".equalsIgnoreCase(typeBase))
+            {
+            	byte[] val = null;
+            	if (value.contains(".") || value.contains(":"))
+            	{
+            		val = InetAddress.getByName(value).getAddress();
+            	}
+            	else
+            	{
+            		Array array = Array.fromHexString(value);
+            		val = array.getBytes();
+            	}
+                avp = new AVP_OctetString(code, val);
+            }
+            else if	("Time".equalsIgnoreCase(type) || "Time".equalsIgnoreCase(typeBase))
+            {
+            	long time = DateUtils.parseDate(value);
+            	Date date = new Date (time);
+                avp = new AVP_Time(code, date);
+            }
+            else if ("UTF8String".equalsIgnoreCase(type) || "UTF8String".equalsIgnoreCase(typeBase))
             {
                 avp = new AVP_OctetString(code, value.getBytes());
             }
-            else if (typeBase.equalsIgnoreCase("Integer32"))
+            // base types
+            else if ("OctetString".equalsIgnoreCase(typeBase))
+            {
+                try
+                {
+                    avp = new AVP_OctetString(code, Utils.parseBinaryString(value));
+                }
+                catch(Exception e)
+                {
+                    avp = new AVP_OctetString(code, value.getBytes());
+                }
+            }
+            else if ("Integer32".equalsIgnoreCase(typeBase))
             {
             	value = parse_AVPEnumValue(value, avpDef);
                 avp = new AVP_Integer32(code,Integer.parseInt(value));
             }
-            else if (typeBase.equalsIgnoreCase("Integer64"))
+            else if ("Integer64".equalsIgnoreCase(typeBase))
             {
             	value = parse_AVPEnumValue(value, avpDef);
                 avp = new AVP_Integer64(code,Long.parseLong(value));
             }
-            else if (typeBase.equalsIgnoreCase("Unsigned32"))
+            else if ("Unsigned32".equalsIgnoreCase(typeBase))
             {
             	value = parse_AVPEnumValue(value, avpDef);
             	UnsignedInt32 unsignedInt32 = new UnsignedInt32(value);
                 avp = new AVP_Unsigned32(code,unsignedInt32.intValue());
             }
-            else if	(typeBase.equalsIgnoreCase("Unsigned64"))
+            else if	("Unsigned64".equalsIgnoreCase(typeBase))
             {
             	value = parse_AVPEnumValue(value, avpDef);
                 UnsignedInt64 unsignedInt64 = new UnsignedInt64(value);
                 avp = new AVP_Unsigned64(code,unsignedInt64.longValue());
             }
-            else if (typeBase.equalsIgnoreCase("Float32"))
+            else if ("Float32".equalsIgnoreCase(typeBase))
             {
                 Float float32 = Float.parseFloat(value);
                 avp = new AVP_Float32(code, float32);
             }
-            else if	(typeBase.equalsIgnoreCase("Float64"))
+            else if	("Float64".equalsIgnoreCase(typeBase))
             {
                 double double64 = Double.parseDouble(value);
                 avp = new AVP_Float64(code, double64);
-            }
-            else if	(typeBase.equalsIgnoreCase("Time"))
-            {
-            	long time = DateUtils.parseDate(value);
-            	Date date = new Date (time);
-                avp = new AVP_Time(code, date);
             }
             else
             {
@@ -511,7 +527,8 @@ public class MsgDiameterParser
 	        if (commandDef != null && !codeLabel.equals(commandDef.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the header command code, the label \"" + codeLabel + "\" does not match the code \"" + commandDef.get_code() + "\" in the dictionary.");
+	        		"For the header command code, the label \"" + codeLabel + "\" does not match the code \"" + commandDef.get_code() + "\" in the dictionary; " +
+	        		"we assume the header command code is \"" + commandDef.get_code() + " and we are waiting the label \"" + commandDef.get_name() + "\".");	        	
 	        }
 	    }
 	    else
@@ -549,7 +566,8 @@ public class MsgDiameterParser
 	    	if (application != null && !codeLabel.equals(application.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the application ID, the label \"" + codeLabel + "\" does not match the id \"" + application.get_id() + "\" in the dictionary.");
+	        		"For the application id, the label \"" + codeLabel + "\" does not match the id \"" + application.get_id() + "\" in the dictionary; " +
+	        		"we assume the application id is \"" + application.get_id() + " and we are waiting the label \"" + application.get_name() + "\".");
 	        }
 	    }
 	    else
@@ -597,10 +615,13 @@ public class MsgDiameterParser
 	    	String codeInt = vendorIdAttr.substring(pos + 1);
 	    	int code = Integer.parseInt(codeInt);
 	    	vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
-	        if (vendorDef != null && !codeLabel.equals(vendorDef.get_vendor_id()))
+	        if (vendorDef != null && 
+	        	!codeLabel.equals(vendorDef.get_vendor_id()) &&
+	        	!codeLabel.equals(vendorDef.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the vendor ID, the label \"" + codeLabel + "\" does not match the id \"" + vendorDef.get_code() + "\" in the dictionary.");
+	        		"For the vendor ID, the label \"" + codeLabel + "\" does not match the id \"" + vendorDef.get_code() + "\" in the dictionary; " +
+	        		"we assume the header command code is \"" + vendorDef.get_code() + " and we are waiting the label \"" + vendorDef.get_name() + "\".");	        	
 	        }
 	    }
 	    else
@@ -638,7 +659,8 @@ public class MsgDiameterParser
 	        if (!codeLabel.equals(name))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the AVP enumeration, the label \"" + codeLabel + "\" does not match the code \"" + codeLong + "\" in the dictionary.");
+	        		"For the AVP enumeration code, the label \"" + codeLabel + "\" does not match the code \"" + codeLong + "\" in the dictionary; " +
+	        		"we assume the AVP enumeration code is \"" + code + " and we are waiting the label \"" + name + "\".");
 	        }
 	    }
 	    else
