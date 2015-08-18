@@ -461,14 +461,7 @@ public class Dictionary
         
         return null;
     }
-    
-    public static boolean isInteger(String string)
-    {
-        if(null == string) return false ;
-        for(int i=0; i<string.length(); i++) if(!Character.isDigit(string.charAt(i))) return false ;
-        return true ;
-    }
-    
+        
     public static void traceWarning(String text)
     {
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Dictionary: ", text);

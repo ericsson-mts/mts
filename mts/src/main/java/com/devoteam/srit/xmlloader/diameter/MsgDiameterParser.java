@@ -229,7 +229,13 @@ public class MsgDiameterParser
         }
         
         // Parse the AVP Code
-        AvpDef avpDef = parseAVP_Code(element, applicationId, vendorId);
+        String codeAttr = element.attributeValue("code");
+        // error if not specified
+        if (codeAttr == null)
+        {
+        	throw new ParsingException("There is no \"code\" attribute in the <avp> XML element : " + element);
+        }
+        AvpDef avpDef = parseAVP_Code(codeAttr, applicationId, vendorId);
         int code = -1;
         if (avpDef != null)
         {
@@ -237,7 +243,6 @@ public class MsgDiameterParser
         }
         else
         {
-        	String codeAttr = element.attributeValue("code");
         	code = Integer.parseInt(codeAttr);
         }
         
@@ -302,13 +307,16 @@ public class MsgDiameterParser
             }                
 
             // Parse the value for the vendorId AVP
-            if (type != null && type.equalsIgnoreCase("VendorId"))
+            if ("VendorId".equalsIgnoreCase(type) || code == 266 || code == 265)
             {
             	VendorDef vendorDefValue = parse_AVPVendorId(value, applicationId);
-            	value = Integer.toString(vendorDefValue.get_code());            	
+            	if (vendorDefValue != null)
+            	{
+            		value = Integer.toString(vendorDefValue.get_code());	
+            	}
             }
 
-            if (type != null && type.equalsIgnoreCase("AppId"))
+            if ("AppId".equalsIgnoreCase(type) || code == 258 || code == 259 )
             {
             	Application applicationValue = parse_ApplicationId(value, false);
             	if (applicationValue != null)
@@ -443,14 +451,8 @@ public class MsgDiameterParser
     /** 
      * Parses the AVP code from XML element and perform dictionary change 
      */
-    private AvpDef parseAVP_Code(Element element, String applicationId, String vendorId) throws Exception
-    {    
-        String codeAttr = element.attributeValue("code");
-        // error if not specified
-        if (codeAttr == null)
-        {
-        	throw new ParsingException("There is no \"code\" attribute in the <avp> XML element : " + element);
-        }                
+    private AvpDef parseAVP_Code(String codeAttr, String applicationId, String vendorId) throws Exception
+    {                    
 	    int pos = codeAttr.lastIndexOf(":");
 	    AvpDef avpDef = null;
 	    if (pos >= 0)
