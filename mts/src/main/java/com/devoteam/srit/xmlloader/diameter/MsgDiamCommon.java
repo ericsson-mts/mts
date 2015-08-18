@@ -735,24 +735,24 @@ public class MsgDiamCommon extends Msg
             {
             	i = 0;
             	Parameter.throwBadPathKeywordException(path);
-            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=xxx:yyy", "setFromMessage value=avp:xxx:yyy");
+            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=xxx.yyy", "setFromMessage value=avp.xxx.yyy");
             	throw new Exception();
             }
             LinkedList<AVP> baseAvps = null ;
             LinkedList<AVP> tempAvps = null ;
             Iterator<AVP>   baseIterator = message.avps().iterator();
             LinkedList<AVP> validAvps = new LinkedList<AVP>();
-            while(i<params.length-1)
+            while (i < params.length-1)
             {
-                if(null != baseAvps)
+                if (baseAvps != null)
                 {
                     baseAvps = new LinkedList<AVP>();
                     
                     Iterator<AVP> tmpIterator = tempAvps.iterator();
-                    while(tmpIterator.hasNext())
+                    while (tmpIterator.hasNext())
                     {
                         AVP anAvp = tmpIterator.next();
-                        if(getAvpStringValue(anAvp).equalsIgnoreCase("grouped"))
+                        if(getAvpStringValue(anAvp).equalsIgnoreCase("Grouped"))
                         {
                             AVP[] avpTab = (new AVP_Grouped(anAvp)).queryAVPs();
                             for(int j=0; j<avpTab.length; j++)
