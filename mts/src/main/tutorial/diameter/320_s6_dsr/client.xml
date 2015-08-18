@@ -52,7 +52,7 @@ Delete-Subscriber-Data-Request ::= < Diameter Header: 320, REQ, PXY, 16777251 >
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestDSR" channel="channel_client" destScenario="server">
-        <header request="true" command="3GPP-Delete-Subscriber-Data" applicationId="3GPP S6a/S6d"/>
+        <header request="true" command="3GPP-Delete-Subscriber-Data" applicationId="[applicationID]"/>
         <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>

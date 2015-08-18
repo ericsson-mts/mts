@@ -23,15 +23,11 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-import com.devoteam.srit.xmlloader.diameter.dictionary.Application;
 import com.devoteam.srit.xmlloader.diameter.dictionary.AvpDef;
-import com.devoteam.srit.xmlloader.diameter.dictionary.CommandDef;
 import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
-import com.devoteam.srit.xmlloader.diameter.dictionary.VendorDef;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -152,7 +148,6 @@ public class MsgDiamCommon extends Msg
         
         // get Experimental-Result:Experimental-Result-Code
         var = getParameter("avp.297.298.value");
-        //if (var != null) {
         if(var != null && var.length() > 0)
         {
             return (String) var.get(0);
@@ -165,26 +160,7 @@ public class MsgDiamCommon extends Msg
     @Override
     public String getResultComplete() throws Exception
     {
-        String applicationId = Integer.toString(message.hdr.application_id);
-        // get Result-Code value
-        Parameter var = getParameter("avp.268.value");
-        if ((var != null) && (var.length() > 0)) {
-        	String valueInt = (String) var.get(0);
-            AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(268, applicationId, null);
-        	String valueName = avpDef.getEnumNameByCode(valueInt);
-            return valueName + ":" + valueInt;
-        }
-        
-        // get Experimental-Result:Experimental-Result-Code
-        var = getParameter("avp.297.298.value");
-        if ((var != null) && (var.length() > 0)) {
-        	String valueInt = (String) var.get(0);
-            AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(298, applicationId, null);
-        	String valueName = avpDef.getEnumNameByCode(valueInt);
-            return valueName + ":" + valueInt;
-        }
-        
-        return null ;
+    	return getResult();
     }
      
     /**
@@ -197,6 +173,11 @@ public class MsgDiamCommon extends Msg
     	String status = getResult();
     	if (status != null && (!status.equals("")))
     	{
+    		int pos = status.lastIndexOf(":");
+    		if (pos > 0)
+    		{
+    			status = status.substring(pos + 1);
+    		}
     		int statusCode = new Integer(status).intValue();
             if (statusCode < 2000 && statusCode >= 3000)
             {
@@ -346,39 +327,17 @@ public class MsgDiamCommon extends Msg
         // retrieve the vendorId code
         String vendorIdCode = Integer.toString(avp.vendor_id);
 
-        // retrieve the type of avp
+        // retrieve the AvpDef object from the dictionary
         AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
                 
-        // retrieve the top-parent type
-        String type = "OctetString";
-        String typeBase = "OctetString";
-        TypeDef typeDef = null;        
-        if (avpDef != null)
-        {
-            typeDef = avpDef.get_type();
-            if (typeDef != null)
-            {
-            	type = typeDef.get_type_name();
-            }
-            while (typeDef != null && typeDef.get_type_parent() != null)
-            {
-                typeDef = typeDef.get_type_parent();
-            }
-            if (typeDef != null)
-            {
-            	typeBase = typeDef.get_type_name();
-            }
-        }
-        
-        if(null != avpDef && avpDef.getGroupedAvpNameList().size()!=0)
-        {
-        	type = "Grouped";
-        	typeBase = "Grouped";
-        }
+        // retrieve the dictionary type
+        String typeDico = getAVPType(avpDef);        
+        // retrieve the base type (using top-parent recursively)
+        String typeBase = getAVPTypeBase(avpDef);
         
         ret += Utils.indent(indent) + "<avp";
         
-        // retrieve the AVP label and code
+        // display the AVP label and code
         int code= avp.code;
         String label = "Unknown";
         if (avpDef != null)
@@ -393,7 +352,7 @@ public class MsgDiamCommon extends Msg
         ret += " value=\"";
         try
         {
-        	ret += getAVPValue(avp, avpDef, applicationId, type, typeBase); 
+        	ret += getAVPValue(avp, avpDef, applicationId, typeDico, typeBase); 
         }
         catch(Exception e)
         {
@@ -413,7 +372,7 @@ public class MsgDiamCommon extends Msg
         }
         
         // display the AVP type and flags
-        ret += " type=\"" + type + "\"";
+        ret += " type=\"" + typeDico + "\"";
         ret += " mandatory=\"" + avp.isMandatory() + "\"";
         ret += " private=\"" + avp.isPrivate() + "\"";
         
@@ -474,13 +433,62 @@ public class MsgDiamCommon extends Msg
 	    return vendorIdString;
     }
 
-    /** get the vendor Id value as a label from the dictionary */
+    /** get the type for an AVP according to the dictionary */
+    private String getAVPType(AvpDef avpDef) throws Exception
+    {    
+        String typeUser = "OctetString";
+        TypeDef typeDef = null;        
+        if (avpDef != null)
+        {
+            typeDef = avpDef.get_type();
+            if (typeDef != null)
+            {
+            	typeUser = typeDef.get_type_name();
+            }
+            if (avpDef.getGroupedAvpNameList().size()!=0)
+            {
+            	typeUser = "Grouped";
+            }
+        }
+        return typeUser;
+    }
+    
+    /** get the type base for an AVP according to the dictionary */
+    private String getAVPTypeBase(AvpDef avpDef) throws Exception
+    {    
+        String typeBase = "OctetString";
+        TypeDef typeDef = null;        
+        if (avpDef != null)
+        {
+            typeDef = avpDef.get_type();
+            while (typeDef != null && typeDef.get_type_parent() != null)
+            {
+                typeDef = typeDef.get_type_parent();
+            }
+            if (typeDef != null)
+            {
+            	typeBase = typeDef.get_type_name();
+            }
+            if (avpDef.getGroupedAvpNameList().size() > 0)
+            {
+            	typeBase = "Grouped";
+            }            
+        }
+        
+        return typeBase;
+    }
+    
+    /** get the value for an AVP according to the dictionary */    
     private String getAVPValue(AVP avp, AvpDef avpDef, String applicationId,
-    						   String type, String typeBase) throws Exception
+    						   String typeDico, String typeBase) throws Exception
     {    
     	String label = null;
     	String value;
-		if ("IPAddress".equalsIgnoreCase(type) || "IPAddress".equalsIgnoreCase(typeBase))
+        if ("Grouped".equalsIgnoreCase(typeDico) || "Grouped".equalsIgnoreCase(typeBase))
+        {
+        	value = "Grouped";
+        }
+        else if ("IPAddress".equalsIgnoreCase(typeDico) || "IPAddress".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = new AVP_OctetString(avp).queryValue();
 	    	if (val.length == 4 || val.length == 16)
@@ -493,7 +501,7 @@ public class MsgDiamCommon extends Msg
 	    		value = Array.toHexString(array);
 	    	}
 	    }
-		else if ("Address".equalsIgnoreCase(type) || "Address".equalsIgnoreCase(typeBase))
+		else if ("Address".equalsIgnoreCase(typeDico) || "Address".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = new AVP_OctetString(avp).queryValue();
 	    	if (val.length == 4 || val.length == 16)
@@ -506,7 +514,7 @@ public class MsgDiamCommon extends Msg
 	    		value = Array.toHexString(array);
 	    	}
 	    }   
-	    else if ("Time".equalsIgnoreCase(type) || "Time".equalsIgnoreCase(typeBase))
+	    else if ("Time".equalsIgnoreCase(typeDico) || "Time".equalsIgnoreCase(typeBase))
 	    {
 	    	// this method is buggous !
 	    	//Date date = new AVP_Time(avp).queryDate();
@@ -515,7 +523,7 @@ public class MsgDiamCommon extends Msg
 	    	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
 	    	value = format.format(date);
 	    }        	
-	    else if ("UTF8String".equalsIgnoreCase(type) || "UTF8String".equalsIgnoreCase(typeBase))
+	    else if ("UTF8String".equalsIgnoreCase(typeDico) || "UTF8String".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = (new AVP_OctetString(avp)).queryValue();
 	    	value = new String(val);
@@ -569,27 +577,23 @@ public class MsgDiamCommon extends Msg
 			value = Array.toHexString(array);
 	    }
 		// case of vendorId type : Auth-Application-Id: or Acct-Application-Id
-		if (type.equalsIgnoreCase("appId"))
+		if (typeDico.equalsIgnoreCase("appId"))
         {
         	label = this.getApplicationIdString(value);
         }
 		// case of vendorId type : Vendor-Id: or Supported-Vendor-Id:
-        if (type.equalsIgnoreCase("vendorId"))
+        if (typeDico.equalsIgnoreCase("vendorId"))
         {
         	label = this.getVendorIdString(Integer.parseInt(value), applicationId);
         }
 
         // display the value the not "Grouped" AVP
         String ret = "";
-        if (!typeBase.equalsIgnoreCase("grouped"))
-        {
-	        if (label != null)
-	        {
-	        	ret += label + ":";
-	        }
-	        ret += value;
-        }
-
+	    if (label != null)
+	    {
+	    	ret += label + ":";
+	    }
+	    ret += value;
         return ret;
     }
 	
@@ -696,12 +700,16 @@ public class MsgDiamCommon extends Msg
             //----------------------------------------------------------------- header:command -
             else if(params[1].equalsIgnoreCase("command"))
             {
-                var.add(Integer.toString(message.hdr.command_code));
+            	String command = Integer.toString(message.hdr.command_code);
+            	command = getCodeString() + ":" + command;
+                var.add(command);
             }
             //----------------------------------------------------------- header:applicationId -
             else if(params[1].equalsIgnoreCase("applicationId"))
             {
-                var.add(Integer.toString(message.hdr.application_id));
+            	String appliID = Integer.toString(message.hdr.application_id);
+            	appliID = getApplicationIdString(appliID) + ":" + appliID;
+                var.add(appliID);
             }
             //---------------------------------------------------------------- header:endToEnd -
             else if(params[1].equalsIgnoreCase("endToEnd"))
@@ -778,7 +786,12 @@ public class MsgDiamCommon extends Msg
             else if(params[params.length-1].equalsIgnoreCase("value"))
             {
                 Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext()) var.add(getAvpStringValue(iterator.next()));
+                while(iterator.hasNext())
+                {
+                	AVP avp = iterator.next(); 
+                	String value = getAvpStringValue(avp);               
+                	var.add(value);
+                }
             }
             else if(params[params.length-1].equalsIgnoreCase("binary"))
             {
@@ -869,86 +882,13 @@ public class MsgDiamCommon extends Msg
         // retrieve the type of avp
         AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
         
-        // retrieve the top-parent type
-        TypeDef typeDef = null;
-        if(null != avpDef)
-        {
-            typeDef = avpDef.get_type();
-            while(null != typeDef && null != typeDef.get_type_parent()) typeDef = typeDef.get_type_parent();
-        }
+        // retrieve the dictionary type
+        String typeDico = getAVPType(avpDef);        
+        // retrieve the base type (using top-parent recursively)
+        String typeBase = getAVPTypeBase(avpDef);
         
-        // determine the type name
-        String type = "unknown" ;
-        if(null != typeDef) type = typeDef.get_type_name();
-        if(null != avpDef && avpDef.getGroupedAvpNameList().size()!=0) type = "grouped";
-        
-        // return the value
-        if(type.equalsIgnoreCase("grouped"))
-        {
-        	return "grouped" ;
-        }
-        else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	String strRes = Utils.toIPAddress(result);
-        	return strRes;
-        }
-        else if(type.equalsIgnoreCase("Time"))
-        {
-        	// this method is buggous !
-        	//Date date = new AVP_Time(avp).queryDate();
-        	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
-        	Date date = new Date(secondSince1970 * 1000);
-        	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
-        	return format.format(date);
-        }
-        else if(type.equalsIgnoreCase("UTF8String"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	return new String(result);
-        }
-        else if(type.equalsIgnoreCase("OctetString"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	return Utils.toBinaryString(result, false);
-        }
-        // base types
-        else if(type.equalsIgnoreCase("Integer32"))
-        {
-        	long result = new AVP_Integer32(avp).queryValue();
-        	return Long.toString(result);
-        }
-        else if(type.equalsIgnoreCase("Integer64"))
-        {
-        	long result = new AVP_Integer64(avp).queryValue();
-        	return Long.toString(result);
-        }
-        else if(type.equalsIgnoreCase("Unsigned32"))
-        {
-        	long result = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
-        	return Long.toString(result);
-        }
-        else if(type.equalsIgnoreCase("Unsigned64"))
-        {
-        	long result = new AVP_Unsigned64(avp).queryValue()& 0xFFFFFFFFFFFFFFFFL;
-        	return Long.toString(result);
-        }
-        else if(type.equalsIgnoreCase("Float32"))
-        {
-        	float result = new AVP_Float32(avp).queryValue();
-        	return Float.toString(result);
-        }
-        else if(type.equalsIgnoreCase("Float64"))
-        {
-        	double result = new AVP_Float64(avp).queryValue();
-        	return Double.toString(result);
-        }
-        else
-        {
-        	// case when there is a decoding problem : we assume type=OctetString
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	return Utils.toBinaryString(result, false);
-        }
+        // return the value        
+        return getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
     }
 
 
