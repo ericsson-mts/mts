@@ -103,7 +103,7 @@
     <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
     <test parameter="[type]" condition="string.equals" value="Multimedia-Authentitcation:506"/>
     <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
-    <test parameter="[result]" condition="string.equals" value="2001"/>
+    <test parameter="[result]" condition="string.equals" value="DIAMETER_SUCCESS:2001"/>
     <parameter name="[text]" operation="protocol.setFromMessage" value="message.text"/>
     <parameter name="[binary]" operation="string.toBinary" value="[text]"/>
     <parameter name="[binReference]" operation="set" value="01000278800001fa000010e106f8ad4e06f8ad4d000001074000001c653466363738396631626666653961363437343300000108600000143133372e35382e38342e37380000012840000011636c69656e742e667200000000000125400000143133372e35382e38342e37380000011b40000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c000010e1000001156000000c0000000100000002e0000029000028af7369703a2b3333383735363331393735407369702e70666465762e667200000000000402e0000010000028af00000001000003fae0000138000028af000003fde0000010000028af00000000000003fce0000010000028af00000002000003fbe00000f8000028af44696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d443500000400e0000012000028af494e5649544500000000036cc0000034000028af0000035ec0000010000028af00127ed90000033fc0000015000028af62616456616c756535000000000000086000000c893a544e00000008600000182a01cf00003300050000000000006e01"/>
@@ -119,7 +119,7 @@
     <parameter name="[request1]" operation="protocol.setFromMessage" value="header.request"/>
     <test parameter="[request1]" condition="string.equals" value="false"/>
     <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>
-    <test parameter="[code]" condition="string.equals" value="506"/>
+    <test parameter="[code]" condition="string.equals" value="Multimedia-Authentitcation:506"/>
     <parameter name="[appId]" operation="protocol.setFromMessage" value="header.applicationId"/>
     <test parameter="[appId]" condition="string.equals" value="[applicationID]"/>
     <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>

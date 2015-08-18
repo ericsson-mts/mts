@@ -246,7 +246,7 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestCCR" channel="channel_client" destScenario="server">
-        <header request="true" command="Credit-Control" applicationId="3GPP Gx"/>
+        <header request="true" command="Credit-Control" applicationId="[applicationID]"/>
         <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
