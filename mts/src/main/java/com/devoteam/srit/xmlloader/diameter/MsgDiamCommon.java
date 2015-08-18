@@ -376,17 +376,20 @@ public class MsgDiamCommon extends Msg
         	typeBase = "Grouped";
         }
         
-        // retrieve the AVP name
-        String name = "Unknown";
-        if(null != avpDef) name = avpDef.get_name();
-
-        // retrieve the AVP code
-        int code= avp.code;
-        if(null != avpDef) code = avpDef.get_code();
-        
         ret += Utils.indent(indent) + "<avp";
-        ret += " code=\"" + name + ":" + code + "\"";
+        
+        // retrieve the AVP label and code
+        int code= avp.code;
+        String label = "Unknown";
+        if (avpDef != null)
+        {
+        	label = avpDef.get_name();
+        	code = avpDef.get_code();
+        }
+        String name = label + ":" + code;
+        ret += " code=\"" + name + "\"";
 
+        // display the AVP value
         ret += " value=\"";
         try
         {
@@ -398,15 +401,18 @@ public class MsgDiamCommon extends Msg
         	byte[] val = new AVP_OctetString(avp).queryValue();
         	Array array = new DefaultArray(val);
     		ret += Array.toHexString(array);
-        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while trying to decode AVP named " + name + " of code " + avp.code);
+        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while trying to decode AVP : \"" + name + "\"");
         }
         ret += "\"";
                 
+        // display the AVP vendor Id
         if (avp.vendor_id != 0)
         {
         	ret += " vendorId=\"";
         	ret += getVendorIdString(avp.vendor_id, applicationId) + ":" + avp.vendor_id + "\"";
         }
+        
+        // display the AVP type and flags
         ret += " type=\"" + type + "\"";
         ret += " mandatory=\"" + avp.isMandatory() + "\"";
         ret += " private=\"" + avp.isPrivate() + "\"";
