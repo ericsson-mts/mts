@@ -764,9 +764,15 @@ public class MsgDiamCommon extends Msg
                     baseIterator = baseAvps.iterator();
                 }
                 
-                
-                validAvps.addAll(getAvps(baseIterator, params[i]));
-                
+                while (baseIterator.hasNext())
+                {
+                	AVP avp = baseIterator.next();
+                	if (matchAVP_Keyword(avp, params[i]))
+                	{
+                		validAvps.add(avp);
+                	}
+                	
+                }
                 tempAvps = validAvps ;
                 baseAvps = validAvps ;
                 validAvps = new LinkedList<AVP>();
@@ -840,35 +846,31 @@ public class MsgDiamCommon extends Msg
         return var;
     }
     
-    private LinkedList<AVP> getAvps(Iterator<AVP> avps, String code) throws Exception
+    private boolean matchAVP_Keyword(AVP avp, String code) throws Exception
     {
-        LinkedList<AVP> result = new LinkedList<AVP>();
-        
         if(Utils.isInteger(code))
         {
             int avpCode = Integer.parseInt(code);
-            while(avps.hasNext())
+            if (avp.code == avpCode) 
             {
-                AVP avp = avps.next();
-                if(avp.code == avpCode) result.add(avp);
+            	return true;
             }
         }
         else
         {
         	String appliIDCode = Integer.toString(message.hdr.application_id);
-            while(avps.hasNext())
+            String vendorIDCode = Integer.toString(avp.vendor_id);
+            AvpDef  avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, appliIDCode, vendorIDCode);
+            if (avpDef != null)
             {
-                AVP avp = avps.next();
-                String vendorIDCode = Integer.toString(avp.vendor_id);
-                AvpDef  avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, appliIDCode, vendorIDCode);
-                if (avpDef != null)
-                {
-		            String avpName = avpDef.get_name(); 
-		            if(code.equals(avpName)) result.add(avp);
+            	String avpName = avpDef.get_name(); 
+		        if (code.equals(avpName))
+		        {
+		        	return true;
                 }
             }
         }
-        return result ;
+        return false;
     }
         
     /** returns the type of an AVP */
