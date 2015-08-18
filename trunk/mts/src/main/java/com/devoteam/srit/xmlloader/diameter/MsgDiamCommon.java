@@ -391,37 +391,7 @@ public class MsgDiamCommon extends Msg
         String value = "";
         try
         {
-            if(typeBase.equalsIgnoreCase("Integer32"))
-            {
-                int val = (new AVP_Integer32(avp)).queryValue();
-                label = getEnumerationString(avpDef, val);
-                value = Long.toString(val);
-            }
-            else if(typeBase.equalsIgnoreCase("Integer64"))
-            {
-            	long val = (new AVP_Integer64(avp)).queryValue();
-            	label = getEnumerationString(avpDef, val);
-            	value = Long.toString(val);
-            }
-            else if(typeBase.equalsIgnoreCase("Unsigned32"))
-            {
-            	long val = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
-            	label = getEnumerationString(avpDef, val);            	
-            	value = Long.toString(val);
-            }
-            else if(typeBase.equalsIgnoreCase("Unsigned64"))
-            {
-            	long val = new AVP_Unsigned64(avp).queryValue() & 0xFFFFFFFFFFFFFFFFL;
-            	label = getEnumerationString(avpDef, val);
-            	value += Long.toString(val);            
-            }
-            else if(typeBase.equalsIgnoreCase("OctetString"))
-            {
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	Array array = new DefaultArray(val);
-        		value = Array.toHexString(array);
-            }
-            else if(typeBase.equalsIgnoreCase("IPAddress") || typeBase.equalsIgnoreCase("Address"))
+        	if ("IPAddress".equalsIgnoreCase(type) || "IPAddress".equalsIgnoreCase(typeBase))
             {
             	byte[] val = new AVP_OctetString(avp).queryValue();
             	if (val.length == 4 || val.length == 16)
@@ -434,22 +404,20 @@ public class MsgDiamCommon extends Msg
             		value = Array.toHexString(array);
             	}
             }
-            else if(typeBase.equalsIgnoreCase("UTF8String"))
+        	else if ("Address".equalsIgnoreCase(type) || "Address".equalsIgnoreCase(typeBase))
             {
-            	byte[] val = (new AVP_OctetString(avp)).queryValue();
-            	value = new String(val);
-            }
-            else if(typeBase.equalsIgnoreCase("Float32"))
-            {
-            	float result = new AVP_Float32(avp).queryValue();
-            	value = Float.toString(result);
-            }
-            else if(typeBase.equalsIgnoreCase("Float64"))
-            {
-            	double result = new AVP_Float64(avp).queryValue();
-            	value = Double.toString(result);
-            }
-            else if(typeBase.equalsIgnoreCase("Time"))
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	if (val.length == 4 || val.length == 16)
+            	{
+            		value = Utils.toIPAddress(val);
+            	}
+            	else
+            	{
+            		Array array = new DefaultArray(val);
+            		value = Array.toHexString(array);
+            	}
+            }   
+            else if ("Time".equalsIgnoreCase(type) || "Time".equalsIgnoreCase(typeBase))
             {
             	// this method is buggous !
             	//Date date = new AVP_Time(avp).queryDate();
@@ -457,6 +425,52 @@ public class MsgDiamCommon extends Msg
             	Date date = new Date(secondSince1970 * 1000);
             	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
             	value = format.format(date);
+            }        	
+            else if ("UTF8String".equalsIgnoreCase(type) || "UTF8String".equalsIgnoreCase(typeBase))
+            {
+            	byte[] val = (new AVP_OctetString(avp)).queryValue();
+            	value = new String(val);
+            }
+        	// base types
+            else if ("OctetString".equalsIgnoreCase(typeBase))
+            {
+            	byte[] val = new AVP_OctetString(avp).queryValue();
+            	Array array = new DefaultArray(val);
+        		value = Array.toHexString(array);
+            }
+        	else if ("Integer32".equalsIgnoreCase(typeBase))
+            {
+                int val = (new AVP_Integer32(avp)).queryValue();
+                label = getEnumerationString(avpDef, val);
+                value = Long.toString(val);
+            }
+            else if("Integer64".equalsIgnoreCase(typeBase))
+            {
+            	long val = (new AVP_Integer64(avp)).queryValue();
+            	label = getEnumerationString(avpDef, val);
+            	value = Long.toString(val);
+            }
+            else if("Unsigned32".equalsIgnoreCase(typeBase))
+            {
+            	long val = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
+            	label = getEnumerationString(avpDef, val);            	
+            	value = Long.toString(val);
+            }
+            else if("Unsigned64".equalsIgnoreCase(typeBase))
+            {
+            	long val = new AVP_Unsigned64(avp).queryValue() & 0xFFFFFFFFFFFFFFFFL;
+            	label = getEnumerationString(avpDef, val);
+            	value += Long.toString(val);            
+            }
+            else if("Float32".equalsIgnoreCase(typeBase))
+            {
+            	float result = new AVP_Float32(avp).queryValue();
+            	value = Float.toString(result);
+            }
+            else if("Float64".equalsIgnoreCase(typeBase))
+            {
+            	double result = new AVP_Float64(avp).queryValue();
+            	value = Double.toString(result);
             }
             else
             {
@@ -552,8 +566,8 @@ public class MsgDiamCommon extends Msg
     {
     	String vendorIdString;
 	    try
-	    {
-	    	vendorIdString = Dictionary.getInstance().getVendorDefByCode(code, applicationId).get_vendor_id();
+	    {	    	
+	    	vendorIdString = Dictionary.getInstance().getVendorDefByCode(code, applicationId).get_name();
 	    }
 	    catch(Exception e)
 	    {
@@ -855,6 +869,32 @@ public class MsgDiamCommon extends Msg
         {
         	return "grouped" ;
         }
+        else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
+        {
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	String strRes = Utils.toIPAddress(result);
+        	return strRes;
+        }
+        else if(type.equalsIgnoreCase("Time"))
+        {
+        	// this method is buggous !
+        	//Date date = new AVP_Time(avp).queryDate();
+        	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
+        	Date date = new Date(secondSince1970 * 1000);
+        	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
+        	return format.format(date);
+        }
+        else if(type.equalsIgnoreCase("UTF8String"))
+        {
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	return new String(result);
+        }
+        else if(type.equalsIgnoreCase("OctetString"))
+        {
+        	byte[] result = new AVP_OctetString(avp).queryValue();
+        	return Utils.toBinaryString(result, false);
+        }
+        // base types
         else if(type.equalsIgnoreCase("Integer32"))
         {
         	long result = new AVP_Integer32(avp).queryValue();
@@ -875,22 +915,6 @@ public class MsgDiamCommon extends Msg
         	long result = new AVP_Unsigned64(avp).queryValue()& 0xFFFFFFFFFFFFFFFFL;
         	return Long.toString(result);
         }
-        else if(type.equalsIgnoreCase("OctetString"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	return Utils.toBinaryString(result, false);
-        }
-        else if(type.equalsIgnoreCase("IPAddress") || type.equalsIgnoreCase("Address"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	String strRes = Utils.toIPAddress(result);
-        	return strRes;
-        }
-        else if(type.equalsIgnoreCase("UTF8String"))
-        {
-        	byte[] result = new AVP_OctetString(avp).queryValue();
-        	return new String(result);
-        }
         else if(type.equalsIgnoreCase("Float32"))
         {
         	float result = new AVP_Float32(avp).queryValue();
@@ -900,15 +924,6 @@ public class MsgDiamCommon extends Msg
         {
         	double result = new AVP_Float64(avp).queryValue();
         	return Double.toString(result);
-        }
-        else if(type.equalsIgnoreCase("Time"))
-        {
-        	// this method is buggous !
-        	//Date date = new AVP_Time(avp).queryDate();
-        	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
-        	Date date = new Date(secondSince1970 * 1000);
-        	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
-        	return format.format(date);
         }
         else
         {

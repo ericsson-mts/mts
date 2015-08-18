@@ -57,7 +57,7 @@
     <parameter name="[vendorSpecType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/@type"/>
     <test parameter="[vendorSpecType]" condition="string.equals" value="Grouped"/>
     <parameter name="[vendorIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@value"/>
-    <test parameter="[vendorIdValue]" condition="string.equals" value="TGPP:10415"/>
+    <test parameter="[vendorIdValue]" condition="string.equals" value="3GPP:10415"/>
     <parameter name="[vendorIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@type"/>
     <test parameter="[vendorIdType]" condition="string.equals" value="VendorId"/>
     <parameter name="[applicationIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Auth-Application-Id:258']/@value"/>
@@ -77,7 +77,7 @@
     <parameter name="[TGPPChargingIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@type"/>
     <test parameter="[TGPPChargingIdType]" condition="string.equals" value="OctetString"/>
     <parameter name="[TGPPChargingIdVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@vendorId"/>
-    <test parameter="[TGPPChargingIdVendorId]" condition="String.equals" value="TGPP:10415"/>
+    <test parameter="[TGPPChargingIdVendorId]" condition="String.equals" value="3GPP:10415"/>
 
     <parameter name="[nbAuthItemsValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@value"/>
     <test parameter="[nbAuthItemsValue]" condition="number.equals" value="1"/>
@@ -122,16 +122,16 @@
         <avp code="Origin-Realm" value="[remoteRealmDIAM]" type="OctetString" mandatory="true"/>
         
         <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Vendor-Id" value="3GPP"/>
             <avp code="Auth-Application-Id" value="3GPP CX/DX"/>
         </avp>
         <avp code="Auth-Session-State" value="1"/>
         <avp code="Result-Code" value="DIAMETER_SUCCESS"/>		
-        <avp code="Public-Identity:2" value="sip:+33875610603@sip.france.fr" vendorId="TGPP:10415" type="OctetString" mandatory="true"/>
+        <avp code="User-Password" value="sip:+33875610603@sip.france.fr" vendorId="TGPP" type="OctetString" mandatory="true"/>
         <avp code="Number-Authentication-Items" value="1"/>
         <avp code="Auth-Data-Item">
             <avp code="Item-Number" value="0" type="Unsigned32" mandatory="false"/>
-            <avp code="Authentication-Scheme:1020" value="DIGEST" type="Integer32" mandatory="false" />
+            <avp code="Authentication-Scheme" value="DIGEST" type="Integer32" mandatory="false" />
             <avp code="Authorization" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' type="OctetString" mandatory="false"/>
             <avp code="Authentication-Context" value="INVITE" type="OctetString" />
         </avp>

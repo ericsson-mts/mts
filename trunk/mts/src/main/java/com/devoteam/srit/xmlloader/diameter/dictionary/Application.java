@@ -142,6 +142,7 @@ public class Application
         if(null != getVendorDefByName(vendor_id)) Dictionary.traceWarning("VendorDef of vendor-id " + vendor_id + " already exists, overwriting");
         
         vendorDefByName.put(vendor_id, vendorDef);
+        vendorDefByName.put(name, vendorDef);
         vendorDefByCode.put(Integer.toString(code), vendorDef);
         
     }
