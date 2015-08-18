@@ -553,7 +553,7 @@ public class MsgDiamCommon extends Msg
     	String vendorIdString;
 	    try
 	    {
-	    	vendorIdString = Dictionary.getInstance().getVendorDefByCode(code, applicationId).get_name();
+	    	vendorIdString = Dictionary.getInstance().getVendorDefByCode(code, applicationId).get_vendor_id();
 	    }
 	    catch(Exception e)
 	    {
@@ -798,6 +798,7 @@ public class MsgDiamCommon extends Msg
     private LinkedList<AVP> getAvps(Iterator<AVP> avps, String code) throws Exception
     {
         LinkedList<AVP> result = new LinkedList<AVP>();
+        
         if(Utils.isInteger(code))
         {
             int avpCode = Integer.parseInt(code);

@@ -191,53 +191,45 @@
 		<!-- ************************************************************** -->
 		<typedefn type-name="OctetString"/>
 		<!--
-			The data contains arbitrary data of variable length. Unless
-			otherwise noted, the AVP Length field MUST be set to at least 9
-			(13 if the 'V' bit is enabled).  Data used to transmit (human
-			readable) character string data uses the UTF-8 [24] character
-			set and is NOT NULL-terminated. The minimum Length field MUST
-			be 9, but can be set to any value up to 65504 bytes. AVP Values
-			of this type that do not align on a 32-bit boundary MUST have
-			the necessary padding.
+      The data contains arbitrary data of variable length.  Unless
+      otherwise noted, the AVP Length field MUST be set to at least 8
+      (12 if the 'V' bit is enabled).  AVP Values of this type that are
+      not a multiple of four-octets in length is followed by the
+      necessary padding so that the next AVP (if any) will start on a
+      32-bit boundary.
 		-->
 		<typedefn type-name="UTF8String"/>
 		<!--
-			The UTF8String format is derived from the OctetString AVP Base
-			Format. This is a human readable string represented using the
-			ISO/IEC IS 10646-1 character set, encoded as an OctetString
-			using the UTF-8 [29] transformation format described in RFC
-			2279.
+      The UTF8String format is derived from the OctetString AVP Base
+      Format.  This is a human readable string represented using the
+      ISO/IEC IS 10646-1 character set, encoded as an OctetString using
+      the UTF-8 [UFT8] transformation format described in <A HREF="/rfcs/rfc2279.html">RFC 2279</A>.
 
-			Since additional code points are added by amendments to the
-			10646 standard from time to time, implementations MUST be
-			prepared to encounter any code point from 0x00000001 to
-			0x7fffffff. Byte sequences that do not correspond to the valid
-			UTF-8 encoding of a code point or are outside this range are
-			prohibited. Note that since a code point of 0x00000000 is
-			prohibited, no octet will contain a value of 0x00.
+      Since additional code points are added by amendments to the 10646
+      standard from time to time, implementations MUST be prepared to
+      encounter any code point from 0x00000001 to 0x7fffffff.  Byte
+      sequences that do not correspond to the valid encoding of a code
+      point into UTF-8 charset or are outside this range are prohibited.
 
-			The use of control codes SHOULD be avoided. When it is
-			necessary to represent a newline, the control code sequence CR
-			LF SHOULD be used.
+      The use of control codes SHOULD be avoided.  When it is necessary
+      to represent a new line, the control code sequence CR LF SHOULD be
+      used.
 
-			The use of leading or trailing white space SHOULD be avoided.
+      The use of leading or trailing white space SHOULD be avoided.
 
-			For code points not directly supported by user interface
-			hardware or software, an alternative means of entry and
-			display, such as hexadecimal, MAY be provided.
+      For code points not directly supported by user interface hardware
+      or software, an alternative means of entry and display, such as
+      hexadecimal, MAY be provided.
 
-			For information encoded in 7-bit US-ASCII, the UTF-8 encoding
-			is identical to the US-ASCII encoding.
+      For information encoded in 7-bit US-ASCII, the UTF-8 charset is
+      identical to the US-ASCII charset.
 
-			UTF-8 may require multiple bytes to represent a single
-			character / code point; thus the length of a UTF8String in
-			octets may be different from the number of characters encoded.
+      UTF-8 may require multiple bytes to represent a single character /
+      code point; thus the length of an UTF8String in octets may be
+      different from the number of characters encoded.
 
-			Note that the size of an UTF8String is measured in octets, not
-			characters.
-
-			The UTF8String MUST not contain any octets with a value of
-			zero.
+      Note that the AVP Length field of an UTF8String is measured in
+      octets, not characters.
 		-->
 		<!-- FH Modified -->
     <typedefn type-name="IPAddress"/>

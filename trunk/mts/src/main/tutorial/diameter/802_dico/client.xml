@@ -7,19 +7,19 @@
     <parameter name="[testcase:newSessionId]" operation="set" value="9876543210"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"
         destScenario="server">
-        <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 301 - Cx:4321"
+        <header request="true" command="Multimedia-Authentitcation_bad:506" applicationId="Ericsson IMT 30 - Cx_bad:4321"
                 hopByHop="333333333" endToEnd="444444444"/>
-        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]" type="OctetString" mandatory="true"/>
+        <avp code="Session-Id_bad:263" value="[localHostDIAM];[newSessionId]" type="OctetString" mandatory="true"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="OctetString" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
         <avp code="Destination-Host:293" value="[remoteHostDIAM]" type="OctetString" mandatory="true"/>
         <avp code="Destination-Realm:283" value="[remoteRealmDIAM]" type="OctetString" mandatory="true"/>
         
         <avp code="Vendor-Specific-Application-Id:260" type="Grouped" mandatory="true">
-            <avp code="Vendor-Id:266" value="TGPP:10415" type="Integer32" mandatory="true"/>
-            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216" type="Integer32" mandatory="true"/>
+            <avp code="Vendor-Id:266" value="TGPP_bad:10415" type="VendorId" mandatory="true"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx_bad:16777216" type="Integer32" mandatory="true"/>
         </avp>
-        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1" type="Integer32" mandatory="true"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED_bad:1" type="Integer32" mandatory="true"/>
         <avp code="Public-Identity:2" value="sip:+33875610603@sip.france.fr" vendorId="TGPP:10415" type="OctetString" mandatory="true"/>
         <avp code="Number-Authentication-Items:1026" value="1" type="Unsigned32" mandatory="true"/>
         <avp code="Auth-Data-Item:1018" type="Grouped" mandatory="true">
@@ -79,7 +79,7 @@
     <parameter name="[vendorSpecType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/@type"/>
     <test parameter="[vendorSpecType]" condition="string.equals" value="Grouped"/>
     <parameter name="[vendorIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@value"/>
-    <test parameter="[vendorIdValue]" condition="string.equals" value="3GPP:10415"/>
+    <test parameter="[vendorIdValue]" condition="string.equals" value="TGPP:10415"/>
     <parameter name="[vendorIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@type"/>
     <test parameter="[vendorIdType]" condition="string.equals" value="VendorId"/>
     <parameter name="[applicationIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Auth-Application-Id:258']/@value"/>
@@ -94,12 +94,12 @@
     <parameter name="[authSessionStateVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Session-State:277']/@vendorId"/>
     <test parameter="[authSessionStateVendorId]" condition="list.isEmpty"/>
 
-    <parameter name="[TGPPChargingIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@value"/>
-    <!--test parameter="[TGPPChargingIdValue]" condition="string.equals" value="TODO"/-->
-    <parameter name="[TGPPChargingIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@type"/>
-    <test parameter="[TGPPChargingIdType]" condition="string.equals" value="OctetString"/>
-    <parameter name="[TGPPChargingIdVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@vendorId"/>
-    <test parameter="[TGPPChargingIdVendorId]" condition="String.equals" value="3GPP:10415"/>
+    <parameter name="[3GPPChargingIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@value"/>
+    <!--test parameter="[3GPPChargingIdValue]" condition="string.equals" value="TODO"/-->
+    <parameter name="[3GPPChargingIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@type"/>
+    <test parameter="[3GPPChargingIdType]" condition="string.equals" value="OctetString"/>
+    <parameter name="[3GPPChargingIdVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@vendorId"/>
+    <test parameter="[3GPPChargingIdVendorId]" condition="String.equals" value="TGPP:10415"/>
 
     <parameter name="[nbAuthItemsValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@value"/>
     <test parameter="[nbAuthItemsValue]" condition="number.equals" value="1"/>
