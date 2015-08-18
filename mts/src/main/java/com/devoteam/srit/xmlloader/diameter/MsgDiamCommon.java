@@ -387,129 +387,21 @@ public class MsgDiamCommon extends Msg
         ret += Utils.indent(indent) + "<avp";
         ret += " code=\"" + name + ":" + code + "\"";
 
-        String label = null;
-        String value = "";
+        ret += " value=\"";
         try
         {
-        	if ("IPAddress".equalsIgnoreCase(type) || "IPAddress".equalsIgnoreCase(typeBase))
-            {
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	if (val.length == 4 || val.length == 16)
-            	{
-            		value = Utils.toIPAddress(val);
-            	}
-            	else
-            	{
-            		Array array = new DefaultArray(val);
-            		value = Array.toHexString(array);
-            	}
-            }
-        	else if ("Address".equalsIgnoreCase(type) || "Address".equalsIgnoreCase(typeBase))
-            {
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	if (val.length == 4 || val.length == 16)
-            	{
-            		value = Utils.toIPAddress(val);
-            	}
-            	else
-            	{
-            		Array array = new DefaultArray(val);
-            		value = Array.toHexString(array);
-            	}
-            }   
-            else if ("Time".equalsIgnoreCase(type) || "Time".equalsIgnoreCase(typeBase))
-            {
-            	// this method is buggous !
-            	//Date date = new AVP_Time(avp).queryDate();
-            	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
-            	Date date = new Date(secondSince1970 * 1000);
-            	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
-            	value = format.format(date);
-            }        	
-            else if ("UTF8String".equalsIgnoreCase(type) || "UTF8String".equalsIgnoreCase(typeBase))
-            {
-            	byte[] val = (new AVP_OctetString(avp)).queryValue();
-            	value = new String(val);
-            }
-        	// base types
-            else if ("OctetString".equalsIgnoreCase(typeBase))
-            {
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	Array array = new DefaultArray(val);
-        		value = Array.toHexString(array);
-            }
-        	else if ("Integer32".equalsIgnoreCase(typeBase))
-            {
-                int val = (new AVP_Integer32(avp)).queryValue();
-                label = getEnumerationString(avpDef, val);
-                value = Long.toString(val);
-            }
-            else if("Integer64".equalsIgnoreCase(typeBase))
-            {
-            	long val = (new AVP_Integer64(avp)).queryValue();
-            	label = getEnumerationString(avpDef, val);
-            	value = Long.toString(val);
-            }
-            else if("Unsigned32".equalsIgnoreCase(typeBase))
-            {
-            	long val = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
-            	label = getEnumerationString(avpDef, val);            	
-            	value = Long.toString(val);
-            }
-            else if("Unsigned64".equalsIgnoreCase(typeBase))
-            {
-            	long val = new AVP_Unsigned64(avp).queryValue() & 0xFFFFFFFFFFFFFFFFL;
-            	label = getEnumerationString(avpDef, val);
-            	value += Long.toString(val);            
-            }
-            else if("Float32".equalsIgnoreCase(typeBase))
-            {
-            	float result = new AVP_Float32(avp).queryValue();
-            	value = Float.toString(result);
-            }
-            else if("Float64".equalsIgnoreCase(typeBase))
-            {
-            	double result = new AVP_Float64(avp).queryValue();
-            	value = Double.toString(result);
-            }
-            else
-            {
-            	// case when there is a decoding problem : we assume type=Binary
-            	byte[] val = new AVP_OctetString(avp).queryValue();
-            	Array array = new DefaultArray(val);
-        		value = Array.toHexString(array);
-            }
+        	ret += getAVPValue(avp, avpDef, applicationId, type, typeBase); 
         }
         catch(Exception e)
         {
         	// case when there is an exception : we assume type=Binary
         	byte[] val = new AVP_OctetString(avp).queryValue();
         	Array array = new DefaultArray(val);
-    		value = Array.toHexString(array);
+    		ret += Array.toHexString(array);
         	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while trying to decode AVP named " + name + " of code " + avp.code);
         }
-        
-        if (type.equalsIgnoreCase("appId"))
-        {
-        	label = this.getApplicationIdString(value);
-        }
-
-        if (type.equalsIgnoreCase("vendorId"))
-        {
-        	label = this.getVendorIdString(Integer.parseInt(value), applicationId);
-        }
-
-        // display the value the not "Grouped" AVP
-        if (!typeBase.equalsIgnoreCase("grouped"))
-        {
-	        ret += " value=\"";
-	        if (label != null)
-	        {
-	        	ret += label + ":";
-	        }
-	        ret += value + "\"";
-        }
-        
+        ret += "\"";
+                
         if (avp.vendor_id != 0)
         {
         	ret += " vendorId=\"";
@@ -576,6 +468,126 @@ public class MsgDiamCommon extends Msg
 	    return vendorIdString;
     }
 
+    /** get the vendor Id value as a label from the dictionary */
+    private String getAVPValue(AVP avp, AvpDef avpDef, String applicationId,
+    						   String type, String typeBase) throws Exception
+    {    
+    	String label = null;
+    	String value;
+		if ("IPAddress".equalsIgnoreCase(type) || "IPAddress".equalsIgnoreCase(typeBase))
+	    {
+	    	byte[] val = new AVP_OctetString(avp).queryValue();
+	    	if (val.length == 4 || val.length == 16)
+	    	{
+	    		value = Utils.toIPAddress(val);
+	    	}
+	    	else
+	    	{
+	    		Array array = new DefaultArray(val);
+	    		value = Array.toHexString(array);
+	    	}
+	    }
+		else if ("Address".equalsIgnoreCase(type) || "Address".equalsIgnoreCase(typeBase))
+	    {
+	    	byte[] val = new AVP_OctetString(avp).queryValue();
+	    	if (val.length == 4 || val.length == 16)
+	    	{
+	    		value = Utils.toIPAddress(val);
+	    	}
+	    	else
+	    	{
+	    		Array array = new DefaultArray(val);
+	    		value = Array.toHexString(array);
+	    	}
+	    }   
+	    else if ("Time".equalsIgnoreCase(type) || "Time".equalsIgnoreCase(typeBase))
+	    {
+	    	// this method is buggous !
+	    	//Date date = new AVP_Time(avp).queryDate();
+	    	long secondSince1970 = new AVP_Time(avp).querySecondsSince1970() & 0xFFFFFFFFL;
+	    	Date date = new Date(secondSince1970 * 1000);
+	    	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS");
+	    	value = format.format(date);
+	    }        	
+	    else if ("UTF8String".equalsIgnoreCase(type) || "UTF8String".equalsIgnoreCase(typeBase))
+	    {
+	    	byte[] val = (new AVP_OctetString(avp)).queryValue();
+	    	value = new String(val);
+	    }
+		// base types
+	    else if ("OctetString".equalsIgnoreCase(typeBase))
+	    {
+	    	byte[] val = new AVP_OctetString(avp).queryValue();
+	    	Array array = new DefaultArray(val);
+			value = Array.toHexString(array);
+	    }
+		else if ("Integer32".equalsIgnoreCase(typeBase))
+	    {
+	        int val = (new AVP_Integer32(avp)).queryValue();
+	        label = getEnumerationString(avpDef, val);
+	        value = Long.toString(val);
+	    }
+	    else if("Integer64".equalsIgnoreCase(typeBase))
+	    {
+	    	long val = (new AVP_Integer64(avp)).queryValue();
+	    	label = getEnumerationString(avpDef, val);
+	    	value = Long.toString(val);
+	    }
+	    else if("Unsigned32".equalsIgnoreCase(typeBase))
+	    {
+	    	long val = new AVP_Unsigned32(avp).queryValue() & 0xFFFFFFFFL;
+	    	label = getEnumerationString(avpDef, val);            	
+	    	value = Long.toString(val);
+	    }
+	    else if("Unsigned64".equalsIgnoreCase(typeBase))
+	    {
+	    	long val = new AVP_Unsigned64(avp).queryValue() & 0xFFFFFFFFFFFFFFFFL;
+	    	label = getEnumerationString(avpDef, val);
+	    	value = Long.toString(val);            
+	    }
+	    else if("Float32".equalsIgnoreCase(typeBase))
+	    {
+	    	float result = new AVP_Float32(avp).queryValue();
+	    	value = Float.toString(result);
+	    }
+	    else if("Float64".equalsIgnoreCase(typeBase))
+	    {
+	    	double result = new AVP_Float64(avp).queryValue();
+	    	value = Double.toString(result);
+	    }
+	    else
+	    {
+	    	// case when there is a decoding problem : we assume type=Binary
+	    	byte[] val = new AVP_OctetString(avp).queryValue();
+	    	Array array = new DefaultArray(val);
+			value = Array.toHexString(array);
+	    }
+		// case of vendorId type : Auth-Application-Id: or Acct-Application-Id
+		if (type.equalsIgnoreCase("appId"))
+        {
+        	label = this.getApplicationIdString(value);
+        }
+		// case of vendorId type : Vendor-Id: or Supported-Vendor-Id:
+        if (type.equalsIgnoreCase("vendorId"))
+        {
+        	label = this.getVendorIdString(Integer.parseInt(value), applicationId);
+        }
+
+        // display the value the not "Grouped" AVP
+        String ret = "";
+        if (!typeBase.equalsIgnoreCase("grouped"))
+        {
+	        if (label != null)
+	        {
+	        	ret += label + ":";
+	        }
+	        ret += value;
+        }
+
+        return ret;
+    }
+	
+	
     private String headerToXml() throws Exception 
     {         
     	
