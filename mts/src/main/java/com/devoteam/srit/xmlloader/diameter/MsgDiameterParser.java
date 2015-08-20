@@ -527,7 +527,7 @@ public class MsgDiameterParser
 	        if (commandDef != null && !codeLabel.equals(commandDef.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the header command code, the label \"" + codeLabel + "\" does not match the code \"" + commandDef.get_code() + "\" in the dictionary; " +
+	        		"Parsing : For the header command code, the label \"" + codeLabel + "\" does not match the code \"" + commandDef.get_code() + "\" in the dictionary; " +
 	        		"we assume the header command code is \"" + commandDef.get_code() + " and we are waiting the label \"" + commandDef.get_name() + "\".");	        	
 	        }
 	    }
@@ -566,7 +566,7 @@ public class MsgDiameterParser
 	    	if (application != null && !codeLabel.equals(application.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the application id, the label \"" + codeLabel + "\" does not match the id \"" + application.get_id() + "\" in the dictionary; " +
+	        		"Parsing : For the application id, the label \"" + codeLabel + "\" does not match the id \"" + application.get_id() + "\" in the dictionary; " +
 	        		"we assume the application id is \"" + application.get_id() + " and we are waiting the label \"" + application.get_name() + "\".");
 	        }
 	    }
@@ -620,7 +620,7 @@ public class MsgDiameterParser
 	        	!codeLabel.equals(vendorDef.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the vendor ID, the label \"" + codeLabel + "\" does not match the id \"" + vendorDef.get_code() + "\" in the dictionary; " +
+	        		"Parsing : For the vendor ID, the label \"" + codeLabel + "\" does not match the id \"" + vendorDef.get_code() + "\" in the dictionary; " +
 	        		"we assume the header command code is \"" + vendorDef.get_code() + " and we are waiting the label \"" + vendorDef.get_name() + "\".");	        	
 	        }
 	    }
@@ -659,7 +659,7 @@ public class MsgDiameterParser
 	        if (!codeLabel.equals(name))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        		"For the AVP enumeration code, the label \"" + codeLabel + "\" does not match the code \"" + codeLong + "\" in the dictionary; " +
+	        		"Parsing : For the AVP enumeration code, the label \"" + codeLabel + "\" does not match the code \"" + codeLong + "\" in the dictionary; " +
 	        		"we assume the AVP enumeration code is \"" + code + " and we are waiting the label \"" + name + "\".");
 	        }
 	    }
