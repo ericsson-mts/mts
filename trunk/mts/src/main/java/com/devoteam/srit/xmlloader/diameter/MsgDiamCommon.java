@@ -535,9 +535,8 @@ public class MsgDiamCommon extends Msg
 		// base types
 	    else if ("OctetString".equalsIgnoreCase(typeBase))
 	    {
-	    	byte[] val = new AVP_OctetString(avp).queryValue();
-	    	Array array = new DefaultArray(val);
-			value = Array.toHexString(array);
+	    	byte[] val = (new AVP_OctetString(avp)).queryValue();
+	    	value = new String(val);
 	    }
 		else if ("Integer32".equalsIgnoreCase(typeBase))
 	    {

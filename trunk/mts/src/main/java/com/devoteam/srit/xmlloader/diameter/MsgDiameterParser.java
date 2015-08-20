@@ -342,7 +342,6 @@ public class MsgDiameterParser
             	}
                 avp = new AVP_OctetString(code, val);
             }
-            // Create the AVP
             else if ("Address".equalsIgnoreCase(type) || "Address".equalsIgnoreCase(typeBase))
             {
             	byte[] val = null;
@@ -369,14 +368,7 @@ public class MsgDiameterParser
             // base types
             else if ("OctetString".equalsIgnoreCase(typeBase))
             {
-                try
-                {
-                    avp = new AVP_OctetString(code, Utils.parseBinaryString(value));
-                }
-                catch(Exception e)
-                {
-                    avp = new AVP_OctetString(code, value.getBytes());
-                }
+                avp = new AVP_OctetString(code, value.getBytes());
             }
             else if ("Integer32".equalsIgnoreCase(typeBase))
             {
@@ -409,6 +401,11 @@ public class MsgDiameterParser
             {
                 double double64 = Double.parseDouble(value);
                 avp = new AVP_Float64(code, double64);
+            }
+            else if ("Binary".equalsIgnoreCase(typeBase))
+            {
+            	byte[] bytes = Utils.parseBinaryString("h" + value);
+            	avp = new AVP_OctetString(code, bytes);
             }
             else
             {
@@ -691,7 +688,8 @@ public class MsgDiameterParser
     		return  null;
     	}
     	TypeDef typeDef = Dictionary.getInstance().getTypeDefByName(typeAttr, applicationId);
-        if (typeDef == null && !"grouped".equalsIgnoreCase(typeAttr.toLowerCase()))
+        if (typeDef == null && !"grouped".equalsIgnoreCase(typeAttr.toLowerCase()) &&
+        		!"binary".equalsIgnoreCase(typeAttr.toLowerCase()))
         {
         	throw new ParsingException("The type id \"" + typeAttr + "\" is not found in the dictionary.");        	
         }
