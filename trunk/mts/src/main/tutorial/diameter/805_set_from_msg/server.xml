@@ -225,7 +225,7 @@
     <test parameter="[avp159996val]" condition="string.equals" value="20/08/2015 11:26:59:000"/>
     <!-- Address -->
     <parameter name="[avp159997val]" operation="protocol.setFromMessage" value="avp.299999997.address"/>
-    <test parameter="[avp159997val]" condition="string.equals" value="1111111111"/>
+    <test parameter="[avp159997val]" condition="string.equals" value="111.111.111.111"/>
 
     <parameter name="[avp16code]" operation="protocol.setFromMessage" value="avp.Public-Identity.code"/>
     <test parameter="[avp16code]" condition="number.equals" value="601"/>
@@ -253,6 +253,8 @@
     <test parameter="[avp16priv]" condition="boolean.equals" value="false"/>
 
     <!-- type = OctetString -->
+    <parameter name="[avp17type]" operation="protocol.setFromMessage" value="avp.CHAP-Password:3.type"/>
+    <test parameter="[avp17type]" condition="string.equalsIgnoreCase" value="OctetString"/>
     <parameter name="[avp17val]" operation="protocol.setFromMessage" value="avp.CHAP-Password:3.value"/>
     <test parameter="[avp17val]" condition="string.equals" value="303132333435363738394142434445464748494a4b4c4d4e4f505152535455565758595a6162636465666768696a6b6c6d6e6f707172737475767778797a"/>
     <parameter name="[avp17val]" operation="protocol.setFromMessage" value="avp.CHAP-Password:3.OctetString"/>
@@ -263,6 +265,8 @@
     <test parameter="[avp17bin]" condition="binary.equals" value="303132333435363738394142434445464748494a4b4c4d4e4f505152535455565758595a6162636465666768696a6b6c6d6e6f707172737475767778797a"/>
 
     <!-- type = UTF8String -->
+    <parameter name="[avp18type]" operation="protocol.setFromMessage" value="avp.User-Name:1.type"/>
+    <test parameter="[avp18type]" condition="string.equalsIgnoreCase" value="UTF8String"/>
     <parameter name="[avp18val]" operation="protocol.setFromMessage" value="avp.User-Name:1.value"/>
     <test parameter="[avp18val]" condition="string.equals" value="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"/>
     <parameter name="[avp18val]" operation="protocol.setFromMessage" value="avp.User-Name:1.UTF8string"/>
@@ -273,6 +277,8 @@
     <test parameter="[avp18val]" condition="string.equals" value="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"/>
 
     <!-- type = IPAddress -->
+    <parameter name="[avp19type]" operation="protocol.setFromMessage" value="avp.Framed-IP-Address:8.type"/>
+    <test parameter="[avp19type]" condition="string.equalsIgnoreCase" value="IPAddress"/>
     <parameter name="[avp19val]" operation="protocol.setFromMessage" value="avp.Framed-IP-Address:8.value"/>
     <test parameter="[avp19val]" condition="list.size" value="2"/>
     <test parameter="[avp19val(0)]" condition="string.equals" value="192.168.90.117"/>
@@ -289,6 +295,8 @@
     <test parameter="[avp19vendor]" condition="list.isEmpty"/>
 
     <!-- type = Integer32 -->
+    <parameter name="[avp20type]" operation="protocol.setFromMessage" value="avp.Management-Privilege-Level:136.type"/>
+    <test parameter="[avp20type]" condition="string.equalsIgnoreCase" value="Integer32"/>
     <parameter name="[avp20val]" operation="protocol.setFromMessage" value="avp.Management-Privilege-Level:136.value"/>
     <test parameter="[avp20val(0)]" condition="number.equals" value="-2000000000"/>
     <test parameter="[avp20val(1)]" condition="number.equals" value="2000000000"/>
@@ -302,6 +310,8 @@
     <test parameter="[avp20vendor]" condition="list.isEmpty"/>
 
     <!-- type = Integer64 -->
+    <parameter name="[avp21type]" operation="protocol.setFromMessage" value="avp.Value-Digits:447.type"/>
+    <test parameter="[avp21type]" condition="string.equalsIgnoreCase" value="Integer64"/>
     <parameter name="[avp21val]" operation="protocol.setFromMessage" value="avp.Value-Digits:447.value"/>
     <test parameter="[avp21val(0)]" condition="number.equals" value="-2000000000000000000"/>
     <test parameter="[avp21val(1)]" condition="number.equals" value="2000000000000000000"/>
@@ -315,6 +325,8 @@
     <test parameter="[avp21vendor]" condition="list.isEmpty"/>
 
     <!-- type = Unsigned32 -->
+    <parameter name="[avp22type]" operation="protocol.setFromMessage" value="avp.NAS-Port:5.type"/>
+    <test parameter="[avp22type]" condition="string.equalsIgnoreCase" value="Unsigned32"/>
     <parameter name="[avp22val]" operation="protocol.setFromMessage" value="avp.NAS-Port:5.value"/>
     <test parameter="[avp22val(0)]" condition="number.equals" value="4000000000"/>
     <test parameter="[avp22val(1)]" condition="number.equals" value="2000000000"/>
@@ -328,6 +340,8 @@
     <test parameter="[avp22vendor]" condition="list.isEmpty"/>
 
     <!-- type = Unsigned64 -->
+    <parameter name="[avp23type]" operation="protocol.setFromMessage" value="avp.Framed-Interface-Id:96.type"/>
+    <test parameter="[avp23type]" condition="string.equalsIgnoreCase" value="Unsigned64"/>
     <parameter name="[avp23val]" operation="protocol.setFromMessage" value="avp.Framed-Interface-Id:96.value"/>
     <test parameter="[avp23val(0)]" condition="number.equals" value="8000000000000000000"/>
     <test parameter="[avp23val(1)]" condition="number.equals" value="4000000000000000000"/>
@@ -341,6 +355,8 @@
     <test parameter="[avp23vendor]" condition="list.isEmpty"/>
 
     <!-- type = Time -->
+    <parameter name="[avp24type]" operation="protocol.setFromMessage" value="avp.Event-Timestamp:55.type"/>
+    <test parameter="[avp24type]" condition="string.equalsIgnoreCase" value="Time"/>
     <parameter name="[avp24val]" operation="protocol.setFromMessage" value="avp.Event-Timestamp:55.value"/>
     <test parameter="[avp24val(0)]" condition="string.equals" value="20/02/2011 17:35:56:000"/>
     <test parameter="[avp24val(1)]" condition="string.equals" value="04/08/2015 11:12:59:000"/>
@@ -354,6 +370,8 @@
     <test parameter="[avp24vendor]" condition="list.isEmpty"/>
 
     <!-- type = Float32 -->
+    <parameter name="[avp25type]" operation="protocol.setFromMessage" value="avp.Peak-Traffic-Rate:498.type"/>
+    <test parameter="[avp25type]" condition="string.equalsIgnoreCase" value="FLOAT32"/>
     <parameter name="[avp25val]" operation="protocol.setFromMessage" value="avp.Peak-Traffic-Rate:498.value"/>
     <test parameter="[avp25val(0)]" condition="number.equals" value="1.2345679e29"/>
     <test parameter="[avp25val(1)]" condition="number.equals" value="9.8e-45"/>
@@ -369,7 +387,9 @@
     <parameter name="[avp25vendor]" operation="protocol.setFromMessage" value="avp.Peak-Traffic-Rate.vendorId"/>
     <test parameter="[avp25vendor]" condition="list.isEmpty"/>
 
-        <!-- type = Float64 -->
+    <!-- type = Float64 -->
+    <parameter name="[avp26type]" operation="protocol.setFromMessage" value="avp.Cost:603.type"/>
+    <test parameter="[avp26type]" condition="string.equalsIgnoreCase" value="float64"/>
     <parameter name="[avp26val]" operation="protocol.setFromMessage" value="avp.Cost:603.value"/>
     <test parameter="[avp26val(0)]" condition="string.equals" value="1.2345678901234567E69"/>
     <test parameter="[avp26val(1)]" condition="number.equals" value="-1.0E308"/>

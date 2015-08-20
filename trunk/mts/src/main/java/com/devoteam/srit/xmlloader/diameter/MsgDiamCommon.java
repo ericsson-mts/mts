@@ -813,6 +813,23 @@ public class MsgDiamCommon extends Msg
         	Array array = new DefaultArray(binary);
         	value = Array.toHexString(array);
 	    }
+	    else if (keyword.equalsIgnoreCase("type"))
+	    {
+	        String vendorIdCode = Long.toString(avp.vendor_id & 0xFFFFFFFFL);
+	        // retrieve the type of avp
+	        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
+	     
+	        // retrieve the dictionary type
+	        TypeDef typeDef = getAVPType(avpDef);
+	        if (typeDef != null)
+	        {
+	        	value = typeDef.get_type_name();
+	        }
+	        if (avpDef != null && avpDef.getGroupedAvpNameList().size() > 0)
+	        {
+	        	value = "Grouped";
+	        }
+	    }
 	    else if (keyword.equalsIgnoreCase("vendorId"))
 	    {
 	    	if (avp.vendor_id != 0)

@@ -234,7 +234,7 @@ public class MsgDiameterParser
         // error if not specified
         if (codeAttr == null)
         {
-        	throw new ParsingException("There is no \"code\" attribute in the <avp> XML element : " + element);
+        	throw new ParsingException("There is no \"code\" attribute for the AVP : " + " in the XML element : " + element);
         }
         AvpDef avpDef = parseAVP_Code(codeAttr, applicationId, vendorId);
         int code = -1;
@@ -264,11 +264,6 @@ public class MsgDiameterParser
             }
             typeBase = typeDef.get_type_name();
         }
-        // default value if the type is not specified and the AVP not nkown in the dictionary
-        if (typeBase == null) 
-        {
-        	typeBase = "OctetString";
-        }
 
         List<Element> listSubAVPs = element.elements("avp");
         // Parse the Grouped AVP
@@ -279,7 +274,7 @@ public class MsgDiameterParser
             //error if specified 
             if (value != null)
             {
-            	throw new ParsingException("You should not have a \"value\" attribute because the AVP is grouped in the XML element : " + element);
+            	throw new ParsingException("You should not have a \"value\" attribute because the AVP is grouped for the AVP : " + code + " in the AVP : " + code + " in the XML element : " + element);
             }                
 
             // Parse child AVPs
@@ -299,12 +294,18 @@ public class MsgDiameterParser
         }
         else
         {            
+            // default value if the type is not specified and the AVP not known in the dictionary
+            if (type == null) 
+            {
+            	throw new ParsingException("The AVP is not known in the dictionary and there is no \"type\" attribute for the AVP : " + code + " in the XML element : " + element);
+            }
+
         	// Parse the AVP value
         	String value = element.attributeValue("value");
             //error if not specified 
             if (value == null)
             {
-            	throw new ParsingException("The \"value\" attribute is mandatory because the AVP is not grouped in the XML element : " + element);
+            	throw new ParsingException("The \"value\" attribute is mandatory because the AVP is not grouped for the AVP : " + code + " in the XML element : " + element);
             }                
 
             // Parse the value for the vendorId AVP
@@ -337,8 +338,7 @@ public class MsgDiameterParser
             	}
             	else
             	{
-            		Array array = Array.fromHexString(value);
-            		val = array.getBytes();
+            		throw new ParsingException("The \"value\" attribute does not contain a valid IP address : " + value + " for the AVP : " + code + " in the element " + element);
             	}
                 avp = new AVP_OctetString(code, val);
             }
@@ -349,13 +349,12 @@ public class MsgDiameterParser
             	if (value.contains(".") || value.contains(":"))
             	{
             		val = InetAddress.getByName(value).getAddress();
+            		avp = new AVP_OctetString(code, val);
             	}
             	else
             	{
-            		Array array = Array.fromHexString(value);
-            		val = array.getBytes();
+            		throw new ParsingException("The \"value\" attribute does not contain a valid IP address : " + value + " for the AVP : " + code + " in the XML element " + element);
             	}
-                avp = new AVP_OctetString(code, val);
             }
             else if	("Time".equalsIgnoreCase(type) || "Time".equalsIgnoreCase(typeBase))
             {
@@ -413,7 +412,7 @@ public class MsgDiameterParser
             }
             else
             {
-                throw new ParsingException("no matching avp type in protocol stack for type " + type);
+                throw new ParsingException("No matching AVP type " + type + " for the AVP : " + code + " in the XML element " + element);
             }
         }
         // if vendor Id is not specified then we take it from the avpDef (dictionary)
@@ -514,7 +513,7 @@ public class MsgDiameterParser
         // error if not specified
         if (commandAttr == null)
         {
-        	throw new ParsingException("There is no \"command\" attribute in the <header> XML elementc : " + element);
+        	throw new ParsingException("There is no \"command\" attribute in the <header> XML element : " + element);
         }                
 
 	    int pos = commandAttr.lastIndexOf(":");
