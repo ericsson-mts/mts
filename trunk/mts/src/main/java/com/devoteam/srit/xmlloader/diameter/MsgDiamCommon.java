@@ -348,14 +348,13 @@ public class MsgDiamCommon extends Msg
         ret += Utils.indent(indent) + "<avp";
         
         // display the AVP label and code
-        int code= avp.code;
+        long code = avp.code & 0xFFFFFFFFL;
         String label = "Unknown";
         if (avpDef != null)
         {
         	label = avpDef.get_name();
-        	code = avpDef.get_code();
         }
-        String name = label + ":" + code;
+        String name = label + ":" + Long.toString(code);
         ret += " code=\"" + name + "\"";
 
         // display the AVP value
@@ -382,7 +381,14 @@ public class MsgDiamCommon extends Msg
         }
         
         // display the AVP type and flags
-        ret += " type=\"" + typeDico + "\"";
+        if (typeDico != null)
+        {
+        	ret += " type=\"" + typeDico + "\"";
+        }
+        if (typeBase != null)
+        {
+        	ret += " type=\"" + typeBase + "\"";
+        }
         ret += " mandatory=\"" + avp.isMandatory() + "\"";
         ret += " private=\"" + avp.isPrivate() + "\"";
         
@@ -461,7 +467,7 @@ public class MsgDiamCommon extends Msg
     private String getAVPTypeBase(String typeDico, String applicationId) throws Exception
     {    
         TypeDef typeDef = MsgDiameterParser.getInstance().parse_AVPType(typeDico, applicationId);
-        String typeBase = "OctetString";
+        String typeBase = "Binary";
         while (typeDef != null && typeDef.get_type_parent() != null)
         {
             typeDef = typeDef.get_type_parent();
@@ -564,6 +570,12 @@ public class MsgDiamCommon extends Msg
 	    {
 	    	double result = new AVP_Float64(avp).queryValue();
 	    	value = Double.toString(result);
+	    }
+	    else if("Binary".equalsIgnoreCase(typeBase))
+	    {
+	    	byte[] val = new AVP_OctetString(avp).queryValue();
+	    	Array array = new DefaultArray(val);
+			value = Array.toHexString(array);
 	    }
 	    else
 	    {
@@ -874,7 +886,7 @@ public class MsgDiamCommon extends Msg
 		        if (avpDef != null && !codeLabel.equalsIgnoreCase(avpDef.get_name()))
 		        {
 		        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-		        			"SetFromMessage :For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + codeInt + "\" in the dictionary; " +
+		        			"SetFromMessage : For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + codeInt + "\" in the dictionary; " +
 		        			"we assume the code is \"" + code + " and we are waiting the label \"" + avpDef.get_name() + "\".");
 
 		        }
