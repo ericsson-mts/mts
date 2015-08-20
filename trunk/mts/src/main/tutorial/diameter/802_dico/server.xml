@@ -54,6 +54,8 @@
     <parameter name="[destRealmType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Destination-Realm:283']/@type"/>
     <test parameter="[destRealmType]" condition="string.equals" value="DiameterIdentity"/>
 
+    <parameter name="[vendorSpecType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/@value"/>
+    <test parameter="[vendorSpecType]" condition="list.isEmpty"/>
     <parameter name="[vendorSpecType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/@type"/>
     <test parameter="[vendorSpecType]" condition="string.equals" value="Grouped"/>
     <parameter name="[vendorIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@value"/>
@@ -88,6 +90,8 @@
     
     <parameter name="[authDataItemType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Data-Item:1018']/@type"/>
     <test parameter="[authDataItemType]" condition="string.equals" value="Grouped"/>
+    <parameter name="[authDataItemType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Data-Item:1018']/@value"/>
+    <test parameter="[authDataItemType]" condition="list.isEmpty"/>
     <parameter name="[authDataItemVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Data-Item:1018']/@vendorId"/>
     <test parameter="[authDataItemVendorId]" condition="list.isEmpty"/>
     <parameter name="[authDataItemValue]" operation="string.xpath" value="[xml]" value2="//avp/avp[@code='Item-Number:1021']/@value"/>
