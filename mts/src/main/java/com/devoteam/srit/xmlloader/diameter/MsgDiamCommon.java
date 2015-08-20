@@ -784,79 +784,55 @@ public class MsgDiamCommon extends Msg
             }
             
             Iterator<AVP> iterator = baseAvps.iterator();
-            if (params[params.length-1].equalsIgnoreCase("code"))
-            {
-                while (iterator.hasNext())
-                {             	
-                	AVP avp = iterator.next();
-                	String value = Integer.toString(avp.code);
-                	var.add(value);
-                }
+            while (iterator.hasNext())
+            {             	
+            	AVP avp = iterator.next();
+            	String value = getParameterForKeyword(avp, params[params.length-1], path);
+            	var.add(value);
             }
-            else if (params[params.length-1].equalsIgnoreCase("value"))
-            {
-                while (iterator.hasNext())
-                {
-                	AVP avp = iterator.next(); 
-                	String value = getAvpStringValue(avp);               
-                	var.add(value);
-                }
-            }
-            else if (params[params.length-1].equalsIgnoreCase("binary"))
-            {
-                while (iterator.hasNext())
-                {             	
-                	AVP avp = iterator.next();
-                	byte[] binary = new AVP_OctetString(avp).queryValue();
-                	Array array = new DefaultArray(binary);
-                	String value = Array.toHexString(array);
-                	var.add(value);
-                }
-            }
-            else if (params[params.length-1].equalsIgnoreCase("vendorId"))
-            {
-                while (iterator.hasNext())
-                {
-                	AVP avp = iterator.next();
-                	String value = Integer.toString(avp.vendor_id);
-                	var.add(value);
-                }
-            }
-            else if (params[params.length-1].equalsIgnoreCase("vendorFlag"))
-            {
-                while (iterator.hasNext())
-                {
-                	AVP avp = iterator.next();
-                	String value = Boolean.toString(avp.isVendorSpecific());
-                	var.add(value);
-                }
-            }
-            else if (params[params.length-1].equalsIgnoreCase("mandatory"))
-            {
-                while (iterator.hasNext())
-                {             	
-                	AVP avp = iterator.next();
-                	String value = Boolean.toString(avp.isMandatory());
-                	var.add(value);
-                }
-            }
-            else if (params[params.length-1].equalsIgnoreCase("private"))
-            {
-                while (iterator.hasNext())
-                {             	
-                	AVP avp = iterator.next();
-                	String value = Boolean.toString(avp.isPrivate());
-                	var.add(value);
-                }
-            }
-            else
-            {
-            	Parameter.throwBadPathKeywordException(path);
-            }
-            
         }
-        
         return var;
+    }
+
+    // get the value the parameter from keyword (setFromMessage)
+    private String getParameterForKeyword(AVP avp, String keyword, String path) throws Exception
+    {
+    	String value = null;
+	    if (keyword.equalsIgnoreCase("code"))
+	    {
+	        	value = Integer.toString(avp.code);
+	    }
+	    else if (keyword.equalsIgnoreCase("value"))
+	    {
+	    	value = getAvpStringValue(avp);               
+	    }
+	    else if (keyword.equalsIgnoreCase("binary"))
+	    {
+        	byte[] binary = new AVP_OctetString(avp).queryValue();
+        	Array array = new DefaultArray(binary);
+        	value = Array.toHexString(array);
+	    }
+	    else if (keyword.equalsIgnoreCase("vendorId"))
+	    {
+	    	value = Integer.toString(avp.vendor_id);
+	    }
+	    else if (keyword.equalsIgnoreCase("vendorFlag"))
+	    {
+	    	value = Boolean.toString(avp.isVendorSpecific());
+	    }
+	    else if (keyword.equalsIgnoreCase("mandatory"))
+	    {
+	    	value = Boolean.toString(avp.isMandatory());
+	    }
+	    else if (keyword.equalsIgnoreCase("private"))
+	    {
+	    	value = Boolean.toString(avp.isPrivate());
+	    }
+	    else
+	    {
+	    	Parameter.throwBadPathKeywordException(path);
+	    }
+	    return value;
     }
     
     // test whether a AVP matches a given keyword
