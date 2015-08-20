@@ -738,7 +738,8 @@ public class MsgDiamCommon extends Msg
             	Parameter.throwBadPathKeywordException(path);
             	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=xxx.yyy", "setFromMessage value=avp.xxx.yyy");
             	throw new Exception();
-            }
+            }          
+            
             LinkedList<AVP> baseAvps = null ;
             LinkedList<AVP> tempAvps = null ;
             Iterator<AVP>   baseIterator = message.avps().iterator();
@@ -765,10 +766,10 @@ public class MsgDiamCommon extends Msg
                     baseIterator = baseAvps.iterator();
                 }
                 
-	        	String applicationId = Integer.toString(message.hdr.application_id);
                 while (baseIterator.hasNext())
                 {
                 	AVP avp = baseIterator.next();
+                    String applicationId = Integer.toString(message.hdr.application_id);
                 	if (matchAVP_Keyword(avp, params[i], applicationId))
                 	{
                 		validAvps.add(avp);
@@ -787,7 +788,8 @@ public class MsgDiamCommon extends Msg
             while (iterator.hasNext())
             {             	
             	AVP avp = iterator.next();
-            	String value = getParameterForKeyword(avp, params[params.length-1], path);
+                String applicationId = Integer.toString(message.hdr.application_id);
+            	String value = getParameterForKeyword(avp, params[params.length-1], path, applicationId);
             	var.add(value);
             }
         }
@@ -795,7 +797,7 @@ public class MsgDiamCommon extends Msg
     }
 
     // get the value the parameter from keyword (setFromMessage)
-    private String getParameterForKeyword(AVP avp, String keyword, String path) throws Exception
+    private String getParameterForKeyword(AVP avp, String keyword, String path, String applicationId) throws Exception
     {
     	String value = null;
 	    if (keyword.equalsIgnoreCase("code"))
@@ -814,9 +816,13 @@ public class MsgDiamCommon extends Msg
 	    }
 	    else if (keyword.equalsIgnoreCase("vendorId"))
 	    {
-	    	value = Integer.toString(avp.vendor_id);
+	    	if (avp.vendor_id != 0)
+	    	{
+	    		value = getVendorIdString(avp.vendor_id, applicationId) + ":";
+		    	value += Integer.toString(avp.vendor_id);
+	    	}
 	    }
-	    else if (keyword.equalsIgnoreCase("vendorFlag"))
+	    else if (keyword.equalsIgnoreCase("vendor"))
 	    {
 	    	value = Boolean.toString(avp.isVendorSpecific());
 	    }
