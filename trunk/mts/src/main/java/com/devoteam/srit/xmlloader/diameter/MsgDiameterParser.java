@@ -244,7 +244,7 @@ public class MsgDiameterParser
         }
         else
         {
-        	code = Integer.parseInt(codeAttr);
+        	code = (int) Long.parseLong(codeAttr) & 0xFFFFFFFF;
         }
         
         // Parse the AVP type
@@ -498,7 +498,7 @@ public class MsgDiameterParser
 	        }
 	        else
 	        {
-	        	int code = Integer.parseInt(codeAttr);
+	        	int code = (int) Long.parseLong(codeAttr) & 0xFFFFFFFF;
 	        	avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
 	        }
 	    }
@@ -685,14 +685,14 @@ public class MsgDiameterParser
     /** 
      * Parses the AVP Vendor Id from XML element and perform dictionary change 
      */
-    private TypeDef parse_AVPType(String typeAttr, String applicationId) throws Exception
+    protected TypeDef parse_AVPType(String typeAttr, String applicationId) throws Exception
     {    
     	if (typeAttr == null)
     	{
     		return  null;
     	}
     	TypeDef typeDef = Dictionary.getInstance().getTypeDefByName(typeAttr, applicationId);
-        if (typeDef == null && !typeAttr.equalsIgnoreCase("Grouped"))
+        if (typeDef == null && !"grouped".equalsIgnoreCase(typeAttr.toLowerCase()))
         {
         	throw new ParsingException("The type id \"" + typeAttr + "\" is not found in the dictionary.");        	
         }
