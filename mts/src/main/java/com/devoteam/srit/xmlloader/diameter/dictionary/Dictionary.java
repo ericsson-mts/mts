@@ -443,7 +443,6 @@ public class Dictionary
         Application application = getApplication(applicationId);
         if(null != application)
         {
-            applicationId = application.get_name();
             result = application.getAvpDefByNameVendorId(name, vendorId);
         }
         if(null != result) return result ;

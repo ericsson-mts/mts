@@ -869,15 +869,15 @@ public class MsgDiamCommon extends Msg
 	    	String codeInt = keyword.substring(pos + 1);
 	    	int code = Integer.parseInt(codeInt);
 	        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
-	        if (avpDef != null && !codeLabel.equals(avpDef.get_name()))
-	        {
-	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
-	        			"For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + avpDef.get_code() + "\" in the dictionary; " +
-	        			"we assume the code is \"" + avpDef.get_code() + " and we are waiting the label \"" + avpDef.get_name() + "\".");
-
-	        }
 	        if (code == avp.code)
 	        {
+		        if (avpDef != null && !codeLabel.equalsIgnoreCase(avpDef.get_name()))
+		        {
+		        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+		        			"SetFromMessage :For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + codeInt + "\" in the dictionary; " +
+		        			"we assume the code is \"" + code + " and we are waiting the label \"" + avpDef.get_name() + "\".");
+
+		        }
 	        	return true;
 	        }
 	    }
