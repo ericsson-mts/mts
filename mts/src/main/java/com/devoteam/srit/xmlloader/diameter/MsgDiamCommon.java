@@ -357,11 +357,14 @@ public class MsgDiamCommon extends Msg
         String name = label + ":" + Long.toString(code);
         ret += " code=\"" + name + "\"";
 
-        // display the AVP value
-        ret += " value=\"";
+        // display the AVP value;
         try
         {
-        	ret += getAVPValue(avp, avpDef, applicationId, typeDico, typeBase); 
+        	String value = getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
+        	if (value != null)
+        	{
+        		ret += " value=\"" + value + "\"";
+        	}
         }
         catch(Exception e)
         {
@@ -371,7 +374,6 @@ public class MsgDiamCommon extends Msg
     		ret += Array.toHexString(array);
         	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while trying to decode AVP : \"" + name + "\"");
         }
-        ret += "\"";
                 
         // display the AVP vendor Id
         if (avp.vendor_id != 0)
@@ -385,7 +387,7 @@ public class MsgDiamCommon extends Msg
         {
         	ret += " type=\"" + typeDico + "\"";
         }
-        if (typeBase != null)
+        else
         {
         	ret += " type=\"" + typeBase + "\"";
         }
@@ -485,10 +487,10 @@ public class MsgDiamCommon extends Msg
     						   String typeDico, String typeBase) throws Exception
     {    
     	String label = null;
-    	String value;
+    	String value = null;
         if ("Grouped".equalsIgnoreCase(typeDico) || "Grouped".equalsIgnoreCase(typeBase))
         {
-        	value = "Grouped";
+        	return null;
         }
         else if ("IPAddress".equalsIgnoreCase(typeDico) || "IPAddress".equalsIgnoreCase(typeBase))
 	    {
@@ -764,7 +766,7 @@ public class MsgDiamCommon extends Msg
                     while (tmpIterator.hasNext())
                     {
                         AVP anAvp = tmpIterator.next();
-                        if(getAvpStringValue(anAvp, null).equalsIgnoreCase("Grouped"))
+                        if (getAvpStringValue(anAvp, null) == null)
                         {
                             AVP[] avpTab = (new AVP_Grouped(anAvp)).queryAVPs();
                             for(int j=0; j<avpTab.length; j++)

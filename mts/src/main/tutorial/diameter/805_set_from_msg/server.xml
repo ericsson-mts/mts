@@ -57,14 +57,16 @@
     <parameter name="[avp0vendor]" operation="protocol.setFromMessage" value="avp.Session-Id.vendorId"/>
     <test parameter="[avp0vendor]" condition="list.isEmpty"/>
     
-    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.code"/>
+    <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.code"/>  
     <test parameter="[avp1code]" condition="number.equals" value="1018"/>
+    <parameter name="[avp1type]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.type"/>  
+    <test parameter="[avp1type]" condition="string.equalsIgnoreCase" value="Grouped"/>
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.1018.code"/>
     <test parameter="[avp1code]" condition="number.equals" value="1018"/>
     <parameter name="[avp1code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.code"/>
     <test parameter="[avp1code]" condition="number.equals" value="1018"/>
     <parameter name="[avp1value]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.value"/>
-    <test parameter="[avp1value]" condition="string.equals" value="Grouped"/>
+    <test parameter="[avp1value]" condition="list.isEmpty"/>
     <parameter name="[avp1binary]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.binary"/>
     <!--test parameter="[avp1binary]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/-->
     <parameter name="[avp1vendor]" operation="protocol.setFromMessage" value="avp.1018.vendorId"/>
@@ -184,6 +186,10 @@
 
     <parameter name="[avp14code]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.code"/>
     <test parameter="[avp14code]" condition="number.equals" value="260"/>
+    <parameter name="[avp14type]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.type"/>
+    <test parameter="[avp14type]" condition="string.equals" value="Grouped"/>
+    <parameter name="[avp14value]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.value"/>
+    <test parameter="[avp1value]" condition="list.isEmpty"/>
     <parameter name="[avp14vendor]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.vendorId"/>
     <test parameter="[avp14vendor]" condition="list.isEmpty"/>
     <parameter name="[avp14Acct]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.Acct-Application-Id:259.value"/>
