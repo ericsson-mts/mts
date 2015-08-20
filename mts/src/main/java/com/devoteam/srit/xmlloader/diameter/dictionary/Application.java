@@ -335,7 +335,8 @@ public class Application
         TypeDef type_parent = null ;
         if(null != root.attributeValue("type-parent"))
         {
-            type_parent = Dictionary.getInstance().getTypeDefByName(root.attributeValue("type-parent"), _name);
+        	String attr = root.attributeValue("type-parent");
+            type_parent = Dictionary.getInstance().getTypeDefByName(attr, _name);
             if(type_parent == null)
             {
                 Dictionary.traceWarning("Invalid typedefn.type-parent, skipping");
@@ -356,7 +357,7 @@ public class Application
         
         if(null != getTypeDefByName(name)) Dictionary.traceWarning("TypeDef of name " + name + " already exists, overwriting");
         
-        typeDefByName.put(name, typeDef);
+        typeDefByName.put(name.toLowerCase(), typeDef);
     }
     
     public void fillGroupedAvpsReferences() throws Exception
@@ -405,7 +406,7 @@ public class Application
     
     public TypeDef getTypeDefByName(String name)
     {
-        return typeDefByName.get(name);
+        return typeDefByName.get(name.toLowerCase());
     }
     
     public CommandDef getCommandDefByName(String name)

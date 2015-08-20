@@ -332,9 +332,18 @@ public class MsgDiamCommon extends Msg
         AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
                 
         // retrieve the dictionary type
-        String typeDico = getAVPType(avpDef);        
+        TypeDef typeDef = getAVPType(avpDef);
+        String typeDico =  null;
+        if (typeDef != null)
+        {
+        	typeDico = typeDef.get_type_name();
+        }
+        if (avpDef !=  null && avpDef.getGroupedAvpNameList().size() > 0)
+        {
+        	typeDico = "Grouped";
+        }
         // retrieve the base type (using top-parent recursively)
-        String typeBase = getAVPTypeBase(avpDef);
+        String typeBase = getAVPTypeBase(typeDico, applicationId);
         
         ret += Utils.indent(indent) + "<avp";
         
@@ -378,7 +387,7 @@ public class MsgDiamCommon extends Msg
         ret += " private=\"" + avp.isPrivate() + "\"";
         
         // managed the "Grouped" AVP : display recursively the list of sub-AVPs
-        if (typeBase.equalsIgnoreCase("grouped"))
+        if (typeDico != null && typeDico.equalsIgnoreCase("grouped"))
         {
             ret += ">\n";
             AVP_Grouped gavp = new AVP_Grouped(avp);
@@ -407,10 +416,13 @@ public class MsgDiamCommon extends Msg
     /** get the enumeration value as a label from the dictionary */
     private String getEnumerationString(AvpDef avpDef, long code)
     {
-    	String enumString;
+    	String enumString = null;
 	    try
 	    {
-	        enumString = avpDef.getEnumNameByCode(Long.toString(code));
+	    	if (avpDef != null)
+	    	{
+	    		enumString = avpDef.getEnumNameByCode(Long.toString(code));
+	    	}
 	    }
 	    catch(Exception e)
 	    {
@@ -435,45 +447,28 @@ public class MsgDiamCommon extends Msg
     }
 
     /** get the type for an AVP according to the dictionary */
-    private String getAVPType(AvpDef avpDef) throws Exception
+    private TypeDef getAVPType(AvpDef avpDef) throws Exception
     {    
-        String typeUser = "OctetString";
-        TypeDef typeDef = null;        
+        TypeDef typeDef = null;
         if (avpDef != null)
         {
-            typeDef = avpDef.get_type();
-            if (typeDef != null)
-            {
-            	typeUser = typeDef.get_type_name();
-            }
-            if (avpDef.getGroupedAvpNameList().size()!=0)
-            {
-            	typeUser = "Grouped";
-            }
+        	typeDef = avpDef.get_type();
         }
-        return typeUser;
+        return typeDef;
     }
     
     /** get the type base for an AVP according to the dictionary */
-    private String getAVPTypeBase(AvpDef avpDef) throws Exception
+    private String getAVPTypeBase(String typeDico, String applicationId) throws Exception
     {    
+        TypeDef typeDef = MsgDiameterParser.getInstance().parse_AVPType(typeDico, applicationId);
         String typeBase = "OctetString";
-        TypeDef typeDef = null;        
-        if (avpDef != null)
+        while (typeDef != null && typeDef.get_type_parent() != null)
         {
-            typeDef = avpDef.get_type();
-            while (typeDef != null && typeDef.get_type_parent() != null)
-            {
-                typeDef = typeDef.get_type_parent();
-            }
-            if (typeDef != null)
-            {
-            	typeBase = typeDef.get_type_name();
-            }
-            if (avpDef.getGroupedAvpNameList().size() > 0)
-            {
-            	typeBase = "Grouped";
-            }            
+            typeDef = typeDef.get_type_parent();
+        }
+        if (typeDef != null)
+        {
+        	typeBase = typeDef.get_type_name();
         }
         
         return typeBase;
@@ -577,17 +572,20 @@ public class MsgDiamCommon extends Msg
 	    	Array array = new DefaultArray(val);
 			value = Array.toHexString(array);
 	    }
-		// case of vendorId type : Auth-Application-Id: or Acct-Application-Id
-		if (typeDico.equalsIgnoreCase("appId"))
+        if (typeDico != null)
         {
-        	label = this.getApplicationIdString(value);
+			// case of vendorId type : Auth-Application-Id: or Acct-Application-Id
+			if (typeDico.equalsIgnoreCase("appId"))
+	        {
+	        	label = this.getApplicationIdString(value);
+	        }
+			// case of vendorId type : Vendor-Id: or Supported-Vendor-Id:
+	        if (typeDico.equalsIgnoreCase("vendorId"))
+	        {
+	        	label = this.getVendorIdString(Integer.parseInt(value), applicationId);
+	        }
         }
-		// case of vendorId type : Vendor-Id: or Supported-Vendor-Id:
-        if (typeDico.equalsIgnoreCase("vendorId"))
-        {
-        	label = this.getVendorIdString(Integer.parseInt(value), applicationId);
-        }
-
+        
         // display the value the not "Grouped" AVP
         String ret = "";
 	    if (label != null)
@@ -754,7 +752,7 @@ public class MsgDiamCommon extends Msg
                     while (tmpIterator.hasNext())
                     {
                         AVP anAvp = tmpIterator.next();
-                        if(getAvpStringValue(anAvp).equalsIgnoreCase("Grouped"))
+                        if(getAvpStringValue(anAvp, null).equalsIgnoreCase("Grouped"))
                         {
                             AVP[] avpTab = (new AVP_Grouped(anAvp)).queryAVPs();
                             for(int j=0; j<avpTab.length; j++)
@@ -802,11 +800,12 @@ public class MsgDiamCommon extends Msg
     	String value = null;
 	    if (keyword.equalsIgnoreCase("code"))
 	    {
-	        	value = Integer.toString(avp.code);
+	    		long val = avp.code & 0xFFFFFFFFL;
+	        	value = Long.toString(val);
 	    }
 	    else if (keyword.equalsIgnoreCase("value"))
 	    {
-	    	value = getAvpStringValue(avp);               
+	    	value = getAvpStringValue(avp, null);               
 	    }
 	    else if (keyword.equalsIgnoreCase("binary"))
 	    {
@@ -836,7 +835,8 @@ public class MsgDiamCommon extends Msg
 	    }
 	    else
 	    {
-	    	Parameter.throwBadPathKeywordException(path);
+	    	// case keyword is a type (integer32, unsigned64, octetstring, utf8string, ....)
+	    	value = getAvpStringValue(avp, keyword);
 	    }
 	    return value;
     }
@@ -880,7 +880,7 @@ public class MsgDiamCommon extends Msg
 	        }
 	        else
 	        {
-	        	int code = Integer.parseInt(keyword);
+	        	int code = (int) Long.parseLong(keyword) & 0xFFFFFFFF;
 		        if (code == avp.code)
 		        {
 		        	return true;
@@ -888,35 +888,10 @@ public class MsgDiamCommon extends Msg
 	        }
 	    }
 	    return false;
-	    /*
-        if(Utils.isInteger(code))
-        {
-            int avpCode = Integer.parseInt(code);
-            if (avp.code == avpCode) 
-            {
-            	return true;
-            }
-        }
-        else
-        {
-        	String appliIDCode = Integer.toString(message.hdr.application_id);
-            String vendorIDCode = Integer.toString(avp.vendor_id);
-            AvpDef  avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, appliIDCode, vendorIDCode);
-            if (avpDef != null)
-            {
-            	String avpName = avpDef.get_name(); 
-		        if (code.equals(avpName))
-		        {
-		        	return true;
-                }
-            }
-        }
-        return false;
-        */
     }
         
     /** returns the type of an AVP */
-    private String getAvpStringValue(AVP avp) throws Exception
+    private String getAvpStringValue(AVP avp, String typeDico) throws Exception
     {
         String applicationId = Integer.toString(message.hdr.application_id) ;
         
@@ -927,9 +902,20 @@ public class MsgDiamCommon extends Msg
         AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorIdCode);
         
         // retrieve the dictionary type
-        String typeDico = getAVPType(avpDef);        
+        TypeDef typeDef = getAVPType(avpDef);
+        if (typeDico == null)
+        {
+	        if (typeDef != null)
+	        {
+	        	typeDico = typeDef.get_type_name();
+	        }
+	        if (avpDef != null && avpDef.getGroupedAvpNameList().size() > 0)
+	        {
+	        	typeDico = "Grouped";
+	        }
+        }
         // retrieve the base type (using top-parent recursively)
-        String typeBase = getAVPTypeBase(avpDef);
+        String typeBase = getAVPTypeBase(typeDico, applicationId);
         
         // return the value        
         return getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
