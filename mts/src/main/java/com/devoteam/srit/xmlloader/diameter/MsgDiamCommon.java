@@ -28,8 +28,10 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -53,7 +55,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 
 import org.dom4j.Element;
 /**
@@ -764,10 +765,11 @@ public class MsgDiamCommon extends Msg
                     baseIterator = baseAvps.iterator();
                 }
                 
+	        	String applicationId = Integer.toString(message.hdr.application_id);
                 while (baseIterator.hasNext())
                 {
                 	AVP avp = baseIterator.next();
-                	if (matchAVP_Keyword(avp, params[i]))
+                	if (matchAVP_Keyword(avp, params[i], applicationId))
                 	{
                 		validAvps.add(avp);
                 	}
@@ -781,59 +783,70 @@ public class MsgDiamCommon extends Msg
                 i++ ;
             }
             
-            if(params[params.length-1].equalsIgnoreCase("code"))
+            Iterator<AVP> iterator = baseAvps.iterator();
+            if (params[params.length-1].equalsIgnoreCase("code"))
             {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext())
+                while (iterator.hasNext())
                 {             	
-                	var.add(Integer.toString(iterator.next().code));
+                	AVP avp = iterator.next();
+                	String value = Integer.toString(avp.code);
+                	var.add(value);
                 }
             }
-            else if(params[params.length-1].equalsIgnoreCase("value"))
+            else if (params[params.length-1].equalsIgnoreCase("value"))
             {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext())
+                while (iterator.hasNext())
                 {
                 	AVP avp = iterator.next(); 
                 	String value = getAvpStringValue(avp);               
                 	var.add(value);
                 }
             }
-            else if(params[params.length-1].equalsIgnoreCase("binary"))
+            else if (params[params.length-1].equalsIgnoreCase("binary"))
             {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext())
+                while (iterator.hasNext())
                 {             	
-                	var.add(Array.toHexString(new DefaultArray(new AVP_OctetString(iterator.next()).queryValue())));
+                	AVP avp = iterator.next();
+                	byte[] binary = new AVP_OctetString(avp).queryValue();
+                	Array array = new DefaultArray(binary);
+                	String value = Array.toHexString(array);
+                	var.add(value);
                 }
             }
-            else if(params[params.length-1].equalsIgnoreCase("vendorId"))
+            else if (params[params.length-1].equalsIgnoreCase("vendorId"))
             {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext()) var.add(Integer.toString(iterator.next().vendor_id));
-            }
-            else if(params[params.length-1].equalsIgnoreCase("vendorFlag"))
-            {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext())
-                {             	
-                	var.add(new AVP_OctetString(iterator.next()).isVendorSpecific());
+                while (iterator.hasNext())
+                {
+                	AVP avp = iterator.next();
+                	String value = Integer.toString(avp.vendor_id);
+                	var.add(value);
                 }
             }
-            else if(params[params.length-1].equalsIgnoreCase("mandatory"))
+            else if (params[params.length-1].equalsIgnoreCase("vendorFlag"))
             {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext())
-                {             	
-                	var.add(new AVP_OctetString(iterator.next()).isMandatory());
+                while (iterator.hasNext())
+                {
+                	AVP avp = iterator.next();
+                	String value = Boolean.toString(avp.isVendorSpecific());
+                	var.add(value);
                 }
             }
-            else if(params[params.length-1].equalsIgnoreCase("private"))
+            else if (params[params.length-1].equalsIgnoreCase("mandatory"))
             {
-                Iterator<AVP> iterator = baseAvps.iterator();
-                while(iterator.hasNext())
+                while (iterator.hasNext())
                 {             	
-                	var.add(new AVP_OctetString(iterator.next()).isPrivate());
+                	AVP avp = iterator.next();
+                	String value = Boolean.toString(avp.isMandatory());
+                	var.add(value);
+                }
+            }
+            else if (params[params.length-1].equalsIgnoreCase("private"))
+            {
+                while (iterator.hasNext())
+                {             	
+                	AVP avp = iterator.next();
+                	String value = Boolean.toString(avp.isPrivate());
+                	var.add(value);
                 }
             }
             else
@@ -846,8 +859,54 @@ public class MsgDiamCommon extends Msg
         return var;
     }
     
-    private boolean matchAVP_Keyword(AVP avp, String code) throws Exception
+    // test whether a AVP matches a given keyword
+    private boolean matchAVP_Keyword(AVP avp, String keyword, String applicationId) throws Exception
     {
+    	String vendorId = Integer.toString(avp.vendor_id); 
+	    int pos = keyword.lastIndexOf(":");
+	    if (pos >= 0)
+	    {
+	    	String codeLabel = keyword.substring(0, pos);
+	    	String codeInt = keyword.substring(pos + 1);
+	    	int code = Integer.parseInt(codeInt);
+	        AvpDef avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
+	        if (avpDef != null && !codeLabel.equals(avpDef.get_name()))
+	        {
+	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
+	        			"For the AVP code, the label \"" + codeLabel + "\" does not match the code \"" + avpDef.get_code() + "\" in the dictionary; " +
+	        			"we assume the code is \"" + avpDef.get_code() + " and we are waiting the label \"" + avpDef.get_name() + "\".");
+
+	        }
+	        if (code == avp.code)
+	        {
+	        	return true;
+	        }
+	    }
+	    else
+	    {
+	        if(!Utils.isInteger(keyword))
+	        {
+	            AvpDef  avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(avp.code, applicationId, vendorId);	            
+	            if (avpDef != null)
+	            {
+	            	String avpName = avpDef.get_name(); 
+			        if (keyword.equals(avpName))
+			        {
+			        	return true;
+	                }
+	            }
+	        }
+	        else
+	        {
+	        	int code = Integer.parseInt(keyword);
+		        if (code == avp.code)
+		        {
+		        	return true;
+		        }	        	
+	        }
+	    }
+	    return false;
+	    /*
         if(Utils.isInteger(code))
         {
             int avpCode = Integer.parseInt(code);
@@ -871,6 +930,7 @@ public class MsgDiamCommon extends Msg
             }
         }
         return false;
+        */
     }
         
     /** returns the type of an AVP */

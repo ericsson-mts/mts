@@ -134,17 +134,17 @@ public class Utils
 
     public static String[] splitPath(String path)
     {
-    	int pos2Dots = path.indexOf(':');
-        if(pos2Dots > 0 && pos2Dots < path.length() - 1){
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE,
-    			"Deprecated separator \":\" in path " + path,
-    			" please use \".\" instead.");
-
-            return Utils.splitNoRegex(path, ":");
+    	int posDot = path.indexOf('.');
+        if(posDot > 0 && posDot < path.length() - 1)
+        {
+        	return Utils.splitNoRegex(path, ".");
         }
         else
         {
-            return Utils.splitNoRegex(path, ".");
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE,
+    			"Deprecated separator \":\" in path " + path,
+    			" please use \".\" instead.");
+            return Utils.splitNoRegex(path, ":");
         }
     }
 
