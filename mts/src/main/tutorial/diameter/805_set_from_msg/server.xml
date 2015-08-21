@@ -10,6 +10,9 @@
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
+
+    <parameter name="[avp149990]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.2999999990.code"/>    
+    <test parameter="[avp149990]" condition="number.equals" value="2999999990"/>
          
     <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
@@ -70,8 +73,37 @@
     <parameter name="[avp1binary]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.binary"/>
     <!--test parameter="[avp1binary]" condition="string.equals" value="h49 h4e h56 h49 h54 h45 "/-->
     <parameter name="[avp1vendor]" operation="protocol.setFromMessage" value="avp.1018.vendorId"/>
-    <test parameter="[avp1vendor]" condition="list.isEmpty"/>
-    
+    <test parameter="[avp1vendor]" condition="string.equals" value="3GPP:10415"/>
+        
+    <parameter name="[avp10code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.code"/>
+    <test parameter="[avp10code]" condition="number.equals" value="1021"/>
+    <parameter name="[avp10val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.value"/>
+    <test parameter="[avp10val]" condition="number.equals" value="0"/>
+    <parameter name="[avp10bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.binary"/>
+    <test parameter="[avp10bin]" condition="binary.equals" value="00000000"/>
+    <parameter name="[avp10vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.vendorId"/>
+    <!--test parameter="[avp10vendor]" condition="string.equals" value="3GPP:10415"/-->
+
+    <parameter name="[avp11code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.code"/>
+    <test parameter="[avp11code]" condition="number.equals" value="1020"/>
+    <parameter name="[avp11val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.value"/>
+    <test parameter="[avp11val(0)]" condition="string.equals" value="DIGEST:2"/>
+    <test parameter="[avp11val(1)]" condition="string.equals" value="0000"/>
+    <parameter name="[avp11bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.binary"/>
+    <test parameter="[avp11bin(0)]" condition="binary.equals" value="00000002"/>
+    <test parameter="[avp11bin(1)]" condition="binary.equals" value="30303030"/>
+    <parameter name="[avp11vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.vendorId"/>
+    <test parameter="[avp11vendor]" condition="string.equals" value="3GPP:10415"/>
+
+    <parameter name="[avp12code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.code"/>
+    <test parameter="[avp12code]" condition="number.equals" value="1019"/>
+    <parameter name="[avp12val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.value"/>
+    <test parameter="[avp12val(0)]" condition="string.equals" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5"/>
+    <parameter name="[avp12bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.binary"/>
+    <test parameter="[avp12bin]" condition="binary.equals" value="44696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435"/>
+    <parameter name="[avp12vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.vendorId"/>
+    <test parameter="[avp12vendor]" condition="string.equals" value="3GPP:10415"/>    
+
     <parameter name="[avp2code]" operation="protocol.setFromMessage" value="avp.1018.Authentication-Context:1024.code"/>
     <test parameter="[avp2code]" condition="number.equals" value="1024"/>
     <parameter name="[avp2code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.1024.code"/>
@@ -79,12 +111,30 @@
     <parameter name="[avp2code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context.code"/>
     <test parameter="[avp2code]" condition="number.equals" value="1024"/>
     <parameter name="[avp2value]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.value"/>
-    <test parameter="[avp2value]" condition="string.equals" value="INVITE"/>
+    <test parameter="[avp2value(0)]" condition="string.equals" value="INVITE"/>
+    <test parameter="[avp2value(1)]" condition="string.equals" value="494e56495445"/>    
     <parameter name="[avp2binary]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Context.binary"/>
     <test parameter="[avp2binary]" condition="binary.equals" value="494e56495445"/>    
     <parameter name="[avp2vendor]" operation="protocol.setFromMessage" value="avp.1018.1024.vendorId"/>
-    <test parameter="[avp2vendor]" condition="list.isEmpty"/>
-        
+    <test parameter="[avp2vendor]" condition="string.equals" value="3GPP:10415"/>
+
+    <parameter name="[avp13code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.code"/>
+    <test parameter="[avp13code]" condition="number.equals" value="1024"/>
+    <parameter name="[avp13val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.value"/>
+    <test parameter="[avp13val(0)]" condition="string.equals" value="INVITE"/>
+    <test parameter="[avp13val(1)]" condition="string.equals" value="494e56495445"/>
+    <parameter name="[avp13bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.binary"/>
+    <test parameter="[avp13bin]" condition="binary.equals" value="494e56495445"/>
+    <parameter name="[avp13vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.vendorId"/>
+    <test parameter="[avp13vendor]" condition="string.equals" value="3GPP:10415"/>
+    <parameter name="[avp13vFlag]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.vendor"/>
+    <test parameter="[avp13vFlag(0)]" condition="boolean.equals" value="false"/>
+    <test parameter="[avp13vFlag(1)]" condition="boolean.equals" value="true"/>
+    <parameter name="[avp13mand]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.mandatory"/>
+    <test parameter="[avp13mand]" condition="boolean.equals" value="true"/>
+    <parameter name="[avp13priv]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.private"/>
+    <test parameter="[avp13priv]" condition="boolean.equals" value="true"/>
+    
     <parameter name="[avp3code]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.code"/>
     <test parameter="[avp3code]" condition="string.equals" value="283"/>
     <parameter name="[avp3code]" operation="protocol.setFromMessage" value="avp.283.code"/>
@@ -140,48 +190,6 @@
     <parameter name="[avp9val]" operation="protocol.setFromMessage" value="avp.IMS-Information.Called-Party-Address.value"/>
     <test parameter="[avp9val]" condition="list.isEmpty"/>
     
-    <parameter name="[avp10code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.code"/>
-    <test parameter="[avp10code]" condition="number.equals" value="1021"/>
-    <parameter name="[avp10val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.value"/>
-    <test parameter="[avp10val]" condition="number.equals" value="0"/>
-    <parameter name="[avp10bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.binary"/>
-    <test parameter="[avp10bin]" condition="binary.equals" value="00000000"/>
-    <parameter name="[avp10vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Item-Number:1021.vendorId"/>
-    <test parameter="[avp10vendor]" condition="list.isEmpty"/>
-
-    <parameter name="[avp11code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.code"/>
-    <test parameter="[avp11code]" condition="number.equals" value="1020"/>
-    <parameter name="[avp11val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.value"/>
-    <test parameter="[avp11val]" condition="string.equals" value="DIGEST:2"/>
-    <parameter name="[avp11bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.binary"/>
-    <test parameter="[avp11bin]" condition="binary.equals" value="00000002"/>
-    <parameter name="[avp11vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Scheme:1020.vendorId"/>
-    <test parameter="[avp11vendor]" condition="list.isEmpty"/>
-
-    <parameter name="[avp12code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.code"/>
-    <test parameter="[avp12code]" condition="number.equals" value="1019"/>
-    <parameter name="[avp12val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.value"/>
-    <test parameter="[avp12val]" condition="string.equals" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5"/>
-    <parameter name="[avp12bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.binary"/>
-    <test parameter="[avp12bin]" condition="binary.equals" value="44696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435"/>
-    <parameter name="[avp12vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authenticate:1019.vendorId"/>
-    <test parameter="[avp12vendor]" condition="list.isEmpty"/>    
-
-    <parameter name="[avp13code]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.code"/>
-    <test parameter="[avp13code]" condition="number.equals" value="1024"/>
-    <parameter name="[avp13val]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.value"/>
-    <test parameter="[avp13val]" condition="string.equals" value="INVITE"/>
-    <parameter name="[avp13bin]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.binary"/>
-    <test parameter="[avp13bin]" condition="binary.equals" value="494e56495445"/>
-    <parameter name="[avp13vendor]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.vendorId"/>
-    <test parameter="[avp13vendor]" condition="list.isEmpty"/>
-    <parameter name="[avp13vFlag]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.vendor"/>
-    <test parameter="[avp13vFlag]" condition="boolean.equals" value="false"/>
-    <parameter name="[avp13mand]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.mandatory"/>
-    <test parameter="[avp13mand]" condition="boolean.equals" value="true"/>
-    <parameter name="[avp13priv]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item:1018.Authentication-Context:1024.private"/>
-    <test parameter="[avp13priv]" condition="boolean.equals" value="true"/>
-
     <parameter name="[avp14code]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.code"/>
     <test parameter="[avp14code]" condition="number.equals" value="260"/>
     <parameter name="[avp14type]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.type"/>
@@ -212,27 +220,57 @@
     <test parameter="[avp149993]" condition="number.equals" value="999999999e123"/>
 
     <!-- OctetString -->
-    <parameter name="[avp159994code]" operation="protocol.setFromMessage" value="avp.299999994.code"/>
-    <test parameter="[avp159994code]" condition="number.equals" value="299999994"/>
-    <parameter name="[avp159994val]" operation="protocol.setFromMessage" value="avp.299999994.octetstring"/>
+    <parameter name="[avp159994code]" operation="protocol.setFromMessage" value="avp.2999999994.code"/>
+    <test parameter="[avp159994code]" condition="number.equals" value="2999999994"/>
+    <parameter name="[avp159994val]" operation="protocol.setFromMessage" value="avp.2999999994.octetstring"/>
     <test parameter="[avp159994val]" condition="string.equals" value="abcdefghijklmnopqrstuvwxyz"/>
-    <parameter name="[avp159994bin]" operation="protocol.setFromMessage" value="avp.299999994.binary"/>
+    <parameter name="[avp159994bin]" operation="protocol.setFromMessage" value="avp.2999999994.binary"/>
     <test parameter="[avp159994bin]" condition="binary.equals" value="6162636465666768696a6b6c6d6e6f707172737475767778797a"/>
-    <parameter name="[avp159994vendor]" operation="protocol.setFromMessage" value="avp.299999994.vendorId"/>
+    <parameter name="[avp159994vendor]" operation="protocol.setFromMessage" value="avp.2999999994.vendorId"/>
     <test parameter="[avp159994vendor]" condition="string.equals" value="3GPP:10415"/>
     <!-- UTF8String -->
-    <parameter name="[avp159995val]" operation="protocol.setFromMessage" value="avp.299999995.utf8string"/>
+    <parameter name="[avp159995val]" operation="protocol.setFromMessage" value="avp.2999999995.utf8string"/>
     <test parameter="[avp159995val]" condition="string.equals" value="AAAAAAAAAAaaaaaaaaaa"/>
     <!-- Time -->
-    <parameter name="[avp159996val]" operation="protocol.setFromMessage" value="avp.299999996.time"/>
+    <parameter name="[avp159996val]" operation="protocol.setFromMessage" value="avp.2999999996.time"/>
     <test parameter="[avp159996val]" condition="string.equals" value="20/08/2015 11:26:59:000"/>
     <!-- Address -->
-    <parameter name="[avp159997val]" operation="protocol.setFromMessage" value="avp.299999997.address"/>
+    <parameter name="[avp159997val]" operation="protocol.setFromMessage" value="avp.2999999997.address"/>
     <test parameter="[avp159997val]" condition="string.equals" value="111.111.111.111"/>
     <!-- Binary -->
-    <parameter name="[avp159998val]" operation="protocol.setFromMessage" value="avp.299999998.binary"/>
+    <parameter name="[avp159998val]" operation="protocol.setFromMessage" value="avp.2999999998.binary"/>
     <test parameter="[avp159998val]" condition="binary.equals" value="010203040506070809101112123141516171819120"/>
-
+    <!-- Bad type -->
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.value"/>
+    <test parameter="[avp159999val]" condition="binary.equals" value="30313233343536373839"/>
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.unsigned32"/>
+    <test parameter="[avp159999val]" condition="binary.equals" value="30313233343536373839"/>
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.float64"/>
+    <test parameter="[avp159999val]" condition="binary.equals" value="30313233343536373839"/>
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.octetstring"/>
+    <test parameter="[avp159999val]" condition="string.equals" value="0123456789"/>
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.utf8string"/>
+    <test parameter="[avp159999val]" condition="string.equals" value="0123456789"/>                       
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.time"/>
+    <test parameter="[avp159999val]" condition="binary.equals" value="30313233343536373839"/>               
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.2999999999.ipaddress"/>
+    <test parameter="[avp159999val]" condition="binary.equals" value="30313233343536373839"/>               
+    <!-- Bad type -->
+    <parameter name="[avp159999val]" operation="protocol.setFromMessage" value="avp.3000000000.value"/>
+    <test parameter="[avp159999val]" condition="binary.equals" value="22222222"/>
+    <parameter name="[avp150000val]" operation="protocol.setFromMessage" value="avp.3000000000.Unsigned32"/>
+    <test parameter="[avp150000val]" condition="number.equals" value="572662306"/>
+    <parameter name="[avp150000val]" operation="protocol.setFromMessage" value="avp.3000000000.float64"/>
+    <test parameter="[avp150000val]" condition="binary.equals" value="22222222"/>
+    <parameter name="[avp150000val]" operation="protocol.setFromMessage" value="avp.3000000000.octetstring"/>
+    <test parameter="[avp150000val]" condition="string.equals" value="&quot;&quot;&quot;&quot;"/>
+    <parameter name="[avp150000val]" operation="protocol.setFromMessage" value="avp.3000000000.utf8string"/>
+    <test parameter="[avp150000val]" condition="string.equals" value="&quot;&quot;&quot;&quot;"/>                       
+    <parameter name="[avp150000val]" operation="protocol.setFromMessage" value="avp.3000000000.time"/>
+    <test parameter="[avp150000val]" condition="string.equals" value="01/04/2054 09:20:02:000"/>               
+    <parameter name="[avp150000val]" operation="protocol.setFromMessage" value="avp.3000000000.ipaddress"/>
+    <test parameter="[avp150000val]" condition="string.equals" value="34.34.34.34"/>               
+            
     <parameter name="[avp16code]" operation="protocol.setFromMessage" value="avp.Public-Identity.code"/>
     <test parameter="[avp16code]" condition="number.equals" value="601"/>
     <parameter name="[avp16code]" operation="protocol.setFromMessage" value="avp.2.code"/>
@@ -397,11 +435,11 @@
     <parameter name="[avp26type]" operation="protocol.setFromMessage" value="avp.Cost:603.type"/>
     <test parameter="[avp26type]" condition="string.equalsIgnoreCase" value="float64"/>
     <parameter name="[avp26val]" operation="protocol.setFromMessage" value="avp.Cost:603.value"/>
-    <test parameter="[avp26val(0)]" condition="string.equals" value="1.2345678901234567E69"/>
+    <test parameter="[avp26val(0)]" condition="number.equals" value="1.2345678901234567E69"/>
     <test parameter="[avp26val(1)]" condition="number.equals" value="-1.0E308"/>
     <test parameter="[avp26val(2)]" condition="number.equals" value="-1E-323"/>
     <parameter name="[avp26val]" operation="protocol.setFromMessage" value="avp.Cost:603.FLOAT64"/>
-    <test parameter="[avp26val(0)]" condition="string.equals" value="1.2345678901234567E69"/>
+    <test parameter="[avp26val(0)]" condition="number.equals" value="1.2345678901234567E69"/>
     <test parameter="[avp26val(1)]" condition="number.equals" value="-1.0E308"/>
     <test parameter="[avp26val(2)]" condition="number.equals" value="-1E-323"/>
     <parameter name="[avp26bin]" operation="protocol.setFromMessage" value="avp.603.binary"/>
@@ -411,9 +449,27 @@
     <parameter name="[avp26vendor]" operation="protocol.setFromMessage" value="avp.Cost.vendorId"/>
     <test parameter="[avp26vendor]" condition="string.equals" value="Ericsson:193"/>
 
+    <!-- Bad type-->
+    <parameter name="[avp27type]" operation="protocol.setFromMessage" value="avp.Subscription-Id-Type:555.type"/>
+    <test parameter="[avp27type]" condition="string.equalsIgnoreCase" value="unsigned32"/>
+    <parameter name="[avp27val]" operation="protocol.setFromMessage" value="avp.Subscription-Id-Type:555.value"/>
+    <test parameter="[avp27val(0)]" condition="number.equals" value="3999999999"/>
+    <test parameter="[avp27val(1)]" condition="string.equals" value="End User PRIVATE (operator defined):4"/>
+    <test parameter="[avp27val(2)]" condition="binary.equals" value="42616420747970653a393939393939393939"/>
+    <parameter name="[avp27val]" operation="protocol.setFromMessage" value="avp.Subscription-Id-Type:555.Unsigned32"/>
+    <test parameter="[avp27val(0)]" condition="number.equals" value="3999999999"/>
+    <test parameter="[avp27val(1)]" condition="string.equals" value="End User PRIVATE (operator defined):4"/>
+    <test parameter="[avp27val(2)]" condition="binary.equals" value="42616420747970653a393939393939393939"/>
+    <parameter name="[avp26bin]" operation="protocol.setFromMessage" value="avp.555.binary"/>
+    <test parameter="[avp26bin(0)]" condition="binary.equals" value="ee6b27ff"/>
+    <test parameter="[avp26bin(1)]" condition="binary.equals" value="00000004"/>
+    <test parameter="[avp26bin(2)]" condition="binary.equals" value="42616420747970653a393939393939393939"/>
+    <parameter name="[avp26vendor]" operation="protocol.setFromMessage" value="avp.Subscription-Id-Type.vendorId"/>
+    <test parameter="[avp26vendor]" condition="string.equals" value="Ericsson:193"/>
+
     <!-- check binary message data -->    
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
-    <test parameter="[binary]" condition="binary.equals" value="010004e8800001fa000010e1069f6bc70d3ed78e000001074000002a3136342e34382e3231392e32393b3132333435363738393031323334353637383930000000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000125400000153136342e34382e3231392e32390000000000011b40000011636c69656e742e66720000000000010440000064b2d05df66000000c069f6bc7000001034000000c000010e1b2d05df76000001000e8762842187eea000001024000000c000010e1b2d05df86000000cbaa1d1390000010a6000000c000028afb2d05df9600000105b568a9c93ce6b0c000001156000000c000000010000025980000029000028af7369703a2b3333383735363331393735407369702e70666465762e667200000000000002000000257369703a2b3333333333333333333333407369702e70666465762e667200000000000402e0000010000028af00000001000003fa60000118000003fd6000000c00000000000003fc6000000c00000002000003fb600000e844696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435000004006000000e494e56495445000011e1a2fae0000026000028af6162636465666768696a6b6c6d6e6f707172737475767778797a000011e1a2fbe0000020000028af414141414141414141416161616161616161616111e1a2fce0000010000028afd9801be311e1a2fde0000010000028af6f6f6f6f11e1a2fee0000021000028af0102030405060708091011121231415161718191200000000000036cc0000034000028af0000035ec0000010000028af00127ed90000033fc0000015000028af62616456616c756535000000000000036000004e27222b2d2a2f3e3c303132333435363738394142434445464748494a4b4c4d4e4f505152535455565758595a6162636465666768696a6b6c6d6e6f707172737475767778797a00000000000160000046303132333435363738394142434445464748494a4b4c4d4e4f505152535455565758595a6162636465666768696a6b6c6d6e6f707172737475767778797a0000000000086000000cc0a85a7500000008600000182a01cf00003300050000000000006e01000000886000000c88ca6c00000000886000000c77359400000001bf60000010e43e9298b1380000000001bf600000101bc16d674ec80000000000056000000cee6b2800000000056000000c7735940000000060600000106f05b59d3b20000000000060600000103782dace9d900000000000374000000cd10bc16c000000374000000cd96b009b000001f26000000c6fc77488000001f26000000c00000007000001f26000000c7eb9c1d30000025be0000014000000c14e46e5762616fa130000025be0000014000000c1ffe1ccf385ebc8a00000025be0000014000000c18000000000000002"/>
+    <test parameter="[binary]" condition="binary.equals" value="0100067c800001fa000010e1069f6bc70d3ed78e000001074000002a3136342e34382e3231392e32393b3132333435363738393031323334353637383930000000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000125400000153136342e34382e3231392e32390000000000011b40000011636c69656e742e66720000000000010440000064b2d05df66000000c069f6bc7000001034000000c000010e1b2d05df76000001000e8762842187eea000001024000000c000010e1b2d05df86000000cbaa1d1390000010a6000000c000028afb2d05df9600000105b568a9c93ce6b0c000001156000000c000000010000025980000029000028af7369703a2b3333383735363331393735407369702e70666465762e667200000000000002000000257369703a2b3333333333333333333333407369702e70666465762e667200000000000402e0000010000028af00000001000003fa60000118000003fd6000000c00000000000003fc6000000c00000002000003fb600000e844696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435000004006000000e494e564954450000000003fae000012c000028af0000058be0000010000028af00000000000003fce0000010000028af30303030000003fbe00000ec000028af44696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d443500000400e0000012000028af494e564954450000b2d05dfae0000026000028af6162636465666768696a6b6c6d6e6f707172737475767778797a0000b2d05dfbe0000020000028af4141414141414141414161616161616161616161b2d05dfce0000010000028afd9801be3b2d05dfde0000010000028af6f6f6f6fb2d05dfee0000021000028af010203040506070809101112123141516171819120000000b2d05dffe0000016000028af303132333435363738390000b2d05e00e0000010000028af222222220000036cc0000034000028af0000035ec0000010000028af00127ed90000033fc0000015000028af62616456616c756535000000000000036000004e27222b2d2a2f3e3c303132333435363738394142434445464748494a4b4c4d4e4f505152535455565758595a6162636465666768696a6b6c6d6e6f707172737475767778797a00000000000160000046303132333435363738394142434445464748494a4b4c4d4e4f505152535455565758595a6162636465666768696a6b6c6d6e6f707172737475767778797a0000000000086000000cc0a85a7500000008600000182a01cf00003300050000000000006e01000000886000000c88ca6c00000000886000000c77359400000001bf60000010e43e9298b1380000000001bf600000101bc16d674ec80000000000056000000cee6b2800000000056000000c7735940000000060600000106f05b59d3b20000000000060600000103782dace9d900000000000374000000cd10bc16c000000374000000cd96b009b000001f26000000c6fc77488000001f26000000c00000007000001f26000000c7eb9c1d30000025be0000014000000c14e46e5762616fa130000025be0000014000000c1ffe1ccf385ebc8a00000025be0000014000000c180000000000000020000022be0000010000000c1ee6b27ff0000022be0000010000000c1000000040000022be000001e000000c142616420747970653a3939393939393939390000"/>
     
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2=" " value3=""/>

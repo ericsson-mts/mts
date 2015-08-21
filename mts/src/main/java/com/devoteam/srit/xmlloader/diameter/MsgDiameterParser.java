@@ -244,7 +244,7 @@ public class MsgDiameterParser
         }
         else
         {
-        	code = (int) Long.parseLong(codeAttr) & 0xFFFFFFFF;
+        	code = (int) (Long.parseLong(codeAttr) & 0x00000000ffffffffL);
         }
         
         // Parse the AVP type
@@ -289,7 +289,7 @@ public class MsgDiameterParser
             }
             
             // Create the AVP and add parsed childs to grouped AVP
-            AVP_Grouped gAvp = new AVP_Grouped(code, avpList.toArray(new AVP[0]));
+            AVP_Grouped gAvp = new AVP_Grouped((int) code, avpList.toArray(new AVP[0]));
             avp = gAvp ;
         }
         else
@@ -494,7 +494,8 @@ public class MsgDiameterParser
 	        }
 	        else
 	        {
-	        	int code = (int) Long.parseLong(codeAttr) & 0xFFFFFFFF;
+	        	int code = (int) (Long.parseLong(codeAttr) & 0x00000000ffffffffL);
+	        	//int code = (int) Long.parseLong(codeAttr);
 	        	avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
 	        }
 	    }
