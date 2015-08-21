@@ -244,13 +244,13 @@ public class MsgDiameterParser
         }
         else
         {
-        	code = (int) (Long.parseLong(codeAttr) & 0x00000000ffffffffL);
+        	code = (int) (Long.parseLong(codeAttr) & 0xffffffffL);
         }
         
         // Parse the AVP type
         String type = element.attributeValue("type");
         TypeDef typeDef = parse_AVPType(type, applicationId);
-        if (typeDef == null && avpDef != null)
+        if (type == null && typeDef == null && avpDef != null)
         {
         	typeDef = avpDef.get_type();
         }
@@ -494,7 +494,7 @@ public class MsgDiameterParser
 	        }
 	        else
 	        {
-	        	int code = (int) (Long.parseLong(codeAttr) & 0x00000000ffffffffL);
+	        	int code = (int) (Long.parseLong(codeAttr) & 0xffffffffL);
 	        	//int code = (int) Long.parseLong(codeAttr);
 	        	avpDef = Dictionary.getInstance().getAvpDefByCodeVendorIdORCode(code, applicationId, vendorId);
 	        }
