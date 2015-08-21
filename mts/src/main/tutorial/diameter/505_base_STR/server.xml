@@ -5,10 +5,17 @@
     <call name="diameter.RecCER_SendCEA"/>
         
     <receiveMessageDIAMETER name="Receive Request STR" request="true" type="Session-Termination:275">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -37,17 +44,18 @@ Session-Termination-Answer  ::= < Diameter Header: 275, PXY >
                               * [ AVP ]
 -->
 
-    <sendMessageDIAMETER name="Send Answer STA">
-        <header request="false" command="[commandCode]" applicationId="Diameter Common Messages" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
+    <sendMessageDIAMETER name="Send Answer STA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
         <!-- The Session-Id AVP is used to identify a specific session. -->
         <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
         <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
         <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
         <avp code="User-Name" mandatory="false" type="UTF8String" value="ToBeCompleted"/>

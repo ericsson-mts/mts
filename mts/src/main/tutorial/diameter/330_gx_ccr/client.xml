@@ -244,16 +244,17 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
     -->
     <parameter name="[Bearer-Usage]" operation="set" value="IMS_SIGNALLING"/>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestCCR" channel="channel_client" destScenario="server">
         <header request="true" command="Credit-Control" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id" value="3GPP Gx"/>
+        
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
         <avp code="Destination-Host" value="[remoteHostDIAM]"/>
         <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        
-        <avp code="Auth-Application-Id" value="3GPP Gx"/>
         
         <avp code="CC-Request-Type" value="[CC-Request-Type]"/>
         <avp code="CC-Request-Number" value="[CC-Request-Number]"/>

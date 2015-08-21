@@ -3,20 +3,22 @@
 <!-- name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 <scenario>
     
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="client-server">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
         
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP Cx"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
         <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
         <avp code="Auth-Data-Item">
@@ -32,17 +34,25 @@
         <test parameter="[temp]" condition="string.equals" value="DIAMETER" />
         <parameter name="[temp]" operation="protocol.setFromMessage" value="message.request"/>
         <test parameter="[temp]" condition="string.equals" value="true" />
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessage>
 
-    <sendMessageDIAMETER name="SendAnswerMAA">
-        <header request="false" command="[commandCode]" applicationId="3GPP Cx" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Origin-Host" value="[remoteHostDIAM]"/>
-        <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Host" value="[destinationHost]"/>
+        <avp code="Origin-Realm" value="[destinationRealm]"/>
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP Cx"/>

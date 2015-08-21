@@ -48,14 +48,10 @@ Multimedia-Auth-Request > ::= < Diameter Header: 303, REQ, PXY, 16777216 >
                                 *[ Route-Record ]
 -->
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/MAR" channel="channel_client" destScenario="server">
         <header request="true" command="Multimedia-Auth" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
@@ -66,6 +62,11 @@ Multimedia-Auth-Request > ::= < Diameter Header: 303, REQ, PXY, 16777216 >
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
           <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 

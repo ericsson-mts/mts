@@ -269,10 +269,10 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
                          *[ AVP ]
 -->
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/Rf/ACR" channel="channel_client" destScenario="CDF">
         <header request="true" command="Accounting" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
           <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 

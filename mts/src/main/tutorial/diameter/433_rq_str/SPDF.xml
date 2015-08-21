@@ -26,10 +26,10 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
                      *[ AVP ]
 -->
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request ETSI/Rq/STR" channel="channel_client" destScenario="A-RACF">
         <header request="true" command="Session-Termination" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
           <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            

@@ -11,21 +11,23 @@
     <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla3[publicIdentity]3, [unKnown(2)]"/>
     <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla4[publicIdentity]4, [unKnown(3)]"/>
 
-    <parameter name="[sessionId]" operation="set" value="999999999888888888"/>
+    <parameter name="[newSessionId]" operation="set" value="999999999888888888"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="Multimedia-Authentitcation" applicationId="[applicationID]"
                 hopByHop="999999999" endToEnd="888888888"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+      
         <avp code="Vendor-Specific-Application-Id">
           	<avp code="Vendor-Id" value="TGPP:10415"/>
           	<avp code="Auth-Application-Id" value="[applicationID]"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
         <avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]" vendorId="TGPP"/>
         <avp code="[codePublicIdentity]" value="[publicIdentity]" vendorId="TGPP"/>
         <avp code="[codePublicIdentity]" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]" vendorId="TGPP"/>

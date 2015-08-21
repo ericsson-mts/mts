@@ -6,10 +6,16 @@
     <call name="diameter.RecCER_SendCEA"/>
     
     <receiveMessageDIAMETER name="Receive Request 3GPP/CX-DX/LIR" request="true" type="Location-Info:302">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
     </receiveMessageDIAMETER>
 
 <!--
@@ -56,7 +62,8 @@ Location-Info-Answer ::= < Diameter Header: 302, PXY, 16777216 >
 
 -->
 
-    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/LIA">
+    <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/LIA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
           <avp code="Vendor-Specific-Application-Id">

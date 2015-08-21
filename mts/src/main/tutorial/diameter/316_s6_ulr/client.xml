@@ -71,20 +71,21 @@ Update-Location-Request ::= < Diameter Header: 316, REQ, PXY, 16777251 >
     <!-- PLMN-ID :  3 bytes - 3GPP TS 29.272 /-->
     <parameter name="[Visited-PLMN-Id]" operation="set" value="20801"/>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestULR" channel="channel_client" destScenario="server">
         <header request="true" command="3GPP-Update-Location" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
-        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
 
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP S6a"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
         <avp code="User-Name" value="[Imsi]"/>
         <avp code="Terminal-Information">

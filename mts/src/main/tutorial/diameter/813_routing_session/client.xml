@@ -44,11 +44,11 @@
     <parameter name="[Subscription-Id-Type]" operation="set" value="2"/>
     <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33672225555@orange.fr"/>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestAAR" listenpoint="lp_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="Scenario server">
         <header request="true" command="AA" applicationId="3GPP Rx"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
         <avp code="Auth-Application-Id" value="3GPP Rx"/>
         <avp code="Origin-Host" value="[localHostDIAM]"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]"/>
@@ -90,14 +90,17 @@
 
     <receiveMessageDIAMETER name="ReceiveRequestRAR" listenpoint="lp_client" 
         request="true" type="Re-Auth">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>                
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
 
@@ -110,7 +113,8 @@
     -->
     <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
 
-    <sendMessageDIAMETER name="SendAnswerRAA" listenpoint="lp_client" >
+    <sendMessageDIAMETER name="SendAnswerRAA" listenpoint="lp_client" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
         <avp code="Origin-Host" value="[destinationHost]"/>

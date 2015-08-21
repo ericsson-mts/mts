@@ -14,9 +14,9 @@
         <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host.value"/>
-        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm.value"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
     </receiveMessageDIAMETER>
         
 <!--
@@ -62,7 +62,7 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
 
 -->
     <sendMessageDIAMETER name="Send Answer 3GPP/CX-DX/UAA" listenpoint="[listenpointName]" 
-                         remoteHost="[remoteHost]" remotePort="[remotePort]">
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
 
@@ -82,7 +82,7 @@ User-Authorization-Answer> ::= < Diameter Header: 300, PXY, 16777216 >
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="Origin-Host" mandatory="tru" type="DiameterIdentity" value="[destinationHost]"/>
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
           <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->

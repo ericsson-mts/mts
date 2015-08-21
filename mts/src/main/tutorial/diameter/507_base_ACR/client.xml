@@ -49,11 +49,11 @@ Accounting-Request ::= < Diameter Header: 271, REQ, PXY >
     <parameter name="[timestamp]" operation="number.divide" value="[timestamp]" value2="1000"/>
     <parameter name="[timestamp]" operation="number.round" value="[timestamp]"/>
     <parameter name="[date]" operation="number.toDate" value="[timestamp]"/>    
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request ACR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="Accounting" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
         <!-- The Session-Id AVP is used to identify a specific session. -->
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
         <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
