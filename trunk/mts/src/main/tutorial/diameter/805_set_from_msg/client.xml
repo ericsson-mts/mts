@@ -36,17 +36,27 @@
           <avp code="Public-Identity" value="sip:+33333333333@sip.pfdev.fr" type="UTF8String" 
                vendorId="0" mandatory="false" private="false"/>
           <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+          <!-- grouped AVP -->
           <avp code="Auth-Data-Item" vendorId="0" state="true">
               <avp code="Item-Number" value="0" vendorId="0"/>
               <avp code="Authentication-Scheme" value="DIGEST" vendorId="0"/>
-            <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="0"/>
+              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="0"/>
               <avp code="Authentication-Context" value="INVITE" vendorId="0"/>
           </avp>
-          <avp code="299999994" value="abcdefghijklmnopqrstuvwxyz" type="OctetString" vendorId="TGPP" state="true"/>
-          <avp code="299999995" value="AAAAAAAAAAaaaaaaaaaa" type="UTF8String" vendorId="TGPP" state="true"/>
-          <avp code="299999996" value="20/08/2015 11:26:59:999" type="Time" vendorId="TGPP" state="true"/>
-          <avp code="299999997" value="111.111.111.111" type="Address" vendorId="TGPP" state="true"/>
-          <avp code="299999998" value="010203040506070809101112123141516171819120" type="Binary" vendorId="TGPP" state="true"/>
+          <!-- Bad grouped AVP -->
+          <avp code="Auth-Data-Item" vendorId="TGPP">
+              <avp code="Item-Number" value="0" vendorId="TGPP"/>
+              <avp code="Authentication-Scheme" value="808464432" vendorId="TGPP"/>
+              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="TGPP"/>
+              <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+          </avp>
+          <avp code="2999999994" value="abcdefghijklmnopqrstuvwxyz" type="OctetString" vendorId="TGPP" state="true"/>
+          <avp code="2999999995" value="AAAAAAAAAAaaaaaaaaaa" type="UTF8String" vendorId="TGPP" state="true"/>
+          <avp code="2999999996" value="20/08/2015 11:26:59:999" type="Time" vendorId="TGPP" state="true"/>
+          <avp code="2999999997" value="111.111.111.111" type="Address" vendorId="TGPP" state="true"/>
+          <avp code="2999999998" value="010203040506070809101112123141516171819120" type="Binary" vendorId="TGPP" state="true"/>
+          <avp code="2999999999" value="0123456789" type="UTF8String" vendorId="TGPP" state="true"/>
+          <avp code="3000000000" value="34.34.34.34" type="address" vendorId="TGPP" state="true"/>          
           <avp code="IMS-Information" vendorId="TGPP" state="true">
               <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
               <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
@@ -87,6 +97,10 @@
           <avp code="Cost" vendorId="Ericsson" value="1234567890123456789012345678901234567890123456789012345678901234567890"/>
           <avp code="603" type="Float64" value="-1e308"/>
           <avp code="Cost" type="Float64" value="-1e-323"/>
+          <!-- type = Bad type -->
+          <avp code="Subscription-Id-Type:555" value="3999999999" vendorId="Ericsson:193" />
+          <avp code="555" type="Enumerated" value="End User PRIVATE (operator defined):4" vendorId="193" />
+          <avp code="Subscription-Id-Type" type="octetstring" value="Bad type:999999999" vendorId="Ericsson" />
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001"  timeout="[timeout]">

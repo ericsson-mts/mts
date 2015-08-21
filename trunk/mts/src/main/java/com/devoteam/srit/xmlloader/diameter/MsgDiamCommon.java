@@ -371,8 +371,13 @@ public class MsgDiamCommon extends Msg
         	// case when there is an exception : we assume type=Binary
         	byte[] val = new AVP_OctetString(avp).queryValue();
         	Array array = new DefaultArray(val);
-    		ret += Array.toHexString(array);
-        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while trying to decode AVP : \"" + name + "\"");
+        	String value = Array.toHexString(array);
+        	if (value != null)
+        	{
+        		ret += " value=\"" + value + "\"";
+        	}
+        	typeDico = "Binary";
+        	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Decoding : error while trying to decode AVP : \"" + code + "\" because the AVP type in the dictionary is not correct.");
         }
                 
         // display the AVP vendor Id
@@ -910,8 +915,9 @@ public class MsgDiamCommon extends Msg
 	        }
 	        else
 	        {
-	        	int code = (int) Long.parseLong(keyword) & 0xFFFFFFFF;
-		        if (code == avp.code)
+	        	long code = Long.parseLong(keyword) & 0xffffffffL;
+	        	long avpCode = ((long) avp.code) & 0xffffffffL;
+		        if (code == avpCode)
 		        {
 		        	return true;
 		        }	        	
@@ -944,11 +950,25 @@ public class MsgDiamCommon extends Msg
 	        	typeDico = "Grouped";
 	        }
         }
+        
         // retrieve the base type (using top-parent recursively)
         String typeBase = getAVPTypeBase(typeDico, applicationId);
-        
-        // return the value        
-        return getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
+
+        // retrieve the value
+        String value;
+        try
+        {
+        	value = getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
+	    }
+	    catch(Exception e)
+	    {
+	    	// case when there is an exception : we assume type=Binary
+	    	byte[] val = new AVP_OctetString(avp).queryValue();
+	    	Array array = new DefaultArray(val);
+	    	value = Array.toHexString(array);
+	    	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Decoding : error for the AVP : \"" + avp.code + "\" because the AVP type in the dictionary is not compliant with the data : we display or return data as binary.");
+	    }      
+        return value;
     }
 
 
