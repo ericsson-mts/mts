@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -303,21 +304,7 @@ public class MsgDiamCommon extends Msg
 	    }
 	    return applicationIdString;
     }
-        
-    private static String avpToStringSafe(AVP avp, int indent)
-    {
-        String ret = "";
-        ret += Utils.indent(indent);
-        
-        ret += "<avp code=\"" + avp.code + "\" type=\"OctetString\" ";
-        ret += "value=\"";
-    	Array array = new DefaultArray(AVPInterface.encode(avp));
-		ret += Array.toHexString(array);
-		ret += "\" />\n";
-		
-        return ret;
-    }
-    
+            
     /**
      * prints as String an avp and it's sub-avps (recursive)
      */
@@ -407,14 +394,7 @@ public class MsgDiamCommon extends Msg
             AVP[] tavp = gavp.queryAVPs();
             for(int i = 0; i < tavp.length; i++)
             {
-                try
-                {
-                    ret += avpToXml(tavp[i], indent+1, applicationId);
-                }
-                catch(Exception e)
-                {
-                    ret += avpToStringSafe(tavp[i], indent+1);
-                }
+                ret += avpToXml(tavp[i], indent+1, applicationId);
             }
             ret += Utils.indent(indent) + "</avp>\n";
         }
@@ -506,8 +486,7 @@ public class MsgDiamCommon extends Msg
 	    	}
 	    	else
 	    	{
-	    		Array array = new DefaultArray(val);
-	    		value = Array.toHexString(array);
+	    		throw new ExecutionException("Decoding : bad value for the type \"IPAddress\" for the AVP.");	    	
 	    	}
 	    }
 		else if ("Address".equalsIgnoreCase(typeDico) || "Address".equalsIgnoreCase(typeBase))
@@ -519,9 +498,7 @@ public class MsgDiamCommon extends Msg
 	    	}
 	    	else
 	    	{
-	    		Array array = new DefaultArray(val);
-	    		value = Array.toHexString(array);
-	    	}
+	    		throw new ExecutionException("Decoding : bad value for the type \"Address\" for the AVP.");	    	}
 	    }   
 	    else if ("Time".equalsIgnoreCase(typeDico) || "Time".equalsIgnoreCase(typeBase))
 	    {
