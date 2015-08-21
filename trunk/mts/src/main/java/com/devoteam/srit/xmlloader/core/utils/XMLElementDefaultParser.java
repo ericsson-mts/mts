@@ -75,7 +75,7 @@ public class XMLElementDefaultParser implements XMLElementReplacer, Serializable
             }
             else
             {
-            	newElement.remove(attribute);
+            	attribute.setValue(null);
             }
         }
         return list;
