@@ -5,10 +5,17 @@
 <scenario>
 
     <receiveMessageDIAMETER name="ReceiveRequestMAR" request="true" type="506" >
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
         <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
         <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
-        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
     <!-- check xml message data -->
@@ -117,13 +124,14 @@
 
     <!-- check binary message data -->    
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
-    <test parameter="[binary]" condition="binary.equals" value="01000208800001fa000010e113de43551a7daf1c00000107400000203136342e34382e3231392e32393b3938373635343332313000000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000125400000153136342e34382e3231392e32390000000000011b40000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c0000000100000002e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000118000003fd6000000c00000000000003fc6000000c00000002000003fe600000e844696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
+    <test parameter="[binary]" condition="binary.equals" value="01000208800001fa000010e113de43551a7daf1c00000107400000203136342e34382e3231392e32393b3938373635343332313000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c0000000100000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000125400000153136342e34382e3231392e32390000000000011b40000011636c69656e742e667200000000000002e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000118000003fd6000000c00000000000003fc6000000c00000002000003fe600000e844696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
 
-    <sendMessageDIAMETER name="SendAnswerMAA" remoteHost="[localHostDIAM]" remotePort="[localPortDIAM]">
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="Multimedia-Authentitcation" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Origin-Host" value="[remoteHostDIAM]" type="OctetString" mandatory="true"/>
-        <avp code="Origin-Realm" value="[remoteRealmDIAM]" type="OctetString" mandatory="true"/>
+        <avp code="Origin-Host" value="[destinationHost]" type="OctetString" mandatory="true"/>
+        <avp code="Origin-Realm" value="[destinationRealm]" type="OctetString" mandatory="true"/>
         
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="3GPP"/>

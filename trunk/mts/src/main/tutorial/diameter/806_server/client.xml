@@ -4,20 +4,22 @@
 
 <scenario>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="aaa://[remoteDIAM]">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
         <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
         		
         <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Auth-Application-Id" value="3GPP Cx"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        
         <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
         <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
         <avp code="Auth-Data-Item">
@@ -31,19 +33,22 @@
     <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001">
     </receiveMessageDIAMETER>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/SH/UDR" remoteURL="aaa://[remoteDIAM]">
         <header request="true" command="User-Data" applicationId="3GPP Sh"/>
-         <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+         <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+
         <avp code="Vendor-Specific-Application-Id">
               <avp code="Vendor-Id" value="TGPP"/>
               <avp code="Auth-Application-Id" value="3GPP Sh"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>		
+
         <avp code="Supported-Features" vendorId="[vendorID]">
             <avp code="Vendor-Id" value="TGPP"/>
             <avp code="Feature-List-ID" value="1"/>

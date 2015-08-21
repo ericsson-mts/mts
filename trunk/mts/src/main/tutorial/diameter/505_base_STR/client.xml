@@ -27,11 +27,11 @@ Session-Termination-Request ::= < Diameter Header: 275, REQ, PXY >
                               * [ AVP ]
 -->
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>        
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>        
     <sendMessageDIAMETER name="Send Request STR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="Session-Termination" applicationId="Diameter Common Messages" proxiable="true" error="false" retransmit="false"/>
           <!-- The Session-Id AVP is used to identify a specific session. -->
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>        
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>        
           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
           <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
           <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->

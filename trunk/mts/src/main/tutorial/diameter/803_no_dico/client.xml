@@ -3,11 +3,11 @@
 <!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 <scenario>
 
-    <parameter name="[sessionId]" operation="set" value="11112222333344445555"/>
+    <parameter name="[newSessionId]" operation="set" value="11112222333344445555"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
         <header request="true" command="506" applicationId="16777216"
                 hopByHop="123456789" endToEnd="987654321"/>		
-        <avp code="263" value="[localHostDIAM];[sessionId]" type="OctetString" mandatory="true"/>
+        <avp code="263" value="[localHostDIAM];[newSessionId]" type="OctetString" mandatory="true"/>
         <avp code="264" value="[localHostDIAM]" type="OctetString" mandatory="true"/>
         <avp code="296" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
         <avp code="293" value="[remoteHostDIAM]" type="OctetString" mandatory="true"/>

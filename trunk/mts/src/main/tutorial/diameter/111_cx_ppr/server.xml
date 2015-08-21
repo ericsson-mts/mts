@@ -43,14 +43,10 @@ Push-Profile-Request ::= < Diameter Header: 305, REQ, PXY, 16777216 >
                            *[ Route-Record ]
 
 -->
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/PPR" channel="channel_client" destScenario="client">
         <header request="true" command="Push-Profile" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[sessionId]"/>
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
@@ -63,6 +59,11 @@ Push-Profile-Request ::= < Diameter Header: 305, REQ, PXY, 16777216 >
           <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
           <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+
+          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
           <avp code="Supported-Features" vendorId="[vendorID]">

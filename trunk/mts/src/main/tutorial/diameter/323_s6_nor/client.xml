@@ -90,20 +90,21 @@ Notify-Request ::= < Diameter Header: 322, REQ, PXY, 16777251 >
     -->
     <parameter name="[NOR-Flags]" operation="set" value="8"/>
 
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestNOR" channel="channel_client" destScenario="server">
         <header request="true" command="3GPP-Notify" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
 
         <avp code="Vendor-Specific-Application-Id">
               <avp code="Vendor-Id" value="TGPP"/>
               <avp code="Auth-Application-Id" value="3GPP S6a"/>
         </avp>
         <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
 
         <avp code="User-Name" value="[Imsi]"/>
         <avp code="MIP6-Agent-Info">

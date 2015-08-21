@@ -40,10 +40,10 @@ User-Authorization-Request ::= < Diameter Header: 300, REQ, PXY, 16777216 >
 -->
 
     <parameter name="[commandCode]" operation="set" value="User-Authorization"/>
-    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/UAR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM]:[sessionId]"/>
+          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM]:[newSessionId]"/>
 
           <avp code="Vendor-Specific-Application-Id">
             <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>

@@ -11,15 +11,11 @@
     <parameter name="[stateValue]" operation="set" value="true"/>
     <parameter name="[testcase:newHopByHop]" operation="set" value="111111111"/>
     <parameter name="[testcase:newEndToEnd]" operation="set" value="222222222"/>
-    <parameter name="[testcase:sessionId]" operation="set" value="12345678901234567890"/>
+    <parameter name="[testcase:newSessionId]" operation="set" value="12345678901234567890"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
           <header request="true" command="Multimedia-Authentitcation" applicationId="4321"
                   hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]"/>
-          <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]"/>
-          <avp code="Origin-Host" value="[localHostDIAM]"/>
-          <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-          <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-          <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+          <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
           		
           <avp code="Vendor-Specific-Application-Id">                                      
               <avp code="2999999990" mandatory="true" type="Unsigned32" value="111111111"/>             
@@ -31,6 +27,12 @@
               <avp code="2999999993" mandatory="true" type="Float64" value="999999999e123"/>
           </avp>
           <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+          
+          <avp code="Origin-Host" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+          <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
           <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" type="UTF8String" 
                vendorId="10415" mandatory="false" private="false"/>
           <avp code="Public-Identity" value="sip:+33333333333@sip.pfdev.fr" type="UTF8String" 
