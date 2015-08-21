@@ -11,8 +11,8 @@
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
     </receiveMessageDIAMETER>
 
-    <parameter name="[avp149990]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.2999999990.code"/>    
-    <test parameter="[avp149990]" condition="number.equals" value="2999999990"/>
+    <parameter name="[avp26type]" operation="protocol.setFromMessage" value="avp.Cost.type"/>
+    <test parameter="[avp26type]" condition="string.equalsIgnoreCase" value="float64"/>
          
     <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
