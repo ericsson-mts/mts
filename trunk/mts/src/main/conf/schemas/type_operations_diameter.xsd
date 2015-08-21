@@ -336,13 +336,13 @@
         <xs:attribute name="command" type="xs:string" use="required">
     		<xs:annotation>
 	    		<xs:appinfo>String</xs:appinfo>
-				<xs:documentation>The command code or name (dictionary resolution).</xs:documentation>
+				<xs:documentation>The command code of the message : format &lt;label&gt;:&lt;code&gt;.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
         <xs:attribute name="applicationId" type="xs:string" use="required">
     		<xs:annotation>
 	    		<xs:appinfo>String</xs:appinfo>
-				<xs:documentation>The application ID code or name (dictionary resolution).</xs:documentation>
+				<xs:documentation>The application id of the message : format &lt;label&gt;:&lt;code&gt;.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
         <xs:attribute name="hopByHop" type="xs:string">
@@ -357,19 +357,37 @@
 				<xs:documentation>The end to end identifier (transaction ID).</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-        <xs:attribute name="proxiable" type="xs:string">
+    <xs:attribute name="proxiable" type="xs:string">
     		<xs:annotation>
 	    		<xs:appinfo>Boolean</xs:appinfo>
 				<xs:documentation>The proxiable flag.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-        <xs:attribute name="error" type="xs:string">
+    <xs:attribute name="p" type="xs:string">
+    		<xs:annotation>
+	    		<xs:appinfo>Boolean</xs:appinfo>
+				<xs:documentation>The proxiable flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+    <xs:attribute name="error" type="xs:string">
     		<xs:annotation>
 	    		<xs:appinfo>Boolean</xs:appinfo>
 				<xs:documentation>The error flag.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-        <xs:attribute name="retransmit" type="xs:string">
+    <xs:attribute name="e" type="xs:string">
+    		<xs:annotation>
+	    		<xs:appinfo>Boolean</xs:appinfo>
+				<xs:documentation>The error flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+    <xs:attribute name="retransmit" type="xs:string">
+    		<xs:annotation>
+	    		<xs:appinfo>Boolean</xs:appinfo>
+				<xs:documentation>The retransmit flag.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+    <xs:attribute name="r" type="xs:string">
     		<xs:annotation>
 	    		<xs:appinfo>Boolean</xs:appinfo>
 				<xs:documentation>The retransmit flag.</xs:documentation>
@@ -382,13 +400,60 @@
         <xs:sequence>
             <xs:element name="avp"  type="avpDIAMType"  minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="code"           type="xs:string" use="required" />
-        <xs:attribute name="value"          type="xs:string" />
-        <xs:attribute name="type"           type="xs:string" />
-        <xs:attribute name="vendorId"       type="xs:string" />
-        <xs:attribute name="mandatory"      type="xs:string" />
-        <xs:attribute name="private"        type="xs:string" />
-        <xs:attribute name="state"          type="xs:string" />        
+        <xs:attribute name="code" type="xs:string" use="required">
+      		<xs:annotation>
+  	    		<xs:appinfo>String</xs:appinfo>
+  				  <xs:documentation>The label and/or code of the AVP : format &lt;label&gt;:&lt;code&gt;.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="value" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>String</xs:appinfo>
+  				  <xs:documentation>The value of the AVP : depending of the AVP type.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="type" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>String</xs:appinfo>
+  				  <xs:documentation>The type of the AVP : according to the dictionary; "binary" or "grouped" are also possible. If omitted then we take it from the dictionary.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="vendorId" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>String</xs:appinfo>
+  				  <xs:documentation>The vendor id of the AVP : format &lt;label&gt;:&lt;code&gt;</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="mandatory" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>Boolean</xs:appinfo>
+  				  <xs:documentation>The mandatory flag of the AVP.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="m" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>Boolean</xs:appinfo>
+  				  <xs:documentation>The mandatory flag of the AVP.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="private" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>Boolean</xs:appinfo>
+  				  <xs:documentation>The private flag of the AVP.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+        <xs:attribute name="p" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>Boolean</xs:appinfo>
+  				  <xs:documentation>The private flag of the AVP.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>        
+        <xs:attribute name="state" type="xs:string">
+      		<xs:annotation>
+  	    		<xs:appinfo>Boolean</xs:appinfo>
+  				  <xs:documentation>The state flag of the AVP : if "false" then the AVP is not sent.</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>        
     </xs:complexType>
 
 <!--************************************************************************************************-->

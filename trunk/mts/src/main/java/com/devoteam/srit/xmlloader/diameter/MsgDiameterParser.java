@@ -132,6 +132,10 @@ public class MsgDiameterParser
         
         // Parse the Proxyable
         String proxyable = element.attributeValue("proxiable");
+        if (proxyable == null)
+        {
+        	proxyable = element.attributeValue("p");
+        }
         if (proxyable != null)
         {
         	messageHeader.setProxiable(Boolean.parseBoolean(proxyable));
@@ -139,6 +143,10 @@ public class MsgDiameterParser
         
         // Parse the Error
         String error = element.attributeValue("error");
+        if (error == null)
+        {
+        	error = element.attributeValue("e");
+        }
         if (error != null)
         {
         	messageHeader.setError(Boolean.parseBoolean(error));
@@ -146,6 +154,10 @@ public class MsgDiameterParser
         
         // Parse the Retransmit flag
         String retransmit = element.attributeValue("retransmit");
+        if (retransmit == null)
+        {
+        	retransmit = element.attributeValue("r");
+        }        
         if (retransmit != null)
         {
         	messageHeader.setRetransmit(Boolean.parseBoolean(retransmit));
@@ -429,6 +441,10 @@ public class MsgDiameterParser
         
         // Parse AVP flags
         String mandatoryAttr = element.attributeValue("mandatory");
+        if (mandatoryAttr == null)
+        {
+        	mandatoryAttr = element.attributeValue("m");
+        }
         boolean mandatoryBool = Boolean.parseBoolean(mandatoryAttr);
         if (mandatoryAttr == null)
         {
@@ -444,7 +460,11 @@ public class MsgDiameterParser
         avp.setMandatory(mandatoryBool);
         
         String privateAttr = element.attributeValue("private");
-        boolean privateBool = Boolean.parseBoolean(mandatoryAttr);
+        if (privateAttr == null)
+        {
+        	privateAttr = element.attributeValue("p");
+        }
+        boolean privateBool = Boolean.parseBoolean(privateAttr);
         if (privateAttr == null)
         {
         	if (avpDef != null && "mustnot".equals(avpDef.get_protected()))

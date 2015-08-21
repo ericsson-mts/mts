@@ -383,8 +383,8 @@ public class MsgDiamCommon extends Msg
         {
         	ret += " type=\"" + typeBase + "\"";
         }
-        ret += " mandatory=\"" + avp.isMandatory() + "\"";
-        ret += " private=\"" + avp.isPrivate() + "\"";
+        ret += " m=\"" + avp.isMandatory() + "\"";
+        ret += " p=\"" + avp.isPrivate() + "\"";
         
         // managed the "Grouped" AVP : display recursively the list of sub-AVPs
         if (typeDico != null && typeDico.equalsIgnoreCase("grouped"))
@@ -606,9 +606,9 @@ public class MsgDiamCommon extends Msg
         ret += message.hdr.application_id + "\" ";
         ret += "hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\" ";
         ret += "endToEnd=\"" + message.hdr.end_to_end_identifier + "\" ";
-        ret += "proxiable=\"" + message.hdr.isProxiable() + "\" ";
-        ret += "error=\"" + message.hdr.isError() + "\" ";
-        ret += "retransmit=\"" + message.hdr.isRetransmit() + "\" ";
+        ret += "p=\"" + message.hdr.isProxiable() + "\" ";
+        ret += "e=\"" + message.hdr.isError() + "\" ";
+        ret += "r=\"" + message.hdr.isRetransmit() + "\" ";
         ret += "/>\n";
         return ret;
 	}
