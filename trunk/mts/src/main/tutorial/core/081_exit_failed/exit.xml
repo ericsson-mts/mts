@@ -2,11 +2,27 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
+    <parameter name="[testcase:scenario_OK]" operation="set" value="true"/>
+    
     <parameter name="[bool]" operation="boolean.random"/>
     <exit  name="exit FAILED" failed="true" exception="PROBLEM"/>
-    <pause seconds="10000000" state="true"  name="pause"/>
+    <pause name="pause" seconds="4000000000" state="true" />
+    
+    <parameter name="[OK]" operation="set" value="true"/>
     
     <finally>
+        <if>
+          <condition>
+            <test parameter="[OK]" condition="string.equals" value="true" not="true"/>
+          </condition>          
+          <then>
+            <parameter name="[testcase:scenario_OK]" operation="set" value="false"/>
+          </then>
+        </if>
+        
+        <parameter name="[testcase:exit_finished]" operation="system.semaphorenotify"/>
+              
         <exit  name="exit" failed="false"/>
+        
     </finally>
 </scenario>
