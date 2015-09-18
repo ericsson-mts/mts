@@ -43,7 +43,7 @@ Profile-Update-Request ::= < Diameter Header: 307, REQ, PXY, 16777217 >
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/SH/PUR" channel="channel_client" destScenario="server">
-        <header request="true" command="Profile-Update" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
           <avp code="Vendor-Specific-Application-Id">

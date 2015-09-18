@@ -44,7 +44,7 @@ ME-Identity-Check-Request ::= < Diameter Header: 324, REQ, PXY, 16777252 >
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestECR" channel="channel_client" destScenario="server">
-        <header request="true" command="3GPP-ME-Identity-Check" applicationId="[applicationID]"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
         <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
 
         <avp code="Vendor-Specific-Application-Id">

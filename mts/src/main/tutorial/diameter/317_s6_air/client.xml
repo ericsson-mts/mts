@@ -56,7 +56,7 @@ Authentication-Information-Request ::= < Diameter Header: 318, REQ, PXY, 1677725
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestAIR" channel="channel_client" destScenario="server">
-        <header request="true" command="3GPP-Authentication-Information" applicationId="[applicationID]"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
         <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
 
         <avp code="Vendor-Specific-Application-Id">

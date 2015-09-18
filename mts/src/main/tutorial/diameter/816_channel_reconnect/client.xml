@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
+
+<scenario>
+
+    <!-- create a listenpoint with no parameter -->
+    <createListenpointDIAMETER name="lp_client" localPort="[Listen-Client-Port]"/>
+    
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" 
+        remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
+        <header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
+        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        		
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items" value="1"/>
+        <avp code="Auth-Data-Item" state="true">
+            <avp code="Item-Number" value="0"/>
+            <avp code="Authentication-Scheme" value="DIGEST" />
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context" value="INVITE"/>
+        </avp>
+        <avp code="10000" value="badValue" vendorId="TGPP" state="false"/>
+        <avp code="IMS-Information" vendorId="TGPP" state="true">
+            <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
+            <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
+            <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="[stateValue]"/>
+            <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
+            <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
+            <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client" request="false" type="506" result="2001" >
+    </receiveMessageDIAMETER>
+    
+    <parameter name="[testcase:createListenpoint]" operation="system.semaphorewait"/> 
+
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" destScenario="server" 
+        remoteURL="diam://[Listen-Server-Host]:[Listen-Server-Port]/path;param=value">
+        <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
+        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        		
+        <avp code="Vendor-Specific-Application-Id">
+            <avp code="Vendor-Id" value="TGPP"/>
+            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        </avp>
+        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items" value="1"/>
+        <avp code="Auth-Data-Item">
+            <avp code="Item-Number" value="0"/>
+            <avp code="Authentication-Scheme" value="DIGEST"/>
+            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context" value="INVITE"/>
+        </avp>
+    </sendMessageDIAMETER>
+    
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client" request="false" type="506" result="2001" >
+    </receiveMessageDIAMETER>
+
+    <finally>
+      <removeListenpointDIAMETER name="lp_client"/>
+      <pause name="pause" seconds="1"/>
+    </finally>
+        
+</scenario>

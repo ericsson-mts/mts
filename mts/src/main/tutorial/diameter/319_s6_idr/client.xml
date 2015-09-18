@@ -173,7 +173,7 @@ Insert-Subscriber-Data-Request ::= < Diameter Header: 319, REQ, PXY, 16777251 >
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestIDR" channel="channel_client" destScenario="server">
-        <header request="true" command="3GPP-Insert-Subscriber-Data" applicationId="[applicationID]"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
         <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
 
         <avp code="Vendor-Specific-Application-Id">

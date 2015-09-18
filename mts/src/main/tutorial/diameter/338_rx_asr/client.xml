@@ -28,7 +28,7 @@ From 3GPP TS 29.214 V10.3.0 : ASR is sent by the PCRF to inform the AF that bear
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestASR" channel="channel_client" destScenario="server">
-        <header request="true" command="Abort-Session" applicationId="[applicationID]"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
         <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
         
         <avp code="Auth-Application-Id" value="3GPP Rx"/>
