@@ -4,7 +4,7 @@
 
 <scenario>
 
-    <createListenpointDIAMETER name="lp_client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]">
+    <createListenpointDIAMETER name="client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -21,7 +21,7 @@
 
     <parameter name="[testcase:createListenpoint]" operation="system.semaphorewait"/>
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" 
+    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
         <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
@@ -47,10 +47,10 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001" >
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="client" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001" >
     </receiveMessageDIAMETER>
     
-    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="lp_client" request="true" type="Multimedia-Authentitcation:506" >
+    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="client" request="true" type="Multimedia-Authentitcation:506" >
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>        
@@ -64,7 +64,7 @@
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_client"
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="client"
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">    
         <header request="false" command="Multimedia-Authentitcation" applicationId="3GPP Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
@@ -88,7 +88,7 @@
     </sendMessageDIAMETER>
     
     <finally>
-        <removeListenpointDIAMETER name="lp_client"/>
+        <removeListenpointDIAMETER name="client"/>
     </finally>
 
 </scenario>

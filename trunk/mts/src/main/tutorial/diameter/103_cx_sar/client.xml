@@ -42,7 +42,7 @@ Server-Assignment-Request ::= < Diameter Header: 301, REQ, PXY, 16777216 >
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/SAR" channel="channel_client" destScenario="server">
-        <header request="true" command="Server-Assignment" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
           <avp code="Vendor-Specific-Application-Id">

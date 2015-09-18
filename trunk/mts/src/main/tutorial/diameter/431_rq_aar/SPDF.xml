@@ -60,7 +60,7 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/> 
     <sendMessageDIAMETER name="Send Request ETSI/Rq/AAR" channel="channel_client" destScenario="A-RACF">
-        <header request="true" command="AA" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
           <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
@@ -208,9 +208,9 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
           <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
           <avp code="Globally-Unique-Address" mandatory="true"  vendorId="13019">
-            <avp code="Framed-IP-Address" type="OctetString" value="ToBeCompleted"/>
-            <avp code="Framed-IPv6-Prefix" type="OctetString" value="ToBeCompleted"/>
-            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="13019"/>
+            <avp code="Framed-IP-Address" type="IPAddress" value="1.2.3.4"/>
+            <avp code="Framed-IPv6-Prefix" type="Address" value="[1234:2345:3456:4567:5678:6789:789A:89AB]"/>
+            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="realm.com" vendorId="13019"/>
           </avp>
 
           <avp code="Address-Realm" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>

@@ -54,7 +54,7 @@ Push-Notification-Request ::= < Diameter Header:  309, REQ, PXY, 16777231 >
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request ETSI/e4/PNR" channel="channel_client" destScenario="client">
-        <header request="true" command="Push-Notification" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
+        <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
           <avp code="Vendor-Specific-Application-Id">
