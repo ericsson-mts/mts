@@ -283,7 +283,8 @@ public class MsgDiamCommon extends Msg
   		ret += "\n";
   		ret += "<HEADER "; 	
         String applicationId = Integer.toString(message.hdr.application_id);
-    	ret += "applicationId=\"" + getApplicationIdString(applicationId) + ":" + message.hdr.application_id + "\" ";
+        long appliIdCode = message.hdr.application_id & 0xFFFFFFFFL;
+    	ret += "applicationId=\"" + getApplicationIdString(applicationId) + ":" + appliIdCode + "\" ";
     	ret += "hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\" ";
     	ret += "endToEnd=\"" + message.hdr.end_to_end_identifier + "\"";	    	
     	ret += "/>";
@@ -603,7 +604,8 @@ public class MsgDiamCommon extends Msg
         ret += "applicationId=\"";
         String applicationId = Integer.toString(message.hdr.application_id);
         ret += getApplicationIdString(applicationId) + ":";
-        ret += message.hdr.application_id + "\" ";
+        long appliIdCode = message.hdr.application_id & 0xFFFFFFFFL;
+        ret += appliIdCode + "\" ";
         ret += "hopByHop=\"" + message.hdr.hop_by_hop_identifier + "\" ";
         ret += "endToEnd=\"" + message.hdr.end_to_end_identifier + "\" ";
         ret += "p=\"" + message.hdr.isProxiable() + "\" ";
@@ -701,7 +703,8 @@ public class MsgDiamCommon extends Msg
             //----------------------------------------------------------- header:applicationId -
             else if(params[1].equalsIgnoreCase("applicationId"))
             {
-            	String appliID = Integer.toString(message.hdr.application_id);
+            	long appliIdCode = message.hdr.application_id & 0xFFFFFFFFL;
+            	String appliID = Long.toString(appliIdCode);
             	appliID = getApplicationIdString(appliID) + ":" + appliID;
                 var.add(appliID);
             }
