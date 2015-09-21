@@ -125,7 +125,8 @@ public class MsgDiameterParser
     	    }
 	
         }
-        messageHeader.application_id = Integer.parseInt(applicationId);
+        long appliIdCode = Long.parseLong(applicationId);
+        messageHeader.application_id = (int) appliIdCode;
         
         // parse the Command code
         messageHeader.command_code = parse_CommandCode(element, applicationId);
@@ -591,8 +592,8 @@ public class MsgDiameterParser
 	    {
 	    	String codeLabel = appliIdAttr.substring(0, pos);
 	    	String codeInt = appliIdAttr.substring(pos + 1);
-	    	int code = Integer.parseInt(codeInt);
-	    	application = Dictionary.getInstance().getApplicationById(code);
+	    	long code = Long.parseLong(codeInt);
+	    	application = Dictionary.getInstance().getApplicationById((int) code);
 	    	if (application != null && !codeLabel.equals(application.get_name()))
 	        {
 	        	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, 
@@ -620,8 +621,8 @@ public class MsgDiameterParser
 	        }
 	        else
 	        {
-	        	int code = Integer.parseInt(appliIdAttr);
-	        	application = Dictionary.getInstance().getApplicationById(code);
+	        	long code = Long.parseLong(appliIdAttr);
+	        	application = Dictionary.getInstance().getApplicationById((int) code);
 	        }
 	    }
 	    return application;
