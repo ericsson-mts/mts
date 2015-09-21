@@ -112,8 +112,20 @@ public class MsgDiameterParser
         	throw new ParsingException("There is no \"applicationId\" attribute in the <header> XML element :" + element);
         }                
         Application appli = parse_ApplicationId(applicationId, true);
-        applicationId = Integer.toString(appli.get_id());
-        messageHeader.application_id = appli.get_id();
+        if (appli != null)
+        {
+        	applicationId = Integer.toString(appli.get_id());
+        }
+        else
+        {
+    	    int pos = applicationId.lastIndexOf(":");
+    	    if (pos >= 0)
+    	    {
+    	    	applicationId = applicationId.substring(pos + 1);
+    	    }
+	
+        }
+        messageHeader.application_id = Integer.parseInt(applicationId);
         
         // parse the Command code
         messageHeader.command_code = parse_CommandCode(element, applicationId);
