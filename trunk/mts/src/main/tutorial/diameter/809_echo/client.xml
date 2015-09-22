@@ -10,6 +10,11 @@
     <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla2[publicIdentity]2, [unKnown(1)]"/>
     <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla3[publicIdentity]3, [unKnown(2)]"/>
     <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla4[publicIdentity]4, [unKnown(3)]"/>
+    
+    <parameter name="[AuthDataItemCode(0)]" operation="set" value="Auth-Data-Item:1018"/>
+    <parameter name="[AuthDataItemCode(1)]" operation="set" value="Auth-Data-Item:1018"/>
+    <parameter name="[ItemNumber(0)]" operation="set" value="0"/>
+    <parameter name="[ItemNumber(1)]" operation="set" value="1"/>
 
     <parameter name="[newSessionId]" operation="set" value="999999999888888888"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
@@ -35,8 +40,8 @@
         <!--<avp code="[codeUserName]" value="bla[privateIdentity(0)]bla" vendorId="TGPP"/>-->
         <avp code="[codeUserName(0)]" value="[userName]" mandatory="false" private="false"/>
         <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
-        <avp code="Auth-Data-Item:1018">
-            <avp code="Item-Number" value="0"/>
+        <avp code="[AuthDataItemCode]">
+            <avp code="Item-Number" value="[ItemNumber]"/>
             <avp code="Authentication-Scheme" value="DIGEST"/>
             <avp code="Authentication-Scheme" value="666"/>
             <avp code="Authentication-Scheme" value="999"/>
