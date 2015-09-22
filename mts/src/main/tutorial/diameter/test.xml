@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test description="DIAMETER regression tests" name="DIAMETER">
 
-    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
     <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[localHostDIAM]" operation="set" value="fhenry"/-->
@@ -365,6 +365,7 @@
     </testcase>
 
     <testcase name="803_no_dico" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[vendorID]" operation="set" value="Unknown:999999999"/>
         <scenario file="803_no_dico/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="803_no_dico/server.xml" name="server" state="[remoteServer]" routingName="DIAMETER"/>
     </testcase>

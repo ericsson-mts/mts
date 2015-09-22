@@ -398,7 +398,7 @@ public class MsgDiameterParser
             else if ("Integer32".equalsIgnoreCase(typeBase))
             {
             	value = parse_AVPEnumValue(value, avpDef);
-                avp = new AVP_Integer32(code,Integer.parseInt(value));
+                avp = new AVP_Integer32(code, (int) Long.parseLong(value));
             }
             else if ("Integer64".equalsIgnoreCase(typeBase))
             {
@@ -447,7 +447,17 @@ public class MsgDiameterParser
         }
         // and set it in the avp object
         avp.vendor_id = 0;
-        if (vendorDef !=  null)
+    	if (vendorIdAttr != null && vendorDef == null)
+    	{
+    		String vendorIdCodeString = vendorIdAttr;
+    		int pos = vendorIdCodeString.lastIndexOf(":");
+    	    if (pos >= 0)
+    	    {
+    	    	vendorIdCodeString = vendorIdAttr.substring(pos + 1);
+    	    }
+    	    avp.vendor_id = (int) Long.parseLong(vendorIdCodeString);
+    	}
+    	else if (vendorDef !=  null)
         {
         	avp.vendor_id = vendorDef.get_code();
         }
@@ -644,8 +654,8 @@ public class MsgDiameterParser
 	    {
 	    	String codeLabel = vendorIdAttr.substring(0, pos);
 	    	String codeInt = vendorIdAttr.substring(pos + 1);
-	    	int code = Integer.parseInt(codeInt);
-	    	vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
+	    	long code = Long.parseLong(codeInt);
+	    	vendorDef = Dictionary.getInstance().getVendorDefByCode((int) code, applicationId);
 	        if (vendorDef != null && 
 	        	!codeLabel.equals(vendorDef.get_vendor_id()) &&
 	        	!codeLabel.equals(vendorDef.get_name()))
@@ -667,8 +677,8 @@ public class MsgDiameterParser
 	        }
 	        else
 	        {
-	        	int code = Integer.parseInt(vendorIdAttr);
-	        	vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
+	        	long code = Long.parseLong(vendorIdAttr);
+	        	vendorDef = Dictionary.getInstance().getVendorDefByCode((int) code, applicationId);
 	        }
 	    }
 	    return vendorDef;
