@@ -578,7 +578,7 @@ public class MsgDiamCommon extends Msg
 			// case of vendorId type : Vendor-Id: or Supported-Vendor-Id:
 	        if (typeDico.equalsIgnoreCase("vendorId"))
 	        {
-	        	label = this.getVendorIdString(Integer.parseInt(value), applicationId);
+	        	label = this.getVendorIdString((int) Long.parseLong(value), applicationId);
 	        }
         }
         
