@@ -23,7 +23,7 @@
               <avp code="2999999991" mandatory="true" type="Integer64" value="65432109876543210"/>
               <avp code="Auth-Application-Id:258" value="4321"/>
               <avp code="2999999992" mandatory="true" type="Float32" value="-1234567890e-12"/>
-              <avp code="Vendor-Id:266" value="3GPP:10415"/>
+              <avp code="Vendor-Id:266" value="[vendorID]"/>
               <avp code="2999999993" mandatory="true" type="Float64" value="999999999e123"/>
           </avp>
           <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
@@ -34,7 +34,7 @@
           <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
 
           <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" type="UTF8String" 
-               vendorId="3GPP:10415" mandatory="false" private="false"/>
+               vendorId="[vendorID]" mandatory="false" private="false"/>
           <avp code="Public-Identity" value="sip:+33333333333@sip.pfdev.fr" type="UTF8String" 
                vendorId="0" mandatory="false" private="false"/>
           <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
@@ -46,10 +46,10 @@
               <avp code="Authentication-Context:1024" value="INVITE" vendorId="0"/>
           </avp>
           <!-- Bad grouped AVP -->
-          <avp code="Auth-Data-Item:1018" vendorId="3GPP:10415">
+          <avp code="Auth-Data-Item:1018" vendorId="[vendorID]">
               <avp code="Item-Number" value="0" vendorId="3GPP"/>
               <avp code="Authentication-Scheme" value="808464432" vendorId="TGPP"/>
-              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="3GPP:10415"/>
+              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="[vendorID]"/>
               <avp code="Authentication-Context" value="INVITE" vendorId="10415"/>
           </avp>
           <avp code="2999999994" value="abcdefghijklmnopqrstuvwxyz" type="OctetString" vendorId="TGPP" state="true"/>
@@ -58,13 +58,13 @@
           <avp code="2999999997" value="111.111.111.111" type="Address" vendorId="TGPP" state="true"/>
           <avp code="2999999998" value="010203040506070809101112123141516171819120" type="Binary" vendorId="TGPP" state="true"/>
           <avp code="2999999999" value="0123456789" type="UTF8String" vendorId="TGPP" state="true"/>
-          <avp code="3000000000" value="34.34.34.34" type="address" vendorId="TGPP" state="true"/>          
+          <avp code="3000000000" value="34.34.34.34" type="address" vendorId="TGPP:10415" state="true"/>          
           <avp code="IMS-Information:876" vendorId="TGPP" state="true">
-              <avp code="Event-Type:823" value="badValue1" vendorId="TGPP" state="false"/>
-              <avp code="Role-Of-Node:829" value="[emptyList]" vendorId="TGPP" state="false"/>
-              <avp code="Node-Functionality:862" value="1212121" vendorId="TGPP" state="[stateValue]"/>
-              <avp code="User-Session-ID:830" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
-              <avp code="Calling-Party-Address:831" value="badValue5" vendorId="TGPP"/>
+              <avp code="Event-Type:823" value="badValue1" vendorId="10415" state="false"/>
+              <avp code="Role-Of-Node:829" value="[emptyList]" vendorId="3GPP:10415" state="false"/>
+              <avp code="Node-Functionality:862" value="1212121" vendorId="3GPP" state="[stateValue]"/>
+              <avp code="User-Session-ID:830" value="[emptyList]" vendorId="10415" state="[stateValue]"/>
+              <avp code="Calling-Party-Address:831" value="badValue5" vendorId="TGPP:10415"/>
               <avp code="Called-Party-Address:832" value="[emptyList]" vendorId="TGPP"/>
           </avp>
           

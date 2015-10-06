@@ -62,7 +62,7 @@
     <parameter name="[vendorSpecType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/@type"/>
     <test parameter="[vendorSpecType]" condition="string.equals" value="Grouped"/>
     <parameter name="[vendorIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@value"/>
-    <test parameter="[vendorIdValue]" condition="string.equals" value="3GPP:10415"/>
+    <test parameter="[vendorIdValue]" condition="string.equals" value="[vendorID]"/>
     <parameter name="[vendorIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Vendor-Id:266']/@type"/>
     <test parameter="[vendorIdType]" condition="string.equals" value="VendorId"/>
     <parameter name="[applicationIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Vendor-Specific-Application-Id:260']/avp[@code='Auth-Application-Id:258']/@value"/>
@@ -82,7 +82,7 @@
     <parameter name="[publicIdentityType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Public-Identity:601']/@type"/>
     <test parameter="[publicIdentityType]" condition="string.equals" value="UTF8String"/>
     <parameter name="[publicIdentityVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Public-Identity:601']/@vendorId"/>
-    <test parameter="[publicIdentityVendorId]" condition="String.equals" value="3GPP:10415"/>
+    <test parameter="[publicIdentityVendorId]" condition="String.equals" value="[vendorID]"/>
 
     <parameter name="[nbAuthItemsValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@value"/>
     <test parameter="[nbAuthItemsValue]" condition="number.equals" value="1"/>
@@ -134,12 +134,12 @@
         <avp code="Origin-Realm:296" value="[destinationRealm]" type="OctetString" mandatory="true"/>
         
         <avp code="Vendor-Specific-Application-Id:260">
-            <avp code="Vendor-Id:266" value="3GPP:10415"/>
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
             <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
         </avp>
         <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
         <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>		
-        <avp code="Public-Identity:601" value="sip:+33875610603@sip.france.fr" vendorId="TGPP" type="UTF8String" mandatory="true"/>
+        <avp code="Public-Identity:601" value="sip:+33875610603@sip.france.fr" vendorId="[vendorID]" type="UTF8String" mandatory="true"/>
         <avp code="Number-Authentication-Items:1026" value="1"/>
         <avp code="Auth-Data-Item:1018">
             <avp code="Item-Number:1021" value="0" type="Unsigned32" mandatory="false"/>
