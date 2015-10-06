@@ -1,12 +1,18 @@
-----------------------------------------------------------------------
----------
+-------------------------------------------------------------------------------
 				RELEASE NOTE
 				  M.T.S.
 -------------------------------------------------------------------------------
 
-			Version : 6.1.0 (revision SVN ????) le ??/??/2015
+			Version : 6.1.0_beta (revision SVN 1704) le 06/10/2015
 
 Evolutions :
+  * Implémentation d'un nouvelle pile DIAMETER qui permet d'envoyer les messages
+    CER/CEA, DWR/DWA, DPR/DPA en transportant les messages sur les couches 
+    génériques de MTS et en se basant sur le l'encodage/décodage de la pile DK.
+  * Nouvelle grammaire unifiée avec pour les tous les codes un syntaxe de la forme
+    <label>:<integer> (command-code, application-id, vendor-id, avp-code, 
+    avp-enum); cette syntaxe est utilisée aussi dans les logs et les message 
+    paths (setFromMessage)   
   * Prise en compte lors de la recherche d'un AVP dans le dictionnaire du 
     vendorId en particulier lors du parsing du fichier XML lors de l'émission 
     d'un message et lors de l'écriture des logs en réception d'un message.
@@ -16,9 +22,6 @@ Evolutions :
     dans le fichier diameter.properties : il est considéré comme relatif 
     par rapport au répertoire dans lequel se trouve le ficheir de test. 
     Avant il était en relatif par rapport à l'application (répertoire bin).  
-  * Implémentation d'un nouvelle pile DIAMETER qui permet d'envoyer les messages
-    CER/CEA, DWR/DWA, DPR/DPA en transportant les messages sur les couches 
-    génériques de MTS et en se basant sur le l'encodage/décodage de la pile DK.
   * Changement important dans les interfaces générique des piles de protocoles : 
     classes Stack, Msg, Listenpoint, Channel, Probe. Nous utilisons maintenant 
     l'introspection pour faciliter le développement de nouveaux protocoles et donc
