@@ -247,45 +247,44 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestCCR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         
-        <avp code="Auth-Application-Id" value="3GPP Gx"/>
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
         
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
         
-        <avp code="CC-Request-Type" value="[CC-Request-Type]"/>
-        <avp code="CC-Request-Number" value="[CC-Request-Number]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Origin-State-Id" value="[Origin-State-Id]"/>
-        <avp code="Subscription-Id">
-            <avp code="Subscription-Id-Type" value="[Subscription-Id-Type]"/>
-            <avp code="Subscription-Id-Data" value="[Subscription-Id-Data]"/>
+        <avp code="CC-Request-Type:416" value="[CC-Request-Type]"/>
+        <avp code="CC-Request-Number:415" value="[CC-Request-Number]"/>
+        <avp code="Origin-State-Id:278" value="[Origin-State-Id]"/>
+        <avp code="Subscription-Id:443">
+            <avp code="Subscription-Id-Type:450" value="[Subscription-Id-Type]"/>
+            <avp code="Subscription-Id-Data:444" value="[Subscription-Id-Data]"/>
         </avp>
-        <avp code="Network-Request-Support" value="[Network-Request-Support]"/>
-        <avp code="Framed-IP-Address" value="[Framed-IP-Address]"/>
-        <avp code="IP-CAN-Type" value="[IP-CAN-Type]"/>
-        <avp code="RAT-Type" value="[RAT-Type]"/>
-        <avp code="User-Equipment-Info">
-            <avp code="User-Equipment-Info-Type" value="[User-Equipment-Info-Type]"/>
-            <avp code="User-Equipment-Info-Value" value="[User-Equipment-Info-Value]"/>
+        <avp code="Network-Request-Support:1024" value="[Network-Request-Support]" vendorId="[vendorID]"/>
+        <avp code="Framed-IP-Address:8" value="[Framed-IP-Address]"/>
+        <avp code="IP-CAN-Type:1027" value="[IP-CAN-Type]" vendorId="[vendorID]"/>
+        <avp code="RAT-Type:1032" value="[RAT-Type]" vendorId="[vendorID]"/>
+        <avp code="User-Equipment-Info:458">
+            <avp code="User-Equipment-Info-Type:459" value="[User-Equipment-Info-Type]"/>
+            <avp code="User-Equipment-Info-Value:460" value="[User-Equipment-Info-Value]"/>
         </avp>
-        <avp code="QoS-Information">
-            <avp code="APN-Aggregate-Max-Bitrate-UL" value="[APN-Aggregate-Max-Bitrate-UL]"/>
-            <avp code="APN-Aggregate-Max-Bitrate-DL" value="[APN-Aggregate-Max-Bitrate-UL]"/>
+        <avp code="QoS-Information:1016" vendorId="[vendorID]">
+            <avp code="APN-Aggregate-Max-Bitrate-UL:1041" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
+            <avp code="APN-Aggregate-Max-Bitrate-DL:1040" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
         </avp>
-        <avp code="Default-EPS-Bearer-QoS">
-            <avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
-            <avp code="Allocation-Retention-Priority">
-                <avp code="Priority-Level" value="[Priority-Level]"/>
-                <avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
-                <avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
+        <avp code="Default-EPS-Bearer-QoS:1049" vendorId="[vendorID]">
+            <avp code="QoS-Class-Identifier:1028" value="[QoS-Class-Identifier]" vendorId="[vendorID]"/>
+            <avp code="Allocation-Retention-Priority:1034" vendorId="[vendorID]">
+                <avp code="Priority-Level:1046" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability:1047" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability:1048" value="[Pre-emption-Vulnerability]"/>
             </avp>
         </avp>
-        <avp code="Called-Station-Id" value="[Called-Station-Id]"/>
-        <avp code="Bearer-Usage" value="[Bearer-Usage]"/>
+        <avp code="Called-Station-Id:30" value="[Called-Station-Id]"/>
+        <avp code="Bearer-Usage:1000" value="[Bearer-Usage]"/>
 	</sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerCCA" channel="channel_client" request="false" type="Credit-Control" result="DIAMETER_SUCCESS:2001">

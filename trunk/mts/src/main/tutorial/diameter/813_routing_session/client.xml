@@ -47,39 +47,39 @@
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestAAR" listenpoint="lp_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="Scenario server">
-        <header request="true" command="AA" applicationId="3GPP Rx"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
-        <avp code="Auth-Application-Id" value="3GPP Rx"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <header request="true" command="AA:265" applicationId="3GPP Rx:16777236"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Auth-Application-Id:258" value="3GPP Rx:16777236"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
         
-        <avp code="Media-Component-Description">
-            <avp code="Media-Component-Number" value="[Media-Component-Number]"/>
-            <avp code="Media-Sub-Component">
-                <avp code="Flow-Number" value="[Flow-Number-Rtp]"/>
-                <avp code="Flow-Description" value="[Flow-Description-Rtp-in]"/>
-                <avp code="Flow-Description" value="[Flow-Description-Rtp-out]"/>
-                <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtp]"/>
-                <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtp]"/>
+        <avp code="Media-Component-Description:517" vendorId="[vendorID]">
+            <avp code="Media-Component-Number:518" value="[Media-Component-Number]" vendorId="[vendorID]"/>
+            <avp code="Media-Sub-Component:519" vendorId="[vendorID]">
+                <avp code="Flow-Number:509" value="[Flow-Number-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Flow-Description:507" value="[Flow-Description-Rtp-in]" vendorId="[vendorID]"/>
+                <avp code="Flow-Description:507" value="[Flow-Description-Rtp-out]" vendorId="[vendorID]"/>
+                <avp code="Max-Requested-Bandwidth-UL:516" value="[Max-Requested-Bandwidth-UL-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Max-Requested-Bandwidth-DL:515" value="[Max-Requested-Bandwidth-DL-Rtp]" vendorId="[vendorID]"/>
             </avp>
-            <avp code="Media-Sub-Component">
-                <avp code="Flow-Number" value="[Flow-Number-Rtcp]"/>
-                <avp code="Flow-Description" value="[Flow-Description-Rtcp-in]"/>
-                <avp code="Flow-Description" value="[Flow-Description-Rtcp-out]"/>
-                <avp code="Flow-Usage" value="[Flow-Usage-Rtcp]"/>
-                <avp code="Max-Requested-Bandwidth-UL" value="[Max-Requested-Bandwidth-UL-Rtcp]"/>
-                <avp code="Max-Requested-Bandwidth-DL" value="[Max-Requested-Bandwidth-DL-Rtcp]"/>
+            <avp code="Media-Sub-Component:519" vendorId="[vendorID]">
+                <avp code="Flow-Number:509" value="[Flow-Number-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Flow-Description:507" value="[Flow-Description-Rtcp-in]" vendorId="[vendorID]"/>
+                <avp code="Flow-Description:507" value="[Flow-Description-Rtcp-out]" vendorId="[vendorID]"/>
+                <avp code="Flow-Usage:512" value="[Flow-Usage-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Max-Requested-Bandwidth-UL:516" value="[Max-Requested-Bandwidth-UL-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Max-Requested-Bandwidth-DL:515" value="[Max-Requested-Bandwidth-DL-Rtcp]" vendorId="[vendorID]"/>
             </avp>
-            <avp code="Media-Type" value="[Media-Type]"/>
-            <avp code="Flow-Status" value="[Flow-Status]"/>
+            <avp code="Media-Type:520" value="[Media-Type]" vendorId="[vendorID]"/>
+            <avp code="Flow-Status:511" value="[Flow-Status]" vendorId="[vendorID]"/>
         </avp>
-        <avp code="AF-Charging-Identifier" value="[AF-Charging-Identifier]"/>
-        <avp code="Specific-Action" value="[Specific-Action]"/>
-        <avp code="Subscription-Id">
-            <avp code="Subscription-Id-Type" value="[Subscription-Id-Type]"/>
-            <avp code="Subscription-Id-Data" value="[Subscription-Id-Data]"/>
+        <avp code="AF-Charging-Identifier:505" value="[AF-Charging-Identifier]" vendorId="[vendorID]"/>
+        <avp code="Specific-Action:513" value="[Specific-Action]" vendorId="[vendorID]"/>
+        <avp code="Subscription-Id:443">
+            <avp code="Subscription-Id-Type:450" value="[Subscription-Id-Type]"/>
+            <avp code="Subscription-Id-Data:444" value="[Subscription-Id-Data]"/>
         </avp>
     </sendMessageDIAMETER>
 
@@ -116,12 +116,12 @@
     <sendMessageDIAMETER name="SendAnswerRAA" listenpoint="lp_client" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-        <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Origin-Host" value="[destinationHost]"/>
-        <avp code="Origin-Realm" value="[destinationRealm]"/>
-        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-        <avp code="Origin-State-Id" value="[Origin-State-Id]"/>
-        <avp code="RAT-Type" value="[RAT-Type]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+        <avp code="Origin-State-Id:278" value="[Origin-State-Id]"/>
+        <avp code="RAT-Type:1032" value="[RAT-Type]" vendorId="[vendorID]"/>
    </sendMessageDIAMETER>
 
 
@@ -130,15 +130,15 @@
 
     <sendMessageDIAMETER name="SendRequestSTR" listenpoint="lp_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
-        <header request="true" command="Session-Termination" applicationId="3GPP Rx"/>
-        <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Auth-Application-Id" value="3GPP Rx"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <header request="true" command="Session-Termination:275" applicationId="3GPP Rx:16777236"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Auth-Application-Id:258" value="3GPP Rx:16777236"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
         
-        <avp code="Termination-Cause" value="[Termination-Cause]"/>
+        <avp code="Termination-Cause:295" value="[Termination-Cause]"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerSTA" listenpoint="lp_client" 

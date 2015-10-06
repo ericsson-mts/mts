@@ -47,69 +47,69 @@ Capabilities-Exchange-Answer ::= < Diameter Header: 257 >
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
-        <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+        <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS:2001"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
         <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
-        <avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
-        <avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
+        <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
+        <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
 
         <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
-        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="0"/>
+        <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
 
         <!-- The Product-Name AVP contains the vendor assigned name for the product. -->
-        <avp code="Product-Name" mandatory="true" type="UTF8String" value="Ivan Skytte Jorgensen Java Diameter stack"/>
+        <avp code="Product-Name:269" mandatory="true" type="UTF8String" value="Ivan Skytte Jorgensen Java Diameter stack"/>
 
         <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
-        <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="2414505"/>
+        <avp code="Origin-State-Id:278" mandatory="false" type="Unsigned32" value="2414505"/>
 
         <!-- The Error-Message AVP MAY accompany a Result-Code AVP as a human readable error message. -->
-        <avp code="Error-Message" mandatory="false" type="UTF8String" value="ToBeCompleted. Change result code success value."/>
+        <avp code="Error-Message:281" mandatory="false" type="UTF8String" value="ToBeCompleted. Change result code success value."/>
 
         <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
 <!--
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
         <!-- To inform the peer that the sender supports (a subset of) the vendor-specific AVPs defined by the vendor identified in this AVP. -->
-        <avp code="Supported-Vendor-Id" mandatory="false" type="Unsigned32" value="2"/>
-        <avp code="Supported-Vendor-Id" mandatory="false" type="Unsigned32" value="3"/>
+        <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="2"/>
+        <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="3"/>
 
         <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
-        <avp code="Auth-Application-Id" mandatory="false" type="Unsigned32" value="16777215"/>
-        <avp code="Auth-Application-Id" mandatory="false" type="Unsigned32" value="16777214"/>
+        <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="16777215"/>
+        <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="16777214"/>
 
         <!-- The Inband-Security-Id AVP is used in order to advertise support of the Security portion of the application. -->
         <!-- Possible enumerated values : NO_INBAND_SECURITY (0) / TLS (1). -->
-        <avp code="Inband-Security-Id" mandatory="false" type="Unsigned32" value="NO_INBAND_SECURITY"/>
-        <avp code="Inband-Security-Id" mandatory="false" type="Unsigned32" value="TLS"/>
+        <avp code="Inband-Security-Id:299" mandatory="false" type="Unsigned32" value="NO_INBAND_SECURITY:0"/>
+        <avp code="Inband-Security-Id:299" mandatory="false" type="Unsigned32" value="TLS:1"/>
 
         <!-- The Acct-Application-Id AVP is used in order to advertise support of the Accounting portion of an application. -->
-        <avp code="Acct-Application-Id" mandatory="false" type="Unsigned32" value="16777213"/>
-        <avp code="Acct-Application-Id" mandatory="false" type="Unsigned32" value="16777212"/>
+        <avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="16777213"/>
+        <avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="16777212"/>
 
         <!-- The Vendor-Specific-Application-Id AVP is used to advertise support of a vendor-specific Diameter Application. -->
-        <avp code="Vendor-Specific-Application-Id">
-          <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="0"/>
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
-          <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+        <avp code="Vendor-Specific-Application-Id:260">
+          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+          <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/>
+          <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777216"/-->
         </avp>
-        <avp code="Vendor-Specific-Application-Id">
-          <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="0"/>
-          <!--avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
-          <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777217"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+          <!--avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/-->
+          <avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777217"/>
         </avp>
 
         <!-- The Firmware-Revision AVP is used to inform a Diameter peer of the firmware revision of the issuing device. -->
-        <avp code="Firmware-Revision" mandatory="false" type="Unsigned32" value="0967"/>
+        <avp code="Firmware-Revision:267" mandatory="false" type="Unsigned32" value="0967"/>
 
     </sendMessageDIAMETER>
     

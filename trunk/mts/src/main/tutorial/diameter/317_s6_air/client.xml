@@ -57,26 +57,26 @@ Authentication-Information-Request ::= < Diameter Header: 318, REQ, PXY, 1677725
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestAIR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
 
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP S6a"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="[applicationID]"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
 
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
-        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+        <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
-        <avp code="User-Name" value="[Imsi]"/>
-        <avp code="Requested-EUTRAN-Authentication-Info">
-            <avp code="Number-Of-Requested-Vectors" value="1"/>
+        <avp code="User-Name:1" value="[Imsi]"/>
+        <avp code="Requested-EUTRAN-Authentication-Info:1408">
+            <avp code="Number-Of-Requested-Vectors:1410" value="1"/>
             <!-- Value of Immediate-Response-Preferred does not matter : only AVP presence is checked by HSS /-->
-            <avp code="Immediate-Response-Preferred" value="0"/>
+            <avp code="Immediate-Response-Preferred:1412" value="0"/>
         </avp>
-        <avp code="Visited-PLMN-Id" value="[Visited-PLMN-Id]"/>
+        <avp code="Visited-PLMN-Id:1407" value="[Visited-PLMN-Id]"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerAIA" channel="channel_client" request="false" type="3GPP-Authentication-Information" result="DIAMETER_SUCCESS">

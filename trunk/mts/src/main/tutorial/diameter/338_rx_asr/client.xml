@@ -29,16 +29,16 @@ From 3GPP TS 29.214 V10.3.0 : ASR is sent by the PCRF to inform the AF that bear
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestASR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         
-        <avp code="Auth-Application-Id" value="3GPP Rx"/>
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
 
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
         
-        <avp code="Abort-Cause" value="[Abort-Cause]"/>
+        <avp code="Abort-Cause:500" value="[Abort-Cause]" vendorId="[vendorID]"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerASA" channel="channel_client" request="false" type="Abort-Session" result="DIAMETER_SUCCESS">

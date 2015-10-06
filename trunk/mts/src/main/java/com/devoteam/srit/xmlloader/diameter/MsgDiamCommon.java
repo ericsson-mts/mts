@@ -180,11 +180,14 @@ public class MsgDiamCommon extends Msg
     		{
     			status = status.substring(pos + 1);
     		}
-    		int statusCode = new Integer(status).intValue();
-            if (statusCode < 2000 && statusCode >= 3000)
-            {
-            	return false;
-            } 
+    		if (Utils.isInteger(status))
+    		{
+    			int statusCode = new Integer(status).intValue();
+    			if (statusCode < 2000 && statusCode >= 3000)
+    			{
+    				return false;
+    			}
+    		}
     	}
     	
         String type = getType();

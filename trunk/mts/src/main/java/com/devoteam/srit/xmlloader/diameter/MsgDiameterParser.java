@@ -706,7 +706,7 @@ public class MsgDiameterParser
 	    }
 	    else
 	    {
-	        if(!Utils.isInteger(enumValue))
+	        if(!Utils.isInteger(enumValue) && avpDef.isEnumerated())
 	        {
 	        	code = avpDef.getEnumCodeByName(enumValue);
 	            if (code < 0)

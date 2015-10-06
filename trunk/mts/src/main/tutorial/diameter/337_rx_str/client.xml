@@ -28,16 +28,16 @@ From 3GPP TS 29.214 V10.3.0 : STR is sent by the AF to inform the PCRF that an e
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestSTR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         
-        <avp code="Auth-Application-Id" value="3GPP Rx"/>
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
 
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
         
-        <avp code="Termination-Cause" value="[Termination-Cause]"/>
+        <avp code="Termination-Cause:295" value="[Termination-Cause]"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerSTA" channel="channel_client" request="false" type="Session-Termination" result="DIAMETER_SUCCESS">

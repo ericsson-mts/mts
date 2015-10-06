@@ -32,22 +32,22 @@ Disconnect-Peer-Answer ::= < Diameter Header: 282 >
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>
         <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
-        <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+        <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS:2001"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
         <!-- The Error-Message AVP MAY accompany a Result-Code AVP as a human readable error message. -->
-        <avp code="Error-Message" mandatory="false" type="UTF8String" value="ToBeCompleted. Change result code success value."/>
+        <avp code="Error-Message:281" mandatory="false" type="UTF8String" value="ToBeCompleted. Change result code success value."/>
 
         <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
 <!--
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->

@@ -79,108 +79,108 @@ User-Data-Answer  ::= < Diameter Header: 306, PXY, 16777231 >
     <sendMessageDIAMETER name="Send Answer ETSI/e4/UDA" listenpoint="[listenpointName]" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-          <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
+          <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
-          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
-          <avp code="Experimental-Result">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001"/>
+          <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS:2001"/>              
+          <avp code="Experimental-Result:297">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code:298" mandatory="true" type="Unsigned32" value="2001"/>
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (ETSI ES 283 034 V1.2.0 (2007-03)). -->
-          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+          <avp code="Auth-Session-State:277" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED:1"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
-          <avp code="Globally-Unique-Address" mandatory="true"  vendorId="[vendorID]">
-            <avp code="Framed-IP-Address" type="Address" value="127.0.0.1"/>
+          <avp code="Globally-Unique-Address:300" mandatory="true"  vendorId="[vendorID]">
+            <avp code="Framed-IP-Address:8" type="Address" value="127.0.0.1"/>
             <!-- bad format for the avp ? -->
-            <!--avp code="Framed-IPv6-Prefix" type="Address" value="[fe80::]"/-->
-            <avp code="Address-Realm" mandatory="true"  type="OctetString" value="localhost" vendorId="[vendorID]"/>
+            <!--avp code="Framed-IPv6-Prefix:97" type="Address" value="[fe80::]"/-->
+            <avp code="Address-Realm:301" mandatory="true"  type="OctetString" value="localhost" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
-          <avp code="User-Name" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="User-Name:1" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
-          <avp code="Logical-Access-Id" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
-          <avp code="Physical-Access-Id" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+          <avp code="Logical-Access-Id:302" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+          <avp code="Physical-Access-Id:313" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
 
-          <avp code="Access-Network-Type" vendorId="13019">
+          <avp code="Access-Network-Type:306" vendorId="13019">
             <!-- The NAS-Port-Type AVP contains the type of the port on which the NAS is authenticating the user. -->
             <!-- Possible enumerated values : Async (0) / Sync (1) / ISDN Sync (2) / ISDN Async V.120 (3) / ISDN Async V.110 (4) / Virtual (5) / PIAFS (6) / HDLC Clear Channel(7) / X.25 (8) / X.75 (9) / G.3 Fax (10) / SDSL - Symmetric DSL (11) / ADSL-CAP - Asymmetric DSL, Carrierless Amplitude Phase Modulation(12) / ADSL-DMT - Asymmetric DSL, Discrete Multi-Tone (13) / IDSL - ISDN Digital Subscriber Line (14) / Ethernet (15) / xDSL - Digital Subscriber Line of unknown type (16) / Cable (17) / Wireless - Other (18) / Wireless - IEEE 802.11 (19) / Token-Ring [RAD802.1X] (20) / FDDI [RAD802.1X] (21) / Wireless - CDMA2000 (22) / Wireless - UMTS (23) / Wireless - 1X-EV (24) / IAPP [IEEE 802.11f] (25). -->
-            <avp code="NAS-Port-Type" type="Enumerated" value="Async"/>
+            <avp code="NAS-Port-Type:61" type="Enumerated" value="Async:0"/>
 
             <!-- The Aggregation-Network-Type AVP is of type Enumerated. -->
             <!-- Possible enumerated values : UNKNOWN (0) / ATM (1) / ETHERNET (2). -->
-            <avp code="Aggregation-Network-Type" type="Enumerated" value="UNKNOWN" vendorId="[vendorID]"/>
+            <avp code="Aggregation-Network-Type:307" type="Enumerated" value="UNKNOWN:0" vendorId="[vendorID]"/>
           </avp>
 
-          <avp code="Initial-Gate-Setting" vendorId="[vendorID]">
-            <avp code="NAS-Filter-Rule" type="IPFilterRule" value="ToBeCompleted"/>
-            <avp code="Maximum-Allowed-Bandwidth-UL" type="Unsigned32" value="0" vendorId="[vendorID]"/>
-            <avp code="Maximum-Allowed-Bandwidth-DL" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+          <avp code="Initial-Gate-Setting:303" vendorId="[vendorID]">
+            <avp code="NAS-Filter-Rule:92" type="IPFilterRule" value="ToBeCompleted"/>
+            <avp code="Maximum-Allowed-Bandwidth-UL:308" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Maximum-Allowed-Bandwidth-DL:309" type="Unsigned32" value="0" vendorId="[vendorID]"/>
           </avp>
 
-          <avp code="QoS-Profile" vendorId="[vendorID]">
-            <avp code="Application-Class-ID" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
+          <avp code="QoS-Profile:304" vendorId="[vendorID]">
+            <avp code="Application-Class-ID:312" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
             <!-- The Media-Type AVP determines the media type of a session component. -->
             <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
-            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="[vendorID]"/>
+            <avp code="Media-Type:520" type="Enumerated" value="AUDIO:0" vendorId="[vendorID]"/>
 
             <!-- The Reservation-Priority AVP is of type Enumerated. -->
             <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
-            <avp code="Reservation-Priority" type="Enumerated" value="1" vendorId="[vendorID]"/>
+            <avp code="Reservation-Priority:458" type="Enumerated" value="1" vendorId="[vendorID]"/>
 
-            <avp code="Maximum-Allowed-Bandwidth-UL" type="Unsigned32" value="0" vendorId="[vendorID]"/>
-            <avp code="Maximum-Allowed-Bandwidth-DL" type="Unsigned32" value="0" vendorId="[vendorID]"/>
-            <avp code="Transport-Class" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Maximum-Allowed-Bandwidth-UL:308" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Maximum-Allowed-Bandwidth-DL:309" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Transport-Class:311" type="Unsigned32" value="0" vendorId="[vendorID]"/>
           </avp>
-          <avp code="QoS-Profile" vendorId="[vendorID]">
-            <avp code="Application-Class-ID" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
+          <avp code="QoS-Profile:304" vendorId="[vendorID]">
+            <avp code="Application-Class-ID:312" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>
 
             <!-- The Media-Type AVP determines the media type of a session component. -->
             <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
-            <avp code="Media-Type" type="Enumerated" value="AUDIO" vendorId="[vendorID]"/>
+            <avp code="Media-Type:520" type="Enumerated" value="AUDIO:0" vendorId="[vendorID]"/>
 
             <!-- The Reservation-Priority AVP is of type Enumerated. -->
             <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
-            <avp code="Reservation-Priority" type="Enumerated" value="1" vendorId="[vendorID]"/>
+            <avp code="Reservation-Priority:458" type="Enumerated" value="PRIORITY-ONE:1" vendorId="[vendorID]"/>
 
-            <avp code="Maximum-Allowed-Bandwidth-UL" type="Unsigned32" value="0" vendorId="[vendorID]"/>
-            <avp code="Maximum-Allowed-Bandwidth-DL" type="Unsigned32" value="0" vendorId="[vendorID]"/>
-            <avp code="Transport-Class" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Maximum-Allowed-Bandwidth-UL:308" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Maximum-Allowed-Bandwidth-DL:309" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+            <avp code="Transport-Class:311" type="Unsigned32" value="0" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The IP-Connectivity-Status AVP is of type Enumerated. -->
           <!-- Possible enumerated values : IP-CONNECTIVITY-ON (0) / IP-CONNECTIVITY-LOST (1). -->
-          <avp code="IP-Connectivity-Status" type="Enumerated" value="IP-CONNECTIVITY-ON" vendorId="[vendorID]"/>
+          <avp code="IP-Connectivity-Status:305" type="Enumerated" value="IP-CONNECTIVITY-ON:0" vendorId="[vendorID]"/>
 
 <!--
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
     
 </scenario>
