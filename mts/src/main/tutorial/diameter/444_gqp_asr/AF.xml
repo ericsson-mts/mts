@@ -51,46 +51,46 @@ Abort-Session-Answer  ::= < Diameter Header: 258, PXY >
     <sendMessageDIAMETER name="Send Answer ETSI/Gq'/ASA" listenpoint="[listenpointName]" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" error="false" retransmit="false" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
-          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
-          <avp code="Experimental-Result">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001" vendorId="[vendorID]"/>
+          <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+          <avp code="Experimental-Result:297">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code:298" mandatory="true" type="Unsigned32" value="INSUFFICIENT_RESOURCES:4041" vendorId="[vendorID]"/>
           </avp>
 
           <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
-          <avp code="Origin-State-Id" mandatory="true" type="Unsigned32" value="0"/>
+          <avp code="Origin-State-Id:278" mandatory="true" type="Unsigned32" value="0"/>
 
-          <avp code="Error-Message" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
-          <avp code="Error-Reporting-Host" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
+          <avp code="Error-Message:281" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="Error-Reporting-Host:294" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
 
 <!--
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
-          <avp code="Redirect-Host" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
+          <avp code="Redirect-Host:292" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
 
           <!-- The Redirect-Host-Usage AVP dictates how the routing entry resulting from the Redirect-Host is to be used. -->
           <!-- Possible enumerated values : DONT_CACHE(0) / ALL_SESSION(1) / ALL_REALM(2) / REALM_AND_APPLICATION(3) / ALL_APPLICATION(4) / ALL_HOST(5) / ALL_USER(6). -->
-          <avp code="Redirect-Host-Usage" mandatory="true" type="Enumerated" value="1"/>
+          <avp code="Redirect-Host-Usage:261" mandatory="true" type="Enumerated" value="1"/>
 
-          <avp code="Redirect-Max-Cache-Time" mandatory="true" type="Unsigned32" value="0"/>              
+          <avp code="Redirect-Max-Cache-Time:262" mandatory="true" type="Unsigned32" value="0"/>              
 
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
     </sendMessageDIAMETER>
     

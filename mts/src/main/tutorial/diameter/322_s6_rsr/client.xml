@@ -46,20 +46,20 @@ Reset-Request ::= < Diameter Header: 322, REQ, PXY, 16777251 >
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestRSR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
 
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP S6a"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="[applicationID]"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
 
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
 
-        <avp code="User-Id" value="[User-Id]"/>
+        <avp code="User-Id:1444" value="[User-Id]"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerRSA" channel="channel_client" request="false" type="3GPP-Reset" result="DIAMETER_SUCCESS">

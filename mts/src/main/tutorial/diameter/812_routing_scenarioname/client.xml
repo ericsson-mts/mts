@@ -6,16 +6,16 @@
 
     <createListenpointDIAMETER name="client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
-        <avp code="Origin-Host" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
-        <avp code="Host-IP-Address" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
-        <avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
-        <avp code="Product-Name" value="MTS : Multiprotocol Test Suite" type="UTF8String" mandatory="true"/>
-        <avp code="Origin-State-Id" value="123456789" type="Unsigned32" mandatory="true"/>
-        <avp code="Firmware-Revision" value="987654321" type="Unsigned32" mandatory="true"/>
-        <avp code="Vendor-Specific-Application-Id" type="Grouped" mandatory="true">
-            <avp code="Vendor-Id" value="TGPP" type="VendorId" mandatory="true"/>
-            <avp code="Auth-Application-Id" value="3GPP Cx" type="AppId" mandatory="true"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Host-IP-Address:257" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
+        <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
+        <avp code="Product-Name:269" value="MTS : Multiprotocol Test Suite" type="UTF8String" mandatory="true"/>
+        <avp code="Origin-State-Id:278" value="123456789" type="Unsigned32" mandatory="true"/>
+        <avp code="Firmware-Revision:267" value="987654321" type="Unsigned32" mandatory="true"/>
+        <avp code="Vendor-Specific-Application-Id:260" type="Grouped" mandatory="true">
+            <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216" type="AppId" mandatory="true"/>
         </avp>
     </createListenpointDIAMETER>
 
@@ -23,27 +23,27 @@
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
-        <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         		
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
 
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
 
-        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
-        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
-        <avp code="Auth-Data-Item">
-            <avp code="Item-Number" value="0"/>
-            <avp code="Authentication-Scheme" value="DIGEST"/>
-            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
-            <avp code="Authentication-Context" value="INVITE"/>
+        <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" vendorId="[vendorID]"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="Auth-Data-Item:1018">
+            <avp code="Item-Number:1021" value="0"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST"/>
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context:1024" value="INVITE"/>
         </avp>
     </sendMessageDIAMETER>
 
@@ -66,24 +66,24 @@
 
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="client"
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">    
-        <header request="false" command="Multimedia-Authentitcation" applicationId="3GPP Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" value="[remoteHostDIAM]"/>
-        <avp code="Origin-Realm" value="[remoteRealmDIAM]"/>
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host:264" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[remoteRealmDIAM]"/>
         
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>		
-        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr"/>
-        <avp code="Number-Authentication-Items" value="1"/>
-        <avp code="Auth-Data-Item">
-            <avp code="Item-Number" value="0"/>
-            <avp code="Authentication-Scheme" value="DIGEST"/>
-            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
-            <avp code="Authentication-Context" value="INVITE"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>		
+        <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" vendorId="[vendorID]"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="Auth-Data-Item:1018">
+            <avp code="Item-Number:1021" value="0"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST"/>
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context:1024" value="INVITE"/>
         </avp>
     </sendMessageDIAMETER>
     

@@ -3,8 +3,8 @@
 <!-- name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 <scenario>
 
-    <parameter name="[codePublicIdentity]" operation="set" value="601"/>
-    <parameter name="[codeUserName]" operation="set" value="1"/>
+    <parameter name="[codePublicIdentity]" operation="set" value="Public-Identity:601"/>
+    <parameter name="[codeUserName]" operation="set" value="User-Name:1"/>
     <parameter name="[publicIdentity]" operation="set" value="sip:+330000@sip.pfdev.fr"/>
     <parameter name="[userName]" operation="set" value="bla1[publicIdentity]1, [unKnown]"/>
     <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla2[publicIdentity]2, [unKnown(1)]"/>
@@ -18,20 +18,20 @@
 
     <parameter name="[newSessionId]" operation="set" value="999999999888888888"/>
     <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
-        <header request="true" command="Multimedia-Authentitcation" applicationId="[applicationID]"
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="[applicationID]"
                 hopByHop="999999999" endToEnd="888888888"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[newSessionId]"/>
       
-        <avp code="Vendor-Specific-Application-Id">
-          	<avp code="Vendor-Id" value="TGPP:10415"/>
-          	<avp code="Auth-Application-Id" value="[applicationID]"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+          	<avp code="Vendor-Id:266" value="[vendorID]"/>
+          	<avp code="Auth-Application-Id:258" value="[applicationID]"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
 
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
 
         <avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]" vendorId="TGPP"/>
         <avp code="[codePublicIdentity]" value="[publicIdentity]" vendorId="TGPP"/>
@@ -39,13 +39,13 @@
         <avp code="[codePublicIdentity]" value="[unKnown]" vendorId="TGPP"/>
         <!--<avp code="[codeUserName]" value="bla[privateIdentity(0)]bla" vendorId="TGPP"/>-->
         <avp code="[codeUserName(0)]" value="[userName]" mandatory="false" private="false"/>
-        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
         <avp code="[AuthDataItemCode]">
-            <avp code="Item-Number" value="[ItemNumber]"/>
-            <avp code="Authentication-Scheme" value="DIGEST"/>
-            <avp code="Authentication-Scheme" value="666"/>
-            <avp code="Authentication-Scheme" value="999"/>
-            <avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Item-Number:1021" value="[ItemNumber]"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST"/>
+            <avp code="Authentication-Scheme:1020" value="666"/>
+            <avp code="Authentication-Scheme:1020" value="999"/>
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
         </avp>
         <avp code="2" value="bla[param]bla"/>
     </sendMessageDIAMETER>

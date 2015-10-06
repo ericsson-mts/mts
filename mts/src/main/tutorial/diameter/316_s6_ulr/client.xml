@@ -74,27 +74,27 @@ Update-Location-Request ::= < Diameter Header: 316, REQ, PXY, 16777251 >
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestULR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
 
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP S6a"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="[applicationID]"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
 
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
-        <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
-        <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+        <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
-        <avp code="User-Name" value="[Imsi]"/>
-        <avp code="Terminal-Information">
-            <avp code="IMEI" value="[IMEI]"/>
-            <avp code="Software-Version" value="[Software-Version]"/>
+        <avp code="User-Name:1" value="[Imsi]"/>
+        <avp code="Terminal-Information:1401">
+            <avp code="IMEI:1402" value="[IMEI]"/>
+            <avp code="Software-Version:1403" value="[Software-Version]"/>
         </avp>
-        <avp code="RAT-Type" value="[RAT-Type]"/>
-        <avp code="ULR-Flags" value="[ULR-Flags]"/>
-        <avp code="Visited-PLMN-Id" value="[Visited-PLMN-Id]"/>
+        <avp code="RAT-Type:1032" value="[RAT-Type]" vendorId="[vendorID]"/>
+        <avp code="ULR-Flags:1405" value="[ULR-Flags]"/>
+        <avp code="Visited-PLMN-Id:1407" value="[Visited-PLMN-Id]"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="ReceiveAnswerULA" channel="channel_client" request="false" type="3GPP-Update-Location" result="DIAMETER_SUCCESS">

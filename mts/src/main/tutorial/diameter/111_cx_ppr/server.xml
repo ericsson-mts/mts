@@ -46,64 +46,64 @@ Push-Profile-Request ::= < Diameter Header: 305, REQ, PXY, 16777216 >
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/PPR" channel="channel_client" destScenario="client">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
-          <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/-->
+          <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/>
+            <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777216"/-->
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
-          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+          <avp code="Auth-Session-State:277" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
 
-          <avp code="User-Name" vendorId="[vendorID]" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="User-Name:1" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+          <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+          <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
-          <avp code="Supported-Features" vendorId="[vendorID]">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+          <avp code="Supported-Features:628" vendorId="[vendorID]">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+            <avp code="Feature-List-ID:629" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
+            <avp code="Feature-List:630" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="[vendorID]">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
+          <avp code="Supported-Features:628" vendorId="[vendorID]">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID:629" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List:630" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The User-Data AVP contains the user data required to give service to a user. -->
-          <!--avp code="User-Data" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/-->              
+          <avp code="User-Data:606" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>              
 
           <!-- The Charging-Information AVP contains the addresses of the charging functions. -->
-          <avp code="Charging-Information" vendorId="[vendorID]">
+          <avp code="Charging-Information:618" vendorId="[vendorID]">
             <!-- The Primary-Event-Charging-Function-Name AVP contains the address of the Primary Online Charging Function. -->
-            <avp code="Primary-Event-Charging-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
+            <avp code="Primary-Event-Charging-Function-Name:619" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
             <!-- The Secondary-Event-Charging-Function-Name AVP contains the address of the Secondary Online Charging Function. -->
-            <avp code="Secondary-Event-Charging-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
+            <avp code="Secondary-Event-Charging-Function-Name:620" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
             <!-- The Primary-Charging-Collection-Function-Name AVP contains the address of the Primary Charging Data Function. -->
-            <avp code="Primary-Charging-Collection-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
+            <avp code="Primary-Charging-Collection-Function-Name:621" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
             <!-- The Secondary-Charging-Collection-Function-Name AVP contains the address of the Secondary Charging Data Function. -->
-            <avp code="Secondary-Charging-Collection-Function-Name" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
+            <avp code="Secondary-Charging-Collection-Function-Name:622" mandatory="true" type="DiameterURI" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]" vendorId="[vendorID]"/>              
           </avp>
 
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer 3GPP/CX-DX/PPA" channel="channel_client" request="false" type="Push-Profile:305" result="DIAMETER_SUCCESS:2001">

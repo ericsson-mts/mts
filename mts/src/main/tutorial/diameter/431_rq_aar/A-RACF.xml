@@ -54,47 +54,47 @@ AA-Answer  ::= < Diameter Header: 265, PXY >
     <sendMessageDIAMETER name="Send Answer ETSI/Rq/AAA" listenpoint="[listenpointName]" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationID]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[sessionId]"/>
-          <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
+          <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
-         <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
 
-          <avp code="Result-Code" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>              
-          <avp code="Experimental-Result">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Experimental-Result-Code" mandatory="true" type="Unsigned32" value="2001"/>
+          <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS:2001"/>              
+          <avp code="Experimental-Result:297">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Experimental-Result-Code:298" mandatory="true" type="Unsigned32" value="ACCESS_PROFILE_FAILURE:4046" vendorId="[vendorID]"/>
           </avp>
 
-          <avp code="Error-Message" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
-          <avp code="Error-Reporting-Host" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
+          <avp code="Error-Message:281" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+          <avp code="Error-Reporting-Host:294" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
 
-          <avp code="Auth-Grace-Period" mandatory="true" type="Unsigned32" value="0"/>
+          <avp code="Auth-Grace-Period:276" mandatory="true" type="Unsigned32" value="0"/>
 
-          <avp code="Session-Bundle-Id" mandatory="true" type="Unsigned32" value="0" vendorId="13019"/>
-          <avp code="Session-Bundle-Id" mandatory="true" type="Unsigned32" value="1" vendorId="13019"/>
+          <avp code="Session-Bundle-Id:400" mandatory="true" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+          <avp code="Session-Bundle-Id:400" mandatory="true" type="Unsigned32" value="1" vendorId="[vendorID]"/>
 
           <!-- The Reservation-Priority AVP is of type Enumerated. -->
           <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
-          <avp code="Reservation-Priority" mandatory="false"  type="Enumerated" value="1" vendorId="13019"/>
+          <avp code="Reservation-Priority:458" mandatory="false"  type="Enumerated" value="PRIORITY-ONE:1" vendorId="[vendorID]"/>
 
-          <avp code="Authorization-Lifetime" mandatory="true" type="Unsigned32" value="0"/>
+          <avp code="Authorization-Lifetime:291" mandatory="true" type="Unsigned32" value="0"/>
 
 <!--
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
-          <avp code="Failed-AVP">
+          <avp code="Failed-AVP:279">
             <avp code="???" vendorId="[vendorID]" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
           </avp>
 -->
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
     </sendMessageDIAMETER>
     

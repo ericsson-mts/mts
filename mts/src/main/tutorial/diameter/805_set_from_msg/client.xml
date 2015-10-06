@@ -17,40 +17,40 @@
                   hopByHop="[newHopByHop]" endToEnd="[newEndToEnd]"/>
           <avp code="Session-Id:263" value="[newSessionId]"/>
           		
-          <avp code="Vendor-Specific-Application-Id">                                      
+          <avp code="Vendor-Specific-Application-Id:260">                                      
               <avp code="2999999990" mandatory="true" type="Unsigned32" value="111111111"/>             
-              <avp code="Acct-Application-Id" value="4321"/>
+              <avp code="Acct-Application-Id:259" value="4321"/>
               <avp code="2999999991" mandatory="true" type="Integer64" value="65432109876543210"/>
-              <avp code="Auth-Application-Id" value="4321"/>
+              <avp code="Auth-Application-Id:258" value="4321"/>
               <avp code="2999999992" mandatory="true" type="Float32" value="-1234567890e-12"/>
-              <avp code="Vendor-Id" value="TGPP"/>
+              <avp code="Vendor-Id:266" value="3GPP:10415"/>
               <avp code="2999999993" mandatory="true" type="Float64" value="999999999e123"/>
           </avp>
-          <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+          <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
           
-          <avp code="Origin-Host" value="[localHostDIAM]"/>
-          <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-          <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-          <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+          <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
+          <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
 
-          <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" type="UTF8String" 
-               vendorId="10415" mandatory="false" private="false"/>
+          <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" type="UTF8String" 
+               vendorId="3GPP:10415" mandatory="false" private="false"/>
           <avp code="Public-Identity" value="sip:+33333333333@sip.pfdev.fr" type="UTF8String" 
                vendorId="0" mandatory="false" private="false"/>
           <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
           <!-- grouped AVP -->
-          <avp code="Auth-Data-Item" vendorId="0" state="true">
-              <avp code="Item-Number" value="0" vendorId="0"/>
-              <avp code="Authentication-Scheme" value="DIGEST" vendorId="0"/>
-              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="0"/>
-              <avp code="Authentication-Context" value="INVITE" vendorId="0"/>
+          <avp code="Auth-Data-Item:1018" vendorId="0" state="true">
+              <avp code="Item-Number:1021" value="0"/>
+              <avp code="Authentication-Scheme:1020" value="DIGEST" vendorId="0"/>
+              <avp code="Authenticate:1019" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5"/>
+              <avp code="Authentication-Context:1024" value="INVITE" vendorId="0"/>
           </avp>
           <!-- Bad grouped AVP -->
-          <avp code="Auth-Data-Item" vendorId="TGPP">
-              <avp code="Item-Number" value="0" vendorId="TGPP"/>
+          <avp code="Auth-Data-Item:1018" vendorId="3GPP:10415">
+              <avp code="Item-Number" value="0" vendorId="3GPP"/>
               <avp code="Authentication-Scheme" value="808464432" vendorId="TGPP"/>
-              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="TGPP"/>
-              <avp code="Authentication-Context" value="INVITE" vendorId="TGPP"/>
+              <avp code="Authenticate" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" vendorId="3GPP:10415"/>
+              <avp code="Authentication-Context" value="INVITE" vendorId="10415"/>
           </avp>
           <avp code="2999999994" value="abcdefghijklmnopqrstuvwxyz" type="OctetString" vendorId="TGPP" state="true"/>
           <avp code="2999999995" value="AAAAAAAAAAaaaaaaaaaa" type="UTF8String" vendorId="TGPP" state="true"/>
@@ -59,28 +59,28 @@
           <avp code="2999999998" value="010203040506070809101112123141516171819120" type="Binary" vendorId="TGPP" state="true"/>
           <avp code="2999999999" value="0123456789" type="UTF8String" vendorId="TGPP" state="true"/>
           <avp code="3000000000" value="34.34.34.34" type="address" vendorId="TGPP" state="true"/>          
-          <avp code="IMS-Information" vendorId="TGPP" state="true">
-              <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
-              <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
-              <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="[stateValue]"/>
-              <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
-              <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
-              <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
+          <avp code="IMS-Information:876" vendorId="TGPP" state="true">
+              <avp code="Event-Type:823" value="badValue1" vendorId="TGPP" state="false"/>
+              <avp code="Role-Of-Node:829" value="[emptyList]" vendorId="TGPP" state="false"/>
+              <avp code="Node-Functionality:862" value="1212121" vendorId="TGPP" state="[stateValue]"/>
+              <avp code="User-Session-ID:830" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
+              <avp code="Calling-Party-Address:831" value="badValue5" vendorId="TGPP"/>
+              <avp code="Called-Party-Address:832" value="[emptyList]" vendorId="TGPP"/>
           </avp>
           
           <!-- type = OctetString -->
-          <avp code="CHAP-Password" type="OctetString" value="'&quot;+-*/&gt;&lt;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"/>
+          <avp code="CHAP-Password:3" type="OctetString" value="'&quot;+-*/&gt;&lt;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"/>
           <!-- type = UTF8String -->
-          <avp code="User-Name" type="UTF8String" value="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"/>
+          <avp code="User-Name:1" type="UTF8String" value="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"/>
           <!-- type = IPAddress -->
           <avp code="Framed-IP-Address" value="192.168.90.117"/>
-          <avp code="Framed-IP-Address" type="IPAddress" value="[2a01:cf00:33:5::6e01]"/>
+          <avp code="8" type="IPAddress" value="[2a01:cf00:33:5::6e01]"/>
           <!-- type = Integer32 -->
           <avp code="Management-Privilege-Level" value="-2000000000"/>
           <avp code="136" type="Integer32" value="2000000000"/>
           <!-- type = Integer64 -->
           <!-- TODO -->
-          <avp code="Value-Digits:447" type="Integer64" value="-2000000000000000000"/>
+          <avp code="Value-Digits" type="Integer64" value="-2000000000000000000"/>
           <avp code="447" type="Integer64" value="2000000000000000000"/>
           <!-- type = Unsigned32 -->
           <avp code="NAS-Port" type="Unsigned32" value="4000000000"/>
@@ -92,7 +92,7 @@
           <avp code="Event-Timestamp" value="20/02/2011 17:35:56:555" vendorId="0"/>
           <avp code="55" type="Time" value="04/08/2015 11:12:59:123" vendorId="0"/>
           <!-- type = Float32 -->
-          <avp code="Peak-Traffic-Rate" value="123456789012345678901234567890"/>
+          <avp code="Peak-Traffic-Rate:498" value="123456789012345678901234567890"/>
           <avp code="498" type="Float32" value="9.876543210e-45"/>
           <avp code="Peak-Traffic-Rate" value="1.234567890e38"/>
           <!-- type = Float64 -->

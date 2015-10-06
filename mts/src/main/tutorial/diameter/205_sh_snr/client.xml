@@ -49,82 +49,82 @@ Subscribe-Notifications-Request ::= < Diameter Header: 308, REQ, PXY, 16777217 >
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="Send Request 3GPP/SH/SNR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
-          <avp code="Session-Id" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
-          <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/>
-            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
+          <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
           </avp>
 
           <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
           <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
-          <avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+          <avp code="Auth-Session-State:277" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED:1"/>
 
-          <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
-          <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
-          <avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
-          <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
 
           <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports. -->
-          <avp code="Supported-Features" vendorId="[vendorID]">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+          <avp code="Supported-Features:628" vendorId="[vendorID]">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
             <!-- The Feature-List-ID AVP contains the identity of a feature list. -->
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+            <avp code="Feature-List-ID:629" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
             <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application. -->
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
+            <avp code="Feature-List:630" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
           </avp>
-          <avp code="Supported-Features" vendorId="[vendorID]">
-            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="[vendorID]"/>
-            <avp code="Feature-List-ID" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
-            <avp code="Feature-List" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
+          <avp code="Supported-Features:628" vendorId="[vendorID]">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID:629" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List:630" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
           </avp>
 
           <!-- The User-Identity AVP contains either a Public- Identity AVP or an MSISDN AVP. -->
-          <avp code="User-Identity" vendorId="[vendorID]">
+          <avp code="User-Identity:700" vendorId="[vendorID]">
             <!-- The Public-Identity AVP contains the public identity of a user in the IMS. -->
-            <avp code="Public-Identity" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="[vendorID]"/>                   
+            <avp code="Public-Identity:601" mandatory="true" type="UTF8String" value="PublicIdentity1" vendorId="[vendorID]"/>                   
             <!-- The MSISDN AVP contains an MSISDN, in international number format as described in ITU-T Rec E.164 [8], encoded as a TBCD-string. -->
-            <avp code="MSISDN" mandatory="true" type="OctetString" value="MSISDN1" vendorId="[vendorID]"/>                    
+            <avp code="MSISDN:701" mandatory="true" type="OctetString" value="MSISDN1" vendorId="[vendorID]"/>                    
           </avp>
 
           <!-- The Service-Indication AVP contains the Service Indication that identifies a service in an AS. -->
-          <avp code="Service-Indication" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>                    
-          <avp code="Service-Indication" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>                    
+          <avp code="Service-Indication:704" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>                    
+          <avp code="Service-Indication:704" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>                    
           
           <!-- The Send-Data-Indication AVP indicates that the sender requests the User-Data. -->
           <!-- Possible enumerated values : USER_DATA_NOT_REQUESTED (0) / USER_DATA_REQUESTED (1). -->
-          <avp code="Send-Data-Indication" mandatory="false"  type="Enumerated" value="0" vendorId="[vendorID]"/>
+          <avp code="Send-Data-Indication:710" mandatory="false"  type="Enumerated" value="0" vendorId="[vendorID]"/>
 
           <!-- The Server-Name AVP contains a SIP-URL used to identify an AS. -->
-          <avp code="Server-Name" mandatory="true" type="UTF8String" value="Server-Name" vendorId="[vendorID]"/>
+          <avp code="Server-Name:602" mandatory="true" type="UTF8String" value="Server-Name" vendorId="[vendorID]"/>
 
           <!-- The Subs-Req-Type AVP indicates the type of the subscription-to-notifications request. -->
           <!-- Possible enumerated values : Subscribe (0) / Unsubscribe (1). -->
-          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
+          <avp code="Data-Reference:703" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
 
           <!-- The Data-Reference AVP indicates the type of the requested user data. -->
           <!-- Possible enumerated values : RepositoryData (0) / IMSPublicIdentity (10) / IMSUserState (11) / S-CSCFName (12) / InitialFilterCriteria (13) / LocationInformation (14) / UserState (15) / ChargingInformation (16)  / MSISDN (17) / PSIActivation (18) / DSAI (19) / AliasesRepositoryData (20). -->
-          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
-          <avp code="Data-Reference" mandatory="true" type="Enumerated" value="10" vendorId="[vendorID]"/>
+          <avp code="Data-Reference:703" mandatory="true" type="Enumerated" value="0" vendorId="[vendorID]"/>
+          <avp code="Data-Reference:703" mandatory="true" type="Enumerated" value="10" vendorId="[vendorID]"/>
 
           <!-- The Identity-Set AVP indicates the requested set of IMS Public Identities. -->
           <!-- Possible enumerated values : ALL_IDENTITIES (0) / REGISTERED_IDENTITIES (1) / IMPLICIT_IDENTITIES (2) / ALIAS_IDENTITIES (3). -->
-          <avp code="Identity-Set" mandatory="false"  type="Enumerated" value="0" vendorId="[vendorID]"/>
+          <avp code="Identity-Set:708" mandatory="false"  type="Enumerated" value="ALL_IDENTITIES:0" vendorId="[vendorID]"/>
 
           <!-- The Expiry-Time AVP contains the expiry time of subscriptions to notifications in the hss. -->
-          <avp code="Expiry-Time" mandatory="false"  type="Time" value="0" vendorId="[vendorID]"/>
+          <avp code="Expiry-Time:709" mandatory="false"  type="Time" value="0" vendorId="[vendorID]"/>
 
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Proxy-Info">
-             <avp code="Proxy-Host" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-             <avp code="Proxy-State" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
           </avp>
-          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
-          <avp code="Route-Record" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer 3GPP/SH/SNA" channel="channel_client" request="false" type="Subscribe-Notifications:308" result="DIAMETER_SUCCESS:2001">

@@ -37,7 +37,7 @@
     <parameter name="[retransmit]" operation="string.xpath" value="[xml]" value2="//header/@r"/>
     <test parameter="[retransmit]" condition="boolean.equals" value="false"/>
     <parameter name="[sessionIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Session-Id:263']/@value"/>
-    <test parameter="[sessionIdValue]" condition="string.equals" value="[localHostDIAM];[newSessionId]"/>
+    <test parameter="[sessionIdValue]" condition="string.equals" value="[newSessionId]"/>
     <parameter name="[sessionIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Session-Id:263']/@type"/>
     <test parameter="[sessionIdType]" condition="string.equals" value="UTF8String"/>
     <parameter name="[originHostValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Origin-Host:264']/@value"/>
@@ -77,12 +77,12 @@
     <parameter name="[authSessionStateVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Auth-Session-State:277']/@vendorId"/>
     <test parameter="[authSessionStateVendorId]" condition="list.isEmpty"/>
 
-    <parameter name="[TGPPChargingIdValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@value"/>
-    <!--test parameter="[TGPPChargingIdValue]" condition="string.equals" value="TODO"/-->
-    <parameter name="[TGPPChargingIdType]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@type"/>
-    <test parameter="[TGPPChargingIdType]" condition="string.equals" value="OctetString"/>
-    <parameter name="[TGPPChargingIdVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='3GPP-Charging-Id:2']/@vendorId"/>
-    <test parameter="[TGPPChargingIdVendorId]" condition="String.equals" value="3GPP:10415"/>
+    <parameter name="[publicIdentityValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Public-Identity:601']/@value"/>
+    <test parameter="[publicIdentityValue]" condition="string.equals" value="sip:+33875610603@sip.france.fr"/>
+    <parameter name="[publicIdentityType]" operation="string.xpath" value="[xml]" value2="//avp[@code='Public-Identity:601']/@type"/>
+    <test parameter="[publicIdentityType]" condition="string.equals" value="UTF8String"/>
+    <parameter name="[publicIdentityVendorId]" operation="string.xpath" value="[xml]" value2="//avp[@code='Public-Identity:601']/@vendorId"/>
+    <test parameter="[publicIdentityVendorId]" condition="String.equals" value="3GPP:10415"/>
 
     <parameter name="[nbAuthItemsValue]" operation="string.xpath" value="[xml]" value2="//avp[@code='Number-Authentication-Items:1026']/@value"/>
     <test parameter="[nbAuthItemsValue]" condition="number.equals" value="1"/>
@@ -124,28 +124,28 @@
 
     <!-- check binary message data -->    
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
-    <test parameter="[binary]" condition="binary.equals" value="01000208800001fa000010e113de43551a7daf1c00000107400000203136342e34382e3231392e32393b3938373635343332313000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c0000000100000108600000153136342e34382e3231392e32390000000000012840000011636c69656e742e667200000000000125400000153136342e34382e3231392e32390000000000011b40000011636c69656e742e667200000000000002e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000118000003fd6000000c00000000000003fc6000000c00000002000003fe600000e844696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
+    <test parameter="[binary]" condition="binary.equals" value="010001fc800001fa000010e113de43551a7daf1c000001074000001239383736353433323130000000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c0000000100000108600000153136342e34382e3231392e36320000000000012840000011636c69656e742e667200000000000125400000153136342e34382e3231392e36320000000000011b40000011636c69656e742e667200000000000259e000002a000028af7369703a2b3333383735363130363033407369702e6672616e63652e66720000000004026000000c00000001000003fa60000118000003fd6000000c00000000000003fc6000000c00000002000003fe600000e844696765737420757365726e616d653d273333383735363331393735407369702e70666465762e6672272c7265616c6d3d277369702e70666465762e6672272c636e6f6e63653d273430623138636366272c6e633d30303030303030312c716f703d617574682c7572693d277369703a7369702e70666465762e6672272c6e6f6e63653d273231626332373637396464616338666436633030383838313763386165333835272c726573706f6e73653d273338313739643939636333346365306164303032616334643730653337633061272c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
 
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="[listenpointName]" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="Multimedia-Authentitcation" applicationId="Ericsson IMT 30 - Cx" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-        <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Origin-Host" value="[destinationHost]" type="OctetString" mandatory="true"/>
-        <avp code="Origin-Realm" value="[destinationRealm]" type="OctetString" mandatory="true"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]" type="OctetString" mandatory="true"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]" type="OctetString" mandatory="true"/>
         
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="3GPP"/>
-            <avp code="Auth-Application-Id" value="3GPP CX/DX"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="3GPP:10415"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
         </avp>
-        <avp code="Auth-Session-State" value="1"/>
-        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>		
-        <avp code="User-Password" value="sip:+33875610603@sip.france.fr" vendorId="TGPP" type="OctetString" mandatory="true"/>
-        <avp code="Number-Authentication-Items" value="1"/>
-        <avp code="Auth-Data-Item">
-            <avp code="Item-Number" value="0" type="Unsigned32" mandatory="false"/>
-            <avp code="Authentication-Scheme" value="DIGEST" type="Integer32" mandatory="false" />
-            <avp code="Authorization" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" type="OctetString" mandatory="false"/>
-            <avp code="Authentication-Context" value="INVITE" type="OctetString" />
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>		
+        <avp code="Public-Identity:601" value="sip:+33875610603@sip.france.fr" vendorId="TGPP" type="UTF8String" mandatory="true"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="Auth-Data-Item:1018">
+            <avp code="Item-Number:1021" value="0" type="Unsigned32" mandatory="false"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST" type="Integer32" mandatory="false" />
+            <avp code="Authorization:1022" value="Digest username='33875631975@sip.pfdev.fr',realm='sip.pfdev.fr',cnonce='40b18ccf',nc=00000001,qop=auth,uri='sip:sip.pfdev.fr',nonce='21bc27679ddac8fd6c0088817c8ae385',response='38179d99cc34ce0ad002ac4d70e37c0a',algorithm=MD5" type="OctetString" mandatory="false"/>
+            <avp code="Authentication-Context:1024" value="INVITE" type="OctetString" />
         </avp>
     </sendMessageDIAMETER>
     

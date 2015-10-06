@@ -9,30 +9,30 @@
     
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" channel="channel" destScenario="server">
-        <header request="true" command="506" applicationId="Ericsson IMT 30 - Cx"/>
-        <avp code="Session-Id" value="[localHostDIAM];[newSessionId]"/>
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 30 - Cx:4321"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         		
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="3GPP:10415"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
 
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
 
-        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
-        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
-        <avp code="10000" value="badValue" vendorId="TGPP" state="false"/>
-        <avp code="IMS-Information" vendorId="TGPP" state="true">
-            <avp code="Event-Type" value="badValue1" vendorId="TGPP" state="false"/>
-            <avp code="Role-Of-Node" value="[emptyList]" vendorId="TGPP" state="false"/>
-            <avp code="Node-Functionality" value="1212121" vendorId="TGPP" state="[stateValue]"/>
-            <avp code="User-Session-ID" value="[emptyList]" vendorId="TGPP" state="[stateValue]"/>
-            <avp code="Calling-Party-Address" value="badValue5" vendorId="TGPP"/>
-            <avp code="Called-Party-Address" value="[emptyList]" vendorId="TGPP"/>
+        <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" vendorId="3GPP:10415"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="10000" value="badValue" vendorId="3GPP:10415" state="false"/>
+        <avp code="IMS-Information:876" vendorId="3GPP:10415" state="true">
+            <avp code="Event-Type:823" value="badValue1" vendorId="3GPP:10415" state="false"/>
+            <avp code="Role-Of-Node:829" value="[emptyList]" vendorId="3GPP:10415" state="false"/>
+            <avp code="Node-Functionality:862" value="1212121" vendorId="3GPP:10415" state="[stateValue]"/>
+            <avp code="User-Session-ID:830" value="[emptyList]" vendorId="3GPP:10415" state="[stateValue]"/>
+            <avp code="Calling-Party-Address:831" value="badValue5" vendorId="3GPP:10415"/>
+            <avp code="Called-Party-Address:832" value="[emptyList]" vendorId="3GPP:10415"/>
         </avp>
     </sendMessageDIAMETER>
 
@@ -50,19 +50,19 @@
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" channel="channel" destScenario="server">
         <header request="true" command="Multimedia-Authentitcation" applicationId="3GPP Cx"/>
-        <avp code="Session-Id" value="[localHostDIAM];[sessionId]"/>
-        <avp code="Origin-Host" value="[localHostDIAM]"/>
-        <avp code="Origin-Realm" value="[localRealmDIAM]"/>
-        <avp code="Destination-Host" value="[remoteHostDIAM]"/>	
-        <avp code="Destination-Realm" value="[remoteRealmDIAM]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
         		
-        <avp code="Vendor-Specific-Application-Id">
-            <avp code="Vendor-Id" value="TGPP"/>
-            <avp code="Auth-Application-Id" value="3GPP Cx"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="3GPP:10415"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
         </avp>
-        <avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
-        <avp code="Public-Identity" value="sip:+33875631975@sip.pfdev.fr" vendorId="TGPP"/>
-        <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+        <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" vendorId="3GPP:10415"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
     </sendMessageDIAMETER>
     
     <receiveMessageDIAMETER name="Receive Answer (MAA)" channel="channel" request="false" type="506" result="2001" >

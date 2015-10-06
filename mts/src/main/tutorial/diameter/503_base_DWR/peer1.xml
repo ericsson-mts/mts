@@ -11,15 +11,15 @@ Device-Watchdog-Request ::= < Diameter Header: 280, REQ >
 -->
 
     <sendMessageDIAMETER name="Send Request RFC3588 DWR" remoteURL="diameter://[remoteDIAM]" destScenario="peer2">
-        <header request="true" command="Device-Watchdog" applicationId="0" proxiable="false" error="false" retransmit="false"/>
+        <header request="true" command="Device-Watchdog:280" applicationId="Diameter Common Messages:0" proxiable="false" error="false" retransmit="false"/>
 
         <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
-        <avp code="Origin-Host" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
         <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
-        <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
 
         <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
-        <avp code="Origin-State-Id" mandatory="false" type="Unsigned32" value="2414505"/>
+        <avp code="Origin-State-Id:278" mandatory="false" type="Unsigned32" value="2414505"/>
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer RFC3588 DWA" request="false" type="Device-Watchdog:280" result="DIAMETER_SUCCESS:2001">

@@ -187,32 +187,32 @@ CC-Answer ::= < Diameter Header: 272, PXY >
     <sendMessageDIAMETER name="SendAnswerCCA" listenpoint="[listenpointName]" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">     
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
-        <avp code="Session-Id" value="[sessionId]"/>
-        <avp code="Auth-Application-Id" value="[authApplicationId]"/>
-        <avp code="Origin-Host" value="[destinationHost]"/>
-        <avp code="Origin-Realm" value="[destinationRealm]"/>
-        <avp code="Result-Code" value="DIAMETER_SUCCESS"/>
-        <avp code="CC-Request-Type" value="[CC-Request-Type]"/>
-        <avp code="CC-Request-Number" value="[CC-Request-Number]"/>
-        <avp code="Charging-Rule-Install">
-            <avp code="Charging-Rule-Definition">
-                <avp code="Charging-Rule-Name" value="[Charging-Rule-Name]"/>
-                <avp code="Flow-Information">
-                    <avp code="Flow-Description" value="[Flow-Description-in]"/>
-                    <avp code="Flow-Description" value="[Flow-Description-out]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Auth-Application-Id:258" value="[authApplicationId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+        <avp code="CC-Request-Type:416" value="[CC-Request-Type]"/>
+        <avp code="CC-Request-Number:415" value="[CC-Request-Number]"/>
+        <avp code="Charging-Rule-Install:1001" vendorId="[vendorID]">
+            <avp code="Charging-Rule-Definition:1003" vendorId="[vendorID]">
+                <avp code="Charging-Rule-Name:1005" value="[Charging-Rule-Name]" vendorId="[vendorID]"/>
+                <avp code="Flow-Information:1058">
+                    <avp code="Flow-Description:507" value="[Flow-Description-in]" vendorId="[vendorID]"/>
+                    <avp code="Flow-Description:507" value="[Flow-Description-out]" vendorId="[vendorID]"/>
                 </avp>
             </avp>
         </avp>
-        <avp code="QoS-Information">
-            <avp code="APN-Aggregate-Max-Bitrate-UL" value="[APN-Aggregate-Max-Bitrate-UL]"/>
-            <avp code="APN-Aggregate-Max-Bitrate-DL" value="[APN-Aggregate-Max-Bitrate-UL]"/>
+        <avp code="QoS-Information:1016" vendorId="[vendorID]">
+            <avp code="APN-Aggregate-Max-Bitrate-UL:1041" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
+            <avp code="APN-Aggregate-Max-Bitrate-DL:1040" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
         </avp>
-        <avp code="Default-EPS-Bearer-QoS">
-            <avp code="QoS-Class-Identifier" value="[QoS-Class-Identifier]"/>
-            <avp code="Allocation-Retention-Priority">
-                <avp code="Priority-Level" value="[Priority-Level]"/>
-                <avp code="Pre-emption-Capability" value="[Pre-emption-Capability]"/>
-                <avp code="Pre-emption-Vulnerability" value="[Pre-emption-Vulnerability]"/>
+        <avp code="Default-EPS-Bearer-QoS:1049">
+            <avp code="QoS-Class-Identifier:1028" value="[QoS-Class-Identifier]" vendorId="[vendorID]"/>
+            <avp code="Allocation-Retention-Priority:1034" vendorId="[vendorID]">
+                <avp code="Priority-Level:1046" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability:1047" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability:1048" value="[Pre-emption-Vulnerability]"/>
             </avp>
         </avp>
    </sendMessageDIAMETER>
