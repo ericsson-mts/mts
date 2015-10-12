@@ -2,7 +2,7 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
-    <!--function name="digest.calculRES">
+    <function name="calcul_digest_MD5">
         <input>
             <parameter name="[function:realm]" type="string"/>
             <parameter name="[function:userName]" type="string"/>
@@ -28,21 +28,16 @@
             <parameter name="[function:res]"/>
         </output>        
         
-    </function-->
+    </function>
     
-    <parameter name="[realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
+    <!--parameter name="[realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
     <parameter name="[userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
-    <parameter name="[password]" value="mobileeu2015"/>
     <parameter name="[password]" value="f572f8d08007bc0b"/>
-    <!--parameter name="[password]" value="00000000000000000000000000000000"/-->
     <parameter name="[password]" operation="binary.tostring" value="[password]"/>      
-    <!--parameter name="[password]" value="[password]"/-->
     
 		<parameter name="[method]" value="REGISTER"/>
 		<parameter name="[uri]" value="sip:ims.mnc001.mcc208.3gppnetwork.org"/>
     
-    <parameter name="[nonce]" value="4024de44f03f477f9c39d559a3aa26912d51c03142f900001bea21607e3c6ac2"/>
-    <parameter name="[nonce]" value="4024de44f03f477f9c39d559a3aa2691"/>
     <parameter name="[nonce]" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
     <parameter name="[qop]" value="auth"/>
     <parameter name="[nonceCount]" value="00000001" />
@@ -50,20 +45,21 @@
 
     <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[realm]:[password]" />
     <parameter name="[HA2]" operation="string.digest" value2="MD5" value="[method]:[uri]" />
-    <parameter name="[res]" operation="string.digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[cnonce]:[qop]:[HA2]" />                     
+    <parameter name="[res]" operation="string.digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[cnonce]:[qop]:[HA2]" /-->                     
 
-    <parameter name="[length]" operation="set" value="12"/>
-    <parameter name="[password]" operation="string.random" value="[length]"/>
+    <!--parameter name="[length]" operation="set" value="12"/>
+    <parameter name="[password]" operation="string.random" value="[length]"/-->
     
-    <!-- trace Vincent Roudil -->
-    <!--call name="digest.calculRES" >
+    <!-- trace Vincent Roudil 20150817_TRACE_REFERENCE_Register_OK.pcapng -->
+    <parameter name="[password]" value="f572f8d08007bc0b"/>
+    <parameter name="[password]" operation="binary.tostring" value="[password]"/>  
+    <call name="calcul_digest_MD5" >
         <input>
             <parameter name="[function:realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
-            <parameter name="[function:userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/-->
-            <!--parameter name="[function:password]" value="mobileeu2015"/-->
-            <!--parameter name="[function:password]" value="00000000000000000000000000000000"/-->  
-            <!--parameter name="[function:password]" value="[password]"/>
-            
+            <parameter name="[function:userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
+            <parameter name="[function:password]" value="[password]"/>
+            <!--parameter name="[function:password]" value="00000000000000000000000000000000"/-->
+            <!--parameter name="[function:password]" value="mobileeu2015"/-->            
         		<parameter name="[function:method]" value="REGISTER"/>
         		<parameter name="[function:uri]" value="sip:ims.mnc001.mcc208.3gppnetwork.org"/>
             
@@ -75,21 +71,21 @@
         <output>
             <parameter name="[function:res]" />
         </output>
-    </call-->    
-    <if>
+    </call>    
+    <!--if>
       <condition>
         <test parameter="[res]" condition="binary.equals" value="b227a1d73311c9a3439f789bd15deaf4"/>
       </condition>
       <then>
-        <log type="Main" level="ERROR">password="[password]"</log>
+        <log type="Main" level="ERROR">password=[password]</log>
       </then>
-      <!--else>
+      <else>
         <exit failed="true"/>
-      </else-->
-    </if>
+      </else>
+    </if-->
     
-    <!-- rfc2617 -->
-    <!--call name="digest.calculRES" >
+    <!-- example from IETF RFC2617 -->
+    <!--call name="calcul_digest_MD5" >
         <input>
             <parameter name="[function:realm]" value="testrealm@host.com"/>
             <parameter name="[function:userName]" value="Mufasa"/>
