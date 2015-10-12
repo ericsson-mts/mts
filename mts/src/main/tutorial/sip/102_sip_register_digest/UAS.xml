@@ -12,8 +12,9 @@
 		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
 	</receiveMessageSIP>
 
+  <parameter name="[newNonce]" operation="binary.random" value="16"/>
+  <parameter name="[newOpaque]" operation="binary.random" value="8"/>
 	<sendMessageSIP name="Answer 401 OK">
-<!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[SIP/2.0 401 Unauthorized
 Via: [Via]
 From: [From]
@@ -21,26 +22,62 @@ To: [To]
 Call-ID: [CallId]
 CSeq: [Cseq]
 Contact: [Contact]
-WWW-Authenticate: Digest realm="sip.mobistar.fr", domain="sip:ttcnserver@sip.mobistar.fr", nonce="1af6e6744f2880715614625e0da87566", stale=false, qop="auth", algorithm=MD5 
+WWW-Authenticate: Digest realm="[domainName]", nonce="[newNonce]", opaque="[newOpaque]", qop="auth", algorithm=MD5, stale=false,  
 Content-Length: 0
 ]]>
-<!--******************** END MESSAGE *********************-->
         </sendMessageSIP>
 
 	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">
 		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
 		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
 		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
-		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>    
 		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
 		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
-		<parameter name="[AuthResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
 	</receiveMessageSIP>
 
-    <test parameter="[AuthResponse]" condition="string.equals" value="2f7b84fada58e09b82fd42e6cde8c3e5"/>
-		
+    <parameter name="[lastCSeqMethod]" operation="protocol.setFromMessage" value="header.CSeq.method"/>
+    <test parameter="[lastCSeqMethod]" condition="string.equals" value="REGISTER"/>
+    <parameter name="[lastAuthUsername]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.username"/>
+    <test parameter="[lastAuthUsername]" condition="string.equals" value="[userName]@[domainName]"/>
+    <parameter name="[lastAuthRealm]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.realm"/>
+    <test parameter="[lastAuthRealm]" condition="string.equals" value="[domainName]"/>  
+    <parameter name="[lastAuthUri]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.uri"/>
+    <test parameter="[lastAuthUri]" condition="string.equals" value="sip:[domainName]"/>      
+    <parameter name="[lastAuthNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce"/>
+    <test parameter="[lastAuthNonce]" condition="string.equals" value="[newNonce]"/>
+    <parameter name="[lastAuthQop]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.qop"/>
+    <test parameter="[lastAuthQop]" condition="string.equals" value="auth"/>
+    <parameter name="[lastAuthNonceCount]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nc"/>
+    <!--test parameter="[lastAuthNonceCount]" condition="string.equals" value="00000001"/-->
+    <parameter name="[lastAuthCNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.cnonce"/>
+    <!--test parameter="[lastAuthCNonce]" condition="string.equals" value="1234567890"/-->				
+    <parameter name="[lastAuthOpaque]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.opaque"/>
+    <test parameter="[lastAuthOpaque]" condition="string.equals" value="[newOpaque]"/>				
+    <parameter name="[lastAuthStale]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.stale"/>
+    <test parameter="[lastAuthStale]" condition="string.equals" value="false"/>				
+    <parameter name="[lastAuthResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
+    <call name="calcul_digest_MD5" >
+    <input>
+        <parameter name="[function:realm]" value="[lastAuthRealm]"/>
+        <parameter name="[function:userName]" value="[lastAuthUsername]"/>
+        <parameter name="[function:password]" value="[password]"/>
+    		<parameter name="[function:method]" value="[lastCSeqMethod]"/>
+    		<parameter name="[function:uri]" value="[lastAuthUri]"/>
+        
+        <parameter name="[function:nonce]" value="[lastAuthNonce]"/>
+        <parameter name="[function:qop]" value="[lastAuthQop]"/>
+        <parameter name="[function:nonceCount]" value="[lastAuthNonceCount]" />
+        <parameter name="[function:cnonce]" value="[lastAuthCNonce]" />
+    </input>
+    <output>
+        <parameter name="[response]" value="[function:res]"/>
+    </output>
+  </call>    
+
+    <test parameter="[lastAuthResponse]" condition="string.equals" value="[response]"/>
+				
 	<sendMessageSIP name="Answer 200 OK">
-<!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[SIP/2.0 200 OK
 Via: [Via]
 From: [From]
@@ -49,7 +86,6 @@ Call-ID: [CallId]
 CSeq: [Cseq]
 Contact: [Contact]
 Content-Length: 0]]>
-<!--******************** END MESSAGE *********************-->
         </sendMessageSIP>
 
 	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">

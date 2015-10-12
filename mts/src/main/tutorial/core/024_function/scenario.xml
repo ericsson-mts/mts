@@ -1,34 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
-
-    <function name="calcul_digest_MD5">
-        <input>
-            <parameter name="[function:realm]" type="string"/>
-            <parameter name="[function:userName]" type="string"/>
-            <parameter name="[function:password]" type="string"/>
-            
-            <parameter name="[function:method]" type="string"/>
-            <parameter name="[function:uri]" type="string"/>
-            <parameter name="[function:qop]" type="string"/>                                        
-            <parameter name="[function:nonce]" type="string"/>
-            <parameter name="[function:nonceCount]" type="string"/>
-            <parameter name="[function:cnonce]" type="string"/>
-            
-        </input>
-
-        <do>
-        
-		        <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[realm]:[password]" />
-        		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[method]:[uri]" />
-          	<parameter name="[function:res]" operation="string.digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[cnonce]:[qop]:[HA2]" />                     
-        </do>
-
-        <output>
-            <parameter name="[function:res]"/>
-        </output>        
-        
-    </function>
     
     <!--parameter name="[realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
     <parameter name="[userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
@@ -72,7 +44,7 @@
             <parameter name="[function:res]" />
         </output>
     </call>    
-    <!--if>
+    <if>
       <condition>
         <test parameter="[res]" condition="binary.equals" value="b227a1d73311c9a3439f789bd15deaf4"/>
       </condition>
@@ -82,7 +54,7 @@
       <else>
         <exit failed="true"/>
       </else>
-    </if-->
+    </if>
     
     <!-- example from IETF RFC2617 -->
     <!--call name="calcul_digest_MD5" >
