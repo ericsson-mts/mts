@@ -2,13 +2,14 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
+    <!-- Calculate the MD5 response : implement the RFC2717 -->
     <function name="calcul_digest_MD5">
         <input>
-            <parameter name="[function:realm]" type="string"/>
-            <parameter name="[function:userName]" type="string"/>
+            <parameter name="[function:realm]" type="string"/> 
+            <parameter name="[function:username]" type="string"/>
             <parameter name="[function:password]" type="string"/>
             
-            <parameter name="[function:method]" type="string"/>
+            <parameter name="[function:method]" type="string"/>        
             <parameter name="[function:uri]" type="string"/>
             <parameter name="[function:qop]" type="string"/>                                        
             <parameter name="[function:nonce]" type="string"/>
@@ -17,7 +18,7 @@
             
         </input>
 
-        <do>
+        <do>   
         
 		        <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[realm]:[password]" />
         		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[method]:[uri]" />
@@ -25,94 +26,142 @@
         </do>
 
         <output>
+            <!-- output : authorization : the SIP Authorization header -->        
             <parameter name="[function:res]"/>
         </output>        
         
     </function>
     
-    <!--parameter name="[realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
-    <parameter name="[userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
-    <parameter name="[password]" value="f572f8d08007bc0b"/>
-    <parameter name="[password]" operation="binary.tostring" value="[password]"/>      
-    
-		<parameter name="[method]" value="REGISTER"/>
-		<parameter name="[uri]" value="sip:ims.mnc001.mcc208.3gppnetwork.org"/>
-    
-    <parameter name="[nonce]" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
-    <parameter name="[qop]" value="auth"/>
-    <parameter name="[nonceCount]" value="00000001" />
-    <parameter name="[cnonce]" value="dsf232sun3723794246xyx" />
-
-    <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[realm]:[password]" />
-    <parameter name="[HA2]" operation="string.digest" value2="MD5" value="[method]:[uri]" />
-    <parameter name="[res]" operation="string.digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[cnonce]:[qop]:[HA2]" /-->                     
-
-    <!--parameter name="[length]" operation="set" value="12"/>
-    <parameter name="[password]" operation="string.random" value="[length]"/-->
-    
-    <!-- trace Vincent Roudil 20150817_TRACE_REFERENCE_Register_OK.pcapng -->
-    <parameter name="[password]" value="f572f8d08007bc0b"/>
-    <parameter name="[password]" operation="binary.tostring" value="[password]"/>  
-    <call name="calcul_digest_MD5" >
+    <!-- Build the Authorization SIP header from the SIP 401 message -->    
+    <function name="build_Authorization_Header">
         <input>
-            <parameter name="[function:realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
-            <parameter name="[function:userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
-            <parameter name="[function:password]" value="[password]"/>
-            <!--parameter name="[function:password]" value="00000000000000000000000000000000"/-->
-            <!--parameter name="[function:password]" value="mobileeu2015"/-->            
-        		<parameter name="[function:method]" value="REGISTER"/>
-        		<parameter name="[function:uri]" value="sip:ims.mnc001.mcc208.3gppnetwork.org"/>
+            <!-- input : msg : the SIP 401 message -->
+            <parameter name="[function:msg]" type="string"/>     
+            <!-- input : userName : the user SIP URI -->
+            <parameter name="[function:username]" type="string"/>       
+            <!-- input : password : the user password -->
+            <parameter name="[function:password]" type="string"/>
+            <!-- input : uri : the SIP request URI -->
+            <parameter name="[function:uri]" type="string"/>            
             
-            <parameter name="[function:nonce]" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
-            <parameter name="[function:qop]" value="auth"/>
-            <parameter name="[function:nonceCount]" value="00000001" />
-            <parameter name="[function:cnonce]" value="dsf232sun3723794246xyx" />
         </input>
-        <output>
-            <parameter name="[function:res]" />
-        </output>
-    </call>    
-    <!--if>
-      <condition>
-        <test parameter="[res]" condition="binary.equals" value="b227a1d73311c9a3439f789bd15deaf4"/>
-      </condition>
-      <then>
-        <log type="Main" level="ERROR">password=[password]</log>
-      </then>
-      <else>
-        <exit failed="true"/>
-      </else>
-    </if-->
-    
-    <!-- example from IETF RFC2617 -->
-    <!--call name="calcul_digest_MD5" >
-        <input>
-            <parameter name="[function:realm]" value="testrealm@host.com"/>
-            <parameter name="[function:userName]" value="Mufasa"/>
-            <parameter name="[function:password]" value="Circle Of Life"/>  
-            
-        		<parameter name="[function:method]" value="GET"/>
-        		<parameter name="[function:uri]" value="/dir/index.html"/>
-            
-            <parameter name="[function:nonce]" value="dcd98b7102dd2f0e8b11d0f600bfb0c093"/>
-            <parameter name="[function:qop]" value="auth"/>
-            <parameter name="[function:nonceCount]" value="00000001" />
-            <parameter name="[function:cnonce]" value="0a4f113b" />
-        </input>
-        <output>
-            <parameter name="[function:res]" />
-        </output>
-    </call>
 
-    <if>
-      <condition>
-        <test parameter="[res]" condition="binary.equals" value="6629fae49393a05397450978507c4ef1"/>
-      </condition>
-      <then>
-        <log type="Main" level="ERROR">password="[password]"</log>
-      </then>
-    </if-->
-    
-    <!--test parameter="[res]" condition="binary.equals" value="6629fae49393a05397450978507c4ef1"/-->
+        <do>
+        
+            <parameter name="[lastCSeqMethod]" operation="protocol.setFromMessage" value="header.CSeq.method" value2="[msg]"/>
+            <parameter name="[lastAuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm" value2="[msg]"/>									
+        		<parameter name="[lastAuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce" value2="[msg]"/>					
+		        <parameter name="[lastAuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop" value2="[msg]"/>
+            <parameter name="[lastOpaque]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.opaque" value2="[msg]"/>
+            <parameter name="[lastStale]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.stale" value2="[msg]"/>
+
+            <parameter name="[newNonceCount]" operation="set" value="00000001"/>
+            <parameter name="[newCnonce]" operation="binary.random" value="4"/>
+            <call name="calcul_digest_MD5" >
+                <input>
+                    <parameter name="[function:realm]" value="[lastAuthRealm]"/>
+                    <parameter name="[function:username]" value="[username]"/>
+                    <parameter name="[function:password]" value="[password]"/>
+                		<parameter name="[function:method]" value="[lastCSeqMethod]"/>
+                		<parameter name="[function:uri]" value="[uri]"/>
+                    
+                    <parameter name="[function:nonce]" value="[lastAuthNonce]"/>
+                    <parameter name="[function:qop]" value="[lastAuthQop]"/>
+                    <parameter name="[function:nonceCount]" value="[newNonceCount]" />
+                    <parameter name="[function:cnonce]" value="[newCnonce]" />
+                </input>
+                <output>
+                    <parameter name="[response]" value="[function:res]"/>
+                </output>
+            </call>    
+
+            <parameter name="[authorization]" value="Digest"/>
+            <parameter name="[authorization]" value="[authorization] username=&quot;[username]&quot;"/>
+            <parameter name="[authorization]" value="[authorization], realm=&quot;[lastAuthRealm]&quot;"/>
+            <parameter name="[authorization]" value="[authorization], uri=&quot;[uri]&quot;"/>
+            <parameter name="[authorization]" value="[authorization], nonce=&quot;[lastAuthNonce]&quot;"/>
+            <parameter name="[authorization]" value="[authorization], response=&quot;[response]&quot;"/>
+            <if>
+              <condition>
+                <test parameter="[lastOpaque]" condition="isEmpty" not="true"/>
+              </condition>
+              <then>
+                <parameter name="[authorization]" value="[authorization], qop=&quot;[lastAuthQop]&quot;"/>  
+                <parameter name="[authorization]" value="[authorization], nc=[newNonceCount]"/>
+                <parameter name="[authorization]" value="[authorization], cnonce=&quot;[newCnonce]&quot;"/>
+              </then>
+            </if>          
+            <if>
+              <condition>
+                <test parameter="[lastOpaque]" condition="isEmpty" not="true"/>
+              </condition>
+              <then>
+                <parameter name="[authorization]" value="[authorization], opaque=&quot;[lastOpaque]&quot;"/>
+              </then>
+            </if>
+            <if>
+              <condition>
+                <test parameter="[lastStale]" condition="isEmpty" not="true"/>
+              </condition>
+              <then>
+                <parameter name="[authorization]" value="[authorization], stale=[lastStale]"/>
+              </then>
+            </if>
+        </do>
+
+        <output>
+        
+            <parameter name="[function:authorization]"/>
+        </output>        
+        
+    </function>
+
+        
+    <!-- Build the Authorization SIP header from the SIP REGISTER message -->        
+    <function name="check_Authorization_Header">
+        <input>
+            <!-- input : msg : the SIP REGISTER message -->
+            <parameter name="[function:msg]" type="string"/>            
+            <!-- input : password : the user password -->
+            <parameter name="[function:password]" type="string"/>       
+            
+        </input>
+
+        <do>
+        
+            <parameter name="[lastRequestURI]" operation="protocol.setFromMessage" value="firstLine.uri" value2="[msg]"/>
+            <parameter name="[lastCSeqMethod]" operation="protocol.setFromMessage" value="firstLine.method" value2="[msg]"/>
+            <parameter name="[lastUserName]" operation="protocol.setFromMessage" value="header.To.Address.URI.User" value2="[msg]"/>            
+            <parameter name="[lastAuthRealm]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.realm" value2="[msg]"/>									
+        		<parameter name="[lastAuthNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce" value2="[msg]"/>					
+		        <parameter name="[lastAuthQop]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.qop" value2="[msg]"/>
+            <parameter name="[lastAuthNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce"/>
+            <parameter name="[lastAuthQop]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.qop"/>
+            <parameter name="[lastAuthNonceCount]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nc"/>
+            <parameter name="[lastAuthCNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.cnonce"/>				
+            <call name="calcul_digest_MD5" >
+                <input>
+                    <parameter name="[function:realm]" value="[lastAuthRealm]"/>
+                    <parameter name="[function:username]" value="[lastUserName]@[lastAuthRealm]"/>
+                    <parameter name="[function:password]" value="[password]"/>
+                		<parameter name="[function:method]" value="[lastCSeqMethod]"/>
+                		<parameter name="[function:uri]" value="[lastRequestURI]"/>
+                    
+                    <parameter name="[function:nonce]" value="[lastAuthNonce]"/>
+                    <parameter name="[function:qop]" value="[lastAuthQop]"/>
+                    <parameter name="[function:nonceCount]" value="[lastAuthNonceCount]" />
+                    <parameter name="[function:cnonce]" value="[lastAuthCNonce]" />
+                </input>
+                <output>
+                    <parameter name="[response]" value="[function:res]"/>
+                </output>
+            </call>    
+            <parameter name="[lastAuthResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
+            <test parameter="[lastAuthResponse]" condition="string.equals" value="[response]"/>
+          </do>
+        <output>
+        </output>        
+        
+    </function>
 
 </scenario>

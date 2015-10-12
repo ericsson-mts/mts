@@ -3,85 +3,6 @@
 
 <scenario>
 
-    <function name="build_Authorization_Header">
-        <input>
-            <parameter name="[function:msg]" type="string"/>     
-            <parameter name="[function:userName]" type="string"/>
-            <parameter name="[function:uri]" type="string"/>       
-            <parameter name="[function:password]" type="string"/>
-            
-        </input>
-
-        <do>
-        
-            <parameter name="[lastCSeqMethod]" operation="protocol.setFromMessage" value="header.CSeq.method" value2="[msg]"/>
-            <parameter name="[lastAuthRealm]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm" value2="[msg]"/>									
-        		<parameter name="[lastAuthNonce]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce" value2="[msg]"/>					
-		        <parameter name="[lastAuthQop]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop" value2="[msg]"/>
-            <parameter name="[lastOpaque]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.opaque" value2="[msg]"/>
-            <parameter name="[lastStale]" operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.stale" value2="[msg]"/>
-
-            <parameter name="[newNonceCount]" operation="set" value="00000001"/>
-            <parameter name="[newCnonce]" operation="binary.random" value="4"/>
-            <call name="calcul_digest_MD5" >
-                <input>
-                    <parameter name="[function:realm]" value="[lastAuthRealm]"/>
-                    <parameter name="[function:userName]" value="[userName]"/>
-                    <parameter name="[function:password]" value="[password]"/>
-                		<parameter name="[function:method]" value="[lastCSeqMethod]"/>
-                		<parameter name="[function:uri]" value="[uri]"/>
-                    
-                    <parameter name="[function:nonce]" value="[lastAuthNonce]"/>
-                    <parameter name="[function:qop]" value="[lastAuthQop]"/>
-                    <parameter name="[function:nonceCount]" value="[newNonceCount]" />
-                    <parameter name="[function:cnonce]" value="[newCnonce]" />
-                </input>
-                <output>
-                    <parameter name="[response]" value="[function:res]"/>
-                </output>
-            </call>    
-
-            <parameter name="[authorization]" value="Digest"/>
-            <parameter name="[authorization]" value="[authorization] username=&quot;[userName]&quot;"/>
-            <parameter name="[authorization]" value="[authorization], realm=&quot;[lastAuthRealm]&quot;"/>
-            <parameter name="[authorization]" value="[authorization], uri=&quot;[uri]&quot;"/>
-            <parameter name="[authorization]" value="[authorization], nonce=&quot;[lastAuthNonce]&quot;"/>
-            <parameter name="[authorization]" value="[authorization], response=&quot;[response]&quot;"/>
-            <if>
-              <condition>
-                <test parameter="[lastOpaque]" condition="isEmpty" not="true"/>
-              </condition>
-              <then>
-                <parameter name="[authorization]" value="[authorization], qop=&quot;[lastAuthQop]&quot;"/>  
-                <parameter name="[authorization]" value="[authorization], nc=[newNonceCount]"/>
-                <parameter name="[authorization]" value="[authorization], cnonce=&quot;[newCnonce]&quot;"/>
-              </then>
-            </if>          
-            <if>
-              <condition>
-                <test parameter="[lastOpaque]" condition="isEmpty" not="true"/>
-              </condition>
-              <then>
-                <parameter name="[authorization]" value="[authorization], opaque=&quot;[lastOpaque]&quot;"/>
-              </then>
-            </if>
-            <if>
-              <condition>
-                <test parameter="[lastStale]" condition="isEmpty" not="true"/>
-              </condition>
-              <then>
-                <parameter name="[authorization]" value="[authorization], stale=[lastStale]"/>
-              </then>
-            </if>
-        </do>
-
-        <output>
-            <parameter name="[function:authorization]"/>
-        </output>        
-        
-    </function>
-
-
     <parameter name="[testcase:URI]" operation="set" value="sip:[domainName]" />	
 	  <parameter name="[localTag]" operation="string.random" value="10"/>
 	  <parameter name="[newCallId]" operation="number.random" value="10000000"/>
@@ -117,9 +38,9 @@ Content-Length: 0]]>
     <call name="build_Authorization_Header" >
         <input>
             <parameter name="[function:msg]" value="[lastMsg]"/>     
-            <parameter name="[function:userName]" value="[userName]@[domainName]"/>
-            <parameter name="[function:uri]" value="sip:[domainName]"/>       
+            <parameter name="[function:username]" value="[userName]@[domainName]"/>      
             <parameter name="[function:password]" value="[password]"/>
+            <parameter name="[function:uri]" value="sip:[domainName]"/> 
         </input>
         <output>
             <parameter name="[authorization]" value="[function:authorization]"/>
