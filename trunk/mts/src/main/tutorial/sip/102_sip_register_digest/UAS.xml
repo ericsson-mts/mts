@@ -2,7 +2,7 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
 <scenario>
-    
+
 	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">
 		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
 		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
@@ -34,6 +34,7 @@ Content-Length: 0
 		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>    
 		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
 		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[lastMsg]" operation="protocol.setFromMessage" value="message"/>
 	</receiveMessageSIP>
 
     <parameter name="[lastCSeqMethod]" operation="protocol.setFromMessage" value="header.CSeq.method"/>
@@ -60,7 +61,7 @@ Content-Length: 0
     <call name="calcul_digest_MD5" >
     <input>
         <parameter name="[function:realm]" value="[lastAuthRealm]"/>
-        <parameter name="[function:userName]" value="[lastAuthUsername]"/>
+        <parameter name="[function:username]" value="[lastAuthUsername]"/>
         <parameter name="[function:password]" value="[password]"/>
     		<parameter name="[function:method]" value="[lastCSeqMethod]"/>
     		<parameter name="[function:uri]" value="[lastAuthUri]"/>
@@ -74,9 +75,17 @@ Content-Length: 0
         <parameter name="[response]" value="[function:res]"/>
     </output>
   </call>    
-
     <test parameter="[lastAuthResponse]" condition="string.equals" value="[response]"/>
 				
+    <call name="check_Authorization_Header" >
+        <input>
+            <parameter name="[function:msg]" value="[lastMsg]"/>           
+            <parameter name="[function:password]" value="[password]"/> 
+        </input>
+        <output>
+        </output>
+    </call>
+                
 	<sendMessageSIP name="Answer 200 OK">
 <![CDATA[SIP/2.0 200 OK
 Via: [Via]
