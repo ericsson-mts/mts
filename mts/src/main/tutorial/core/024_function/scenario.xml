@@ -28,7 +28,7 @@
     <call name="calcul_digest_MD5" >
         <input>
             <parameter name="[function:realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
-            <parameter name="[function:userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
+            <parameter name="[function:username]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
             <parameter name="[function:password]" value="[password]"/>
             <!--parameter name="[function:password]" value="00000000000000000000000000000000"/-->
             <!--parameter name="[function:password]" value="mobileeu2015"/-->            
@@ -44,6 +44,7 @@
             <parameter name="[function:res]" />
         </output>
     </call>    
+    
     <if>
       <condition>
         <test parameter="[res]" condition="binary.equals" value="b227a1d73311c9a3439f789bd15deaf4"/>
@@ -57,10 +58,10 @@
     </if>
     
     <!-- example from IETF RFC2617 -->
-    <!--call name="calcul_digest_MD5" >
+    <call name="calcul_digest_MD5" >
         <input>
             <parameter name="[function:realm]" value="testrealm@host.com"/>
-            <parameter name="[function:userName]" value="Mufasa"/>
+            <parameter name="[function:username]" value="Mufasa"/>
             <parameter name="[function:password]" value="Circle Of Life"/>  
             
         		<parameter name="[function:method]" value="GET"/>
@@ -83,8 +84,11 @@
       <then>
         <log type="Main" level="ERROR">password="[password]"</log>
       </then>
-    </if-->
+      <else>
+        <exit failed="true"/>
+      </else>
+    </if>
     
-    <!--test parameter="[res]" condition="binary.equals" value="6629fae49393a05397450978507c4ef1"/-->
+    <test parameter="[res]" condition="binary.equals" value="6629fae49393a05397450978507c4ef1"/>
 
 </scenario>
