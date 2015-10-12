@@ -5,11 +5,11 @@
     <!-- Calculate the MD5 response : implement the RFC2717 -->
     <function name="calcul_digest_MD5">
         <input>
-            <parameter name="[function:realm]" type="string"/> 
+            <parameter name="[function:realm]" type="string"/>
             <parameter name="[function:username]" type="string"/>
             <parameter name="[function:password]" type="string"/>
             
-            <parameter name="[function:method]" type="string"/>        
+            <parameter name="[function:method]" type="string"/>
             <parameter name="[function:uri]" type="string"/>
             <parameter name="[function:qop]" type="string"/>                                        
             <parameter name="[function:nonce]" type="string"/>
@@ -18,15 +18,14 @@
             
         </input>
 
-        <do>   
+        <do>
         
-		        <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[realm]:[password]" />
+		        <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[username]:[realm]:[password]" />
         		<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[method]:[uri]" />
           	<parameter name="[function:res]" operation="string.digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[cnonce]:[qop]:[HA2]" />                     
         </do>
 
         <output>
-            <!-- output : authorization : the SIP Authorization header -->        
             <parameter name="[function:res]"/>
         </output>        
         
