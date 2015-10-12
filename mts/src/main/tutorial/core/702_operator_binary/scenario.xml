@@ -2,6 +2,16 @@
 
 <scenario>
 
+    <parameter name="[NONCE]" operation="set" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
+    <parameter name="[clear]" operation="binary.frombase64" value="[NONCE]" />        
+    <parameter name="[RAND]" operation="binary.subbinary" value="[clear]" value2="0" value3="32"/>
+    <test parameter="[RAND]" condition="binary.equals" value="4024de44f03f477f9c39d559a3aa26912d51c03142f900001bea21607e3c6ac2" />
+    <parameter name="[AUTH]" operation="binary.subbinary" value="[clear]" value2="32" /> 
+    <parameter name="[AUTH]" operation="binary.tostring" value="[AUTH]" />  
+    <parameter name="[AUTH]" operation="binary.tonumber" value="[AUTH]" />         
+    <parameter name="[XNONCE]" operation="binary.tobase64" value="[clear]" />
+    <test parameter="[XNONCE]" condition="string.equals" value="[NONCE]" />
+
     <!-- test exists / create / delete -->
     <parameter name="[result1]" operation="string.tobinary"   value="123" />
     <parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
