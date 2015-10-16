@@ -176,20 +176,26 @@ public class MsgSctp extends Msg{
     public String toXml() throws Exception 
     {
 		String xml = getTypeComplete();
-		xml += "\n";
+		xml += "\n"; 
 		if (sctpData.sndrcvinfo!=null)
 		{
-			xml += "<header >";
-			xml += "stream=\"" + sctpData.sndrcvinfo.sinfo_stream + "\", ";
-			xml += "ssn=\"" + sctpData.sndrcvinfo.sinfo_ssn + "\", ";			
-			xml += "ppid=\"" + sctpData.sndrcvinfo.sinfo_ppid + "\", ";
-        	System.out.println("ToXml:ppid=" + this.sctpData.sndrcvinfo.sinfo_ppid);
+			xml += "<header ";
+			int stream = sctpData.sndrcvinfo.sinfo_stream & 0xffff;
+			xml += "stream=\"" + stream + "\", ";
+			xml += "ssn=\"" + sctpData.sndrcvinfo.sinfo_ssn + "\", ";	
+			long ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid) & 0xffffffffl;
+			xml += "ppid=\"" + ppid + "\", ";
 			xml += "flags=\"" + sctpData.sndrcvinfo.sinfo_flags + "\", ";
-			xml += "context=\"" + sctpData.sndrcvinfo.sinfo_context + "\", ";
-			xml += "ttl=\"" + sctpData.sndrcvinfo.sinfo_timetolive + "\", ";
-			xml += "tsn=\"" + sctpData.sndrcvinfo.sinfo_tsn + "\", ";
-			xml += "cumtsn=\"" + sctpData.sndrcvinfo.sinfo_cumtsn + "\", ";
-			xml += "aid=\"" + sctpData.sndrcvinfo.sinfo_assoc_id + "\"/>\n";
+			long context = this.sctpData.sndrcvinfo.sinfo_context & 0xffffffffl;
+			xml += "context=\"" + context + "\", ";
+			long timetolive = this.sctpData.sndrcvinfo.sinfo_timetolive & 0xffffffffl;
+			xml += "ttl=\"" + timetolive + "\", ";
+			long tsn = this.sctpData.sndrcvinfo.sinfo_tsn & 0xffffffffl;
+			xml += "tsn=\"" + tsn + "\", ";
+			long cumtsn = this.sctpData.sndrcvinfo.sinfo_cumtsn & 0xffffffffl;
+			xml += "cumtsn=\"" + cumtsn + "\", ";
+			long aid = this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode() & 0xffffffffl;			
+			xml += "aid=\"" + aid + "\"/>\n";
 			xml += "\n";
 		}
 		xml += Utils.byteTabToString(sctpData.getData());
@@ -255,7 +261,7 @@ public class MsgSctp extends Msg{
         Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
         
 		String stream = root.attributeValue("stream");
-		if(stream !=null)
+		if (stream != null)
 		{
 			this.sctpData.sndrcvinfo.sinfo_stream = (short) Integer.parseInt(stream);
 		}
@@ -264,8 +270,9 @@ public class MsgSctp extends Msg{
 			this.sctpData.sndrcvinfo.sinfo_stream = (short) config.getInteger("client.DEFAULT_STREAM", 1);
 
 		}
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + this.sctpData.sndrcvinfo.sinfo_stream);
 		String ssn = root.attributeValue("ssn");
-		if(ssn!=null)
+		if (ssn != null)
 		{
 			this.sctpData.sndrcvinfo.sinfo_ssn = (short) Integer.parseInt(ssn);
 		}
@@ -273,18 +280,21 @@ public class MsgSctp extends Msg{
 		{
 			this.sctpData.sndrcvinfo.sinfo_ssn = (short) config.getInteger("client.DEFAULT_SSN", 0);
 		}
-		String ppid = root.attributeValue("ppid");
-		if(ppid!=null)
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + this.sctpData.sndrcvinfo.sinfo_ssn);
+		String ppidString = root.attributeValue("ppid");
+		Integer ppid = null;
+		if (ppidString != null)
 		{			
-			this.sctpData.sndrcvinfo.sinfo_ppid = Integer.parseInt(ppid);
+			ppid = (int) Long.parseLong(ppidString);
 		}
 		else
 		{
-			this.sctpData.sndrcvinfo.sinfo_ppid = config.getInteger("client.DEFAULT_PPID", 0);
+			ppid = config.getInteger("client.DEFAULT_PPID", 0);
 		}
-    	System.out.println("ParseFromXml:ppid=" + this.sctpData.sndrcvinfo.sinfo_ppid);
+		this.sctpData.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppid);
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + this.sctpData.sndrcvinfo.sinfo_ppid);
 		String flags = root.attributeValue("flags");
-		if(flags!=null)
+		if (flags != null)
 		{
 			this.sctpData.sndrcvinfo.sinfo_flags = (short) Integer.parseInt(flags);
 		}
@@ -292,51 +302,60 @@ public class MsgSctp extends Msg{
 		{
 			this.sctpData.sndrcvinfo.sinfo_flags = (short) config.getInteger("client.DEFAULT_FLAGS", 0);
 		}
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + this.sctpData.sndrcvinfo.sinfo_flags);
 		String context = root.attributeValue("context");
-		if(context!=null)
+		if (context != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_context = Integer.parseInt(context);
+			this.sctpData.sndrcvinfo.sinfo_context = (int) Long.parseLong(context);
 		}
 		else
 		{
 			this.sctpData.sndrcvinfo.sinfo_context = config.getInteger("client.DEFAULT_CONTEXT", 0);
-		}		
+		}
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + this.sctpData.sndrcvinfo.sinfo_context);
 		String ttl = root.attributeValue("ttl");
-		if(ttl!=null)
+		if (ttl != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_timetolive = Integer.parseInt(ttl);
+			this.sctpData.sndrcvinfo.sinfo_timetolive = (int) Long.parseLong(ttl);
 		}
 		else
 		{
 			this.sctpData.sndrcvinfo.sinfo_timetolive = config.getInteger("client.DEFAULT_TTL", 0);
-		}		
+		}
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + this.sctpData.sndrcvinfo.sinfo_timetolive);
 		String tsn = root.attributeValue("tsn");
-		if(tsn!=null)
+		if (tsn != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_tsn = Integer.parseInt(tsn);
+			this.sctpData.sndrcvinfo.sinfo_tsn = (int) Long.parseLong(tsn);
 		}
 		else
 		{
 			this.sctpData.sndrcvinfo.sinfo_tsn = config.getInteger("client.DEFAULT_TSN", 0);
-		}				
+		}
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + this.sctpData.sndrcvinfo.sinfo_tsn);
 		String cumtsn = root.attributeValue("cumtsn");
-		if(cumtsn!=null)
+		if (cumtsn != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_cumtsn = Integer.parseInt(cumtsn);
+			this.sctpData.sndrcvinfo.sinfo_cumtsn = (int) Long.parseLong(cumtsn);
 		}
 		else
 		{
 			this.sctpData.sndrcvinfo.sinfo_cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
 		}		
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + this.sctpData.sndrcvinfo.sinfo_cumtsn);
 		String aid = root.attributeValue("aid");
-		if(aid!=null)
+		Long assocId = null; 
+		if (aid != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Long.parseLong(aid));
+			assocId = Long.parseLong(aid);
 		}
 		else
 		{
-			this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(config.getInteger("client.DEFAULT_AID", 0));
-		}		
+			assocId = (long) config.getInteger("client.DEFAULT_AID", 0);
+			this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocId);
+		}
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + assocId);
+		this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocId);
     }
 
     
@@ -366,19 +385,18 @@ public class MsgSctp extends Msg{
         	{
 	            if(params[1].equalsIgnoreCase("stream")) 
 	            {
-	            	short stream = this.sctpData.sndrcvinfo.sinfo_stream;
-	            	var.add(Short.toString(stream));
+	            	int stream = this.sctpData.sndrcvinfo.sinfo_stream & 0xffff;
+	            	var.add(Integer.toString(stream));
 	            }
 	            else if(params[1].equalsIgnoreCase("ssn")) 
 	            {
-	            	short ssn = this.sctpData.sndrcvinfo.sinfo_ssn;
-	            	var.add(Short.toString(ssn));
+	            	int ssn = this.sctpData.sndrcvinfo.sinfo_ssn & 0xffff;
+	            	var.add(Integer.toString(ssn));
 	            }
 	            else if(params[1].equalsIgnoreCase("ppid")) 
 	            {
-	            	int ppid = this.sctpData.sndrcvinfo.sinfo_ppid;
-	            	System.out.println("GetParameter:ppid=" + ppid);
-	            	var.add(Integer.toString(ppid));
+	            	long ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid) & 0xffffffffl;
+	            	var.add(Long.toString(ppid));
 	            }
 	            else if(params[1].equalsIgnoreCase("flags")) 
 	            {
@@ -387,28 +405,28 @@ public class MsgSctp extends Msg{
 	            }
 	            else if(params[1].equalsIgnoreCase("context")) 
 	            {
-	            	int ppid = this.sctpData.sndrcvinfo.sinfo_context;
-	            	var.add(Integer.toString(ppid));
+	            	int context = this.sctpData.sndrcvinfo.sinfo_context & 0xffffffff;
+	            	var.add(Integer.toString(context));
 	            }
 	            else if(params[1].equalsIgnoreCase("ttl")) 
 	            {
-	            	int ppid = this.sctpData.sndrcvinfo.sinfo_timetolive;
-	            	var.add(Integer.toString(ppid));
+	            	int ttl = this.sctpData.sndrcvinfo.sinfo_timetolive & 0xffffffff;
+	            	var.add(Integer.toString(ttl));
 	            }
 	            else if(params[1].equalsIgnoreCase("tsn")) 
 	            {
-	            	int tsn = this.sctpData.sndrcvinfo.sinfo_tsn;
-	            	var.add(Long.toString(tsn));
+	            	int tsn = this.sctpData.sndrcvinfo.sinfo_tsn & 0xffffffff;
+	            	var.add(Integer.toString(tsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("cumtsn")) 
 	            {
-	            	int tsn = this.sctpData.sndrcvinfo.sinfo_cumtsn;
-	            	var.add(Integer.toString(tsn));
+	            	int cumtsn = this.sctpData.sndrcvinfo.sinfo_cumtsn & 0xffffffff;
+	            	var.add(Integer.toString(cumtsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 
 	            {
 	            	AssociationId assocId = this.sctpData.sndrcvinfo.sinfo_assoc_id;
-	            	int aid = assocId.hashCode();
+	            	int aid = assocId.hashCode()  & 0xffffffff;;
 	            	var.add(Integer.toString(aid));
 					setAidFromMsg();
 	            }

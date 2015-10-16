@@ -3,36 +3,49 @@
 <scenario>
     <createListenpointSCTP name="listenpoint" localPort="5665"/>
 
-    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="5665"  num_ostreams="7" max_instreams="6" />
+    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="5665"  num_ostreams="22223" max_instreams="333334" />
     
     <receiveMessageSCTP type="INIT-ACK"/>
 
-    <sendMessageSCTP channel="channelSCTP">
+    <sendMessageSCTP channel="channelSCTP" stream="22222" ssn="33333" ppid="4294967295"  
+                    flags="1" context="2000000000" ttl="3000000000" 
+                     tsn= "1234567890" cumtsn=  "2345678901" aid="3456789012">
         <data format="text">test value</data>
     </sendMessageSCTP>
    
-   <receiveMessageSCTP>
-       <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
-       <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
-       <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
-       <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>
-       <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
+   <receiveMessageSCTP></receiveMessageSCTP>
 
-       <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
-       <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
-  
-       <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveMessageSCTP>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <test parameter="[lastStream]" condition="number.equals" value="22222" />
+    <!-- ssn is incremented automatically by the sctp stack if flag == 1 -->
+   <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <test parameter="[lastSsn]" condition="number.equals" value="0"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
+    <test parameter="[lastPpid]" condition="number.equals" value="4294967295" />
+     <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
+    <test parameter="[lastFlags]" condition="number.equals" value="1" />
+    <!-- context is always set to 0 by the sctp stack --> 
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
+    <test parameter="[lastContext]" condition="number.equals" value="0" />    <!-- tts is always set to 0 by the sctp stack --> 
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
+    <test parameter="[lastTtl]" condition="number.equals" value="0" />
+    <!-- ttl is choosen automatically by the sctp stack --> 
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
+    <!--test parameter="[lastTsn]" condition="number.equals" value="0" /-->
+     <!-- cumtls is managed automatically by the sctp stack -->
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
+    <!--test parameter="[lastCumtsn]" condition="number.equals" value="0" /-->
+    <!-- aid is choosen automatically by the sctp stack --> 
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
+    <!--test parameter="[lastAid]" condition="number.equals" value="0" /-->
 
-    <test parameter="[stream]" condition="number.equals" value="1" />
-    <!--test parameter="[ssn]" condition="number.equals" value="255" /-->
-    <test parameter="[ppid]" condition="number.equals" value="987654321" />
-    <!--test parameter="[tsn]" condition="number.equals" value="1234567890" /-->
-    <test parameter="[aid]" condition="number.equals" value="33554432" />
+    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHostSCTP]" />
+   <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+    <!--test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
 
-    <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
-    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
-    <test parameter="[contents]" condition="string.equals" value="test value" />
+    <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
+    <test parameter="[lastContents]" condition="string.equals" value="test value" />
 
     <finally>
 

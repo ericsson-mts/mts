@@ -207,7 +207,14 @@ public class SocketSctp extends Thread {
 			else
 			{
 				SCTPData data = new SCTPData();
-				data.setData(msg.encode());
+				//get the ppid from the config
+				Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+	            int ppidInt = config.getInteger("client.DEFAULT_PPID", 0);                
+	            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppidInt =" + ppidInt);
+	            data.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppidInt);
+	            // get the bytes from the msg
+	            byte[] bytes = msg.encode();
+				data.setData(bytes);
 				sctpSocket.send(data);
 			}
 			GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SEND>>> the SCTP message :\n", msg);
