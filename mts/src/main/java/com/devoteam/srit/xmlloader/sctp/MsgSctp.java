@@ -35,7 +35,6 @@ import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.coding.text.FirstLine;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -57,6 +56,10 @@ public class MsgSctp extends Msg{
 
 	private SCTPData sctpData;
 
+	public SCTPData getSctpData() {
+		return sctpData;
+	}
+
 	/** Creates a new instance */
     public MsgSctp(Stack stack) throws Exception
     {
@@ -64,10 +67,11 @@ public class MsgSctp extends Msg{
     }
     
     /** Creates a new instance */
-	public MsgSctp(Stack stack, byte[] bytes) throws Exception{
+	public MsgSctp(Stack stack, SCTPData chunk) throws Exception{
 		this(stack);
 		
-		this.sctpData=new SCTPData(bytes);
+		this.setType("DATA");
+		this.sctpData = chunk;
 	}
 
     /** Get the protocol of this message */
@@ -172,11 +176,17 @@ public class MsgSctp extends Msg{
     {
 		String xml = getTypeComplete();
 		xml += "\n";
-		if (sctpData.sndrcvinfo!=null){
-			xml += "<header stream=\"" + sctpData.sndrcvinfo.sinfo_stream + "\", ";
-			xml += "ssn=\"" + sctpData.sndrcvinfo.sinfo_ssn + "\", ";
+		if (sctpData.sndrcvinfo!=null)
+		{
+			xml += "<header >";
+			xml += "stream=\"" + sctpData.sndrcvinfo.sinfo_stream + "\", ";
+			xml += "ssn=\"" + sctpData.sndrcvinfo.sinfo_ssn + "\", ";			
 			xml += "ppid=\"" + sctpData.sndrcvinfo.sinfo_ppid + "\", ";
+			xml += "flags=\"" + sctpData.sndrcvinfo.sinfo_flags + "\", ";
+			xml += "context=\"" + sctpData.sndrcvinfo.sinfo_context + "\", ";
+			xml += "ttl=\"" + sctpData.sndrcvinfo.sinfo_timetolive + "\", ";
 			xml += "tsn=\"" + sctpData.sndrcvinfo.sinfo_tsn + "\", ";
+			xml += "cumtsn=\"" + sctpData.sndrcvinfo.sinfo_cumtsn + "\", ";
 			xml += "aid=\"" + sctpData.sndrcvinfo.sinfo_assoc_id + "\"/>\n";
 			xml += "\n";
 		}
@@ -191,6 +201,8 @@ public class MsgSctp extends Msg{
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	this.setType("DATA");
+    	 
 		List<Element> elements = root.elements("data");
 		List<byte[]> datas = new LinkedList<byte[]>();
 		for(Element element:elements)
@@ -234,58 +246,55 @@ public class MsgSctp extends Msg{
 				data[i] = aData[j];
 				i++;
 			}
-		}
+		}	
 
-		SCTPData sctpData = new SCTPData(data);		
+		this.sctpData=new SCTPData(data);
 
 		String stream = root.attributeValue("stream");
 		if(stream !=null)
 		{
-			sctpData.sndrcvinfo.sinfo_stream = (short) Integer.parseInt(stream);
+			this.sctpData.sndrcvinfo.sinfo_stream = (short) Integer.parseInt(stream);
 		}
 		String ssn = root.attributeValue("ssn");
 		if(ssn!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_ssn = (short) Integer.parseInt(ssn);
-		}
-		String flags = root.attributeValue("flags");
-		if(flags!=null)
-		{
-			sctpData.sndrcvinfo.sinfo_flags = (short) Integer.parseInt(flags);
+			this.sctpData.sndrcvinfo.sinfo_ssn = (short) Integer.parseInt(ssn);
 		}
 		String ppid = root.attributeValue("ppid");
 		if(ppid!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_ppid = Integer.parseInt(ppid);
+			this.sctpData.sndrcvinfo.sinfo_ppid = Integer.parseInt(ppid);
+		}
+		String flags = root.attributeValue("flags");
+		if(flags!=null)
+		{
+			this.sctpData.sndrcvinfo.sinfo_flags = (short) Integer.parseInt(flags);
 		}
 		String context = root.attributeValue("context");
 		if(context!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_context = Integer.parseInt(context);
+			this.sctpData.sndrcvinfo.sinfo_context = Integer.parseInt(context);
 		}
 		String ttl = root.attributeValue("ttl");
 		if(ttl!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_timetolive = Integer.parseInt(ttl);
+			this.sctpData.sndrcvinfo.sinfo_timetolive = Integer.parseInt(ttl);
 		}
 		String tsn = root.attributeValue("tsn");
 		if(tsn!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_tsn = Integer.parseInt(tsn);
+			this.sctpData.sndrcvinfo.sinfo_tsn = Integer.parseInt(tsn);
 		}
 		String cumtsn = root.attributeValue("cumtsn");
 		if(cumtsn!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_cumtsn = Integer.parseInt(cumtsn);
+			this.sctpData.sndrcvinfo.sinfo_cumtsn = Integer.parseInt(cumtsn);
 		}
 		String aid = root.attributeValue("aid");
 		if(aid!=null)
 		{
-			sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Long.parseLong(aid));
+			this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(Long.parseLong(aid));
 		}
-				
-		this.sctpData=new SCTPData(sctpData.sndrcvinfo, sctpData.getData());
-        this.type = "DATA";
     }
 
     
@@ -326,9 +335,29 @@ public class MsgSctp extends Msg{
 	            	int ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid);
 	            	var.add(Integer.toString(ppid));
 	            }
+	            else if(params[1].equalsIgnoreCase("flags")) 
+	            {
+	            	int ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_flags);
+	            	var.add(Integer.toString(ppid));
+	            }
+	            else if(params[1].equalsIgnoreCase("context")) 
+	            {
+	            	int ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_context);
+	            	var.add(Integer.toString(ppid));
+	            }
+	            else if(params[1].equalsIgnoreCase("ttl")) 
+	            {
+	            	int ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_timetolive);
+	            	var.add(Integer.toString(ppid));
+	            }
 	            else if(params[1].equalsIgnoreCase("tsn")) 
 	            {
 	            	int tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn);
+	            	var.add(Long.toString(tsn));
+	            }
+	            else if(params[1].equalsIgnoreCase("cumtsn")) 
+	            {
+	            	int tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn);
 	            	var.add(Long.toString(tsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 

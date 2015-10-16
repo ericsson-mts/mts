@@ -23,22 +23,14 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import com.devoteam.srit.xmlloader.core.Runner;
-import org.dom4j.Element;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
 import dk.i1.sctp.SCTPData;
-import dk.i1.sctp.sctp_initmsg;
 
 public class StackSctp extends Stack
 {
@@ -47,73 +39,18 @@ public class StackSctp extends Stack
 	public StackSctp() throws Exception
 	{
 		super();
-        		
-		/*
-        // initiate a default listenpoint if port is not empty or null
-        int port = getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
-        if (port > 0)
-        {
-        	Listenpoint listenpoint = new ListenpointSctp(this);
-            createListenpoint(listenpoint, StackFactory.PROTOCOL_SCTP);
-        }
-        */
 	}
+	
+    /**
+     * Creates a Msg specific to each Stack
+     * Used for SCTP like protocol : to build incoming message
+     */
+    public Msg readFromSCTPData(SCTPData chunk) throws Exception    
+    {
+    	return new MsgSctp(this, chunk);
+    }
 
-    /** Creates a Channel specific to each Stack */
-	/*
-    @Override
-	public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception
-	{
-		String name = root.attributeValue("name");
-		String localHost = root.attributeValue("localHost");
-		String localPort = root.attributeValue("localPort");
-		String remoteHost = root.attributeValue("remoteHost");
-		String remotePort = root.attributeValue("remotePort");
-		String ostreams = root.attributeValue("ostreams");
-		String instreams = root.attributeValue("instreams");
-		String attempts = root.attributeValue("attempts");
-		String timeo = root.attributeValue("timeo");
-		
-		sctp_initmsg im = new sctp_initmsg();
-		if(ostreams != null) im.sinit_num_ostreams = (short) Integer.parseInt(ostreams);
-		if(instreams != null) im.sinit_max_instreams = (short) Integer.parseInt(instreams);
-		if(attempts != null) im.sinit_max_attempts= (short) Integer.parseInt(attempts);
-		if(timeo != null) im.sinit_max_init_timeo = (short) Integer.parseInt(timeo);
-
-		if(existsChannel(name))
-		{
-			return getChannel(name);
-		}
-		else
-		{
-			return new ChannelSctp(name, localHost, localPort, remoteHost, remotePort, protocol, im);
-		}
-	}
-	*/
-
-	/** Creates a specific Msg */
-    /*
-    @Override
-	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
-	{
-			
-		Msg msg = super.parseMsgFromXml(request, root, runner);
-
-		String channelName = root.attributeValue("channel");
-		
-        // instanciates the channel
-        Channel channel = getChannel(channelName);
-		if (channel == null)
-		{
-			throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
-		}        
-		msg.setChannel(channel);
-
-		return msg;
-	}
-	*/
-    
-    /** 
+	/** 
      * Create an empty message for transport connection actions (open or close) 
      * and on server side and dispatch it to the generic stack 
      **/
