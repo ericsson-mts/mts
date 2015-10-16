@@ -199,8 +199,17 @@ public class SocketSctp extends Thread {
 
             GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, logDataSndRcvInfo);
             */
-			MsgSctp msgSctp = (MsgSctp) msg;
-			sctpSocket.send(msgSctp.getSctpData());
+			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
+			{
+				MsgSctp msgSctp = (MsgSctp) msg;
+				sctpSocket.send(msgSctp.getSctpData());
+			}
+			else
+			{
+				SCTPData data = new SCTPData();
+				data.setData(msg.encode());
+				sctpSocket.send(data);
+			}
 			GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SEND>>> the SCTP message :\n", msg);
 		}
 		catch(WouldBlockException e1)
