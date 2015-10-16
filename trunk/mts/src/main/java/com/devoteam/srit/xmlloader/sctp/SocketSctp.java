@@ -157,9 +157,10 @@ public class SocketSctp extends Thread {
 	{
 		try
 		{	
-			SCTPData data = new SCTPData();
-			data.setData(msg.encode());
+			//SCTPData data = new SCTPData();
+			//data.setData(msg.encode());
 
+			/*
             Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
             
             String logDataSndRcvInfo = ""; 
@@ -197,8 +198,9 @@ public class SocketSctp extends Thread {
             logDataSndRcvInfo += ", aid = " + data.sndrcvinfo.sinfo_assoc_id.hashCode();
 
             GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, logDataSndRcvInfo);
-            
-			sctpSocket.send(data);
+            */
+			MsgSctp msgSctp = (MsgSctp) msg;
+			sctpSocket.send(msgSctp.getSctpData());
 			GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SEND>>> the SCTP message :\n", msg);
 		}
 		catch(WouldBlockException e1)
