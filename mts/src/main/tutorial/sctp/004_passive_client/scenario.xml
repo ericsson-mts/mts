@@ -17,10 +17,10 @@
     
    <receiveMessageSCTP/>
 
-     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
     <test parameter="[lastStream]" condition="number.equals" value="11222" />
     <!-- ssn is incremented automatically by the sctp stack if flag == 1 -->
-   <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
     <test parameter="[lastSsn]" condition="number.equals" value="0"/>
     <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
     <test parameter="[lastPpid]" condition="number.equals" value="987654321" />
@@ -53,7 +53,7 @@
 
         <closeChannelSCTP name="channel"/>
 
-	<receiveMessageSCTP type="ABORT-ACK" timeout="1">
+	      <receiveMessageSCTP type="ABORT-ACK" timeout="1">
              <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />    
              <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
              <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
