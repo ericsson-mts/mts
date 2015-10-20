@@ -113,8 +113,6 @@ public class ListenpointUdpNIO extends Listenpoint
 
     public boolean remove()
     {
-        super.remove();
-
         if (this.socketUdp != null)
         {
             this.socketUdp.close();
