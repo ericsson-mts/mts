@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
+
     <createListenpointSCTP name="listenpoint" localPort="5665"/>
 
-    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="5665"  num_ostreams="22223" max_instreams="333334" />
-    
+    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="5665"  num_ostreams="22223" max_instreams="333334" />    
     <receiveMessageSCTP type="INIT-ACK"/>
 
     <sendMessageSCTP channel="channelSCTP" stream="22222" ssn="33333" ppid="4294967295"  
@@ -50,8 +50,7 @@
     <finally>
 
         <closeChannelSCTP name="channelSCTP"/>
-
-	<receiveMessageSCTP type="ABORT-ACK"/>
+        <receiveMessageSCTP type="ABORT-ACK"/>
 
         <!--removeListenpointSCTP name="listenpoint"/-->
 
