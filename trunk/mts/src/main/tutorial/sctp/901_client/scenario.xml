@@ -3,30 +3,31 @@
 
 <scenario>
 
-	<openChannelSCTP name="proxy_client" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  ostreams="7" instreams="6" />
+     <parameter name="[channel]" operation="set" value="[scenarioName]"/>
+     <openChannelSCTP name="[channel]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]" />
    
-	<sendMessageSCTP channel="proxy_client">
-		<data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    <sendMessageSCTP channel="[channel]">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
 	  
-	<receiveMessageSCTP>
-        <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
-        <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
-        <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
-        <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>
-        <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
-        <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
-     	<parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>  
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveMessageSCTP>
-        
+   <receiveMessageSCTP channel="[channel]"/>
+    <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
+    <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>    
+    <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
     <!--test parameter="[aid]" condition="string.equals" value="1" /-->
+    
+    <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
     <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
+    <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
     <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
+    
+    <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
 
     <finally>
-        <!--closeChannelSCTP name="proxy_client"/-->
+        <!--closeChannelSCTP name="[channel]"/-->
     </finally>
 
     				

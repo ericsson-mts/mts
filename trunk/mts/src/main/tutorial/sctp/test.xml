@@ -15,6 +15,7 @@
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortSCTP]" operation="set" value="[remotePortSCTP]"/>
     
     <testcase name="001_channel" state="true">
+        <parameter name="[newSsn]" operation="set" value="0"/>
         <scenario file="001_channel/scenario.xml" name="SCTP" routingName="SCTP"/>
     </testcase>
     <testcase name="002_binary" state="true">
@@ -27,10 +28,10 @@
         <scenario file="004_passive_client/scenario.xml" name="SCTP" routingName="SCTP"/>
     </testcase>
     <testcase name="client" state="false">
-        <scenario file="901_client/scenario.xml" name="SCTP" routingName="SCTP"/>
+        <scenario file="901_client/scenario.xml" name="client" routingName="client"/>
     </testcase>
     <testcase name="server" state="false">
-        <scenario file="901_server/scenario.xml" name="SCTP" routingName="SCTP"/>
+        <scenario file="901_server/scenario.xml" name="server" routingName="[remotePortSCTP]"/>
     </testcase>
     
 </test>
