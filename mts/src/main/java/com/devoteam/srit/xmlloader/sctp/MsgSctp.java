@@ -190,9 +190,9 @@ public class MsgSctp extends Msg{
 			xml += "context=\"" + context + "\", ";
 			long timetolive = this.sctpData.sndrcvinfo.sinfo_timetolive & 0xffffffffl;
 			xml += "ttl=\"" + timetolive + "\", ";
-			long tsn = this.sctpData.sndrcvinfo.sinfo_tsn & 0xffffffffl;
+			long tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn) & 0xffffffffl;
 			xml += "tsn=\"" + tsn + "\", ";
-			long cumtsn = this.sctpData.sndrcvinfo.sinfo_cumtsn & 0xffffffffl;
+			long cumtsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn) & 0xffffffffl;
 			xml += "cumtsn=\"" + cumtsn + "\", ";
 			long aid = this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode() & 0xffffffffl;			
 			xml += "aid=\"" + aid + "\"/>\n";
@@ -323,25 +323,29 @@ public class MsgSctp extends Msg{
 			this.sctpData.sndrcvinfo.sinfo_timetolive = config.getInteger("client.DEFAULT_TTL", 0);
 		}
 		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + this.sctpData.sndrcvinfo.sinfo_timetolive);
-		String tsn = root.attributeValue("tsn");
-		if (tsn != null)
+		String tsnString = root.attributeValue("tsn");
+		Integer tsn = null;
+		if (tsnString != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_tsn = (int) Long.parseLong(tsn);
+			tsn = (int) Long.parseLong(tsnString);
 		}
 		else
 		{
-			this.sctpData.sndrcvinfo.sinfo_tsn = config.getInteger("client.DEFAULT_TSN", 0);
+			tsn = config.getInteger("client.DEFAULT_TSN", 0);
 		}
+		this.sctpData.sndrcvinfo.sinfo_tsn = Utils.convertLittleBigIndian(tsn);
 		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + this.sctpData.sndrcvinfo.sinfo_tsn);
-		String cumtsn = root.attributeValue("cumtsn");
-		if (cumtsn != null)
+		String cumtsnString = root.attributeValue("cumtsn");
+		Integer cumtsn = null;
+		if (cumtsnString != null)
 		{
-			this.sctpData.sndrcvinfo.sinfo_cumtsn = (int) Long.parseLong(cumtsn);
+			cumtsn = (int) Long.parseLong(cumtsnString);
 		}
 		else
 		{
-			this.sctpData.sndrcvinfo.sinfo_cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
-		}		
+			cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
+		}
+		this.sctpData.sndrcvinfo.sinfo_tsn = Utils.convertLittleBigIndian(cumtsn);
 		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + this.sctpData.sndrcvinfo.sinfo_cumtsn);
 		String aid = root.attributeValue("aid");
 		Long assocId = null; 
@@ -415,13 +419,13 @@ public class MsgSctp extends Msg{
 	            }
 	            else if(params[1].equalsIgnoreCase("tsn")) 
 	            {
-	            	int tsn = this.sctpData.sndrcvinfo.sinfo_tsn & 0xffffffff;
-	            	var.add(Integer.toString(tsn));
+	            	long tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn) & 0xffffffff;
+	            	var.add(Long.toString(tsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("cumtsn")) 
 	            {
-	            	int cumtsn = this.sctpData.sndrcvinfo.sinfo_cumtsn & 0xffffffff;
-	            	var.add(Integer.toString(cumtsn));
+	            	long cumtsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn) & 0xffffffff;
+	            	var.add(Long.toString(cumtsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 
 	            {
