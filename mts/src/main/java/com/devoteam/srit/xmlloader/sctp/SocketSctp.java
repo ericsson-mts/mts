@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.sctp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+
 import java.net.SocketException;
 import java.util.concurrent.Semaphore;
 
@@ -142,6 +143,21 @@ public class SocketSctp extends Thread {
 
 		GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.PROTOCOL, "SocketSctp receiver thread stopped");
 
+        try
+        {
+            synchronized (this)
+            {
+                if (null != sctpSocket)
+                {
+                    StackFactory.getStack(channelSctp.getProtocol()).closeChannel(channelSctp.getName());
+                }
+            }
+        }
+        catch (Exception e)
+        {
+        	// nothing to do
+        }
+		
 	}
 
 	public void setChannelSctp(ChannelSctp aChannelSctp)
