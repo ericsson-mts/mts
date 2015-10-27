@@ -44,14 +44,22 @@ Evolutions :
     
 Fault report :
 
-Migration :   
-  * Pour le protocole DIAMETER, si des AVPs ne sont plus bien traduits du fait 
+Migration :    
+  *  En DIAMETER, si vous utilisez l'operation 'setFromMessage' avec un path 
+    message.type, vous allez obtenir le label (issu du dictionnaire) en plus du 
+    command code something like that <label>:<code>. Donc si le routage est basé 
+    sur message.type il faut modifier l'attribut routingName de la balise XML 
+    <scenario> en conséquence.  
     de la modifiaction de l'algorithme de recherche d'un AVP (prise en compte du
+    vendorId) alors il faut modifier le code pour tenir compte. 
+  * Pour le protocole DIAMETER, si des AVPs ne sont plus bien traduits du fait 
+    de la modification de l'algorithme de recherche d'un AVP (prise en compte du
     vendorId) alors il faut modifier le code pour tenir compte.                                                           
   * For SMTP protocol the deprecated grammar is now not supported; please use 
     the unified grammar  
     For basic transport protocol (TCP, UDP, SCTP, TLS) the deprecated grammar 
     is now not supported; please use the unified grammar
+    
 
 
 -------------------------------------------------------------------------------
@@ -67,9 +75,21 @@ Evolutions :
     Implémentation partielle du setFromMessage.
 
 Fault report :
+  * Pour les noms du test, des testcases, des scenarios, on supprime un certain
+    nombre de caractère et en particulier le caratère '|' (comme ceux qui 
+    interviennent dans les expressions régulières unix) car sinon les statistiques 
+    aussi bien en temps réel que le rapport ne sont pas générés car le mécasnisme 
+    des stats est basé sur l'évaluation d'expressions régulières.    
 
 Migration :
-
+  * Si la variable route.scenarioName contient des caractères de concaténation 
+    ',' alors ceux-ci sont transformés en caractère '|'. Dans cette version 
+    (voir fault report) le caractère '|' est supprimé ce qui peut perturber 
+    le mécasnisme de routage. Dans ce cas vous pouvez contourner le problème
+    en utilisant l'attribut "routingName" à la place de "name" pour la balise    
+    XML <scenario>. Il n'y a pas de suppression de caractère sur cette valeur et 
+    c'est la bonne façon de faire le routage maintenant.
+    
 
 -------------------------------------------------------------------------------
 				RELEASE NOTE
