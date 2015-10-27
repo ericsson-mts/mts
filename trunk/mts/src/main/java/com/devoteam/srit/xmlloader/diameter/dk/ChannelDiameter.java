@@ -73,7 +73,7 @@ public class ChannelDiameter extends Channel
     	Listenpoint listenpoint = msg.getListenpoint();
     	if (listenpoint != null)
     	{
-            ret = listenpoint.sendMessage(msg, remoteHost, remotePort, transport);
+            ret = listenpoint.sendMessage(msg, remoteHost[0], remotePort, transport);
         }
         else
         {

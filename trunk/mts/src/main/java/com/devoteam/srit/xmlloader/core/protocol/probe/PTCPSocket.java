@@ -60,9 +60,9 @@ public class PTCPSocket extends Channel implements Task, Removable {
 
     public PTCPSocket(PTCPPacket packet, Probe probe){        
         super("TCP capture channel " + Utils.newUID());
-        super.localHost = packet.getIPHeader().getSrcIP().getValue();
+        super.localHost = new String[] {packet.getIPHeader().getSrcIP().getValue()};
         super.localPort = packet.getTCPHeader().getSrcPort().getValue();
-        super.remoteHost = packet.getIPHeader().getDstIP().getValue();
+        super.remoteHost = new String[] {packet.getIPHeader().getDstIP().getValue()};
         super.remotePort = packet.getTCPHeader().getDstPort().getValue();
         
         

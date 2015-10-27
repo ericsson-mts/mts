@@ -92,7 +92,7 @@ public class ChannelTcpNIO extends Channel
     }
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcpNIO(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
+    public ChannelTcpNIO(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
     {
         super(localHost, localPort, remoteHost, remotePort, aProtocol);
         this.socketTcp = null;
@@ -131,7 +131,7 @@ public class ChannelTcpNIO extends Channel
     		Config.getConfigForTCPSocket(hybridSocket, false);
 
             this.localPort = hybridSocket.getLocalPort();
-            this.localHost = hybridSocket.getLocalAddress().getHostAddress();
+            this.localHost = new String[] {hybridSocket.getLocalAddress().getHostAddress()};
         }
 
 

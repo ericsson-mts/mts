@@ -1,17 +1,17 @@
 package dk.i1.diameter.node;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+
 //import java.util.Iterator;
 import dk.i1.diameter.Message;
 import dk.i1.sctp.*;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Collection;
 import java.net.InetSocketAddress;
 import java.net.InetAddress;
-
-import com.devoteam.srit.xmlloader.core.utils.Config;
 
 class SCTPNode extends NodeImplementation {
 	static {
@@ -55,10 +55,7 @@ class SCTPNode extends NodeImplementation {
 		events.sctp_association_event = true;
 		sctp_socket.subscribeEvents(events);
 		if(settings.port()!=0) {
-			// FH modif 
-			// sctp_socket.bind(settings.port());
-			InetAddress inetAddr = InetAddress.getByName(settings.hostId());
-			sctp_socket.bind(inetAddr, settings.port());
+			sctp_socket.bind(settings.port());
 			sctp_socket.listen();
 		} else {
 			sctp_socket.bind();
@@ -124,7 +121,8 @@ class SCTPNode extends NodeImplementation {
 		}
 	    private void run_() throws java.io.IOException {
 		// set non-blocking mode for the listening socket
-		sctp_socket.configureBlocking(false);
+	    System.out.println(sctp_socket + ".configureBlocking(false)");
+		//sctp_socket.configureBlocking(true);
 		
 		for(;;) {
 			boolean tmp_any_queued_messages;
@@ -357,13 +355,6 @@ class SCTPNode extends NodeImplementation {
 							conn.sac_outbound_streams = sac.sac_outbound_streams;
 							map.put(assoc_id,conn);
 							registerInboundConnection(conn);
-							
-							// Devoteam Configure the CER/CEA sending
-							boolean autoCERCEAEnable = Config.getConfigByName("diameter.properties").getBoolean("capability.AUTO_CER_CEA_ENABLE", true);
-							if (!autoCERCEAEnable)
-							{
-								getNode().sendCER(conn);
-							}		
 						} else {
 							conn.state = Connection.State.connected_out;
 							conn.assoc_id = assoc_id;

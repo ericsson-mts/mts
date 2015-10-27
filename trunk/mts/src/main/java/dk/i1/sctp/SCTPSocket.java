@@ -12,6 +12,7 @@ a datagram socket.
 public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 	static {
 		System.loadLibrary("dk_i1_sctp");
+		System.out.println("SCTPSocket" + ".init()");
 		init();
 	}
 	private static native void init();
@@ -19,10 +20,12 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 	
 	public SCTPSocket(boolean one_to_many) throws SocketException {		 //Devoteam
 		impl=0;
+		System.out.println(this + ".open(" + one_to_many + ")");
 		open(one_to_many);
 	}
 	public SCTPSocket(boolean one_to_many, int port) throws SocketException { //Devoteam
 		impl=0;
+		System.out.println(this + ".open(" + one_to_many + ", " + port + ")");
 		open(one_to_many);
 		bind(port);
 	}
@@ -65,6 +68,7 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 		bind(addr.getAddress(),port);
 	}
 	private void bind(byte[] addr, int port) throws SocketException {
+		System.out.println(this + ".bind(" + addr +", " + port + ")");
 		bind_native(addr,port);
 	}
 	private native void bind_native(byte[] addr, int port) throws SocketException;
@@ -155,6 +159,20 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 	 * Sets the parameters for a peer, heartbeat interval among others.
 	 */
 	public void setPeerParameters(sctp_paddrparams spp) throws SocketException {
+		String bytes = spp.spp_address==null?null:spp.spp_address.getAddress().getAddress().toString();
+		int intPort = spp.spp_address== null?0:spp.spp_address.getPort();
+		String port = Integer.toString(intPort);		
+		System.out.println(this + ".setPeerParameters_native(" +
+						   spp.spp_assoc_id.id + ", " +
+						   bytes + "," +
+						   port + ", " +
+						   spp.spp_hbinterval + ", " +
+						   spp.spp_pathmaxrxt + ", " +
+						   spp.spp_pathmtu + ", " +
+						   spp.spp_sackdelay + ", " +
+						   spp.spp_flags + ", " +
+						   spp.spp_ipv6_flowlabel + ", " +
+						   spp.spp_ipv4_tos + ")");
 		setPeerParameters_native(spp.spp_assoc_id.id,
 		                         spp.spp_address==null?null:spp.spp_address.getAddress().getAddress(),
 		                         spp.spp_address==null?0:spp.spp_address.getPort(),
@@ -187,6 +205,11 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 	 *@since 0.5.6
 	 */
 	public void setInitMsg(sctp_initmsg im) throws SocketException {
+		System.out.println(this + ".setInitMsg_native(" +
+				im.sinit_num_ostreams + ", " +
+				im.sinit_max_instreams + ", " +
+				im.sinit_max_attempts + ", " +
+				im.sinit_max_init_timeo + ")");
 		setInitMsg_native(im.sinit_num_ostreams, im.sinit_max_instreams,
 		                  im.sinit_max_attempts, im.sinit_max_init_timeo);
 	}
@@ -216,6 +239,7 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 		connect(addr.getAddress(),port);
 	}
 	private void connect(byte[] addr, int port) throws SocketException {
+		System.out.println(this + ".connect_native(" + addr + ", " + port + ")");
 		connect_native(addr,port);
 	}
 	private native void connect_native(byte[] addr, int port) throws SocketException;
@@ -317,6 +341,17 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 	 *@throws WouldBlockException if the socket is non-blocking and outgoing OS buffers are full.
 	 */
 	public void send(SCTPData sctpdata) throws SocketException, WouldBlockException {
+		System.out.println(this + ".send_native(" + 
+				sctpdata.data + ", " + 
+				sctpdata.sndrcvinfo.sinfo_context + ", " +
+				sctpdata.sndrcvinfo.sinfo_cumtsn + ", " +
+				sctpdata.sndrcvinfo.sinfo_flags + ", " + 
+				sctpdata.sndrcvinfo.sinfo_ppid + ", " +
+				sctpdata.sndrcvinfo.sinfo_ssn + ", " +
+				sctpdata.sndrcvinfo.sinfo_stream + ", " +
+				sctpdata.sndrcvinfo.sinfo_timetolive + ", " +
+				sctpdata.sndrcvinfo.sinfo_tsn + ", " +
+				sctpdata.sndrcvinfo.sinfo_assoc_id.hashCode() + ")");
 		send_native(sctpdata.data,sctpdata.sndrcvinfo);
 	}
 	private native void send_native(byte[] data, sctp_sndrcvinfo sndrcvinfo) throws SocketException, WouldBlockException;

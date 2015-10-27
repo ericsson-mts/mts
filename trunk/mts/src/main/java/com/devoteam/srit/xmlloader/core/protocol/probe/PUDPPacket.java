@@ -48,9 +48,9 @@ public class PUDPPacket extends Channel {
         this.udpHeader = new PUDPHeader(array);
         this.data = array.subArray(8); // udp header has a fixed length of "8" src port + dst port + len + checksum
 
-        super.localHost = ipHeader.getSrcIP().getValue();
+        super.localHost = new String[] {ipHeader.getSrcIP().getValue()};
         super.localPort = udpHeader.getSrcPort().getValue();
-        super.remoteHost = ipHeader.getDstIP().getValue();
+        super.remoteHost = new String[] {ipHeader.getDstIP().getValue()};
         super.remotePort = udpHeader.getDstPort().getValue();
     }
 

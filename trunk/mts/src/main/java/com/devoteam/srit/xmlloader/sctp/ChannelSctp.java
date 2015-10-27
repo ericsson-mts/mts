@@ -38,8 +38,11 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
 import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 
+import dk.i1.sctp.OneToManySCTPSocket;
 import dk.i1.sctp.OneToOneSCTPSocket;
+import dk.i1.sctp.SCTPSocket;
 import dk.i1.sctp.sctp_initmsg;
+import dk.i1.sctp.sctp_paddrparams;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -64,8 +67,6 @@ public class ChannelSctp extends Channel
     private Listenpoint listenpoint;
 
     private AssociationId aid;
-    private Collection<InetAddress> localHostList;
-    private Collection<InetAddress> remoteHostList;
     private sctp_initmsg initmsg;
 
     private long startTimestamp = 0;    
@@ -89,7 +90,7 @@ public class ChannelSctp extends Channel
 		super(
         		name,
         		Utils.getLocalAddress().getHostAddress(),
-        		Integer.toString(((OneToOneSCTPSocket)aSocket).getLocalInetPort()),
+        		Integer.toString(((SCTPSocket)aSocket).getLocalInetPort()),
         		null,
         		null,
         		aListenpoint.getProtocol()
@@ -99,7 +100,7 @@ public class ChannelSctp extends Channel
 		this.startTimestamp = System.currentTimeMillis();
 
         this.listenpoint = aListenpoint;
-        this.socket = new SocketSctp((OneToOneSCTPSocket) aSocket);
+        this.socket = new SocketSctp((SCTPSocket) aSocket);
         this.socket.setChannelSctp(this);
         this.initmsg = new sctp_initmsg();
     }
@@ -127,19 +128,56 @@ public class ChannelSctp extends Channel
         {
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
     		this.startTimestamp = System.currentTimeMillis();
-        	
+            
+    		//InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
 			//InetAddress localAddr = InetAddress.getByName(getLocalHost());
 			// TODO Take localAddr into account
-            OneToOneSCTPSocket sctpSocket = new OneToOneSCTPSocket();
-            sctpSocket.bind(getLocalPort()); 
+            SCTPSocket sctpSocket = new OneToOneSCTPSocket();
             sctpSocket.setInitMsg(this.initmsg);
+            
+            int port = getLocalPort();
+            if (localHost != null)
+            {
+	            for (int i = 0; i < this.localHost.length; i++)
+	            {
+	            	System.out.println("bind to " + this.localHost[i] + ":" + port);
+	            	InetAddress inet = InetAddress.getByName(this.localHost[i]);
+	            	sctpSocket.bind(inet.getByName(localHost[i]), port);
+	            	//sctpSocket.listen();
+	            }
+            }
+            else
+            {
+            	sctpSocket.bind(port);
+            	//sctpSocket.listen();
+            }          
     		            
-            InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
+            InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());            
+            //sctp_paddrparams spp = sctpSocket.setPeerParameters(spp);getpeeetPeerParameters(spp);
+            //System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
+            //System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode())
+            sctp_paddrparams spp = new sctp_paddrparams();
+            spp.spp_assoc_id = new AssociationId(101);
+            //spp.spp_address = remoteSocketAddress;
+			spp.spp_flags = sctp_paddrparams.SPP_HB_ENABLE;
+			spp.spp_hbinterval = (int)30000+1000;
+			sctpSocket.setPeerParameters(spp);
             sctpSocket.connect(remoteSocketAddress);
+            //sctspp_paddrparams spp = new sctp_paddrparams();
+            //spp.spp_assoc_id = new AssociationId(1);
+            //spp.spp_address = remoteSocketAddress;
+            //spp.spp_flags = 2 + 32 + 128;
+            //spp.spp_hbinterval = 0;
+            //spp.spp_ipv4_tos = 1;
+            //spp.spp_ipv6_flowlabel = 1;
+            //spp.spp_pathmaxrxt = 1;
+            //spp.spp_pathmtu = 1;
+            //spp.spp_sackdelay = 1;
+            //sctpSocket.setPeerParameters(spp);
         
-            this.localPort = sctpSocket.getLocalInetPort();
+            //this.localPort = sctpSocket.getLocalInetPort();
             // TODO Take socket LocalAddress into account
-            // this.setLocalHost(socket.getLocalAddress().getHostAddress());
+            //this.setLocalHost(socket.getLocalAddress().getHostAddress());
 
             socket = new SocketSctp(sctpSocket);
         }

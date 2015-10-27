@@ -5,9 +5,6 @@ import java.net.*;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Iterator;
-
-import com.devoteam.srit.xmlloader.core.utils.Config;
-
 import dk.i1.diameter.Message;
 
 class TCPNode extends NodeImplementation {
@@ -26,8 +23,10 @@ class TCPNode extends NodeImplementation {
 		if(settings.port()!=0) {
 			// allocate an unbound server socket channel
 			serverChannel = ServerSocketChannel.open();
-			// set the (host,port) into the server channel will listen to
-			serverChannel.socket().bind(new InetSocketAddress (settings.hostId(), settings.port()));
+			// Get the associated ServerSocket to bind it with
+			ServerSocket serverSocket = serverChannel.socket();
+			// set the port the server channel will listen to
+			serverSocket.bind(new InetSocketAddress (settings.port()));
 		}
 	}
 	
@@ -62,13 +61,11 @@ class TCPNode extends NodeImplementation {
 	}
 	
 	void closeIO() {
-		logger.log(Level.FINEST,"Closing server channel");
+		logger.log(Level.FINEST,"Closing server channel, etc.");
 		if(serverChannel!=null) {
 			try {
 				serverChannel.close();
-			} catch(java.io.IOException ex) {
-				logger.log(Level.WARNING,"Closing server channel : ", ex);
-			}
+			} catch(java.io.IOException ex) {}
 		}
 		serverChannel=null;
 		try {
@@ -128,7 +125,6 @@ class TCPNode extends NodeImplementation {
 					logger.log(Level.FINE,"Got an inbound connection (key is acceptable)");
 					ServerSocketChannel server = (ServerSocketChannel)key.channel();
 					SocketChannel channel = server.accept();
-					
 					InetSocketAddress address = (InetSocketAddress)channel.socket().getRemoteSocketAddress();
 					logger.log(Level.INFO,"Got an inbound connection from " + address.toString());
 					if(!please_stop) {
@@ -140,14 +136,6 @@ class TCPNode extends NodeImplementation {
 						channel.register(selector, SelectionKey.OP_READ, conn);
 						
 						registerInboundConnection(conn);
-						
-						// Devoteam Configure the CER/CEA sending
-						boolean autoCERCEAEnable = Config.getConfigByName("diameter.properties").getBoolean("capability.AUTO_CER_CEA_ENABLE", true);
-						if (!autoCERCEAEnable)
-						{
-							getNode().sendCER(conn);
-						}		
-
 					} else {
 						//We don't want to add the connection if were are shutting down.
 						channel.close();
@@ -161,7 +149,7 @@ class TCPNode extends NodeImplementation {
 							logger.log(Level.FINEST,"Connected!");
 							conn.state = Connection.State.connected_out;
 							channel.register(selector, SelectionKey.OP_READ, conn);
-							initiateCER(conn);							
+							initiateCER(conn);
 						}
 					} catch(java.io.IOException ex) {
 						logger.log(Level.WARNING,"Connection to '"+conn.host_id+"' failed", ex);
@@ -205,7 +193,7 @@ class TCPNode extends NodeImplementation {
 	    }
 	}
 	
-	private void handleReadable(TCPConnection conn) {		
+	private void handleReadable(TCPConnection conn) {
 		logger.log(Level.FINEST,"handlereadable()...");
 		conn.makeSpaceInNetInBuffer();
 		ConnectionBuffers connection_buffers = conn.connection_buffers;
@@ -231,7 +219,7 @@ class TCPNode extends NodeImplementation {
  		}
 	}
 	
-	private void processInBuffer(TCPConnection conn) {				
+	private void processInBuffer(TCPConnection conn) {
 		ByteBuffer app_in_buffer = conn.connection_buffers.appInBuffer();
 		logger.log(Level.FINEST,"pre: app_in_buffer.position=" + app_in_buffer.position());
 		int raw_bytes=app_in_buffer.position();
@@ -239,7 +227,7 @@ class TCPNode extends NodeImplementation {
 		app_in_buffer.position(0);
 		app_in_buffer.get(raw);
 		app_in_buffer.position(raw_bytes);
-		int offset=0;		
+		int offset=0;
 		//System.out.println("processInBuffer():looping");
 		while(offset<raw.length) {
 			//System.out.println("processInBuffer(): inside loop offset=" + offset);
@@ -327,12 +315,10 @@ class TCPNode extends NodeImplementation {
 		TCPConnection conn = (TCPConnection)conn_;
 		try {
 			SocketChannel channel = SocketChannel.open();
-			InetSocketAddress localAddress = new InetSocketAddress(conn.host_id,0);
-			channel.socket().bind(localAddress);
 			channel.configureBlocking(false);
+			InetSocketAddress address = new InetSocketAddress(peer.host(),peer.port());
 			try {
-				InetSocketAddress remoteAddress = new InetSocketAddress(peer.host(),peer.port());
-				if(channel.connect(remoteAddress)) {
+				if(channel.connect(address)) {
 					//This only happens on Solaris when connecting locally
 					logger.log(Level.FINEST,"Connected!");
 					conn.state = Connection.State.connected_out;
@@ -346,7 +332,7 @@ class TCPNode extends NodeImplementation {
 				channel.close();
 				return false;
 			}
- 			conn.state = Connection.State.connecting;
+			conn.state = Connection.State.connecting;
 			conn.channel = channel;
 			selector.wakeup();
 			channel.register(selector, SelectionKey.OP_CONNECT, conn);
