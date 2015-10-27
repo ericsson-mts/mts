@@ -139,7 +139,7 @@ public class Listenpoint
      * It should only be called in the open() method of the Channel sub-types.
      * @param port
      */
-    public void setHost(String host)
+    public void setHost(String host) throws Exception
     {
         this.host = Utils.formatIPAddress(host);
     }

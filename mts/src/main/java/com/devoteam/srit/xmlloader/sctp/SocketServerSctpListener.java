@@ -30,8 +30,11 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
+import dk.i1.sctp.OneToManySCTPSocket;
 import dk.i1.sctp.OneToOneSCTPSocket;
+import dk.i1.sctp.SCTPSocket;
 import dk.i1.sctp.sctp_event_subscribe;
+
 import java.net.Socket;
 import java.net.SocketException;
 

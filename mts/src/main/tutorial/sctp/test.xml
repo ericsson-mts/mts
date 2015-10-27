@@ -14,28 +14,32 @@
     <!--parameter name="[remotePortSCTP]" operation="set" value="10000" /-->
     <parameter name="[remotePortSCTP]" operation="set" value="[remotePortSCTP]" description="remote port of the SUT host" editable="true"/>
     
-    <testcase name="001_channel" state="true">
+    <testcase name="001_channel" description="channel + SCTP XML parameter : flag=0" state="true">
         <parameter name="[newSsn]" operation="set" value="0"/>
         <scenario file="001_channel/scenario.xml" name="SCTP" routingName="SCTP"/>
     </testcase>
 
-    <testcase name="002_binary" state="true">
+    <testcase name="002_binary" description="channel + SCTP config parameter " state="true">
         <scenario file="002_binary/scenario.xml" name="SCTP" routingName="SCTP"/>
     </testcase>
 
-    <testcase name="003_listenpoint" state="true">
+    <testcase name="003_listenpoint" description="listenpoint + SCTP XML parameter : flag=1" state="true">
         <scenario file="003_listenpoint/scenario.xml" name="SCTP" routingName="SCTP"/>
     </testcase>
 
-    <testcase name="004_passive_client" state="true">
+    <testcase name="004_passive_client" description="passive client" state="true">
         <scenario file="004_passive_client/scenario.xml" name="SCTP" routingName="SCTP"/>
     </testcase>
+
+    <testcase name="005_multihoming" description="multihoming feature" state="true">
+        <scenario file="005_multihoming/scenario.xml" name="SCTP" routingName="SCTP"/>
+    </testcase>
     
-    <testcase name="client" state="false">
+    <testcase name="client" description="client" state="false">
         <scenario file="901_client/scenario.xml" name="client" routingName="client"/>
     </testcase>
     
-    <testcase name="server" state="false">
+    <testcase name="server" description="server as proxy" state="false">
         <scenario file="901_server/scenario.xml" name="server" routingName="[remotePortSCTP]"/>
     </testcase>
     

@@ -84,7 +84,7 @@ public class ChannelTcpBIO extends Channel
     }
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcpBIO(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
+    public ChannelTcpBIO(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
     {
     	super(localHost, localPort, remoteHost, remotePort, aProtocol);
         socketTcp = null;    	    
@@ -119,7 +119,7 @@ public class ChannelTcpBIO extends Channel
     		Config.getConfigForTCPSocket(socket, false);
     		
             this.localPort = socket.getLocalPort();
-            this.localHost = socket.getLocalAddress().getHostAddress();
+            this.localHost = new String[] {socket.getLocalAddress().getHostAddress()};
             
             socketTcp = new SocketTcpBIO(socket);
     	}

@@ -871,15 +871,17 @@ public class Utils
     }
     
     /*
-     * Format the IP address : for IPV6 only add brackets characters; for IPV4 do nothing
+     * Format the IP address : resolve domain name into IP adress and for IPV6 only 
+     * add brackets characters
      */
-    public static String formatIPAddress(String addr)
+    public static String formatIPAddress(String addr) throws Exception
     {
     	// for IPV6 address then add '[' and ']' character around;
     	if (addr == null)
     	{
     		return addr;
     	}
+    	addr = InetAddress.getByName(addr).getHostAddress();
     	// test IPV6 address
     	if (addr.indexOf(":") >= 0)
     	{
@@ -895,7 +897,18 @@ public class Utils
     	}
     	return addr;
     }
-    
+
+    /*
+     * Format the IP addresses
+     */
+    public static String[] formatIPAddresses(String[] addresses) throws Exception
+    {
+    	for (int i = 0; i < addresses.length; i++)
+    	{
+    		addresses[i] = Utils.formatIPAddress(addresses[i]);  
+    	}
+    	return addresses;
+    }
     static public String formatdouble(double number)
     {
         if (Math.abs(number) > 1e-4 || number == 0)
@@ -906,6 +919,22 @@ public class Utils
         { 
         	return dfMicro.format(number);
         }         
+    }
+
+    static public String TableToString(String[] strings)
+    {
+    	String ret = "";
+    	if (strings ==  null)
+    	{
+    		return null;
+    	}
+    	for (int i =0; i < strings.length; i++)
+    	{
+    		ret += strings[i];
+    		if (i < strings.length - 1)
+    		ret += ",";
+    	}
+    	return ret;
     }
 
     static public String[] splitNoRegex(String string, String splitter)

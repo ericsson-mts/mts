@@ -74,7 +74,7 @@ public class ChannelUdpNIO extends Channel
 
             if (this.localHost != null)
             {
-                localDatagramSocketAddress = new InetSocketAddress(this.localHost, this.localPort);
+                localDatagramSocketAddress = new InetSocketAddress(this.localHost[0], this.localPort);
             }
             else
             {

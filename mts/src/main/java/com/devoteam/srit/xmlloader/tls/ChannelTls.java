@@ -105,7 +105,7 @@ public class ChannelTls extends Channel {
 	}
 
 	/** Creates a new instance of ChannelTls */
-	public ChannelTls(ListenpointTls listenpointTls, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol)
+	public ChannelTls(ListenpointTls listenpointTls, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
 	{
 		super(localHost, localPort, remoteHost, remotePort, aProtocol);
 		socketTls = null;    	    
@@ -198,7 +198,7 @@ public class ChannelTls extends Channel {
   	      	
             
 			this.localPort = socket.getLocalPort();
-			this.localHost = socket.getLocalAddress().getHostAddress();
+			this.localHost = new String[] {socket.getLocalAddress().getHostAddress()};
 			socketTls = new SocketTls(socket);
 		}
 

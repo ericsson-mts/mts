@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import com.devoteam.srit.xmlloader.core.Parameter;
-
 import java.net.SocketException;
 import java.util.concurrent.Semaphore;
 
@@ -36,14 +34,12 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
-import dk.i1.sctp.AssociationId;
-import dk.i1.sctp.OneToOneSCTPSocket;
 import dk.i1.sctp.SCTPChunk;
 import dk.i1.sctp.SCTPData;
 import dk.i1.sctp.SCTPNotificationAssociationChangeCommLost;
 import dk.i1.sctp.SCTPNotificationShutdownEvent;
+import dk.i1.sctp.SCTPSocket;
 import dk.i1.sctp.WouldBlockException;
 import dk.i1.sctp.sctp_event_subscribe;
 /**
@@ -53,11 +49,11 @@ import dk.i1.sctp.sctp_event_subscribe;
 
 public class SocketSctp extends Thread {
 
-	private OneToOneSCTPSocket sctpSocket;
+	private SCTPSocket sctpSocket;
 	private ChannelSctp channelSctp;
 	private Semaphore mutex = new Semaphore(1,true);
 
-	public SocketSctp(OneToOneSCTPSocket aSctpSocket) throws Exception
+	public SocketSctp(SCTPSocket aSctpSocket) throws Exception
 	{
 		this.sctpSocket = aSctpSocket;
 		sctp_event_subscribe ses = new sctp_event_subscribe();
@@ -165,7 +161,7 @@ public class SocketSctp extends Thread {
 		channelSctp = aChannelSctp;
 	}	
 
-	public OneToOneSCTPSocket getSctpSocket(){
+	public SCTPSocket getSctpSocket(){
 		return sctpSocket;	
 	}
 
@@ -173,48 +169,6 @@ public class SocketSctp extends Thread {
 	{
 		try
 		{	
-			//SCTPData data = new SCTPData();
-			//data.setData(msg.encode());
-
-			/*
-            Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-            
-            String logDataSndRcvInfo = ""; 
-            int streamInt = config.getInteger("client.DEFAULT_STREAM", 0);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "streamInt =" + streamInt);
-			int streamUnint = Utils.convertLittleBigIndian(streamInt);        
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "streamUnint =" + streamUnint);			
-            data.sndrcvinfo.sinfo_stream = (short) streamInt;
-			logDataSndRcvInfo += "stream = " + data.sndrcvinfo.sinfo_stream;
-			
-            int ssnInt = config.getInteger("client.DEFAULT_SSN", 0);
-            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssnInt =" + ssnInt);
-            int ssnUnint = Utils.convertLittleBigIndian(ssnInt);
-            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssnUnint =" + ssnUnint);
-            data.sndrcvinfo.sinfo_ssn = (short) ssnInt;
-			logDataSndRcvInfo += ", ssn = " + data.sndrcvinfo.sinfo_ssn;
-			
-            int ppidInt = config.getInteger("client.DEFAULT_PPID", 0);                
-            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppidInt =" + ppidInt);
-            int ppidUnint = Utils.convertLittleBigIndian(ppidInt);            
-            data.sndrcvinfo.sinfo_ppid = ppidUnint;
-			logDataSndRcvInfo += ", ppid = " + data.sndrcvinfo.sinfo_ppid;
-
-            int tsnInt = config.getInteger("client.DEFAULT_TSN", 0);                
-            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsnInt =" + tsnInt);
-            int tsnUnint = Utils.convertLittleBigIndian(tsnInt);                        
-            data.sndrcvinfo.sinfo_tsn = tsnUnint;
-			logDataSndRcvInfo += ", tsn = " + data.sndrcvinfo.sinfo_tsn;
-
-            int aidInt = config.getInteger("client.DEFAULT_AID", 0);
-            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aidInt =" + aidInt);
-            int aidUnint = Utils.convertLittleBigIndian(aidInt);            
-            AssociationId assocId = new AssociationId(aidUnint);                 
-            data.sndrcvinfo.sinfo_assoc_id = assocId;
-            logDataSndRcvInfo += ", aid = " + data.sndrcvinfo.sinfo_assoc_id.hashCode();
-
-            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, logDataSndRcvInfo);
-            */
 			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
 			{
 				MsgSctp msgSctp = (MsgSctp) msg;
