@@ -35,6 +35,7 @@ import dk.i1.sctp.OneToOneSCTPSocket;
 import dk.i1.sctp.SCTPSocket;
 import dk.i1.sctp.sctp_event_subscribe;
 
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -65,7 +66,20 @@ public class SocketServerSctpListener extends Thread
 			ses.sctp_data_io_event = true;
 			ses.sctp_association_event = true;
 			ses.sctp_shutdown_event=true;
-//			sctpSocketserver.setInitMsg(im);
+			//sctpSocketserver.subscribeEvents(ses);
+			
+			String host = listenpointSctp.getHost();
+			/*
+			if (host != null)
+			{
+				InetAddress addr = InetAddress.getByName(host);
+				sctpSocketserver.bind(addr, port);
+			}
+			else
+			{
+				sctpSocketserver.bind(port);
+			}
+			*/
 			sctpSocketserver.listen();
             this.listenpointSctp = listenpointSctp;
         }

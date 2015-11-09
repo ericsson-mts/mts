@@ -2,7 +2,9 @@
 
 <scenario>
 
-    <openChannelSCTP name="channel" localHost="[localHostSCTP],164.48.84.92" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP],164.48.84.92" remotePort="[remotePortSCTP]"/>
+    <createListenpointSCTP name="listenpoint2" localHost="164.48.84.98" localPort="5665"/>
+
+    <openChannelSCTP name="channel" localHost="[localHostSCTP],164.48.84.92" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP],164.48.84.92" remotePort="5665"/>
     
     <receiveMessageSCTP request="true" type="INIT-ACK" timeout="5"/>
 
@@ -11,6 +13,7 @@
     </sendMessageSCTP>
      
    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+	<parameter name="[lastChannel]" operation="protocol.setFromMessage" value="channel.name"/>
     </receiveMessageSCTP>
 
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
@@ -22,6 +25,17 @@
     
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
+
+    <closeChannelSCTP name="[lastChannel]"/>
+
+    <!--createListenpointSCTP name="listenpoint1" localHost="[localHostSCTP]" localPort="5665"/>
+
+    <sendMessageSCTP channel="channel">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+     
+   <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    </receiveMessageSCTP-->
 
     <finally>
 

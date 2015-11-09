@@ -438,7 +438,6 @@ public class MsgSctp extends Msg{
 		        {
 					SocketSctp socketSctp=((ChannelSctp) getChannel()).getSocketSctp();
 					Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
-					//System.out.println("getPeerInetAddresses().size="+ col.size());
 					for (InetAddress ia : col)
 					{	
 						// support IPV6 address
