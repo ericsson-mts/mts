@@ -135,50 +135,65 @@ public class ChannelSctp extends Channel
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
             sctpSocket.setInitMsg(this.initmsg);
             
-            int port = getLocalPort();
+            int localPort = getLocalPort();
             if (localHost != null)
             {
 	            for (int i = 0; i < this.localHost.length; i++)
 	            {
-	            	System.out.println("bind to " + this.localHost[i] + ":" + port);
-	            	InetAddress inet = InetAddress.getByName(this.localHost[i]);
-	            	sctpSocket.bind(inet.getByName(localHost[i]), port);
-	            	//sctpSocket.listen();
+	            	try
+	            	{
+	            		System.out.println("Bind to " + this.localHost[i] +  ":" + localPort);
+	            		InetAddress inet = InetAddress.getByName(this.localHost[i]);
+		            	sctpSocket.bind(inet.getByName(this.localHost[i]), localPort);
+		            	//sctpSocket.listen();
+
+		                sctp_paddrparams spp = new sctp_paddrparams();
+		                spp.spp_assoc_id = new AssociationId(101);
+		                System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
+		                InetSocketAddress localSocketAddress = new InetSocketAddress(this.localHost[i], localPort);
+		                spp.spp_address = localSocketAddress;
+		                System.out.println("spp.spp_address:" + spp.spp_address);
+		                spp.spp_hbinterval = (int)30000+1000;
+		    			spp.spp_flags = sctp_paddrparams.SPP_HB_ENABLE | sctp_paddrparams.SPP_PMTUD_DISABLE | sctp_paddrparams.SPP_SACKDELAY_DISABLE | sctp_paddrparams.SPP_IPV6_FLOWLABEL;
+		    			spp.spp_pathmaxrxt = 0;
+		    			spp.spp_pathmtu = 0;
+		    			spp.spp_sackdelay = 0;
+		    			spp.spp_ipv6_flowlabel = 0;
+		    			spp.spp_ipv4_tos = 0;
+		    			sctpSocket.setPeerParameters(spp);
+		            	break;
+	            	}
+	            	catch (Exception e)
+	            	{
+	            		System.out.println(e);
+		            	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "Exception : so we try the next peer :", e);
+	            	}
 	            }
             }
             else
             {
-            	sctpSocket.bind(port);
+            	sctpSocket.bind(localPort);
             	//sctpSocket.listen();
             }          
-    		            
-            InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());            
-            //sctp_paddrparams spp = sctpSocket.setPeerParameters(spp);getpeeetPeerParameters(spp);
-            //System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
-            //System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode())
-            sctp_paddrparams spp = new sctp_paddrparams();
-            spp.spp_assoc_id = new AssociationId(101);
-            //spp.spp_address = remoteSocketAddress;
-			spp.spp_flags = sctp_paddrparams.SPP_HB_ENABLE;
-			spp.spp_hbinterval = (int)30000+1000;
-			sctpSocket.setPeerParameters(spp);
-            sctpSocket.connect(remoteSocketAddress);
-            //sctspp_paddrparams spp = new sctp_paddrparams();
-            //spp.spp_assoc_id = new AssociationId(1);
-            //spp.spp_address = remoteSocketAddress;
-            //spp.spp_flags = 2 + 32 + 128;
-            //spp.spp_hbinterval = 0;
-            //spp.spp_ipv4_tos = 1;
-            //spp.spp_ipv6_flowlabel = 1;
-            //spp.spp_pathmaxrxt = 1;
-            //spp.spp_pathmtu = 1;
-            //spp.spp_sackdelay = 1;
-            //sctpSocket.setPeerParameters(spp);
-        
-            //this.localPort = sctpSocket.getLocalInetPort();
-            // TODO Take socket LocalAddress into account
-            //this.setLocalHost(socket.getLocalAddress().getHostAddress());
 
+            int remotePort = getRemotePort();
+            if (remoteHost != null)
+            {
+	            for (int i = 0; i < this.remoteHost.length; i++)
+	            {
+	            	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Connect to ", this.remoteHost[i], ":", remotePort);
+	            	try
+	            	{		            
+		                InetSocketAddress remoteSocketAddress = new InetSocketAddress(this.remoteHost[i], remotePort);            
+		                sctpSocket.connect(remoteSocketAddress);
+		            	break;
+	            	}
+	            	catch (Exception e)
+	            	{
+		            	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "Exception : so we try the next peer :", e); 	            			            
+	            	}
+	            }
+            }       
             socket = new SocketSctp(sctpSocket);
         }
         
