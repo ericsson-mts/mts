@@ -41,10 +41,12 @@
     <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
     <!--test parameter="[lastAid]" condition="number.equals" value="0" /-->
 
-    <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
-    <test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" />
-   <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
-    <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
+    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
+    <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
+   <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+    <!--test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
 
     <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
