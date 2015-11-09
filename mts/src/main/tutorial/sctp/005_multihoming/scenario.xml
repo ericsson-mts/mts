@@ -14,7 +14,9 @@
     </receiveMessageSCTP>
 
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
-    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHostSCTP]" />
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
+    <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
     <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
     <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
     

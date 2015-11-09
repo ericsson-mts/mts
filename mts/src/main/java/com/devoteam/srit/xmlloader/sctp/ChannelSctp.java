@@ -136,6 +136,7 @@ public class ChannelSctp extends Channel
             sctpSocket.setInitMsg(this.initmsg);
             
             int localPort = getLocalPort();
+            /*
             if (localHost != null)
             {
 	            for (int i = 0; i < this.localHost.length; i++)
@@ -153,8 +154,8 @@ public class ChannelSctp extends Channel
 		                InetSocketAddress localSocketAddress = new InetSocketAddress(this.localHost[i], localPort);
 		                spp.spp_address = localSocketAddress;
 		                System.out.println("spp.spp_address:" + spp.spp_address);
-		                spp.spp_hbinterval = (int)30000+1000;
-		    			spp.spp_flags = sctp_paddrparams.SPP_HB_ENABLE | sctp_paddrparams.SPP_PMTUD_DISABLE | sctp_paddrparams.SPP_SACKDELAY_DISABLE | sctp_paddrparams.SPP_IPV6_FLOWLABEL;
+		                spp.spp_hbinterval = 0;
+		    			spp.spp_flags = sctp_paddrparams.SPP_HB_DISABLE | sctp_paddrparams.SPP_PMTUD_DISABLE | sctp_paddrparams.SPP_SACKDELAY_DISABLE;
 		    			spp.spp_pathmaxrxt = 0;
 		    			spp.spp_pathmtu = 0;
 		    			spp.spp_sackdelay = 0;
@@ -170,7 +171,7 @@ public class ChannelSctp extends Channel
 	            	}
 	            }
             }
-            else
+            else */
             {
             	sctpSocket.bind(localPort);
             	//sctpSocket.listen();
