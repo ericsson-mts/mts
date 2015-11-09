@@ -143,11 +143,7 @@ public class ChannelSctp extends Channel
 	            {
 	            	try
 	            	{
-	            		System.out.println("Bind to " + this.localHost[i] +  ":" + localPort);
-	            		InetAddress inet = InetAddress.getByName(this.localHost[i]);
-		            	sctpSocket.bind(inet.getByName(this.localHost[i]), localPort);
-		            	//sctpSocket.listen();
-
+	            		System.out.println("Bind to " + this.localHost[i] +  ":" + localPort);	        
 		                sctp_paddrparams spp = new sctp_paddrparams();
 		                spp.spp_assoc_id = new AssociationId(101);
 		                System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
@@ -161,7 +157,11 @@ public class ChannelSctp extends Channel
 		    			spp.spp_sackdelay = 0;
 		    			spp.spp_ipv6_flowlabel = 0;
 		    			spp.spp_ipv4_tos = 0;
-		    			sctpSocket.setPeerParameters(spp);
+		    			//sctpSocket.setPeerParameters(spp);
+		    			
+		    			InetAddress inet = InetAddress.getByName(this.localHost[i]);
+		            	sctpSocket.bind(inet, localPort);
+		            	//sctpSocket.listen();
 		            	break;
 	            	}
 	            	catch (Exception e)
@@ -171,7 +171,8 @@ public class ChannelSctp extends Channel
 	            	}
 	            }
             }
-            else */
+            else
+            */
             {
             	sctpSocket.bind(localPort);
             	//sctpSocket.listen();
