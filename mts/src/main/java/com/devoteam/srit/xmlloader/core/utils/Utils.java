@@ -55,6 +55,7 @@ import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
@@ -933,6 +934,25 @@ public class Utils
     		ret += strings[i];
     		if (i < strings.length - 1)
     		ret += ",";
+    	}
+    	return ret;
+    }
+    
+    static public String TableInetToString(Collection<InetAddress> collection)
+    {
+    	String ret = "";
+    	if (collection ==  null)
+    	{
+    		return null;
+    	}
+    	for (InetAddress inet : collection)
+    	{
+    		ret += inet.getHostAddress();
+    		ret += ",";
+    	}
+    	if (collection.size() >= 1)
+    	{
+    		ret = ret.substring(0, collection.size() - 1);
     	}
     	return ret;
     }
