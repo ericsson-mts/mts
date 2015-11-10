@@ -18,26 +18,44 @@
 
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
     <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
-    <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
-    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHosts]" />
+    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
+    <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
     <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
     <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
     
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
 
-    <closeChannelSCTP name="[lastChannel]"/>
+    <!--closeChannelSCTP name="[lastChannel]"/>
 
-    <!--createListenpointSCTP name="listenpoint1" localHost="[localHostSCTP]" localPort="5665"/>
+    <createListenpointSCTP name="listenpoint1" localHost="[localHostSCTP]" localPort="5665"/-->
+
+    <!-- coupure reseau -->
+    <parameter name="[result]" operation="system.command" value="ifdown eth1"/>
+    <pause seconds="1"/>
 
     <sendMessageSCTP channel="channel">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
      
    <receiveMessageSCTP request="true" type="DATA" timeout="5">
-    </receiveMessageSCTP-->
+    </receiveMessageSCTP>
+
+	<!-- reconnection reseau -->
+	<parameter name="[result]" operation="system.command" value="ifup eth1"/>
+
+    <sendMessageSCTP channel="channel">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+     
+   <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    </receiveMessageSCTP>
 
     <finally>
+
+	<!-- reconnection reseau -->
+	<parameter name="[result]" operation="system.command" value="ifup eth1"/>
+	<pause seconds="1"/>
 
         <closeChannelSCTP name="channel"/>
         

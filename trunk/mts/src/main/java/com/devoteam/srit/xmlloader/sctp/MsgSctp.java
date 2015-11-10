@@ -374,7 +374,7 @@ public class MsgSctp extends Msg{
     public Parameter getParameter(String path) throws Exception
 	{
 		Parameter var = super.getParameter(path);
-		if (null != var)
+		if (var != null)
 		{
 			return var;
 		}
@@ -436,13 +436,12 @@ public class MsgSctp extends Msg{
 	            }
 	            else if(params[1].equalsIgnoreCase("sourceHost")) 
 		        {
-					SocketSctp socketSctp=((ChannelSctp) getChannel()).getSocketSctp();
-					Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
-					for (InetAddress ia : col)
-					{	
-						// support IPV6 address
-						// if (ia instanceof Inet4Address)
-						{
+					SocketSctp socketSctp = ((ChannelSctp) getChannel()).getSocketSctp();
+					if (socketSctp != null)
+					{						
+						Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
+						for (InetAddress ia : col)
+						{	
 							var.add(ia.getHostAddress());						
 						}
 					}

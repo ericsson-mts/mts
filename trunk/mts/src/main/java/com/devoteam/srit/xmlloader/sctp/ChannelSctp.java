@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -46,6 +47,7 @@ import dk.i1.sctp.sctp_paddrparams;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.Collection;
 
 import dk.i1.sctp.AssociationId;
@@ -89,7 +91,7 @@ public class ChannelSctp extends Channel
     {
 		super(
         		name,
-        		Utils.getLocalAddress().getHostAddress(),
+        		((SCTPSocket)aSocket).getLocalAddress().getHostAddress(),
         		Integer.toString(((SCTPSocket)aSocket).getLocalInetPort()),
         		null,
         		null,
@@ -302,6 +304,125 @@ public class ChannelSctp extends Channel
 			this.initmsg.sinit_max_init_timeo= (short) Integer.parseInt(max_init_timeo);
 			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_init_timeo=", initmsg.sinit_max_init_timeo);    			
 		}
+    }
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing
+    //---------------------------------------------------------------------
+
+    /** 
+     * Returns the string description of the message. Used for logging as DEBUG level 
+     */
+    /*
+    @Override
+    public String toString()
+    {
+        String ret = super.toString();
+        if (this.socket != null && this.socket.getSctpSocket() != null)
+        {
+        	InetAddress inet = this.socket.getSctpSocket().getInetAddress();
+        	if (inet != null)
+        	{
+		        ret += " inetAddress=\"" + inet.getHostAddress() + "\"";
+        	}
+    		InetAddress local = this.socket.getSctpSocket().getLocalAddress();
+        	if (local != null)
+        	{
+	        	ret += " localAddress=\"" + local.getHostAddress() + "\"";
+        	}
+	        try 
+	        {
+	        	// crash de la jvm
+	        	//String localAddresses = Utils.TableInetToString(this.socket.getSctpSocket().getLocalInetAddresses());
+	        	//ret += " localAddresses=\"" + localAddresses + "\"";
+	        }
+	        catch (Exception e)
+	        {
+	        	// nothing to do
+	        }
+	        try 
+	        {
+	        	//int localInetPort = this.socket.getSctpSocket().getLocalInetPort();
+		        //if (localInetPort > 0)
+		        //{
+		        	//ret += " localInetPort=\"" + localInetPort + "\"";
+		        //}
+	        }
+	        catch (Exception e)
+	        {
+	        	// nothing to do
+	        }
+	        localPort = this.socket.getSctpSocket().getLocalPort();
+	        if (localPort > 0)
+	        {
+	        	ret += " localPort=\"" + localPort + "\"";
+	        }
+	        int port = this.socket.getSctpSocket().getPort();
+	        if (port > 0)
+	        {
+	        	ret += " port=\"" + port + "\"";
+	        }
+	        SocketAddress localSocket= this.socket.getSctpSocket().getLocalSocketAddress();
+	        if (localSocket != null)
+	        {
+	        	ret += " localSocketAddress=\"" + localSocket + "\"";
+	        }
+	        SocketAddress remoteSocket = this.socket.getSctpSocket().getRemoteSocketAddress();
+	        if (remoteSocket != null)
+	        {
+	        	ret += " remoteSocketAddress=\"" + remoteSocket + "\"";
+	        }
+        }
+	    return ret;
+    }
+    */
+        
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+    
+    /** 
+     * Get a parameter from the message 
+     */
+    @Override
+    public Parameter getParameter(String path) throws Exception
+    {
+		Parameter var = super.getParameter(path);
+		if (var != null)
+		{
+			return var;
+		}
+
+		var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if(params[1].equalsIgnoreCase("peerHosts")) 
+        {
+        	SCTPSocket sctpSocket = this.getSocketSctp().getSctpSocket();
+			if (sctpSocket != null)
+			{						
+				Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(this.aid);
+				for (InetAddress ia : col)
+				{	
+					var.add(ia.getHostAddress());						
+				}
+			}
+        }
+        else if(params[1].equalsIgnoreCase("peerPort")) 
+        {
+			SCTPSocket sctpSocket = this.getSocketSctp().getSctpSocket();
+			if (sctpSocket != null)
+			{	
+				int port = sctpSocket.getPeerInetPort(this.aid);
+				var.add(Integer.toString(port));
+			}
+        }    
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+        return var; 
     }
 
 }

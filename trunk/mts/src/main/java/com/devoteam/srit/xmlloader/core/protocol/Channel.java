@@ -291,6 +291,7 @@ public class Channel
         String ret = "";
         ret += "name=\"" + name + "\"";
         ret += " localHost=\"" + Utils.TableToString(localHost) + "\"";
+        System.out.println("toString():port="+ localPort);
         ret += " localPort=\"" + localPort + "\"";
         ret += " remoteHost=\"" + Utils.TableToString(remoteHost) + "\"";
         ret += " remotePort=\"" + remotePort + "\""; 
@@ -423,12 +424,14 @@ public class Channel
         else if(params[1].equalsIgnoreCase("xml"))
         {
         	parameter.add(this.toXml());
-        }
+        }         
         else
         {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-            
+        	if (!StackFactory.PROTOCOL_SCTP.equalsIgnoreCase(this.getTransport()))
+        	{
+        		Parameter.throwBadPathKeywordException(path);
+        	}
+        }        
         return parameter;
     }
 
