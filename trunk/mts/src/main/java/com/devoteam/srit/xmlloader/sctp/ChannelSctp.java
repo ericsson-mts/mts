@@ -95,7 +95,7 @@ public class ChannelSctp extends Channel
         		null,
         		aListenpoint.getProtocol()
         );
-		
+
 		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
 		this.startTimestamp = System.currentTimeMillis();
 

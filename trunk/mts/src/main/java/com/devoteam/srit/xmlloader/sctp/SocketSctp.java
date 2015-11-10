@@ -60,9 +60,12 @@ public class SocketSctp extends Thread {
 		ses.sctp_data_io_event = true;
 		ses.sctp_association_event = true;
 		ses.sctp_shutdown_event=true;
-		try {				
+		try 
+		{				
 			sctpSocket.subscribeEvents(ses);
-		} catch (SocketException e1) {
+		} 
+		catch (Exception e1) 
+		{
 			e1.printStackTrace();
 		}
 	}
