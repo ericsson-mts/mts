@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <openChannelSCTP name="SCTPConn1" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
+
+    <openChannelSCTP name="SCTPConn2" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
+    
+    <sendMessageSCTP channel="SCTPConn1">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+   
+    <sendMessageSCTP channel="SCTPConn2">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+   
+    <parameter name="[testcase:semaphore]" operation="system.semaphorewait"/>
+
+    <finally>
+
+        <closeChannelSCTP name="SCTPConn1" />
+
+        <closeChannelSCTP name="SCTPConn2" />
+
+    </finally>
+
+</scenario>

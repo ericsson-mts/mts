@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="5"/>
+     
+    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    <parameter name="[lastChannel]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
+
+    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
+    <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
+    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+    <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
+    
+    <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
+    <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
+
+    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
+    
+    <!-- coupure reseau -->
+    <parameter name="[result]" operation="system.command" value="ifdown eth1"/>
+    <pause seconds="1"/>
+
+    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
+     
+    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    </receiveMessageSCTP>
+    
+    <!-- reconnection reseau -->
+    <parameter name="[result]" operation="system.command" value="ifup eth1"/>
+    
+    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
+
+    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    </receiveMessageSCTP>
+
+    <finally>
+
+      	<!-- reconnection reseau -->
+      	<parameter name="[result]" operation="system.command" value="ifup eth1"/>
+      	<pause seconds="1"/>
+              
+        <receiveMessageSCTP request="true" type="ABORT-ACK" timeout="5"/>
+	
+    </finally>
+
+</scenario>

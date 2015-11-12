@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-
-    <openChannelSCTP name="SCTPConn1" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
-
-    <receiveMessageSCTP type="INIT-ACK"/>
-
-    <openChannelSCTP name="SCTPConn2" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
-
-    <receiveMessageSCTP type="INIT-ACK"/>
     
-    <sendMessageSCTP channel="SCTPConn1">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendMessageSCTP>
+    <receiveMessageSCTP type="INIT-ACK"/>
    
-    <sendMessageSCTP channel="SCTPConn2">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendMessageSCTP>
-   
-    <receiveMessageSCTP type="DATA"></receiveMessageSCTP>
-     
+   <receiveMessageSCTP></receiveMessageSCTP>
+
     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
-    <test parameter="[lastStream]" condition="number.equals" value="11222" />
+    <test parameter="[lastStream]" condition="number.equals" value="22222" />
     <!-- ssn is incremented automatically by the sctp stack if flag == 1 -->
    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
     <test parameter="[lastSsn]" condition="number.equals" value="0"/>
     <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
-    <test parameter="[lastPpid]" condition="number.equals" value="987654321" />
+    <test parameter="[lastPpid]" condition="number.equals" value="4294967295" />
      <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
     <test parameter="[lastFlags]" condition="number.equals" value="1" />
     <!-- context is always set to 0 by the sctp stack --> 
@@ -49,26 +35,21 @@
     <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
     <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
-    <!--test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]"/-->
+    <!--test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
 
-    <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-    <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+    <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
+    <test parameter="[lastContents]" condition="string.equals" value="test value" />
 
-    <receiveMessageSCTP type="DATA">
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-    </receiveMessageSCTP>
-
-    <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-    <test parameter="[contents]" condition="string.equals" value="AAAAA" />
-
+    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
+    
     <finally>
 
-        <closeChannelSCTP name="SCTPConn1" />
-    	  <receiveMessageSCTP type="ABORT-ACK"/>
+        <closeChannelSCTP name="channelSCTP"/>
+        <receiveMessageSCTP type="ABORT-ACK"/>
 
-        <closeChannelSCTP name="SCTPConn2" />
-	      <receiveMessageSCTP type="ABORT-ACK"/>
+        <!--removeListenpointSCTP name="listenpoint"/-->
 
     </finally>
 
 </scenario>
+
