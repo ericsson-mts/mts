@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <openChannelSCTP name="channel" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  num_ostreams="65535" max_instreams="65535" />
+    
+    <sendMessageSCTP channel="channel" stream="65534" ssn="65535" ppid="2222222222"  
+                    flags="0" context="2333444555" ttl="3444555666" 
+                     tsn= "2345678901" cumtsn=  "3456789012" aid="4000000000">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+     
+    <parameter name="[testcase:semaphore]" operation="system.semaphorewait"/>
+
+    <finally>
+
+        <closeChannelSCTP name="channel"/>    
+	
+    </finally>
+
+</scenario>

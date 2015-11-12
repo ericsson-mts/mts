@@ -2,19 +2,13 @@
 
 <scenario>
 
-    <openChannelSCTP name="channel" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  num_ostreams="30000" max_instreams="40000" />
-       
     <receiveMessageSCTP type="INIT-ACK" timeout="1">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name" />    
         <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
         <test parameter="[contents]" condition="string.equals" value="" />
     </receiveMessageSCTP>
-    
-    <sendMessageSCTP channel="channel">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendMessageSCTP>
-    
+        
    <receiveMessageSCTP/>
 
     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
@@ -50,10 +44,10 @@
 
     <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+    
+    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
 
     <finally>
-
-        <closeChannelSCTP name="channel"/>
 
 	      <receiveMessageSCTP type="ABORT-ACK" timeout="1">
              <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />    
