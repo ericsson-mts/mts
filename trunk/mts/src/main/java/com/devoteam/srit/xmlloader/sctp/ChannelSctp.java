@@ -125,17 +125,17 @@ public class ChannelSctp extends Channel
     /** Open a Channel */
     @Override
     public boolean open() throws Exception
-    {
+    {    
         if (socket == null)
         {
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
     		this.startTimestamp = System.currentTimeMillis();
             
-    		//InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
-			//InetAddress localAddr = InetAddress.getByName(getLocalHost());
-			// TODO Take localAddr into account
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
-            sctpSocket.setInitMsg(this.initmsg);
+            if (this.initmsg != null)
+            {
+            	sctpSocket.setInitMsg(this.initmsg);
+            }
             
             int localPort = getLocalPort();
             /*
@@ -183,6 +183,8 @@ public class ChannelSctp extends Channel
             int remotePort = getRemotePort();
             if (remoteHost != null)
             {
+            	boolean connected = false;
+            	Exception lastException;
 	            for (int i = 0; i < this.remoteHost.length; i++)
 	            {
 	            	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Connect to ", this.remoteHost[i], ":", remotePort);
@@ -190,11 +192,17 @@ public class ChannelSctp extends Channel
 	            	{		            
 		                InetSocketAddress remoteSocketAddress = new InetSocketAddress(this.remoteHost[i], remotePort);            
 		                sctpSocket.connect(remoteSocketAddress);
+		                connected = true;
 		            	break;
 	            	}
 	            	catch (Exception e)
 	            	{
+	            		lastException = e;
 		            	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "Exception : so we try the next peer :", e); 	            			            
+	            	}
+	            	if (!connected)
+	            	{
+	            		throw new ExecutionException("Can not connect to all remote destinations : last exception " + lastException);
 	            	}
 	            }
             }       

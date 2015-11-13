@@ -2,29 +2,77 @@
 
 <scenario>
 
-    <openChannelSCTP name="channel" localHost="[localHostSCTP],164.48.84.92" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP],164.48.84.92" remotePort="[remotePortSCTP]"/>
+    <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
+    <openChannelSCTP name="[channelName]" localHost="[localHostSCTP],164.48.84.92" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP],164.48.84.92" remotePort="[remotePortSCTP]"/>
     
-    <sendMessageSCTP channel="channel">
+    <sendMessageSCTP channel="[channelName]" stream="10" ssn="0" ppid="3333"  
+                    flags="1" context="0" ttl="0" 
+                     tsn= "0" cumtsn=  "0" aid="0">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
      
-    <parameter name="[testcase:semaphore]" operation="system.semaphorewait"/> 
-     
-    <sendMessageSCTP channel="channel">
-        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
-    </sendMessageSCTP>
-    
-    <parameter name="[testcase:semaphore]" operation="system.semaphorewait"/>
+    <receiveMessageSCTP channel="[channelName]" request="true" type="DATA" timeout="[timeout]">
+    </receiveMessageSCTP>
 
-    <sendMessageSCTP channel="channel">
+    <!-- coupure reseau -->
+    <parameter name="[result]" operation="system.command" value="ip link set [networkInterface] down"/>
+    <if>
+        <condition>
+            <test parameter="[result.returnCode]" condition="number.equals" value="0" not="true"/>
+        </condition>
+        <then>
+            <exit failed="true" exception="Error while cutting the network interface [networkInterface] : [result.standardOut][result.errorOut]"/>
+        </then>
+    </if>
+    <pause seconds="5"/>
+     
+    <sendMessageSCTP channel="[channelName]" stream="10" ssn="0" ppid="3333"  
+                    flags="0" context="0" ttl="0" 
+                     tsn= "0" cumtsn=  "0" aid="0">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+
+    <receiveMessageSCTP channel="[channelName]" request="true" type="DATA" timeout="[timeout]">
+    </receiveMessageSCTP>
+
+    <!-- reconnection reseau -->
+    <parameter name="[result]" operation="system.command" value="ip link set [networkInterface] down"/>
+    <if>
+        <condition>
+            <test parameter="[result.returnCode]" condition="number.equals" value="0" not="true"/>
+        </condition>
+        <then>
+            <exit failed="true" exception="Error while restoring the network interface [networkInterface] : [result.standardOut][result.errorOut]"/>
+        </then>
+    </if>
+    <pause seconds="5"/>
+
+
+    <sendMessageSCTP channel="[channelName]" stream="20" ssn="0" ppid="4444"  
+                    flags="0" context="0" ttl="0" 
+                     tsn= "0" cumtsn=  "0" aid="0">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
      
-    <parameter name="[testcase:semaphore]" operation="system.semaphorewait"/>
+    <receiveMessageSCTP channel="[channelName]" request="true" type="DATA" timeout="[timeout]">
+    </receiveMessageSCTP>
     
     <finally>
 
-        <closeChannelSCTP name="channel"/>
+      	<!-- reconnection reseau -->
+      	<parameter name="[result]" operation="system.command" value="ip link set [networkInterface] up"/>
+    <if>
+        <condition>
+            <test parameter="[result.returnCode]" condition="number.equals" value="0" not="true"/>
+        </condition>
+        <then>
+            <exit failed="true" exception="Error while restoring the network interface [networkInterface] : [result.standardOut][result.errorOut]"/>
+        </then>
+    </if>
+
+      	<pause seconds="1"/>
+
+        <closeChannelSCTP name="[channelName]"/>            
         
     </finally>
 

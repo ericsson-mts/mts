@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-
-    <receiveMessageSCTP type="INIT-ACK"/>
-
-    <receiveMessageSCTP type="INIT-ACK"/>
        
-    <receiveMessageSCTP type="DATA"></receiveMessageSCTP>
+    <receiveMessageSCTP type="DATA" timeout="[timeout]"></receiveMessageSCTP>
      
     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
     <test parameter="[lastStream]" condition="number.equals" value="11222" />
@@ -42,20 +38,20 @@
     <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
 
-    <receiveMessageSCTP type="DATA">
+    <parameter name="[lastChannelName1]" operation="protocol.setFromMessage" value="channel.name" />
+
+    <receiveMessageSCTP type="DATA" timeout="[timeout]">
         <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     </receiveMessageSCTP>
 
     <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
 
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
-
     <finally>
 
-    	  <receiveMessageSCTP type="ABORT-ACK"/>
-
-	      <receiveMessageSCTP type="ABORT-ACK"/>
+        <closeChannelSCTP name="[lastChannelName1]" />
+        <parameter name="[lastChannelName2]" operation="protocol.setFromMessage" value="channel.name" />
+        <closeChannelSCTP name="[lastChannelName2]" />
 
     </finally>
 

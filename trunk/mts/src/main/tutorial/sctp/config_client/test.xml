@@ -12,49 +12,45 @@
     <!--parameter name="[remoteHostSCTP]" operation="set" value="172.16.21.32"/-->
     <parameter name="[remoteHostSCTP]" operation="set" value="[remoteHostSCTP(0)]" description="remote address of the SUT host" editable="true"/>
     <parameter name="[remotePortSCTP]" operation="file.readProperty" value="sctp.properties" value2="listenpoint.LOCAL_PORT"/>
-    <!--parameter name="[remotePortSCTP]" operation="set" value="10000" /-->
+    <parameter name="[remotePortSCTP]" operation="set" value="14000" />
     <parameter name="[remotePortSCTP]" operation="set" value="[remotePortSCTP]" description="remote port of the SUT host" editable="true"/>
-    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>    
+    <parameter name="[remoteServer]" operation="set" value="false" description="flag to activate the server scenario" editable="true"/>    
     
     <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
     <parameter name="[timeout]" operation="set" value="5" description="timeout duration for message receipt : 0 mean always" editable="true"/>
     
     <testcase name="001_channel" state="true" number="[iterations]" description="channel + SCTP XML parameter : flag=0">
         <parameter name="[newSsn]" operation="set" value="0"/>
-        <scenario name="client" file="001_channel/client.xml" state="[localClient]" routingName="client"/>
-        <scenario name="server" file="001_channel/server.xml" state="[remoteServer]" routingName="SCTP"/>
+        <scenario name="client" file="../001_channel/client.xml" state="[localClient]" routingName=""/>
+        <scenario name="server" file="../001_channel/server.xml" state="[remoteServer]" routingName="SCTP"/>
     </testcase>
 
     <testcase name="002_binary" state="true" number="[iterations]" description="channel + SCTP config parameter ">    
-        <scenario name="client" file="002_binary/client.xml" state="[localClient]" routingName="client1,client2"/>
-        <scenario name="server" file="002_binary/server.xml" state="[remoteServer]" routingName="SCTP"/>        
+        <scenario name="client" file="../002_binary/client.xml" state="[localClient]" routingName=""/>
+        <scenario name="server" file="../002_binary/server.xml" state="[remoteServer]" routingName="SCTP"/>        
     </testcase>
 
     <testcase name="003_listenpoint" state="true" number="[iterations]" description="listenpoint + SCTP XML parameter : flag=1">
-        <parameter name="[remoteListenPortSCTP]" operation= "set" value="14001" />
-        <scenario name="client" file="003_listenpoint/client.xml" state="[localClient]" routingName="client"/>
-        <scenario name="server" file="003_listenpoint/server.xml" state="[remoteServer]" routingName="SCTP"/>
+        <scenario name="client" file="../003_listenpoint/client.xml" state="[localClient]" routingName=""/>
+        <scenario name="server" file="../003_listenpoint/server.xml" state="[remoteServer]" routingName="SCTP"/>
     </testcase>
 
     <testcase name="004_passive_client" state="true" number="[iterations]" description="passive client">
-        <scenario name="client" file="004_passive_client/client.xml" state="[localClient]" routingName="client"/>
-        <scenario name="server" file="004_passive_client/server.xml" state="[remoteServer]" routingName="SCTP"/>
+        <scenario name="client" file="../004_passive_client/client.xml" state="[localClient]" routingName=""/>
+        <scenario name="server" file="../004_passive_client/server.xml" state="[remoteServer]" routingName="SCTP"/>
     </testcase>
 
     <testcase name="005_multihoming" state="true" number="[iterations]" description="multihoming feature">
-        <parameter name="[networkInterface]" operation= "set" value="ens224" />
-        <parameter name="[timeout]" operation="set" value="10" description="timeout duration for message receipt : 0 mean always"/>
-  
-        <scenario name="client" file="005_multihoming/client.xml" state="[localClient]" routingName="client"/>
-        <scenario name="server" file="005_multihoming/server.xml" state="[remoteServer]" routingName="SCTP"/>
+        <scenario name="client" file="../005_multihoming/client.xml" state="[localClient]" routingName=""/>
+        <scenario name="server" file="../005_multihoming/server.xml" state="[remoteServer]" routingName="SCTP"/>
     </testcase>
     
     <testcase name="client" description="client" state="false">
-        <scenario name="client" file="901_client/scenario.xml" routingName="client"/>
+        <scenario name="client" file="../901_client/scenario.xml" routingName=""/>
     </testcase>
     
     <testcase name="server" description="server as proxy" state="false">
-        <scenario name="server" file="901_server/scenario.xml" routingName="[remotePortSCTP]"/>
+        <scenario name="server" file="../901_server/scenario.xml" routingName="[remotePortSCTP]"/>
     </testcase>
     
 </test>

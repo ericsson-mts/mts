@@ -182,19 +182,20 @@ public class MsgSctp extends Msg{
 			xml += "<header ";
 			int stream = sctpData.sndrcvinfo.sinfo_stream & 0xffff;
 			xml += "stream=\"" + stream + "\", ";
-			xml += "ssn=\"" + sctpData.sndrcvinfo.sinfo_ssn + "\", ";	
-			long ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid) & 0xffffffffl;
+			int ssn = sctpData.sndrcvinfo.sinfo_ssn & 0xffff;
+			xml += "ssn=\"" + ssn + "\", ";	
+			long ppid = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid)) & 0xffffffffl;
 			xml += "ppid=\"" + ppid + "\", ";
 			xml += "flags=\"" + sctpData.sndrcvinfo.sinfo_flags + "\", ";
-			long context = this.sctpData.sndrcvinfo.sinfo_context & 0xffffffffl;
+			long context = ((long) this.sctpData.sndrcvinfo.sinfo_context) & 0xffffffffl;
 			xml += "context=\"" + context + "\", ";
-			long timetolive = this.sctpData.sndrcvinfo.sinfo_timetolive & 0xffffffffl;
+			long timetolive = ((long) this.sctpData.sndrcvinfo.sinfo_timetolive) & 0xffffffffl;
 			xml += "ttl=\"" + timetolive + "\", ";
-			long tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn) & 0xffffffffl;
+			long tsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn)) & 0xffffffffl;
 			xml += "tsn=\"" + tsn + "\", ";
-			long cumtsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn) & 0xffffffffl;
+			long cumtsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn)) & 0xffffffffl;
 			xml += "cumtsn=\"" + cumtsn + "\", ";
-			long aid = this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode() & 0xffffffffl;			
+			long aid = ((long) this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode()) & 0xffffffffl;			
 			xml += "aid=\"" + aid + "\"/>\n";
 			xml += "\n";
 		}
@@ -399,39 +400,39 @@ public class MsgSctp extends Msg{
 	            }
 	            else if(params[1].equalsIgnoreCase("ppid")) 
 	            {
-	            	long ppid = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid) & 0xffffffffl;
+	            	long ppid = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid)) & 0xffffffffl;
 	            	var.add(Long.toString(ppid));
 	            }
 	            else if(params[1].equalsIgnoreCase("flags")) 
 	            {
-	            	short ppid = this.sctpData.sndrcvinfo.sinfo_flags;
-	            	var.add(Short.toString(ppid));
+	            	int ppid = this.sctpData.sndrcvinfo.sinfo_flags & 0xffff;
+	            	var.add(Integer.toString(ppid));
 	            }
 	            else if(params[1].equalsIgnoreCase("context")) 
 	            {
-	            	int context = this.sctpData.sndrcvinfo.sinfo_context & 0xffffffff;
-	            	var.add(Integer.toString(context));
+	            	long context = ((long) this.sctpData.sndrcvinfo.sinfo_context) & 0xffffffff;
+	            	var.add(Long.toString(context));
 	            }
 	            else if(params[1].equalsIgnoreCase("ttl")) 
 	            {
-	            	int ttl = this.sctpData.sndrcvinfo.sinfo_timetolive & 0xffffffff;
-	            	var.add(Integer.toString(ttl));
+	            	long ttl = ((long) this.sctpData.sndrcvinfo.sinfo_timetolive) & 0xffffffff;
+	            	var.add(Long.toString(ttl));
 	            }
 	            else if(params[1].equalsIgnoreCase("tsn")) 
 	            {
-	            	long tsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn) & 0xffffffff;
+	            	long tsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn)) & 0xffffffff;
 	            	var.add(Long.toString(tsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("cumtsn")) 
 	            {
-	            	long cumtsn = Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn) & 0xffffffff;
+	            	long cumtsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn)) & 0xffffffff;
 	            	var.add(Long.toString(cumtsn));
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 
 	            {
 	            	AssociationId assocId = this.sctpData.sndrcvinfo.sinfo_assoc_id;
-	            	int aid = assocId.hashCode()  & 0xffffffff;;
-	            	var.add(Integer.toString(aid));
+	            	long aid = ((long) assocId.hashCode())  & 0xffffffff;;
+	            	var.add(Long.toString(aid));
 					setAidFromMsg();
 	            }
 	            else if(params[1].equalsIgnoreCase("sourceHost")) 

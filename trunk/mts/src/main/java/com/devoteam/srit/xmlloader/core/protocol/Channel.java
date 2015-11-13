@@ -479,11 +479,11 @@ public class Channel
         }
         
         String localHost = channel.getLocalHost();
-        if(null != this.localHost )
+        if(null != this.localHost & this.localHost.length > 0)
         {
             if(null != localHost)
             {
-                if (!this.localHost.equals(localHost))
+                if (!localHost.equals(this.localHost[0]))
                 {
                     return false;
                 }
@@ -500,11 +500,11 @@ public class Channel
         }
         
         String remoteHost = channel.getRemoteHost();
-        if(null != this.remoteHost )
+        if(null != this.remoteHost & this.remoteHost.length > 0)
         {
             if(null != remoteHost)
             {
-                if (!this.remoteHost.equals(remoteHost))
+                if (!remoteHost.equals(this.remoteHost[0]))
                 {
                     return false;
                 }

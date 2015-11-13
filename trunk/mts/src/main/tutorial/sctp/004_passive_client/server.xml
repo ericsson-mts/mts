@@ -2,14 +2,7 @@
 
 <scenario>
 
-    <receiveMessageSCTP type="INIT-ACK" timeout="1">
-        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name" />    
-        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-        <test parameter="[contents]" condition="string.equals" value="" />
-    </receiveMessageSCTP>
-        
-   <receiveMessageSCTP/>
+   <receiveMessageSCTP type="DATA" timeout="[timeout]"/>
 
     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
     <test parameter="[lastStream]" condition="number.equals" value="11222" />
@@ -44,17 +37,11 @@
 
     <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[contents]" condition="string.equals" value="AAAAA" />
-    
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
 
     <finally>
 
-	      <receiveMessageSCTP type="ABORT-ACK" timeout="1">
-             <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />    
-             <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
-             <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
-             <test parameter="[contents]" condition="string.equals" value="" />
-        </receiveMessageSCTP>
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name" />
+        <closeChannelSCTP name="[lastChannelName]" />
 
     </finally>
 

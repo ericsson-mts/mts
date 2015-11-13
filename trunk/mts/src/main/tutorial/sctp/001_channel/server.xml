@@ -2,9 +2,10 @@
 
 <scenario>
     
-    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="5"/>
+    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="[timeout]"/>
      
-    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
     </receiveMessageSCTP>
 
     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
@@ -48,11 +49,25 @@
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
 
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
+    <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
+    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <sendMessageSCTP channel="[lastChannelName]" stream="0" ssn="[lastSsn]" ppid="[lastPpid]"  
+                    flags="[lastFlags]" context="[lastContext]" ttl="[lastTtl]" 
+                     tsn= "[lastTsn]" cumtsn=  "[lastCumtsn]" aid="[lastAid]">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+
+    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
+
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
 
     <finally>
-        
-        <receiveMessageSCTP request="true" type="ABORT-ACK" timeout="5"/>
+
+        <closeChannelSCTP name="[lastChannelName]"/> 
 	
     </finally>
 

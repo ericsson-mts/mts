@@ -2,25 +2,15 @@
 
 <scenario>
 
-    <createListenpointSCTP name="listenpoint" localPort="5665"/>
+    <pause name="wait listenpoint" seconds="1"/>
 
-    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="5665"  num_ostreams="22223" max_instreams="333334" />    
+    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="[remoteListenPortSCTP]"  num_ostreams="22223" max_instreams="333334" />    
 
     <sendMessageSCTP channel="channelSCTP" stream="22222" ssn="33333" ppid="4294967295"  
                     flags="1" context="2000000000" ttl="3000000000" 
                      tsn= "1234567890" cumtsn=  "2345678901" aid="3456789012">
         <data format="text">test value</data>
     </sendMessageSCTP>
-   
-   <parameter name="[testcase:semaphore]" operation="system.semaphorewait"/>
-
-    <finally>
-
-        <closeChannelSCTP name="channelSCTP"/>
-
-        <!--removeListenpointSCTP name="listenpoint"/-->
-
-    </finally>
 
 </scenario>
 
