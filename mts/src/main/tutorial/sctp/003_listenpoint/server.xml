@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    
-    <receiveMessageSCTP type="INIT-ACK"/>
+
+    <createListenpointSCTP name="listenpoint" localPort="[remoteListenPortSCTP]"/>
    
-   <receiveMessageSCTP></receiveMessageSCTP>
+   <receiveMessageSCTP listenpoint="listenpoint" type="DATA" timeout="[timeout]"></receiveMessageSCTP>
 
     <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
     <test parameter="[lastStream]" condition="number.equals" value="22222" />
@@ -34,19 +34,18 @@
     <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
     <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
     <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
-   <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
     <!--test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
 
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[lastContents]" condition="string.equals" value="test value" />
-
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
     
     <finally>
 
-        <closeChannelSCTP name="channelSCTP"/>
-        <receiveMessageSCTP type="ABORT-ACK"/>
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name" />
+        <closeChannelSCTP name="[lastChannelName]" />
 
+	<!-- Bug when removing a listepoint ; infinte loop -->
         <!--removeListenpointSCTP name="listenpoint"/-->
 
     </finally>

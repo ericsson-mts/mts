@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-
-    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="5"/>
      
-    <receiveMessageSCTP request="true" type="DATA" timeout="5">
-    <parameter name="[lastChannel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <parameter name="[lastSsn]" operation="number.add" value="[lastSsn]" value2="1"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
     </receiveMessageSCTP>
 
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
@@ -18,33 +26,54 @@
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
     <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
 
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
-    
-    <!-- coupure reseau -->
-    <parameter name="[result]" operation="system.command" value="ifdown eth1"/>
-    <pause seconds="1"/>
-
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
+    <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
+    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <sendMessageSCTP channel="[lastChannelName]" stream="0" ssn="[lastSsn]" ppid="[lastPpid]"  
+                    flags="[lastFlags]" context="[lastContext]" ttl="[lastTtl]" 
+                     tsn= "[lastTsn]" cumtsn=  "[lastCumtsn]" aid="[lastAid]">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
      
-    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
     </receiveMessageSCTP>
-    
-    <!-- reconnection reseau -->
-    <parameter name="[result]" operation="system.command" value="ifup eth1"/>
-    
-    <parameter name="[testcase:semaphore]" operation="system.semaphorenotify"/>
 
-    <receiveMessageSCTP request="true" type="DATA" timeout="5">
+    <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
+    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <sendMessageSCTP channel="[lastChannelName]" stream="0" ssn="[lastSsn]" ppid="[lastPpid]"  
+                    flags="[lastFlags]" context="[lastContext]" ttl="[lastTtl]" 
+                     tsn= "[lastTsn]" cumtsn=  "[lastCumtsn]" aid="[lastAid]">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+    
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
     </receiveMessageSCTP>
 
-    <finally>
-
-      	<!-- reconnection reseau -->
-      	<parameter name="[result]" operation="system.command" value="ifup eth1"/>
-      	<pause seconds="1"/>
-              
-        <receiveMessageSCTP request="true" type="ABORT-ACK" timeout="5"/>
-	
-    </finally>
+    <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
+    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <sendMessageSCTP channel="[lastChannelName]" stream="0" ssn="[lastSsn]" ppid="[lastPpid]"  
+                    flags="[lastFlags]" context="[lastContext]" ttl="[lastTtl]" 
+                     tsn= "[lastTsn]" cumtsn=  "[lastCumtsn]" aid="[lastAid]">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
 
 </scenario>
