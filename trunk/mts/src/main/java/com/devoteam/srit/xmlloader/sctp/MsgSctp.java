@@ -45,6 +45,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.sctp.AssociationId;
 import dk.i1.sctp.SCTPData;
+import dk.i1.sctp.SCTPSocket;
 
 
 public class MsgSctp extends Msg{
@@ -179,7 +180,7 @@ public class MsgSctp extends Msg{
 		xml += "\n"; 
 		if (sctpData.sndrcvinfo!=null)
 		{
-			xml += "<header ";
+			xml += "<sctp ";
 			int stream = sctpData.sndrcvinfo.sinfo_stream & 0xffff;
 			xml += "stream=\"" + stream + "\", ";
 			int ssn = sctpData.sndrcvinfo.sinfo_ssn & 0xffff;
@@ -197,7 +198,38 @@ public class MsgSctp extends Msg{
 			xml += "cumtsn=\"" + cumtsn + "\", ";
 			long aid = ((long) this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode()) & 0xffffffffl;			
 			xml += "aid=\"" + aid + "\"/>\n";
-			xml += "\n";
+			
+			ChannelSctp channelSctp = (ChannelSctp) getChannel();
+			if (channelSctp != null)
+			{
+				SocketSctp socketSctp = channelSctp.getSocketSctp();
+				if (socketSctp != null)
+				{
+					SCTPSocket sctpSocket = socketSctp.getSctpSocket();
+					if (sctpSocket != null)
+					{
+						AssociationId assoId = sctpData.sndrcvinfo.sinfo_assoc_id;
+						if (assoId != null && assoId.hashCode() != 0)
+						{
+							//System.out.println("assoId" + assoId);
+							int port= sctpSocket.getPeerInetPort(assoId);
+							//int port=  0;
+							Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(assoId);
+							if (col != null)
+							{
+								for (InetAddress ia : col)
+								{	
+									xml += "    <peer ";
+									xml += "address=\"" + ia.getHostAddress() + "\" ";
+									xml += "port=\"" + port + "\" ";
+									xml += "/>\n";
+								}
+							}
+						}
+					}
+				}	
+			}
+			xml += "</sctp>\n";
 		}
 		xml += Utils.byteTabToString(sctpData.getData());
         return xml;
@@ -212,9 +244,9 @@ public class MsgSctp extends Msg{
     {
     	this.setType("DATA");
     	 
-		List<Element> elements = root.elements("data");
+		List<Element> xmlData = root.elements("data");
 		List<byte[]> datas = new LinkedList<byte[]>();
-		for(Element element:elements)
+		for(Element element:xmlData)
 		{
 			switch(DataType.valueOf(element.attributeValue("format")))
 			{
@@ -258,7 +290,7 @@ public class MsgSctp extends Msg{
 		}	
 
 		this.sctpData=new SCTPData(data);
-
+		
         Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
         
 		String stream = root.attributeValue("stream");
