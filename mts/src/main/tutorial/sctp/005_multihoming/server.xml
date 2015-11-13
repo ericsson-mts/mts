@@ -4,23 +4,23 @@
      
     <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
         <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
-    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
-    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="sctp.stream"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="sctp.ssn"/>
     <parameter name="[lastSsn]" operation="number.add" value="[lastSsn]" value2="1"/>
-    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
-    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
-    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
-    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
-    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
-    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
-    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="sctp.ppid"/>
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="sctp.flags"/>
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="sctp.context"/>
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="sctp.ttl"/>
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="sctp.tsn"/>
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="sctp.cumtsn"/>
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     </receiveMessageSCTP>
 
-    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
     <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
     <!--test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" /-->
     <!--test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" /-->
-    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
     <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
     
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
@@ -35,15 +35,15 @@
      
     <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
         <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
-    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
-    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
-    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
-    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
-    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
-    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
-    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
-    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
-    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="sctp.stream"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="sctp.ssn"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="sctp.ppid"/>
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="sctp.flags"/>
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="sctp.context"/>
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="sctp.ttl"/>
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="sctp.tsn"/>
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="sctp.cumtsn"/>
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     </receiveMessageSCTP>
 
     <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
@@ -55,15 +55,15 @@
     
     <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
         <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
-    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="header.stream"/>
-    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="header.ssn"/>
-    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="header.ppid"/>
-    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="header.flags"/>
-    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="header.context"/>
-    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="header.ttl"/>
-    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="header.tsn"/>
-    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="header.cumtsn"/>
-    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="header.aid"/>
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="sctp.stream"/>
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="sctp.ssn"/>
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="sctp.ppid"/>
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="sctp.flags"/>
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="sctp.context"/>
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="sctp.ttl"/>
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="sctp.tsn"/>
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="sctp.cumtsn"/>
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     </receiveMessageSCTP>
 
     <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>

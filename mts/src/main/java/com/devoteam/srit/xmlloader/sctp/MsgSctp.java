@@ -398,7 +398,7 @@ public class MsgSctp extends Msg{
         path = path.trim();
         String[] params = Utils.splitPath(path);
 
-        if(params[0].equalsIgnoreCase("header")) 
+        if(params[0].equalsIgnoreCase("sctp")) 
         {
         	if (this.sctpData != null && this.sctpData.sndrcvinfo != null)
         	{
@@ -449,7 +449,7 @@ public class MsgSctp extends Msg{
 	            	var.add(Long.toString(aid));
 					setAidFromMsg();
 	            }
-	            else if(params[1].equalsIgnoreCase("sourceHost")) 
+	            else if(params[1].equalsIgnoreCase("peerHosts")) 
 		        {
 					SocketSctp socketSctp = ((ChannelSctp) getChannel()).getSocketSctp();
 					if (socketSctp != null)
@@ -461,7 +461,7 @@ public class MsgSctp extends Msg{
 						}
 					}
 		        }
-		        else if(params[1].equalsIgnoreCase("sourcePort")) 
+		        else if(params[1].equalsIgnoreCase("peerPort")) 
 		        {
 					ChannelSctp connSctp =((ChannelSctp) getChannel());
 					int port=connSctp.getSocketSctp().getSctpSocket().getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);

@@ -11,16 +11,16 @@
     </sendMessageSCTP>
 	  
    <receiveMessageSCTP channel="[channelName]"/>
-    <parameter name="[stream]" operation="protocol.setFromMessage" value="header.stream"/>
-    <parameter name="[ssn]" operation="protocol.setFromMessage" value="header.ssn"/>
-    <parameter name="[ppid]" operation="protocol.setFromMessage" value="header.ppid"/>
-    <parameter name="[tsn]" operation="protocol.setFromMessage" value="header.tsn"/>    
-    <parameter name="[aid]" operation="protocol.setFromMessage" value="header.aid"/>
+    <parameter name="[stream]" operation="protocol.setFromMessage" value="sctp.stream"/>
+    <parameter name="[ssn]" operation="protocol.setFromMessage" value="sctp.ssn"/>
+    <parameter name="[ppid]" operation="protocol.setFromMessage" value="sctp.ppid"/>
+    <parameter name="[tsn]" operation="protocol.setFromMessage" value="sctp.tsn"/>    
+    <parameter name="[aid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     <!--test parameter="[aid]" condition="string.equals" value="1" /-->
     
-    <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="header.sourceHost"/>
+    <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
     <!--test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" /-->
-    <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="header.sourcePort"/>
+    <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
     <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
     
     <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
