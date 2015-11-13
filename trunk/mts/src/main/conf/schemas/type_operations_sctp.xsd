@@ -230,17 +230,60 @@
     <xs:complexType name="headerSctpType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
-                <xs:attribute name="stream" type="xs:string" />
-                <xs:attribute name="ssn" type="xs:string" />    
-                <xs:attribute name="flags" type="xs:string" />
-                <xs:attribute name="ppid" type="xs:string" />
-                <xs:attribute name="context" type="xs:string" />
-                <xs:attribute name="ttl" type="xs:string" />                
-                <xs:attribute name="tsn" type="xs:string" />
-                <xs:attribute name="cumtsn" type="xs:string" />
-                <xs:attribute name="aid" type="xs:string" />
-                <xs:attribute name="sourceHost" type="xs:string" />
-                <xs:attribute name="sourcePort" type="xs:string" />
+                <xs:attribute name="stream" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 16 bits unsigned</xs:appinfo>
+        						<xs:documentation>Stream identifier: Identifies the stream to which the following user data belongs.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
+                <xs:attribute name="ssn" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 16 bits unsigned</xs:appinfo>
+        						<xs:documentation>Stream Sequence Number: Represents the stream sequence number of the following user data within the stream S.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                                    
+                <xs:attribute name="ppid" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 32 bits unsigned</xs:appinfo>
+        						<xs:documentation>Payload Protocol Identifier: Represents an application (or upper layer) specified protocol identifier.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
+                <xs:attribute name="flags" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Boolean 0|1</xs:appinfo>
+        						<xs:documentation>U bit: The (U)nordered bit, if set to '1', indicates that this is an unordered DATA chunk, and there is no Stream Sequence Number assigned to this DATA chunk.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
+                <xs:attribute name="context" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 32 bits unsigned</xs:appinfo>
+        						<xs:documentation>Context: Not part of the protocol but it’s internal data in the SCTP stack. So you are not able to set it.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
+                <xs:attribute name="ttl" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 32 bits unsigned</xs:appinfo>
+        						<xs:documentation>TTL=Time To Live: Not part of the protocol but it’s internal data in the SCTP stack. So you are not able to set it.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                                
+                <xs:attribute name="tsn" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 32 bits unsigned</xs:appinfo>
+        						<xs:documentation>TSN = Transmission Sequence Number: Represents the TSN for this DATA chunk. So you are not able to set it.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
+                <xs:attribute name="cumtsn" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 32 bits unsigned</xs:appinfo>
+        						<xs:documentation>Cumulative TSN: Represents the cumulative TSN for this DATA chunk. So you are not able to set it.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
+                <xs:attribute name="aid" type="xs:string">
+        					<xs:annotation>
+        						<xs:appinfo>Integer 32 bits unsigned</xs:appinfo>
+        						<xs:documentation>Association Identifier: Not part of the protocol but it’s internal data in the SCTP stack. So you are not able to set it.</xs:documentation>
+        					</xs:annotation>
+        				</xs:attribute>                
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
