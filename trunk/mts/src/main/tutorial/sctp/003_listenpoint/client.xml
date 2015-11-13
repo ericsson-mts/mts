@@ -6,9 +6,8 @@
 
     <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="[remoteListenPortSCTP]"  num_ostreams="22223" max_instreams="333334" />    
 
-    <sendMessageSCTP channel="channelSCTP" stream="22222" ssn="33333" ppid="4294967295"  
-                    flags="1" context="2000000000" ttl="3000000000" 
-                     tsn= "1234567890" cumtsn=  "2345678901" aid="3456789012">
+    <sendMessageSCTP channel="channelSCTP">
+        <sctp stream="22222" ssn="33333" ppid="4294967295" flags="1"/>
         <data format="text">test value</data>
     </sendMessageSCTP>
 

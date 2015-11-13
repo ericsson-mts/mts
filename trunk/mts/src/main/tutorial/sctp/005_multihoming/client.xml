@@ -5,9 +5,8 @@
     <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
     <openChannelSCTP name="[channelName]" localHost="[localHostSCTP],164.48.84.92" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP],164.48.84.92" remotePort="[remotePortSCTP]"/>
     
-    <sendMessageSCTP channel="[channelName]" stream="10" ssn="0" ppid="3333"  
-                    flags="1" context="0" ttl="0" 
-                     tsn= "0" cumtsn=  "0" aid="0">
+    <sendMessageSCTP channel="[channelName]">
+        <sctp stream="10" ssn="0" ppid="3333" flags="1"/>
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
      
@@ -26,9 +25,8 @@
     </if>
     <pause seconds="5"/>
      
-    <sendMessageSCTP channel="[channelName]" stream="10" ssn="0" ppid="3333"  
-                    flags="0" context="0" ttl="0" 
-                     tsn= "0" cumtsn=  "0" aid="0">
+    <sendMessageSCTP channel="[channelName]">
+        <sctp stream="10" ssn="0" ppid="3333" flags="0"/>
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
 
@@ -48,9 +46,8 @@
     <pause seconds="5"/>
 
 
-    <sendMessageSCTP channel="[channelName]" stream="20" ssn="0" ppid="4444"  
-                    flags="0" context="0" ttl="0" 
-                     tsn= "0" cumtsn=  "0" aid="0">
+    <sendMessageSCTP channel="[channelName]">
+        <sctp stream="20" ssn="0" ppid="4444" flags="0"/>
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
      
@@ -75,5 +72,6 @@
         <closeChannelSCTP name="[channelName]"/>            
         
     </finally>
+
 
 </scenario>

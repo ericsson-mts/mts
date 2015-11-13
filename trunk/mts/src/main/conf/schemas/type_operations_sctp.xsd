@@ -138,6 +138,7 @@
 		<xs:complexContent>
 			<xs:extension base="operationType">
                 <xs:sequence>
+                    <xs:element name="sctp" type="headerSctpType" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="data" type="dataSctpType" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
@@ -158,17 +159,6 @@
 						<xs:documentation>The time delay (in seconds) when the message sending is differed.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-        <xs:attribute name="stream" type="xs:string" />
-        <xs:attribute name="ssn" type="xs:string" />    
-        <xs:attribute name="flags" type="xs:string" />
-        <xs:attribute name="ppid" type="xs:string" />
-        <xs:attribute name="context" type="xs:string" />
-        <xs:attribute name="ttl" type="xs:string" />                
-        <xs:attribute name="tsn" type="xs:string" />
-        <xs:attribute name="cumtsn" type="xs:string" />
-        <xs:attribute name="aid" type="xs:string" />
-        <xs:attribute name="sourceHost" type="xs:string" />
-        <xs:attribute name="sourcePort" type="xs:string" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -235,6 +225,25 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+  <!--                                                                                       sctp header -->
+    <xs:complexType name="headerSctpType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="stream" type="xs:string" />
+                <xs:attribute name="ssn" type="xs:string" />    
+                <xs:attribute name="flags" type="xs:string" />
+                <xs:attribute name="ppid" type="xs:string" />
+                <xs:attribute name="context" type="xs:string" />
+                <xs:attribute name="ttl" type="xs:string" />                
+                <xs:attribute name="tsn" type="xs:string" />
+                <xs:attribute name="cumtsn" type="xs:string" />
+                <xs:attribute name="aid" type="xs:string" />
+                <xs:attribute name="sourceHost" type="xs:string" />
+                <xs:attribute name="sourcePort" type="xs:string" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
 
 <!--                                                                                       data -->
     <xs:complexType name="dataSctpType">

@@ -51,9 +51,8 @@
 
     <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
     <!-- [newStream] is not taken into account BUG  I don't know why ?-->
-    <sendMessageSCTP channel="[lastChannelName]" stream="0" ssn="[lastSsn]" ppid="[lastPpid]"  
-                    flags="[lastFlags]" context="[lastContext]" ttl="[lastTtl]" 
-                     tsn= "[lastTsn]" cumtsn=  "[lastCumtsn]" aid="[lastAid]">
+    <sendMessageSCTP channel="[lastChannelName]"> 
+        <sctp stream="0" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]"/>
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
 
