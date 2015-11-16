@@ -27,168 +27,195 @@
     <parameter name="[remoteRealmDIAM]" operation="set" value="client.fr"/>
     <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
     
-    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    <parameter name="[iterations]" operation="set" value="10" description=" iterations number" editable="true"/>
     
     <parameter name="[transport]" operation="set" value="TCP"/>
     <parameter name="[vendorID]" operation="set" value="3GPP:10415"/>
   
     <testcase name="101_cx_uar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="User-Authorization:300"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
         <scenario file="101_cx_uar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="101_cx_uar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="103_cx_sar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Server-Assignment:301"/>    
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
         <scenario file="103_cx_sar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="103_cx_sar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="105_cx_lir" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Location-Info:302"/> 
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
         <scenario file="105_cx_lir/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="105_cx_lir/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="107_cx_mar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Multimedia-Auth:303"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
         <scenario file="107_cx_mar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="107_cx_mar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="109_cx_rtr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Registration-Termination:304"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
         <scenario file="109_cx_rtr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="109_cx_rtr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="111_cx_ppr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Push-Profile:305"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
         <scenario file="111_cx_ppr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="111_cx_ppr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="201_sh_udr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="User-Data:306"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Sh:16777217"/>
         <scenario file="201_sh_udr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="201_sh_udr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="203_sh_pur" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Profile-Update:307"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Sh:16777217"/>
         <scenario file="203_sh_pur/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="203_sh_pur/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="205_sh_snr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Subscribe-Notifications:308"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Sh:16777217"/>
         <scenario file="205_sh_snr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="205_sh_snr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="207_sh_pnr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Push-Notification:309"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Sh:16777217"/>
         <scenario file="207_sh_pnr/server.xml" name="server" state="[localClient]" routingName="server"/>
         <scenario file="207_sh_pnr/client.xml" name="client" state="[remoteServer]" routingName="client"/>
     </testcase>
 
     <testcase name="301_rf_acr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Accounting:271"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
         <scenario file="301_rf_acr/CTF.xml" name="CTF" state="[localClient]" routingName="CTF"/>
         <scenario file="301_rf_acr/CDF.xml" name="CDF" state="[remoteServer]" routingName="CDF"/>
     </testcase>
 
     <testcase name="302_ro_ccr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Credit-Control:272"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Credit Control Application:4"/>
         <scenario file="302_ro_ccr/CTF.xml" name="CTF" state="[localClient]" routingName="CTF"/>
         <scenario file="302_ro_ccr/OCF.xml" name="OCF" state="[remoteServer]" routingName="OCF"/>
     </testcase>
     
     <testcase name="316_s6_ulr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Update-Location:316"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="316_s6_ulr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="316_s6_ulr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="317_s6_air" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Authentication-Information:318"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="317_s6_air/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="317_s6_air/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="318_s6_clr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Cancel-Location:317"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="318_s6_clr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="318_s6_clr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="319_s6_idr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Insert-Subscriber-Data:319"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="319_s6_idr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="319_s6_idr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="320_s6_dsr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Delete-Subscriber-Data:320"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="320_s6_dsr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="320_s6_dsr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="321_s6_pur" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Purge-UE:321"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="321_s6_pur/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="321_s6_pur/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="322_s6_rsr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Reset:322"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="322_s6_rsr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="322_s6_rsr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="323_s6_nor" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-Notify:323"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S6a/S6d:16777251"/>
         <scenario file="323_s6_nor/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="323_s6_nor/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="327_s13_ecr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="3GPP-ME-Identity-Check:324"/>
         <parameter name="[applicationID]" operation="set" value="3GPP S13/S13':16777252"/>
         <scenario file="327_s13_ecr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="327_s13_ecr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="330_gx_ccr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Credit-Control:272"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gx:16777238"/>
         <scenario file="330_gx_ccr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="330_gx_ccr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="331_gx_rar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Re-Auth:258"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gx:16777238"/>
         <scenario file="331_gx_rar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="331_gx_rar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="335_rx_aar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="AA:265"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Rx:16777236"/>
         <scenario file="335_rx_aar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="335_rx_aar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="336_rx_rar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Re-Auth:258"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Rx:16777236"/>
         <scenario file="336_rx_rar/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="336_rx_rar/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="337_rx_str" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Session-Termination:275"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Rx:16777236"/>
         <scenario file="337_rx_str/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="337_rx_str/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
  
     <testcase name="338_rx_asr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Abort-Session:274"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Rx:16777236"/>
         <scenario file="338_rx_asr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="338_rx_asr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
@@ -196,12 +223,14 @@
  
     <testcase name="411_e4_udr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[applicationID]" operation="set" value="Diameter e2e4 Application:16777231"/>
+        <parameter name="[commandCode]" operation="set" value="User-Data:306"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
         <scenario file="411_e4_udr/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="411_e4_udr/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="412_e4_pnr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Push-Notification:309"/>
         <parameter name="[applicationID]" operation="set" value="Diameter e2e4 Application:16777231"/>
         <parameter name="[vendorID]" operation="set" value="13019"/>
         <scenario file="412_e4_pnr/server.xml" name="server" state="[localClient]" routingName="server"/>
@@ -209,6 +238,7 @@
     </testcase>
 
     <testcase name="421_e2_udr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="User-Data:306"/>
         <parameter name="[applicationID]" operation="set" value="Diameter e2e4 Application:16777231"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
         <scenario file="421_e2_udr/client.xml" name="client" state="[localClient]" routingName="client"/>
@@ -216,6 +246,7 @@
     </testcase>
 
     <testcase name="431_rq_aar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="AA:265"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
         <scenario file="431_rq_aar/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
@@ -223,6 +254,7 @@
     </testcase>
 
     <testcase name="432_rq_rar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Re-Auth:258"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
         <scenario file="432_rq_rar/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
@@ -230,6 +262,7 @@
     </testcase>
 
     <testcase name="433_rq_str" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Session-Termination:275"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
         <scenario file="433_rq_str/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
@@ -237,27 +270,31 @@
     </testcase>
 
     <testcase name="434_rq_asr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Abort-Session:274"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
-        <scenario file="434_rq_asr/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
-        <scenario file="434_rq_asr/A-RACF.xml" name="A-RACF" state="[remoteServer]" routingName="A-RACF"/>
+        <scenario file="434_rq_asr/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
+        <scenario file="434_rq_asr/A-RACF.xml" name="A-RACF" state="[localClient]" routingName="A-RACF"/>
     </testcase>
 
     <testcase name="441_gqp_aar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="AA:265"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
-        <scenario file="441_gqp_aar/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
-        <scenario file="441_gqp_aar/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
+        <scenario file="441_gqp_aar/AF.xml" name="AF" state="[remoteServer]" routingName="AF"/>
+        <scenario file="441_gqp_aar/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
     </testcase>
 
     <testcase name="442_gqp_rar" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Re-Auth:258"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
-        <scenario file="442_gqp_rar/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
-        <scenario file="442_gqp_rar/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
+        <scenario file="442_gqp_rar/AF.xml" name="AF" state="[remoteServer]" routingName="AF"/>
+        <scenario file="442_gqp_rar/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
     </testcase>
 
     <testcase name="443_gqp_str" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Session-Termination:275"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
         <scenario file="443_gqp_str/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
@@ -265,50 +302,58 @@
     </testcase>
 
     <testcase name="444_gqp_asr" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Abort-Session:274"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Gq:16777222"/>
         <parameter name="[vendorID]" operation="set" value="ETSI:13019"/>
-        <scenario file="444_gqp_asr/AF.xml" name="AF" state="[localClient]" routingName="AF"/>
-        <scenario file="444_gqp_asr/SPDF.xml" name="SPDF" state="[remoteServer]" routingName="SPDF"/>
+        <scenario file="444_gqp_asr/AF.xml" name="AF" state="[remoteServer]" routingName="AF"/>
+        <scenario file="444_gqp_asr/SPDF.xml" name="SPDF" state="[localClient]" routingName="SPDF"/>
     </testcase>
 
     <testcase name="501_base_CER (light stack only)" state="false" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Capabilities-Exchange:257"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
         <scenario file="501_base_CER/peer1.xml" name="peer1" state="[localClient]" routingName="peer1"/>
         <scenario file="501_base_CER/peer2.xml" name="peer2" state="[remoteServer]" routingName="peer2"/>
     </testcase>
 
     <testcase name="502_base_DPR (light stack only)" state="false" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Disconnect-Peer:282"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
         <scenario file="502_base_DPR/peer1.xml" name="peer1" state="[localClient]" routingName="peer1"/>
         <scenario file="502_base_DPR/peer2.xml" name="peer2" state="[localClient]" routingName="peer2"/>
     </testcase>
 
     <testcase name="503_base_DWR (light stack only)" state="false" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Device-Watchdog:280"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
         <scenario file="503_base_DWR/peer1.xml" name="peer1" state="[localClient]" routingName="peer1"/>
         <scenario file="503_base_DWR/peer2.xml" name="peer2" state="[remoteServer]" routingName="peer2"/>
     </testcase>
 
     <testcase name="504_base_RAR" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Re-Auth:258"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
         <scenario file="504_base_RAR/server.xml" name="server" state="[localClient]" routingName="server"/>
         <scenario file="504_base_RAR/client.xml" name="client" state="[remoteServer]" routingName="client"/>
     </testcase>
 
     <testcase name="505_base_STR" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Session-Termination:275"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
         <scenario file="505_base_STR/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="505_base_STR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="506_base_ASR" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[commandCode]" operation="set" value="Abort-Session:274"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Common Messages:0"/>
-        <scenario file="506_base_ASR/client.xml" name="client" state="[localClient]" routingName="client"/>
-        <scenario file="506_base_ASR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
+        <scenario file="506_base_ASR/client.xml" name="client" state="[remoteServer]" routingName="client"/>
+        <scenario file="506_base_ASR/server.xml" name="server" state="[localClient]" routingName="server"/>
     </testcase>
 
     <testcase name="507_base_ACR" state="true" number="[iterations]" description="diameter" >
         <parameter name="[waitSemaphore]" operation="set" value="false"/>
+        <parameter name="[commandCode]" operation="set" value="Accounting:271"/>
         <parameter name="[applicationID]" operation="set" value="Diameter Base Common:0"/>
         <scenario file="507_base_ACR/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="507_base_ACR/server.xml" name="server" state="[remoteServer]" routingName="server"/>
