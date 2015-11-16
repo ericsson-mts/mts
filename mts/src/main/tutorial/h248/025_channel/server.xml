@@ -2,27 +2,20 @@
 
 <scenario>
 
-    <parameter name="[LocalHost]" operation="set" value="[localHostH248]" />  
-    <parameter name="[LocalPort]" operation="number.add" value="[localPortH248]" value2="4"/>
-    <parameter name="[RemoteHost]" operation="set" value="[localHostH248]" />  
-    <parameter name="RemotePort]" operation="number.add" value="[localPortH248]" value2="2"/>
-
-    <createListenpointH248 name="lpServer" localHost="[LocalHost]" localPort="[LocalPort]"/>    
-
     <!-- receive Add request-->
-    <receiveMessageH248 name="Receive request" listenpoint="lpServer" request="true" type="Add">
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
         <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
         <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name" />
     </receiveMessageH248>
 
     <!-- send Add response -->
     <parameter name="[contextID]" operation="number.random" value="10000000"/>
     <parameter name="[termID1]" operation="number.random" value="10000000"/>
-    <parameter name="[termID2]" operation="number.random" value="10000000"/>
+    <parameter name="[termID2]" operation="number.random" value="10000000"/>                              
     <parameter name="[rtpPort1]" operation="number.random" value="65535"/>
     <parameter name="[rtpPort2]" operation="number.random" value="65535"/>
-    <sendMessageH248 name="Send response" listenpoint="lpServer"
-                     remoteHost="[RemoteHost]" remotePort="[RemotePort]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response" channel="[channelName]">
 <![CDATA[
 MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Reply = [transaction] {
@@ -118,21 +111,22 @@ c=IN IP4 [localHostH248]/127
     </sendMessageH248>
 
     <!-- receive Add acknowledge -->
-    <receiveMessageH248 name="Receive acknowledge" listenpoint="lpServer" request="true" type="TransactionResponseAck">
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
         <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
         <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name" />        
     </receiveMessageH248>
    
     <!-- receive Subtract request-->
-    <receiveMessageH248 name="Receive request" listenpoint="lpServer" request="true" type="Subtract">
+    <receiveMessageH248 name="Receive request" request="true" type="Subtract">
         <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
         <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name" />        
         <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.*.Context.value" />
     </receiveMessageH248>
 
     <!-- send Subtract response -->
-    <sendMessageH248 name="Send response" listenpoint="lpServer"
-                     remoteHost="[RemoteHost]" remotePort="[RemotePort]" transport="[transportResponse]">
+    <sendMessageH248 name="Send response" channel="[channelName]">
 <![CDATA[
 MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Reply = [transaction] {
@@ -151,12 +145,9 @@ Reply = [transaction] {
     </sendMessageH248>
 
     <!-- receive Subtract acknowledge -->
-    <receiveMessageH248 name="Receive acknowledge" listenpoint="lpServer" request="true" type="TransactionResponseAck">
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
         <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
         <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
     </receiveMessageH248>
-
-    <!-- blocking on LINUX because of SCTP -->
-    <!--removeListenpointH248 name="lpServer"/-->        
 
 </scenario>
