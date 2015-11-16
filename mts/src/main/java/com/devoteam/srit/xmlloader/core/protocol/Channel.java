@@ -462,9 +462,9 @@ public class Channel
         }
         
         String name = channel.getName();
-        if(null != this.name )
-        {
-            if(null != name)
+        if (this.name != null)
+        { 
+            if (name != null)
             {
                 if (!this.name.equals(name))
                 {
@@ -478,9 +478,9 @@ public class Channel
         }
         
         String localHost = channel.getLocalHost();
-        if(null != this.localHost & this.localHost.length > 0)
+        if (this != null && this.localHost != null & this.localHost.length > 0)
         {
-            if(null != localHost)
+            if (channel != null && localHost != null)
             {
                 if (!localHost.equals(this.localHost[0]))
                 {
@@ -499,9 +499,9 @@ public class Channel
         }
         
         String remoteHost = channel.getRemoteHost();
-        if(null != this.remoteHost & this.remoteHost.length > 0)
+        if (this !=  null && this.remoteHost != null && this.remoteHost.length > 0)
         {
-            if(null != remoteHost)
+            if (channel != null && remoteHost != null)
             {
                 if (!remoteHost.equals(this.remoteHost[0]))
                 {

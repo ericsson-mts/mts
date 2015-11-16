@@ -33,16 +33,16 @@
     <!--test parameter="[lastAid]" condition="number.equals" value="0" /-->
 
     <parameter name="[lastPeerHosts]" operation="protocol.setFromMessage" value="channel.peerHosts"/>
-    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+    <!--parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
     <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
-    <!--test parameter="[lastPeerHosts]" condition="string.equals" value="[localHosts]" /-->
+    <test parameter="[lastPeerHosts]" condition="string.equals" value="[localHosts]" /-->
     <parameter name="[lastPeerPort]" operation="protocol.setFromMessage" value="channel.peerPort"/>
-    <!--test parameter="[lastPeerPort]" condition="string.equals" value="[localPortSCTP]" /--> 
+    <!--test parameter="[lastPeerPort]" condition="string.equals" value="[localPortSCTP]"/--> 
 
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
     <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
     <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
-    <!--test parameter="[lastSourceHost]" condition="string.equals" value="[localHosts]" /-->
+    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHosts]" />
     <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
     <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
     

@@ -30,8 +30,8 @@
 
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
     <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
-    <!--test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" /-->
-    <!--test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" /-->
+    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
+    <test parameter="[lastSourceHost(1)]" condition="string.equals" value="[localHosts(1)]" />
    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
     <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
 
@@ -41,7 +41,8 @@
     <finally>
 
         <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name" />
-        <closeChannelSCTP name="[lastChannelName]" />
+        <!--closeChannelSCTP name="[lastChannelName]" /-->
+       <!--pause name="else crash of the jvm"  seconds="0.01"/-->
 
     </finally>
 
