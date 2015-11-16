@@ -97,6 +97,7 @@ public class SocketUdpBIO extends Thread {
             		{
             			channel = new ChannelUdpBIO(this, locHost, datagramSocket.getLocalPort(), remoteHost, remotePort, listenpointUdp.getProtocol());
             			listenpointUdp.putChannel(nameChannel, channel);
+            			stack.openChannel(channel);
             		}
                     msg.setChannel(channel);
                     msg.setListenpoint(listenpointUdp);
