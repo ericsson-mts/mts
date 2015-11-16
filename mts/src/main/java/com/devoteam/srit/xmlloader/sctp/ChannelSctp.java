@@ -49,6 +49,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
+import java.util.List;
 
 import dk.i1.sctp.AssociationId;
 
@@ -269,48 +270,48 @@ public class ChannelSctp extends Channel
     	super.parseFromXml(root, runner, protocol);
     	
     	this.initmsg = new sctp_initmsg();
-		String num_ostreams = root.attributeValue("num_ostreams");
-		if (num_ostreams == null)
+    	
+		// initialize from the configuration file
+    	this.initmsg.sinit_num_ostreams = (short) this.stack.getConfig().getInteger("connect.NUM_OSTREAMS");
+    	this.initmsg.sinit_max_instreams = (short) this.stack.getConfig().getInteger("connect.MAX_INSTREAMS");
+    	this.initmsg.sinit_max_attempts = (short)  this.stack.getConfig().getInteger("connect.MAX_ATTEMPTS");
+    	this.initmsg.sinit_max_init_timeo= (short) this.stack.getConfig().getInteger("connect.MAX_INIT_TIMEO");
+		
+		// Parse the XML file
+		List<Element> sctpElements = root.elements("sctp");
+		if (sctpElements != null && sctpElements.size() > 0)
 		{
-    		num_ostreams = this.stack.getConfig().getString("connect.NUM_OSTREAMS");
-		}
-		if (num_ostreams != null)
-		{
-			this.initmsg.sinit_num_ostreams = (short) Integer.parseInt(num_ostreams);
-    		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_num_ostreams=", this.initmsg.sinit_num_ostreams);
-		}
-
-		String max_instreams = root.attributeValue("max_instreams");
-		if (max_instreams == null)
-		{
-			max_instreams = this.stack.getConfig().getString("connect.MAX_INSTREAMS");
-		}
-    	if (max_instreams != null)
-    	{
-    		this.initmsg.sinit_max_instreams = (short) Integer.parseInt(max_instreams);
+			Element sctpElement = sctpElements.get(0);
+	        
+			String num_ostreams = sctpElement.attributeValue("num_ostreams");
+			if (num_ostreams != null)
+			{
+				this.initmsg.sinit_num_ostreams = (short) Integer.parseInt(num_ostreams);	    	
+			}
+	
+			String max_instreams = sctpElement.attributeValue("max_instreams");
+	    	if (max_instreams != null)
+	    	{
+	    		this.initmsg.sinit_max_instreams = (short) Integer.parseInt(max_instreams);
+	    	}
+			
+	    	String max_attempts = sctpElement.attributeValue("max_attempts");
+			if (max_attempts != null)
+			{
+				this.initmsg.sinit_max_attempts = (short) Integer.parseInt(max_attempts);    			
+			}
+			
+			String max_init_timeo = sctpElement.attributeValue("max_initTimeo");
+			if (max_init_timeo != null)
+			{
+				this.initmsg.sinit_max_init_timeo= (short) Integer.parseInt(max_init_timeo);    			
+			}
+			
+			// log datas
+			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_num_ostreams=", this.initmsg.sinit_num_ostreams);			
     		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_instreams=", this.initmsg.sinit_max_instreams);
-    	}
-		
-    	String max_attempts = root.attributeValue("max_attempts");
-		if (max_attempts == null)
-		{
-			max_attempts = this.stack.getConfig().getString("connect.MAX_ATTEMPTS");
-		}
-		if (max_attempts != null)
-		{
-			this.initmsg.sinit_max_attempts = (short) Integer.parseInt(max_attempts);
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_attempts=", initmsg.sinit_max_attempts);    			
-		}
-		
-		String max_init_timeo = root.attributeValue("max_initTimeo");
-		if (max_init_timeo == null)
-		{
-			max_init_timeo = this.stack.getConfig().getString("connect.MAX_INIT_TIMEO");
-		}
-		if (max_init_timeo != null)
-		{
-			this.initmsg.sinit_max_init_timeo= (short) Integer.parseInt(max_init_timeo);
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_init_timeo=", initmsg.sinit_max_init_timeo);    			
+			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_attempts=", initmsg.sinit_max_attempts);
+			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_init_timeo=", initmsg.sinit_max_init_timeo);
 		}
     }
     

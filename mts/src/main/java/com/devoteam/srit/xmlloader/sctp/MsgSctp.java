@@ -290,9 +290,8 @@ public class MsgSctp extends Msg{
 		}	
 
 		this.sctpData=new SCTPData(data);
-		
-		List<Element> sctpElements = root.elements("sctp");
 
+		// initialize from the configuration file
         Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
         this.sctpData.sndrcvinfo.sinfo_stream = (short) config.getInteger("client.DEFAULT_STREAM", 1);
 		this.sctpData.sndrcvinfo.sinfo_ssn = (short) config.getInteger("client.DEFAULT_SSN", 0);
@@ -305,7 +304,9 @@ public class MsgSctp extends Msg{
 		this.sctpData.sndrcvinfo.sinfo_cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
 		long assocId = (long) config.getInteger("client.DEFAULT_AID", 0);
 		this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocId);
-		
+
+		// Parse the XML file
+		List<Element> sctpElements = root.elements("sctp");
 		if (sctpElements != null && sctpElements.size() > 0)
 		{
 			Element sctpElement = sctpElements.get(0);
@@ -315,14 +316,12 @@ public class MsgSctp extends Msg{
 			{
 				this.sctpData.sndrcvinfo.sinfo_stream = (short) Integer.parseInt(stream);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + this.sctpData.sndrcvinfo.sinfo_stream);
 			
 			String ssn = sctpElement.attributeValue("ssn");
 			if (ssn != null)
 			{
 				this.sctpData.sndrcvinfo.sinfo_ssn = (short) Integer.parseInt(ssn);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + this.sctpData.sndrcvinfo.sinfo_ssn);
 			
 			String ppidString = sctpElement.attributeValue("ppid");
 			if (ppidString != null)
@@ -330,42 +329,37 @@ public class MsgSctp extends Msg{
 				int ppidInt = (int) Long.parseLong(ppidString);
 				this.sctpData.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppidInt);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + this.sctpData.sndrcvinfo.sinfo_ppid);
 			
 			String flags = sctpElement.attributeValue("flags");
 			if (flags != null)
 			{
 				this.sctpData.sndrcvinfo.sinfo_flags = (short) Integer.parseInt(flags);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + this.sctpData.sndrcvinfo.sinfo_flags);
 			
 			String context = sctpElement.attributeValue("context");
 			if (context != null)
 			{
 				this.sctpData.sndrcvinfo.sinfo_context = (int) Long.parseLong(context);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + this.sctpData.sndrcvinfo.sinfo_context);
 			
 			String ttl = sctpElement.attributeValue("ttl");
 			if (ttl != null)
 			{
 				this.sctpData.sndrcvinfo.sinfo_timetolive = (int) Long.parseLong(ttl);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + this.sctpData.sndrcvinfo.sinfo_timetolive);
 			
 			String tsnString = sctpElement.attributeValue("tsn");
 			if (tsnString != null)
 			{
 				this.sctpData.sndrcvinfo.sinfo_tsn = (int) Long.parseLong(tsnString);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + this.sctpData.sndrcvinfo.sinfo_tsn);
 			
 			String cumtsnString = sctpElement.attributeValue("cumtsn");
 			if (cumtsnString != null)
 			{
 				this.sctpData.sndrcvinfo.sinfo_cumtsn = (int) Long.parseLong(cumtsnString);
 			}
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + this.sctpData.sndrcvinfo.sinfo_cumtsn);
+
 			String aid = sctpElement.attributeValue("aid");
 			Long assocIdLong = null; 
 			if (aid != null)
@@ -373,6 +367,16 @@ public class MsgSctp extends Msg{
 				assocIdLong = Long.parseLong(aid);
 				this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocIdLong);
 			}
+
+			// log datas
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + this.sctpData.sndrcvinfo.sinfo_stream);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + this.sctpData.sndrcvinfo.sinfo_ssn);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + this.sctpData.sndrcvinfo.sinfo_ppid);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + this.sctpData.sndrcvinfo.sinfo_flags);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + this.sctpData.sndrcvinfo.sinfo_context);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + this.sctpData.sndrcvinfo.sinfo_timetolive);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + this.sctpData.sndrcvinfo.sinfo_tsn);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + this.sctpData.sndrcvinfo.sinfo_cumtsn);			
 			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + assocId);
 		}
     }

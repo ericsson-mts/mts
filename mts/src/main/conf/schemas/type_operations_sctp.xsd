@@ -4,6 +4,9 @@
 	<xs:complexType name="openChannelSCTPType">
 		<xs:complexContent>
 			<xs:extension base="operationType">
+        <xs:sequence>
+            <xs:element name="sctp" type="channelSctpType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
 				<xs:attribute name="localHost" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
@@ -40,55 +43,6 @@
 						<xs:documentation>The remote URL of the channel (sometimes called the destination information).</xs:documentation>
 					</xs:annotation>
 				</xs:attribute> 
-        <xs:attribute name="num_ostreams"      	type="xs:string" >
-					<xs:annotation>
-						<xs:appinfo>Integer</xs:appinfo>
-						<xs:documentation>This is an integer number representing the number 
-            of streams that the application wishes to be able to send to.  
-            This number is confirmed in the SCTP_COMM_UP notification and must 
-            be verified since it is a negotiated number with the remote endpoint.  
-            The default value of 0 indicates to use the endpoint default value.
-            </xs:documentation>
-					</xs:annotation>                                                         
-				</xs:attribute>
-        <xs:attribute name="max_instreams"      type="xs:string" >
-					<xs:annotation>
-						<xs:appinfo>Integer</xs:appinfo>
-						<xs:documentation>This value represents the maximum number of inbound 
-            streams the application is prepared to support. This value is bounded 
-            by the actual implementation.  In other words the user MAY be able to 
-            support more streams than the Operating System.  In such a case, the 
-            Operating System limit overrides the value requested by the user. 
-            The default value of 0 indicates to use the endpoints default value.
-            </xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-        <xs:attribute name="max_attempts"     	type="xs:string" >
-					<xs:annotation>
-						<xs:appinfo>Integer</xs:appinfo>
-						<xs:documentation>This integer specifies how many attempts the SCTP 
-            endpoint should make at resending the INIT.  This value overrides 
-            the system SCTP 'Max.Init.Retransmits' value.  
-            The default value of 0 indicates to use the endpoints default value.  
-            This is normally set to the system's default 'Max.Init.Retransmit' 
-            value.
-            </xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-        <xs:attribute name="max_initTimeo"      	type="xs:string" >
-					<xs:annotation>
-						<xs:appinfo>Integer</xs:appinfo>
-						<xs:documentation>This value represents the largest Time-Out or 
-            RTO value (in milliseconds) to use in attempting an INIT.  
-            Normally the 'RTO.Max' is used to limit the doubling of the RTO 
-            upon timeout.  For the INIT message this value MAY override 
-            'RTO.Max'.  This value MUST NOT influence 'RTO.Max' during 
-            data transmission and is only used to bound the initial setup time.  
-            A default value of 0 indicates to use the endpoints default value.  
-            This is normally set to the system's 'RTO.Max' value (60 seconds).
-	          </xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -99,6 +53,63 @@
 			<xs:extension base="operationType"/>
 		</xs:complexContent>
 	</xs:complexType>
+
+    <!--                                                                                       sctp message -->
+    <xs:complexType name="channelSctpType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="num_ostreams"      	type="xs:string" >
+      					<xs:annotation>
+      						<xs:appinfo>Integer</xs:appinfo>
+      						<xs:documentation>This is an integer number representing the number 
+                  of streams that the application wishes to be able to send to.  
+                  This number is confirmed in the SCTP_COMM_UP notification and must 
+                  be verified since it is a negotiated number with the remote endpoint.  
+                  The default value of 0 indicates to use the endpoint default value.
+                  </xs:documentation>
+      					</xs:annotation>                                                         
+      				</xs:attribute>
+              <xs:attribute name="max_instreams"      type="xs:string" >
+      					<xs:annotation>
+      						<xs:appinfo>Integer</xs:appinfo>
+      						<xs:documentation>This value represents the maximum number of inbound 
+                  streams the application is prepared to support. This value is bounded 
+                  by the actual implementation.  In other words the user MAY be able to 
+                  support more streams than the Operating System.  In such a case, the 
+                  Operating System limit overrides the value requested by the user. 
+                  The default value of 0 indicates to use the endpoints default value.
+                  </xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute>
+              <xs:attribute name="max_attempts"     	type="xs:string" >
+      					<xs:annotation>
+      						<xs:appinfo>Integer</xs:appinfo>
+      						<xs:documentation>This integer specifies how many attempts the SCTP 
+                  endpoint should make at resending the INIT.  This value overrides 
+                  the system SCTP 'Max.Init.Retransmits' value.  
+                  The default value of 0 indicates to use the endpoints default value.  
+                  This is normally set to the system's default 'Max.Init.Retransmit' 
+                  value.
+                  </xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute>
+              <xs:attribute name="max_initTimeo"      	type="xs:string" >
+      					<xs:annotation>
+      						<xs:appinfo>Integer</xs:appinfo>
+      						<xs:documentation>This value represents the largest Time-Out or 
+                  RTO value (in milliseconds) to use in attempting an INIT.  
+                  Normally the 'RTO.Max' is used to limit the doubling of the RTO 
+                  upon timeout.  For the INIT message this value MAY override 
+                  'RTO.Max'.  This value MUST NOT influence 'RTO.Max' during 
+                  data transmission and is only used to bound the initial setup time.  
+                  A default value of 0 indicates to use the endpoints default value.  
+                  This is normally set to the system's 'RTO.Max' value (60 seconds).
+      	          </xs:documentation>
+      					</xs:annotation>
+      				</xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
 
 <!--                                                                          createListenpoint -->
 	<xs:complexType name="createListenpointSCTPType">
@@ -138,7 +149,7 @@
 		<xs:complexContent>
 			<xs:extension base="operationType">
                 <xs:sequence>
-                    <xs:element name="sctp" type="headerSctpType" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="sctp" type="messageSctpType" minOccurs="0" maxOccurs="1"/>
                     <xs:element name="data" type="dataSctpType" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:sequence>
 				<xs:attribute name="channel" type="xs:string" use="optional">
@@ -226,8 +237,8 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-  <!--                                                                                       sctp header -->
-    <xs:complexType name="headerSctpType">
+  <!--                                                                                       sctp message -->
+    <xs:complexType name="messageSctpType">
         <xs:simpleContent>
             <xs:extension base="xs:string">
                 <xs:attribute name="stream" type="xs:string">

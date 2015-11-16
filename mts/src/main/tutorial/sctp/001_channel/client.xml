@@ -3,7 +3,9 @@
 <scenario>
 
     <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
-    <openChannelSCTP name="[channelName]" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"  num_ostreams="65535" max_instreams="65535" />
+    <openChannelSCTP name="[channelName]" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]">
+        <sctp num_ostreams="65535" max_instreams="65535"/>
+    </openChannelSCTP>
     
     <sendMessageSCTP channel="[channelName]">
         <sctp stream="65534" ssn="65535" ppid="2222222222" flags="0"/>
