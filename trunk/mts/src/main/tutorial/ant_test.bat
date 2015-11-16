@@ -1,6 +1,6 @@
 echo OFF
 
-set OPTIONS="-level:WARN -stor:file -gen:false -show:false -param:[iterations]+1"
+set OPTIONS=-level:WARN -stor:file -gen:false -show:false -param:[iterations]+1
 rem set MODE1=1
 set MODE1=-seq
 
