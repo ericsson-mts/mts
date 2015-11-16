@@ -25,7 +25,7 @@
 
     <!-- timers for the retransmissions-->
     <parameter name="[retransmitNumber]" operation="set" value="4"/>
-    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+    <parameter name="[RetransTimeout]" operation="set" value="1"/>
         
     <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>     	
     <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>     	
@@ -44,7 +44,7 @@
    
     <testcase name="000_setFromMessage" state="true" number="[iterations]" >
         <scenario file="000_setFromMessage/client.xml" name="client" state="[localClient]" routingName="client"/>
-        <scenario file="000_setFromMessage/server.xml" name="server" state="[remoteServer]" routingName="server"/>
+        <scenario file="000_setFromMessage/server.xml" name="server" state="[remoteServer]" routingName="H248"/>
     </testcase>
 
     <testcase name="001_setFromSdp" state="true" number="[iterations]" >
@@ -68,6 +68,11 @@
     <testcase name="020_listenpoint" state="true" number="[iterations]" >
         <scenario file="020_listenpoint/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="020_listenpoint/server.xml" name="server" state="[remoteServer]" routingName="server"/>
+    </testcase>
+
+    <testcase name="025_channel" state="true" number="[iterations]" >
+        <scenario file="025_channel/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="025_channel/server.xml" name="server" state="[remoteServer]" routingName="server"/>
     </testcase>
 
     <testcase name="030_retransmit" state="true" number="[iterations]" >

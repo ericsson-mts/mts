@@ -536,7 +536,7 @@ public abstract class Stack
     public byte[] readMessageFromStream(InputStream inputStream) throws Exception
     {
     	// nothing to do
-    	return new byte[0];
+    	throw new Exception("TCP stream reader is not implemented for the protocol" + getProtocol());
     }
 
     /** 

@@ -3,16 +3,15 @@
 <scenario>
 
     <parameter name="[LocalHost]" operation="set" value="[localHostH248]" />  
-    <parameter name="[LocalPort]" operation="number.add" value="[localPortH248]" value2="2"/>
+    <parameter name="[LocalPort]" operation="number.add" value="[localPortH248]" value2="1"/>
     <parameter name="[RemoteHost]" operation="set" value="[localHostH248]" />  
-    <parameter name="RemotePort]" operation="number.add" value="[localPortH248]" value2="4"/>
+    <parameter name="RemotePort]" operation="number.add" value="[localPortH248]" value2="2"/>
 
-    <createListenpointH248 name="lpClient" localHost="[LocalHost]" localPort="[LocalPort]"/>    
+    <openChannelH248 name="channelClient" localHost="[LocalHost]" localPort="[LocalPort]" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]"/>    
 
     <!-- send Add request-->
     <parameter name="[transID]" operation="number.random" value="10000000"/>
-    <sendMessageH248 name="Send request" destScenario="server" listenpoint="lpClient"
-                     remoteHost="[RemoteHost]" remotePort="[RemotePort]" transport="[transportRequest]">
+    <sendMessageH248 name="Send request" channel="channelClient" destScenario="server">
 <![CDATA[
 MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Transaction=[transID]{
@@ -147,7 +146,7 @@ c=IN IP4 $
     </sendMessageH248>
 
     <!-- receive Add response -->
-    <receiveMessageH248 name="Receive response" listenpoint="lpClient" request="false" type="Add" result="Reply">
+    <receiveMessageH248 name="Receive response" channel="channelClient" request="false" type="Add" result="Reply">
         <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
         <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
         <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.*.Context.value" />
@@ -156,8 +155,7 @@ c=IN IP4 $
 
     <!-- send Add acknowledge -->
     <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
-    <sendMessageH248 name="Send acknowledge" destScenario="server" listenpoint="lpClient"
-                     remoteHost="[RemoteHost]" remotePort="[RemotePort]" transport="[transportRequest]">
+    <sendMessageH248 name="Send acknowledge" channel="channelClient" destScenario="server">
 <![CDATA[
 MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
 ]]>
@@ -165,8 +163,7 @@ MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
 
     <!-- send Subtract request-->
     <parameter name="[transID]" operation="number.random" value="10000000"/>
-    <sendMessageH248 name="Send request" destScenario="server" listenpoint="lpClient"
-                     remoteHost="[RemoteHost]" remotePort="[RemotePort]" transport="[transportRequest]">
+    <sendMessageH248 name="Send request" channel="channelClient" destScenario="server"> 
 <![CDATA[
 MEGACO/3 [[remoteHostH248]]:[remotePortH248]
 Transaction=[transID]{
@@ -179,7 +176,7 @@ Transaction=[transID]{
     </sendMessageH248>
 
     <!-- receive Subtract response -->
-    <receiveMessageH248 name="Receive response" listenpoint="lpClient" request="false" type="Subtract" result="Reply">
+    <receiveMessageH248 name="Receive response" channel="channelClient" request="false" type="Subtract" result="Reply">
         <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
         <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
     </receiveMessageH248>
@@ -187,14 +184,13 @@ Transaction=[transID]{
 
     <!-- send Subtract acknowledge -->
     <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
-    <sendMessageH248 name="Send acknowledge" destScenario="server" listenpoint="lpClient"
-                     remoteHost="[RemoteHost]" remotePort="[RemotePort]" transport="[transportRequest]">
+    <sendMessageH248 name="Send acknowledge" channel="channelClient" destScenario="server">
 <![CDATA[
 MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
 ]]>
     </sendMessageH248>
 
-    <!-- blocking on LINUX because of SCTP -->
-    <!--removeListenpointH248 name="lpClient"/-->        
+    <!-- blocking on LINUX because of SCTP -->                                             
+    <closeChannelH248 name="channelClient"/>        
 
 </scenario>

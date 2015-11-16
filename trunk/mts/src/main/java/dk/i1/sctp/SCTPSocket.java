@@ -68,7 +68,21 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 		bind(addr.getAddress(),port);
 	}
 	private void bind(byte[] addr, int port) throws SocketException {
-		System.out.println(this + ".bind(" + addr +", " + port + ")");
+		String res = this + ".bind_native(";
+		if (addr != null)
+		{
+			res +="[";
+			for (int i = 0; i < addr.length; i++)
+			{
+				res += addr[i] + ".";
+			}
+			res = res.substring(0, res.length() - 1);
+			res +="]";
+		}
+		else
+		res += "null";
+		res += "," + port + ")";
+		System.out.println(res);
 		bind_native(addr,port);
 	}
 	private native void bind_native(byte[] addr, int port) throws SocketException;
@@ -160,8 +174,11 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 	 */
 	public void setPeerParameters(sctp_paddrparams spp) throws SocketException {
 		String bytes = spp.spp_address==null?null:spp.spp_address.getAddress().getAddress().toString();
+		System.out.println("bytes=" + bytes);
 		int intPort = spp.spp_address== null?0:spp.spp_address.getPort();
-		String port = Integer.toString(intPort);		
+		System.out.println("intPort=" + intPort);
+		String port = Integer.toString(intPort);
+		System.out.println("port=" + port);
 		System.out.println(this + ".setPeerParameters_native(" +
 						   spp.spp_assoc_id.id + ", " +
 						   bytes + "," +
@@ -239,7 +256,22 @@ public class SCTPSocket extends Socket{/* extends Socket added by Devoteam */
 		connect(addr.getAddress(),port);
 	}
 	private void connect(byte[] addr, int port) throws SocketException {
-		System.out.println(this + ".connect_native(" + addr + ", " + port + ")");
+		String res = this + ".connect_native(";
+		if (addr != null)
+		{
+			res +="[";
+			for (int i = 0; i < addr.length; i++)
+			{
+				res += addr[i] + ".";
+			}
+			res = res.substring(0, res.length() - 1);
+			res +="]";
+		}
+		else
+		res += "null";
+		res += "," + port + ")";
+		System.out.println(res);
+
 		connect_native(addr,port);
 	}
 	private native void connect_native(byte[] addr, int port) throws SocketException;
