@@ -322,11 +322,11 @@ public class ChannelSctp extends Channel
     /** 
      * Returns the string description of the message. Used for logging as DEBUG level 
      */
-    /*
     @Override
     public String toString()
     {
         String ret = super.toString();
+        /*
         if (this.socket != null && this.socket.getSctpSocket() != null)
         {
         	InetAddress inet = this.socket.getSctpSocket().getInetAddress();
@@ -381,10 +381,30 @@ public class ChannelSctp extends Channel
 	        {
 	        	ret += " remoteSocketAddress=\"" + remoteSocket + "\"";
 	        }
-        }
+	     }
+	     */
+        ret += ">\n";
+        
+		if (this.initmsg != null && (
+			this.initmsg.sinit_num_ostreams != 0 ||
+			this.initmsg.sinit_max_instreams != 0 ||
+			this.initmsg.sinit_max_attempts != 0 ||
+			this.initmsg.sinit_max_init_timeo != 0)
+			)
+		{
+			ret += "<sctp";
+			int numOutstreams = this.initmsg.sinit_num_ostreams & 0xffff;
+			ret += " num_ostreams=\"" + numOutstreams + "\"";
+			int maxInstreams = this.initmsg.sinit_max_instreams & 0xffff;
+			ret += " max_instreams=\"" + maxInstreams + "\"";
+			int maxAttempts = this.initmsg.sinit_max_attempts & 0xffff;
+			ret += " max_attempts=\"" + maxAttempts+ "\"";
+			int maxInitTimeo = this.initmsg.sinit_max_init_timeo & 0xffff;
+			ret += " max_initTimeo=\"" + maxInitTimeo+ "\"";
+			ret += "/>\n";
+		}	
 	    return ret;
     }
-    */
         
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
