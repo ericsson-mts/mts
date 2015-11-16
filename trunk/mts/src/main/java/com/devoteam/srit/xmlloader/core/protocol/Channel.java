@@ -291,7 +291,6 @@ public class Channel
         String ret = "";
         ret += "name=\"" + name + "\"";
         ret += " localHost=\"" + Utils.TableToString(localHost) + "\"";
-        System.out.println("toString():port="+ localPort);
         ret += " localPort=\"" + localPort + "\"";
         ret += " remoteHost=\"" + Utils.TableToString(remoteHost) + "\"";
         ret += " remotePort=\"" + remotePort + "\""; 
