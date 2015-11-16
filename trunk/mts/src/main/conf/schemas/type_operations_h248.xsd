@@ -129,7 +129,13 @@
 <!--                                                                                sendMessage -->
     <xs:complexType name="sendMessageH248Type">
         <xs:simpleContent>
-            <xs:extension base="operationTypeSimple" >                     
+            <xs:extension base="operationTypeSimple" >              
+  			<xs:attribute name="channel" type="xs:string" use="optional">
+  				<xs:annotation>
+  					<xs:appinfo>String</xs:appinfo>
+  					<xs:documentation>The name of the channel to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+  				</xs:annotation>
+  			</xs:attribute>                             
 				<xs:attribute name="listenpoint" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
