@@ -16,10 +16,18 @@ diameter.RecCER_SendCEA
         </input>
 
         <do>
-                    
+
             <if>
               <condition>
-                <test parameter="[first]" condition="string.equals" value="True" not="true"/>
+                <test parameter="[remoteServer]" condition="boolean.equals" value="false"/>
+              </condition>
+              <then>
+                  <pause name="synchro si on est client pur" seconds="0.1"/>
+              </then>
+            </if>       
+            <if>
+              <condition>
+                <test parameter="[firstClient]" condition="string.equals" value="true" not="true"/>
               </condition>
               <then>
         
@@ -28,7 +36,7 @@ diameter.RecCER_SendCEA
                 <openChannelDIAMETER name="channel_client" localHost="[localHostDIAM]" localPort="[localPortDIAM]" 
                                      remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]" transport="[transport]" />
         
-                <parameter name="test:first" operation="set" value="True"/>
+                <parameter name="[test:firstClient]" operation="set" value="true"/>
         
                 <parameter name="[stackDiameter]" operation="file.readproperty" value="tester.properties" value2="protocol.STACK_CLASS_NAME_DIAMETER"/>
                 <if>
@@ -229,12 +237,12 @@ diameter.RecCER_SendCEA
             <parameter name="[stackDiameter]" operation="file.readproperty" value="tester.properties" value2="protocol.STACK_CLASS_NAME_DIAMETER"/>
             <if>
               <condition>
-                <test parameter="[first]" condition="string.equals" value="True" not="true"/>
+                <test parameter="[firstServer]" condition="string.equals" value="true" not="true"/>
                 <test parameter="[stackDiameter]" condition="string.contains" value="light"/>
               </condition>
               <then>
                 
-                  <parameter name="test:first" operation="set" value="true"/>
+                  <parameter name="[test:firstServer]" operation="set" value="true"/>
                   
                   <receiveMessageDIAMETER name="Receive Request RFC3588 CER" request="true" type="Capabilities-Exchange:257">
                       <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>    
