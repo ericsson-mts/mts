@@ -165,7 +165,17 @@ public class ScenarioRunner extends Runner
 	            Parameter parameter = new Parameter();
 	            parameter.add(getScenarioReference().getName());
 	            getParameterPool().set("[scenarioName]", parameter);
-	
+
+	            
+	            String routing = getScenarioReference().getRoutingName();
+	            String[] routingTable = routing.split(",");
+	            parameter = new Parameter();
+	            for(int i = 0; i < routingTable.length; i++)
+	            {
+		            parameter.add(routingTable[i]);
+	            }
+	            getParameterPool().set("[scenarioRouting]", parameter);
+	            
 	            parameter = new Parameter();
 	            parameter.add(getScenarioReference().getId());
 	            getParameterPool().set("[scenarioId]", parameter);
