@@ -198,7 +198,7 @@ public class ChannelTls extends Channel {
   	      	
             
 			this.localPort = socket.getLocalPort();
-			this.localHost = new String[] {socket.getLocalAddress().getHostAddress()};
+			this.localHost = socket.getLocalAddress().getHostAddress();
 			socketTls = new SocketTls(socket);
 		}
 

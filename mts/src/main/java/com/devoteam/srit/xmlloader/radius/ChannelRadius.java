@@ -167,7 +167,7 @@ public class ChannelRadius extends Channel implements Runnable
                 radiusMessage.setSecret(this.secret);
 
                 MsgRadius msgRadius = new MsgRadius(this.stack, radiusMessage);
-                this.remoteHost = new String[] {radiusMessage.getRemoteAddress().getAddress().getHostAddress()};
+                this.remoteHost = radiusMessage.getRemoteAddress().getAddress().getHostAddress();
                 this.remotePort = radiusMessage.getRemoteAddress().getPort();
                 msgRadius.setChannel(this);
 
