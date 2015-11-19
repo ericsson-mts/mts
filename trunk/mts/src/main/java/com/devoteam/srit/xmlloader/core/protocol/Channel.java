@@ -47,9 +47,9 @@ public class Channel
     private String UID;
     
     protected String name;
-    protected String[] localHost;
+    protected String localHost;
     protected int localPort = 0;
-    protected String[] remoteHost;
+    protected String remoteHost;
     protected int remotePort = 0;
 
 	protected String protocol;
@@ -75,10 +75,10 @@ public class Channel
     public Channel(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
     {
         this("Channel #" + Stack.nextTransactionId());
-        this.localHost = new String[]{Utils.formatIPAddress(localHost)};
+        this.localHost = Utils.formatIPAddress(localHost);
         this.localPort = localPort;
 
-        this.remoteHost = new String[]{Utils.formatIPAddress(remoteHost)};
+        this.remoteHost = Utils.formatIPAddress(remoteHost);
         this.remotePort = remotePort;
         
         this.protocol = aProtocol;
@@ -90,7 +90,7 @@ public class Channel
         this(name);
         if (localHost != null)
         {
-        	this.localHost = new String[]{Utils.formatIPAddress(localHost)};
+        	this.localHost = Utils.formatIPAddress(localHost);
         }
         
         if (localPort != null)
@@ -98,7 +98,7 @@ public class Channel
             this.localPort = Integer.parseInt(localPort);
         }
 
-        this.remoteHost = new String[]{Utils.formatIPAddress(remoteHost)};
+        this.remoteHost = Utils.formatIPAddress(remoteHost);
         
         if (remotePort != null)
         {
@@ -120,14 +120,7 @@ public class Channel
 
     public String getLocalHost()
     {
-    	if (localHost != null)
-    	{
-    		return localHost[0];
-    	}
-    	else
-    	{
-    		return null;
-    	}
+        return localHost;
     }
 
     public int getLocalPort()
@@ -138,27 +131,9 @@ public class Channel
 
     public String getRemoteHost()
     {
-    	if (remoteHost != null && remoteHost.length > 0)
-    	{
-    		return remoteHost[0];
-    	}
-    	else
-    	{
-    		return null;
-    	}
+        return remoteHost;
     }
 
-    public String getRemoteHost(int i)
-    {
-    	if (remoteHost != null)
-    	{
-    		return remoteHost[i];
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    }
     public int getRemotePort()
     {
         return remotePort;
@@ -183,7 +158,7 @@ public class Channel
      */
     public void setRemoteHost(String host) throws Exception
     {
-        this.remoteHost = new String[]{Utils.formatIPAddress(host)};
+        this.remoteHost = Utils.formatIPAddress(host);
     }
 
     public String getProtocol() {
@@ -289,12 +264,12 @@ public class Channel
     public String toString()
     {
         String ret = "";
-        ret += "name=\"" + name + "\"";
-        ret += " localHost=\"" + Utils.TableToString(localHost) + "\"";
-        ret += " localPort=\"" + localPort + "\"";
-        ret += " remoteHost=\"" + Utils.TableToString(remoteHost) + "\"";
-        ret += " remotePort=\"" + remotePort + "\""; 
-        ret += " transport=\"" + getTransport() + "\"";
+        ret += "name=\"" + this.name + "\"";
+        ret += " localHost=\"" + this.localHost + "\"";
+        ret += " localPort=\"" + this.localPort + "\"";
+        ret += " remoteHost=\"" + this.remoteHost + "\"";
+        ret += " remotePort=\"" + this.remotePort + "\""; 
+        ret += " transport=\"" + this.getTransport() + "\"";
         return ret;
     }
 
@@ -317,8 +292,8 @@ public class Channel
         String localHost  = root.attributeValue("localHost");
         if (localHost !=  null)
         {
-        	this.localHost = localHost.split(",");
-        	this.localHost = Utils.formatIPAddresses(this.localHost);
+        	localHost = InetAddress.getByName(localHost).getHostAddress();
+        	this.localHost = Utils.formatIPAddress(localHost);
         }
         String localPort  = root.attributeValue("localPort");
         if (localPort != null)
@@ -328,22 +303,16 @@ public class Channel
         String localURL = root.attributeValue("localURL");
         if (localURL != null)
         {
-        	String[] localURLs = localURL.split(",");
-        	this.localHost = new String[localURLs.length];
-        	for (int i = 0; i < localURLs.length; i++)
-        	{
-	        	URI uri = new URI(localURLs[i]).normalize();
-	        	this.localHost[i] = uri.getHost();
-	        	this.localPort = uri.getPort();
-        	}
-        	this.localHost = Utils.formatIPAddresses(this.localHost);
+        	URI uri = new URI(localURL).normalize();
+        	this.localHost = uri.getHost();
+        	this.localPort = uri.getPort();
         }
         
         String remoteHost = root.attributeValue("remoteHost");
         if (remoteHost != null)
         {
-        	this.remoteHost = remoteHost.split(",");
-        	this.remoteHost = Utils.formatIPAddresses(this.remoteHost);
+        	remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
+        	this.remoteHost = Utils.formatIPAddress(remoteHost);
         }
         String remotePort = root.attributeValue("remotePort");
         if (remotePort != null)
@@ -353,15 +322,9 @@ public class Channel
         String remoteURL = root.attributeValue("remoteURL");
         if (remoteURL != null)
         {
-        	String[] remoteURLs = remoteURL.split(",");
-        	this.remoteHost = new String[remoteURLs.length];
-        	for (int i = 0; i < remoteURLs.length; i++)
-        	{
-	        	URI uri = new URI(remoteURLs[i]).normalize();
-	        	this.remoteHost[i] = uri.getHost();
-	        	this.remotePort = uri.getPort();
-        	}
-        	this.remoteHost = Utils.formatIPAddresses(this.remoteHost);
+        	URI uri = new URI(remoteURL).normalize();
+        	this.remoteHost = uri.getHost();
+        	this.remotePort = uri.getPort();
         }
         
         String transport = root.attributeValue("transport");
@@ -398,7 +361,7 @@ public class Channel
         }
         else if(params[1].equalsIgnoreCase("localHost"))
         {
-        	parameter.add(Utils.TableToString(this.localHost));
+        	parameter.add(this.localHost);
         }
         else if(params[1].equalsIgnoreCase("localPort"))
         {
@@ -406,7 +369,7 @@ public class Channel
         }
         else if(params[1].equalsIgnoreCase("remoteHost"))
         {
-        	parameter.add(Utils.TableToString(this.remoteHost));
+        	parameter.add(this.remoteHost);
         }
         else if(params[1].equalsIgnoreCase("remotePort"))
         {
@@ -423,7 +386,7 @@ public class Channel
         else if(params[1].equalsIgnoreCase("xml"))
         {
         	parameter.add(this.toXml());
-        }         
+        }
         else
         {
         	if (!StackFactory.PROTOCOL_SCTP.equalsIgnoreCase(this.getTransport()))
@@ -444,10 +407,10 @@ public class Channel
         }
     	this.name = channel.getName();
     	
-    	this.localHost = new String[] {channel.getLocalHost()};
+    	this.localHost = channel.getLocalHost();
     	this.localPort = channel.getLocalPort();
     	
-    	this.remoteHost = new String[]{channel.getRemoteHost()};
+    	this.remoteHost = channel.getRemoteHost();
     	this.remotePort = channel.getRemotePort();	
     	
     	this.protocol = channel.getProtocol();
@@ -476,13 +439,12 @@ public class Channel
                 return false;
             }
         }
-        
-        String localHost = channel.getLocalHost();
-        if (this != null && this.localHost != null & this.localHost.length > 0)
+        if (this.localHost != null)
         {
-            if (channel != null && localHost != null)
+            if (channel != null)
             {
-                if (!localHost.equals(this.localHost[0]))
+                String localHost = channel.getLocalHost();
+                if (!this.localHost.equals(localHost))
                 {
                     return false;
                 }
@@ -498,12 +460,12 @@ public class Channel
             return false;
         }
         
-        String remoteHost = channel.getRemoteHost();
-        if (this !=  null && this.remoteHost != null && this.remoteHost.length > 0)
+        if (this.remoteHost != null)
         {
-            if (channel != null && remoteHost != null)
-            {
-                if (!remoteHost.equals(this.remoteHost[0]))
+        	if (channel != null)
+        	{
+        		String remoteHost = channel.getRemoteHost();
+                if (!this.remoteHost.equals(remoteHost))
                 {
                     return false;
                 }
