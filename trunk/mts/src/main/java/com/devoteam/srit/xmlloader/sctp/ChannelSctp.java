@@ -186,12 +186,12 @@ public class ChannelSctp extends Channel
             {
             	boolean connected = false;
             	Exception lastException;
-	            for (int i = 0; i < this.remoteHost.length; i++)
+	            for (int i = 0; i < 1; i++)
 	            {
-	            	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Connect to ", this.remoteHost[i], ":", remotePort);
+	            	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Connect to ", this.remoteHost, ":", remotePort);
 	            	try
 	            	{		            
-		                InetSocketAddress remoteSocketAddress = new InetSocketAddress(this.remoteHost[i], remotePort);            
+		                InetSocketAddress remoteSocketAddress = new InetSocketAddress(this.remoteHost, remotePort);            
 		                sctpSocket.connect(remoteSocketAddress);
 		                connected = true;
 		            	break;

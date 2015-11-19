@@ -81,7 +81,7 @@ public class ChannelUdpBIO extends Channel
 
             if (this.localHost != null)
             {
-                localDatagramSocketAddress = new InetSocketAddress(this.localHost[0], this.localPort);
+                localDatagramSocketAddress = new InetSocketAddress(this.localHost, this.localPort);
                 datagramSocket = new DatagramSocket(localDatagramSocketAddress);
             }
             else

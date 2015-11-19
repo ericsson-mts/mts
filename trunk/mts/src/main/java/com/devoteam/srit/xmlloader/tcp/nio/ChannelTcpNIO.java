@@ -131,7 +131,7 @@ public class ChannelTcpNIO extends Channel
     		Config.getConfigForTCPSocket(hybridSocket, false);
 
             this.localPort = hybridSocket.getLocalPort();
-            this.localHost = new String[] {hybridSocket.getLocalAddress().getHostAddress()};
+            this.localHost = hybridSocket.getLocalAddress().getHostAddress();
         }
 
 
