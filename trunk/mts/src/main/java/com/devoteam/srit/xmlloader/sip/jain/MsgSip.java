@@ -302,7 +302,7 @@ public class MsgSip extends MsgSipCommon
 	        else if (params.length > 1 && params[0].equalsIgnoreCase("header"))
 	        {
 	            //---------------------------------------------------------------------- header:Yyyyy -
-	            if (params.length >= 2 && (params[1].equals("Authorization")))
+	            if (params.length >= 2 && (params[1].equalsIgnoreCase("Authorization")))
 	            {
 	                if (params.length == 2)
 	                {
@@ -316,7 +316,7 @@ public class MsgSip extends MsgSipCommon
 	                }
 	            }
 	            //---------------------------------------------------------------------- header:To -
-	            else if (params[1].equals("To"))
+	            else if (params[1].equalsIgnoreCase("To"))
 	            {
 	                if (params.length == 2)
 	                {
@@ -330,7 +330,7 @@ public class MsgSip extends MsgSipCommon
 	                }
 	            }
 	            //---------------------------------------------------------------------- header:From -
-	            else if (params[1].equals("From"))
+	            else if (params[1].equalsIgnoreCase("From"))
 	            {
 	                if (params.length == 2)
 	                {
@@ -344,7 +344,7 @@ public class MsgSip extends MsgSipCommon
 	                }
 	            }
 	            //---------------------------------------------------------------------- header:ContentType -
-	            else if (params[1].equals("ContentType"))
+	            else if (params[1].equalsIgnoreCase("ContentType"))
 	            {
 	                if (params.length == 2)
 	                {
@@ -358,7 +358,7 @@ public class MsgSip extends MsgSipCommon
 	                }
 	            }
 	            //---------------------------------------------------------------------- header:Contact -
-	            else if (params[1].equals("Contact"))
+	            else if (params[1].equalsIgnoreCase("Contact"))
 	            {
 	                if (params.length == 2)
 	                {
@@ -375,27 +375,27 @@ public class MsgSip extends MsgSipCommon
 	                }
 	            }
 	            //---------------------------------------------------------------------- header:CSeq -
-	            else if (params[1].equals("CSeq"))
+	            else if (params[1].equalsIgnoreCase("CSeq"))
 	            {            	
 	            	addSIPHeaderCSeq(var, params, (CSeq) sipMessage.getCSeq());                
 	            }
 	            //---------------------------------------------------------------------- header:CSeqNumber -
-	            else if (params[1].equals("CSeqNumber"))
+	            else if (params[1].equalsIgnoreCase("CSeqNumber"))
 	            {
 	                var.add(Long.valueOf(sipMessage.getCSeq().getSeqNumber()).toString());
-	            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:CSeqNumber", "setFromMessage value=header:CSeq:Number");
+	            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:CSeqNumber", "setFromMessage value=header.CSeq.Number");
 	                return var;
 	            }
 	            //---------------------------------------------------------------------- header:CSeqMethod -
-	            else if (params[1].equals("CSeqMethod"))                	
+	            else if (params[1].equalsIgnoreCase("CSeqMethod"))                	
 	            {
 	                var.add(sipMessage.getCSeq().getMethod().toString());
-	            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:CSeqMethod", "setFromMessage value=header:CSeq:Method");
+	            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:CSeqMethod", "setFromMessage value=header.CSeq.Method");
 	                return var;
 	            }
 	
 	            //---------------------------------------------------------------------- header:Route -
-	            else if (params[1].equals("Route"))
+	            else if (params[1].equalsIgnoreCase("Route"))
 	            {
 	            	if (sipMessage.getRouteHeaders() != null)
 	            	{
@@ -408,7 +408,7 @@ public class MsgSip extends MsgSipCommon
 	                return var;
 	            }
 	            //---------------------------------------------------------------------- header:RecordRoute -
-	            else if (params[1].equals("RecordRoute"))
+	            else if (params[1].equalsIgnoreCase("RecordRoute"))
 	            {
 	                Iterator iter = sipMessage.getRecordRouteHeaders().iterator();
 	                while (iter.hasNext())
@@ -418,13 +418,13 @@ public class MsgSip extends MsgSipCommon
 	                return var;
 	            }
 	            //---------------------------------------------------------------------- header:TopMostVia -
-	            else if (params[1].equals("TopmostVia"))
+	            else if (params[1].equalsIgnoreCase("TopmostVia"))
 	            {
 	                addSIPHeaderVia(var, params, sipMessage.getTopmostVia());
 	                return var;
 	            }
 	            //---------------------------------------------------------------------- header:Via -
-	            else if (params[1].equals("Via"))
+	            else if (params[1].equalsIgnoreCase("Via"))
 	            {
 	                Iterator iter = sipMessage.getViaHeaders().iterator();
 	                while (iter.hasNext())
@@ -554,7 +554,7 @@ public class MsgSip extends MsgSipCommon
         if (((params.length == 3) && params[2].equalsIgnoreCase("URI")))
         {
             var.add(sipMessage.getAuthorization().getURI().toString());
-        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:" + params[1] + ":URI", "setFromMessage value=header:" + params[1] + ":Attribute:URI");            
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:" + params[1] + ":URI", "setFromMessage value=header." + params[1] + ".Attribute:URI");            
         }
         //---------------------------------------------------------------------- header:Yyyyyy:Scheme -
         if (((params.length == 3) && params[2].equalsIgnoreCase("Scheme")))
@@ -565,7 +565,7 @@ public class MsgSip extends MsgSipCommon
         else if ((params.length == 4) && params[2].equalsIgnoreCase("Parameter"))
         {
             var.add(sipMessage.getAuthorization().getParameter(params[3]));
-        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:" + params[1] + ":Parameter:" + params[3], "setFromMessage value=header:" + params[1] + ":Attribute:" + params[3]);
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:" + params[1] + ":Parameter:" + params[3], "setFromMessage value=header." + params[1] + ".Attribute:" + params[3]);
         }
         //---------------------------------------------------------------------- header:Yyyyyy:Attribute:Zzzzzz -
         else if ((params.length == 4) && params[2].equalsIgnoreCase("Attribute"))
@@ -592,13 +592,13 @@ public class MsgSip extends MsgSipCommon
     {
         //---------------------------------------------------------------------- header:To|From:Tag -
 
-        if (params[2].equals("Tag"))
+        if (params[2].equalsIgnoreCase("Tag"))
         {
             var.add(sipMessage.getFrom().getTag().toString());
-        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:From:Tag", "setFromMessage value=header:From:Parameter:tag");            
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:From:Tag", "setFromMessage value=header.From.Parameter.tag");            
         }
         //---------------------------------------------------------------------- header:To|From:Address -
-        else if (params[2].equals("Address"))
+        else if (params[2].equalsIgnoreCase("Address"))
         {
             String address = sipMessage.getFrom().getAddress().toString();
             addSIPAddressHeader(var, params, address);
@@ -619,13 +619,13 @@ public class MsgSip extends MsgSipCommon
     {
         //---------------------------------------------------------------------- header:To|From:Tag -
 
-        if (params[2].equals("Tag"))
+        if (params[2].equalsIgnoreCase("Tag"))
         {
             var.add(sipMessage.getTo().getTag());
-        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:To:Tag", "setFromMessage value=header:To:Parameter:tag");            
+        	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:To:Tag", "setFromMessage value=header.To.Parameter.tag");            
         }
         //---------------------------------------------------------------------- header:To|From:Address -
-        else if (params[2].equals("Address"))
+        else if (params[2].equalsIgnoreCase("Address"))
         {
             String address = sipMessage.getTo().getAddress().toString();
             addSIPAddressHeader(var, params, address);
@@ -649,12 +649,12 @@ public class MsgSip extends MsgSipCommon
             var.add(header.getValue());
         }
         //---------------------------------------------------------------------- header:CSeq:Number -
-        else if (params[2].equals("Number"))
+        else if (params[2].equalsIgnoreCase("Number"))
         {
             var.add(Long.valueOf(header.getSeqNumber()).toString());
         }
         //---------------------------------------------------------------------- header:CSeq:Method -
-        else if (params[2].equals("Method"))
+        else if (params[2].equalsIgnoreCase("Method"))
         {
             var.add(header.getMethod().toString());
         }
@@ -668,22 +668,22 @@ public class MsgSip extends MsgSipCommon
             var.add(header.getValue());
         }
         //---------------------------------------------------------------------- header:TopMostVia:Protocol or header:Via:Protocol-
-        else if (params[2].equals("Protocol"))
+        else if (params[2].equalsIgnoreCase("Protocol"))
         {
             var.add(header.getProtocol());
         }
         //---------------------------------------------------------------------- header:TopMostVia:Transport or header:Via:Transport-
-        else if (params[2].equals("Transport"))
+        else if (params[2].equalsIgnoreCase("Transport"))
         {
             var.add(header.getTransport());
         }
         //---------------------------------------------------------------------- header:TopMostVia:Host or header:Via:Host-
-        else if (params[2].equals("Host"))
+        else if (params[2].equalsIgnoreCase("Host"))
         {
             var.add(header.getHost());
         }
         //---------------------------------------------------------------------- header:TopMostVia:Port or header:Via:Port-
-        else if (params[2].equals("Port"))
+        else if (params[2].equalsIgnoreCase("Port"))
         {
             var.add(Integer.toString(header.getPort()));
         }
@@ -706,7 +706,7 @@ public class MsgSip extends MsgSipCommon
             var.add(header.getValue());
         }
         //---------------------------------------------------------------------- header:Route:Address -
-        else if (params[2].equals("Address"))
+        else if (params[2].equalsIgnoreCase("Address"))
         {
             String address = header.getAddress().toString();
             addSIPAddressHeader(var, params, address);
@@ -726,7 +726,7 @@ public class MsgSip extends MsgSipCommon
             var.add(header.getValue());
         }
         //---------------------------------------------------------------------- header:Route:Address -
-        else if (params[2].equals("Address"))
+        else if (params[2].equalsIgnoreCase("Address"))
         {
             String address = header.getAddress().toString();
             addSIPAddressHeader(var, params, address);
@@ -747,16 +747,16 @@ public class MsgSip extends MsgSipCommon
         {
             Contact currentContact = (Contact) iterator.next();
             //---------------------------------------------------------------------- header:Contact:Address -
-            if (params[2].equals("Address"))
+            if (params[2].equalsIgnoreCase("Address"))
             {
                 String address = currentContact.getAddress().toString();
                 addSIPAddressHeader(var, params, address);
             }
             // ---------------------------------------------------------------------- header:Contact:QValue -
-            else if (params[2].equals("QValue"))
+            else if (params[2].equalsIgnoreCase("QValue"))
             {
                 var.add(Float.toString(currentContact.getQValue()));
-            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:Contact:QValue", "setFromMessage value=header:Contact:Parameter:q");
+            	GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=header:Contact:QValue", "setFromMessage value=header.Contact.Parameter.q");
             }
             //---------------------------------------------------------------------- header:Contact:Parameter:Xxxx -
             else if ((params.length == 4) && (params[2].equalsIgnoreCase("Parameter")))
