@@ -100,12 +100,16 @@
         <scenario name="bob" routingName="bob">101_sip_reinvite/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="102_register" state="true">
+    <testcase description="test sip" name="102_register" state="true">    
         <scenario name="alice" routingName="alice">102_sip_register/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">102_sip_register/UAS.xml</scenario>
     </testcase>
 
     <testcase description="test sip" name="102_register_digest" state="true">
+      	<parameter name="[domainName]" operation="set" value="ericsson.com"/>
+      	<parameter name="[userName]" operation="set" value="alice"/>       
+        <parameter name="[password]" operation="set" value="ims30ims30"/>    
+
         <scenario name="alice" routingName="alice">102_sip_register_digest/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">102_sip_register_digest/UAS.xml</scenario>
     </testcase>
