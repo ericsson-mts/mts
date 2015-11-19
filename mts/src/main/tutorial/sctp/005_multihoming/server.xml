@@ -27,7 +27,6 @@
     <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
 
     <parameter name="[newStream]" operation="number.random" value="0" value2="9"/>
-    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
     <sendMessageSCTP channel="[lastChannelName]">
         <sctp stream="[newStream]" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]" aid="[lastAid]"/>
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
@@ -46,10 +45,9 @@
     <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     </receiveMessageSCTP>
 
-    <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
-    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <parameter name="[newStream]" operation="number.random" value="0" value2="9"/>
     <sendMessageSCTP channel="[lastChannelName]">
-        <sctp stream="0" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]"/>
+        <sctp stream="[newStream]" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]"/>
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
     
@@ -66,10 +64,9 @@
     <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     </receiveMessageSCTP>
 
-    <parameter name="[newStream]" operation="number.random" value="1" value2="65535"/>
-    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <parameter name="[newStream]" operation="number.random" value="0" value2="9"/>   
     <sendMessageSCTP channel="[lastChannelName]">
-        <sctp stream="0" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]"/> 
+        <sctp stream="[newStream]" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]"/> 
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
 
