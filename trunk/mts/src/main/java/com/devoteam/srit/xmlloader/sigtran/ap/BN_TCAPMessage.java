@@ -146,46 +146,6 @@ public class BN_TCAPMessage extends BN_ASNMessage
     	return null;
     }
 
-    // get the Application Context Name
-    public String getTCAPACN() throws Exception
-    {
-    	DialogueOC dialogueOC = getTCAPDialogueOC();
-    	return null;    	
-    }
-   
-    private DialogueOC getTCAPDialogueOC() throws Exception
-    {
-    	DialogueOC dialogueOC = null;
-    	if (((TCMessage) asnObject).isBeginSelected())
-    	{
-    		dialogueOC = ((TCMessage) asnObject).getBegin().getDialoguePortion().getValue();
-    	}
-    	else if (((TCMessage) asnObject).isEndSelected())
-    	{
-    		End end = ((TCMessage) asnObject).getEnd();
-    		if (end.getComponents() != null)
-    		{
-    			dialogueOC = ((TCMessage) asnObject).getEnd().getDialoguePortion().getValue();
-    		}
-    	}
-    	else if (((TCMessage) asnObject).isContinue1Selected())
-    	{
-    		dialogueOC = ((TCMessage) asnObject).getContinue1().getDialoguePortion().getValue();
-    	}
-    	else if (((TCMessage) asnObject).isAbortSelected())
-    	{
-    		// nothing 
-    	}
-    	else if (((TCMessage) asnObject).isUnidirectionalSelected())
-    	{
-    		dialogueOC = ((TCMessage) asnObject).getUnidirectional().getDialoguePortion().getValue();
-    	}
-    	else
-    	{
-    		return null;
-    	}
-    	return dialogueOC;
-    }
 
     private Component getTCAPComponents() throws Exception
     {

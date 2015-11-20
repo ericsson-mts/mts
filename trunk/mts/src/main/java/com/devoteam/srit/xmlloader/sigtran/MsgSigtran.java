@@ -448,15 +448,15 @@ public class MsgSigtran extends Msg
 		  
 	    		if (_tcapMessage != null)
 	    		{
-			    	Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();
-					_apMessage = new BN_APMessage();
-					
 					String ACN = null;
-					Parameter param = getParameter("tcap.application_context_name");
+					Parameter param = this._tcapMessage.getParameter("tcap.application_context_name");
 					if (param.length() > 0)
 			        {
-			        	ACN = param.get(0).toString();
+			            ACN = param.get(0).toString();
 			        }
+		            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL,"ACN=", ACN);
+					_apMessage = new BN_APMessage();
+					Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();					
 		    		try
 		    		{
 		    			if (ACN != null && ACN.startsWith("CAP-"))

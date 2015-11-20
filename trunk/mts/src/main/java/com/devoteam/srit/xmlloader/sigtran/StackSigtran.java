@@ -52,7 +52,7 @@ public class StackSigtran extends Stack
     private HashMap<String, TlvDictionary> tlvDictionaries;
     private HashMap<String, FvoDictionary> fvoDictionaries;
 
-    private int defaultPayloadProtocolID = getConfig().getInteger("server.DEFAULT_PPID", 1);
+    private int defaultPayloadProtocolID = 0;
         
     
     public StackSigtran() throws Exception 
@@ -61,6 +61,7 @@ public class StackSigtran extends Stack
         
         this.tlvDictionaries = new HashMap<String, TlvDictionary>();
         this.fvoDictionaries = new HashMap<String, FvoDictionary>();
+        this.defaultPayloadProtocolID = getConfig().getInteger("server.DEFAULT_PPID", 3);
     }
 
     public TlvDictionary getTlvDictionnary(String name) throws Exception
@@ -98,7 +99,7 @@ public class StackSigtran extends Stack
     	if (bytes != null)
     	{
 	        //create the message
-	        int ppidInt = defaultPayloadProtocolID;
+	        int ppidInt = this.defaultPayloadProtocolID;
 	        MsgSigtran msg = new MsgSigtran(this, ppidInt);
 	        msg.decode(bytes);
 	        return msg;
@@ -172,7 +173,7 @@ public class StackSigtran extends Stack
         // when the PPID is not present into the sctp layer
         if (ppidInt == 0)
         {
-        	ppidInt = defaultPayloadProtocolID;
+        	ppidInt = this.defaultPayloadProtocolID;
         }
         MsgSigtran msg = new MsgSigtran(this, ppidInt);
         msg.decode(array.getBytes());
