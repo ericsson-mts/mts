@@ -12,9 +12,9 @@
 <scenario>
 
     <!-- Message encoded value -->
-  	<parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
-	
+    
     <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
     
     <!-- TCAP LAYER -->
@@ -62,48 +62,48 @@
                 </Component.Choice>
               </Collection>          
             </components>
-
+    
         </begin.A2.Sequence>
       </TCMessage.Choice>
     </ASN>
     
-	  <!-- SCCP LAYER  -->
-  	<SS7 name="sccp" file="sccp.xml">
-  		<header>
+    <!-- SCCP LAYER  -->
+    <SS7 name="sccp" file="sccp.xml">
+    	<header>
           <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
       </header>
-  		<parameter name="Protocol_Class" type="F" littleEndian="false">
-  			<field value="0" lengthBit="4" />
-  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-  		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="2" length="2" />
-  			<field name="Subsystem_Number" value="8" length="1" />	
-  		</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="1" length="2" />
-  			<field name="Subsystem_Number" value="8" length="1" />
-  		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false">
-  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+    	<parameter name="Protocol_Class" type="F" littleEndian="false">
+    		<field value="0" lengthBit="4" />
+    		<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+    	</parameter>
+    	<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+    		<field name="Address_Indicator" value="67" length="1" />
+    		<field name="Signalling_Point_Code" value="2" length="2" />
+    		<field name="Subsystem_Number" value="8" length="1" />	
+    	</parameter>
+    	<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+    		<field name="Address_Indicator" value="67" length="1" />
+    		<field name="Signalling_Point_Code" value="1" length="2" />
+    		<field name="Subsystem_Number" value="8" length="1" />
+    	</parameter>
+    	<parameter id="15" name="Data" type="V" littleEndian="false">
+    		<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
         <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-  		</parameter>
-  	</SS7>
-
+    	</parameter>
+    </SS7>
+    
     <UA name="m3ua" file="m3ua.xml">
         <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
-				
+    		
         <parameter tag="Network_Appearence">
             <field name="Network_Appearence"  format="Integer" value="102"/>
         </parameter>
-
-
+    
+    
         <parameter tag="Routing_Context">
             <field name="Routing_Context" format="Integer"  value="101"/>
         </parameter>
-
+    
         <parameter tag="Protocol_Data">
             <field value="1" name="Originating_Point_Code"/>
             <field value="2" name="Destination_Point_Code" />
@@ -113,7 +113,7 @@
             <field value="1"	name="SLS"/>
             <field name="DATA"	format="fvo"/>
         </parameter>
-	
+    
         <!--parameter tag="Correlation_Id">
             <field name="Correlation_Id" format="Integer"  value="12783"/>
         </parameter-->
@@ -124,13 +124,131 @@
     <test parameter="[data1]" condition="binary.equals" value="[data]"/>
     
     	<!-- Message encoded value -->
-	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
-  <parameter name="[length]" operation="string.length" value="[data]"/>
+    <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" request="false" type="Begin:2" result="RESULT">
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
 
-	<receiveMessageSIGTRAN name="Wait DATA1" request="false" type="Begin:2" result="RESULT">
-		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-	</receiveMessageSIGTRAN>
-	
-  <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    <if>
+    	<condition>
+    		<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    	</condition>
+    	<else>
+    		<log level="ERROR">	Message received :	</log>
+    		<log level="ERROR">	"[data1]"			</log>
+    		<log level="ERROR">	Message expected :	</log>
+    		<log level="ERROR">	"[data]"			</log>
+    	</else>
+    </if>
+        
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <parameter name="[end]" operation="protocol.setFromMessage" value="tcap.end"/>
+    <test parameter="[end]" condition="list.size" value="0"/>
+    <parameter name="[dtid]" operation="protocol.setFromMessage" value="tcap.end.dtid"/>    
+    <test parameter="[dtid]" condition="list.size" value="1"/>
+    <test parameter="[dtid]" condition="binary.equals" value="00000001"/>
+    <parameter name="[dialoguePortion]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion"/>    
+    <test parameter="[dialoguePortion]" condition="list.size" value="0"/>
+    <parameter name="[ExternalPDU]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU"/>
+    <test parameter="[ExternalPDU]" condition="list.size" value="0"/>
+    <parameter name="[direct_reference]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType"/>    
+    <test parameter="[direct_reference]" condition="list.size" value="1"/>
+    <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>    
+    <parameter name="[direct_reference]" operation="protocol.setFromMessage" value="tcap.ExternalPDUSequenceType"/>    
+    <test parameter="[direct_reference]" condition="list.size" value="1"/>
+    <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>
+    <parameter name="[single_ASN1_type]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.single_ASN1_type"/>
+    <test parameter="[single_ASN1_type]" condition="list.size" value="0"/>                                     
+    <parameter name="[UniDialoguePDU]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.single_ASN1_type.UniDialoguePDU"/>    
+    <test parameter="[UniDialoguePDU]" condition="list.size" value="0"/>
+    <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.protocol_version"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.single_ASN1_type.DialoguePDU.dialogueResponse.AUDT_apduSequenceType.protocol_version"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.single_ASN1_type.DialoguePDU.dialogueResponse.AUDT_apduSequenceType.protocol_version"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="list.size" value="2"/>
+    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="list.size" value="2"/>
+    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="list.size" value="2"/>
+    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="list.size" value="2"/>
+    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="list.size" value="2"/>
+    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+        
+    <!-- control AP part -->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Integer&gt;1&lt;/Integer&gt;"/>
             
+    <!-- control dialoguePortion -->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
+    <parameter name="[end]" operation="string.xpath" value="[xml]" value2="//end.A4.Sequence"/>
+    <test parameter="[end]" condition="list.size" value="1"/>
+    <parameter name="[dtid]" operation="string.xpath" value="[end]" value2="//dtid.BoxedType/Bytes.A9/text()"/>
+    <test parameter="[dtid]" condition="list.size" value="1"/>
+    <test parameter="[dtid]" condition="binary.equals" value="00000001"/>    
+    <parameter name="[dialoguePortion]" operation="string.xpath" value="[end]" value2="//dialoguePortion.BoxedType"/>
+    <test parameter="[dialoguePortion]" condition="list.size" value="1"/>
+    <parameter name="[ExternalPDU]" operation="string.xpath" value="[dialoguePortion]" value2="//ExternalPDU.A11.BoxedType"/>
+    <test parameter="[ExternalPDU]" condition="list.size" value="1"/>
+    <parameter name="[direct_reference]" operation="string.xpath" value="[ExternalPDU]" value2="//direct_reference/ObjectIdentifier/text()"/>
+    <test parameter="[direct_reference]" condition="list.size" value="1"/>
+    <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>
+    <parameter name="[single_ASN1_type]" operation="string.xpath" value="[ExternalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
+    <test parameter="[single_ASN1_type]" condition="list.size" value="1"/>
+    <parameter name="[DialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//DialoguePDU.C0.Choice"/>
+    <test parameter="[DialoguePDU]" condition="list.size" value="1"/>
+    <parameter name="[dialogueResponse]" operation="string.xpath" value="[DialoguePDU]" value2="//dialogueResponse.A1.BoxedType"/>
+    <test parameter="[dialogueResponse]" condition="list.size" value="1"/>
+    <parameter name="[protocol_version]" operation="string.xpath" value="[dialogueResponse]" value2="//protocol_version.C0d/BitString/@value"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[application_context_name]" operation="string.xpath" value="[dialogueResponse]" value2="//application_context_name.C1.BoxedType/ObjectIdentifier.C1/ObjectIdentifier/text()"/>
+    <test parameter="[application_context_name]" condition="list.size" value="1"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <parameter name="[result]" operation="string.xpath" value="[dialogueResponse]" value2="//result.C2.BoxedType"/>
+    <test parameter="[result]" condition="list.size" value="1"/>
+    <parameter name="[Associate_result]" operation="string.xpath" value="[result]" value2="//Associate_result.C2.BoxedType/Long/text()"/>
+    <test parameter="[Associate_result]" condition="list.size" value="1"/>    
+    <test parameter="[Associate_result]" condition="string.equals" value="0"/>
+    <parameter name="[result_source_diagnostic]" operation="string.xpath" value="[dialogueResponse]" value2="//result_source_diagnostic.C3.BoxedType"/>
+    <test parameter="[result_source_diagnostic]" condition="list.size" value="1"/>    
+    <parameter name="[Associate_source_diagnostic]" operation="string.xpath" value="[result_source_diagnostic]" value2="//Associate_source_diagnostic.C3.Choice"/>
+    <test parameter="[Associate_source_diagnostic]" condition="list.size" value="1"/>    
+    <parameter name="[dialogue_service_user]" operation="string.xpath" value="[Associate_source_diagnostic]" value2="//dialogue_service_user.C1.BoxedType"/>
+    <test parameter="[dialogue_service_user]" condition="list.size" value="1"/>    
+    <parameter name="[Dialogue_service_user]" operation="string.xpath" value="[dialogue_service_user]" value2="//Dialogue_service_user.C1.BoxedType/Long/text()"/>
+    <test parameter="[Dialogue_service_user]" condition="list.size" value="1"/>    
+    <test parameter="[Dialogue_service_user]" condition="string.equals" value="0"/>
+    
+    <!-- control components -->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
+    <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.A12.Choice"/>
+    <test parameter="[component]" condition="list.size" value="1"/>
+    <parameter name="[returnResultLast]" operation="string.xpath" value="[component]" value2="//returnResultLast.C2.Sequence"/>
+    <test parameter="[returnResultLast]" condition="list.size" value="1"/>
+    <parameter name="[invokeID]" operation="string.xpath" value="[returnResultLast]" value2="//invokeID.BoxedType/Integer/text()"/>
+    <test parameter="[invokeID]" condition="list.size" value="1"/>
+    <test parameter="[invokeID]" condition="string.equals" value="1"/>
+                        
 </scenario>

@@ -104,25 +104,7 @@ public class ASNGetParameter
         	// we add a embedded record in the list		
 	        if (message !=null)
 	        {
-				// get the condition for embedded objects
-		        String elementName = resultPath;
-		        int iPos = resultPath.lastIndexOf(".");
-		        if (iPos > 0)
-		        {
-		        	elementName = resultPath.substring(iPos + 1);
-		        }
-	        	String condition = elementName + "=" + objClass;
-	        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);	        
-	        	if (embeddedList == null && objClass instanceof ObjectIdentifier)
-	        	{
-	        		condition = name + "=" + ((ObjectIdentifier) objClass).getValue();
-	        		embeddedList = message.getEmbeddedByCondition(condition);
-	        	}
-	        	if (embeddedList == null)
-	        	{
-	        		condition = name + "=" + objClass.toString();
-	        		embeddedList = message.getEmbeddedByCondition(condition);
-	        	}
+	        	List<Embedded> embeddedList = getEmbeddedListWithCondition(resultPath, message, parentObj, name, objClass);
 	        	if (embeddedList != null)
 	        	{
 	        		message.addConditionalEmbedded(embeddedList);
@@ -141,6 +123,10 @@ public class ASNGetParameter
 					pathWithoutLayer = path.substring(pos);
 				}
 				if (resultPath.endsWith(pathWithoutLayer)) 
+				{
+					parameter.add(retObject);
+				}
+				if (pathWithoutLayer.endsWith(name)) 
 				{
 					parameter.add(retObject);
 				}
@@ -195,6 +181,31 @@ public class ASNGetParameter
 		}
 
 		return;
+	}
+
+	// get the condition for embedded objects
+	private List<Embedded> getEmbeddedListWithCondition(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass) throws Exception 
+	{
+		// get the condition for embedded objects
+	    String elementName = resultPath;
+	    int iPos = resultPath.lastIndexOf(".");
+	    if (iPos > 0)
+	    {
+	    	elementName = resultPath.substring(iPos + 1);
+	    }
+		String condition = elementName + "=" + objClass;
+		List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);	        
+		if (embeddedList == null && objClass instanceof ObjectIdentifier)
+		{
+			condition = name + "=" + ((ObjectIdentifier) objClass).getValue();
+			embeddedList = message.getEmbeddedByCondition(condition);
+		}
+		if (embeddedList == null)
+		{
+			condition = name + "=" + objClass.toString();
+			embeddedList = message.getEmbeddedByCondition(condition);
+		}
+		return embeddedList;
 	}
 	
 	private String getSignificantXMLTag(Object objClass, String name) throws Exception 
