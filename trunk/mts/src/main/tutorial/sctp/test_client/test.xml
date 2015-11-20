@@ -5,7 +5,8 @@
     
     <parameter name="[localHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostSCTP]" operation="set" value="[localHostSCTP(0)]" description="local address of the MTS host" editable="true"/>
-    <parameter name="[localPortSCTP]" operation="set" value="4011" description="local port of the MTS host" editable="true" />
+    <parameter name="[localPortSCTP]" operation="number.random" value="10000" value2="65535" />    
+    <parameter name="[localPortSCTP]" operation="set" value="[localPortSCTP(0)]" description="local port of the MTS host" editable="true" />
     <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
     
     <parameter name="[remoteHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
