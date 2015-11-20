@@ -119,14 +119,7 @@ public class ASNToXMLConverter
 	        if (message !=null)
 	        {
 				// get the condition for embedded objects
-		        String elementName = resultPath;
-		        int iPos = resultPath.lastIndexOf(".");
-		        if (iPos > 0)
-		        {
-		        	elementName = resultPath.substring(iPos + 1);
-		        }
-	        	String condition = elementName + "=" + objClass;
-	        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
+	        	List<Embedded> embeddedList = message.getEmbeddedListWithCondition(resultPath, parentObj, name, objClass);
 	        	if (embeddedList != null)
 	        	{
 	        		message.addConditionalEmbedded(embeddedList);

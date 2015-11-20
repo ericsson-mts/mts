@@ -462,9 +462,10 @@ public class XMLToASNParser
             return obj;
         }
             	
-        // get the condition for embedded objects
+        // we add a embedded record in the list
         if (message != null)
         {
+        	// get the condition for embedded objects
 	    	String XMLTag = resultPath;
 	    	int pos = resultPath.lastIndexOf('.');
 	    	if (pos >= 0)

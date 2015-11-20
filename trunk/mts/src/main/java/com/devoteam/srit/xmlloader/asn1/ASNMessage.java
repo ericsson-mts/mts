@@ -28,6 +28,7 @@ import java.util.List;
 
 import gp.utils.arrays.Array;
 
+import org.bn.types.ObjectIdentifier;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
@@ -131,6 +132,31 @@ public abstract class ASNMessage
      	return null;
  	}
     
+	// get the condition for embedded objects
+	public List<Embedded> getEmbeddedListWithCondition(String resultPath, Object parentObj, String name, Object objClass) throws Exception 
+	{
+		// get the condition for embedded objects
+	    String elementName = resultPath;
+	    int iPos = resultPath.lastIndexOf(".");
+	    if (iPos > 0)
+	    {
+	    	elementName = resultPath.substring(iPos + 1);
+	    }
+		String condition = elementName + "=" + objClass;
+		List<Embedded> embeddedList = this.getEmbeddedByCondition(condition);	        
+		if (embeddedList == null && objClass instanceof ObjectIdentifier)
+		{
+			condition = name + "=" + ((ObjectIdentifier) objClass).getValue();
+			embeddedList = this.getEmbeddedByCondition(condition);
+		}
+		if (embeddedList == null)
+		{
+			condition = name + "=" + objClass.toString();
+			embeddedList = this.getEmbeddedByCondition(condition);
+		}
+		return embeddedList;
+	}
+        
     public ElementAbstract getElementByLabel(String label)
     {
     	return this.dictionary.getElementByLabel(label);

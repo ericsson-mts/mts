@@ -104,7 +104,8 @@ public class ASNGetParameter
         	// we add a embedded record in the list		
 	        if (message !=null)
 	        {
-	        	List<Embedded> embeddedList = getEmbeddedListWithCondition(resultPath, message, parentObj, name, objClass);
+				// get the condition for embedded objects	        	
+	        	List<Embedded> embeddedList = message.getEmbeddedListWithCondition(resultPath, parentObj, name, objClass);
 	        	if (embeddedList != null)
 	        	{
 	        		message.addConditionalEmbedded(embeddedList);
@@ -181,31 +182,6 @@ public class ASNGetParameter
 		}
 
 		return;
-	}
-
-	// get the condition for embedded objects
-	private List<Embedded> getEmbeddedListWithCondition(String resultPath, ASNMessage message, Object parentObj, String name, Object objClass) throws Exception 
-	{
-		// get the condition for embedded objects
-	    String elementName = resultPath;
-	    int iPos = resultPath.lastIndexOf(".");
-	    if (iPos > 0)
-	    {
-	    	elementName = resultPath.substring(iPos + 1);
-	    }
-		String condition = elementName + "=" + objClass;
-		List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);	        
-		if (embeddedList == null && objClass instanceof ObjectIdentifier)
-		{
-			condition = name + "=" + ((ObjectIdentifier) objClass).getValue();
-			embeddedList = message.getEmbeddedByCondition(condition);
-		}
-		if (embeddedList == null)
-		{
-			condition = name + "=" + objClass.toString();
-			embeddedList = message.getEmbeddedByCondition(condition);
-		}
-		return embeddedList;
 	}
 	
 	private String getSignificantXMLTag(Object objClass, String name) throws Exception 
