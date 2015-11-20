@@ -112,7 +112,17 @@ public class ASNGetParameter
 		        	elementName = resultPath.substring(iPos + 1);
 		        }
 	        	String condition = elementName + "=" + objClass;
-	        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);
+	        	List<Embedded> embeddedList = message.getEmbeddedByCondition(condition);	        
+	        	if (embeddedList == null && objClass instanceof ObjectIdentifier)
+	        	{
+	        		condition = name + "=" + ((ObjectIdentifier) objClass).getValue();
+	        		embeddedList = message.getEmbeddedByCondition(condition);
+	        	}
+	        	if (embeddedList == null)
+	        	{
+	        		condition = name + "=" + objClass.toString();
+	        		embeddedList = message.getEmbeddedByCondition(condition);
+	        	}
 	        	if (embeddedList != null)
 	        	{
 	        		message.addConditionalEmbedded(embeddedList);
