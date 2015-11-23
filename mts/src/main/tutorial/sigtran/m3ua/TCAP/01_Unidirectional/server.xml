@@ -54,8 +54,8 @@
     <test parameter="[direct_reference]" condition="string.equals" value="uniDialogue-as-id:0.0.17.773.1.2.1"/>
     <parameter name="[single_ASN1_type]" operation="protocol.setFromMessage" value="tcap.unidirectional.dialoguePortion.DialogueOC.ExternalPDU.single_ASN1_type"/>
     <test parameter="[single_ASN1_type]" condition="list.size" value="0"/>                                     
-    <parameter name="[UniDialoguePDU]" operation="protocol.setFromMessage" value="tcap.unidirectional.dialoguePortion.DialogueOC.ExternalPDU.single_ASN1_type.UniDialoguePDU"/>    
-    <test parameter="[UniDialoguePDU]" condition="list.size" value="0"/>
+    <parameter name="[uniDialoguePDU]" operation="protocol.setFromMessage" value="tcap.unidirectional.dialoguePortion.DialogueOC.ExternalPDU.single_ASN1_type.UniDialoguePDU"/>    
+    <test parameter="[uniDialoguePDU]" condition="list.size" value="0"/>
     <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.protocol_version"/>
     <test parameter="[protocol_version]" condition="list.size" value="1"/>
     <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
@@ -96,19 +96,19 @@
     <test parameter="[unidirectional]" condition="list.size" value="1"/>
     <parameter name="[dialoguePortion]" operation="string.xpath" value="[unidirectional]" value2="//dialoguePortion.BoxedType"/>
     <test parameter="[dialoguePortion]" condition="list.size" value="1"/>
-    <parameter name="[ExternalPDU]" operation="string.xpath" value="[dialoguePortion]" value2="//ExternalPDU.A11.BoxedType"/>
-    <test parameter="[ExternalPDU]" condition="list.size" value="1"/>
-    <parameter name="[direct_reference]" operation="string.xpath" value="[ExternalPDU]" value2="//direct_reference/ObjectIdentifier/text()"/>
+    <parameter name="[externalPDU]" operation="string.xpath" value="[dialoguePortion]" value2="//ExternalPDU.A11.BoxedType"/>
+    <test parameter="[externalPDU]" condition="list.size" value="1"/>
+    <parameter name="[direct_reference]" operation="string.xpath" value="[externalPDU]" value2="//direct_reference/ObjectIdentifier/text()"/>
     <test parameter="[direct_reference]" condition="list.size" value="1"/>
     <test parameter="[direct_reference]" condition="string.equals" value="uniDialogue-as-id:0.0.17.773.1.2.1"/>
-    <parameter name="[single_ASN1_type]" operation="string.xpath" value="[ExternalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
+    <parameter name="[single_ASN1_type]" operation="string.xpath" value="[externalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
     <test parameter="[single_ASN1_type]" condition="list.size" value="1"/>
-    <parameter name="[UniDialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//UniDialoguePDU.C0.Choice"/>
-    <test parameter="[UniDialoguePDU]" condition="list.size" value="1"/>
-    <parameter name="[protocol_version]" operation="string.xpath" value="[UniDialoguePDU]" value2="//protocol_version.C0d/BitString/@value"/>
+    <parameter name="[uniDialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//UniDialoguePDU.C0.Choice"/>
+    <test parameter="[uniDialoguePDU]" condition="list.size" value="1"/>
+    <parameter name="[protocol_version]" operation="string.xpath" value="[uniDialoguePDU]" value2="//protocol_version.C0d/BitString/@value"/>
     <test parameter="[protocol_version]" condition="list.size" value="1"/>
     <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
-    <parameter name="[application_context_name]" operation="string.xpath" value="[UniDialoguePDU]" value2="//application_context_name.C1.BoxedType/ObjectIdentifier.C1/ObjectIdentifier/text()"/>
+    <parameter name="[application_context_name]" operation="string.xpath" value="[uniDialoguePDU]" value2="//application_context_name.C1.BoxedType/ObjectIdentifier.C1/ObjectIdentifier/text()"/>
     <test parameter="[application_context_name]" condition="list.size" value="1"/>
     <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     

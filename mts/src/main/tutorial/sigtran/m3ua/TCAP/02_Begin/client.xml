@@ -195,6 +195,29 @@
     <test parameter="[application_context_name]" condition="list.size" value="2"/>
     <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <parameter name="[result]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result"/>
+    <test parameter="[result]" condition="list.size" value="1"/>
+    <test parameter="[result]" condition="string.equals" value="020100"/>
+    <parameter name="[associate_result]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result.Associate_result"/>
+    <test parameter="[associate_result]" condition="list.size" value="1"/>    
+    <test parameter="[associate_result]" condition="string.equals" value="0"/>
+    <parameter name="[associate_result]" operation="protocol.setFromMessage" value="tcap.Associate_result"/>
+    <test parameter="[associate_result]" condition="list.size" value="1"/>    
+    <test parameter="[associate_result]" condition="string.equals" value="0"/>
+    <parameter name="[result_source_diagnostic]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result_source_diagnostic"/>
+    <test parameter="[result_source_diagnostic]" condition="list.size" value="1"/>
+    <test parameter="[result_source_diagnostic]" condition="string.equals" value="a103020100"/>        
+    <parameter name="[associate_source_diagnostic]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result_source_diagnostic.Associate_source_diagnostic"/>
+    <test parameter="[associate_source_diagnostic]" condition="list.size" value="0"/>    
+    <parameter name="[dialogue_service_user]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result_source_diagnostic.Associate_source_diagnostic.dialogue_service_user"/>
+    <test parameter="[dialogue_service_user]" condition="list.size" value="1"/>
+    <test parameter="[dialogue_service_user]" condition="string.equals" value="020100"/>    
+    <parameter name="[dialogue_service_user]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result_source_diagnostic.Associate_source_diagnostic.dialogue_service_user.Dialogue_service_user"/>
+    <test parameter="[dialogue_service_user]" condition="list.size" value="1"/>    
+    <test parameter="[dialogue_service_user]" condition="string.equals" value="0"/>
+    <parameter name="[dialogue_service_user]" operation="protocol.setFromMessage" value="tcap.Dialogue_service_user"/>
+    <test parameter="[dialogue_service_user]" condition="list.size" value="1"/>    
+    <test parameter="[dialogue_service_user]" condition="string.equals" value="0"/>
         
     <!-- control AP part -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
@@ -216,9 +239,9 @@
     <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>
     <parameter name="[single_ASN1_type]" operation="string.xpath" value="[ExternalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
     <test parameter="[single_ASN1_type]" condition="list.size" value="1"/>
-    <parameter name="[DialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//DialoguePDU.C0.Choice"/>
-    <test parameter="[DialoguePDU]" condition="list.size" value="1"/>
-    <parameter name="[dialogueResponse]" operation="string.xpath" value="[DialoguePDU]" value2="//dialogueResponse.A1.BoxedType"/>
+    <parameter name="[dialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//DialoguePDU.C0.Choice"/>
+    <test parameter="[dialoguePDU]" condition="list.size" value="1"/>
+    <parameter name="[dialogueResponse]" operation="string.xpath" value="[dialoguePDU]" value2="//dialogueResponse.A1.BoxedType"/>
     <test parameter="[dialogueResponse]" condition="list.size" value="1"/>
     <parameter name="[protocol_version]" operation="string.xpath" value="[dialogueResponse]" value2="//protocol_version.C0d/BitString/@value"/>
     <test parameter="[protocol_version]" condition="list.size" value="1"/>
@@ -228,18 +251,18 @@
     <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[result]" operation="string.xpath" value="[dialogueResponse]" value2="//result.C2.BoxedType"/>
     <test parameter="[result]" condition="list.size" value="1"/>
-    <parameter name="[Associate_result]" operation="string.xpath" value="[result]" value2="//Associate_result.C2.BoxedType/Long/text()"/>
-    <test parameter="[Associate_result]" condition="list.size" value="1"/>    
-    <test parameter="[Associate_result]" condition="string.equals" value="0"/>
+    <parameter name="[associate_result]" operation="string.xpath" value="[result]" value2="//Associate_result.C2.BoxedType/Long/text()"/>
+    <test parameter="[associate_result]" condition="list.size" value="1"/>    
+    <test parameter="[associate_result]" condition="string.equals" value="0"/>
     <parameter name="[result_source_diagnostic]" operation="string.xpath" value="[dialogueResponse]" value2="//result_source_diagnostic.C3.BoxedType"/>
     <test parameter="[result_source_diagnostic]" condition="list.size" value="1"/>    
-    <parameter name="[Associate_source_diagnostic]" operation="string.xpath" value="[result_source_diagnostic]" value2="//Associate_source_diagnostic.C3.Choice"/>
-    <test parameter="[Associate_source_diagnostic]" condition="list.size" value="1"/>    
-    <parameter name="[dialogue_service_user]" operation="string.xpath" value="[Associate_source_diagnostic]" value2="//dialogue_service_user.C1.BoxedType"/>
+    <parameter name="[associate_source_diagnostic]" operation="string.xpath" value="[result_source_diagnostic]" value2="//Associate_source_diagnostic.C3.Choice"/>
+    <test parameter="[associate_source_diagnostic]" condition="list.size" value="1"/>    
+    <parameter name="[dialogue_service_user]" operation="string.xpath" value="[associate_source_diagnostic]" value2="//dialogue_service_user.C1.BoxedType"/>
     <test parameter="[dialogue_service_user]" condition="list.size" value="1"/>    
-    <parameter name="[Dialogue_service_user]" operation="string.xpath" value="[dialogue_service_user]" value2="//Dialogue_service_user.C1.BoxedType/Long/text()"/>
-    <test parameter="[Dialogue_service_user]" condition="list.size" value="1"/>    
-    <test parameter="[Dialogue_service_user]" condition="string.equals" value="0"/>
+    <parameter name="[dialogue_service_user]" operation="string.xpath" value="[dialogue_service_user]" value2="//Dialogue_service_user.C1.BoxedType/Long/text()"/>
+    <test parameter="[dialogue_service_user]" condition="list.size" value="1"/>    
+    <test parameter="[dialogue_service_user]" condition="string.equals" value="0"/>
     
     <!-- control components -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
