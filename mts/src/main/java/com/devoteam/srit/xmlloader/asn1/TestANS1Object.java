@@ -61,7 +61,7 @@ public class TestANS1Object
 	private static String JAVA_PACKAGE = "com.devoteam.srit.xmlloader.sigtran.ap";
 			
 	// destination directory for resulting files
-	private static String destDirectory = "../tutorial/asn1/";	
+	private static String destDirectory = "../tutorial/asn1/ap/";	
 	// maximum number of iterations
 	private static int maxIterations = 5;
 	// rules list
@@ -86,16 +86,28 @@ public class TestANS1Object
         TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
     
         // mandatory
+        if (args.length <= 0)
+        {
+        	usage("no class name or package to process");
+        }
         String name = args[0];
         // if the name does not start with '.' character then we add the default package before
         if (name.startsWith("."))
         {
         	name = JAVA_PACKAGE + name;
         }
+
         // default destination package directory
-        int index2 = name.lastIndexOf(".");
-        int index1 = name.lastIndexOf(".", index2 - 1);
-        String destPackage = name.substring(index1 + 1, index2);
+        String destPackage = "";
+        int index1 = name.lastIndexOf(".");
+        if (index1 > 0)
+        {
+        	int index2 = name.lastIndexOf(".", index1 - 1);
+        	if (index2 > 0)
+        	{
+        		destPackage = name.substring(index2 + 1, index1);
+        	}
+        }
         
         // destination directory
         if (args.length >= 2)
@@ -118,7 +130,7 @@ public class TestANS1Object
         	maxIterations = Integer.parseInt(args[2]);
         }
         
-        // maximum number of iterations
+        // rules list (, separator)
         if (args.length >= 4)
         {	
         	tabRules = args[3].split(",");
@@ -446,15 +458,9 @@ public class TestANS1Object
 
     static public void usage(String message) {
         System.out.println(message);
-        System.out.println("Usage: startCmd <testFile>|<masterFile>\n"
-                + "    -seq[uential]|-par[allel]|<testcaseName>\n"
-                + "    -testplan\n"
-                + "    [-param[eter]:<paramName>+<paramValue>]\n"
-                + "    [-config[uration]:<configName>+<configValue>]\n"
-                + "    [-level[Log]:ERROR=0|WARN=1|INFO=2|DEBUG=3]\n"
-                + "    [-stor[ageLog]:disable=0|file=1]\n"
-                + "    [-gen[Report]:false|true]\n"
-                + "    [-show[Report]:false|true]\n");
+        System.out.println("Generate the template xml files for a given class name or a java package.\n"
+        		+ "Usage: asn1_templater.[bat|sh] <className> | <package.>\n"
+                + "    [outputDirectory] [numberIteration] [listRules]\n");
         System.exit(10);
     }
 }
