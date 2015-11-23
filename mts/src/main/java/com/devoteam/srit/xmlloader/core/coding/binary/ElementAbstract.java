@@ -93,7 +93,7 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			newElement = new ElementTV();
 		} 
-		else if ("Q931".equals(coding))
+		else if ("Q931".equals(coding) || "EAP".equals(coding))
 		{
 			newElement = new ElementQ931();
 		}

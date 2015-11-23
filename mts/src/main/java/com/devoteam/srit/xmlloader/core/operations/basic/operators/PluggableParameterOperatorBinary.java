@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.XMLToASNParser;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.utils.GenericWrapper;
@@ -40,6 +41,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.DigestArray;
 import gp.utils.arrays.MacArray;
 import gp.utils.arrays.RandomArray;
+import gp.utils.arrays.SupArray;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -50,6 +52,7 @@ import java.net.InetAddress;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -104,6 +107,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_ENDIAN = "binary.endian";
     final private String NAME_BIN_ENCODE = "binary.encode";
     final private String NAME_BIN_DECODE = "binary.decode";
+    final private String NAME_BIN_FROMXML = "binary.fromxml";
+    final private String NAME_BIN_TOXML = "binary.toXml";
 
     
     
@@ -141,7 +146,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_ENDIAN));
         this.addPluggableName(new PluggableName(NAME_BIN_ENCODE));
         this.addPluggableName(new PluggableName(NAME_BIN_DECODE));
-        
+        this.addPluggableName(new PluggableName(NAME_BIN_FROMXML));
+        this.addPluggableName(new PluggableName(NAME_BIN_TOXML));
     }
 
     @Override
@@ -514,7 +520,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_XMLTOASN))
                 {
-                	String string1 = param_1.get(i).toString();
+                	String xmlData = param_1.get(i).toString();
                 	
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
                     String className = param_2.get(i).toString().replace(" ", "");
@@ -531,7 +537,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     	packageName = className.substring(0, pos + 1);
                     }
                     
-                    Document doc = Utils.stringParseXML(string1, false);
+                    Document doc = Utils.stringParseXML(xmlData, false);
                     Element element = doc.getRootElement();
                     
                     Object objASN;
@@ -609,6 +615,45 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     }
                     Array arrayResult = decodeNumberBits(array, nbBits, endian);
                 	result.add(Array.toHexString(arrayResult));
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_FROMXML))
+                {
+                	String xmlData = param_1.get(i).toString();
+
+                	Parameter param_2 = assertAndGetParameter(operands, "value2");
+                	String dictionary = param_2.get(i).toString();
+
+                    Document doc = Utils.stringParseXML(xmlData, false);
+                    Element xmlRoot = doc.getRootElement();
+                    List<Element> xmlElements = xmlRoot.elements("element");
+                    
+            	    ElementAbstract elemDico = null;
+            	    ElementAbstract newElement = null;
+            	    List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
+            	    for (Element elementRoot : xmlElements) 
+            	    {
+            	    	String coding = elementRoot.attributeValue("coding");            		
+            	    	newElement = ElementAbstract.buildFactory(coding);
+            	        //elemDico = this.dictionary.getElementFromXML(elementRoot);
+            	        //newElement = (ElementAbstract) elemDico.cloneAttribute();
+            	        //newElement.parseFromXML(elementRoot, this.dictionary, elemDico, true);
+            	        newElement.parseFromXML(elementRoot, null, null, true);
+            	        
+            	        elements.add(newElement);            	
+            	    }
+            	    
+            	    SupArray array = new SupArray();
+        	    	Iterator<ElementAbstract> iter = elements.iterator();
+        	    	while (iter.hasNext())
+        	    	{
+        	    		ElementAbstract elem = (ElementAbstract) iter.next();
+        	    		array.addLast(elem.encodeToArray());
+        	    	}
+                	result.add(Array.toHexString(array));
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_TOXML))
+                {
+                	//TODO
                 }
                 else
                 {
