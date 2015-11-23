@@ -121,10 +121,11 @@ public abstract class ASNMessage
     public Embedded getEmbeddedByInitial(String initial) 
  	{
      	Embedded init = this.embeddedList.getEmbeddedByInitial(initial);
-     	if (init ==  null)
+     	if (init != null)
      	{
-     		init = this.dictionary.getEmbeddedByInitial(initial);
+     		return init;
      	}
+     	init = this.dictionary.getEmbeddedByInitial(initial);
      	if (init != null && init.getCondition() == null)
      	{
      		return init;
@@ -173,7 +174,7 @@ public abstract class ASNMessage
     	{
     		Embedded embedded = embeddeds.get(i);
 	    	this.embeddedList.addEmbedded(embedded);
-	    	embedded.setCondition(null);
+	    	//embedded.setCondition(null);
     	}
  	}
 
