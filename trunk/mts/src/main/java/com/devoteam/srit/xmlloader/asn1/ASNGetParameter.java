@@ -99,7 +99,7 @@ public class ASNGetParameter
 			Field[] fields = objClass.getClass().getDeclaredFields();
 
 			// get the XML tag
-	        String XMLTag = getSignificantXMLTag(objClass, name);
+	        String XMLTag = getSignificantXMLTag(objClass, name);	     
 	        
         	// we add a embedded record in the list		
 	        if (message !=null)
@@ -125,15 +125,31 @@ public class ASNGetParameter
 				}
 				if (resultPath.endsWith(pathWithoutLayer)) 
 				{
-					parameter.add(retObject);
+					if (retObject != null)
+					{
+						parameter.add(retObject);
+						return;
+					}
 				}
-				if (pathWithoutLayer.endsWith(name)) 
+				pos = resultPath.lastIndexOf('.');
+				String tempResultPath = resultPath; 
+				if (pos >= 0)
 				{
-					parameter.add(retObject);
+					tempResultPath = resultPath.substring(0, pos + 1);
+					tempResultPath += name;
+				}				
+				if (tempResultPath.endsWith(pathWithoutLayer)) 
+				{
+					if (retObject != null)
+					{
+						parameter.add(retObject);
+						return;
+					}
 				}
-				return;
+				//return;
 			} 
-			else 
+			//if (retObject == null)
+			else
 			{
 				// calculate resultPath
 		        resultPath = resultPath + "." + XMLTag; 
