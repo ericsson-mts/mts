@@ -110,16 +110,16 @@
     <test parameter="[otid]" condition="binary.equals" value="00000001"/>    
     <parameter name="[dialoguePortion]" operation="string.xpath" value="[begin]" value2="//dialoguePortion.BoxedType"/>
     <test parameter="[dialoguePortion]" condition="list.size" value="1"/>
-    <parameter name="[ExternalPDU]" operation="string.xpath" value="[dialoguePortion]" value2="//ExternalPDU.A11.BoxedType"/>
-    <test parameter="[ExternalPDU]" condition="list.size" value="1"/>
-    <parameter name="[direct_reference]" operation="string.xpath" value="[ExternalPDU]" value2="//direct_reference/ObjectIdentifier/text()"/>
+    <parameter name="[externalPDU]" operation="string.xpath" value="[dialoguePortion]" value2="//ExternalPDU.A11.BoxedType"/>
+    <test parameter="[externalPDU]" condition="list.size" value="1"/>
+    <parameter name="[direct_reference]" operation="string.xpath" value="[externalPDU]" value2="//direct_reference/ObjectIdentifier/text()"/>
     <test parameter="[direct_reference]" condition="list.size" value="1"/>
     <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>
-    <parameter name="[single_ASN1_type]" operation="string.xpath" value="[ExternalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
+    <parameter name="[single_ASN1_type]" operation="string.xpath" value="[externalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
     <test parameter="[single_ASN1_type]" condition="list.size" value="1"/>
-    <parameter name="[DialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//DialoguePDU.C0.Choice"/>
-    <test parameter="[DialoguePDU]" condition="list.size" value="1"/>
-    <parameter name="[dialogueRequest]" operation="string.xpath" value="[DialoguePDU]" value2="//dialogueRequest.A0.BoxedType"/>
+    <parameter name="[dialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//DialoguePDU.C0.Choice"/>
+    <test parameter="[dialoguePDU]" condition="list.size" value="1"/>
+    <parameter name="[dialogueRequest]" operation="string.xpath" value="[dialoguePDU]" value2="//dialogueRequest.A0.BoxedType"/>
     <test parameter="[dialogueRequest]" condition="list.size" value="1"/>
     <parameter name="[protocol_version]" operation="string.xpath" value="[dialogueRequest]" value2="//protocol_version.C0d/BitString/@value"/>
     <test parameter="[protocol_version]" condition="list.size" value="1"/>

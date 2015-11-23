@@ -121,10 +121,12 @@ public abstract class ASNMessage
     public Embedded getEmbeddedByInitial(String initial) 
  	{
      	Embedded init = this.embeddedList.getEmbeddedByInitial(initial);
+     	// check in the conditionnal list into the message => no condition to test
      	if (init != null)
      	{
      		return init;
      	}
+     	// check in the conditionnal list into the dictionary => condition to test
      	init = this.dictionary.getEmbeddedByInitial(initial);
      	if (init != null && init.getCondition() == null)
      	{
