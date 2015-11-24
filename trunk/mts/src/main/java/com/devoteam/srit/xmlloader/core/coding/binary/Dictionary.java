@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,12 +50,27 @@ public class Dictionary
     { 
     }
     
-    public Dictionary(Element root, String syntax) throws Exception 
+	public Dictionary(String file) throws Exception 
     {
-     
-        _layer = root.attributeValue("layer");
+    	this();
+		XMLDoc xml = new XMLDoc();
+		String path = "../conf/" + file;
+	    xml.setXMLFile(new URI(path));
+	    xml.parse();
+	    Element rootDico = xml.getDocument().getRootElement();
+	    parseFromXML(rootDico, (String) null);
+    }
+
+    public Dictionary(Element rootDico, String syntax) throws Exception 
+    {
+    	parseFromXML(rootDico, syntax);
+    }
+    
+    private void parseFromXML(Element rootDico, String syntax) throws Exception
+    {     
+        _layer = rootDico.attributeValue("layer");
         
-        List<Element> listElem=root.element("header").elements("field"); 
+        List<Element> listElem = rootDico.element("header").elements("field"); 
         for (Element element : listElem) 
         {
         	FieldAbstract fieldHeader = FieldAbstract.buildFactory(element);
@@ -62,7 +78,7 @@ public class Dictionary
         	fieldsMapHeader.put(element.attributeValue("name"), fieldHeader);
         }
         
-        List<Element> list=root.elements("element");
+        List<Element> list = rootDico.elements("element");
         for (Element elem : list) 
         {
             ElementAbstract elemInfo = null;
@@ -80,7 +96,6 @@ public class Dictionary
             
             addElement(elemInfo);
         }
-
     }
     
     public String get_layer() {
