@@ -114,6 +114,10 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			newElement = new ElementEAP();
 		}
+		else if ("Message".equals(coding))
+		{
+			newElement = new ElementMessage();
+		}
 		else
 		{
      		throw new ExecutionException("ERROR : The coding attribute for the element is mandatory because the element is not present in the dictionary.");
