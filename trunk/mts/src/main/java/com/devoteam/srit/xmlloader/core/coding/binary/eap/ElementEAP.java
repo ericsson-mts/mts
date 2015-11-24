@@ -51,13 +51,11 @@ public class ElementEAP extends ElementAbstract
         
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
-        	// TODO
             int length = new Integer08Array(array.subArray(1, 1)).getValue();
             length = length * 4;
-            Array data = array.subArray(2, length);
-            decodeFieldsTagElementsFromArray(data, dictionary);
-            
-            return length + 2;
+            Array data = array.subArray(2, length - 2);
+            decodeFieldsTagElementsFromArray(data, dictionary);            
+            return length;
 	    }
         
         return 1;
@@ -79,8 +77,7 @@ public class ElementEAP extends ElementAbstract
         	int length = this.fieldsArray.length + this.subelementsArray.length;
         	length = length / 4 + 1;
 		    Integer08Array lengthArray = new Integer08Array(length);
-		    sup.addLast(lengthArray);
-		    
+		    sup.addLast(lengthArray);		    
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
         }

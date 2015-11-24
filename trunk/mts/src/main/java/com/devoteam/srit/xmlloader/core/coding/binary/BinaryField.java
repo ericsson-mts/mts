@@ -48,7 +48,15 @@ public class BinaryField extends FieldAbstract
 	@Override
     public String getValue(Array array) 
     {
-    	Array arrayValue = array.subArray(this.offset / 8);
+		Array arrayValue = null;
+		if (this.length > 0)
+		{
+			arrayValue = array.subArray(this.offset / 8, this.length / 8);
+		}
+		else
+		{
+			arrayValue = array.subArray(this.offset / 8);
+		}
     	return Array.toHexString(arrayValue);
     }
 	
