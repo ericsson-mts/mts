@@ -2,47 +2,6 @@
 
 <scenario>
 
-    <parameter name="[messageEAP]" operation="set">
-<![CDATA[
-<binary>
-<element name="messageEAP" coding="Message" description="">
-    <element tag="header" coding="V" description="">
-      <!--field name="Code" value="Request:1" type="EnumLong" length="1" description=""/-->          
-      <field name="Code" value="1" type="EnumLong" length="1" description=""/>
-      <field name="Id" value="2" length="1" type="Integer" description=""/>            
-      <field name="Length" value="0" length="2" type="Integer" description=""/>
-      <!--field name="Type" value="UMTS Authentication and Key Agreement EAP (EAP AKA):23" length="1" type="Integer" description=""/-->
-      <field name="Type" value="23" length="1" type="Integer" description=""/>          
-      <!--field name="EAP AKA Subtype" value="AKA-Challenge:1" length="1" type="Integer" description=""/-->
-      <field name="EAP AKA Subtype" value="1" length="1" type="Integer" description=""/>                      
-      <field name="EAP AKA Reserved" value="0" length="2" type="Integer" description=""/>
-    </element>               
-    <element tag="AT_RAND:1" coding="EAP" description="">
-        <field name="AT_RAND" value="0000027f6f8909616c3ca4c836a02f7642be" type="Binary" description=""/>
-    </element>
-    <element tag="AT_AUTH:2" coding="EAP" description="">
-        <field name="AT_AUTH" value="0000598451caa6ce0000a52ffc02ec24118b" type="Binary" description=""/>
-    </element>
-    <element tag="AT_MAC:11" coding="EAP" description="">
-        <field name="AT_MAC" value="0000beafd710332dd3c27033c241bcb07053" type="Binary" description=""/>
-    </element>
-    <element tag="AT_CHECKCODE:134" coding="EAP" description="">
-        <field name="AT_CHECKCODE" value="0000" type="Binary" description=""/>
-    </element>
-    <element tag="AT_IV:129" coding="EAP" description="">
-        <field name="AT_IV" value="0000fba14079d7d0e05175eb39c560be666c" type="Binary" description=""/>
-    </element>
-    <element tag="AT_ENCR_DATA:130" coding="EAP" description="">
-        <field name="AT_IV" value="0000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26" type="Binary" description=""/>
-    </element>
-</element>      
-</binary>        
-]]>
-</parameter>
-    <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
-    <test parameter="[binaryEAP]" condition="binary.equals" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000beafd710332dd3c27033c241bcb070538601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>
-
-
     <parameter name="[NONCE]" operation="set" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
     <parameter name="[clear]" operation="binary.frombase64" value="[NONCE]" />        
     <parameter name="[RAND]" operation="binary.subbinary" value="[clear]" value2="0" value3="32"/>
@@ -345,6 +304,5 @@
     <parameter name="[binary]" operation="set" value="73e6cc9933670e"/>
     <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="9" value3="true"/>
     <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
-
                   
 </scenario>

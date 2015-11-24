@@ -76,6 +76,10 @@ public class ElementMessage extends ElementAbstract
         	int length = this.fieldsArray.length + this.subelementsArray.length;
         	ElementAbstract elementLength = getElement(0);
         	FieldAbstract fieldLength = elementLength.getFieldsByName("Length");
+        	if (fieldLength == null)
+        	{
+        		fieldLength = elementLength.getFieldsByName("length");
+        	}
         	fieldLength.setValue(Integer.toString(length), 2*8, elementLength.fieldsArray);        			  
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
