@@ -131,6 +131,12 @@ public abstract class ElementAbstract implements Cloneable
             {
             	tagStr = elementRoot.attributeValue("tag");
             }
+            // TODO to be deleted
+            if (tagStr == null)
+            {
+            	tagStr = elementRoot.attributeValue("code");
+            }
+
             if (tagStr != null)
             {
 	    		tagStr = tagStr.trim();
@@ -168,6 +174,11 @@ public abstract class ElementAbstract implements Cloneable
         this.description = elementRoot.attributeValue("description");
         
         String instances = elementRoot.attributeValue("instances");
+        // TODO to be deleted
+        if (instances ==  null)
+        {
+        	instances = elementRoot.attributeValue("id");
+        }
         if (instances != null)
         {
         	this.instances = Integer.parseInt(instances);
@@ -261,7 +272,7 @@ public abstract class ElementAbstract implements Cloneable
         	elem.parseFromXML(elemElement, dictionary, subElemDico, parseDico);
         	this.elements.add(elem);
         	// case when we parse the dictionary itself
-        	if (parseDico)
+        	if (parseDico && dictionary !=  null)
         	{
         		dictionary.addElement(elem);
         	}
