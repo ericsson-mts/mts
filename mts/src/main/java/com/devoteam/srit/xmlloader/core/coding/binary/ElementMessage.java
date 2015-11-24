@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.core.coding.binary.eap;
+package com.devoteam.srit.xmlloader.core.coding.binary;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
@@ -36,10 +36,10 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementEAP extends ElementAbstract
+public class ElementMessage extends ElementAbstract
 {
 
-    public ElementEAP()
+    public ElementMessage()
     {
     	
     }
@@ -69,18 +69,14 @@ public class ElementEAP extends ElementAbstract
 	{
 		// encode the sub-element
 		this.subelementsArray = super.encodeToArray();
-
-        SupArray sup = new SupArray();
-        Integer08Array idArray = new Integer08Array(this.tag);
-        sup.addLast(idArray);
         
+        SupArray sup = new SupArray();
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
         	int length = this.fieldsArray.length + this.subelementsArray.length;
-        	length = length / 4 + 1;
-		    Integer08Array lengthArray = new Integer08Array(length);
-		    sup.addLast(lengthArray);
-		    
+        	ElementAbstract elementLength = getElement(0);
+        	FieldAbstract fieldLength = elementLength.getFieldsByName("Length");
+        	fieldLength.setValue(Integer.toString(length), 2*8, elementLength.fieldsArray);        			  
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
         }
