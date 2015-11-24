@@ -622,13 +622,14 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	String xmlData = param_1.get(i).toString();
 
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
-                	String dicofile = param_2.get(i).toString();
-                	Dictionary dico = new Dictionary(dicofile);
+                	String dicoFile = param_2.get(i).toString();
+                	Dictionary dico = new Dictionary(dicoFile);
 
                     Document doc = Utils.stringParseXML(xmlData, false);
                     Element xmlRoot = doc.getRootElement();
                     List<Element> xmlElements = xmlRoot.elements("element");
                     
+                    // parse the XML file using the dictionary
             	    ElementAbstract elemDico = null;
             	    ElementAbstract newElement = null;
             	    List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
@@ -639,11 +640,11 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
             	        elemDico = dico.getElementFromXML(elementRoot);
             	        newElement = (ElementAbstract) elemDico.cloneAttribute();
             	        newElement.parseFromXML(elementRoot, dico, elemDico, true);
-            	        //newElement.parseFromXML(elementRoot, null, null, true);
             	        
             	        elements.add(newElement);            	
             	    }
             	    
+            	    // encode the elements list
             	    SupArray array = new SupArray();
         	    	Iterator<ElementAbstract> iter = elements.iterator();
         	    	while (iter.hasNext())
@@ -655,7 +656,25 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TOXML))
                 {
-                	//TODO
+                	Array array = Array.fromHexString(param_1.get(i).toString());
+                                        
+                    Parameter param_2 = assertAndGetParameter(operands, "value2");
+                    String dicoFile = param_2.get(i).toString().replace(" ", "");
+                    Dictionary dico = new Dictionary(dicoFile);
+                    
+            	    // encode the elements list
+                    Array arrayElements = array.subArray(8);
+                    List<ElementAbstract> elements = ElementAbstract.decodeTagElementsFromArray(arrayElements, dico);
+                    
+                    // get the XML data
+                    String xmlData = "";
+        	    	Iterator<ElementAbstract> iter = elements.iterator();
+        	    	while (iter.hasNext())
+        	    	{
+        	    		ElementAbstract elem = (ElementAbstract) iter.next();
+        	    		xmlData += elem.toXml(0);
+        	    	}
+                	result.add(xmlData);
                 }
                 else
                 {
