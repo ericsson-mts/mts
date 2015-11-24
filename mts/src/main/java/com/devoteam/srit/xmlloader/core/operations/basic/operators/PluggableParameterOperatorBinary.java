@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.asn1.BN_ASNMessage;
 import com.devoteam.srit.xmlloader.asn1.XMLToASNParser;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
@@ -621,7 +622,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	String xmlData = param_1.get(i).toString();
 
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
-                	String dictionary = param_2.get(i).toString();
+                	String dicofile = param_2.get(i).toString();
+                	Dictionary dico = new Dictionary(dicofile);
 
                     Document doc = Utils.stringParseXML(xmlData, false);
                     Element xmlRoot = doc.getRootElement();
@@ -634,10 +636,10 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
             	    {
             	    	String coding = elementRoot.attributeValue("coding");            		
             	    	newElement = ElementAbstract.buildFactory(coding);
-            	        //elemDico = this.dictionary.getElementFromXML(elementRoot);
-            	        //newElement = (ElementAbstract) elemDico.cloneAttribute();
-            	        //newElement.parseFromXML(elementRoot, this.dictionary, elemDico, true);
-            	        newElement.parseFromXML(elementRoot, null, null, true);
+            	        elemDico = dico.getElementFromXML(elementRoot);
+            	        newElement = (ElementAbstract) elemDico.cloneAttribute();
+            	        newElement.parseFromXML(elementRoot, dico, elemDico, true);
+            	        //newElement.parseFromXML(elementRoot, null, null, true);
             	        
             	        elements.add(newElement);            	
             	    }
