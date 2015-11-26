@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.util.List;
+
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
@@ -47,17 +49,16 @@ public class ElementMessage extends ElementAbstract
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
-        this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
-        
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
-        	// TODO
-            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-            length = length * 4;
-            Array data = array.subArray(2, length);
-            decodeFieldsTagElementsFromArray(data, dictionary);
-            
-            return length + 2;
+        	ElementAbstract elementHeader = getElement(0);
+        	// TODO calculate the length of header
+            Array data = array.subArray(8);
+	        this.subelementsArray = new SupArray();
+	    	this.subelementsArray.addFirst(data);
+	    	List<ElementAbstract> elements = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
+	    	this.elements.addAll(elements);
+            return array.length;
 	    }
         
         return 1;
@@ -74,13 +75,14 @@ public class ElementMessage extends ElementAbstract
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
         	int length = this.fieldsArray.length + this.subelementsArray.length;
-        	ElementAbstract elementLength = getElement(0);
-        	FieldAbstract fieldLength = elementLength.getFieldsByName("Length");
+        	ElementAbstract elementHeader = getElement(0);
+        	FieldAbstract fieldLength = elementHeader.getFieldsByName("Length");
         	if (fieldLength == null)
         	{
-        		fieldLength = elementLength.getFieldsByName("length");
+        		fieldLength = elementHeader.getFieldsByName("length");
         	}
-        	fieldLength.setValue(Integer.toString(length), 2*8, elementLength.fieldsArray);        			  
+        	// TODO calculate the offset for Length field
+        	fieldLength.setValue(Integer.toString(length), 2*8, elementHeader.fieldsArray);        			  
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
         }

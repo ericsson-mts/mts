@@ -70,12 +70,16 @@ public class Dictionary
     {     
         _layer = rootDico.attributeValue("layer");
         
-        List<Element> listElem = rootDico.element("header").elements("field"); 
-        for (Element element : listElem) 
+        Element headerElement = rootDico.element("header");
+        if (headerElement != null)
         {
-        	FieldAbstract fieldHeader = FieldAbstract.buildFactory(element);
-        	fieldHeader.parseFromXML(element, true);
-        	fieldsMapHeader.put(element.attributeValue("name"), fieldHeader);
+        	List<Element> listFieldsElement = headerElement.elements("field"); 
+	        for (Element element : listFieldsElement) 
+	        {
+	        	FieldAbstract fieldHeader = FieldAbstract.buildFactory(element);
+	        	fieldHeader.parseFromXML(element, true);
+	        	fieldsMapHeader.put(element.attributeValue("name"), fieldHeader);
+	        }
         }
         
         List<Element> list = rootDico.elements("element");
