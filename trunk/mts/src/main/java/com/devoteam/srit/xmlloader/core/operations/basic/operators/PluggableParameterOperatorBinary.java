@@ -627,19 +627,18 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 
                     Document doc = Utils.stringParseXML(xmlData, false);
                     Element xmlRoot = doc.getRootElement();
-                    List<Element> xmlElements = xmlRoot.elements("element");
                     
                     // parse the XML file using the dictionary
             	    ElementAbstract elemDico = null;
             	    ElementAbstract newElement = null;
             	    List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
-            	    for (Element elementRoot : xmlElements) 
+            	    //for (Element elementRoot : xmlRoot) 
             	    {
-            	    	String coding = elementRoot.attributeValue("coding");            		
+            	    	String coding = xmlRoot.attributeValue("coding");            		
             	    	newElement = ElementAbstract.buildFactory(coding);
-            	        elemDico = dico.getElementFromXML(elementRoot);
+            	        elemDico = dico.getElementFromXML(xmlRoot);
             	        newElement = (ElementAbstract) elemDico.cloneAttribute();
-            	        newElement.parseFromXML(elementRoot, dico, elemDico, true);
+            	        newElement.parseFromXML(xmlRoot, dico, elemDico, true);
             	        
             	        elements.add(newElement);            	
             	    }
@@ -663,17 +662,11 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Dictionary dico = new Dictionary(dicoFile);
                     
             	    // encode the elements list
-                    Array arrayElements = array.subArray(8);
-                    List<ElementAbstract> elements = ElementAbstract.decodeTagElementsFromArray(arrayElements, dico);
+                    ElementAbstract headerElement = dico.getElementByLabel("Message");
+                    headerElement.decodeFromArray(array, dico);
                     
-                    // get the XML data
-                    String xmlData = "";
-        	    	Iterator<ElementAbstract> iter = elements.iterator();
-        	    	while (iter.hasNext())
-        	    	{
-        	    		ElementAbstract elem = (ElementAbstract) iter.next();
-        	    		xmlData += elem.toXml(0);
-        	    	}
+                    // get the XML data                  
+                    String xmlData = headerElement.toXml(0);
                 	result.add(xmlData);
                 }
                 else
