@@ -51,13 +51,17 @@ public class ElementMessage extends ElementAbstract
 	{
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
-        	ElementAbstract elementHeader = getElement(0);
-        	// TODO calculate the length of header
-            Array data = array.subArray(8);
-	        this.subelementsArray = new SupArray();
-	    	this.subelementsArray.addFirst(data);
-	    	List<ElementAbstract> elements = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
-	    	this.elements.addAll(elements);
+        	// decode the message for not tag elements
+        	int lengthHeader = decodeNotTagElementsFromArray(array, dictionary);
+        	if (array.length > lengthHeader)
+        	{
+            	// decode the message for tag elements
+	            Array data = array.subArray(lengthHeader);
+		        this.subelementsArray = new SupArray();
+		    	this.subelementsArray.addFirst(data);
+		    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
+		    	this.elements.addAll(elementsRead);
+        	}
             return array.length;
 	    }
         
@@ -81,8 +85,7 @@ public class ElementMessage extends ElementAbstract
         	{
         		fieldLength = elementHeader.getFieldsByName("length");
         	}
-        	// TODO calculate the offset for Length field
-        	fieldLength.setValue(Integer.toString(length), 2*8, elementHeader.fieldsArray);        			  
+        	fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);        			  
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
         }

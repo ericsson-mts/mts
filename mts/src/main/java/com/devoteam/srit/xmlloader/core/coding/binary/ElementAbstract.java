@@ -339,7 +339,8 @@ public abstract class ElementAbstract implements Cloneable
 		while (iterF.hasNext())
 		{
 			FieldAbstract field = (FieldAbstract) iterF.next();
-            length += field.getLength();
+			int fieldLength = field.getLength();
+            length += fieldLength;
         }
         return length;
     }
@@ -439,11 +440,29 @@ public abstract class ElementAbstract implements Cloneable
 		}
 		if (!this.fieldsByName.isEmpty())
 		{
-			int length = array.length;
-	        this.fieldsArray = new SupArray();
-	        Array subArray = array.subArray(0, length);
-	        this.fieldsArray.addFirst(subArray);
-	        return length;
+			FieldAbstract lastField = this.fields.get(this.fields.size() - 1);
+			// cas ou le dernier field est statique donc longueur non nulle  
+			if (lastField.getLength() > 0)
+			{
+		        this.fieldsArray = new SupArray();
+		        int elementLength = getLengthElem() / 8;
+		        //cas il n'y a pas suffisamment de données pour remplir tous les fields
+		        if (elementLength > array.length)
+		        {
+		        	elementLength = array.length; 
+		        }
+		        Array subArray = array.subArray(0, elementLength);
+		        this.fieldsArray.addFirst(subArray);
+		        return elementLength;
+			}
+			else
+			{
+				int length = array.length;
+		        this.fieldsArray = new SupArray();
+		        Array subArray = array.subArray(0, length);
+		        this.fieldsArray.addFirst(subArray);
+		        return length;				
+			}
 		}
 		return 0;
 	}
@@ -464,13 +483,19 @@ public abstract class ElementAbstract implements Cloneable
 				elemInfo.copyToClone(elemDico);
 			}
 			int length = elemInfo.getLengthElem() / 8;
+			// Si c'est le dernier sous-element on prend tout ce qu'il reste comme data 
 			if (!iter.hasNext())
 			{
 				length = array.length - index;
+			}			
+			// S'il n'y a plus de data à décoder ou si l'element est dynamique (longueur nulle) 
+			// (cas d'un element dynamique ex MAP TP-DA element)
+			if (index < array.length || length == 0)
+			{
+				Array subArray = array.subArray(index, length);
+				index += elemInfo.decodeFromArray(subArray, dictionary);
+				newElements.add(elemInfo);
 			}
-			Array subArray = array.subArray(index, length);
-			index += elemInfo.decodeFromArray(subArray, dictionary);
-			newElements.add(elemInfo);
 		}
 		this.elements = newElements;
 		return index;
