@@ -78,8 +78,53 @@
 </parameter>
 
     <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP-AKA.xml"/>
-    <test parameter="[binaryEAP]" condition="binary.equals" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000beafd710332dd3c27033c241bcb070538601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>
+    <test parameter="[binaryEAP]" condition="binary.equals" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000beafd710332dd3c27033c241bcb070538601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>  
+
+    <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP-AKA.xml"/>
     
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Code']/attribute::value"/>
+    <test parameter="[Code]" condition="string.equals" value="Request:1"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Id']/attribute::value"/>
+    <test parameter="[Id]" condition="string.equals" value="2"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Length']/attribute::value"/>
+    <test parameter="[Length]" condition="string.equals" value="192"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Type']/attribute::value"/>
+    <test parameter="[Type]" condition="string.equals" value="UMTS Authentication and Key Agreement EAP (EAP-AKA):23"/>
+    <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='EAP AKA Subtype']/attribute::value"/>
+    <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Challenge:1"/>
+    <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='EAP AKA Reserved']/attribute::value"/>
+    <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>
+
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RAND:1']/field[@name='Reserved']/attribute::value"/>
+    <test parameter="[Reserved]" condition="number.equals" value="0"/>
+    <parameter name="[AT_RAND]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RAND:1']/field[@name='AT_RAND']/attribute::value"/>
+    <test parameter="[AT_RAND]" condition="binary.equals" value="027f6f8909616c3ca4c836a02f7642be"/>    
+
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_AUTH:2']/field[@name='Reserved']/attribute::value"/>
+    <test parameter="[Reserved]" condition="number.equals" value="0"/>
+    <parameter name="[AT_AUTH]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_AUTH:2']/field[@name='AT_AUTH']/attribute::value"/>
+    <test parameter="[AT_AUTH]" condition="binary.equals" value="598451caa6ce0000a52ffc02ec24118b"/>    
+
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='Reserved']/attribute::value"/>
+    <test parameter="[Reserved]" condition="number.equals" value="0"/>
+    <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='AT_MAC']/attribute::value"/>
+    <test parameter="[AT_MAC]" condition="binary.equals" value="beafd710332dd3c27033c241bcb07053"/>
+
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_CHECKCODE:134']/field[@name='Reserved']/attribute::value"/>
+    <test parameter="[Reserved]" condition="number.equals" value="0"/>
+    <parameter name="[AT_CHECKCODE]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_CHECKCODE:134']/field[@name='AT_CHECKCODE']/attribute::value"/>
+    <test parameter="[AT_CHECKCODE]" condition="list.isEmpty"/>
+
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_IV:129']/field[@name='Reserved']/attribute::value"/>
+    <test parameter="[Reserved]" condition="number.equals" value="0"/>
+    <parameter name="[AT_IV]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_IV:129']/field[@name='AT_IV']/attribute::value"/>
+    <test parameter="[AT_IV]" condition="binary.equals" value="fba14079d7d0e05175eb39c560be666c"/>
+
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_ENCR_DATA:130']/field[@name='Reserved']/attribute::value"/>
+    <test parameter="[Reserved]" condition="number.equals" value="0"/>
+    <parameter name="[AT_ENCR_DATA]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_ENCR_DATA:130']/field[@name='AT_ENCR_DATA']/attribute::value"/>
+    <test parameter="[AT_ENCR_DATA]" condition="binary.equals" value="dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>
+
     <parameter name="[messageEAPresult]" operation="set">
 <![CDATA[<element name="Message" coding="Message" value="">
    <element name="Header" coding="V" value="010200c017010000">
@@ -104,6 +149,7 @@
    </element>
    <element name="AT_CHECKCODE:134" coding="EAP" value="0000">
       <field name="Reserved" value="0" type="Integer" length="2" />
+      <field name="AT_CHECKCODE" type="Binary" />
    </element>
    <element name="AT_IV:129" coding="EAP" value="0000fba14079d7d0e05175eb39c560be666c">
       <field name="Reserved" value="0" type="Integer" length="2" />
@@ -116,9 +162,8 @@
 </element>
 ]]></parameter>
 
-
-    <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP-AKA.xml"/>
     <test parameter="[xmlEAP]" condition="string.equals" value="[messageEAPresult]"/>
+
 
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
@@ -167,7 +212,7 @@
     <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='AT_MAC']/attribute::value"/>
     <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RES:3']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RES:3']/field[@name='Length']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="64"/>
     <parameter name="[AT_RES]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RES:3']/field[@name='AT_RES']/attribute::value"/>
     <test parameter="[AT_RES]" condition="binary.equals" value="39bcb97622c4715a"/>

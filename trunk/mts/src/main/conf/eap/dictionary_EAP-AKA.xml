@@ -76,19 +76,103 @@
     
     <!-- AT_RAND attribute : EAP-RES => IETF RFC 4187 chapter 10.8 page 56 -->
     <element tag="AT_RES:3" coding="EAP" description="">
-        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Length" type="Integer" length="2" description=""/>
         <field name="AT_RES" type="Binary" description=""/>        
     </element>
+    
+    <!-- Attribute AT_AUTS:4 => IETF RFC 4187 chapter 10.9 page 56 -->
+    <element tag="AT_AUTS:4" coding="EAP" description="">
+        <field name="AT_AUTS" type="Binary" description=""/>        
+    </element>
 
+    <!-- Attribute AT_PADDING:6 => IETF RFC 4187 chapter 10.12 page 59 -->
+    <element tag="AT_PADDING:6" coding="EAP" description="">
+        <field name="AT_PADDING" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_NONCE_MT:7 => IETF RFC 4187 chapter 11 page 66 -->
+    <!-- not defined : so we assume that the format is the same as AT_NONCE_S -->
+    <element tag="AT_NONCE_MT:7" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>    
+        <field name="AT_NONCE_MT" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_PERMANENT_ID_REQ:10 => IETF RFC 4187 chapter 10.2 page 53 -->
+    <element tag="AT_PERMANENT_ID_REQ:10" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>       
+    </element>
+        
     <!-- Attribute AT_MAC:11 => IETF RFC 4187 chapter 10.15 page 63 -->
     <element tag="AT_MAC:11" coding="EAP" description="">
         <field name="Reserved" type="Integer" length="2" description=""/>
         <field name="AT_MAC" type="Binary" description=""/>
     </element>
-    
-    <!-- Attribute AT_CHECKCODE:134 => IETF RFC 4187 chapter 10.13 page 60 -->
-    <element tag="AT_CHECKCODE:134" coding="EAP" description="">
-        <field name="Reserved" type="Integer" length="2" description=""/>
+
+    <!-- Attribute AT_NOTIFICATION:12 => IETF RFC 4187 chapter 10.19 page 64 -->
+    <element tag="AT_NOTIFICATION:12" coding="EAP" description="">
+        <field name="Success bit (S bit)" type="Boolean" lengthbit="1" description=""/>
+        <field name="Phase P (P bit)" type="Boolean" lengthbit="1" description=""/>        
+        <field name="Notification Code" type="Integer" lengthbit="15" description="">
+            <enum name="General failure after authentication." value="0"/>
+            <enum name="Undefined" value="1-1025"/>            
+            <enum name="User has been temporarily denied access to the requested service." value="1026"/>
+            <enum name="Undefined" value="1027-1030"/>            
+            <enum name="User has not subscribed to the requested service." value="1031"/>            
+            <enum name="Undefined" value="1032-16383"/>            
+            <enum name="General failure." value="16384"/>                                                
+        </field>                    
+    </element>
+
+    <!-- Attribute AT_ANY_ID_REQ:13 => IETF RFC 4187 chapter 10.3 page 53 -->
+    <element tag="AT_ANY_ID_REQ:13" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>           
+    </element>
+
+    <!-- Attribute AT_IDENTITY:14 => IETF RFC 4187 chapter 10.5 page 55 -->
+    <element tag="AT_IDENTITY:14" coding="EAP" description="">
+        <field name="Actual length" type="Integer" length="2" description=""/>    
+        <field name="AT_IDENTITY" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_VERSION_LIST:15 => IETF RFC 4187 chapter 11 page 66 -->
+    <!-- not defined : so we assume that the format is binary -->    
+    <element tag="AT_VERSION_LIST:15" coding="EAP" description="">    
+        <field name="AT_VERSION_LIST" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_SELECTED_VERSION:16 => IETF RFC 4187 chapter 11 page 66 -->
+    <!-- not defined : so we assume that the format is binary -->    
+    <element tag="AT_SELECTED_VERSION:16" coding="EAP" description="">    
+        <field name="AT_SELECTED_VERSION:16" type="Binary" description=""/>      
+    </element>
+
+    <!-- Attribute AT_FULLAUTH_ID_REQ:17 => IETF RFC 4187 chapter 10.4 page 54 -->
+    <element tag="AT_FULLAUTH_ID_REQ:17" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>           
+    </element>
+
+    <!-- Attribute AT_COUNTER:19 => IETF RFC 4187 chapter 10.16 page 64 -->
+    <element tag="AT_COUNTER:19" coding="EAP" description="">
+        <field name="Counter" type="Integer" length="2" description=""/>    
+    </element>
+
+    <!-- Attribute AT_COUNTER_TOO_SMALL:20 => IETF RFC 4187 chapter 10.17 page 64 -->
+    <element tag="AT_COUNTER_TOO_SMALL:20" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>    
+    </element>
+   
+    <!-- Attribute AT_NONCE_S:21 => IETF RFC 4187 chapter 10.18 page 65 -->
+    <element tag="AT_NONCE_S:21" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>    
+        <field name="AT_NONCE_S" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_CLIENT_ERROR_CODE:22 => IETF RFC 4187 chapter 10.20 page 66 -->
+    <element tag="AT_CLIENT_ERROR_CODE:22" coding="EAP" description="">
+        <field name="Client Error Code" type="Integer" length="2" description="">
+            <enum name="General : Unable to process packet" value="0"/>
+            <enum name="Undefined" value="1-65535"/>            
+        </field>            
     </element>
     
     <!-- Attribute AT_IV:129 => IETF RFC 4187 chapter 10.12 page 58 -->
@@ -103,4 +187,27 @@
         <field name="AT_ENCR_DATA" type="Binary" description=""/>
     </element>
 
+    <!-- Attribute AT_NEXT_PSEUDONYM:132 => IETF RFC 4187 chapter 10.10 page 57 -->
+    <element tag="AT_NEXT_PSEUDONYM:132" coding="EAP" description="">
+        <field name="Actual Length" type="Integer" length="2" description=""/>
+        <field name="AT_NEXT_PSEUDONYM" type="String" description=""/>
+    </element>
+
+        <!-- Attribute AT_NEXT_REAUTH_ID:133 => IETF RFC 4187 chapter 10.11 page 58 -->
+    <element tag="AT_NEXT_REAUTH_ID:133" coding="EAP" description="">
+        <field name="Actual Length" type="Integer" length="2" description=""/>
+        <field name="AT_NEXT_REAUTH_ID" type="String" description=""/>
+    </element>
+
+    <!-- Attribute AT_CHECKCODE:134 => IETF RFC 4187 chapter 10.13 page 60 -->
+    <element tag="AT_CHECKCODE:134" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="AT_CHECKCODE" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_RESULT_IND:135 => IETF RFC 4187 chapter 10.14 page 62 -->
+    <element tag="AT_RESULT_IND:135" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+    </element>
+        
 </dictionary>
