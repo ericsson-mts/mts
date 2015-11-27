@@ -164,47 +164,51 @@ public abstract class FieldAbstract
     	this.offset = source.offset;
     }
     
-    public String toXml(Array array, int indent) {
-
-        StringBuilder elemString = new StringBuilder();
-        elemString.append(ASNToXMLConverter.indent(indent));
-        elemString.append("<field ");
-        elemString.append("name=\"" + this.name + "\" ");
+    public String toXml(Array array, int indent) 
+    {
         String strVal = null;
         try
         {
         	strVal = this.getValue(array);
-        	elemString.append("value=\"" + strVal + "\" ");
         }
         catch (Exception e)
         {
         	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         	// nothing to do 
         }
-        String type = this.getClass().getSimpleName().split("Field")[0];
-        if ("NumberBCD".equalsIgnoreCase(type))
+        if (strVal !=  null)
         {
-        	type = "Number_BCD";
-        }
-        elemString.append("type=\"" + type + "\" ");
-        int intLen = this.length;
-        if (intLen <= 0 && strVal != null)
-        { 
-        	intLen = strVal.length() * 8 / 2;
-        }
-        if (intLen > 0)
-        {
-	        if (intLen % 8 == 0)
+	        StringBuilder elemString = new StringBuilder();
+	        elemString.append(ASNToXMLConverter.indent(indent));
+	        elemString.append("<field ");
+	        elemString.append("name=\"" + this.name + "\" ");
+	    	elemString.append("value=\"" + strVal + "\" ");
+	        String type = this.getClass().getSimpleName().split("Field")[0];
+	        if ("NumberBCD".equalsIgnoreCase(type))
 	        {
-	        	elemString.append("length=\"" + intLen / 8 + "\" ");
+	        	type = "Number_BCD";
 	        }
-	        else
+	        elemString.append("type=\"" + type + "\" ");
+	        int intLen = this.length;
+	        if (intLen <= 0 && strVal != null)
+	        { 
+	        	intLen = strVal.length() * 8 / 2;
+	        }
+	        if (intLen > 0)
 	        {
-	        	elemString.append("lengthBit=\"" + intLen + "\" ");
+		        if (intLen % 8 == 0)
+		        {
+		        	elemString.append("length=\"" + intLen / 8 + "\" ");
+		        }
+		        else
+		        {
+		        	elemString.append("lengthBit=\"" + intLen + "\" ");
+		        }
 	        }
+	        elemString.append("/>\n");
+	        return elemString.toString();
         }
-        elemString.append("/>\n");
-        return elemString.toString();
+        return "";
     }
     
     protected void permuteByte(byte[] bytes) throws Exception 
