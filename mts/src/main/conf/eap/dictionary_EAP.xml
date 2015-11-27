@@ -17,17 +17,35 @@
     <element name="Message" coding="Message" description="">
         <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
         <element name="Header" coding="V" description="">
-          <field name="Code" type="EnumLong" length="1" description=""/>          
+          <field name="Code" type="EnumLong" length="1" description="">
+            <enum name="Not applicable" value="0"/>          
+            <enum name="Request" value="1"/>
+            <enum name="Response" value="2"/>
+            <enum name="Success" value="3"/>
+            <enum name="Failure" value="4"/>
+            <enum name="Undefined" value="5-255"/>                        
+          </field>                    
           <field name="Id" length="1" type="Integer" description=""/>            
-          <field name="Length" length="2" type="EnumLong" description=""/>          
-        </element>
-        <!-- Attribute Identity => IETF RFC 3748 chapter ?.? page ?? -->               
-        <element name="Type" coding="V" description="">
-          <field name="Type" value="Identity:1" length="1" type="EnumLong" description=""/>
+          <field name="Length" length="2" type="Integer" description=""/>          
+          <!-- Attribute Identity => IETF RFC 3748 chapter 5 page 26 -->               
+          <field name="Type" length="1" type="EnumLong" description="">
+            <enum name="Not applicable" value="0"/>          
+            <enum name="Identity" value="1"/>
+            <enum name="Notification" value="2"/>
+            <enum name="Nak (Response only)" value="3"/>
+            <enum name="MD5-Challenge" value="4"/>
+            <enum name="One Time Password (OTP)" value="5"/>
+            <enum name="Generic Token Card (GTC)" value="6"/>
+            <enum name="Undefined" value="7-22"/>
+            <enum name="UMTS Authentication and Key Agreement EAP (EAP-AKA)" value="23"/>
+            <enum name="Undefined" value="24-253"/>            
+            <enum name="Expanded Types" value="254"/>
+            <enum name="Experimental use" value="255"/>                                    
+          </field>                    
         </element>                    
         <!-- Header => IETF RFC 3748 chapter 5.1 page 27 -->
         <element name="Identity" coding="V" description="">
-            <field name="Identity" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
+            <field name="Identity" type="String" description=""/>
         </element>
     </element>
 
@@ -36,7 +54,7 @@
 
     <!-- Attribute Identity:1 => IETF RFC 3748 chapter 5.1 page 18 -->               
     <!--element tag="Identity:1" coding="V" description="">
-        <field name="Identity" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
+        <field name="Identity" type="String" description=""/>
     </element-->
 
 </dictionary>

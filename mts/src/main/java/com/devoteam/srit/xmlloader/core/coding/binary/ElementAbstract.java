@@ -483,15 +483,11 @@ public abstract class ElementAbstract implements Cloneable
 				elemInfo.copyToClone(elemDico);
 			}
 			int length = elemInfo.getLengthElem() / 8;
-			// Si c'est le dernier sous-element on prend tout ce qu'il reste comme data 
-			if (!iter.hasNext())
-			{
-				length = array.length - index;
-			}			
 			// S'il n'y a plus de data à décoder ou si l'element est dynamique (longueur nulle) 
 			// (cas d'un element dynamique ex MAP TP-DA element)
 			if (index < array.length || length == 0)
 			{
+				length = array.length - index;			
 				Array subArray = array.subArray(index, length);
 				index += elemInfo.decodeFromArray(subArray, dictionary);
 				newElements.add(elemInfo);
