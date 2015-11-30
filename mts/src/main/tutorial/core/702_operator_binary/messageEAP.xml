@@ -5,14 +5,14 @@
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
 <element name="MessageEAP" coding="Message" value="" description="">
-    <element name="Header" coding="V" description="">
+    <element name="HeaderEAP" coding="V" description="">
       <field name="Code" value="Response:2" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="1" length="1" type="Integer" description=""/>            
       <field name="length" value="0" length="2" type="Integer" description=""/>          
       <field name="Type" value="Identity:1" length="1" type="EnumLong" description=""/>
     </element>                   
     <element name="Identity" coding="V" description="">
-        <field name="Identity" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
+        <field name="Type-Data" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
     </element>
 </element>           
 ]]>
@@ -21,22 +21,22 @@
     <test parameter="[binaryEAP]" condition="binary.equals" value="0201003b0130323038303134343639313131323233406e61692e6570632e6d6e633030312e6d63633230382e336770706e6574776f726b2e6f7267"/>
 
     <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
-    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Code']/attribute::value"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
-    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Id']/attribute::value"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="string.equals" value="1"/>
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Length']/attribute::value"/>
     <test parameter="[Length]" condition="string.equals" value="59"/>
-    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Type']/attribute::value"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Type']/attribute::value"/>
     <test parameter="[Type]" condition="string.equals" value="Identity:1"/>
-    <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Request:1_Identity:1,Response:2_Identity:1']/field[@name='Type-Data']/attribute::value"/>
+    <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Response:2_Identity:1']/field[@name='Type-Data']/attribute::value"/>
     <test parameter="[Identity]" condition="string.equals" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
 
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
 <element name="MessageEAP" coding="Message" description="">
     <!-- Header => IETF RFC 4187 chapter 8.1 page 45 -->
-    <element name="Header" coding="V" description="">
+    <element name="HeaderEAP" coding="V" description="">
       <field name="Code" value="Request:1" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="2" length="1" type="Integer" description=""/>            
       <field name="length" value="0" length="2" type="Integer" description=""/>
@@ -232,11 +232,11 @@
     <test parameter="[binaryEAP]" condition="binary.equals" value="03010004"/>
 
     <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
-    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Code']/attribute::value"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Success:3"/>
-    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Id']/attribute::value"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="string.equals" value="1"/>
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Header']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Length']/attribute::value"/>
     <test parameter="[Length]" condition="string.equals" value="4"/>
                   
 </scenario>

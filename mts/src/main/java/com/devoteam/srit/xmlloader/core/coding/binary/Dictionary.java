@@ -41,6 +41,8 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 public class Dictionary 
 {
     private String _layer;
+    
+    private ElementAbstract elementMessage = null;
 	
     private Map<String,ElementAbstract> elementsMapByLabel = new HashMap<String, ElementAbstract>();
     private Map<Integer,ElementAbstract> elementsMapByTag = new HashMap<Integer, ElementAbstract>();
@@ -83,6 +85,7 @@ public class Dictionary
         }
         
         List<Element> list = rootDico.elements("element");
+        int i = 0;
         for (Element elem : list) 
         {
             ElementAbstract elemInfo = null;
@@ -99,6 +102,11 @@ public class Dictionary
             elemInfo.parseFromXML(elem, this, null, true);
             
             addElement(elemInfo);
+            if (i == 0)
+            {
+            	this.elementMessage = elemInfo;
+            }
+            i++;
         }
     }
     
@@ -216,5 +224,10 @@ public class Dictionary
     	}
     	return null;
     }
+
+	public ElementAbstract getElementMessage() 
+	{
+		return elementMessage;
+	}
 
 }

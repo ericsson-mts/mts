@@ -645,7 +645,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Dictionary dico = new Dictionary(dicoFile);
                     
             	    // decode the elements list
-                    ElementAbstract elementMessage = dico.getElementByLabel("Message");
+                    ElementAbstract elementMessage = dico.getElementMessage();
                     elementMessage.decodeFromArray(array, dico);
                     
                     // get the XML data                  

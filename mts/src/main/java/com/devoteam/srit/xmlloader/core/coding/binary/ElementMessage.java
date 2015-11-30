@@ -73,6 +73,7 @@ public class ElementMessage extends ElementAbstract
 				ElementAbstract elementMessage = dictionary.getElementByLabel(key);
 				if (elementMessage != null)
 				{
+					elementMessage.setLabel(key);
 					Array data = array.subArray(currentLength);
 					currentLength += elementMessage.decodeFromArray(data, dictionary);
 					this.elements.add(elementMessage);
