@@ -5,9 +5,9 @@
 
     <!-- attend message capability -->
     <receiveMessageIMAP request="true">
-        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
-        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />      
         <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />        
         <test parameter="[command]" condition="string.equals" value="CAPABILITY"/>
     </receiveMessageIMAP>
     
@@ -23,6 +23,8 @@
     <receiveMessageIMAP request="true">
         <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
         <parameter name="[argument]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />        
+        <test parameter="[command]" condition="string.equals" value="LOGIN"/>        
     </receiveMessageIMAP>
 
     <!-- envoi reponse final login-->
@@ -35,6 +37,8 @@
     <!-- attend message noop-->
     <receiveMessageIMAP request="true">
         <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />        
+        <test parameter="[command]" condition="string.equals" value="NOOP"/>        
     </receiveMessageIMAP>
 
     <!-- envoi reponse final noop-->
@@ -47,6 +51,8 @@
     <!-- attend message logout-->
     <receiveMessageIMAP request="true">
         <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />        
+        <test parameter="[command]" condition="string.equals" value="LOGOUT"/>        
     </receiveMessageIMAP>
 
     <!-- envoi reponse logout-->
@@ -57,8 +63,8 @@
 ]]>
     </sendMessageIMAP>
 
+    <parameter name="[testcase:SEM]" operation="system.semaphorewait"/>
     <closeChannelIMAP name="[connection]"/>
-
 
     <!-- attend message login-->
     <receiveMessageIMAP request="true">
@@ -92,5 +98,9 @@
 [tag] OK LOGIN completed
 ]]>
     </sendMessageIMAP>
+
+    <receiveMessageIMAP request="true">
+        <parameter name="[arg]" operation="protocol.setFromMessage" value="request.arguments" />
+    </receiveMessageIMAP>
 
 </scenario>
