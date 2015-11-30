@@ -32,10 +32,10 @@
             <enum name="Not applicable" value="0"/>          
             <enum name="Identity" value="1"/>
             <enum name="Notification" value="2"/>
-            <enum name="Nak (Response only)" value="3"/>
+            <enum name="Legacy Nak" value="3" description="(response only)"/>
             <enum name="MD5-Challenge" value="4"/>
-            <enum name="One Time Password (OTP)" value="5"/>
-            <enum name="Generic Token Card (GTC)" value="6"/>
+            <enum name="One Time Password" value="5" description="(OTP)"/>
+            <enum name="Generic Token Card" value="6" description="(GTC)"/>
             <enum name="Undefined" value="7-22"/>
             <enum name="UMTS Authentication and Key Agreement EAP (EAP-AKA)" value="23"/>
             <enum name="Undefined" value="24-253"/>            
@@ -43,18 +43,56 @@
             <enum name="Experimental use" value="255"/>                                    
           </field>                    
         </element>                    
-        <!-- Header => IETF RFC 3748 chapter 5.1 page 27 -->
-        <!--element name="Identity" coding="V" description="">
-            <field name="Identity" type="String" description=""/>
-        </element-->
     </element>
 
-    <!-- Attribute Reserved:0 -->
+    <!-- Message Not applicable:0 -->
 
 
-    <!-- Attribute Identity:1 => IETF RFC 3748 chapter 5.1 page 18 -->               
-    <element id="Response:2_Identity:1" coding="V" description="">
-        <field name="Identity" type="String" description=""/>
+    <!-- Message Identity:1 => IETF RFC 3748 chapter 5.1 page 28 -->               
+    <element id="Request:1_Identity:1,Response:2_Identity:1" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element>
+
+    <!-- Message Notification:2 => IETF RFC 3748 chapter 5.2 page 29 -->               
+    <element id="Request:1_Notification:2,Response:2_Notification:2" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element>
+
+    <!-- Message Legacy Nak:3 (response only) => IETF RFC 3748 chapter 5.3.1 page 30 -->               
+    <element id="Response:2_Legacy Nak:3" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element>
+
+    <!-- Message MD5-Challenge:4 => IETF RFC 3748 chapter 5.4 page 34 -->               
+    <element id="Request:1_MD5-Challenge:4,Response:2_MD5-Challenge:4" coding="V" description="">
+        <!--element id="value" coding="LV" description="">
+            <field name="value" type="Binary" description=""/>
+        </element-->    
+        <element id="name" coding="V" description="">
+            <field name="name" type="String" description=""/>
+        </element>    
+    </element>
+
+    <!-- Message One-Time Password:5 => IETF RFC 3748 chapter 5.5 page 35 -->               
+    <element id="Request:1_One-Time Password:5,Response:2_One-Time Password:5" coding="V" description="">
+        <field name="Type-Data" type="Binary" description=""/>
+    </element>
+
+    <!-- Message Generic Token Card:6 => IETF RFC 3748 chapter 5.6 page 36 -->               
+    <element id="Request:1_Generic Token Card:6,Response:2_Generic Token Card:6" coding="V" description="">
+        <field name="Type-Data" type="Binary" description=""/>
+    </element>
+
+    <!-- Message Expanded Types:254 => IETF RFC 3748 chapter 5.7 page 38 -->               
+    <element id="Request:1_Expanded Types:254,Response:2_Expanded Types:254" coding="V" description="">
+        <field name="Vendor-Id" type="Integer" length="3" description=""/>
+        <field name="Vendor-Type" type="Integer" length="4" description=""/>
+        <field name="Vendor-Data" type="Binary" description=""/>                
+    </element>
+    
+    <!-- Message Experimental use:255 => IETF RFC 3748 chapter 5.8 page 39 -->               
+    <element id="Request:1_Experimental use:255,Response:2_Experimental use:255" coding="V" description="">
+        <field name="Type-Data" type="Binary" description=""/>
     </element>
 
 </dictionary>
