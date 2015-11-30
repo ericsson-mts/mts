@@ -29,18 +29,21 @@
     <test parameter="[payloadType(3)]" condition="number.equals" value="18"/>
     <test parameter="[payloadType(4)]" condition="number.equals" value="18"/>
     <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+    <test parameter="[seqnum]" condition="list.size" value="5"/>    
     <test parameter="[seqnum(0)]" condition="number.equals" value="65534"/>
     <test parameter="[seqnum(1)]" condition="number.equals" value="65535"/>
     <test parameter="[seqnum(2)]" condition="number.equals" value="0"/>
     <test parameter="[seqnum(3)]" condition="number.equals" value="1"/>
     <test parameter="[seqnum(4)]" condition="number.equals" value="2"/>
     <parameter name="[timestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
+    <test parameter="[timestamp]" condition="list.size" value="5"/>    
     <test parameter="[timestamp(0)]" condition="number.equals" value="456"/>
     <test parameter="[timestamp(1)]" condition="number.equals" value="556"/>
     <test parameter="[timestamp(2)]" condition="number.equals" value="656"/>
     <test parameter="[timestamp(3)]" condition="number.equals" value="756"/>
     <test parameter="[timestamp(4)]" condition="number.equals" value="856"/>
     <parameter name="[mark]" operation="protocol.setFromMessage" value="header.mark"/>
+    <test parameter="[mark]" condition="list.size" value="5"/>
     <test parameter="[mark(0)]" condition="number.equals" value="1"/>
     <test parameter="[mark(1)]" condition="number.equals" value="0"/>
     <test parameter="[mark(2)]" condition="number.equals" value="0"/>
