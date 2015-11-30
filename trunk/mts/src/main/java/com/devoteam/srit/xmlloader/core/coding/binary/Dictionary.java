@@ -148,6 +148,10 @@ public class Dictionary
         String tag = elementRoot.attributeValue("identifier");
         if (tag == null)
         {
+        	tag = elementRoot.attributeValue("id");
+        }
+        if (tag == null)
+        {
         	tag = elementRoot.attributeValue("tag");
         }
         if (tag == null)
