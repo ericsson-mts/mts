@@ -40,6 +40,7 @@ import gp.utils.arrays.SupArray;
  */
 public class ElementMessage extends ElementAbstract
 {
+	
 
     public ElementMessage()
     {
@@ -49,14 +50,42 @@ public class ElementMessage extends ElementAbstract
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{
-        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
-        {
+		
+		if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
+        {						
         	// decode the message for not tag elements
-        	int lengthHeader = decodeNotTagElementsFromArray(array, dictionary);
-        	if (array.length > lengthHeader)
+			ElementAbstract elementHeader = this.getElement(0);
+			int currentLength = 0;
+			if (elementHeader != null)
+			{
+	        	currentLength = elementHeader.decodeFromArray(array, dictionary);
+	        	String key = "";
+	        	FieldAbstract fieldCode = elementHeader.getFieldsByName("Code");	        	
+	        	if (fieldCode != null)
+	        	{
+	        		key = elementHeader.getFieldsByName("Code").getValue(array) + "_";
+	        	}
+	        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
+	        	if (fieldType != null && fieldType.offset / 8 < array.length)
+	        	{	        	
+	        		key += elementHeader.getFieldsByName("Type").getValue(array);
+	        	}
+				ElementAbstract elementMessage = dictionary.getElementByLabel(key);
+				if (elementMessage != null)
+				{
+					Array data = array.subArray(currentLength);
+					currentLength += elementMessage.decodeFromArray(data, dictionary);
+					this.elements.add(elementMessage);
+				}
+				else
+				{
+					currentLength = decodeNotTagElementsFromArray(array, dictionary);
+				}
+			}
+        	if (array.length > currentLength)
         	{
             	// decode the message for tag elements
-	            Array data = array.subArray(lengthHeader);
+	            Array data = array.subArray(currentLength);
 		        this.subelementsArray = new SupArray();
 		    	this.subelementsArray.addFirst(data);
 		    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
@@ -65,7 +94,7 @@ public class ElementMessage extends ElementAbstract
             return array.length;
 	    }
         
-        return 1;
+        return 0;
         
     }
 

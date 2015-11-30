@@ -629,29 +629,12 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Element xmlRoot = doc.getRootElement();
                     
                     // parse the XML file using the dictionary
-            	    ElementAbstract elemDico = null;
-            	    ElementAbstract newElement = null;
-            	    List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
-            	    //for (Element elementRoot : xmlRoot) 
-            	    {
-            	    	String coding = xmlRoot.attributeValue("coding");            		
-            	    	newElement = ElementAbstract.buildFactory(coding);
-            	        elemDico = dico.getElementFromXML(xmlRoot);
-            	        newElement = (ElementAbstract) elemDico.cloneAttribute();
-            	        newElement.parseFromXML(xmlRoot, dico, elemDico, true);
-            	        
-            	        elements.add(newElement);            	
-            	    }
-            	    
-            	    // encode the elements list
-            	    SupArray array = new SupArray();
-        	    	Iterator<ElementAbstract> iter = elements.iterator();
-        	    	while (iter.hasNext())
-        	    	{
-        	    		ElementAbstract elem = (ElementAbstract) iter.next();
-        	    		array.addLast(elem.encodeToArray());
-        	    	}
-                	result.add(Array.toHexString(array));
+            	    ElementAbstract elemDico = dico.getElementFromXML(xmlRoot);
+            	    ElementAbstract newElement = (ElementAbstract) elemDico.cloneAttribute();
+        	        newElement.parseFromXML(xmlRoot, dico, elemDico, true);
+        	                    	    
+            	    // encode the element
+                	result.add(Array.toHexString(newElement.encodeToArray()));
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TOXML))
                 {
@@ -661,12 +644,12 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     String dicoFile = param_2.get(i).toString().replace(" ", "");
                     Dictionary dico = new Dictionary(dicoFile);
                     
-            	    // encode the elements list
-                    ElementAbstract headerElement = dico.getElementByLabel("Message");
-                    headerElement.decodeFromArray(array, dico);
+            	    // decode the elements list
+                    ElementAbstract elementMessage = dico.getElementByLabel("Message");
+                    elementMessage.decodeFromArray(array, dico);
                     
                     // get the XML data                  
-                    String xmlData = headerElement.toXml(0);
+                    String xmlData = elementMessage.toXml(0);
                 	result.add(xmlData);
                 }
                 else
