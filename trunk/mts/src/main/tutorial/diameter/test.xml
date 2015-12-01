@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!DOCTYPE lib [
+	<!ENTITY lib_configuration SYSTEM "350_swm_attach/lib_configuration.xml">
+]>
+
+
 <test description="DIAMETER regression tests" name="DIAMETER">
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
@@ -32,6 +38,9 @@
     
     <parameter name="[transport]" operation="set" value="TCP"/>
     <parameter name="[vendorID]" operation="set" value="3GPP:10415"/>
+  
+    <!-- library for the 350_swm_attach testcase -->
+    &lib_configuration;
   
     <testcase name="101_cx_uar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[commandCode]" operation="set" value="User-Authorization:300"/>
@@ -220,6 +229,14 @@
         <parameter name="[applicationID]" operation="set" value="3GPP Rx:16777236"/>
         <scenario name="client" file="338_rx_asr/client.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="338_rx_asr/server.xml" state="[remoteServer]" routingName="[commandCode],[remotePortDIAM],DIAMETER"/>
+    </testcase>
+
+    <testcase name="350_swm_attach" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[host3GGP_AAA]" operation="set" value="[remoteHostDIAM]"/>
+        <parameter name="[port3GGP_AAA]" operation="set" value="13868"/>
+
+        <scenario name="client" file="350_swm_attach/epdg.xml" state="[localClient]" routingName="client"/>
+        <scenario name="server" file="350_swm_attach/3gpp_aaa.xml" state="[remoteServer]" routingName="[commandCode],[remotePortDIAM],DIAMETER"/>
     </testcase>
  
     <testcase name="411_e4_udr" state="true" number="[iterations]" description="diameter" >
