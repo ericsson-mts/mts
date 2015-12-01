@@ -245,7 +245,7 @@ Content-Length: x
     <parameter name="[RP-User-Data_XML]" operation="set">
 <![CDATA[
 <sm_RP_UI.BoxedType><Bytes>
-  <element name="SMS-DELIVER" coding="V">
+  <element label="SMS-DELIVER" coding="V">
     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-UDHI" value="[RP-UD-TP-UDHI]" type="EnumLong" lengthBit="1"/>
     <field name="TP-SRI" value="A status report is not requested:0" type="EnumLong" lengthBit="1" description="TP Status Report Indication" />
@@ -254,30 +254,30 @@ Content-Length: x
     <field name="TP-MMS" value="No more messages are waiting for the MS in this SC:1" type="EnumLong" lengthBit="1" description="TP More Messages to Send" />
     <field name="TP-MTI" value="SMS-DELIVER / SMS-DELIVER-REPORT:0" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" />
   </element>
-  <element name="TP-OA" coding="V">
-    <element name="Address" coding="DV" description="Generic Address" comment="Address of the function.">
+  <element label="TP-OA" coding="V">
+    <element label="Address" coding="DV" description="Generic Address" comment="Address of the function.">
   		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
       <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
       <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
       <field name="digits" value="[MSISDN-User1WithoutPlus]" type="number_bcd" description="digits"/>
     </element>
   </element>
-  <element name="TP-PID" coding="V">
+  <element label="TP-PID" coding="V">
     <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
     <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1"/>
     <field name="telematic devices" value="implicit device type is specific to this SC,:0" type="EnumLong" lengthBit="5"/>
   </element>
-  <element name="TP-DCS" coding="V">
+  <element label="TP-DCS" coding="V">
     <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
     <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
     <field name="Bit 1-0 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
     <field name="Alphabet" value="[smsAlphabet]" type="EnumLong" lengthBit="2"/>
     <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
   </element>
-  <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
+  <element label="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
     <field name="TP-SCTP" value="67072712345678" type="number_bcd" length="7" description="Service Centre Time Stamp" />
   </element>
-  <element name="TP-UD" coding="V">
+  <element label="TP-UD" coding="V">
     <field name="TP-UDL" value="[RP-UD-TP-UDL]" type="integer" length="1"/>
     <field name="TP-UD" value="[RP-UD-TP-UD]" type="Binary"/>
   </element>
@@ -397,7 +397,7 @@ Content-Length: 0
     <parameter name="[RP-User-Data_XML]" operation="set">
 <![CDATA[
 <sm_RP_UI.BoxedType><Bytes>
-  <element name="SMS-DELIVER" coding="V">
+  <element label="SMS-DELIVER" coding="V">
     <field name="NA1" value="0" type="Integer" lengthBit="1"/>
     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
     <field name="TP-SRQ" value="The SMS STATUS REPORT is the result of a SMS SUBMIT.:0" type="EnumLong" lengthBit="1" description="TP Status Report Indication" />
@@ -406,26 +406,26 @@ Content-Length: 0
     <field name="TP-MMS" value="No more messages are waiting for the MS in this SC:1" type="EnumLong" lengthBit="1" description="TP More Messages to Send" />
     <field name="TP-MTI" value="SMS-STATUS-REPORT / SMS-COMMAND:2" type="EnumLong" lengthBit="2" description="TP Message Type Indicator" />
   </element>
-  <element name="TP-MR" coding="V" description="TP Message Reference">
+  <element label="TP-MR" coding="V" description="TP Message Reference">
     <field name="TP-MR" value="1" type="integer" length="1" description="TP Message Reference" />
   </element>
-  <element name="TP-RA" coding="DV">
+  <element label="TP-RA" coding="DV">
     <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
     <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
     <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
     <field name="digits" value="[MSISDN-User2WithoutPlus]" type="Number_BCD" length="6"/>
   </element>
-  <element name="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
+  <element label="TP-SCTS" coding="V" description="TP Service Centre Time Stamp">
   <field name="TP-SCTP" value="14121911134700" type="number_bcd" length="7" description="Service Centre Time Stamp" />
   </element>
-  <element name="TP-DT" coding="V" description="TP Discharge Time">
+  <element label="TP-DT" coding="V" description="TP Discharge Time">
     <field name="TP-SCTP" value="14121911134700" type="number_bcd" length="7" description="Service Centre Time Stamp" />
   </element>
-  <element name="TP-ST" coding="V" description="TP Status">
+  <element label="TP-ST" coding="V" description="TP Status">
 		<field name="bit7" value="Bits 0..6 as defined below:0" type="EnumLong" lengthBit="1" />
 		<field name="assignment" value="Short message transaction completed, Short message received by the SME" type="EnumLong" lengthBit="7" />
   </element>
-  <element name="TP-PI" coding="V" description="TP Parameter Indicator">
+  <element label="TP-PI" coding="V" description="TP Parameter Indicator">
 		<field name="Reserved1" value="0" type="Integer" lengthBit="1" description="Reserved #1"/>
     <field name="Reserved2" value="0" type="Integer" lengthBit="1" description="Reserved #2"/>
     <field name="Reserved3" value="0" type="Integer" lengthBit="1" description="Reserved #3"/>
@@ -435,12 +435,12 @@ Content-Length: 0
 		<field name="TP-DCS present" value="absent:0" type="EnumLong" lengthBit="1" description="TP-DCS present"/>
 		<field name="TP-PID present" value="absent:0" type="EnumLong" lengthBit="1" description="TP-PID present"/>
   </element>
-  <!--element name="TP-PID" coding="V">
+  <!--element label="TP-PID" coding="V">
     <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
     <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1"/>
     <field name="telematic devices" value="implicit device type is specific to this SC,:0" type="EnumLong" lengthBit="5"/>
   </element>
-  <element name="TP-DCS" coding="V">
+  <element label="TP-DCS" coding="V">
     <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
     <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
     <field name="Bit 10 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
