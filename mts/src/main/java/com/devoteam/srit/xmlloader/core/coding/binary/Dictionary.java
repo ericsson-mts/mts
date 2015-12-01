@@ -153,18 +153,20 @@ public class Dictionary
     public ElementAbstract getElementFromXML(Element elementRoot) throws Exception
     {
         //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
+    	// for Q931 protocols only
         String tag = elementRoot.attributeValue("identifier");
+        // for Q931 protocols only
         if (tag == null)
         {
-        	tag = elementRoot.attributeValue("id");
+        	tag = elementRoot.attributeValue("name");
+        }
+        if (tag == null)
+        {
+        	tag = elementRoot.attributeValue("label");
         }
         if (tag == null)
         {
         	tag = elementRoot.attributeValue("tag");
-        }
-        if (tag == null)
-        {
-        	tag = elementRoot.attributeValue("name");
         }
         if (tag != null)
         {
@@ -193,7 +195,7 @@ public class Dictionary
 	 * @throws Exception
 	 */
 	public ElementAbstract getElementFromTag(String tag) throws Exception
-    {
+    {	
 		tag = tag.trim();
     	int iPos = tag.indexOf(":");
     	String label = tag;

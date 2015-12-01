@@ -131,6 +131,7 @@ public abstract class ElementAbstract implements Cloneable
         //si non present dans le dico on parse le fichier xml
     	if (elemDico == null)
     	{
+        	// for Q931 protocols only
             String tagStr = elementRoot.attributeValue("identifier");
             if (tagStr == null)
             {
@@ -163,13 +164,13 @@ public abstract class ElementAbstract implements Cloneable
             }
     	}
     	
-    	// for Q931 protocols
+    	// for Q931 protocols only
         String labelTag = elementRoot.attributeValue("name");
         if (labelTag != null)
         {
         	this.label = labelTag;
         }
-        labelTag = elementRoot.attributeValue("id");
+        labelTag = elementRoot.attributeValue("label");
         if (labelTag != null)
         {
         	this.label = labelTag;
@@ -618,9 +619,9 @@ public abstract class ElementAbstract implements Cloneable
         StringBuilder elemString = new StringBuilder();
         elemString.append(ASNToXMLConverter.indent(indent));
         elemString.append("<element ");
-        if (this.tag >= 0)
+        if (this.tag != Integer.MIN_VALUE)
         {
-	        elemString.append("name=\"");
+	        elemString.append("tag=\"");
 	    	if (this.label != null)
 	    	{
 	    		elemString.append(this.label + ":");
@@ -630,7 +631,7 @@ public abstract class ElementAbstract implements Cloneable
         }
         else
         {
-	        elemString.append("name=\"");
+	        elemString.append("label=\"");
 	    	elemString.append(this.label);
 	    	elemString.append("\"");        	
         }
