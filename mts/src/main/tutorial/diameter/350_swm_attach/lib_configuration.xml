@@ -1,0 +1,129 @@
+<!--
+ ***************  lib_configuration    *************
+Function description: librairie de configuration general
+-->
+	<!--  tests parameters  -->			
+	
+	<!--  IP Configuration -->
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="false" />
+    
+    <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localPort]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+
+  	<parameter name="[host3GGP_AAA]" 	operation="set" value="[localHost(0)]" description="address pour la simulation de 3GGP_AAA_Server" editable="true"/>
+	<parameter name="[port3GGP_AAA]" 	operation="set" value="3865" description="local port of the MTS host" editable="true" />
+	<parameter name="[url3GGP_AAA]" 	operation="set" value="simuAAA://[host3GGP_AAA]:[port3GGP_AAA]"/>
+	<parameter name="[realm3GGP_AAA]" 	operation="set" value="epc.mnc001.mcc208.3gppnetwork.org" description="domain name = realm for the I_CSCF side" editable="true"/>
+
+    <!-- adresse 3ePDG -->
+	<!--parameter name="[hostePDG]" 	operation="set" value="172.20.102.170" description="local address du ePDG" editable="true"/-->	
+	<parameter name="[localhostePDG]" operation="set" value="ePDG-Cisco.epc.ims.mnc001.mcc208.3gppnetwork.org" description="local host of the simulateur ePDG" />
+    <parameter name="[portePDG]" 	operation="set" value="38270" description="remote port of the simulateur ePDG host" editable="true"/>
+    <parameter name="[realmePDG]" 	operation="set" value="epc.mnc001.mcc208.3gppnetwork.org" description="domain name = realm for the ePDG side" editable="true"/>
+	
+ 
+	<parameter name="[realmNAI]" 		operation="set" value="nai.epc.mnc001.mcc208.3gppnetwork.org" description="domain name realm pour User" editable="true"/>	
+	<parameter name="[ServerSelection]" operation="set" value="imsnsn-6cop" />
+	<parameter name="[StateID_ePDG]" 	operation="set" value="1262304204" />
+	<parameter name="[StateID_3GPP]" 	operation="set" value="1" />
+
+	
+	<!-- pour mise au point -->	
+    <parameter name="[hostePDG]" 	operation="set" value="[localHost(0)]" description="remote address of the simulateur ePDG host" editable="true"/>
+    <parameter name="[urlePDG]" 	operation="set" value="ePDG://[hostePDG]:[portePDG]"/>
+
+	
+	
+    <parameter name="[responseCode]" operation="set" value="DIAMETER_SUCCESS" description="response code to reply to requests" editable="true"/>
+    <parameter name="[responseTime]" operation="set" value="0" description="response time (in seconds) for the transactions when sending a response" editable="false"/>
+    <parameter name="[sessionTime]" operation="set" value="10" description="duration (in seconds) of the sessions" editable="false"/>
+    
+
+    <parameter name="[receiveTimeout]" operation="set" value="30" description="Timeout (in seconds) to wait for a message" editable="false"/>
+	
+	
+	<!-- parametre Diameter  -->
+    <parameter name="[vendorID]" 				operation="set" value="10415"/>
+    <parameter name="[applicationID_SWm]" 		operation="set" value="16777264"/>		<!-- 3GPP SWm  -->	
+    <parameter name="[applicationID_SWx]" 		operation="set" value="16777265"/>		<!-- 3GPP SWx  -->
+    <parameter name="[applicationID_S6b]" 		operation="set" value="16777272"/>		<!-- 3GPP S6b  -->	
+	
+	<parameter name="[AUTHORIZE_AUTHENTICATE]" 	operation="set" value="3"/>  			<!-- AUTHORIZE_AUTHENTICATE = 3 -->
+	<parameter name="[STATE_MAINTAINED]" 		operation="set" value="0"/>  			<!-- STATE_MAINTAINED = 0 -->
+	<parameter name="[MULTI_ROUND_AUTH]" 		operation="set" value="1001"/>  		<!-- DIAMETER_MULTI_ROUND_AUTH (1001) -->
+
+	<parameter name="[WLAN]" 					operation="set" value="0"/>  		<!-- RAT_Type : WLAN (0)-->
+
+
+	<parameter name="[DIAMETER_SUCCESS]" 		operation="set" value="2001"/>  	<!-- DIAMETER_SUCCESS = 2001 -->
+	<parameter name="[Fisrt_REGISTRATION]" 		operation="set" value="2001"/>  	<!-- DIAMETER_FIRST_REGISTRATION = 2001 -->
+	<parameter name="[Subseq_REGISTRATION]" 	operation="set" value="2002"/>		<!-- DIAMETER_SUBSEQUENT_REGISTRATION = 2002 --> 
+	
+	
+	<!-- AVP Siemens-3GPP-Server-Name = 1110  pour message RTR -->
+	<parameter name="[Siemens-3GPP-Server-Name]" 	operation="set" value="1110"/>	
+	
+	
+
+	
+<!--  users pour les sessions -->
+
+	<!-- CSV PARAMETERS   22 paramètres -->
+	<parameter name="[User_E164-tab]" 		operation="file.readCsv" value="./load_users10.csv" value2="User-E164" />
+	<parameter name="[User_Password-tab]" 	operation="file.readCsv" value="./load_users10.csv" value2="User-Password" />
+
+	<parameter name="[Authenticate-1-tab]" 	operation="file.readCsv" value="./load_users10.csv" value2="Authenticate_1" />
+	<parameter name="[Authoriz-1-tab]" 		operation="file.readCsv" value="./load_users10.csv" value2="Authoriz_1" />
+	<parameter name="[CK-1-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="CK_1" />
+	<parameter name="[IK-1-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="IK_1" />
+
+	<parameter name="[Authenticate-2-tab]" 	operation="file.readCsv" value="./load_users10.csv" value2="Authenticate_2" />
+	<parameter name="[Authoriz-2-tab]" 		operation="file.readCsv" value="./load_users10.csv" value2="Authoriz_2" />
+	<parameter name="[CK-2-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="CK_2" />
+	<parameter name="[IK-2-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="IK_2" />
+
+	<parameter name="[Authenticate-3-tab]" 	operation="file.readCsv" value="./load_users10.csv" value2="Authenticate_3" />
+	<parameter name="[Authoriz-3-tab]" 		operation="file.readCsv" value="./load_users10.csv" value2="Authoriz_3" />
+	<parameter name="[CK-3-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="CK_3" />
+	<parameter name="[IK-3-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="IK_3" />
+
+	<parameter name="[Authenticate-4-tab]" 	operation="file.readCsv" value="./load_users10.csv" value2="Authenticate_4" />
+	<parameter name="[Authoriz-4-tab]" 		operation="file.readCsv" value="./load_users10.csv" value2="Authoriz_4" />
+	<parameter name="[CK-4-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="CK_4" />
+	<parameter name="[IK-4-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="IK_4" />
+
+	<parameter name="[Authenticate-5-tab]" 	operation="file.readCsv" value="./load_users10.csv" value2="Authenticate_5" />
+	<parameter name="[Authoriz-5-tab]" 		operation="file.readCsv" value="./load_users10.csv" value2="Authoriz_5" />
+	<parameter name="[CK-5-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="CK_5" />
+	<parameter name="[IK-5-tab]" 			operation="file.readCsv" value="./load_users10.csv" value2="IK_5" />
+
+	
+	<parameter name="[MIP_Home_Address]" 	operation="set" value="172.20.70.17" />
+	
+	<parameter name="[Rand]"		operation="set" 	value="0000027f6f8909616c3ca4c836a02f7642be" />
+	<parameter name="[Autn]"		operation="set" 	value="0000598451caa6ce0000a52ffc02ec24118b" />
+	<parameter name="[Mac]"			operation="set" 	value="0000beafd710332dd3c27033c241bcb07053" />
+	<parameter name="[Checkcode]"	operation="set" 	value="0000"/>
+	<parameter name="[Iv]"			operation="set" 	value="0000fba14079d7d0e05175eb39c560be666c" />
+	<parameter name="[EncrData]"	operation="set" 	value="0000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26" />
+	<parameter name="[Master_Key]" 	operation="set" value="af4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453c" />
+
+	
+	<!-- parametres commun user -->
+	<parameter name="[Domain]" 				operation="set" value="osp.nokims.eu" description="domain name = realm pour User"  editable="true" />
+
+	<!-- valeurs des temporistaions -->
+	<parameter name="[Duree_Session]" 		value="1" />	<!-- tempo avant détach  -->
+	<parameter name="[Duree_maj_profil]" 	value="1" />	<!-- tempo avant mise a jour profil -->
+
+		
+	<!--  Semaphore  -->
+	<parameter name="[queueTimeout]" value="3000000" />	
+
+	<!-- index boucles pour mise au point -->
+	<parameter name="[userIndexPourDER]" 				value="0" />
+	<parameter name="[userIndexPourLIR]" 				value="0" />
+
+
+
+	
