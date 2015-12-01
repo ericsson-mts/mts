@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+
+<scenario>
+         
+    <call name="diameter.RecCER_SendCEA"/>                  
+             
+    <parameter name="[binaryEAP]" operation="list.create" />
+    
+    <call name="diameter.RecDER_SendDEA">
+      <input>       
+        <parameter name="[function:binInputEAP]" value="[binaryEAP]" />
+      </input>
+      <output>       
+    		<parameter name="[binaryEAP]" value="[function:binOutputEAP]" />
+      </output>                      
+    </call>    
+
+    <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
+    <test parameter="[Code]" condition="string.equals" value="Response:2"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
+    <test parameter="[Id]" condition="string.equals" value="1"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
+    <test parameter="[Length]" condition="string.equals" value="46"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
+    <test parameter="[Type]" condition="string.equals" value="MD5-Challenge:4"/>
+    <parameter name="[MD5-value]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge:4']/element[@label='value']/field[@name='value']/attribute::value"/>
+    <test parameter="[MD5-value]" condition="binary.equals" value="0102030405060708091011121314151617181920"/>
+    <parameter name="[MD5-name]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge:4']/element[@label='name']/field[@name='name']/attribute::value"/>
+    <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
+
+</scenario>

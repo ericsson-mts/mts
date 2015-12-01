@@ -143,8 +143,8 @@
 				<!--avp code="Destination-Host" value="[hostePDG]"/>
 				<avp code="Destination-Realm" 	value="[realmePDG]"/-->
 
-				<avp code="Auth-Request-Type:274" 	mandatory="true" type="Enumerated" value="AUTHORIZE_AUTHENTICATE"/>
-				<avp code="Result-Code:268" 		mandatory="true" type="Unsigned32" value="DIAMETER_MULTI_ROUND_AUTH" />	
+				<avp code="Auth-Request-Type:274" 	mandatory="true" type="Enumerated" value="AUTHORIZE_AUTHENTICATE:3"/>
+				<avp code="Result-Code:268" 		mandatory="true" type="Unsigned32" value="DIAMETER_MULTI_ROUND_AUTH:1001" />	
 
 				<!-- message EAP Challenge-->
 				<avp code="EAP-Payload:462" mandatory="true" type="Binary" value="[binaryEAP]">
@@ -156,9 +156,7 @@
 				<!-- newsessionId = valeur pour HSS -->
 				<!--avp code="State:24"			mandatory="true" type="UTF8String" value="[newsessionId]"/>
 				<avp code="Origin-State-Id:278" mandatory="true" type="Unsigned32" value="[StateID_3GPP]"  /-->
-			</sendMessageDIAMETER>
-			
-				
+			</sendMessageDIAMETER>					
 
 			<!-- Réception du message Request DER (Challenge) de ePDG -->
 			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268" >
@@ -231,8 +229,8 @@
 				<!--avp code="Destination-Host" value="[hostePDG]"/>
 				<avp code="Destination-Realm" 	value="[realmePDG]"/-->
 
-				<avp code="Auth-Request-Type:274" 	mandatory="true" type="Enumerated" value="[AUTHORIZE_AUTHENTICATE]"/>
-				<avp code="Result-Code:268" 		mandatory="true" type="Enumerated" value="DIAMETER_SUCCESS" />	
+				<avp code="Auth-Request-Type:274" 	mandatory="true" type="Enumerated" value="[AUTHORIZE_AUTHENTICATE]:3"/>
+				<avp code="Result-Code:268" 		mandatory="true" type="Enumerated" value="DIAMETER_SUCCESS:2001" />	
 
 				<!-- message EAP Success-->
 				<avp code="EAP-Payload:462" mandatory="true" type="binary" value="[binaryEAP]"/>

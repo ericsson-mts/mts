@@ -238,6 +238,14 @@
         <scenario name="client" file="350_swm_attach/epdg.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="350_swm_attach/3gpp_aaa.xml" state="[remoteServer]" routingName="[commandCode],[remotePortDIAM],DIAMETER"/>
     </testcase>
+
+    <testcase name="351_swm_eap-aka" state="true" number="[iterations]" description="diameter" >
+  			<parameter name="[commandCode]" operation="set" value="Diameter-EAP:268"/> 
+        <parameter name="[applicationID]" operation="set" value="Diameter e2e4 Application:16777234"/>
+        <parameter name="[userName]" operation="set" value="0208014460005000@nai.epc.mnc001.mcc208.3gppnetwork.org"/>                    
+        <scenario name="client" file="351_swm_eap-aka/client.xml" state="[localClient]" routingName="client"/>
+        <scenario name="server" file="351_swm_eap-aka/server.xml" state="[remoteServer]" routingName="[commandCode],[remotePortDIAM],DIAMETER"/>
+    </testcase>
  
     <testcase name="411_e4_udr" state="true" number="[iterations]" description="diameter" >
         <parameter name="[commandCode]" operation="set" value="User-Data:306"/>
