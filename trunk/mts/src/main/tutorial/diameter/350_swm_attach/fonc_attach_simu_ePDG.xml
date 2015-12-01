@@ -22,8 +22,8 @@
 			<parameter name="[MacRes]" 	operation="set" value="[SIP_Authoriz-tab([Index_UserA])]" />
 
 			-->	
-			<parameter name="[Res]"		operation="set" 	value="004039bcb97622c4715a" />
-			<parameter name="[MacRes]"	operation="set" 	value="0000b70f5d335df7606d83b4c87d820e6071" />	
+			<parameter name="[Res]"		operation="set" 	value="39bcb97622c4715a" />
+			<parameter name="[MacRes]"	operation="set" 	value="b70f5d335df7606d83b4c87d820e6071" />	
 			
 			<!-- init valeurs -->  
 			<parameter name="[EndToEndDER]" operation="number.random" value="1000000000" />
@@ -45,13 +45,13 @@
     </element> 
     <!-- Message "Identity:1" => IETF RFC 3748 chapter 5.1 page 28 -->                  
     <element label="Message_Identity:1" coding="V" description="">
-        <field name="Type-Data" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
+        <field name="Type-Data" value="[UserName]" type="String" description=""/>
     </element>
 </element>           
 ]]>
 </parameter>
       <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
-      <test parameter="[binaryEAP]" condition="binary.equals" value="0201003b0130323038303134343639313131323233406e61692e6570632e6d6e633030312e6d63633230382e336770706e6574776f726b2e6f7267"/>
+      <!--test parameter="[binaryEAP]" condition="binary.equals" value="0201003b0130323038303134343639313131323233406e61692e6570632e6d6e633030312e6d63633230382e336770706e6574776f726b2e6f7267"/-->
 											
 <!--
 From 3GPP TS 29.273 V8.3.0 :
@@ -187,12 +187,12 @@ From 3GPP TS 29.273 V8.3.0 :
     <!-- Attribute AT_MAC:11 => IETF RFC 4187 chapter 10.15 page 63 -->
     <element tag="AT_MAC:11" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
-        <field name="Value" value="b70f5d335df7606d83b4c87d820e6071" type="Binary" description=""/>
+        <field name="Value" value="[MacRes]" type="Binary" description=""/>
     </element>
-    <!-- AT_RAND attribute : EAP-RES => IETF RFC 4187 chapter 10.8 page 56 -->
+    <!-- Attribute : EAP-RES => IETF RFC 4187 chapter 10.8 page 56 -->
     <element tag="AT_RES:3" coding="EAP" description="">
         <field name="Reserved" value="64" type="Integer" length="2" description=""/>
-        <field name="Value" value="39bcb97622c4715a" type="Binary" description=""/>        
+        <field name="Value" value="[Res]" type="Binary" description=""/>        
     </element>
 </element>              
 ]]>
@@ -260,5 +260,6 @@ From 3GPP TS 29.273 V8.3.0 :
 			<parameter name="[function:HopByHopDER]" />
 			<parameter name="[function:EndToEndDER]" />
 		</output>
+    
 	</function>
 </scenario>

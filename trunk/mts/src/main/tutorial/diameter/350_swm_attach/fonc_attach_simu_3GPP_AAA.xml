@@ -38,7 +38,7 @@
       <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
       <test parameter="[Type]" condition="string.equals" value="Identity:1"/>
       <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_Identity:1']/field[@name='Type-Data']/attribute::value"/>
-      <test parameter="[Identity]" condition="string.equals" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
+      <test parameter="[Identity]" condition="string.equals" value="[UserName]"/>
 
 			<!-- recherche user dans la table -->
 			<parameter name="[User_E164]" 	value="[test:User_E164-tab([Index_UserA])]" />
@@ -47,16 +47,14 @@
 			<parameter name="[IMSI]"		operation="set" value="20801446[MSIN]" />  
 			<parameter name="[UserNameP]"	operation="set" value="020801446[MSIN]@[realmNAI]" />  
 			
-			<!-- recuperation des donnees pour l'user  				
-			<parameter name="[Rand]"		operation="set" 	value="[SIP_Rand-tab([Index_UserA])]" />
+			<!--recuperation des donnees pour l'user -->  				
+			<!--parameter name="[Rand]"		operation="set" 	value="[SIP_Rand-tab([Index_UserA])]" />
 			<parameter name="[Autn]"		operation="set" 	value="[SIP_Autn-tab([Index_UserA])]" />
 			<parameter name="[Mac]"			operation="set" 	value="[SIP_Mac-tab([Index_UserA])]" />
 			<parameter name="[Iv]"			operation="set" 	value="[SIP_Iv-tab([Index_UserA])]" />
 			<parameter name="[EncrData]"	operation="set" 	value="[SIP_EncrData-tab([Index_UserA])]" />
-			<parameter name="[Master_Key]"	operation="set" 	value="[SIP_Master_Key-tab([Index_UserA])]" />
-			-->
-
-			
+			<parameter name="[Master_Key]"	operation="set" 	value="[SIP_Master_Key-tab([Index_UserA])]" /-->
+	
 			<!-- Envoie de la réponse DEA (Challenge) au message Request DER (Identity) vers le ePDG -->
 			<!-- init DEA -->	
 			<parameter name="[commandCode]" 	operation="set" value="Diameter-EAP:268"/>
@@ -80,17 +78,17 @@
     <!-- Attribute AT_RAND:1 => IETF RFC 4187 chapter 10.6 page 55 -->               
     <element tag="AT_RAND:1" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
-        <field name="Value" value="027f6f8909616c3ca4c836a02f7642be" type="Binary" description=""/>
+        <field name="Value" value="[Rand]" type="Binary" description=""/>
     </element>
     <!-- Attribute AT_AUTH:2 => IETF RFC 4187 chapter 10.7 page 56 -->
     <element tag="AT_AUTH:2" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
-        <field name="Value" value="598451caa6ce0000a52ffc02ec24118b" type="Binary" description=""/>
+        <field name="Value" value="[Autn]" type="Binary" description=""/>
     </element>
     <!-- Attribute AT_MAC:11 => IETF RFC 4187 chapter 10.15 page 63 -->
     <element tag="AT_MAC:11" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
-        <field name="Value" value="beafd710332dd3c27033c241bcb07053" type="Binary" description=""/>
+        <field name="Value" value="[Mac]" type="Binary" description=""/>
     </element>
     <!-- Attribute AT_CHECKCODE:134 => IETF RFC 4187 chapter 10.13 page 60 -->
     <element tag="AT_CHECKCODE:134" coding="EAP" description="">
@@ -99,12 +97,12 @@
     <!-- Attribute AT_IV:129 => IETF RFC 4187 chapter 10.12 page 58 -->
     <element tag="AT_IV:129" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
-        <field name="Value" value="fba14079d7d0e05175eb39c560be666c" type="Binary" description=""/>
+        <field name="Value" value="[Iv]" type="Binary" description=""/>
     </element>
     <!-- AT_ENCR_DATA:130 => IETF RFC 4187 chapter 10.12 page 58 -->
     <element tag="AT_ENCR_DATA:130" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
-        <field name="Value" value="dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26" type="Binary" description=""/>
+        <field name="Value" value="[EncrData]" type="Binary" description=""/>
     </element>
 </element>             
 ]]>
