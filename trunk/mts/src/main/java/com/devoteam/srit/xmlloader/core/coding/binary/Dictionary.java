@@ -162,23 +162,26 @@ public class Dictionary
         }
         if (tag == null)
         {
-        	tag = elementRoot.attributeValue("label");
-        }
-        if (tag == null)
-        {
         	tag = elementRoot.attributeValue("tag");
         }
         if (tag != null)
-        {
-        	tag = tag.trim();
+        {    
+        	ElementAbstract elemDico = getElementFromTag(tag);
+	        // the element is present in the dictionary
+	        if (elemDico != null)
+	        {
+	        	return elemDico;
+	        }
         }
-        
-        ElementAbstract elemDico = getElementFromTag(tag);
+
+        String label = elementRoot.attributeValue("identifier");
+        ElementAbstract elemDico = getElementByLabel(label);
         // the element is present in the dictionary
         if (elemDico != null)
         {
         	return elemDico;
         }
+        
         // the element is not present in the dictionary
         String coding = elementRoot.attributeValue("coding");
         ElementAbstract newElement = ElementAbstract.buildFactory(coding);

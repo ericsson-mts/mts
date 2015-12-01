@@ -59,18 +59,19 @@ public class ElementMessage extends ElementAbstract
 			if (elementHeader != null)
 			{
 	        	currentLength = elementHeader.decodeFromArray(array, dictionary);
-	        	String key = "";
+	        	String key = "Message";
+	        	/*
 	        	FieldAbstract fieldCode = elementHeader.getFieldsByName("Code");	        	
 	        	if (fieldCode != null)
 	        	{
 	        		key = "_" + elementHeader.getFieldsByName("Code").getValue(array);
 	        	}
+	        	*/
 	        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
 	        	if (fieldType != null && fieldType.offset / 8 < array.length)
 	        	{	        	
 	        		key += "_" + elementHeader.getFieldsByName("Type").getValue(array);
 	        	}
-	        	key += "_";
 				ElementAbstract elementMessage = dictionary.getElementByLabel(key);
 				if (elementMessage != null)
 				{
