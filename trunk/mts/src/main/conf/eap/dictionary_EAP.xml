@@ -14,9 +14,9 @@
 
 <dictionary>
 
-    <element id="MessageEAP" coding="Message" description="">
+    <element label="MessageEAP" coding="Message" description="">
         <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
-        <element name="HeaderEAP" coding="V" description="">
+        <element label="HeaderEAP" coding="V" description="">
           <field name="Code" type="EnumLong" length="1" description="[TYPE]">
             <enum name="Not applicable" value="0"/>          
             <enum name="Request" value="1"/>
@@ -49,42 +49,42 @@
 
 
     <!-- Message "Identity:1" => IETF RFC 3748 chapter 5.1 page 28 -->               
-    <element id="Request:1_Identity:1,Response:2_Identity:1" coding="V" description="">
+    <element label="_Response:2_Identity:1_" coding="V" description="">
         <field name="Type-Data" type="String" description=""/>
     </element>
 
     <!-- Message "Notification:2" => IETF RFC 3748 chapter 5.2 page 29 -->               
-    <element id="Request:1_Notification:2,Response:2_Notification:2" coding="V" description="">
+    <element label="Message_Notification:2" coding="V" description="">
         <field name="Type-Data" type="String" description=""/>
     </element>
 
     <!-- Message "Legacy Nak:3" (response only) => IETF RFC 3748 chapter 5.3.1 page 30 -->               
-    <element id="Response:2_Legacy Nak:3" coding="V" description="">
+    <element label="Message_Legacy Nak:3" coding="V" description="">
         <field name="Type-Data" type="String" description=""/>
     </element>
 
     <!-- Message "MD5-Challenge:4" => IETF RFC 3748 chapter 5.4 page 34 -->               
-    <element id="Request:1_MD5-Challenge:4,Response:2_MD5-Challenge:4" coding="V" description="">
-        <!--element id="value" coding="LV" description="">
+    <element label="Message_MD5-Challenge:4" coding="V" description="">
+        <element label="value" coding="LV" description="">
             <field name="value" type="Binary" description=""/>
-        </element-->    
-        <element id="name" coding="V" description="">
+        </element>    
+        <element label="name" coding="V" description="">
             <field name="name" type="String" description=""/>
         </element>    
     </element>
 
     <!-- Message "One-Time Password:5" => IETF RFC 3748 chapter 5.5 page 35 -->               
-    <element id="Request:1_One-Time Password:5,Response:2_One-Time Password:5" coding="V" description="">
+    <element label="Message_One-Time Password:5" coding="V" description="">
         <field name="Type-Data" type="Binary" description=""/>
     </element>
 
     <!-- Message "Generic Token Card:6" => IETF RFC 3748 chapter 5.6 page 36 -->               
-    <element id="Request:1_Generic Token Card:6,Response:2_Generic Token Card:6" coding="V" description="">
+    <element label="Message_Generic Token Card:6" coding="V" description="">
         <field name="Type-Data" type="Binary" description=""/>
     </element>
 
     <!-- Message "UMTS Authentication and Key Agreement EAP:23 (EAP-AKA) => IETF RFC 4187 chapter 8.1 page 45 -->               
-    <element id="Request:1_EAP-AKA:23,Response:2_EAP-AKA:23" coding="V" description="UMTS Authentication and Key Agreement EAP (EAP-AKA)">
+    <element label="_Request:1_EAP-AKA:23_,_Response:2_EAP-AKA:23_" coding="V" description="UMTS Authentication and Key Agreement EAP (EAP-AKA)">
           <field name="EAP AKA Subtype" length="1" type="EnumLong" description="">
             <enum name="Not applicable" value="0"/>
             <enum name="AKA-Challenge" value="1"/>
@@ -103,14 +103,14 @@
     </element>
 
     <!-- Message Expanded Types:254 => IETF RFC 3748 chapter 5.7 page 38 -->               
-    <element id="Request:1_Expanded Types:254,Response:2_Expanded Types:254" coding="V" description="">
+    <element label="Message_Expanded Types:254" coding="V" description="">
         <field name="Vendor-Id" type="Integer" length="3" description=""/>
         <field name="Vendor-Type" type="Integer" length="4" description=""/>
         <field name="Vendor-Data" type="Binary" description=""/>                
     </element>
     
     <!-- Message Experimental use:255 => IETF RFC 3748 chapter 5.8 page 39 -->               
-    <element id="Request:1_Experimental use:255,Response:2_Experimental use:255" coding="V" description="">
+    <element label="Message_Experimental use:255" coding="V" description="">
         <field name="Type-Data" type="Binary" description=""/>
     </element>
 

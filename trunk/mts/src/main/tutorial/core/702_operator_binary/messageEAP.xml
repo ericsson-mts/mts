@@ -4,14 +4,16 @@
 
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
-<element id="MessageEAP" coding="Message" value="" description="">
-    <element id="HeaderEAP" coding="V" description="">
+<element label="MessageEAP" coding="Message" value="" description="">
+    <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
+    <element label="HeaderEAP" coding="V" description="">
       <field name="Code" value="Response:2" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="1" length="1" type="Integer" description=""/>            
       <field name="length" value="0" length="2" type="Integer" description=""/>          
       <field name="Type" value="Identity:1" length="1" type="EnumLong" description=""/>
-    </element>                   
-    <element id="Identity" coding="V" description="">
+    </element> 
+    <!-- Message "Identity:1" => IETF RFC 3748 chapter 5.1 page 28 -->                  
+    <element label="_Response:2_Identity:1" coding="V" description="">
         <field name="Type-Data" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
     </element>
 </element>           
@@ -21,28 +23,29 @@
     <test parameter="[binaryEAP]" condition="binary.equals" value="0201003b0130323038303134343639313131323233406e61692e6570632e6d6e633030312e6d63633230382e336770706e6574776f726b2e6f7267"/>
 
     <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
-    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Code']/attribute::value"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
-    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Id']/attribute::value"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="string.equals" value="1"/>
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
     <test parameter="[Length]" condition="string.equals" value="59"/>
-    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Type']/attribute::value"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
     <test parameter="[Type]" condition="string.equals" value="Identity:1"/>
-    <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Response:2_Identity:1']/field[@name='Type-Data']/attribute::value"/>
+    <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='_Response:2_Identity:1_']/field[@name='Type-Data']/attribute::value"/>
     <test parameter="[Identity]" condition="string.equals" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
 
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
-<element name="MessageEAP" coding="Message" description="">
-    <!-- Header => IETF RFC 4187 chapter 8.1 page 45 -->
-    <element name="HeaderEAP" coding="V" description="">
+<element label="MessageEAP" coding="Message" description="">
+    <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
+    <element label="HeaderEAP" coding="V" description="">
       <field name="Code" value="Request:1" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="2" length="1" type="Integer" description=""/>            
       <field name="length" value="0" length="2" type="Integer" description=""/>
       <field name="Type" value="EAP-AKA:23" length="1" type="EnumLong" description=""/>
-    </element>      
-    <element name="HeaderEAP-AKA" coding="V" description="">                
+    </element>
+    <!-- Message "UMTS Authentication and Key Agreement EAP:23 (EAP-AKA) => IETF RFC 4187 chapter 8.1 page 45 -->          
+    <element label="_Request:1_EAP-AKA:23_" coding="V" description="">                
       <field name="EAP AKA Subtype" value="AKA-Challenge:1" length="1" type="EnumLong" description=""/>                      
       <field name="EAP AKA Reserved" value="0" length="2" type="Integer" description=""/>
     </element>
@@ -84,81 +87,81 @@
 
     <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
     
-    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Code']/attribute::value"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Request:1"/>
-    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Id']/attribute::value"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="string.equals" value="2"/>
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
     <test parameter="[Length]" condition="string.equals" value="192"/>
-    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Type']/attribute::value"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
     <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
-    <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Request:1_EAP-AKA:23']/field[@name='EAP AKA Subtype']/attribute::value"/>
+    <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='_Request:1_EAP-AKA:23_']/field[@name='EAP AKA Subtype']/attribute::value"/>
     <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Challenge:1"/>
-    <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Request:1_EAP-AKA:23']/field[@name='EAP AKA Reserved']/attribute::value"/>
+    <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='_Request:1_EAP-AKA:23_']/field[@name='EAP AKA Reserved']/attribute::value"/>
     <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RAND:1']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RAND:1']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_RAND]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RAND:1']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_RAND]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RAND:1']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_RAND]" condition="binary.equals" value="027f6f8909616c3ca4c836a02f7642be"/>    
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_AUTH:2']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_AUTH:2']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_AUTH]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_AUTH:2']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_AUTH]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_AUTH:2']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_AUTH]" condition="binary.equals" value="598451caa6ce0000a52ffc02ec24118b"/>    
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_MAC:11']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_MAC:11']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_MAC]" condition="binary.equals" value="beafd710332dd3c27033c241bcb07053"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_CHECKCODE:134']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_CHECKCODE:134']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_CHECKCODE]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_CHECKCODE:134']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_CHECKCODE]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_CHECKCODE:134']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_CHECKCODE]" condition="list.isEmpty"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_IV:129']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IV:129']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_IV]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_IV:129']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_IV]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IV:129']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_IV]" condition="binary.equals" value="fba14079d7d0e05175eb39c560be666c"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_ENCR_DATA:130']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_ENCR_DATA:130']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_ENCR_DATA]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_ENCR_DATA:130']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_ENCR_DATA]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_ENCR_DATA:130']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_ENCR_DATA]" condition="binary.equals" value="dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>
 
     <parameter name="[messageEAPresult]" operation="set">
-<![CDATA[<element name="MessageEAP" coding="Message" value="">
-   <element name="HeaderEAP" coding="V" value="010200c017">
+<![CDATA[<element label="MessageEAP" coding="Message" value="">
+   <element label="HeaderEAP" coding="V" value="010200c017">
       <field name="Code" value="Request:1" type="EnumLong" length="1" />
       <field name="Id" value="2" type="Integer" length="1" />
       <field name="Length" value="192" type="Integer" length="2" />
       <field name="Type" value="EAP-AKA:23" type="EnumLong" length="1" />
    </element>
-   <element name="Request:1_EAP-AKA:23" coding="V" value="010000">
+   <element label="_Request:1_EAP-AKA:23_" coding="V" value="010000">
       <field name="EAP AKA Subtype" value="AKA-Challenge:1" type="EnumLong" length="1" />
       <field name="EAP AKA Reserved" value="0" type="Integer" length="2" />
    </element>
-   <element name="AT_RAND:1" coding="EAP" value="0000027f6f8909616c3ca4c836a02f7642be">
+   <element tag="AT_RAND:1" coding="EAP" value="0000027f6f8909616c3ca4c836a02f7642be">
       <field name="Reserved" value="0" type="Integer" length="2" />
       <field name="Value" value="027f6f8909616c3ca4c836a02f7642be" type="Binary" length="16" />
    </element>
-   <element name="AT_AUTH:2" coding="EAP" value="0000598451caa6ce0000a52ffc02ec24118b">
+   <element tag="AT_AUTH:2" coding="EAP" value="0000598451caa6ce0000a52ffc02ec24118b">
       <field name="Reserved" value="0" type="Integer" length="2" />
       <field name="Value" value="598451caa6ce0000a52ffc02ec24118b" type="Binary" length="16" />
    </element>
-   <element name="AT_MAC:11" coding="EAP" value="0000beafd710332dd3c27033c241bcb07053">
+   <element tag="AT_MAC:11" coding="EAP" value="0000beafd710332dd3c27033c241bcb07053">
       <field name="Reserved" value="0" type="Integer" length="2" />
       <field name="Value" value="beafd710332dd3c27033c241bcb07053" type="Binary" length="16" />
    </element>
-   <element name="AT_CHECKCODE:134" coding="EAP" value="0000">
+   <element tag="AT_CHECKCODE:134" coding="EAP" value="0000">
       <field name="Reserved" value="0" type="Integer" length="2" />
    </element>
-   <element name="AT_IV:129" coding="EAP" value="0000fba14079d7d0e05175eb39c560be666c">
+   <element tag="AT_IV:129" coding="EAP" value="0000fba14079d7d0e05175eb39c560be666c">
       <field name="Reserved" value="0" type="Integer" length="2" />
       <field name="Value" value="fba14079d7d0e05175eb39c560be666c" type="Binary" length="16" />
    </element>
-   <element name="AT_ENCR_DATA:130" coding="EAP" value="0000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26">
+   <element tag="AT_ENCR_DATA:130" coding="EAP" value="0000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26">
       <field name="Reserved" value="0" type="Integer" length="2" />
       <field name="Value" value="dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26" type="Binary" length="96" />
    </element>
@@ -170,21 +173,25 @@
 
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
-<element name="MessageEAP" coding="Message" description="">
+<element label="MessageEAP" coding="Message" description="">
+    <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
     <element name="HeaderEAP" coding="V" description="">
       <field name="Code" value="Response:2" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="2" length="1" type="Integer" description=""/>            
       <field name="Length" value="0" length="2" type="Integer" description=""/>
       <field name="Type" value="EAP-AKA:23" length="1" type="EnumLong" description=""/>
-    </element>      
-    <element name="Response:2_EAP-AKA:23" coding="V" description="HeaderEAP-AKA">                                
+    </element>     
+    <!-- Message "UMTS Authentication and Key Agreement EAP:23 (EAP-AKA) => IETF RFC 4187 chapter 8.1 page 45 -->     
+    <element label="_Response:2_EAP-AKA:23_" coding="V" description="HeaderEAP-AKA">                                
       <field name="EAP AKA Subtype" value="AKA-Challenge:1" length="1" type="EnumLong" description=""/>                      
       <field name="EAP AKA Reserved" value="0" length="2" type="Integer" description=""/>
     </element>
+    <!-- Attribute AT_MAC:11 => IETF RFC 4187 chapter 10.15 page 63 -->
     <element tag="AT_MAC:11" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
         <field name="Value" value="b70f5d335df7606d83b4c87d820e6071" type="Binary" description=""/>
     </element>
+    <!-- AT_RAND attribute : EAP-RES => IETF RFC 4187 chapter 10.8 page 56 -->
     <element tag="AT_RES:3" coding="EAP" description="">
         <field name="Reserved" value="64" type="Integer" length="2" description=""/>
         <field name="Value" value="39bcb97622c4715a" type="Binary" description=""/>        
@@ -196,34 +203,34 @@
     <test parameter="[binaryEAP]" condition="binary.equals" value="02020028170100000b050000b70f5d335df7606d83b4c87d820e60710303004039bcb97622c4715a"/>
     
     <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
-    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Code']/attribute::value"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
-    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Id']/attribute::value"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="string.equals" value="2"/>
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
     <test parameter="[Length]" condition="string.equals" value="40"/>
-    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Type']/attribute::value"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
     <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
-    <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Response:2_EAP-AKA:23']/field[@name='EAP AKA Subtype']/attribute::value"/>
+    <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='_Response:2_EAP-AKA:23_']/field[@name='EAP AKA Subtype']/attribute::value"/>
     <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Challenge:1"/>
-    <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='Response:2_EAP-AKA:23']/field[@name='EAP AKA Reserved']/attribute::value"/>
+    <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='_Response:2_EAP-AKA:23_']/field[@name='EAP AKA Reserved']/attribute::value"/>
     <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_MAC:11']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_MAC:11']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_MAC:11']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071"/>
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RES:3']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RES:3']/field[@name='Length']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="64"/>
-    <parameter name="[AT_RES]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='AT_RES:3']/field[@name='Value']/attribute::value"/>
+    <parameter name="[AT_RES]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RES:3']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_RES]" condition="binary.equals" value="39bcb97622c4715a"/>
 
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
-<element name="MessageEAP" coding="Message" description="">
-    <!-- Header => IETF RFC 4187 chapter 8.1 page 45 -->
-    <element name="Header" coding="V" description="">
+<element label="MessageEAP" coding="Message" description="">
+    <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
+    <element label="HeaderEAP" coding="V" description="">
       <field name="Code" value="Success:3" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="1" length="1" type="Integer" description=""/>            
       <field name="Length" value="0" length="2" type="Integer" description=""/>
@@ -235,11 +242,11 @@
     <test parameter="[binaryEAP]" condition="binary.equals" value="03010004"/>
 
     <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
-    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Code']/attribute::value"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Success:3"/>
-    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Id']/attribute::value"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="string.equals" value="1"/>
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@name='HeaderEAP']/field[@name='Length']/attribute::value"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
     <test parameter="[Length]" condition="string.equals" value="4"/>
                   
 </scenario>
