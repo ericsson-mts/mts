@@ -152,14 +152,8 @@ public class Dictionary
 
     public ElementAbstract getElementFromXML(Element elementRoot) throws Exception
     {
-        //si elem dans dico on prend dico sinon on envoie ce qu'il y a dans le fichier xml
     	// for Q931 protocols only
         String tag = elementRoot.attributeValue("identifier");
-        // for Q931 protocols only
-        if (tag == null)
-        {
-        	tag = elementRoot.attributeValue("name");
-        }
         if (tag == null)
         {
         	tag = elementRoot.attributeValue("tag");
@@ -174,12 +168,20 @@ public class Dictionary
 	        }
         }
 
-        String label = elementRoot.attributeValue("identifier");
-        ElementAbstract elemDico = getElementByLabel(label);
-        // the element is present in the dictionary
-        if (elemDico != null)
+        // for Q931 protocols only
+        String label = elementRoot.attributeValue("name");
+        if (label == null)
         {
-        	return elemDico;
+        	label = elementRoot.attributeValue("label");
+        }
+        if (label != null)
+        {
+        	ElementAbstract elemDico = getElementByLabel(label);
+	        // the element is present in the dictionary
+	        if (elemDico != null)
+	        {
+	        	return elemDico;
+	        }
         }
         
         // the element is not present in the dictionary

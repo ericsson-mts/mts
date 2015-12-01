@@ -72,7 +72,7 @@
                    <!--noSM_RP_OA.C5></noSM_RP_OA.C5-->
                 </sm_RP_OA.Choice>
                 <sm_RP_UI.BoxedType><Bytes>
-                  <element name="SMS-SUBMIT" coding="V" description="First byte of the data">
+                  <element label="SMS-SUBMIT" coding="V" description="First byte of the data">
                     <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="enumeration" lengthBit="1" description="TP Reply Path"/>
                     <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="enumeration" lengthBit="1" description="TP User Data Header Indicator"/>
                     <field name="TP-SRR" value="A status report is not requested:0" type="enumeration" lengthBit="1" description="TP Status Report Request" />
@@ -80,23 +80,23 @@
                     <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="enumeration" lengthBit="1" description="TP Reject Duplicates" />
                     <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="enumeration" lengthBit="2" description="TP Message Type Indicator" />
                   </element>
-                  <element name="TP-MR" coding="V" description="TP Message Reference">
+                  <element label="TP-MR" coding="V" description="TP Message Reference">
                     <field name="TP-MR" value="8" type="integer" length="1" description="TP Message Reference" />
                   </element>
-                  <element name="TP-DA" coding="V" description="TP Destination Address">
-                    <element name="Address" coding="DV" description="Generic Address" comment="Address of the function.">
+                  <element label="TP-DA" coding="V" description="TP Destination Address">
+                    <element label="Address" coding="DV" description="Generic Address" comment="Address of the function.">
                   		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
                       <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
                       <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
                       <field name="digits" value="33660650767" type="number_bcd" description="digits"/>
                     </element>
                   </element>
-                  <element name="TP-PID" coding="V" description="TP Protocol Identifier">
+                  <element label="TP-PID" coding="V" description="TP Protocol Identifier">
                 		<field name="assignment" value="Assigns bits 0..5 as defined below:0" type="enumeration" lengthBit="2" description="next bits assignment"/>
                 		<field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="enumeration" lengthBit="1" description="telematic interworking"/>
                 		<field name="telematic devices" value="implicit device type is specific to this SC,:0" type="enumeration" lengthBit="5" description="telematic devices"/>
                   </element>
-                  <element name="TP-DCS" coding="V" description="TP Data Coding Scheme">
+                  <element label="TP-DCS" coding="V" description="TP Data Coding Scheme">
                 		<field name="Coding Group Bits" value="General Data Coding indication:0" type="enumeration" lengthBit="2" description="Coding Group Bits"/>
                 		<field name="Compression" value="the text is uncompressed:0" type="enumeration" lengthBit="1" description="Compression"/>
                 		<field name="Bit 1-0 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="enumeration" lengthBit="1" description="Bit 1-0 significance"/>
@@ -111,7 +111,7 @@
                     <!--field name="TP-VP" value="3   d  " /-->
                     <!--field name="TP-VP" value="52 w(eeks)" type="enumLong" length="1" description="TP Validity Period" /-->
                   </element>
-                  <element name="TP-UD" coding="V" description="TP User Data">
+                  <element label="TP-UD" coding="V" description="TP User Data">
                     <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1" description="number of characters in the SMS"/>
                     <field name="TP-UD" value="[smsBinary]" type="binary" description="SMS text"/>
                   </element>
