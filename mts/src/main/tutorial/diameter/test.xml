@@ -7,6 +7,9 @@
 
 <test description="DIAMETER regression tests" name="DIAMETER">
 
+    <!-- library for the 350_swm_attach testcase -->
+    &lib_configuration;
+
     <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
     <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
@@ -38,10 +41,7 @@
     
     <parameter name="[transport]" operation="set" value="TCP"/>
     <parameter name="[vendorID]" operation="set" value="3GPP:10415"/>
-  
-    <!-- library for the 350_swm_attach testcase -->
-    &lib_configuration;
-  
+    
     <testcase name="101_cx_uar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[commandCode]" operation="set" value="User-Authorization:300"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
