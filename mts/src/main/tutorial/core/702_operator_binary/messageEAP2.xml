@@ -39,5 +39,44 @@
     <test parameter="[MD5-value]" condition="binary.equals" value="0102030405060708091011121314151617181920"/>
     <parameter name="[MD5-name]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge:4']/element[@label='name']/field[@name='name']/attribute::value"/>
     <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
+
+    <parameter name="[messageEAP]" operation="set">
+<![CDATA[
+<element label="MessageEAP" coding="Message" value="" description="">
+    <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
+    <element label="HeaderEAP" coding="V" description="">
+      <field name="Code" value="Response:2" type="EnumLong" length="1" description=""/>          
+      <field name="Id" value="1" length="1" type="Integer" description=""/>            
+      <field name="length" value="0" length="2" type="Integer" description=""/>          
+      <field name="Type" value="MD5-Challenge:4" length="1" type="EnumLong" description=""/>
+    </element> 
+    <!-- Message "MD5-Challenge:4" => IETF RFC 3748 chapter 5.4 page 34 -->                  
+    <element label="Message_MD5-Challenge:4" coding="V" description="">
+        <element label="value" coding="LV" description="">
+            <field name="value" value="0102030405060708091011121314151617181920" description=""/>
+        </element>    
+        <element label="name" coding="V" description="">
+            <field name="name" value="abcdefghijJIHGFEDCBA" description=""/>
+        </element>    
+    </element></element>
+]]>
+</parameter>
+    <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+    <test parameter="[binaryEAP]" condition="binary.equals" value="0201002e041401020304050607080910111213141516171819206162636465666768696a4a494847464544434241"/>
+
+    <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
+    <test parameter="[Code]" condition="string.equals" value="Response:2"/>
+    <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
+    <test parameter="[Id]" condition="string.equals" value="1"/>
+    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
+    <test parameter="[Length]" condition="string.equals" value="46"/>
+    <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
+    <test parameter="[Type]" condition="string.equals" value="MD5-Challenge:4"/>
+    <parameter name="[MD5-value]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge:4']/element[@label='value']/field[@name='value']/attribute::value"/>
+    <test parameter="[MD5-value]" condition="binary.equals" value="0102030405060708091011121314151617181920"/>
+    <parameter name="[MD5-name]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge:4']/element[@label='name']/field[@name='name']/attribute::value"/>
+    <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
+
                   
 </scenario>
