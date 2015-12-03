@@ -102,6 +102,15 @@ From 3GPP TS 29.273 V8.3.0 :
     				<parameter name="[binOutputEAP]" operation="protocol.setFromMessage" value="avp.EAP-Payload:462.binary"/>
     			</receiveMessageDIAMETER>
 
+          <if>
+            <condition>
+              <test parameter="[binInputEAP]" condition="list.isEmpty"/>
+            </condition>
+            <then>
+              <parameter name="[binInputEAP]" operation="set" value="[binOutputEAP]"/>
+            </then>
+          </if>
+            
 <!--
 From 3GPP TS 29.273 V8.3.0 :
 < Diameter-EAP-Answer > ::=     < Diameter Header: 268, REQ, PXY, 16777264 > 
