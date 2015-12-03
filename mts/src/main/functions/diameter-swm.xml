@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+functions defined in this scenario
+
+"public"
+diameter.openChannel_SendDER_RecDEA
+diameter.RecDER_SendDEA
+
+"private"
+
+-->
+<scenario>
+
+    <function name="diameter.SendDER_RecDEA">
+        <input>
+          <parameter name="[function:binInputEAP]" type="binary"/>
+        </input>
+
+        <do>
+
+<!--
+From 3GPP TS 29.273 V8.3.0 :
+< Diameter-EAP-Request > ::=       < Diameter Header: 268, REQ, PXY, 16777264 > 
+									< Session-Id > 
+									{ Auth-Application-Id } 
+									{ Origin-Host } 
+									{ Origin-Realm } 
+									{ Destination-Realm } 
+									{ Auth-Request-Type } 
+									{ EAP-Payload } 
+									[ User-Name ] 
+									... 
+									[ Service-Seletion ]  
+									[ Auth-Session-State ] 
+									[ Service-Seletion ] 
+									... 
+									*[ AVP ] 
+-->
+
+      			<parameter name="[endToEnd]" operation="number.random" value="1000000000" />
+      			<parameter name="[hopByHop]" operation="number.random" value="1000000000" />
+      			<parameter name="[sessionId]" 	operation="number.random" value="1000000" />            
+
+      			<!-- envoie du message DER (EAP-Request / AKA identity)  -->
+      			<sendMessageDIAMETER name="Send Request DER" channel="channel_client" destScenario="server" >
+        				<header request="true" command="[commandCode]" applicationId="[applicationID]" 
+        					hopByHop="[hopByHop]" endToEnd="[endToEnd]"
+        					proxiable="true" error="false" retransmit="false"/>
+        				<avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
+        				<avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+        
+        				<avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        				<avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        				<avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        				<avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        				<avp code="Origin-State-Id:278" 	mandatory="true" type="Unsigned32" value="0"/>
+        				<!--  AVP: Auth-Request-Type(274) -->
+        				<avp code="Auth-Request-Type:274" mandatory="true" type="Enumerated" value="AUTHORIZE_AUTHENTICATE:3"/>
+        
+        				<avp code="User-Name:1" mandatory="true"  value="[userName]"/> 
+        				
+        				<!--  AVP: EAP-Payload (462)  -->
+        				<avp code="EAP-Payload:462" mandatory="true" type="Binary" value="[binInputEAP]"/>
+        				
+        				<!--  AVP: Auth-Session-State(277))  -->
+        				<avp code="Auth-Session-State:277" mandatory="true" type="Enumerated" value="STATE_MAINTAINED:0"/>
+        				<!--  AVP: Service-Selection(493)) -->
+        				<avp code="Service-Selection:493" mandatory="true" type="UTF8String" value="serverSelection"/>
+      			</sendMessageDIAMETER>
+      
+      			<!-- attente DEA apres echange MAR/MAA avec HSS -->
+      			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268">
+                <parameter name="[binOutputEAP]" operation="protocol.setFromMessage" value="avp.EAP-Payload:462.binary"/>
+      			</receiveMessageDIAMETER>
+            
+        </do>
+
+      <output>      
+        <parameter name="[function:binOutputEAP]"/>
+      </output>            
+    </function>
+
+    <function name="diameter.RecDER_SendDEA">
+        <input>
+          <parameter name="[function:binInputEAP]" type="binary" />        
+        </input>
+
+        <do>
+
+    			<!-- réception du DER 268(Identity) extract User-Name et info message  -->
+    			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268" >
+            <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>          
+            <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
+            <parameter name="[lastApplicationID]" operation="protocol.setFromMessage" value="header.applicationID"/>    
+            <parameter name="[lastHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+            <parameter name="[lastEndToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+            <parameter name="[lastSessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>                  
+            <parameter name="[lastDestHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+            <parameter name="[lastDestRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>                
+    				<parameter name="[lastUserName]" operation="protocol.setFromMessage" value="avp.User-Name.value" />
+    				<parameter name="[binOutputEAP]" operation="protocol.setFromMessage" value="avp.EAP-Payload:462.binary"/>
+    			</receiveMessageDIAMETER>
+
+<!--
+From 3GPP TS 29.273 V8.3.0 :
+< Diameter-EAP-Answer > ::=     < Diameter Header: 268, REQ, PXY, 16777264 > 
+									< Session-Id > 
+									{ Auth-Application-Id }
+									{ Auth-Request-Type }
+									{ Result-Code }
+									{ Origin-Host }
+									{ Origin-Realm }
+									{ EAP-Payload }
+									[ Auth-Session-State ]
+									[ User-Name ]
+									[ Session-Timeout ]
+									[ Origin-Host ]
+									[ State ]
+									…
+									*[ AVP ]
+-->
+			
+    			<sendMessageDIAMETER name="Send Answer DEA" listenpoint="[listenpointName]">
+    				<header request="false" command="[lastCommandCode]" applicationId="[lastApplicationID]" 
+    					hopByHop="[lastHopByHop]" endToEnd="[lastEndToEnd]" 
+    					proxiable="true" error="false" retransmit="false"/>
+    				<avp code="Session-Id:263" value="[lastSessionId]"/>
+    
+    				<avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[lastApplicationID]"/>
+    				
+    				<avp code="Origin-Host:264" 		value="[lastDestHost]"/>
+    				<avp code="Origin-Realm:296" 		value="[lastDestRealm]"/>
+    
+    				<avp code="Auth-Request-Type:274" 	mandatory="true" type="Enumerated" value="AUTHORIZE_AUTHENTICATE:3"/>
+    				<avp code="Result-Code:268" 		mandatory="true" type="Unsigned32" value="DIAMETER_MULTI_ROUND_AUTH:1001" />	
+    
+    				<!-- message EAP Challenge-->
+    				<avp code="EAP-Payload:462" mandatory="true" type="Binary" value="[binInputEAP]">
+    				</avp>
+    				
+    				<avp code="User-Name:1" mandatory="true" type="UTF8String" value="[userName]"/>
+    
+    				<avp code="Session-Timeout:27" 	mandatory="true" value="180"/>
+    				<!-- newsessionId = valeur pour HSS -->
+    				<!--avp code="State:24"			mandatory="true" type="UTF8String" value="[newsessionId]"/>
+    				<avp code="Origin-State-Id:278" mandatory="true" type="Unsigned32" value="[StateID_3GPP]"  /-->
+    			</sendMessageDIAMETER>
+
+        </do>
+        
+        <output>      
+          <parameter name="[function:binOutputEAP]"  />
+        </output>        
+    </function>
+
+
+</scenario>

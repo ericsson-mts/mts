@@ -205,8 +205,14 @@ public class Dictionary
     
     public Application getApplication(String key)
     {
-        if(Utils.isInteger(key))  return getApplicationById((int)Long.parseLong(key));
-        else                      return getApplicationByName(key);
+        if (Utils.isInteger(key))
+        {
+        	return getApplicationById((int)Long.parseLong(key));
+        }
+        else
+        {
+        	return getApplicationByName(key);
+        }
     }
     
     public VendorDef getVendorDefByName(String name, String applicationId )
