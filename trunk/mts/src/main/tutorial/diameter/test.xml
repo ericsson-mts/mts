@@ -7,9 +7,6 @@
 
 <test description="DIAMETER regression tests" name="DIAMETER">
 
-    <!-- library for the 350_swm_attach testcase -->
-    &lib_configuration;
-
     <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
     <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
@@ -42,6 +39,9 @@
     <parameter name="[transport]" operation="set" value="TCP"/>
     <parameter name="[vendorID]" operation="set" value="3GPP:10415"/>
     
+    <!-- library for the 350_swm_attach testcase -->
+    &lib_configuration;
+
     <testcase name="101_cx_uar" state="true" number="[iterations]" description="diameter" >
         <parameter name="[commandCode]" operation="set" value="User-Authorization:300"/>
         <parameter name="[applicationID]" operation="set" value="3GPP Cx:16777216"/>
@@ -241,7 +241,7 @@
 
     <testcase name="351_swm_eap-aka" state="true" number="[iterations]" description="diameter" >
   			<parameter name="[commandCode]" operation="set" value="Diameter-EAP:268"/> 
-        <parameter name="[applicationID]" operation="set" value="Diameter e2e4 Application:16777234"/>
+        <parameter name="[applicationID]" operation="set" value="3GPP SWm:16777264"/>
         <parameter name="[userName]" operation="set" value="0208014460005000@nai.epc.mnc001.mcc208.3gppnetwork.org"/>                    
         <scenario name="client" file="351_swm_eap-aka/client.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="351_swm_eap-aka/server.xml" state="[remoteServer]" routingName="[commandCode],[remotePortDIAM],DIAMETER"/>
