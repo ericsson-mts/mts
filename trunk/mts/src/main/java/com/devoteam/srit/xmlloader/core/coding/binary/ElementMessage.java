@@ -60,13 +60,6 @@ public class ElementMessage extends ElementAbstract
 			{
 	        	currentLength = elementHeader.decodeFromArray(array, dictionary);
 	        	String key = "Message";
-	        	/*
-	        	FieldAbstract fieldCode = elementHeader.getFieldsByName("Code");	        	
-	        	if (fieldCode != null)
-	        	{
-	        		key = "_" + elementHeader.getFieldsByName("Code").getValue(array);
-	        	}
-	        	*/
 	        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
 	        	if (fieldType != null && fieldType.offset / 8 < array.length)
 	        	{	        	
