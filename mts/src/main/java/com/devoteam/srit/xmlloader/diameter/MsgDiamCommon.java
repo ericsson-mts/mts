@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
@@ -81,7 +82,7 @@ public class MsgDiamCommon extends Msg
         message = aMessage;
         setListenpoint(StackDiamCommon.listenpoint); 
     }
-    
+        
     /** Returns the diameter message of MsgDiameter */
     public Message getMessage()
     {
@@ -91,7 +92,30 @@ public class MsgDiamCommon extends Msg
 	//-----------------------------------------------------------------------------------------
 	// generic methods for protocol request type result retransmission, transaction and session
 	//-----------------------------------------------------------------------------------------
-                
+    
+    /** 
+     * Get the protocol acronym of the message 
+     */
+    @Override
+    public String getProtocol()
+    {
+    	String applicationId = "";
+        try
+        {
+        	if (this.message.hdr.application_id!= 0)
+        	{
+        		applicationId = "." + Dictionary.getInstance().getApplicationById(this.message.hdr.application_id).get_name() + ":" + this.message.hdr.application_id;
+        		applicationId = applicationId.replace(" ", "");
+        	}
+        }
+        catch(Exception e)
+        {
+        	// nothing to do
+        }
+
+    	return StackFactory.PROTOCOL_DIAMETER + applicationId;    	
+    }
+        
     /** 
      * Return true if the message is a request else return false
      */
