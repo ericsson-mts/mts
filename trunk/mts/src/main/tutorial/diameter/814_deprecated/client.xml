@@ -3,6 +3,8 @@
 <!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 <scenario>
 
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendRequestAAA name="SendRequestMAR" server="aaa://[remoteDIAM]" destScenario="server">
         <header command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216"/>

@@ -3,10 +3,12 @@
 <!-- name="Send 3GPP CX Multimedia Authentication answer (MAR/MAA)" -->
 
 <scenario>
-
+                           
     <!-- create a listenpoint with no parameter -->
     <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
 
+    <call name="diameter.RecCER_SendCEA"/>
+    
     <receiveMessageDIAMETER name="ReceiveRequestMAR"  listenpoint="lp_server" request="true" type="506" >
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>

@@ -3,7 +3,9 @@
 <!-- name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 
 <scenario>
-    
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+        
     <parameter name="[timeout]" operation="set" value="10" />
     <parameter name="[emptyList]" operation="list.create"/>
     <parameter name="[stateValue]" operation="set" value="true"/>
@@ -133,7 +135,7 @@
     <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2="code=&quot;263&quot;value=&quot;[0-9,a,b,c,d,e,f]*&quot;" value3="X"/>
     
     <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
-    <test parameter="[protocol]" condition="string.equals" value="DIAMETER"/>
+    <test parameter="[protocol]" condition="string.equals" value="DIAMETER.EricssonIMT30-Cx:4321"/>
     <parameter name="[request1]" operation="protocol.setFromMessage" value="header.request"/>
     <test parameter="[request1]" condition="string.equals" value="false"/>
     <parameter name="[code]" operation="protocol.setFromMessage" value="header.command"/>

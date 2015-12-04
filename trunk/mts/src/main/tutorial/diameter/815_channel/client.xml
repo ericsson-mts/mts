@@ -7,6 +7,8 @@
     <!-- open a channel with no parameter -->
     <openChannelDIAMETER name="channel" remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]"/>
     
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+        
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" channel="channel" destScenario="server">
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 30 - Cx:4321"/>
