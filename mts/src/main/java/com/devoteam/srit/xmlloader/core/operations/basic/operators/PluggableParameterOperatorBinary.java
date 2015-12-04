@@ -108,8 +108,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_ENDIAN = "binary.endian";
     final private String NAME_BIN_ENCODE = "binary.encode";
     final private String NAME_BIN_DECODE = "binary.decode";
-    final private String NAME_BIN_FROMXML = "binary.fromxml";
-    final private String NAME_BIN_TOXML = "binary.toXml";
+    final private String NAME_BIN_ELEMENT_FROMXML = "binary.elementFromXml";
+    final private String NAME_BIN_ELEMENT_TOXML = "binary.elementToXml";
 
     
     
@@ -147,8 +147,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_ENDIAN));
         this.addPluggableName(new PluggableName(NAME_BIN_ENCODE));
         this.addPluggableName(new PluggableName(NAME_BIN_DECODE));
-        this.addPluggableName(new PluggableName(NAME_BIN_FROMXML));
-        this.addPluggableName(new PluggableName(NAME_BIN_TOXML));
+        this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_FROMXML));
+        this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_TOXML));
     }
 
     @Override
@@ -618,7 +618,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Array arrayResult = decodeNumberBits(array, nbBits, endian);
                 	result.add(Array.toHexString(arrayResult));
                 }
-                else if (name.equalsIgnoreCase(NAME_BIN_FROMXML))
+                else if (name.equalsIgnoreCase(NAME_BIN_ELEMENT_FROMXML))
                 {
                 	String xmlData = param_1.get(i).toString();
 
@@ -637,7 +637,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
             	    // encode the element
                 	result.add(Array.toHexString(newElement.encodeToArray()));
                 }
-                else if (name.equalsIgnoreCase(NAME_BIN_TOXML))
+                else if (name.equalsIgnoreCase(NAME_BIN_ELEMENT_TOXML))
                 {
                 	String string1 = param_1.get(i).toString();                	
                                         
