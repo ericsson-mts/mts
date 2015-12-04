@@ -58,16 +58,33 @@ public class Dictionary
     
     public static Dictionary getInstance(String file) throws Exception
     {
-    	Dictionary instance = dictionaries.get(file);
-    	if (instance == null)
+    	if (dictionaries == null)
     	{
-    		instance = new Dictionary(file);
-    		dictionaries.put(file, instance);
+    		dictionaries = new  HashMap<String, Dictionary>();
+    	}
+    	Dictionary instance = null;
+    	synchronized (dictionaries)
+    	{
+	    	instance = dictionaries.get(file);
+	    	if (instance == null)
+	    	{
+	    		instance = new Dictionary(file);
+	    		dictionaries.put(file, instance);
+	    	}
     	}
     	return instance;
     }
     
-	public Dictionary(String file) throws Exception 
+    public static void reset()
+    {
+    	if (dictionaries !=  null)
+    	{
+	    	dictionaries.clear();
+	    	dictionaries = null;
+    	}
+    }
+    
+	private Dictionary(String file) throws Exception 
     {
     	this();    	
 		XMLDoc xml = new XMLDoc();

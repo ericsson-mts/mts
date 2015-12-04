@@ -27,6 +27,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -160,6 +161,7 @@ public class StackFactory
         }
 
         listStack.clear();
+        Dictionary.reset();
     }
     
     /*

@@ -625,7 +625,6 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
                 	String dicoFile = param_2.get(i).toString();
                 	Dictionary dico = Dictionary.getInstance(dicoFile.trim());
-                	//Dictionary dico = new Dictionary(dicoFile.trim());
 
                     Document doc = Utils.stringParseXML(xmlData, false);
                     Element xmlRoot = doc.getRootElement();
@@ -646,7 +645,6 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
                     String dicoFile = param_2.get(i).toString();
                     Dictionary dico = Dictionary.getInstance(dicoFile.trim());
-                    //Dictionary dico = new Dictionary(dicoFile.trim());
                     
             	    // get the element from the dictionary and clone it
                     ElementAbstract elemDico = dico.getElementMessage();
