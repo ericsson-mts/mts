@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 
@@ -40,6 +41,9 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
  */
 public class Dictionary 
 {
+	
+	public static HashMap<String, Dictionary> dictionaries = new  HashMap<String, Dictionary>();
+	
     private String _layer;
     
     private ElementAbstract elementMessage = null;
@@ -52,9 +56,20 @@ public class Dictionary
     { 
     }
     
+    public static Dictionary getInstance(String file) throws Exception
+    {
+    	Dictionary instance = dictionaries.get(file);
+    	if (instance == null)
+    	{
+    		instance = new Dictionary(file);
+    		dictionaries.put(file, instance);
+    	}
+    	return instance;
+    }
+    
 	public Dictionary(String file) throws Exception 
     {
-    	this();
+    	this();    	
 		XMLDoc xml = new XMLDoc();
 		String path = "../conf/" + file;
 	    xml.setXMLFile(new URI(path));
