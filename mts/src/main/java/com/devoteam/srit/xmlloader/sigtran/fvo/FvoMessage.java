@@ -420,7 +420,7 @@ public class FvoMessage {
 
     public String getProtocol() 
     {
-    	return StackFactory.PROTOCOL_SIGTRAN + "." + _dictionary.get_layer();
+    	return StackFactory.PROTOCOL_SIGTRAN + StackFactory.SEP_SUB_INFORMATION + _dictionary.get_layer();
     }
     
     public boolean isRequest()

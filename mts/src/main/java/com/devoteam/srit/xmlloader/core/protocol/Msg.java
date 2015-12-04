@@ -402,12 +402,31 @@ public abstract class Msg extends MsgLight implements Removable
      * Get the type of the message
      * Used for message filtering with "type" attribute and for statistic counters 
      */
-    public abstract String getType() throws Exception;
+    public String getType() throws Exception
+    {
+    	String type = null;
+        // for response message
+        if (!isRequest())
+        {
+			Trans trans = getTransaction(); 
+	    	if (trans != null)
+	    	{
+		    	Msg request = trans.getBeginMsg();
+		    	if (request != null)
+		    	{
+		    		type = request.getType();
+		    	}
+	    	}
+        }
+        return type;
+    }
 
     /** Get the type for comparison of the message */
     public String getTypeComparison() throws Exception
     {
-    	return ":" + getTypeComplete() + ":";
+    	String type = getTypeComplete();
+    	type = type.replace(StackFactory.SEP_SUB_INFORMATION, ":");
+    	return ":" + type + ":";
     }
 
     /** Get the complete type (with dictionary conversion) of the message */
@@ -427,7 +446,9 @@ public abstract class Msg extends MsgLight implements Removable
     /** Get the result for comparison of the message */
     public String getResultComparison() throws Exception
     {
-    	return ":" + getResultComplete() + ":";
+    	String result = getResultComplete();
+    	result = result.replace(StackFactory.SEP_SUB_INFORMATION, ":");
+    	return ":" + result + ":";
     }
 
     /** Get the complete result of the message (null if request) */

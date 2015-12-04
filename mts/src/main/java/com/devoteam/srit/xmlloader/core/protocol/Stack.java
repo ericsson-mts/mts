@@ -444,7 +444,7 @@ public abstract class Stack
     	String stackClassname = clStack.getSimpleName();
     	String packageName = clStack.getPackage().getName();
     	String acronyme = stackClassname.substring(5);
-    	String msgClassname = packageName + "." + type + acronyme;
+    	String msgClassname = packageName + StackFactory.SEP_SUB_INFORMATION + type + acronyme;
     	//java.lang.reflect.Type.GetType(msgClassname)
     	Class<?> cl = getClassFromCanonicalName(msgClassname); 
     	return cl;

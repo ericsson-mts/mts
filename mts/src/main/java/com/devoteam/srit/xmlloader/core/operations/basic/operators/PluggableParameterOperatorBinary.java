@@ -639,23 +639,12 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TOXML))
                 {
-                	String string1 = param_1.get(i).toString();
-                	Array array = Array.fromHexString(string1);
+                	String string1 = param_1.get(i).toString();                	
                                         
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
                     String dicoFile = param_2.get(i).toString();
-                    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
-                    
-            	    // get the element from the dictionary and clone it
-                    ElementAbstract elemDico = dico.getElementMessage();
-                    ElementAbstract newElement = ElementAbstract.buildFactory(elemDico.getCoding()); 
-                    if (elemDico != null)
-        			{
-                    	newElement.copyToClone(elemDico);
-        			}
-            	    // decode the elements list
-                    newElement.decodeFromArray(array, dico);
-                    
+                    ElementAbstract newElement = elementDecodeToXml(string1, dicoFile);
+                                        
                     // get the XML data                  
                     String xmlData = newElement.toXml(0);
                 	result.add(xmlData);
@@ -1160,5 +1149,21 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 		return arrayResult;
     }
 
+    public static ElementAbstract elementDecodeToXml(String data, String dicoFile) throws Exception
+    {    
+    	Array array = Array.fromHexString(data);
+	    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
+	    
+	    // get the element from the dictionary and clone it
+	    ElementAbstract elemDico = dico.getElementMessage();
+	    ElementAbstract newElement = ElementAbstract.buildFactory(elemDico.getCoding()); 
+	    if (elemDico != null)
+		{
+	    	newElement.copyToClone(elemDico);
+		}
+	    // decode the elements list
+	    newElement.decodeFromArray(array, dico);
+	    return newElement;
+    }
 }
 
