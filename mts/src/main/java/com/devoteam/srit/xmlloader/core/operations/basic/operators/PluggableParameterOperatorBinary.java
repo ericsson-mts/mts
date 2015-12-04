@@ -559,7 +559,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_ASNTOXML))
                 {
-                	Array array = Array.fromHexString(param_1.get(i).toString());
+                	String string1 = param_1.get(i).toString();
+                	Array array = Array.fromHexString(string1);
                     
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
                     String className = param_2.get(i).toString().replace(" ", "");
@@ -623,7 +624,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
                 	String dicoFile = param_2.get(i).toString();
-                	Dictionary dico = new Dictionary(dicoFile);
+                	Dictionary dico = Dictionary.getInstance(dicoFile.trim());
+                	//Dictionary dico = new Dictionary(dicoFile.trim());
 
                     Document doc = Utils.stringParseXML(xmlData, false);
                     Element xmlRoot = doc.getRootElement();
@@ -631,25 +633,33 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     // parse the XML file using the dictionary
             	    ElementAbstract elemDico = dico.getElementFromXML(xmlRoot);
             	    ElementAbstract newElement = (ElementAbstract) elemDico.cloneAttribute();
-        	        newElement.parseFromXML(xmlRoot, dico, elemDico, true);
+        	        newElement.parseFromXML(xmlRoot, dico, elemDico, false);
         	                    	    
             	    // encode the element
                 	result.add(Array.toHexString(newElement.encodeToArray()));
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_TOXML))
                 {
-                	Array array = Array.fromHexString(param_1.get(i).toString());
+                	String string1 = param_1.get(i).toString();
+                	Array array = Array.fromHexString(string1);
                                         
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
-                    String dicoFile = param_2.get(i).toString().replace(" ", "");
-                    Dictionary dico = new Dictionary(dicoFile);
+                    String dicoFile = param_2.get(i).toString();
+                    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
+                    //Dictionary dico = new Dictionary(dicoFile.trim());
                     
+            	    // get the element from the dictionary and clone it
+                    ElementAbstract elemDico = dico.getElementMessage();
+                    ElementAbstract newElement = ElementAbstract.buildFactory(elemDico.getCoding()); 
+                    if (elemDico != null)
+        			{
+                    	newElement.copyToClone(elemDico);
+        			}
             	    // decode the elements list
-                    ElementAbstract elementMessage = dico.getElementMessage();
-                    elementMessage.decodeFromArray(array, dico);
+                    newElement.decodeFromArray(array, dico);
                     
                     // get the XML data                  
-                    String xmlData = elementMessage.toXml(0);
+                    String xmlData = newElement.toXml(0);
                 	result.add(xmlData);
                 }
                 else

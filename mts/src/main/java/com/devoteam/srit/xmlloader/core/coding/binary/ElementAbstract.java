@@ -58,7 +58,7 @@ public abstract class ElementAbstract implements Cloneable
 {
     protected String coding;
 	
-    protected int tag = Integer.MIN_VALUE;
+	protected int tag = Integer.MIN_VALUE;
 
     protected String label;
     
@@ -715,6 +715,12 @@ public abstract class ElementAbstract implements Cloneable
     	}
         return null;
     }
+    
+    public String getCoding() 
+    {
+		return coding;
+	}
+    
     public int getTag() 
     {
         return this.tag;

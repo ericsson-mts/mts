@@ -130,9 +130,19 @@ public class MsgDiamCommon extends Msg
      * Used for message filtering with "type" attribute and for statistic counters 
      */
     @Override
-    public String getType()
+    public String getType() throws Exception
     {
-        return getCodeString() + ":" + message.hdr.command_code + "";
+    	String type = getCodeString() + ":" + message.hdr.command_code;
+    	Parameter var = getParameter("avp.462.binary");
+    	/*
+    	if (var != null && var.length() > 0) 
+        {
+    		Array array = Array.fromHexString((String) var.get(0));
+    		
+            type = new String(array.get(1));
+        }
+        */
+        return type;
     }
     
     /** get the command as a label from the dictionary */
@@ -167,7 +177,7 @@ public class MsgDiamCommon extends Msg
     {
         // get Result-Code value
         Parameter var = getParameter("avp.268.value");
-        if (var.length() > 0) 
+        if (var != null && var.length() > 0) 
         {
             return (String) var.get(0);
         }
