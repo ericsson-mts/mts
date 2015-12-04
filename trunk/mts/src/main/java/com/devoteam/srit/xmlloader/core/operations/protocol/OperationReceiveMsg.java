@@ -76,25 +76,24 @@ public class OperationReceiveMsg extends Operation
         GlobalLogger.instance().logDeprecatedMessage( root.getName() + " .../", "receiveMessage" + protocol + " .../");
         
         // add the corresponding <parameter> and <test> xml tag
-        addParameterTestTag(root, "string.equals", "message.protocol", protocol);
+        if (protocol != null) 
+        {
+            addParameterTestTag(root, "string.startsWith", "message.protocol", protocol);
+        }
         addParameterTestTag(root, "string.equals", "message.request", new Boolean(request).toString());
-
-        if(null != channel)
+        if (channel != null)
         {
             addParameterTestTag(root, "string.equals", "channel.name", channel);
         }
-
-        if(null != listenpoint)
+        if (listenpoint != null)
         {
             addParameterTestTag(root, "string.equals", "listenpoint.name", listenpoint);
         }
-
-        if(null != type)
+        if (type != null)
         {
             addParameterTestTag(root, "string.contains", "message.typeComparison", ":" + type + ":");
-        }
-        
-        if(null != result)
+        }        
+        if (result != null)
         {
             addParameterTestTag(root, "string.contains", "message.resultComparison", ":" + result + ":");
         }

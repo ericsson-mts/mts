@@ -85,30 +85,32 @@ public class OperationReceiveMessage extends Operation {
         String result = rootNode.attributeValue("result");
         String probe = rootNode.attributeValue("probe");
         
-                if (null != protocol) {
+        if (protocol != null) 
+        {
             addParameterTestTag(rootNode, "string.startsWith", "message.protocol", protocol);
         }
-        if (null != request) {
+        if (request != null) 
+        {
             addParameterTestTag(rootNode, "string.equals", "message.request", new Boolean(request).toString());
         }
-
-        if (null != channel) {
+        if (channel != null) 
+        {
             addParameterTestTag(rootNode, "string.equals", "channel.name", channel);
         }
-
-        if (null != listenpoint) {
+        if (listenpoint != null) 
+        {
             addParameterTestTag(rootNode, "string.equals", "listenpoint.name", listenpoint);
         }
-
-        if (null != type) {
+        if (type != null) 
+        {
             addParameterTestTag(rootNode, "string.contains", "message.typeComparison", ":" + type + ":");
         }
-
-        if (null != result) {
+        if (result != null) 
+        {
             addParameterTestTag(rootNode, "string.contains", "message.resultComparison", ":" + result + ":");
         }
-        
-        if (null != probe) {
+        if (probe != null) 
+        {
         	addParameterTestTag(rootNode, "string.equals", "probe.name", probe);
         }
         
