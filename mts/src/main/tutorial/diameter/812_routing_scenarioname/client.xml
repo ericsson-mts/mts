@@ -3,7 +3,7 @@
 <!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
 
 <scenario>
-
+                              
     <createListenpointDIAMETER name="client" localHost="[Listen-Client-Host]" localPort="[Listen-Client-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -18,6 +18,8 @@
             <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216" type="AppId" mandatory="true"/>
         </avp>
     </createListenpointDIAMETER>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
 
     <parameter name="[testcase:createListenpoint]" operation="system.semaphorewait"/>
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>

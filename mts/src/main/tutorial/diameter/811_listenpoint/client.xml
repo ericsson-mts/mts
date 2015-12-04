@@ -6,7 +6,9 @@
 
     <!-- create a listenpoint with no parameter -->
     <createListenpointDIAMETER name="lp_client" localPort="[Listen-Client-Port]"/>
-    
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+        
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
