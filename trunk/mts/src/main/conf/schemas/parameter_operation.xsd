@@ -694,7 +694,51 @@
 						</xs:annotation>
 					</xs:attribute>
 				</xs:complexType>
-			</xs:element>																																																																																																												
+			</xs:element>
+      <xs:element name="binary.elementFromXml">
+				<xs:annotation>
+					<xs:documentation>Parse an element structure from XML format and encode it to binary data using a dictionary.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The resulting binary data.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The XML data to parse and encode.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The dictionary file path.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>
+      <xs:element name="binary.elementToXml">
+				<xs:annotation>
+					<xs:documentation>Decode an element structure from binary data and convert it to XML format using a dictionary.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The resulting XML data.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The binary data to encode and convetrt to XML.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The dictionary file path.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+				</xs:complexType>
+			</xs:element>																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="OperationBoolean">
