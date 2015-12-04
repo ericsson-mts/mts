@@ -59,7 +59,7 @@ public class BN_APMessage extends BN_ASNMessage
 	
 	public String getProtocol()
     {
-		return StackFactory.PROTOCOL_SIGTRAN + "." + this.dictionary.getLayer();
+		return StackFactory.PROTOCOL_SIGTRAN + StackFactory.SEP_SUB_INFORMATION + this.dictionary.getLayer();
     }
 	
     @Override

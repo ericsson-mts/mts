@@ -171,18 +171,28 @@ public class Trans extends GroupMsg<Msg>
     {
     	String ret = beginMsg.getSummary(send, true);
     	ret += " / ";
+    	if (ret.length() > 20)
+    	{
+    		ret += "<BR>";
+    	}
         Iterator<Msg> iter = endListMsg.values().iterator();
         while (iter.hasNext())
         {
             Msg msg = (Msg) iter.next();
+            String summary;  
             if (iter.hasNext())
             {
-           		ret += msg.getSummary(!send, false) + " ";
+           		summary = msg.getSummary(!send, false) + " ";
             }
             else
             {
-           		ret += msg.getSummary(!send, true);
+           		summary= msg.getSummary(!send, true);
             }
+            ret += summary;
+        	if (summary.length() > 20)
+        	{
+        		ret += "<BR>";
+        	}
         }    
         return ret;
     }

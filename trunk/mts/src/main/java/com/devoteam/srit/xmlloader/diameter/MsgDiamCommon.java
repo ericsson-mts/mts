@@ -28,14 +28,17 @@ import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
 import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
+import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorBinary;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.AVP;
@@ -104,7 +107,7 @@ public class MsgDiamCommon extends Msg
         {
         	if (this.message.hdr.application_id!= 0)
         	{
-        		applicationId = "." + Dictionary.getInstance().getApplicationById(this.message.hdr.application_id).get_name() + ":" + this.message.hdr.application_id;
+        		applicationId = StackFactory.SEP_SUB_INFORMATION + Dictionary.getInstance().getApplicationById(this.message.hdr.application_id).get_name() + ":" + this.message.hdr.application_id;
         		applicationId = applicationId.replace(" ", "");
         	}
         }
@@ -112,7 +115,6 @@ public class MsgDiamCommon extends Msg
         {
         	// nothing to do
         }
-
     	return StackFactory.PROTOCOL_DIAMETER + applicationId;    	
     }
         
@@ -131,18 +133,62 @@ public class MsgDiamCommon extends Msg
      */
     @Override
     public String getType() throws Exception
-    {
-    	String type = getCodeString() + ":" + message.hdr.command_code;
-    	Parameter var = getParameter("avp.462.binary");
-    	/*
-    	if (var != null && var.length() > 0) 
+    {    
+    	String type = super.getType();
+    	if (type != null)
+    	{
+    		return type;
+    	}
+
+    	// for request message
+        type = getCodeString() + ":" + message.hdr.command_code;        
+
+    	// for message with EAP data
+        Parameter eapPayload = getParameter("avp.462.binary");    	
+    	if (eapPayload != null && eapPayload.length() > 0) 
         {
-    		Array array = Array.fromHexString((String) var.get(0));
-    		
-            type = new String(array.get(1));
+    		String data = (String) eapPayload.get(0);
+    		type += StackFactory.SEP_SUB_INFORMATION + getEAPType(data);    		
+            return type;
         }
-        */
         return type;
+    }
+    
+    /** 
+     * Get the special type of the EAP message 
+     */
+    private String getEAPType(String data) throws Exception
+    {
+    	String eapType = null;
+		// for message with EAP data
+		ElementAbstract newElement = PluggableParameterOperatorBinary.elementDecodeToXml(data, "../conf/eap/dictionary_EAP.xml");
+		
+		ElementAbstract subElement = newElement.getElement(0);
+		String typeValue = subElement.getFieldValue("Type");
+		if (typeValue == null)
+		{
+			String codeValue = subElement.getFieldValue("Code");
+			if (codeValue != null)
+			{
+				eapType = codeValue;
+			}
+			return eapType;
+		}
+		if (typeValue.endsWith(":23"))
+		{
+			subElement = newElement.getElement(1);
+			String akaSubtypeValue = subElement.getFieldValue("EAP AKA Subtype");
+			if (akaSubtypeValue != null)
+			{
+				eapType = akaSubtypeValue;
+			}
+			return eapType;
+		}
+		if (typeValue != null)
+		{
+			eapType = typeValue;
+		}
+        return eapType;
     }
     
     /** get the command as a label from the dictionary */
@@ -167,7 +213,7 @@ public class MsgDiamCommon extends Msg
     {
 	    return getType();
     }
-
+    
     /** 
      * Get the result of the message (null if request)
      * Used for message filtering with "result" attribute and for statistic counters 
@@ -175,21 +221,34 @@ public class MsgDiamCommon extends Msg
     @Override
     public String getResult() throws Exception
     {
-        // get Result-Code value
-        Parameter var = getParameter("avp.268.value");
-        if (var != null && var.length() > 0) 
+    	String result = null;
+    	    	
+    	// get Result-Code value
+        Parameter resultCode = getParameter("avp.268.value");
+        if (resultCode != null && resultCode.length() > 0) 
         {
-            return (String) var.get(0);
+            result = (String) resultCode.get(0);
+        }
+                
+        if (result == null)
+        {
+	        // get Experimental-Result:Experimental-Result-Code
+	    	Parameter experimentalResult = getParameter("avp.297.298.value");
+	        if (experimentalResult != null && experimentalResult.length() > 0)
+	        {
+	            result = (String) experimentalResult.get(0);
+	        }
         }
         
-        // get Experimental-Result:Experimental-Result-Code
-        var = getParameter("avp.297.298.value");
-        if(var != null && var.length() > 0)
+    	// for message with EAP data
+        Parameter eapPayload = getParameter("avp.462.binary");    	
+    	if (eapPayload != null && eapPayload.length() > 0) 
         {
-            return (String) var.get(0);
+    		String data = (String) eapPayload.get(0);
+    		result += StackFactory.SEP_SUB_INFORMATION + getEAPType(data);    		
+            return result;
         }
-        
-        return null ;
+        return result;
     }
 
     /** Get the complete result of this answer (null if request) */

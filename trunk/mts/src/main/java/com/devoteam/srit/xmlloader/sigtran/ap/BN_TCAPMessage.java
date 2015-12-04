@@ -65,7 +65,7 @@ public class BN_TCAPMessage extends BN_ASNMessage
 	
 	public String getProtocol()
     {
-		return StackFactory.PROTOCOL_SIGTRAN + "." + this.dictionary.getLayer();
+		return StackFactory.PROTOCOL_SIGTRAN + StackFactory.SEP_SUB_INFORMATION + this.dictionary.getLayer();
     }
 	
     public boolean isRequest()

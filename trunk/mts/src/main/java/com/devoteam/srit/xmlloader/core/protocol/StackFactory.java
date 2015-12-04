@@ -39,6 +39,12 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 public class StackFactory
 {
 
+    // separator for sub information
+    public final static String SEP_SUB_INFORMATION = ".";
+
+    // separator for dictionary resolvation
+    public final static String SEP_DICO_RESOLVATION = ":";
+
     // public final static String PREFIX_INCOMING = "&lt;&lt;in";
     public final static String PREFIX_INCOMING = "_in";
     // public final static String PREFIX_OUTGOING = "&gt;&gt;out";

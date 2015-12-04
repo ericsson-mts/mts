@@ -336,7 +336,7 @@ public class TlvMessage {
     
     public String getProtocol() 
     {
-    	return StackFactory.PROTOCOL_SIGTRAN + "." + _dictionary.getLayer();
+    	return StackFactory.PROTOCOL_SIGTRAN + StackFactory.SEP_SUB_INFORMATION + _dictionary.getLayer();
     }
     
     public boolean isRequest()

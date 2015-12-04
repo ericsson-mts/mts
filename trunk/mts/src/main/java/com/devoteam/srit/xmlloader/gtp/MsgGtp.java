@@ -64,7 +64,7 @@ public class MsgGtp extends Msg
     @Override
     public String getProtocol()
     {
-    	return StackFactory.PROTOCOL_GTP + "." + this.message.getSubProtocol();
+    	return StackFactory.PROTOCOL_GTP + StackFactory.SEP_SUB_INFORMATION + this.message.getSubProtocol();
     }
 
     /** 

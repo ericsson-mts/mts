@@ -508,6 +508,16 @@ public abstract class ElementAbstract implements Cloneable
 		return sup;
     }
     
+    public String getFieldValue(String fieldName) throws Exception
+    {
+    	FieldAbstract field = this.getFieldsByName(fieldName);
+    	if (field != null && field.offset / 8 < this.fieldsArray.length)
+    	{
+    		return field.getValue(this.fieldsArray);
+    	}
+		return null;
+    }
+    
     public ElementAbstract cloneAttribute() throws Exception
     {
 		ElementAbstract newElement = buildFactory(this.coding);
@@ -635,14 +645,6 @@ public abstract class ElementAbstract implements Cloneable
 	    	elemString.append(this.label);
 	    	elemString.append("\"");        	
         }
-        /*
-        if (this.description != null)
-        {
-	    	elemString.append(" description=\"");
-	   		elemString.append(this.description);
-	    	elemString.append("\"");
-        }
-        */
         if (this.instances != 0)
         {
 	    	elemString.append(" instances=\"");
