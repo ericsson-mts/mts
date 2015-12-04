@@ -28,7 +28,7 @@
 			</receiveMessageDIAMETER>
       
       <!-- check the EAP received data -->
-      <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
       <test parameter="[Code]" condition="string.equals" value="Response:2"/>
       <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -108,7 +108,7 @@
 ]]>
 </parameter>
   
-      <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
       <test parameter="[binaryEAP]" condition="binary.equals" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000beafd710332dd3c27033c241bcb070538601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>  
 					
 			<!--
@@ -174,7 +174,7 @@
 			</receiveMessageDIAMETER>
 
       <!-- check the EAP received data -->
-      <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
       <test parameter="[Code]" condition="string.equals" value="Response:2"/>
       <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -211,7 +211,7 @@
 </element>            
 ]]>
   </parameter>
-      <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
       <test parameter="[binaryEAP]" condition="binary.equals" value="03010004"/>          
           
 			<sendMessageDIAMETER name="Send Answer DEA" listenpoint="[test:simu_3GPP_AAA_Server]"  remoteURL="[urlePDG]">

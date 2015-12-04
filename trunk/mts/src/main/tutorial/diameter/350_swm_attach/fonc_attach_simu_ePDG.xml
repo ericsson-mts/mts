@@ -50,7 +50,7 @@
 </element>           
 ]]>
 </parameter>
-      <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
       <!--test parameter="[binaryEAP]" condition="binary.equals" value="0201003b0130323038303134343639313131323233406e61692e6570632e6d6e633030312e6d63633230382e336770706e6574776f726b2e6f7267"/-->
 											
 <!--
@@ -119,7 +119,7 @@ From 3GPP TS 29.273 V8.3.0 :
 			</receiveMessageDIAMETER>
 
       <!-- check the EAP received data -->
-      <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
       
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
       <test parameter="[Code]" condition="string.equals" value="Request:1"/>
@@ -197,7 +197,7 @@ From 3GPP TS 29.273 V8.3.0 :
 </element>              
 ]]>
   </parameter>
-      <parameter name="[binaryEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
       <test parameter="[binaryEAP]" condition="binary.equals" value="02020028170100000b050000b70f5d335df7606d83b4c87d820e60710303004039bcb97622c4715a"/>
 
 			<sendMessageDIAMETER name="Send Request DER" listenpoint="[test:simu_ePDG]" remoteHost="[host3GGP_AAA]" remotePort="[port3GGP_AAA]" >
@@ -245,7 +245,7 @@ From 3GPP TS 29.273 V8.3.0 :
 			</receiveMessageDIAMETER>	
       
       <!-- check the EAP received data -->      
-      <parameter name="[xmlEAP]" operation="binary.toxml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
       <test parameter="[Code]" condition="string.equals" value="Success:3"/>
       <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>

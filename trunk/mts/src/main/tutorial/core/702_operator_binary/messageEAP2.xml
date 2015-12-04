@@ -23,12 +23,12 @@
     </element></element>           
 ]]>
 </parameter>
-    <parameter name="[binInputEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
     <test parameter="[binInputEAP]" condition="binary.equals" value="0201002e041401020304050607080910111213141516171819206162636465666768696a4a494847464544434241"/>
 
     <parameter name="[binOutputEAP]" operation="set" value="[binInputEAP]"/>
 
-    <parameter name="[xmlEAP]" operation="binary.toxml" value="[binOutputEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binOutputEAP]" value2="eap/dictionary_EAP.xml"/>
     <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
     <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -66,12 +66,12 @@
 </element>
 ]]>
 </parameter>
-    <parameter name="[binInputEAP]" operation="binary.fromxml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
     <test parameter="[binInputEAP]" condition="binary.equals" value="0201002cfe989680b2d05e00303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f"/>
 
     <parameter name="[binOutputEAP]" operation="set" value="[binInputEAP]"/>
     
-    <parameter name="[xmlEAP]" operation="binary.toxml" value="[binOutputEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binOutputEAP]" value2="eap/dictionary_EAP.xml"/>
     <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
     <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
