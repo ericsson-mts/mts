@@ -101,7 +101,7 @@ From 3GPP TS 29.273 V8.3.0 :
 			</sendMessageDIAMETER>
 
 			<!-- attente DEA apres echange MAR/MAA avec HSS -->
-			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268" >
+			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268:Identity:1" result="DIAMETER_MULTI_ROUND_AUTH:1001:AKA-Challenge:1">
 				<parameter name="[UserName]" operation="protocol.setFromMessage" value="avp.User-Name.value"   />
 				<parameter name="[session]" operation="protocol.setFromMessage" value="avp.Session-Id.value"  />
 				<parameter name="[ListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name" />
@@ -228,7 +228,7 @@ From 3GPP TS 29.273 V8.3.0 :
 
 			
 			<!-- attente DEA (AKA Success) apres echange SAR/SAA avec HSS -->
-			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268" >
+			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268:AKA-Challenge:1" result="DIAMETER_SUCCESS:2001:Success:3">
 				<parameter name="[UserName]" operation="protocol.setFromMessage" value="avp.User-Name.value"  />
 				<parameter name="[session]" operation="protocol.setFromMessage" value="avp.Session-Id.value"  />
 				<parameter name="[ListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name" />
