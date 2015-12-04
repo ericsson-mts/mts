@@ -11,7 +11,7 @@
     
         <do>
 			<!-- réception du DER 268(Identity) extract User-Name et info message  -->
-			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268" >
+			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268:Identity:1" >
 				<parameter name="[UserName]" operation="protocol.setFromMessage" value="avp.User-Name.value" />
 				<parameter name="[sessionDER]" operation="protocol.setFromMessage" value="avp.Session-Id.value" />
 				<parameter name="[ListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name" />
@@ -157,7 +157,7 @@
 			</sendMessageDIAMETER>					
 
 			<!-- Réception du message Request DER (Challenge) de ePDG -->
-			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268" >
+			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268:AKA-Challenge:1" >
 				<parameter name="[UserName]" operation="protocol.setFromMessage" value="avp.User-Name.value"  />
 				<parameter name="[sessionDER]" operation="protocol.setFromMessage" value="avp.Session-Id.value"  />
 				<parameter name="[ListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name" />
