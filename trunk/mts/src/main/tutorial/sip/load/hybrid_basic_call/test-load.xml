@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    <parameter name="[SpeedTestcase]" operation="set" value="100" description="number of testcase per second" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="100" description="Duration (in sec.) of the test" editable="true" />
+    <parameter name="[NumberTestcase]" operation="set" value="1" description="number of testcase" editable="true" />
+    <parameter name="[CallDuration]" operation="set" value="10" description="number of testcase" editable="true" />    
+    <parameter name="[LevelSupervision]" operation="set" value="ERROR" description="level to log the supervision message" editable="true" />
+    <parameter name="[PeriodSupervision]" operation="set" value="10" description="Period for the supervision polling" editable="true" />
+
+    <parameter name="[localHostSIP]" operation="system.ipaddress" description="Addresse du XMLloader" />
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
+    <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader" />
+    <parameter name="[localPortSIP]" operation="set" value="7070"/>
+    <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>
+
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress" description="Addresse de l'AS" />
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
+    <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Port du XMLloader" />
+    <parameter name="[remotePortSIP]" operation="set" value="7070"/>    	
+    <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    <parameter name="[invitee]" operation="set" value="bob"/>
+    <parameter name="[inviter]" operation="set" value="alice"/>
+
+    <!-- transport parameters-->
+	  <parameter name="[transportRequest]" operation="set" value="UDP"/>
+	  <parameter name="[transportResponse]" operation="set" value="UDP"/>
+
+   	<parameter name="[SpeedTestcase]" operation="number.divide" value="[SpeedTestcase]" value2="[NumberTestcase]"/>
+    
+    <parameter name="[test:setupId]" operation="set" value="0000000"/>
+    <parameter name="[test:releaseId]" operation="set" value="0000000"/>    
+    
+    <parameter name="[first]" operation="set" value="true"/>
+    <parameter name="[waiting]" operation="set" value="[NumberTestcase]"/>
+
+    <!--testcase description="test sip" name="sip/156_sip_supervision" state="false">
+        <scenario file="../../156_sip_supervision/probe.xml" name="probe" routingName="probe"/>
+        <scenario file="../../156_sip_supervision/supervision.xml" name="supervision" routingName="supervision"/>
+    </testcase-->    
+
+    
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">   
+
+	    <testcase name="Testcase[index] SETUP" description="load [index]" number="1" state="true">
+        			
+    		<runProfile>
+              <start delay="0"/>
+              <step frequency="[SpeedTestcase]" time="0"/>
+              <end delay="[TestDurationSec]"/>
+      	</runProfile>
+    
+    		<scenario file="UAC_setup.xml" name="alice" routingName="alice[index]"/>
+    		<scenario file="UAS_setup.xml" name="bob" routingName="bob[index]"/>
+        
+	    </testcase>
+    </for>
+
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">   
+
+	    <testcase name="Testcase[index] RELEASE" description="load [index]" number="1" state="true">
+        			
+        <parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[CallDuration]"/>               
+    		<runProfile>
+              <start delay="[CallDuration]"/>
+              <step frequency="[SpeedTestcase]" time="0"/>
+              <end delay="[TestDurationSec]"/>
+      	</runProfile>
+    
+    		<scenario file="UAC_release.xml" name="alice" routingName="alice[index]"/>
+    		<scenario file="UAS_release.xml" name="bob" routingName="bob[index]"/>
+        
+	    </testcase>
+    </for>
+    
+</test>

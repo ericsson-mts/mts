@@ -425,7 +425,10 @@ public abstract class Msg extends MsgLight implements Removable
     public String getTypeComparison() throws Exception
     {
     	String type = getTypeComplete();
-    	type = type.replace(StackFactory.SEP_SUB_INFORMATION, ":");
+    	if (type != null)
+    	{
+    		type = type.replace(StackFactory.SEP_SUB_INFORMATION, ":");
+    	}
     	return ":" + type + ":";
     }
 
@@ -447,7 +450,10 @@ public abstract class Msg extends MsgLight implements Removable
     public String getResultComparison() throws Exception
     {
     	String result = getResultComplete();
-    	result = result.replace(StackFactory.SEP_SUB_INFORMATION, ":");
+    	if (result != null)
+    	{
+    		result = result.replace(StackFactory.SEP_SUB_INFORMATION, ":");
+    	}
     	return ":" + result + ":";
     }
 

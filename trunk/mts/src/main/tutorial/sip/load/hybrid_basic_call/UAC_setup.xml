@@ -3,14 +3,25 @@
 
 <scenario>
 
+    <parameter name="[test:setupId]" operation="number.add" value="[test:setupId]" value2="0000001"/>
+    <if>
+      <condition>
+        <test parameter="[test:setupId]" condition="number.greaterThan" value="1000000"/>
+      </condition>
+      <then>
+        <parameter name="[test:setupId]" operation="set" value="0000000"/>      
+      </then>
+    </if>
+    <log type="Main" level="WARN">SETUP : [setupId]</log>
+        
+		<parameter name="[inviteeName]" operation="set" value="bob[setupId]"/>
+		<parameter name="[inviterName]" operation="set" value="alice[setupId]"/>
+
   	<parameter name="[localTag]" operation="string.random" value="10"/>
   	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
   	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>
-  
-    <log>[remoteSIP]</log>
-    
-	<sendMessageSIP name="Send INVITE" destScenario="[invitee]"
+  	<sendMessageSIP name="Send INVITE" destScenario="[invitee]"
      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
 <![CDATA[INVITE sip:[inviteeName]@[domainName] SIP/2.0
 To: sip:[inviteeName]@[domainName]
@@ -72,8 +83,7 @@ Content-Disposition: recipient-list
 
   	<!--receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180"/-->
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>                              
-    
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>                                  
   	<receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200">
     		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>                     
     		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>                         
@@ -82,8 +92,19 @@ Content-Disposition: recipient-list
     		<parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
   	</receiveMessageSIP>
 
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>
-      	
+    <parameter name="[test:from_[setupId]]" operation="set" value="[From]"/>
+    <parameter name="[test:to_[setupId]]" operation="set" value="[To]"/>    
+    <parameter name="[test:callId_[setupId]]" operation="set" value="[CallId]"/>
+    <parameter name="[test:cseqnumber_[setupId]]" operation="set" value="[lastCseqNumber]"/>
+    <parameter name="[test:requestUri_[setupId]]" operation="set" value="[Request-URI]"/>
+    <parameter name="[test:timestamp_[setupId]]" operation="system.timestamp" value="1970"/>
+    <stats>
+        <counter name="Number session" summary="Sess" complete="Number of session">
+            <increase>1</increase>
+        </counter>
+    </stats>
+
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>      	
   	<sendMessageSIP name="Send ACK" destScenario="[invitee]"
      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
 <![CDATA[ACK [Request-URI] SIP/2.0
@@ -102,30 +123,5 @@ Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
 Content-Length: 0
 ]]>
   	</sendMessageSIP>
-
-  	<pause name="Pause before BYE" seconds="0"/>
-
-    <parameter name="[newBranchId]" operation="string.random" value="10"/>
-  	<parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>
-    
-  	<sendMessageSIP name="Send BYE" destScenario="[invitee]"
-     remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
-<![CDATA[BYE [Request-URI] SIP/2.0
-To: [To]
-From: [From]
-Call-ID: [CallId]
-CSeq: [newCseqNumber] BYE
-Route: <sip:[inviterName]@[remoteSIP];lr;transport=[transportRequest];mode=originating>
-Route: <sip:[inviterName]@[localSIP];lr;transport=[transportRequest];mode=originating>
-Contact: <sip:[inviterName]@[localSIP]>
-Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
-Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
-User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
-Max-Forwards: 70
-Content-Length: 0
-]]>
-  	</sendMessageSIP>
-                
-  	<receiveMessageSIP name="Wait 200 OK" type="BYE" result="200"/>
-        
+            
 </scenario>

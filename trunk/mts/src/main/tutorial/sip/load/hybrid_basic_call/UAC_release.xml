@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <if>
+      <condition>
+        <test parameter="[test:releaseId]" condition="number.greaterEqualThan" value="[setupId]"/>
+      </condition>
+      <then>
+        <exit name="fin test"/>      
+      </then>
+    </if>
+
+    <parameter name="[test:releaseId]" operation="number.add" value="[test:releaseId]" value2="0000001"/>
+    <if>
+      <condition>
+        <test parameter="[test:releaseId]" condition="number.greaterThan" value="1000000"/>
+      </condition>
+      <then>
+        <parameter name="[test:releaseId]" operation="set" value="0000000"/>      
+      </then>
+    </if>
+    <log type="Main" level="WARN">RELEASE : [releaseId]</log>    
+
+    <parameter name="[inviteeName]" operation="set" value="bob[releaseId]"/>
+		<parameter name="[inviterName]" operation="set" value="alice[releaseId]"/>
+
+    <parameter name="[From]" operation="set" value="[test:from_[releaseId]]"/>     
+    <parameter name="[To]" operation="set" value="[test:to_[releaseId]]"/>    
+    <parameter name="[CallId]" operation="set" value="[test:callId_[releaseId]]"/>
+    <parameter name="[newCseqNumber]" operation="set" value="[test:cseqnumber_[releaseId]]"/>    
+    <parameter name="[Request-URI]" operation="set" value="[test:requestUri_[releaseId]]"/>
+
+    <parameter name="[test:from_[releaseId]]" operation="list.remove"/>
+    <parameter name="[test:to_[releaseId]]" operation="list.remove"/>    
+    <parameter name="[test:callId_[releaseId]]" operation="list.remove"/>
+    <parameter name="[test:cseqnumber_[releaseId]]" operation="list.remove"/>
+    <parameter name="[test:requestUri_[releaseId]]" operation="list.remove"/>    
+    
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  	<parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>    
+  	<sendMessageSIP name="Send BYE" destScenario="[invitee]"
+     remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [newCseqNumber] BYE
+Route: <sip:[inviterName]@[remoteSIP];lr;transport=[transportRequest];mode=originating>
+Route: <sip:[inviterName]@[localSIP];lr;transport=[transportRequest];mode=originating>
+Contact: <sip:[inviterName]@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+                
+  	<receiveMessageSIP name="Wait 200 OK" type="BYE" result="200"/>
+        
+</scenario>

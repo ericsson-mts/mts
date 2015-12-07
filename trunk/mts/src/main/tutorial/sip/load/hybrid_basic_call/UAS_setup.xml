@@ -11,8 +11,6 @@
     		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
     		<parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
     		<parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
-    		<!--parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
-    		<parameter name="[contentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/-->
   	</receiveMessageSIP>
 
     <parameter name="[localTag]" operation="string.random" value="10"/>
@@ -87,32 +85,5 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
   	</sendMessageSIP>
 
   	<receiveMessageSIP name="Wait ACK" request="true" type="ACK"/>
-
-  	<receiveMessageSIP name="Wait BYE" request="true" type="BYE">
-    		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
-    		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
-    		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>          
-    		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
-    		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
-    		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
-    		<parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>              
-  	</receiveMessageSIP>
-  
-  	<sendMessageSIP name="Send 200 OK"
-     remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
-<![CDATA[SIP/2.0 200 OK
-To: [To]
-From: [From]
-Via: [Via]
-Call-ID: [CallId]
-CSeq: [CSeq]
-Contact: [contact]
-Max-Forwards: MaxForwards  
-Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
-User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
-Max-Forwards: 70
-Content-Length: 0
-]]>
-  	</sendMessageSIP>
 
 </scenario>
