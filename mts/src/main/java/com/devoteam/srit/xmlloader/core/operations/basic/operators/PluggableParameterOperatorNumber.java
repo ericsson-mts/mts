@@ -69,6 +69,7 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
     final private String NAME_N_TOBINARY = "number.toBinary";
     final private String NAME_N_MAX = "number.max";
     final private String NAME_N_MIN = "number.min";
+    final private String NAME_N_ABS = "number.abs";
     
 
     private DecimalFormat decimalFormat;
@@ -103,7 +104,7 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_N_TODATE));
         this.addPluggableName(new PluggableName(NAME_N_TOBINARY));
         this.addPluggableName(new PluggableName(NAME_N_MAX));
-        this.addPluggableName(new PluggableName(NAME_N_MIN));
+        this.addPluggableName(new PluggableName(NAME_N_ABS));
     }
     
     @Override
@@ -249,6 +250,11 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
                     Parameter param2 = assertAndGetParameter(operands, "value2");
                     Double op2 = Double.parseDouble(param2.get(i).toString());
                     result.add(formatDouble(Math.min(op1, op2)));
+                }
+                else if (name.equalsIgnoreCase(NAME_N_ABS))
+                {
+                	Double op1 = Double.parseDouble(param1.get(i).toString());
+                	result.add(formatDouble(Math.abs(op1)));
                 }
                 else throw new RuntimeException("unsupported operation " + name);
             }
