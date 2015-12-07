@@ -92,8 +92,14 @@ ErrorList.list={...}
 	<test parameter="[number]" condition="number.equals" value="10" />
 
 	<parameter name="[result]" operation="string.digest" value="mystring" value2="MD5" />
-	<parameter name="[number]" operation="string.length" value="[result]" />
-	<test parameter="[number]" condition="number.equals" value="32" />
+	<parameter name="[number]" operation="binary.length" value="[result]" />
+	<test parameter="[number]" condition="number.equals" value="16" />
+  <test parameter="[result]" condition="binary.equals" value="169319501261C644A58610f967e8f9d0" />
+
+  <parameter name="[result]" operation="string.digest" value="mystring" value2="SHA1" />
+	<parameter name="[number]" operation="binary.length" value="[result]" />
+	<test parameter="[number]" condition="number.equals" value="20" />
+  <test parameter="[result]" condition="binary.equals" value="9ce3ea4d6fAC2165933B3971E6D5A13753c7d878" />
 
 	<parameter name="[string]" operation="list.set" value="valuesepvaluesepvalue" />
 	<parameter name="[string]" operation="string.split" value="[string]" value2="sep" />
