@@ -104,6 +104,7 @@ public class PluggableParameterOperatorNumber extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_N_TODATE));
         this.addPluggableName(new PluggableName(NAME_N_TOBINARY));
         this.addPluggableName(new PluggableName(NAME_N_MAX));
+        this.addPluggableName(new PluggableName(NAME_N_MIN));        
         this.addPluggableName(new PluggableName(NAME_N_ABS));
     }
     
