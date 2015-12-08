@@ -2,11 +2,16 @@
 <test name="Load tests">
 
     <parameter name="[SpeedTestcase]" operation="set" value="100" description="number of testcase per second" editable="true" />
-    <parameter name="[TestDurationSec]" operation="set" value="100" description="Duration (in sec.) of the test" editable="true" />
-    <parameter name="[NumberTestcase]" operation="set" value="1" description="number of testcase" editable="true" />
-    <parameter name="[CallDuration]" operation="set" value="10" description="number of testcase" editable="true" />    
-    <parameter name="[LevelSupervision]" operation="set" value="ERROR" description="level to log the supervision message" editable="true" />
-    <parameter name="[PeriodSupervision]" operation="set" value="10" description="Period for the supervision polling" editable="true" />
+    <parameter name="[TestDurationSec]" operation="set" value="36000" description="Duration (in sec.) of the test" editable="true" />
+    <parameter name="[NumberTestcase]" operation="set" value="200" description="number of testcase" editable="true" />
+    <parameter name="[CallDuration]" operation="set" value="3600" description="duration of a call" editable="true" />    
+    <parameter name="[ProcessTime]" operation="set" value="0.1" description="processing time to simulate the equipement latency" editable="true" />    
+    <parameter name="[ResponseTime]" operation="set" value="0.2" description="time for the terminal to answer 200 or 180 (for INVITE)" editable="true" />
+    <parameter name="[HangupTime]" operation="set" value="0.5" description="time for the terminal to hangup for 200 (for INVITE)" editable="true" />
+    <parameter name="[RangeUser]" operation="set" value="1000000" description="range for the user id" editable="true" />
+    
+    <!--parameter name="[LevelSupervision]" operation="set" value="ERROR" description="level to log the supervision message" editable="true" />
+    <parameter name="[PeriodSupervision]" operation="set" value="10" description="Period for the supervision polling" editable="true" /-->
 
     <parameter name="[localHostSIP]" operation="system.ipaddress" description="Addresse du XMLloader" />
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
@@ -27,12 +32,15 @@
     <!-- transport parameters-->
 	  <parameter name="[transportRequest]" operation="set" value="UDP"/>
 	  <parameter name="[transportResponse]" operation="set" value="UDP"/>
-
-   	<parameter name="[SpeedTestcase]" operation="number.divide" value="[SpeedTestcase]" value2="[NumberTestcase]"/>
     
     <parameter name="[test:setupId]" operation="set" value="0000000"/>
     <parameter name="[test:releaseId]" operation="set" value="0000000"/>    
+    <parameter name="[test:semSetup]" operation="system.semaphorenotify" value="1"/>
+    <parameter name="[test:semRelease]" operation="system.semaphorenotify" value="1"/>
     
+    <parameter name="[NumberTestcaseSETUP]" operation="set" value="[NumberTestcase]"/>
+    <parameter name="[NumberTestcaseRELEASE]" operation="number.divide" value="[NumberTestcase]" value2="2" />
+       
     <parameter name="[first]" operation="set" value="true"/>
     <parameter name="[waiting]" operation="set" value="[NumberTestcase]"/>
 
@@ -42,10 +50,12 @@
     </testcase-->    
 
     
-    <for from="001" index="[index]" step="1" to="[NumberTestcase]">   
+    <for from="001" index="[index]" step="1" to="[NumberTestcaseSETUP]">   
 
 	    <testcase name="Testcase[index] SETUP" description="load [index]" number="1" state="true">
         			
+        <parameter name="[SpeedTestcase]" operation="number.divide" value="[SpeedTestcase]" value2="[NumberTestcaseSETUP]"/>
+        
     		<runProfile>
               <start delay="0"/>
               <step frequency="[SpeedTestcase]" time="0"/>
@@ -58,11 +68,13 @@
 	    </testcase>
     </for>
 
-    <for from="001" index="[index]" step="1" to="[NumberTestcase]">   
+    <for from="001" index="[index]" step="1" to="[NumberTestcaseRELEASE]">   
 
 	    <testcase name="Testcase[index] RELEASE" description="load [index]" number="1" state="true">
         			
-        <parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[CallDuration]"/>               
+        <parameter name="[SpeedTestcase]" operation="number.divide" value="[SpeedTestcase]" value2="[NumberTestcaseRELEASE]"/>              
+        <parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[CallDuration]"/>
+                       
     		<runProfile>
               <start delay="[CallDuration]"/>
               <step frequency="[SpeedTestcase]" time="0"/>
