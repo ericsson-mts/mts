@@ -62,8 +62,10 @@ public class ElementMessage extends ElementAbstract
 	        	String key = "Message";
 	        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
 	        	if (fieldType != null && fieldType.offset / 8 < array.length)
-	        	{	        	
-	        		key += "_" + fieldType.getValue(array);
+	        	{	  
+	        		String typeValue = fieldType.getValue(array);
+	        		typeValue = typeValue.replace(":", "_");
+	        		key += "_" + typeValue;
 	        	}
 				ElementAbstract elementMessage = dictionary.getElementByLabel(key);
 				if (elementMessage != null)

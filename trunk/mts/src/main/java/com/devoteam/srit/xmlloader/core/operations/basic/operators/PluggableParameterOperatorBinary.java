@@ -110,8 +110,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_DECODE = "binary.decode";
     final private String NAME_BIN_ELEMENT_FROMXML = "binary.elementFromXml";
     final private String NAME_BIN_ELEMENT_TOXML = "binary.elementToXml";
+    final private String NAME_BIN_ELEMENT_SETFROM = "binary.elementSetFrom";
 
-    
     
     public PluggableParameterOperatorBinary()
     {
@@ -149,6 +149,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_DECODE));
         this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_FROMXML));
         this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_TOXML));
+        this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_SETFROM));
     }
 
     @Override
@@ -643,11 +644,29 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                                         
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
                     String dicoFile = param_2.get(i).toString();
-                    ElementAbstract newElement = elementDecodeToXml(string1, dicoFile);
+            	    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
+                    ElementAbstract newElement = elementDecodeToXml(string1, dico);
                                         
                     // get the XML data                  
                     String xmlData = newElement.toXml(0);
                 	result.add(xmlData);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_ELEMENT_SETFROM))
+                {
+                	String string1 = param_1.get(i).toString();                	
+                   
+                    Parameter param_2 = assertAndGetParameter(operands, "value2");
+                    String path = "element." + param_2.get(i).toString();
+                    String[] params = Utils.splitNoRegex(path, ".");
+
+                    Parameter param_3 = assertAndGetParameter(operands, "value3");
+                    String dicoFile = param_3.get(i).toString();
+                    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
+                                       
+                    ElementAbstract newElement = elementDecodeToXml(string1, dico);
+                                        
+                    // get the data from element using path        
+                    newElement.getParameter(result, params, 0, dico);
                 }
                 else
                 {
@@ -1149,10 +1168,9 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 		return arrayResult;
     }
 
-    public static ElementAbstract elementDecodeToXml(String data, String dicoFile) throws Exception
+    public static ElementAbstract elementDecodeToXml(String data, Dictionary dico) throws Exception
     {    
     	Array array = Array.fromHexString(data);
-	    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
 	    
 	    // get the element from the dictionary and clone it
 	    ElementAbstract elemDico = dico.getElementMessage();
