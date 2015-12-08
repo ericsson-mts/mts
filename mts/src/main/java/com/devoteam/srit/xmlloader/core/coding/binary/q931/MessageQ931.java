@@ -138,7 +138,7 @@ public class MessageQ931
 		    while (iter.hasNext())
 		    {
 		    	ElementAbstract elem = (ElementAbstract) iter.next();
-	    		elem.getParameter(var, params, path, 1, dictionary);
+	    		elem.getParameter(var, params, 1, dictionary);
 	    	}
         }
         else

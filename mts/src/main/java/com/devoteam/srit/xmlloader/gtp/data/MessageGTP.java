@@ -248,7 +248,7 @@ public class MessageGTP
 		    while (iter.hasNext())
 		    {
 		    	ElementAbstract elem = (ElementAbstract) iter.next();
-	    		elem.getParameter(var, params, path, 0, dictionary);
+	    		elem.getParameter(var, params, 0, dictionary);
 	    	}
 	    }
 	    else if (path.equalsIgnoreCase("data.binary"))

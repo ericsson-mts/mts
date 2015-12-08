@@ -552,7 +552,7 @@ public abstract class ElementAbstract implements Cloneable
 		}
     }
     
-    public void getParameter(Parameter var, String[] params, String path, int offset, Dictionary dictionary) throws Exception 
+    public void getParameter(Parameter var, String[] params, int offset, Dictionary dictionary) throws Exception 
     {
     	if (params.length == offset + 2) 
         {
@@ -572,7 +572,21 @@ public abstract class ElementAbstract implements Cloneable
         	FieldAbstract field = this.fieldsByName.get(params[offset + 3]);
         	if (field != null)
         	{	
-        		var.add(field.getValue(this.fieldsArray));
+                String strVal = null;
+                try
+                {
+                	strVal = field.getValue(this.fieldsArray);
+                }
+                catch (Exception e)
+                {
+                	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
+                	// nothing to do 
+                }
+
+        		if (strVal !=  null)
+        		{
+        			var.add(strVal);
+        		}
         	}
         }
         else 
@@ -582,7 +596,7 @@ public abstract class ElementAbstract implements Cloneable
  		    while (iter.hasNext())
  		    {
  		    	ElementAbstract elem = (ElementAbstract) iter.next();
- 		    	elem.getParameter(var, params, params[offset + 2], offset + 1, dictionary);
+ 		    	elem.getParameter(var, params, offset + 1, dictionary);
  		    }
         }    	
     }
@@ -608,19 +622,22 @@ public abstract class ElementAbstract implements Cloneable
     		instances = Integer.parseInt(instancesStr);
     	}		
 		
-		Integer tagInt = dictionary.getElementFromTag(tagStr).getTag();
-		
-		List<ElementAbstract> list = new ArrayList<ElementAbstract>();
-		
-	    Iterator<ElementAbstract> iter = elements.iterator();
-	    while (iter.hasNext())
-	    {
-	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        if ((tagInt == elem.getTag()) && ((instances == null) || (instances.equals(elem.instances))))
-	        {
-	        	list.add(elem);
-	        }
-	    }
+		List<ElementAbstract> list = new ArrayList<ElementAbstract>();		
+    	ElementAbstract elementAbstr = dictionary.getElementFromTag(tagStr);
+    	if (elementAbstr !=  null)
+    	{
+			Integer tagInt = dictionary.getElementFromTag(tagStr).getTag();
+			
+		    Iterator<ElementAbstract> iter = elements.iterator();
+		    while (iter.hasNext())
+		    {
+		    	ElementAbstract elem = (ElementAbstract) iter.next();
+		        if ((tagInt == elem.getTag() || tag.equalsIgnoreCase(elem.getLabel())) && (instances == null || instances.equals(elem.instances)))
+		        {
+		        	list.add(elem);
+		        }
+		    }
+    	}
 	    return list;
 	}
 
