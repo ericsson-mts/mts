@@ -133,6 +133,7 @@ public class Utils
         return bytes;
     }
 
+    /*
     public static String[] splitPath(String path)
     {
     	int posDot = path.indexOf(':');
@@ -146,6 +147,23 @@ public class Utils
         else
         {
             return Utils.splitNoRegex(path, ".");
+        }
+    }
+    */
+
+    public static String[] splitPath(String path)
+    {
+    	int posDot = path.indexOf('.');
+        if(posDot > 0 && posDot < path.length() - 1)
+        {
+        	return Utils.splitNoRegex(path, ".");
+        }
+        else
+        {
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE,
+    			"Deprecated separator \":\" in path " + path,
+    			" please use \".\" instead.");
+            return Utils.splitNoRegex(path, ":");
         }
     }
 
