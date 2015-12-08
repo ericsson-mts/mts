@@ -14,7 +14,7 @@
   	</receiveMessageSIP>
 
     <parameter name="[localTag]" operation="string.random" value="10"/>
-  	<sendMessageSIP name="Send 100 Trying" 
+  	<sendMessageSIP name="Send 100 Trying" delay="[ProcessTime]" 
      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
 <![CDATA[SIP/2.0 100 Trying
 To: [lastTo];tag=[localTag]
@@ -29,9 +29,9 @@ Content-Length: 0
 ]]>
   	</sendMessageSIP>
 
-  	<pause name="Pause before 180 OK" seconds="0"/>
+  	<pause name="Pause before 180 OK" seconds="[ResponseTime]"/>
   
-  	<sendMessageSIP name="Send 180 Ringing"
+  	<sendMessageSIP name="Send 180 Ringing" delay="[ProcessTime]" 
      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
 <![CDATA[SIP/2.0 180 Ringing
 To: [lastTo];tag=[localTag]
@@ -46,9 +46,9 @@ Content-Length: 0
 ]]>
   	</sendMessageSIP>
 
-  	<pause name="Pause before 200 OK" seconds="0"/>
+  	<pause name="Pause before 200 OK" seconds="[HangupTime]"/>
   
-  	<sendMessageSIP name="Send 200 OK"
+  	<sendMessageSIP name="Send 200 OK" delay="[ProcessTime]" 
      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
 <![CDATA[SIP/2.0 200 OK
 To: [lastTo];tag=[localTag]

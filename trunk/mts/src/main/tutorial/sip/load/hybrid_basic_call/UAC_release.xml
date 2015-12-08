@@ -3,35 +3,34 @@
 
 <scenario>
 
-    <if>
+    <!--if>
       <condition>
-        <test parameter="[test:releaseId]" condition="number.greaterEqualThan" value="[setupId]"/>
+        <test parameter="[test:releaseId]" condition="number.greaterEqualThan" value="[test:setupId]"/>
       </condition>
       <then>
         <exit name="fin test"/>      
       </then>
-    </if>
+    </if-->
 
-    <parameter name="[test:releaseId]" operation="number.add" value="[test:releaseId]" value2="0000001"/>
-    <if>
-      <condition>
-        <test parameter="[test:releaseId]" condition="number.greaterThan" value="1000000"/>
-      </condition>
-      <then>
-        <parameter name="[test:releaseId]" operation="set" value="0000000"/>      
-      </then>
-    </if>
-    <log type="Main" level="WARN">RELEASE : [releaseId]</log>    
+    <!-- increment the user id -->
+    <parameter name="[test:semRelease]" operation="system.semaphorewait" value="1"/>
+    <parameter name="[test:releaseId]" operation="number.add" value="[test:releaseId]" value2="1"/>
+    <parameter name="[test:releaseId]" operation="number.modulo" value="[test:releaseId]" value2="[RangeUser]"/>    
+    <parameter name="[testcase:releaseId]" operation="set" value="[test:releaseId]"/>
+    <parameter name="[test:semRelease]" operation="system.semaphorenotify" value="1"/>        
+    <!--log type="Main" level="WARN">RELEASE : [releaseId]</log-->
 
     <parameter name="[inviteeName]" operation="set" value="bob[releaseId]"/>
 		<parameter name="[inviterName]" operation="set" value="alice[releaseId]"/>
 
+    <!-- get the data from the context -->
     <parameter name="[From]" operation="set" value="[test:from_[releaseId]]"/>     
     <parameter name="[To]" operation="set" value="[test:to_[releaseId]]"/>    
     <parameter name="[CallId]" operation="set" value="[test:callId_[releaseId]]"/>
     <parameter name="[newCseqNumber]" operation="set" value="[test:cseqnumber_[releaseId]]"/>    
     <parameter name="[Request-URI]" operation="set" value="[test:requestUri_[releaseId]]"/>
 
+    <!-- delete the data in the context -->
     <parameter name="[test:from_[releaseId]]" operation="list.remove"/>
     <parameter name="[test:to_[releaseId]]" operation="list.remove"/>    
     <parameter name="[test:callId_[releaseId]]" operation="list.remove"/>
@@ -40,7 +39,7 @@
     
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
   	<parameter name="[newCseqNumber]" operation="number.add" value="[newCseqNumber]" value2="1"/>    
-  	<sendMessageSIP name="Send BYE" destScenario="[invitee]"
+  	<sendMessageSIP name="Send BYE" destScenario="[invitee]" delay="[ProcessTime]" 
      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
 <![CDATA[BYE [Request-URI] SIP/2.0
 To: [To]
