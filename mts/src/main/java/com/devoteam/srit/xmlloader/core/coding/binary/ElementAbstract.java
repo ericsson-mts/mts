@@ -557,22 +557,14 @@ public abstract class ElementAbstract implements Cloneable
 		}
     }
     
-    public void getParameter(Parameter var, String[] params, int offset, Dictionary dictionary) throws Exception 
+    public void getParameter(Parameter var, String[] params, String path, int offset, Dictionary dictionary) throws Exception 
     {
     	if (params.length == offset + 2) 
         {
-    		String value = "";
-        	if (this.fieldsArray != null)
-        	{
-        		value = Array.toHexString(this.fieldsArray);
-        	}
-        	if (this.subelementsArray != null)
-        	{
-        		value += Array.toHexString(this.subelementsArray);
-        	}
-    		var.add(value);
+    		Array array = this.encodeToArray();
+    		var.add(Array.toHexString(array));
         }
-        else if (params.length >= offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
+        else if (params.length == offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {
         	FieldAbstract field = this.fieldsByName.get(params[offset + 3]);
         	if (field != null)
@@ -594,6 +586,14 @@ public abstract class ElementAbstract implements Cloneable
         		}
         	}
         }
+        else if (params.length >= offset + 5 && (params[offset + 2].equalsIgnoreCase("field"))) 
+        {
+        	FieldAbstract field = this.fieldsByName.get(params[offset + 3]);
+        	if (field != null)
+        	{	
+        		field.getParameter(var, params, path, offset + 4, dictionary, this.fieldsArray);
+        	}
+        }    	
         else 
         {
         	List<ElementAbstract> list = ElementAbstract.getElementsFromTag(this.elements, params[offset + 2], dictionary);
@@ -601,7 +601,7 @@ public abstract class ElementAbstract implements Cloneable
  		    while (iter.hasNext())
  		    {
  		    	ElementAbstract elem = (ElementAbstract) iter.next();
- 		    	elem.getParameter(var, params, offset + 1, dictionary);
+ 		    	elem.getParameter(var, params, path, offset + 1, dictionary);
  		    }
         }    	
     }

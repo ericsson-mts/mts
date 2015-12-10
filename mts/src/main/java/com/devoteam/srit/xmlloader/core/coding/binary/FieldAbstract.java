@@ -29,6 +29,7 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
 
 import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import org.dom4j.Element;
@@ -40,22 +41,9 @@ import org.dom4j.Element;
  */
 public abstract class FieldAbstract 
 {
-
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-
+	
 	protected String name;
     protected int length = Integer.MIN_VALUE;
-
-	public int getLength() 
-	{
-		if (this.length >= 0)
-		{
-			return length;
-		}
-		return 0;
-	}
 
 	protected int offset;
 
@@ -264,24 +252,69 @@ public abstract class FieldAbstract
 		}
     }
 
+    public void getParameter(Parameter var, String[] params, String path, int offset, Dictionary dictionary, Array fieldArray) throws Exception 
+    {
+    	if (params.length == offset) 
+        {
+            String strVal = null;
+            try
+            {
+            	strVal = this.getValue(fieldArray);
+            }
+            catch (Exception e)
+            {
+            	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
+            	// nothing to do 
+            }
+
+    		if (strVal !=  null)
+    		{
+    			var.add(strVal);
+    		}
+        }
+    	else if (params.length == offset + 1 && (params[offset].equalsIgnoreCase("length"))) 
+        {
+    		if (this.length >= 0)
+    		{
+    			var.add(this.length / 8);
+    		}
+        }
+    	else if (params.length == offset + 1 && (params[offset].equalsIgnoreCase("lengthBit"))) 
+        {
+    		if (this.length >= 0)
+    		{
+    			var.add(this.length);
+    		}
+        }
+    	else if (params.length == offset + 1 && (params[offset].equalsIgnoreCase("offset"))) 
+        {
+    		var.add(this.offset);
+        }
+        else
+        {
+           	Parameter.throwBadPathKeywordException(path);
+        }    	
+    }
+    
     public String toString() 
     {
     	Array array = new DefaultArray(0);
     	return toXml(array, 4);
     }
 
-    // do not use experimental for development
-    /*
-	public void setName(String name) {
-		this.name = name;
+	public int getLength() 
+	{
+		if (this.length >= 0)
+		{
+			return length;
+		}
+		return 0;
 	}
-	*/
 
-    // do not use experimental for development
-	/*
-	public void setLength(int length) {
-		this.length = length;
+    
+	public void setOffset(int offset) 
+	{
+		this.offset = offset;
 	}
-	*/
 
 }
