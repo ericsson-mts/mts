@@ -75,7 +75,11 @@ public class ElementEAPLength extends ElementAbstract
         
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
-        	int length = this.fieldsArray.length + this.subelementsArray.length;
+        	int length = this.getLengthElem() / 8;
+        	if (length <= 0)
+        	{
+        		length = this.fieldsArray.length + this.subelementsArray.length;
+        	}
         	int lengthDiv4 = (length + 3)/ 4 + 1;
         	// length divide by 4
 		    Integer08Array lengthDiv4Array = new Integer08Array(lengthDiv4);		    
@@ -85,7 +89,8 @@ public class ElementEAPLength extends ElementAbstract
 		    sup.addLast(lengthArray);			    
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
-		    int lengthPadding = (4 - length % 4) % 4;
+		    //int lengthPadding = (4 - length % 4) % 4;
+		    int lengthPadding = (lengthDiv4 - 1) * 4 - length;
 		    // padding
 		    Array paddingArray = new DefaultArray(new byte[]{0});
 		    for (int i = 0; i < lengthPadding;i++)

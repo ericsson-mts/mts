@@ -281,8 +281,7 @@ public abstract class ElementAbstract implements Cloneable
         	{
         		dictionary.addElement(elem);
         	}
-        }
-        
+        }        
     }
 
     public void initValue(int index, Dictionary dictionary) throws Exception 
