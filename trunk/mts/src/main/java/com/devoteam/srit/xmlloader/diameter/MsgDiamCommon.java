@@ -163,8 +163,20 @@ public class MsgDiamCommon extends Msg
 		// for message with EAP data
     	com.devoteam.srit.xmlloader.core.coding.binary.Dictionary dico = 
     	com.devoteam.srit.xmlloader.core.coding.binary.Dictionary.getInstance("../conf/eap/dictionary_EAP.xml");
-		ElementAbstract newElement = PluggableParameterOperatorBinary.elementDecodeToXml(data, dico);
-		
+    	
+		ElementAbstract newElement = null;
+		try 
+		{
+			newElement = PluggableParameterOperatorBinary.elementDecodeToXml(data, dico);
+		}
+		catch (Exception e)
+		{
+			//nothing to do
+		}
+		if (newElement == null)
+		{
+			return eapType;
+		}
 		ElementAbstract subElement = newElement.getElement(0);
 		String typeValue = subElement.getFieldValue("Type");
 		if (typeValue == null)

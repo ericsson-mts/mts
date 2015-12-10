@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.asn1.data.ElementLengthV;
 import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAP;
+import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLength;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -114,13 +115,17 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			newElement = new ElementEAP();
 		}
+		else if ("EAPLength".equals(coding))
+		{
+			newElement = new ElementEAPLength();
+		}		
 		else if ("Message".equals(coding))
 		{
 			newElement = new ElementMessage();
 		}
 		else
 		{
-     		throw new ExecutionException("ERROR : The coding attribute for the element is mandatory because the element is not present in the dictionary.");
+     		throw new ExecutionException("ERROR : The coding attribute \"" + coding + "\" for the element is mandatory because the element is not present in the dictionary.");
 		}
 		newElement.coding = coding;
 		return newElement;
