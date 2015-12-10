@@ -666,7 +666,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     ElementAbstract newElement = elementDecodeToXml(string1, dico);
                                         
                     // get the data from element using path        
-                    newElement.getParameter(result, params, 0, dico);
+                    newElement.getParameter(result, params, path, 0, dico);
                 }
                 else
                 {
@@ -678,8 +678,6 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         {
             throw new ParameterException("Error in operation " + name, e);
         }
-
-
         return result;
     }
 

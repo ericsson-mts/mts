@@ -37,11 +37,11 @@
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.1.field.IMSI"/>
     <test parameter="[IMSI]" condition="string.equals" value="123456789012345"/>
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI:1"/>
-    <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
+    <test parameter="[IMSI]" condition="binary.equals" value="0100080021436587092143f5"/>
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.IMSI"/>
-    <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
+    <test parameter="[IMSI]" condition="binary.equals" value="0100080021436587092143f5"/>
     <parameter name="[IMSI]" operation="protocol.setFromMessage" value="element.1"/>
-    <test parameter="[IMSI]" condition="binary.equals" value="21436587092143f5"/>
+    <test parameter="[IMSI]" condition="binary.equals" value="0100080021436587092143f5"/>
 
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76.field.MSISDN"/>
     <test parameter="[MSISDN]" condition="list.size" value="2"/>
@@ -49,15 +49,15 @@
     <test parameter="[MSISDN(1)]" condition="string.equals" value="339876543210987654"/>
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76"/>
     <test parameter="[MSISDN]" condition="list.size" value="2"/>
-    <test parameter="[MSISDN(0)]" condition="binary.equals" value="332143658709214365"/>
-    <test parameter="[MSISDN(1)]" condition="binary.equals" value="338967452301896745"/>
+    <test parameter="[MSISDN(0)]" condition="binary.equals" value="4C000905332143658709214365"/>
+    <test parameter="[MSISDN(1)]" condition="binary.equals" value="4C000906338967452301896745"/>
 
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,6.field.MSISDN"/>
     <test parameter="[MSISDN]" condition="list.size" value="1"/>
     <test parameter="[MSISDN]" condition="string.equals" value="339876543210987654"/>
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,6"/>
     <test parameter="[MSISDN]" condition="list.size" value="1"/>
-    <test parameter="[MSISDN]" condition="binary.equals" value="338967452301896745"/>
+    <test parameter="[MSISDN]" condition="binary.equals" value="4C000906338967452301896745"/>
 
     <parameter name="[MSISDN]" operation="protocol.setFromMessage" value="element.MSISDN:76,1.field.MSISDN"/>
     <test parameter="[MSISDN]" condition="list.size" value="0"/>
@@ -67,7 +67,7 @@
     <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI:75.field.MEI"/>
     <test parameter="[MEI]" condition="number.equals" value="0033123456789012"/>
     <parameter name="[MEI]" operation="protocol.setFromMessage" value="element.MEI:75"/>
-    <test parameter="[MEI]" condition="binary.equals" value="0033123456789012"/>
+    <test parameter="[MEI]" condition="binary.equals" value="4B0008000033123456789012"/>
     
     <parameter name="[ULI.spare1]" operation="protocol.setFromMessage" value="element.ULI:86.field.spare1"/>
     <test parameter="[ULI.spare1]" condition="number.equals" value="3"/>
@@ -94,17 +94,17 @@
     <parameter name="[ULI.ECGI_ECI]" operation="protocol.setFromMessage" value="element.ULI:86.field.ECGI_ECI"/>
     <test parameter="[ULI.ECGI_ECI]" condition="number.equals" value="268435455"/>
     <parameter name="[ULI]" operation="protocol.setFromMessage" value="element.ULI:86"/>
-    <test parameter="[ULI]" condition="binary.equals" value="d821738900ff23f198ffffffff"/>
+    <test parameter="[ULI]" condition="binary.equals" value="56000d00d821738900ff23f198ffffffff"/>
     
     <parameter name="[Serving Network.MMC]" operation="protocol.setFromMessage" value="element.Serving Network:83.field.MMC"/>
     <test parameter="[Serving Network.MMC]" condition="string.equals" value="456,78"/>
     <parameter name="[Serving Network]" operation="protocol.setFromMessage" value="element.Serving Network:83"/>
-    <test parameter="[Serving Network]" condition="binary.equals" value="54f687"/>
+    <test parameter="[Serving Network]" condition="binary.equals" value="5300030054f687"/>
 
     <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type:82.field.RAT Type"/>
     <test parameter="[RAT Type]" condition="string.equals" value="EUTRAN:6"/>
     <parameter name="[RAT Type]" operation="protocol.setFromMessage" value="element.RAT Type:82"/>
-    <test parameter="[RAT Type]" condition="binary.equals" value="06"/>
+    <test parameter="[RAT Type]" condition="binary.equals" value="5200010006"/>
 
     <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.V4"/>
     <test parameter="[F-TEID.V4]" condition="list.size" value="2"/>
@@ -131,8 +131,8 @@
     <test parameter="[F-TEID.IPv6 address(1)]" condition="string.equals" value="[fedc:ba98:7654:3210:123:4567:89ab:cdef]"/>
     <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87"/>
     <test parameter="[F-TEID]" condition="list.size" value="2"/>
-    <test parameter="[F-TEID(0)]" condition="binary.equals" value="c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
-    <test parameter="[F-TEID(1)]" condition="binary.equals" value="e600000000624c3620fedcba98765432100123456789abcdef"/>
+    <test parameter="[F-TEID(0)]" condition="binary.equals" value="57001900c6ffffffff7b2d43591234567890abcdeffedcba0987654321"/>
+    <test parameter="[F-TEID(1)]" condition="binary.equals" value="57001901e600000000624c3620fedcba98765432100123456789abcdef"/>
     
     <parameter name="[F-TEID.V4]" operation="protocol.setFromMessage" value="element.F-TEID:87,1.field.V4"/>
     <test parameter="[F-TEID.V4]" condition="list.size" value="1"/>
@@ -154,7 +154,7 @@
     <test parameter="[F-TEID.IPv6 address]" condition="string.equals" value="[fedc:ba98:7654:3210:123:4567:89ab:cdef]"/>
     <parameter name="[F-TEID]" operation="protocol.setFromMessage" value="element.F-TEID:87,1"/>
     <test parameter="[F-TEID]" condition="list.size" value="1"/>
-    <test parameter="[F-TEID]" condition="binary.equals" value="e600000000624c3620fedcba98765432100123456789abcdef"/>
+    <test parameter="[F-TEID]" condition="binary.equals" value="57001901e600000000624c3620fedcba98765432100123456789abcdef"/>
     
     <parameter name="[APN01]" operation="protocol.setFromMessage" value="element.APN:71.field.APN01"/>
     <test parameter="[APN01]" condition="string.equals" value="stringstring01"/>
@@ -165,21 +165,21 @@
     <parameter name="[APN04]" operation="protocol.setFromMessage" value="element.APN:71.field.APN04"/>
     <test parameter="[APN04]" condition="string.equals" value="04"/>    
     <parameter name="[APN]" operation="protocol.setFromMessage" value="element.APN:71"/>
-    <test parameter="[APN]" condition="binary.equals" value="0e737472696e67737472696e67303108737472696e673032057374723033023034"/>
+    <test parameter="[APN]" condition="binary.equals" value="470021000e737472696e67737472696e67303108737472696e673032057374723033023034"/>
     
     <parameter name="[Selection Mode.spare]" operation="protocol.setFromMessage" value="element.Selection Mode:128.field.spare"/>
     <test parameter="[Selection Mode.spare]" condition="number.equals" value="63"/>
     <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode:128.field.Selection Mode"/>
     <test parameter="[Selection Mode]" condition="string.equals" value="MS or network provided APN, subscribed verified:0"/>
     <parameter name="[Selection Mode]" operation="protocol.setFromMessage" value="element.Selection Mode:128"/>
-    <test parameter="[Selection Mode]" condition="binary.equals" value="fc"/>
+    <test parameter="[Selection Mode]" condition="binary.equals" value="80000100fc"/>
 
     <parameter name="[PDN Type.spare]" operation="protocol.setFromMessage" value="element.PDN Type:99.field.spare"/>
     <test parameter="[PDN Type.spare]" condition="number.equals" value="31"/>
     <parameter name="[PDN Type]" operation="protocol.setFromMessage" value="element.PDN Type:99.field.PDN Type"/>
     <test parameter="[PDN Type]" condition="string.equals" value="IPv4:1"/>
     <parameter name="[PDN Type]" operation="protocol.setFromMessage" value="element.PDN Type:99"/>
-    <test parameter="[PDN Type]" condition="binary.equals" value="f9"/>    
+    <test parameter="[PDN Type]" condition="binary.equals" value="63000100f9"/>    
     
     <parameter name="[PAA.spare]" operation="protocol.setFromMessage" value="element.PAA:79.field.spare"/>
     <test parameter="[PAA.spare]" condition="number.equals" value="31"/>
@@ -192,7 +192,7 @@
     <parameter name="[PAA.IPv4 address]" operation="protocol.setFromMessage" value="element.PAA:79.field.IPv4 address"/>
     <test parameter="[PAA.IPv4 address]" condition="string.equals" value="87.65.43.210"/>
     <parameter name="[PAA]" operation="protocol.setFromMessage" value="element.PAA:79"/>
-    <test parameter="[PAA]" condition="binary.equals" value="fbfffedcba09876543211234567890abcdef57412bd2"/>    
+    <test parameter="[PAA]" condition="binary.equals" value="4F001600fbfffedcba09876543211234567890abcdef57412bd2"/>    
 
     <parameter name="[Indication.DAF]" operation="protocol.setFromMessage" value="element.Indication:77.field.DAF"/>
     <test parameter="[Indication.DAF]" condition="boolean.equals" value="false"/>
@@ -241,24 +241,24 @@
     <parameter name="[Indication.CCRSI]" operation="protocol.setFromMessage" value="element.Indication:77.field.CCRSI"/>
     <test parameter="[Indication.CCRSI]" condition="boolean.equals" value="false"/>
     <parameter name="[Indication]" operation="protocol.setFromMessage" value="element.Indication:77"/>
-    <test parameter="[Indication]" condition="binary.equals" value="00140000"/>  
+    <test parameter="[Indication]" condition="binary.equals" value="4D00040000140000"/>  
                                             
     <parameter name="[APN Restriction.Restriction Type value]" operation="protocol.setFromMessage" value="element.APN Restriction:127.field.Restriction Type value"/>
     <test parameter="[APN Restriction.Restriction Type value]" condition="string.equals" value="No Existing Contexts or Restriction:0"/>
     <parameter name="[APN Restriction]" operation="protocol.setFromMessage" value="element.APN Restriction:127"/>
-    <test parameter="[APN Restriction]" condition="binary.equals" value="00"/>
+    <test parameter="[APN Restriction]" condition="binary.equals" value="7F00010000"/>
                     
     <parameter name="[AMBR.APN-AMBR for uplink]" operation="protocol.setFromMessage" value="element.AMBR:72.field.APN-AMBR for uplink"/>
     <test parameter="[AMBR.APN-AMBR for uplink]" condition="number.equals" value="4294967295"/>
     <parameter name="[AMBR.APN-AMBR for downlink]" operation="protocol.setFromMessage" value="element.AMBR:72.field.APN-AMBR for downlink"/>
     <test parameter="[AMBR.APN-AMBR for downlink]" condition="number.equals" value="4294967295"/>
     <parameter name="[AMBR]" operation="protocol.setFromMessage" value="element.AMBR:72"/>
-    <test parameter="[AMBR]" condition="binary.equals" value="ffffffffffffffff"/>
+    <test parameter="[AMBR]" condition="binary.equals" value="48000800ffffffffffffffff"/>
 
     <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO:78.field.PCO"/>
     <test parameter="[PCO]" condition="binary.equals" value="8080211001000010810600000000830600000000000d00000a00"/>
     <parameter name="[PCO]" operation="protocol.setFromMessage" value="element.PCO:78"/>
-    <test parameter="[PCO]" condition="binary.equals" value="8080211001000010810600000000830600000000000d00000a00"/>
+    <test parameter="[PCO]" condition="binary.equals" value="4E001A008080211001000010810600000000830600000000000d00000a00"/>
 
     <parameter name="[Bearer Context.EBI.spare]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI:73.field.spare"/>
     <test parameter="[Bearer Context.EBI.spare]" condition="number.equals" value="15"/>
@@ -269,11 +269,11 @@
     <parameter name="[Bearer Context.EBI.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context.73.field.EBI"/>
     <test parameter="[Bearer Context.EBI.EBI]" condition="number.equals" value="15"/>
     <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI:73"/>
-    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
+    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="49000100ff"/>
     <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.EBI"/>
-    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
+    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="49000100ff"/>
     <parameter name="[Bearer Context.EBI]" operation="protocol.setFromMessage" value="element.Bearer Context:93.73"/>
-    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="ff"/>
+    <test parameter="[Bearer Context.EBI]" condition="binary.equals" value="49000100ff"/>
 
     <parameter name="[Bearer Context.Bearer QOS.spare1]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.spare1"/>
     <test parameter="[Bearer Context.Bearer QOS.spare1]" condition="number.equals" value="1"/>
@@ -296,7 +296,7 @@
     <parameter name="[Bearer Context.Bearer QOS.Guaranteed bit rate for downlink]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80.field.Guaranteed bit rate for downlink"/>
     <test parameter="[Bearer Context.Bearer QOS.Guaranteed bit rate for downlink]" condition="number.equals" value="1099511627775"/>
     <parameter name="[Bearer Context.Bearer QOS]" operation="protocol.setFromMessage" value="element.Bearer Context:93.Bearer QoS:80"/>
-    <test parameter="[Bearer Context.Bearer QOS]" condition="binary.equals" value="beffffffffffffffffffffffffffffffffffffffffff"/>
+    <test parameter="[Bearer Context.Bearer QOS]" condition="binary.equals" value="50001600beffffffffffffffffffffffffffffffffffffffffff"/>
 
     <parameter name="[Bearer Context.FTEID.V4]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87.field.V4"/>
     <test parameter="[Bearer Context.FTEID.V4]" condition="list.size" value="2"/>
@@ -318,7 +318,8 @@
     <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="[1212:1234:1256:1278:1290:12ab:12cd:12ef]"/>
     <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93.F-TEID:87"/>
     <test parameter="[Bearer Context.FTEID]" condition="list.size" value="2"/>
-    <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+    <test parameter="[Bearer Context.FTEID(0)]" condition="binary.equals" value="5700190Ec4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+    <test parameter="[Bearer Context.FTEID(1)]" condition="binary.equals" value="5700190Fc4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>    
 
     <parameter name="[Bearer Context.FTEID.V4]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15.field.V4"/>
     <test parameter="[Bearer Context.FTEID.V4]" condition="list.size" value="1"/>
@@ -340,10 +341,10 @@
     <test parameter="[Bearer Context.FTEID.IPv6 address]" condition="string.equals" value="[1212:1234:1256:1278:1290:12ab:12cd:12ef]"/>
     <parameter name="[Bearer Context.FTEID]" operation="protocol.setFromMessage" value="element.Bearer Context:93,0.F-TEID:87,15"/>
     <test parameter="[Bearer Context.FTEID]" condition="list.size" value="1"/>
-    <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="c4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+    <test parameter="[Bearer Context.FTEID]" condition="binary.equals" value="5700190Fc4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
 
     <parameter name="[Bearer Context]" operation="protocol.setFromMessage" value="element.Bearer Context:93"/>
-    <test parameter="[Bearer Context]" condition="binary.equals" value="49000100ff50001600beffffffffffffffffffffffffffffffffffffffffff5700190ec4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef5700190fc4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
+    <test parameter="[Bearer Context]" condition="binary.equals" value="5D00590049000100ff50001600beffffffffffffffffffffffffffffffffffffffffff5700190ec4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef5700190fc4ffffffff0c0d0e0f1212123412561278129012ab12cd12ef"/>
     
     <parameter name="[UE Time Zone.Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.Time Zone"/>
     <test parameter="[UE Time Zone.Time Zone]" condition="number.equals" value="255"/>
@@ -352,12 +353,12 @@
     <parameter name="[UE Time Zone.Daylight Saving Time]" operation="protocol.setFromMessage" value="element.UE Time Zone:114.field.Daylight Saving Time"/>
     <test parameter="[UE Time Zone.Daylight Saving Time]" condition="string.equals" value="No adjustment for Daylight Saving Time:0"/>
     <parameter name="[UE Time Zone]" operation="protocol.setFromMessage" value="element.UE Time Zone:114"/>
-    <test parameter="[UE Time Zone]" condition="binary.equals" value="fffc"/>
+    <test parameter="[UE Time Zone]" condition="binary.equals" value="72000200fffc"/>
 
     <parameter name="[Charging Characteristics]" operation="protocol.setFromMessage" value="element.Charging Characteristics:95.field.Charging Characteristics value"/>
     <test parameter="[Charging Characteristics]" condition="number.equals" value="65535"/>
     <parameter name="[Charging Characteristics]" operation="protocol.setFromMessage" value="element.Charging Characteristics:95"/>
-    <test parameter="[Charging Characteristics]" condition="binary.equals" value="ffff"/>
+    <test parameter="[Charging Characteristics]" condition="binary.equals" value="5F000200ffff"/>
 
     <sendMessageGTP name="send message"
                     remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
