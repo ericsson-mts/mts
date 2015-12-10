@@ -179,20 +179,15 @@ public abstract class FieldAbstract
 	        	type = "Number_BCD";
 	        }
 	        elemString.append("type=\"" + type + "\" ");
-	        int intLen = this.length;
-	        if (intLen <= 0 && strVal != null)
-	        { 
-	        	intLen = strVal.length() * 8 / 2;
-	        }
-	        if (intLen > 0)
+	        if (this.length > 0)
 	        {
-		        if (intLen % 8 == 0)
+		        if (this.length % 8 == 0)
 		        {
-		        	elemString.append("length=\"" + intLen / 8 + "\" ");
+		        	elemString.append("length=\"" + this.length / 8 + "\" ");
 		        }
 		        else
 		        {
-		        	elemString.append("lengthBit=\"" + intLen + "\" ");
+		        	elemString.append("lengthBit=\"" + this.length + "\" ");
 		        }
 	        }
 	        elemString.append("/>\n");

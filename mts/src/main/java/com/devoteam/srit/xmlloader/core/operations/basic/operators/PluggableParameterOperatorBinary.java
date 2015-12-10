@@ -678,6 +678,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         {
             throw new ParameterException("Error in operation " + name, e);
         }
+
+
         return result;
     }
 
