@@ -175,10 +175,16 @@ ErrorList.list={...}
   <parameter name="[Response]" operation="string.digest" value="[HA1]:[Nonce]:[NonceCount]:[CNonce]:[QOp]:[HA2]" value2="MD5" />
   <test parameter="[Response]" condition="binary.equals" value="2f7b84fada58e09b82fd42e6cde8c3e5"/>
 
-	<parameter name="[result]" operation="string.hmac" value="mystring" value2="HmacMD5" value3="mykey" />
+	<parameter name="[result]" operation="string.hmac" value="MTS : Multi-protocol Test Suite" value2="HmacMD5" value3="shared secret ericsson" />
 	<parameter name="[number]" operation="string.length" value="[result]" />
 	<test parameter="[number]" condition="number.equals" value="32" />
-
+	<test parameter="[result]" condition="binary.equals" value="AA3BBD056B8245F0FCE02A4D1BD6F373" />  
+  
+	<parameter name="[result]" operation="string.hmac" value="MTS : Multi-protocol Test Suite" value2="HmacSHA1" value3="shared secret ericsson" />
+	<parameter name="[number]" operation="string.length" value="[result]" />
+	<test parameter="[number]" condition="number.equals" value="40" />
+	<test parameter="[result]" condition="binary.equals" value="0443F2A25C9FA98434AFCA840AF69594FD3B35BC" />  
+  
 	<parameter name="[result]" operation="string.trim" value=" essai       " />
 	<test parameter="[result]" condition="string.equals" value="essai" />
 
