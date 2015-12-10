@@ -10,22 +10,25 @@
     <element label="HeaderEAP" coding="V" description="">
       <field name="Code" value="Response:2" type="EnumLong" length="1" description=""/>          
       <field name="Id" value="1" length="1" type="Integer" description=""/>            
-      <field name="length" value="0" length="2" type="Integer" description=""/>          
-      <field name="Type" value="MD5-Challenge:4" length="1" type="EnumLong" description=""/>
-    </element> 
-    <!-- Message "MD5-Challenge:4" => IETF RFC 3748 chapter 5.4 page 34 -->                  
-    <element label="Message_MD5-Challenge_4" coding="V" description="">
-        <element label="value" coding="LV" description="">
-            <field name="value" value="0102030405060708091011121314151617181920" description=""/>
-        </element>    
-        <element label="name" coding="V" description="">
-            <field name="name" value="abcdefghijJIHGFEDCBA" description=""/>
-        </element>    
-    </element></element>           
+      <field name="length" value="0" length="2" type="Integer" description=""/>
+      <field name="Type" value="EAP-AKA:23" length="1" type="EnumLong" description=""/>
+    </element>
+    <!-- Message "UMTS Authentication and Key Agreement EAP_23 (EAP-AKA) => IETF RFC 4187 chapter 8.1 page 45 -->          
+    <element label="Message_EAP-AKA_23" coding="V" description="">                
+      <field name="EAP AKA Subtype" value="AKA-Identity:5" length="1" type="EnumLong" description=""/>                      
+      <field name="EAP AKA Reserved" value="0" length="2" type="Integer" description=""/>
+    </element>
+    <!-- Attribute AT_IDENTITY:14 => IETF RFC 4187 chapter 10.5 page 55 -->               
+    <element tag="AT_IDENTITY:14" coding="EAP" description="">
+        <field name="Actual length" value="0" type="Integer" length="2" description=""/>    
+        <field name="Value" value="02080144691112@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/>
+        <!--field name="Value" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org" type="String" description=""/-->
+    </element>
+</element>
 ]]>
 </parameter>
     <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
-    <test parameter="[binInputEAP]" condition="binary.equals" value="0201002e041401020304050607080910111213141516171819206162636465666768696a4a494847464544434241"/>
+    <!--test parameter="[binInputEAP]" condition="binary.equals" value="0201002e041401020304050607080910111213141516171819206162636465666768696a4a494847464544434241"/-->
 
     <parameter name="[binOutputEAP]" operation="set" value="[binInputEAP]"/>
 
@@ -36,13 +39,15 @@
     <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
     <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
-    <test parameter="[Length]" condition="number.equals" value="46"/>
+    <test parameter="[Length]" condition="number.equals" value="68"/>
     <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
-    <test parameter="[Type]" condition="string.equals" value="MD5-Challenge:4"/>
-    <parameter name="[MD5-value]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge_4']/element[@label='value']/field[@name='value']/attribute::value"/>
-    <test parameter="[MD5-value]" condition="binary.equals" value="0102030405060708091011121314151617181920"/>
-    <parameter name="[MD5-name]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_MD5-Challenge_4']/element[@label='name']/field[@name='name']/attribute::value"/>
-    <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
+    <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
+    <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_EAP-AKA_23']/field[@name='EAP AKA Subtype']/attribute::value"/>
+    <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Identity:5"/>
+    <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_EAP-AKA_23']/field[@name='EAP AKA Reserved']/attribute::value"/>
+    <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>
+    <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IDENTITY:14']/field[@name='Value']/attribute::value"/>
+    <test parameter="[Identity]" condition="string.equals" value="02080144691112@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
 
     <!-- test binary.elementSetFrom -->
     <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
@@ -50,13 +55,15 @@
     <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
     <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
-    <test parameter="[Length]" condition="number.equals" value="46"/>
+    <test parameter="[Length]" condition="number.equals" value="68"/>
     <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>    
-    <test parameter="[Type]" condition="string.equals" value="MD5-Challenge:4"/>
-    <parameter name="[MD5-value]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_MD5-Challenge_4.value.field.value" value3="eap/dictionary_EAP.xml"/>    
-    <test parameter="[MD5-value]" condition="binary.equals" value="0102030405060708091011121314151617181920"/>
-    <parameter name="[MD5-name]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_MD5-Challenge_4.name.field.name" value3="eap/dictionary_EAP.xml"/>    
-    <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
+    <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
+    <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Subtype" value3="eap/dictionary_EAP.xml"/>    
+    <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Identity:5"/>
+    <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Reserved" value3="eap/dictionary_EAP.xml"/>    
+    <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>    
+    <parameter name="[Identity]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value" value3="eap/dictionary_EAP.xml"/>    
+    <test parameter="[Identity]" condition="string.equals" value="02080144691112@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
 
     <!-- test binary.elementFromXml -->
     <parameter name="[messageEAP]" operation="set">
