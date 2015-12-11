@@ -332,7 +332,7 @@ class TesterGuiHelper implements ActionListener {
                 browser = Utils.normalizePath(browser);
                 if (browser != null)
             	{
-                	URI absURI = new File("../doc/schemas/scenario.html").toURI();
+                	URI absURI = new File("../doc/MTS_doc_XML_grammar.htm").toURI();
 	                Runtime.getRuntime().exec(browser + " " + absURI); // le lien est dans urlName
             	}
             }
