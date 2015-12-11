@@ -59,13 +59,11 @@ public abstract class FieldAbstract
         this.name = rootXML.attributeValue("name");
         String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null && (this.length >= 0 || parseDico)) 
-        //if (lengthBit != null)
         {
             this.length = Integer.parseInt(lengthBit);
         }
         String length = rootXML.attributeValue("length");
         if (length != null && (this.length >= 0 || parseDico)) 
-        //if (length != null)
         {
             this.length = Integer.parseInt(length) * 8;
         }
@@ -179,15 +177,27 @@ public abstract class FieldAbstract
 	        	type = "Number_BCD";
 	        }
 	        elemString.append("type=\"" + type + "\" ");
-	        if (this.length > 0)
+	        int intLen = this.length;
+	        if (intLen <= 0 && strVal != null)
+	        { 
+	        	if (type.toLowerCase().contains("binary"))
+	        	{
+	        		intLen = strVal.length() * 8 / 2;
+	        	}
+	        	else
+	        	{
+	        		intLen = strVal.length() * 8;
+	        	}
+	        }
+	        if (intLen > 0)
 	        {
-		        if (this.length % 8 == 0)
+		        if (intLen % 8 == 0)
 		        {
-		        	elemString.append("length=\"" + this.length / 8 + "\" ");
+		        	elemString.append("length=\"" + intLen / 8 + "\" ");
 		        }
 		        else
 		        {
-		        	elemString.append("lengthBit=\"" + this.length + "\" ");
+		        	elemString.append("lengthBit=\"" + intLen + "\" ");
 		        }
 	        }
 	        elemString.append("/>\n");

@@ -164,15 +164,18 @@ public class Dictionary
 			String[] initElt = eltLabel.split(",");
 			for (int i=0; i < initElt.length; i++)
 			{
-				// elemInfo.setLabel(initElt[i]);
-				if (!elementsMapByLabel.containsKey(initElt[i]))
+				// cas pour l'element est défini plusieurs fois 
+				// on l'ajoute s'il n'existe pas ou s'il n'est pas vide
+				if (!elementsMapByLabel.containsKey(initElt[i]) || !elemInfo.isEmpty())
 				{
 					elementsMapByLabel.put(initElt[i], elemInfo);
 				}
-				if (!elementsMapByTag.containsKey(elemInfo.getTag()))
-				{
-					elementsMapByTag.put(elemInfo.getTag(), elemInfo);
-				}
+			}
+			// cas pour l'element est défini plusieurs fois			
+			// on l'ajoute s'il n'existe pas ou s'il n'est pas vide
+			if (!elementsMapByTag.containsKey(elemInfo.getTag()) || !elemInfo.isEmpty())
+			{
+				elementsMapByTag.put(elemInfo.getTag(), elemInfo);
 			}
         }
     }
