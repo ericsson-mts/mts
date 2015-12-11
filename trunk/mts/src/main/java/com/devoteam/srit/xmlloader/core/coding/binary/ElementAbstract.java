@@ -133,41 +133,37 @@ public abstract class ElementAbstract implements Cloneable
     
     public void parseFromXML(Element elementRoot, Dictionary dictionary, ElementAbstract elemDico, boolean parseDico) throws Exception 
     {
-        //si non present dans le dico on parse le fichier xml
-    	if (elemDico == null)
-    	{
-        	// for Q931 protocols only
-            String tagStr = elementRoot.attributeValue("identifier");
-            if (tagStr == null)
-            {
-            	tagStr = elementRoot.attributeValue("tag");
-            }
-            if (tagStr != null)
-            {
-	    		tagStr = tagStr.trim();
-	        	int iPos = tagStr.indexOf(":");
-	        	String label = null;
-	        	String value = tagStr;
-	        	if (iPos >= 0)
-	        	{
-	        		label = tagStr.substring(0, iPos);
-	        		value = tagStr.substring(iPos + 1);
-	        	}
-	        	if (value != null)
-	        	{
-	        		Integer intTag = getTagValueFromBinary(value);
-	        		if (intTag !=  null)
-	        		{
-	        			this.tag = intTag;
-	        			this.label = label;
-	        		}
-	        		else
-	        		{
-	        			this.label = value;
-	        		}
-	        	}
-            }
-    	}
+    	// for Q931 protocols only
+        String tagStr = elementRoot.attributeValue("identifier");
+        if (tagStr == null)
+        {
+        	tagStr = elementRoot.attributeValue("tag");
+        }
+        if (tagStr != null)
+        {
+    		tagStr = tagStr.trim();
+        	int iPos = tagStr.indexOf(":");
+        	String label = null;
+        	String value = tagStr;
+        	if (iPos >= 0)
+        	{
+        		label = tagStr.substring(0, iPos);
+        		value = tagStr.substring(iPos + 1);
+        	}
+        	if (value != null)
+        	{
+        		Integer intTag = getTagValueFromBinary(value);
+        		if (intTag !=  null)
+        		{
+        			this.tag = intTag;
+        			this.label = label;
+        		}
+        		else
+        		{
+        			this.label = value;
+        		}
+        	}
+        }
     	
     	// for Q931 protocols only
         String labelTag = elementRoot.attributeValue("name");
@@ -769,5 +765,11 @@ public abstract class ElementAbstract implements Cloneable
     {
 		return fieldsArray;
 	}
+    
+    public boolean isEmpty() 
+    {
+		return fields.isEmpty() && elements.isEmpty();
+	}
+    
 
 }
