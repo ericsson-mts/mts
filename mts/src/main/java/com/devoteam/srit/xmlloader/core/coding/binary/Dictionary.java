@@ -42,7 +42,11 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 public class Dictionary 
 {
 	
-	public static HashMap<String, Dictionary> dictionaries = new  HashMap<String, Dictionary>();
+	public static HashMap<String, Dictionary> dictionaries;
+	static 
+	{
+		dictionaries = new  HashMap<String, Dictionary>();
+	}
 	
     private String _layer;
     

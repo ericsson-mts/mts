@@ -190,19 +190,38 @@ public abstract class ElementAbstract implements Cloneable
         {
             Element fieldRoot = it.next();
             String name = fieldRoot.attributeValue("name");
-            FieldAbstract field = null;
+            
+            FieldAbstract fieldDico = null;
             // Case if field is present in the dico
             if (elemDico != null)
             {
-            	field = elemDico.getFieldsByName(name); 
+            	fieldDico = elemDico.getFieldsByName(name);
             }
-            if (field == null)
+            
+            FieldAbstract newField;
+            String type = fieldRoot.attributeValue("type");
+            // Case if "type" attribute is specified in the scenario
+            if (type != null)
             {
-            	field = FieldAbstract.buildFactory(fieldRoot);
+                newField = FieldAbstract.buildFactory(fieldRoot);
+                // Case if the element exits in the dictionary with the same "type" as in the scenario
+                if (fieldDico != null && fieldDico.getClass().equals(newField.getClass()))
+                {
+                	newField = fieldDico.clone();
+                }            	
             }
-            field.parseFromXML(fieldRoot, parseDico);
-            this.fieldsByName.put(name, field);
-            this.fields.add(field);
+            // Case if "type" attribute is not specified by the user 
+            else
+            {
+            	newField = fieldDico;
+            }
+            if (newField == null)
+            {
+            	newField = FieldAbstract.buildFactory(fieldRoot);
+            }
+            newField.parseFromXML(fieldRoot, parseDico);
+            this.fieldsByName.put(name, newField);
+            this.fields.add(newField);
         }
         
         // initiate the Array containing the fields
@@ -261,14 +280,22 @@ public abstract class ElementAbstract implements Cloneable
         	if (dictionary != null)
         	{
         		subElemDico = dictionary.getElementFromXML(elemElement);
-        		elem = (ElementAbstract) subElemDico.cloneAttribute();
+        		if (subElemDico != null)
+        		{
+        			elem = (ElementAbstract) subElemDico.cloneAttribute();
+        		}
         		//elem = ElementAbstract.buildFactory(subElemDico.coding);
         		//elem.copyToClone(subElemDico);
         	}
-        	else
+        	//else
+        	String coding = elemElement.attributeValue("coding");
+    		if (coding !=  null)
         	{
-        		String coding = elemElement.attributeValue("coding");            		
         		elem = ElementAbstract.buildFactory(coding);
+        		if (subElemDico == null)
+        		{
+        			elem = (ElementAbstract) subElemDico.cloneAttribute();
+        		}
         	}
         	elem.parseFromXML(elemElement, dictionary, subElemDico, parseDico);
         	this.elements.add(elem);
@@ -411,6 +438,13 @@ public abstract class ElementAbstract implements Cloneable
 	    {
 	        this.fieldsArray = new SupArray();
 	        this.fieldsArray.addFirst(data);
+	        if (fields.size() >= 4)
+	        {
+		        //System.out.println(this + fields.get(0).getValue(this.fieldsArray));
+		        //System.out.println(this + fields.get(1).getValue(this.fieldsArray));
+		        //System.out.println(this + fields.get(2).getValue(this.fieldsArray));
+		        //System.out.println(this + fields.get(3).getValue(this.fieldsArray));
+	        }
 	    }
 	    // cas when there are some sub elements
 	    else if (!this.elements.isEmpty())

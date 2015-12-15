@@ -242,6 +242,11 @@ public class EnumLongField extends IntegerField
     {
     	EnumLongField newField = new EnumLongField(); 
     	newField.copyToClone(this);
+    	
+    	newField.labelsByValue = this.labelsByValue;
+    	newField.valuesByLabel = this.valuesByLabel; 
+    	newField.ranges = this.ranges;
+    	
     	return newField;
     }
 }
