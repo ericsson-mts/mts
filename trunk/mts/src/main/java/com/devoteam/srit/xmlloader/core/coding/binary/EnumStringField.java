@@ -168,4 +168,17 @@ public class EnumStringField extends StringField
     	return ret;
     }
 
+    @Override
+    public FieldAbstract clone()
+    {
+    	EnumStringField newField = new EnumStringField(); 
+    	newField.copyToClone(this);
+    	
+    	newField.labelsByValue = this.labelsByValue;
+    	newField.valuesByLabel = this.valuesByLabel; 
+    	newField.ranges = this.ranges;
+    	
+    	return newField;
+    }
+    
 }

@@ -49,7 +49,7 @@
             <field name="RAI_MCC_MNC" type="number_mmc" value="208,01" description="Mobile Country Code+Mobile Network Code"/> 
             <field name="RAI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
             <field name="RAI_RAC" lengthBit="8" type="integer" value="250" description="Routing Area Code"/>
-            <field name="RAI_RAC1" lengthBit="8" type="binary" value="255" description="Routing Area Code = 11111111"/>
+            <field name="RAI_RAC1" lengthBit="8" type="integer" value="255" description="Routing Area Code = 11111111"/>
             <!-- TAI Field 5 octets -->
             <field name="TAI_MCC_MNC" type="number_mmc" value="208,20" description="Mobile Country Code+Mobile Network Code"/> 
             <field name="TAI_TAC" lengthBit="16" type="integer" value="555" description="Tracking Area Code"/>
@@ -417,12 +417,12 @@
 			<field name="SSIDI" value="true:1" description="SSID Indicator"/>
 			<field name="BSSID" value="a1a2a3a4a5"/>          <!-- if BSSIDI == true -->
 			<field name="SSID Length" value="9"/>             <!-- if SSIDI == true -->
-			<field name="SSID" type="f1f2f3f4f5f6f7f8f9"/>    <!-- if SSIDI == true -->
+			<field name="SSID" value="f1f2f3f4f5f6f7f8f9"/>    <!-- if SSIDI == true -->
 		</element>
 		
 		<element tag="Private Extension:255" >
 			<field name="Enterprise ID" value="16"/>
-			<field name="Proprietary value" type="properties"/>
+			<field name="Proprietary value" value="properties"/>
 		</element>
 		
 		</sendMessageGTP>
