@@ -52,10 +52,20 @@ public class ElementEAPLength extends ElementAbstract
         
         if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
         {
-            int length = new Integer16Array(array.subArray(2, 2)).getValue();
-            Array dataArray = array.subArray(4, length);
-            decodeFieldsTagElementsFromArray(dataArray, dictionary);
             int lengthDiv4 = new Integer08Array(array.subArray(1, 1)).getValue();
+            Array elementData = array.subArray(4, (lengthDiv4 - 1) * 4);        	
+            int length = new Integer16Array(array.subArray(2, 2)).getValue();
+            if (length > elementData.length)
+            {
+            	length = elementData.length;
+            }
+            Array dataArray = elementData.subArray(0, length);
+
+            // remove padding data
+            int lengthPadding = ElementEAP.removePaddingBytes(dataArray);
+            dataArray = dataArray.subArray(0, length - lengthPadding);
+            
+            decodeFieldsTagElementsFromArray(dataArray, dictionary);
             return lengthDiv4 * 4;
 	    }
         
@@ -89,14 +99,10 @@ public class ElementEAPLength extends ElementAbstract
 		    sup.addLast(lengthArray);			    
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
-		    //int lengthPadding = (4 - length % 4) % 4;
-		    int lengthPadding = (lengthDiv4 - 1) * 4 - length;
 		    // padding
-		    Array paddingArray = new DefaultArray(new byte[]{0});
-		    for (int i = 0; i < lengthPadding;i++)
-		    {
-		    	sup.addLast(paddingArray);
-		    }		    
+		    int lengthPadding = (lengthDiv4 - 1) * 4 - length;
+		    byte[] bytesPadding = ElementEAP.getPaddingBytes(lengthPadding);
+		    sup.addLast(new DefaultArray(bytesPadding));
         }
         
         return sup;

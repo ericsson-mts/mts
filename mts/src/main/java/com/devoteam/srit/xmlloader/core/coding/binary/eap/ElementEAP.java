@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 
 import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
@@ -54,8 +55,14 @@ public class ElementEAP extends ElementAbstract
         {
             int length = new Integer08Array(array.subArray(1, 1)).getValue();
             length = length * 4;
+            length = length - removePaddingBytes(array);
             Array data = array.subArray(2, length - 2);
-            decodeFieldsTagElementsFromArray(data, dictionary);            
+            
+            // remove padding data
+            int lengthPadding = ElementEAP.removePaddingBytes(data);
+            Array dataArray = array.subArray(0, length - lengthPadding);
+
+            decodeFieldsTagElementsFromArray(dataArray, dictionary);            
             return length;
 	    }
         
@@ -78,17 +85,47 @@ public class ElementEAP extends ElementAbstract
         	int length = this.fieldsArray.length + this.subelementsArray.length;
         	if ((length + 2) % 4 != 0)
         	{
-        		throw new ExecutionException("ERROR : The length of data for an \"EAP\" element should be a multiple of 4; please use a \"EAPLength\" element instead of.");
+        		// throw new ExecutionException("ERROR : The length of data for an \"EAP\" element should be a multiple of 4; please use a \"EAPLength\" element instead of.");
         	}
-        	int lengthDiv4 = length / 4 + 1;
+        	int lengthDiv4 = (length + 1) / 4 + 1;
 		    Integer08Array lengthDiv4Array = new Integer08Array(lengthDiv4);
 		    sup.addLast(lengthDiv4Array);		    
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
+		    // padding		    
+		    int lengthPadding = (lengthDiv4 - 1) * 4 + 2 - length;
+		    byte[] bytesPadding = getPaddingBytes(lengthPadding);
+		    sup.addLast(new DefaultArray(bytesPadding));
         }
         
         return sup;
     }
 
-    
+	/*
+	 * get padding array
+	 */
+    protected static byte[] getPaddingBytes(int lengthPadding)
+	{
+	    byte[] bytes = new byte[lengthPadding];
+	    for (int i = 0; i < lengthPadding; i++)
+	    {
+	    	bytes[i] = 0;
+	    }
+	    return bytes;
+	}
+	
+	/*
+	 * remove padding data
+	 */
+    protected static int removePaddingBytes(Array data)
+    {
+	    int i = data.length - 1;
+	    int lengthPadding = 0;
+	    while (data.get(i) == 0)
+	    {
+	    	lengthPadding++;
+	    	i--;
+	    }
+	    return lengthPadding;
+    }
 }
