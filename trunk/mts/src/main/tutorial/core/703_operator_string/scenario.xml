@@ -217,6 +217,8 @@ ErrorList.list={...}
 	<test parameter="[number]" condition="number.equals" value="40" />
 	<test parameter="[result]" condition="binary.equals" value="0443F2A25C9FA98434AFCA840AF69594FD3B35BC" />  
 
+  <!-- payload from Diameter-EAP-Answer(268)_AKA-Challenge(1) Frame #7
+       on <install_dir>/tutorial/diameter/350_swm_attach/trace swm swx s6b ok.pcap network capture -->
 
   <parameter name="[EAPPayload]"     operation="binary.toString" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000beafd710332dd3c27033c241bcb070538601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>
   <parameter name="[EAPPayloadMAC0]" operation="binary.toString" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000000000000000000000000000000000008601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>
@@ -243,6 +245,34 @@ ErrorList.list={...}
 	<test parameter="[number]" condition="number.equals" value="40" />
 	<parameter name="[AT_MAC]" operation="binary.subbinary" value="[MAC20]" value2="0" value3="16"/>  
 	<test parameter="[AT_MAC]" condition="binary.equals" value="beafd710332dd3c27033c241bcb07053" />  
+
+  <!-- payload from Diameter-EAP-Request(268)_AKA-Challenge(1) Frame #9
+       on <install_dir>/tutorial/diameter/350_swm_attach/trace swm swx s6b ok.pcap network capture -->
+  <parameter name="[EAPPayload]"     operation="binary.toString" value="02020028170100000b050000b70f5d335df7606d83b4c87d820e60710303004039bcb97622c4715a"/>
+  <parameter name="[EAPPayloadMAC0]" operation="binary.toString" value="02020028170100000b050000000000000000000000000000000000000303004039bcb97622c4715a"/>
+  <parameter name="[strIdentity]" operation="set" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
+  <parameter name="[Identity]" operation="string.tobinary" value="[strIdentity]"/>  
+  <parameter name="[IK]" operation="set" value="ee78ba18d36aeb993acb600a9718305f"/>
+  <parameter name="[CK]" operation="set" value="c16f01e478cdffc371923bf70fbe4205"/>
+  <parameter name="[Concat]" operation="set" value="[Identity][IK][CK]"/>
+  <parameter name="[strConcat]" operation="binary.tostring" value="[Concat]"/>  
+  <!--parameter name="[strIdentity]" operation="set" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>  
+  <parameter name="[IK]" operation="set" value="ee78ba18d36aeb993acb600a9718305f"/>
+  <parameter name="[strIK]" operation="binary.toString" value="[IK]"/>  
+  <parameter name="[CK]" operation="set" value="c16f01e478cdffc371923bf70fbe4205"/>
+  <parameter name="[strCK]" operation="binary.toString" value="[CK]"/>  
+  <parameter name="[strConcat]" operation="set" value="[strIdentity][strIK][strCK]"/-->    
+  <parameter name="[MK]" operation="string.digest" value="[strConcat]" value2="SHA1" />
+  <test parameter="[MK]" condition="binary.equals" value="5273151b660ecceac5368ad77c2356b6c440d08d" />      
+  <parameter name="[strMK]" operation="binary.tostring" value="[MK]"/>
+  <!-- calculated by external C program -->
+  <parameter name="[Kout]" operation="set" value="76015283ac829f34f5c40125d38061cf"/>
+  <parameter name="[strKout]" operation="binary.tostring" value="[Kout]"/>  
+	<parameter name="[MAC20]" operation="string.hmac" value="[EAPPayloadMAC0]" value2="HmacSHA1" value3="[strKout]" />
+	<parameter name="[number]" operation="string.length" value="[MAC20]" />
+	<test parameter="[number]" condition="number.equals" value="40" />
+	<parameter name="[AT_MAC]" operation="binary.subbinary" value="[MAC20]" value2="0" value3="16"/>  
+	<test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071" />  
   
 	<parameter name="[result]" operation="string.trim" value=" essai       " />
 	<test parameter="[result]" condition="string.equals" value="essai" />
