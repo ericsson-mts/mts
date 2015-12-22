@@ -4,11 +4,11 @@
 <scenario>
 
    <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
+    <createListenpointDIAMETER name="lp_session_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
     
     <call name="diameter.RecCER_SendCEA"/>
     
-    <receiveMessageDIAMETER name="ReceiveRequestAAR" listenpoint="lp_server" 
+    <receiveMessageDIAMETER name="ReceiveRequestAAR" listenpoint="lp_session_server" 
         request="true" type="AA">
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
@@ -29,7 +29,7 @@
     <!-- RAT-Type: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
     <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
 
-    <sendMessageDIAMETER name="SendAnswerAAA" listenpoint="lp_server"
+    <sendMessageDIAMETER name="SendAnswerAAA" listenpoint="lp_session_server"
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">    
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -104,7 +104,7 @@
     <parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
     <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
 
-    <sendMessageDIAMETER name="SendRequestRAR" listenpoint="lp_server" 
+    <sendMessageDIAMETER name="SendRequestRAR" listenpoint="lp_session_server" 
         remoteHost="[remoteHost]" remotePort="[remotePort]">
         <header request="true" command="Re-Auth:258" applicationId="3GPP Gx:16777238"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -177,13 +177,13 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerRAA" listenpoint="lp_server" 
+    <receiveMessageDIAMETER name="ReceiveAnswerRAA" listenpoint="lp_session_server" 
         request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 
 
-    <receiveMessageDIAMETER name="ReceiveRequestSTR" listenpoint="lp_server"
+    <receiveMessageDIAMETER name="ReceiveRequestSTR" listenpoint="lp_session_server"
         request="true" type="Session-Termination">
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
@@ -198,7 +198,7 @@
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerSTA" listenpoint="lp_server"
+    <sendMessageDIAMETER name="SendAnswerSTA" listenpoint="lp_session_server"
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -208,7 +208,13 @@
     </sendMessageDIAMETER>
 
     <finally>
-        <removeListenpointDIAMETER name="lp_server" />
+    
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_session_server"/>
+          </input>
+        </call>
+
     </finally>
 
 </scenario>

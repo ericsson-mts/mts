@@ -459,5 +459,22 @@ diameter.RecCER_SendCEA
         </do>
     </function>
 
+    <function name="diameter.removeListenpoint">
+        <input>
+          <parameter name="[function:name]" type="String"/>
+        </input>
+
+        <do>
+            <if>
+              <condition>
+                <test parameter="[transport]" condition="string.equalsIgnoreCase" value="sctp" not="true"/>
+              </condition>
+              <then>
+                  <removeListenpointDIAMETER name="[function:name]"/>
+                  <pause name="pause" seconds="0.1"/>
+              </then>
+            </if>
+        </do>
+    </function>
 
 </scenario>

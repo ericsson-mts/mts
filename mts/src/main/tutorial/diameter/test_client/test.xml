@@ -30,7 +30,7 @@
     <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
     <parameter name="[timeout]" operation="set" value="30" description="timeout duration for message receipt : 0 mean always" editable="true"/>
     
-    <parameter name="[transport]" operation="set" value="TCP"/>
+    <parameter name="[transport]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.TRANSPORT"/>
     <parameter name="[vendorID]" operation="set" value="3GPP:10415"/>
   
     <testcase name="101_cx_uar" state="true" number="[iterations]" description="diameter" >
@@ -393,7 +393,7 @@
     </testcase>
 
      <testcase name="808_one_scenario_receiveMessage" state="false" number="[iterations]" description="diameter" >
-        <scenario name="client-server" file="../808_one_scenario_receiveMessage/client-server.xml" state="true" routingName="DIAMETER"/>
+        <scenario name="client-server" file="../808_one_scenario_receiveMessage/client-server.xml" state="true" routingName="DIAMETER.3GPPCx:16777216"/>
     </testcase>
 
      <testcase name="809_echo" state="false" number="[iterations]" description="diameter" >
@@ -426,7 +426,7 @@
         <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
     
         <!--routing using SCENARIO_NAME=header.command -->
-        <scenario name="Scenario Client" file="../812_routing_scenarioname/client.xml" state="[localClient]" routingName="client"/>
+        <scenario name="Scenario Client" file="../812_routing_scenarioname/client.xml" state="[localClient]" routingName="lp_routing_client"/>
         <!--routing using SCENARIO_NAME=listenpoint.name -->
         <scenario name="Scenario Server" file="../812_routing_scenarioname/server.xml" state="[remoteServer]" routingName="Multimedia-Authentitcation:506"/>
     </testcase>

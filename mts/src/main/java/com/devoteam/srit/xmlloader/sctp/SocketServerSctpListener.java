@@ -68,16 +68,18 @@ public class SocketServerSctpListener extends Thread
 			ses.sctp_shutdown_event=true;
 			//sctpSocketserver.subscribeEvents(ses);
 			
-			String host = listenpointSctp.getHost();
 			/*
-			if (host != null)
+			String host = listenpointSctp.getHost();
+			System.out.println("host:"+host);
+			if (host != null && !"0.0.0.0".equals(host))
 			{
 				InetAddress addr = InetAddress.getByName(host);
 				sctpSocketserver.bind(addr, port);
 			}
 			else
 			{
-				sctpSocketserver.bind(port);
+				InetAddress addr = InetAddress.getByName(host);
+				sctpSocketserver.bind(addr, port);
 			}
 			*/
 			sctpSocketserver.listen();

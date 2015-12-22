@@ -5,12 +5,13 @@
 <scenario>
 
     <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_client" localPort="[Listen-Client-Port]"/>
+    <parameter name="[testcase:Listen-Client-Port]" operation="number.add" value="[testcase:Listen-Client-Port]" value2="1"/>    
+    <createListenpointDIAMETER name="lp_client1" localPort="[Listen-Client-Port]"/>
 
     <call name="diameter.openChannel_SendCER_RecCEA"/>
         
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client" 
+    <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client1" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 30 - Cx:4321"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
@@ -45,15 +46,19 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client" request="false" type="506" result="2001" >
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client1" request="false" type="506" result="2001" >
     </receiveMessageDIAMETER>
     
-    <removeListenpointDIAMETER name="lp_client"/>
-    <pause name="pause" seconds="0.1"/>
+    <call name="diameter.removeListenpoint">
+      <input>
+        <parameter name="[function:name]" value="lp_client1"/>
+      </input>
+    </call>
         
     <!-- create a listenpoint with all parameters -->
-    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>    
-    <createListenpointDIAMETER name="lp_client" localPort="[Listen-Client-Port]">
+    <parameter name="[testcase:Listen-Client-Port]" operation="number.add" value="[testcase:Listen-Client-Port]" value2="1"/>
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>        
+    <createListenpointDIAMETER name="lp_client2" localPort="[Listen-Client-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -71,7 +76,7 @@
     <parameter name="[testcase:createListenpoint]" operation="system.semaphorewait"/> 
 
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client" destScenario="server" 
+    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client2" destScenario="server" 
         remoteURL="diam://[Listen-Server-Host]:[Listen-Server-Port]/path;param=value">
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]"/>
@@ -95,12 +100,23 @@
         </avp>
     </sendMessageDIAMETER>
     
-    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client" request="false" type="506" result="2001" >
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client2" request="false" type="506" result="2001" >
     </receiveMessageDIAMETER>
 
     <finally>
-      <removeListenpointDIAMETER name="lp_client"/>
-      <pause name="pause" seconds="0.1"/>
+    
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_client1"/>
+          </input>
+        </call>
+
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_client2"/>
+          </input>
+        </call>
+        
     </finally>
         
 </scenario>
