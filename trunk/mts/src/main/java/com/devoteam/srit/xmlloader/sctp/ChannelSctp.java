@@ -132,14 +132,23 @@ public class ChannelSctp extends Channel
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
     		this.startTimestamp = System.currentTimeMillis();
             
+			//InetAddress localAddr = InetAddress.getByName(getLocalHost());
+			// TODO Take localAddr into account
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
+            sctpSocket.bind(getLocalPort());
             if (this.initmsg != null)
             {
             	sctpSocket.setInitMsg(this.initmsg);
             }
+                        
+            InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
+            sctpSocket.connect(remoteSocketAddress);
+        
+            this.localPort = sctpSocket.getLocalInetPort();
+            // TODO Take socket LocalAddress into account
+            // this.setLocalHost(socket.getLocalAddress().getHostAddress());
             
-            int localPort = getLocalPort();
-            /*
+            /* for multihoming but not used : we keep it nethertheless
             if (localHost != null)
             {
 	            for (int i = 0; i < this.localHost.length; i++)
@@ -175,12 +184,13 @@ public class ChannelSctp extends Channel
 	            }
             }
             else
-            */
             {
-            	sctpSocket.bind(localPort);
+            	sctpSocket.bind(getLocalPort());
             	//sctpSocket.listen();
-            }          
+            }   
+            */       
 
+            /* for multihoming but not used : we keep it nethertheless
             int remotePort = getRemotePort();
             if (remoteHost != null)
             {
@@ -206,7 +216,8 @@ public class ChannelSctp extends Channel
 	            		throw new ExecutionException("Can not connect to all remote destinations : last exception " + lastException);
 	            	}
 	            }
-            }       
+            }
+			*/
             socket = new SocketSctp(sctpSocket);
         }
         

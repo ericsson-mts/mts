@@ -5,7 +5,7 @@
 <scenario>
 
     <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>  
-    <createListenpointDIAMETER name="server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
+    <createListenpointDIAMETER name="lp_routing_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -24,7 +24,7 @@
                                 
     <call name="diameter.RecCER_SendCEA"/>
                                     
-    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="server" request="true" type="Multimedia-Authentitcation:506" >
+    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="lp_routing_server" request="true" type="Multimedia-Authentitcation:506" >
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>        
@@ -38,7 +38,7 @@
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
   </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="server"
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_routing_server"
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -61,7 +61,7 @@
     </sendMessageDIAMETER>
     
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="server" remoteURL="diameter://[Listen-Client-Host]:[Listen-Client-Port]">
+    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_routing_server" remoteURL="diameter://[Listen-Client-Host]:[Listen-Client-Port]">
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216" proxiable="true"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]"/>
@@ -83,12 +83,17 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="server" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001" >
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_routing_server" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001" >
     </receiveMessageDIAMETER>
 
     <finally>
-        <removeListenpointDIAMETER name="server" />
-        <pause name="pause" seconds="0.1"/>
+    
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_routing_server"/>
+          </input>
+        </call>
+
     </finally>
 
 </scenario>

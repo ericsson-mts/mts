@@ -34,7 +34,7 @@
     
     <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
     
-    <parameter name="[transport]" operation="set" value="TCP"/>
+    <parameter name="[transport]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.TRANSPORT"/>
     <parameter name="[vendorID]" operation="set" value="3GPP:10415"/>
   
     <!-- library for the 350_swm_attach testcase -->
@@ -417,7 +417,7 @@
     </testcase>
 
      <testcase name="808_one_scenario_receiveMessage" state="true" number="[iterations]" description="diameter" >
-        <scenario name="client-server" file="808_one_scenario_receiveMessage/client-server.xml" state="true" routingName="DIAMETER"/>
+        <scenario name="client-server" file="808_one_scenario_receiveMessage/client-server.xml" state="true" routingName="DIAMETER.3GPPCx:16777216"/>
     </testcase>
 
      <testcase name="809_echo" state="true" number="[iterations]" description="diameter" >
@@ -435,9 +435,9 @@
 
     <testcase name="811_listenpoint" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
-        <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
+        <parameter name="[Listen-Client-Port]" operation="set" value="13880"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>        
-        <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
+        <parameter name="[Listen-Server-Port]" operation="set" value="23882"/>
     
         <scenario name="client" file="811_listenpoint/client.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="811_listenpoint/server.xml" state="[remoteServer]" routingName="server"/>
@@ -445,14 +445,14 @@
     
     <testcase name="812_routing_scenarioname" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
-        <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
+        <parameter name="[Listen-Client-Port]" operation="set" value="33868"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
-        <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
-    
-        <!--routing using SCENARIO_NAME=header.command -->
-        <scenario name="Scenario Client" file="812_routing_scenarioname/client.xml" state="[localClient]" routingName="client"/>
+        <parameter name="[Listen-Server-Port]" operation="set" value="43868"/>
+  
         <!--routing using SCENARIO_NAME=listenpoint.name -->
-        <scenario name="Scenario Server" file="812_routing_scenarioname/server.xml" state="[remoteServer]" routingName="Multimedia-Authentitcation:506"/>
+        <scenario name="client" file="812_routing_scenarioname/client.xml" state="[localClient]" routingName="lp_routing_client"/>
+        <!--routing using SCENARIO_NAME=header.command -->
+        <scenario name="server" file="812_routing_scenarioname/server.xml" state="[remoteServer]" routingName="Multimedia-Authentitcation:506"/>
     </testcase>
 
     <testcase name="812_routing_destscenario" state="true" number="[iterations]" description="diameter" >
@@ -463,9 +463,9 @@
 
     <testcase name="813_routing_session" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
-        <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
+        <parameter name="[Listen-Client-Port]" operation="set" value="53880"/>
         <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
-        <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
+        <parameter name="[Listen-Server-Port]" operation="set" value="63882"/>
         <parameter name="[applicationID]" operation="set" value="16777236"/>
         
         <!--routing using SESSION_ID -->

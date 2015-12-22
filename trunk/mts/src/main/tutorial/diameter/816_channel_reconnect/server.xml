@@ -5,11 +5,11 @@
 <scenario>
 
     <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
+    <createListenpointDIAMETER name="lp_reconnect_server1" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
 
     <call name="diameter.RecCER_SendCEA"/>
     
-    <receiveMessageDIAMETER name="ReceiveRequestMAR"  listenpoint="lp_server" request="true" type="506" >
+    <receiveMessageDIAMETER name="ReceiveRequestMAR"  listenpoint="lp_reconnect_server1" request="true" type="506" >
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
@@ -23,7 +23,7 @@
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server"
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_reconnect_server1"
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -45,12 +45,15 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <removeListenpointDIAMETER name="lp_server"/>
-    <pause name="pause" seconds="1"/>
+    <call name="diameter.removeListenpoint">
+      <input>
+        <parameter name="[function:name]" value="lp_reconnect_server1"/>
+      </input>
+    </call>
 
     <!-- create a listenpoint with all parameters -->
     <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <createListenpointDIAMETER name="lp_server" localURL="aaa://[Listen-Server-Host]:[Listen-Server-Port]/path">
+    <createListenpointDIAMETER name="lp_reconnect_server2" localURL="aaa://[Listen-Server-Host]:[Listen-Server-Port]/path">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -67,7 +70,7 @@
 
     <parameter name="[testcase:createListenpoint]" operation="system.semaphorenotify"/>
     
-    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="lp_server" request="true" type="Multimedia-Authentitcation:506" >
+    <receiveMessageDIAMETER name="ReceiveRequestMAR" listenpoint="lp_reconnect_server2" request="true" type="Multimedia-Authentitcation:506" >
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
@@ -81,7 +84,7 @@
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
     </receiveMessageDIAMETER>
 
-    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server" remoteURL="diameter://[localDIAM]" >
+    <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_reconnect_server2" remoteURL="diameter://[localDIAM]" >
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
         <avp code="Origin-Host:264" value="[remoteHostDIAM]"/>
@@ -101,15 +104,15 @@
             <avp code="Authentication-Context:1024" value="INVITE"/>
         </avp>
     </sendMessageDIAMETER>
-
-    <removeListenpointDIAMETER name="lp_server"/>
-    <pause name="pause" seconds="1"/>
-
-    <createListenpointDIAMETER name="lp_server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
     
     <finally>
-        <removeListenpointDIAMETER name="lp_server"/>
-        <pause name="pause" seconds="1"/>
+
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_reconnect_server2"/>
+          </input>
+        </call>
+
     </finally>
         
 </scenario>

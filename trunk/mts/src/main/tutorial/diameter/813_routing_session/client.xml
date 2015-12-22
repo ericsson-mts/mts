@@ -4,7 +4,7 @@
 <scenario>                
                          
     <!-- create a listenpoint with no parameter -->
-    <createListenpointDIAMETER name="lp_client" localPort="[Listen-Client-Port]"/>
+    <createListenpointDIAMETER name="lp_session_client" localPort="[Listen-Client-Port]"/>
 
     <call name="diameter.openChannel_SendCER_RecCEA"/>
     
@@ -47,7 +47,7 @@
     <parameter name="[Subscription-Id-Data]" operation="set" value="sip:+33672225555@orange.fr"/>
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="lp_client" 
+    <sendMessageDIAMETER name="SendRequestAAR" listenpoint="lp_session_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="Scenario server">
         <header request="true" command="AA:265" applicationId="3GPP Rx:16777236"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
@@ -85,12 +85,12 @@
         </avp>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerAAA" listenpoint="lp_client" 
+    <receiveMessageDIAMETER name="ReceiveAnswerAAA" listenpoint="lp_session_client" 
         request="false" type="AA" result="DIAMETER_SUCCESS">
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveRequestRAR" listenpoint="lp_client" 
+    <receiveMessageDIAMETER name="ReceiveRequestRAR" listenpoint="lp_session_client" 
         request="true" type="Re-Auth">
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
@@ -115,7 +115,7 @@
     -->
     <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
 
-    <sendMessageDIAMETER name="SendAnswerRAA" listenpoint="lp_client" 
+    <sendMessageDIAMETER name="SendAnswerRAA" listenpoint="lp_session_client" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -130,7 +130,7 @@
     <!-- Termination-Cause - enum - cf RFC 3588 for list of values -->
     <parameter name="[Termination-Cause]" operation="set" value="DIAMETER_SESSION_TIMEOUT"/>
 
-    <sendMessageDIAMETER name="SendRequestSTR" listenpoint="lp_client" 
+    <sendMessageDIAMETER name="SendRequestSTR" listenpoint="lp_session_client" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]">
         <header request="true" command="Session-Termination:275" applicationId="3GPP Rx:16777236"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
@@ -143,13 +143,19 @@
         <avp code="Termination-Cause:295" value="[Termination-Cause]"/>
     </sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerSTA" listenpoint="lp_client" 
+    <receiveMessageDIAMETER name="ReceiveAnswerSTA" listenpoint="lp_session_client" 
         request="false" type="Session-Termination" result="DIAMETER_SUCCESS">
         <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 
     <finally>
-        <removeListenpointDIAMETER name="lp_client" />
+
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_session_client"/>
+          </input>
+        </call>
+
     </finally>
 
 </scenario>
