@@ -7,7 +7,7 @@
 <test description="DIAMETER regression tests" name="DIAMETER">
 
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
-    
+
     <parameter name="[localHostDIAM]" operation="system.ipaddress" value2="[IPVersion]"/>
     <!--parameter name="[localHostDIAM]" operation="set" value="fhenry"/-->
     <!--parameter name="[localHostDIAM]" operation="set" value="172.16.21.32" /-->
@@ -436,7 +436,7 @@
     <testcase name="811_listenpoint" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
-        <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
+        <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>        
         <parameter name="[Listen-Server-Port]" operation="set" value="3882"/>
     
         <scenario name="client" file="811_listenpoint/client.xml" state="[localClient]" routingName="client"/>
@@ -446,7 +446,7 @@
     <testcase name="812_routing_scenarioname" state="true" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
-        <parameter name="[Listen-Server-Host]" operation="set" value="[localHostDIAM]"/>
+        <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
         <parameter name="[Listen-Server-Port]" operation="set" value="3868"/>
     
         <!--routing using SCENARIO_NAME=header.command -->
