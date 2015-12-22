@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.core.coding.binary.eap;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.StringField;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -61,9 +62,13 @@ public class ElementEAPLength extends ElementAbstract
             }
             Array dataArray = elementData.subArray(0, length);
 
-            // remove padding data
-            int lengthPadding = ElementEAP.removePaddingBytes(dataArray);
-            dataArray = dataArray.subArray(0, length - lengthPadding);
+            // remove padding data if the last field is a type of String
+            if (!this.fields.isEmpty() && this.fields.get(this.fields.size() - 1) instanceof StringField)
+            {
+            	int lengthPadding = ElementEAP.removePaddingBytes(dataArray);
+            	length = length - lengthPadding;
+            }
+            dataArray = dataArray.subArray(0, length);
             
             decodeFieldsTagElementsFromArray(dataArray, dictionary);
             return lengthDiv4 * 4;

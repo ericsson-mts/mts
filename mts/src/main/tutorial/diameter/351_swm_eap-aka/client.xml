@@ -9,13 +9,20 @@
     <parameter name="[binaryAll]" operation="set" value=""/>
     <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]000102030405060708090a0b0c0d0e0f"/-->
     <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]101112131415161718191a1b1c1d1e1f"/-->
-    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]202122232425262728292a2b2c2d2e2f"/-->
-    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]303132333435363738393a3b3c3d3e3f"/-->
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]202122232425262728292a2b2c2d2e2f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]303132333435363738393a3b3c3d3e3f"/>
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]404142434445464748494a4b4c4d4e4f"/>
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]505152535455565758595a5b5c5d5e5f"/>
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]606162636465666768696a6b6c6d6e6f"/>
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]707172737475767778797a7b7c7d7e7f"/>
-    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]808182838485868788898a8b8c8d8e8f"/-->    
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]808182838485868788898a8b8c8d8e8f"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]909192939495969798999a9b9c9d9e9f"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]a0a1a2a3a4a5a6a7a8a9aaabacadaeaf"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]b0b1b2b3b4b5b6b7b8b9babbbcbdbebf"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]c0c1c2c3c4c5c6c7c8c9cacbcccdcecf"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]d0d1d2d3d4d5d6d7d8d9dadbdcdddedf"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]e0e1e2e3e4e5e6e7e8e9eaebecedeeef"/-->
+    <!--parameter name="[binaryAll]" operation="set" value="[binaryAll]f0f1ff3f4f5f6f7f8f9fafbfcfdfeff"/-->                
     <parameter name="[stringAll]" operation="binary.ToString" value="[binaryAll]"/>                
     
     
@@ -48,7 +55,7 @@
         <field name="Value" value="123456789" type="String" description=""/>
     </element>
     <element tag="AT_IDENTITY:14" coding="EAP" description=""> 
-        <field name="Actual length" value="20" type="Integer" length="2" description=""/>       
+        <field name="Actual length" value="20" type="Integer" length="2" description=""></field>       
         <field name="Value" value="123456789abcde" type="String" description=""/>
     </element>
     <element tag="AT_IDENTITY:14" coding="EAP" description=""> 
@@ -92,14 +99,15 @@
     <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Identity:5"/>
     <parameter name="[EAP_AKA_Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_EAP-AKA_23']/field[@name='EAP AKA Reserved']/attribute::value"/>
     <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>
-    <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IDENTITY:14']/field[@name='Value']/attribute::value"/>
-    <test parameter="[Identity(0)]" condition="string.equals" value="value=&quot;123456&quot;"/>
-    <test parameter="[Identity(1)]" condition="string.equals" value="value=&quot;1234567&quot;"/>    
-    <test parameter="[Identity(2)]" condition="string.equals" value="value=&quot;12345678&quot;"/>
-    <test parameter="[Identity(3)]" condition="string.equals" value="value=&quot;123456789&quot;"/>        
-    <test parameter="[Identity(4)]" condition="string.equals" value="value=&quot;123456789abcde&quot;"/>
-    <test parameter="[Identity(5)]" condition="string.equals" value="value=&quot;12345678&quot;"/>    
-    <!--test parameter="[Identity(6)]" condition="string.equals" value="value=&quot;123456789abcdef&quot;"/-->    
+    <parameter name="[IdentityValue]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IDENTITY:14']/field[@name='Value']/attribute::value"/>
+    <test parameter="[IdentityValue(0)]" condition="string.equals" value="123456"/>
+    <test parameter="[IdentityValue(1)]" condition="string.equals" value="1234567"/>    
+    <test parameter="[IdentityValue(2)]" condition="string.equals" value="12345678"/>
+    <test parameter="[IdentityValue(3)]" condition="string.equals" value="123456789"/>        
+    <test parameter="[IdentityValue(4)]" condition="string.equals" value="123456789abcde"/>
+    <test parameter="[IdentityValue(5)]" condition="string.equals" value="12345678"/>
+    <parameter name="[IdentityText]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IDENTITY:14']/field[@name='Value']/text()"/>        
+    <test parameter="[IdentityText]" condition="string.equals" value="[stringAll]"/>    
 
 
     <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
@@ -107,7 +115,7 @@
     <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
     <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
-    <test parameter="[Length]" condition="number.equals" value="160"/>
+    <test parameter="[Length]" condition="number.equals" value="200"/>
     <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>    
     <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
     <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Subtype" value3="eap/dictionary_EAP.xml"/>    
@@ -119,15 +127,17 @@
     <test parameter="[IdentityBin(1)]" condition="binary.equals" value="0E0300073132333435363700"/>    
     <test parameter="[IdentityBin(2)]" condition="binary.equals" value="0E0300083132333435363738"/>
     <test parameter="[IdentityBin(3)]" condition="binary.equals" value="0E040009313233343536373839000000"/>
-    <test parameter="[IdentityBin(4)]" condition="binary.equals" value="0E0300083132333435363738"/>            
-    <test parameter="[IdentityBin(5)]" condition="binary.equals" value="0E110040[binaryAll]"/>
+    <test parameter="[IdentityBin(4)]" condition="binary.equals" value="0E05000e31323334353637383961626364650000"/>            
+    <test parameter="[IdentityBin(5)]" condition="binary.equals" value="0E0300083132333435363738"/>    
+    <test parameter="[IdentityBin(6)]" condition="binary.equals" value="0E190060[binaryAll]"/>
     <parameter name="[Identity]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value" value3="eap/dictionary_EAP.xml"/>    
     <test parameter="[Identity(0)]" condition="string.equals" value="123456"/>
     <test parameter="[Identity(1)]" condition="string.equals" value="1234567"/>    
     <test parameter="[Identity(2)]" condition="string.equals" value="12345678"/>
     <test parameter="[Identity(3)]" condition="string.equals" value="123456789"/>
-    <test parameter="[Identity(4)]" condition="string.equals" value="12345678"/>
-    <test parameter="[Identity(5)]" condition="string.equals" value="[stringAll]"/>
+    <test parameter="[Identity(4)]" condition="string.equals" value="123456789abcde"/>
+    <test parameter="[Identity(5)]" condition="string.equals" value="12345678"/>
+    <test parameter="[Identity(6)]" condition="string.equals" value="[stringAll]"/>
     <parameter name="[IdentityOff]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value.offset" value3="eap/dictionary_EAP.xml"/>    
     <test parameter="[IdentityOff]" condition="number.equals" value="0"/>
     <parameter name="[IdentityLen]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value.length" value3="eap/dictionary_EAP.xml"/>    

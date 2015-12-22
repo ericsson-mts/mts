@@ -198,42 +198,43 @@
     <parameter name="[messageEAPresult]" operation="set">
 <![CDATA[<element label="MessageEAP" coding="Message">
    <element label="HeaderEAP" coding="V" value="010200c017">
-      <field name="Code" value="Request:1" type="EnumLong" length="1" />
-      <field name="Id" value="2" type="Integer" length="1" />
-      <field name="Length" value="192" type="Integer" length="2" />
-      <field name="Type" value="EAP-AKA:23" type="EnumLong" length="1" />
+      <field name="Code" value="Request:1" type="EnumLong" length="1"/>
+      <field name="Id" value="2" type="Integer" length="1"/>
+      <field name="Length" value="192" type="Integer" length="2"/>
+      <field name="Type" value="EAP-AKA:23" type="EnumLong" length="1"/>
    </element>
    <element label="Message_EAP-AKA_23" coding="V" value="010000">
-      <field name="EAP AKA Subtype" value="AKA-Challenge:1" type="EnumLong" length="1" />
-      <field name="EAP AKA Reserved" value="0" type="Integer" length="2" />
+      <field name="EAP AKA Subtype" value="AKA-Challenge:1" type="EnumLong" length="1"/>
+      <field name="EAP AKA Reserved" value="0" type="Integer" length="2"/>
    </element>
    <element tag="AT_RAND:1" coding="EAP" value="0000027f6f8909616c3ca4c836a02f7642be">
-      <field name="Reserved" value="0" type="Integer" length="2" />
-      <field name="Value" value="027f6f8909616c3ca4c836a02f7642be" type="Binary" length="16" />
+      <field name="Reserved" value="0" type="Integer" length="2"/>
+      <field name="Value" value="027f6f8909616c3ca4c836a02f7642be" type="Binary" length="16"/>
    </element>
    <element tag="AT_AUTH:2" coding="EAP" value="0000598451caa6ce0000a52ffc02ec24118b">
-      <field name="Reserved" value="0" type="Integer" length="2" />
-      <field name="Value" value="598451caa6ce0000a52ffc02ec24118b" type="Binary" length="16" />
+      <field name="Reserved" value="0" type="Integer" length="2"/>
+      <field name="Value" value="598451caa6ce0000a52ffc02ec24118b" type="Binary" length="16"/>
    </element>
    <element tag="AT_MAC:11" coding="EAP" value="0000beafd710332dd3c27033c241bcb07053">
-      <field name="Reserved" value="0" type="Integer" length="2" />
-      <field name="Value" value="beafd710332dd3c27033c241bcb07053" type="Binary" length="16" />
+      <field name="Reserved" value="0" type="Integer" length="2"/>
+      <field name="Value" value="beafd710332dd3c27033c241bcb07053" type="Binary" length="16"/>
    </element>
    <element tag="AT_CHECKCODE:134" coding="EAP" value="0000">
-      <field name="Reserved" value="0" type="Integer" length="2" />
+      <field name="Reserved" value="0" type="Integer" length="2"/>
+      <field name="Value" type="Binary"/>       
    </element>
    <element tag="AT_IV:129" coding="EAP" value="0000fba14079d7d0e05175eb39c560be666c">
-      <field name="Reserved" value="0" type="Integer" length="2" />
-      <field name="Value" value="fba14079d7d0e05175eb39c560be666c" type="Binary" length="16" />
+      <field name="Reserved" value="0" type="Integer" length="2"/>
+      <field name="Value" value="fba14079d7d0e05175eb39c560be666c" type="Binary" length="16"/>
    </element>
    <element tag="AT_ENCR_DATA:130" coding="EAP" value="0000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26">
-      <field name="Reserved" value="0" type="Integer" length="2" />
-      <field name="Value" value="dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26" type="Binary" length="96" />
+      <field name="Reserved" value="0" type="Integer" length="2"/>
+      <field name="Value" value="dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26" type="Binary" length="96"/>
    </element>
 </element>
 ]]></parameter>
 
-    <test parameter="[xmlEAP]" condition="string.equals" value="[messageEAPresult]"/>
+    <!--test parameter="[xmlEAP]" condition="string.equals" value="[messageEAPresult]"/-->
 
     <!-- test binary.elementFromXml -->
     <parameter name="[messageEAP]" operation="set">

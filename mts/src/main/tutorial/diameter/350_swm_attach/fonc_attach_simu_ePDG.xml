@@ -104,7 +104,8 @@ From 3GPP TS 29.273 V8.3.0 :
 			</sendMessageDIAMETER>
 
 			<!-- attente DEA apres echange MAR/MAA avec HSS -->
-			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268:Identity:1" result="DIAMETER_MULTI_ROUND_AUTH:1001:AKA-Challenge:1">
+			<!--receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268:Identity:1" result="DIAMETER_MULTI_ROUND_AUTH:1001:AKA-Challenge:1"-->
+      <receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268:Identity:1">      
 				<parameter name="[UserName]" operation="protocol.setFromMessage" value="avp.User-Name.value"   />
 				<parameter name="[session]" operation="protocol.setFromMessage" value="avp.Session-Id.value"  />
 				<parameter name="[ListenpointName]" operation="protocol.setFromMessage" value="listenpoint.name" />
@@ -120,7 +121,7 @@ From 3GPP TS 29.273 V8.3.0 :
 				<parameter name="[ResultCode]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
         <parameter name="[binaryEAP]" operation="protocol.setFromMessage" value="avp.EAP-Payload:462.binary"/>
 			</receiveMessageDIAMETER>
-
+                                   
       <!-- check the EAP received data -->
       <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>      
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
