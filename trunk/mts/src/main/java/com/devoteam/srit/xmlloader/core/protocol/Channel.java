@@ -292,7 +292,6 @@ public class Channel
         String localHost  = root.attributeValue("localHost");
         if (localHost !=  null)
         {
-        	localHost = InetAddress.getByName(localHost).getHostAddress();
         	this.localHost = Utils.formatIPAddress(localHost);
         }
         String localPort  = root.attributeValue("localPort");
@@ -311,7 +310,6 @@ public class Channel
         String remoteHost = root.attributeValue("remoteHost");
         if (remoteHost != null)
         {
-        	remoteHost = InetAddress.getByName(remoteHost).getHostAddress();
         	this.remoteHost = Utils.formatIPAddress(remoteHost);
         }
         String remotePort = root.attributeValue("remotePort");

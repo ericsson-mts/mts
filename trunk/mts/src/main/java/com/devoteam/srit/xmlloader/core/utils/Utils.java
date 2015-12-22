@@ -895,13 +895,12 @@ public class Utils
      */
     public static String formatIPAddress(String addr) throws Exception
     {
-    	// for IPV6 address then add '[' and ']' character around;
     	if (addr == null)
     	{
     		return addr;
     	}
-    	addr = InetAddress.getByName(addr).getHostAddress();
     	// test IPV6 address
+    	// for IPV6 address then add '[' and ']' character around;    	
     	if (addr.indexOf(":") >= 0)
     	{
     		if (addr.charAt(0) != '[')
