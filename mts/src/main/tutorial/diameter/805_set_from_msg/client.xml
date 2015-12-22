@@ -114,7 +114,10 @@
     <parameter name="[listenpointName]" operation="protocol.setFromMessage" value=" listenpoint.name  "/>
     <test parameter="[listenpointName]" condition="list.isEmpty"/>
     <parameter name="[listenpointHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
-    <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>
+    <or>
+        <test parameter="[listenpointHost]" condition="string.equals" value="0.0.0.0"/>
+        <test parameter="[listenpointHost]" condition="string.equals" value="fhenry"/>
+    </or>
     <parameter name="[listenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
     <test parameter="[listenpointPort]" condition="string.equals" value="[localPortDIAM]"/>
     
