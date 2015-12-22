@@ -24,6 +24,7 @@ Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
                                 * [ AVP ]
 -->
 
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
     <sendMessageDIAMETER name="Send Request RFC3588 CER" remoteURL="diameter://[remoteDIAM]" destScenario="peer2">
         <header request="true" command="Capabilities-Exchange:257" applicationId="Diameter Common Messages:0" proxiable="false" error="false" retransmit="false"/>
 
@@ -33,8 +34,7 @@ Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
         <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
 
         <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
-        <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
-        <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
+        <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHosts]"/>
 
         <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
         <!-- A Vendor-Id value of zero in the CER or CEA messages is reserved and indicates that this field is ignored. -->

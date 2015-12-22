@@ -22,7 +22,7 @@ diameter.RecCER_SendCEA
                 <test parameter="[remoteServer]" condition="boolean.equals" value="false"/>
               </condition>
               <then>
-                  <pause name="synchro si on est client pur" seconds="0.1"/>
+                  <pause name="synchro si on est client pur" seconds="0.0"/>
               </then>
             </if>       
             <if>
@@ -67,6 +67,7 @@ diameter.RecCER_SendCEA
                                               * [ AVP ]
                       -->
                       
+                      <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
                       <sendMessageDIAMETER name="Send Request RFC3588 CER" channel="channel_client" destScenario="server">
                           <header request="true" command="Capabilities-Exchange" applicationId="0" proxiable="false" error="false" retransmit="false"/>
                   
@@ -76,8 +77,7 @@ diameter.RecCER_SendCEA
                           <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
                   
                           <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
-                          <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
-                          <!--avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIAM]"/-->
+                          <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHosts]"/>
                   
                           <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
                           <!-- A Vendor-Id value of zero in the CER or CEA messages is reserved and indicates that this field is ignored. -->
@@ -284,6 +284,7 @@ diameter.RecCER_SendCEA
                                              * [ AVP ]
                   -->
               
+                  <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
                   <sendMessageDIAMETER name="Send Answer RFC3588 CEA">
                       <header request="false" command="[commandCode]" applicationId="0" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>              
                       <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
@@ -295,7 +296,7 @@ diameter.RecCER_SendCEA
                       <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
               
                       <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
-                      <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHostDIAM]"/>
+                      <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHosts]"/>
                       <!--avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIAM]"/-->
               
                       <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->

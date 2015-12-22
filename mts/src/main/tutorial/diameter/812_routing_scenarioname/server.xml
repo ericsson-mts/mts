@@ -4,11 +4,12 @@
 
 <scenario>
 
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>  
     <createListenpointDIAMETER name="server" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
-        <avp code="Host-IP-Address:257" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
+        <avp code="Host-IP-Address:257" value="[localHosts]" type="IPAddress" mandatory="true"/>
         <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
         <avp code="Product-Name:269" value="MTS : Multiprotocol Test Suite" type="UTF8String" mandatory="true"/>
         <avp code="Origin-State-Id:278" value="123456789" type="Unsigned32" mandatory="true"/>
@@ -87,6 +88,7 @@
 
     <finally>
         <removeListenpointDIAMETER name="server" />
+        <pause name="pause" seconds="0.1"/>
     </finally>
 
 </scenario>

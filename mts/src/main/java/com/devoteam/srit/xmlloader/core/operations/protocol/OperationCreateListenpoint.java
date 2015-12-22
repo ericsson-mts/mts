@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementDefaultParser;
 
@@ -46,7 +47,7 @@ public class OperationCreateListenpoint extends Operation {
      * Creates a new instance
      */
     public OperationCreateListenpoint(String aProtocol, Element rootNode) throws Exception {
-        super(rootNode, XMLElementDefaultParser.instance());
+        super(rootNode, null);
         protocol = aProtocol;
 
         // deprecated message
@@ -62,6 +63,9 @@ public class OperationCreateListenpoint extends Operation {
     public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.PROTOCOL, this);
 
+    	Stack stack = StackFactory.getStack(protocol);
+    	setReplacer(stack.getElementReplacer());
+        
         Listenpoint listenpoint;
         try {
             lockAndReplace(runner);
