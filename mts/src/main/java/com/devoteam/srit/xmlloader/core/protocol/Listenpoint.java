@@ -532,7 +532,8 @@ public class Listenpoint
     {
         this.name = root.attributeValue("name");
 
-        this.host = Utils.formatIPAddress(root.attributeValue("localHost"));
+        String strLocalHost = root.attributeValue("localHost");       
+        this.host = Utils.formatIPAddress(strLocalHost);
         if (this.host == null || this.host.length() <= 0)
         {
             this.host = "0.0.0.0";
