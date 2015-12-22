@@ -49,11 +49,12 @@
     <pause name="pause" seconds="1"/>
 
     <!-- create a listenpoint with all parameters -->
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
     <createListenpointDIAMETER name="lp_server" localURL="aaa://[Listen-Server-Host]:[Listen-Server-Port]/path">
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
-        <avp code="Host-IP-Address:257" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
+        <avp code="Host-IP-Address:257" value="[localHosts]" type="IPAddress" mandatory="true"/>
         <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
         <avp code="Product-Name:269" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
         <avp code="Origin-State-Id:278" value="123456789" type="Unsigned32" mandatory="true"/>
