@@ -245,6 +245,10 @@ public abstract class ElementAbstract implements Cloneable
             if (field != null) 
             {
             	String value = element1.attributeValue("value");
+            	if (value == null)
+            	{
+            		value = element1.elementText("value");
+            	}
             	if (value != null)
             	{
 			        field.setValue(value, offset, this.fieldsArray);

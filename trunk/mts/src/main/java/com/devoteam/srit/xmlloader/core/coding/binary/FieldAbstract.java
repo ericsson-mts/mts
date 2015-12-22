@@ -164,46 +164,82 @@ public abstract class FieldAbstract
         	// GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE, e, "Exception in toString() method for field " + this._name);
         	// nothing to do 
         }
-        if (strVal !=  null)
+        StringBuilder elemString = new StringBuilder();
+        elemString.append(ASNToXMLConverter.indent(indent));
+        elemString.append("<field");
+        elemString.append(" name=\"" + this.name + "\"");
+        boolean cdata = false;
+        if (strVal != null)
         {
-	        StringBuilder elemString = new StringBuilder();
-	        elemString.append(ASNToXMLConverter.indent(indent));
-	        elemString.append("<field ");
-	        elemString.append("name=\"" + this.name + "\" ");
-	    	elemString.append("value=\"" + strVal + "\" ");
-	        String type = this.getClass().getSimpleName().split("Field")[0];
-	        if ("NumberBCD".equalsIgnoreCase(type))
-	        {
-	        	type = "Number_BCD";
-	        }
-	        elemString.append("type=\"" + type + "\" ");
-	        int intLen = this.length;
-	        if (intLen <= 0 && strVal != null)
-	        { 
-	        	if (type.toLowerCase().contains("binary"))
-	        	{
-	        		intLen = strVal.length() * 8 / 2;
-	        	}
-	        	else
-	        	{
-	        		intLen = strVal.length() * 8;
-	        	}
-	        }
-	        if (intLen > 0)
-	        {
-		        if (intLen % 8 == 0)
+        	cdata = searchListChar(strVal, "<>&\"\'");
+	        if (!cdata)
+	       	{
+		        elemString.append(" value=\"");
+		        if (strVal != null)
 		        {
-		        	elemString.append("length=\"" + intLen / 8 + "\" ");
+		        	elemString.append(strVal);
 		        }
-		        else
-		        {
-		        	elemString.append("lengthBit=\"" + intLen + "\" ");
-		        }
+		        elemString.append("\"");
 	        }
-	        elemString.append("/>\n");
-	        return elemString.toString();
         }
-        return "";
+        String type = this.getClass().getSimpleName().split("Field")[0];
+        if ("NumberBCD".equalsIgnoreCase(type))
+        {
+        	type = "Number_BCD";
+        }
+        elemString.append(" type=\"" + type + "\"");	        
+        int intLen = this.length;
+        if (intLen < 0 && strVal != null)
+        { 
+        	if (type.toLowerCase().contains("binary"))
+        	{
+        		intLen = strVal.length() * 8 / 2;
+        	}
+        	else
+        	{
+        		intLen = strVal.length() * 8;
+        	}
+        }
+        if (intLen >= 0)
+        {
+	        if (intLen % 8 == 0)
+	        {
+	        	elemString.append(" length=\"" + intLen / 8 + "\"");
+	        }
+	        else
+	        {
+	        	elemString.append(" lengthBit=\"" + intLen + "\"");
+	        }
+        }	    	
+    	if (cdata)
+    	{
+    		elemString.append(">");
+    		elemString.append("<![CDATA[");
+    		elemString.append(strVal);	    	
+    		elemString.append("]]>");
+    		elemString.append("</field>\n");
+    	}
+    	else
+    	{
+    		elemString.append("/>\n");
+    	}
+	    return elemString.toString();
+    }
+    
+    private static boolean searchListChar(String str, String listChar)
+    {
+    	if (str == null)
+    	{ 
+    		return false;
+    	}
+    	for (int i = 0; i < listChar.length(); i++)
+    	{
+    		if (str.indexOf(listChar.charAt(i)) >= 0)
+    		{ 
+    			return true; 
+    		}
+    	}
+    	return false;
     }
     
     protected void permuteByte(byte[] bytes) throws Exception 

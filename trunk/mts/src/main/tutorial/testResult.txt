@@ -2,21 +2,6 @@
 C:\MTSSource\mts\src\main\tutorial>echo OFF
 Deleted file - C:\MTSSource\mts\src\main\logs\application.log
 Deleted file - C:\MTSSource\mts\src\main\logs\stdout.log
-
-[IPVersion]=ipv4
-[localHostIMAP]=[localHostIMAP(0)]
-[localPortIMAP]=[localPortIMAP]
-[localClient]=true
-[remoteHostIMAP]=[remoteHostIMAP(0)]
-[remotePortIMAP]=[remotePortIMAP]
-[remoteServer]=true
-[serverPortTLS]=[serverPortTLS]
-[iterations]=10
-Run -seq test "..\tutorial\imap\test.xml"
-Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-
-
-
 *************** functional testing
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
  Please check that point.
@@ -38,13 +23,31 @@ FAILED: Testcase=081_exit_failed
 [remoteHostDIAM]=[remoteHostDIAM(0)]
 [remotePortDIAM]=[remotePortDIAM]
 [remoteServer]=true
-[iterations]=10
-Run -seq test "..\tutorial\diameter\test_light.xml"
+[iterations]=1
+[timeout]=30
+[host3GGP_AAA]=[localHost(0)]
+[port3GGP_AAA]=3865
+[realm3GGP_AAA]=epc.mnc001.mcc208.3gppnetwork.org
+[portePDG]=38270
+[realmePDG]=epc.mnc001.mcc208.3gppnetwork.org
+[realmNAI]=nai.epc.mnc001.mcc208.3gppnetwork.org
+[hostePDG]=[localHost(0)]
+[responseCode]=DIAMETER_SUCCESS
+[Domain]=osp.nokims.eu
+Run -seq test "..\tutorial\diameter\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-nov. 27, 2015 7:19:09 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
+dÚc. 04, 2015 4:43:33 PM dk.i1.diameter.node.Node start
+INFO: Starting Diameter node
+dÚc. 04, 2015 4:43:34 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: TCP support was loaded
+dÚc. 04, 2015 4:43:34 PM dk.i1.diameter.node.Node loadTransportProtocol
+INFO: SCTP support was not loaded
+dÚc. 04, 2015 4:43:34 PM dk.i1.diameter.node.Node start
+INFO: Diameter node started
+dÚc. 04, 2015 4:43:34 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
 nit>
 WARNING: traceLevel = WARNING
-Exception in thread "Thread-103" java.lang.NoSuchMethodError: setRoutingOption
+Exception in thread "Thread-98" java.lang.NoSuchMethodError: setRoutingOption
         at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
         at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
         at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
@@ -73,13 +76,66 @@ va:264)
 [remoteHostDIAM]=[remoteHostDIAM(0)]
 [remotePortDIAM]=[remotePortDIAM]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
+[host3GGP_AAA]=[localHost(0)]
+[port3GGP_AAA]=3865
+[realm3GGP_AAA]=epc.mnc001.mcc208.3gppnetwork.org
+[portePDG]=38270
+[realmePDG]=epc.mnc001.mcc208.3gppnetwork.org
+[realmNAI]=nai.epc.mnc001.mcc208.3gppnetwork.org
+[hostePDG]=[localHost(0)]
+[responseCode]=DIAMETER_SUCCESS
+[Domain]=osp.nokims.eu
 Run -seq test "..\tutorial\diameter\test_light.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-nov. 27, 2015 7:20:49 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
+dÚc. 04, 2015 4:44:04 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
 nit>
 WARNING: traceLevel = WARNING
-Exception in thread "Thread-103" java.lang.NoSuchMethodError: setRoutingOption
+Exception in thread "Thread-107" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:83)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.parseFromXml(Probe.ja
+va:393)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:510)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:67)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:264)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
+[IPVersion]=ipv4
+[localHostDIAM]=[localHostDIAM(0)]
+[localPortDIAM]=[localPortDIAM]
+[localClient]=true
+[remoteHostDIAM]=[remoteHostDIAM(0)]
+[remotePortDIAM]=[remotePortDIAM]
+[remoteServer]=true
+[iterations]=1
+[host3GGP_AAA]=[localHost(0)]
+[port3GGP_AAA]=3865
+[realm3GGP_AAA]=epc.mnc001.mcc208.3gppnetwork.org
+[portePDG]=38270
+[realmePDG]=epc.mnc001.mcc208.3gppnetwork.org
+[realmNAI]=nai.epc.mnc001.mcc208.3gppnetwork.org
+[hostePDG]=[localHost(0)]
+[responseCode]=DIAMETER_SUCCESS
+[Domain]=osp.nokims.eu
+Run -seq test "..\tutorial\diameter\test_light.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+dÚc. 04, 2015 4:44:30 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
+nit>
+WARNING: traceLevel = WARNING
+Exception in thread "Thread-107" java.lang.NoSuchMethodError: setRoutingOption
         at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
         at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
         at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
@@ -108,13 +164,13 @@ va:264)
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\sip\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-nov. 27, 2015 7:24:08 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
+dÚc. 04, 2015 4:45:54 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
 nit>
 WARNING: traceLevel = WARNING
-Exception in thread "Thread-249" java.lang.NoSuchMethodError: setRoutingOption
+Exception in thread "Thread-123" java.lang.NoSuchMethodError: setRoutingOption
         at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
         at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
         at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
@@ -143,13 +199,24 @@ va:264)
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\sip\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-nov. 27, 2015 7:27:56 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
+dÚc. 04, 2015 4:47:13 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
 nit>
 WARNING: traceLevel = WARNING
-Exception in thread "Thread-249" java.lang.NoSuchMethodError: setRoutingOption
+java.util.ConcurrentModificationException
+        at java.util.LinkedHashMap$LinkedHashIterator.nextEntry(Unknown Source)
+        at java.util.LinkedHashMap$ValueIterator.next(Unknown Source)
+        at com.devoteam.srit.xmlloader.core.protocol.Trans.retransmitAutomaticRe
+sponses(Trans.java:140)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stac
+k.java:899)
+        at com.devoteam.srit.xmlloader.sip.StackSipCommon.doReceiveMessage(Stack
+SipCommon.java:236)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:843)
+
+Exception in thread "Thread-124" java.lang.NoSuchMethodError: setRoutingOption
         at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
         at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
         at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
@@ -170,6 +237,7 @@ va:67)
 va:264)
         at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
 9)
+
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
  Please check that point.
 [IPVersion]=ipv4
@@ -179,7 +247,9 @@ WARNING : The editable parameter "[iterations]" does not exist in the test pool.
 [remotePortSIP]=[remotePortSIP]
 Run -seq test "..\tutorial\sip\test_jain.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-nov. 27, 2015 7:30:14 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
+FAILED: Testcase=102_register_call
+FAILED: Testcase=116_foo
+dÚc. 04, 2015 4:47:41 PM com.devoteam.srit.xmlloader.diameter.StackDiamCommon <i
 nit>
 WARNING: traceLevel = WARNING
 Exception in thread "Thread-117" java.lang.NoSuchMethodError: setRoutingOption
@@ -203,6 +273,10 @@ va:67)
 va:264)
         at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
 9)
+FAILED: Testcase=130_probe_udp
+FAILED: Testcase=130_probe_tcp
+FAILED: Testcase=130_probe_file
+FAILED: Testcase=131_probe_regexfilter
 
 [IPVersion]=ipv4
 [localHostRTP]=[localHostRTP(0)]
@@ -215,46 +289,7 @@ va:264)
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-[iterations]=10
-[domainName]=devoteam.com
-[inviter]=bob
-[invitee]=alice
-Run -seq test "..\tutorial\rtp\test.xml"
-Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-Exception in thread "Thread-374" java.lang.NoSuchMethodError: setRoutingOption
-        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
-        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
-        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
-JpcapThread.java:83)
-        at com.devoteam.srit.xmlloader.core.protocol.Probe.parseFromXml(Probe.ja
-va:393)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
-ck.java:510)
-        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
-robe.execute(OperationCreateProbe.java:63)
-        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
-Operation.java:184)
-        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
-xecute(OperationSequence.java:88)
-        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
-va:67)
-        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
-va:264)
-        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
-9)
-
-[IPVersion]=ipv4
-[localHostRTP]=[localHostRTP(0)]
-[localPortRTP]=10000
-[localClient]=true
-[remoteHostRTP]=[remoteHostRTP(0)]
-[remotePortRTP]=11000
-[remoteServer]=true
-[localHostSIP]=[localHostSIP(0)]
-[localPortSIP]=[localPortSIP]
-[remoteHostSIP]=[remoteHostSIP(0)]
-[remotePortSIP]=[remotePortSIP]
-[iterations]=10
+[iterations]=1
 [domainName]=devoteam.com
 [inviter]=bob
 [invitee]=alice
@@ -293,12 +328,52 @@ va:264)
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-[iterations]=10
+[iterations]=1
+[domainName]=devoteam.com
+[inviter]=bob
+[invitee]=alice
+Run -seq test "..\tutorial\rtp\test.xml"
+Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+Exception in thread "Thread-21" java.lang.NoSuchMethodError: setRoutingOption
+        at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
+        at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
+        at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
+JpcapThread.java:83)
+        at com.devoteam.srit.xmlloader.core.protocol.Probe.parseFromXml(Probe.ja
+va:393)
+        at com.devoteam.srit.xmlloader.core.protocol.Stack.parseProbeFromXml(Sta
+ck.java:510)
+        at com.devoteam.srit.xmlloader.core.operations.protocol.OperationCreateP
+robe.execute(OperationCreateProbe.java:63)
+        at com.devoteam.srit.xmlloader.core.operations.Operation.executeAndStat(
+Operation.java:184)
+        at com.devoteam.srit.xmlloader.core.operations.basic.OperationSequence.e
+xecute(OperationSequence.java:88)
+        at com.devoteam.srit.xmlloader.core.Scenario.executeScenario(Scenario.ja
+va:67)
+        at com.devoteam.srit.xmlloader.core.ScenarioRunner.run(ScenarioRunner.ja
+va:264)
+        at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
+9)
+
+[IPVersion]=ipv4
+[localHostRTP]=[localHostRTP(0)]
+[localPortRTP]=10000
+[localClient]=true
+[remoteHostRTP]=[remoteHostRTP(0)]
+[remotePortRTP]=11000
+[remoteServer]=true
+[localHostSIP]=[localHostSIP(0)]
+[localPortSIP]=[localPortSIP]
+[remoteHostSIP]=[remoteHostSIP(0)]
+[remotePortSIP]=[remotePortSIP]
+[iterations]=1
 [domainName]=devoteam.com
 [inviter]=bob
 [invitee]=alice
 Run 001_jmf_noreg test "..\tutorial\rtp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
+No format has been registered for RTP Payload type 8
 
 [IPVersion]=ipv4
 [localHostRTP]=[localHostRTP(0)]
@@ -311,13 +386,10 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\rtpflow\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-FAILED: Testcase=002_testAllParameters
-FAILED: Testcase=005_sendFlowCSV
-FAILED: Testcase=006_sendFlowWithDisturbance
-Exception in thread "Thread-374" java.lang.NoSuchMethodError: setRoutingOption
+Exception in thread "Thread-5" java.lang.NoSuchMethodError: setRoutingOption
         at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
         at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
         at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
@@ -338,7 +410,7 @@ va:67)
 va:264)
         at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
 9)
-FAILED: Testcase=200_srtp_sendFileWave
+FAILED: Testcase=100_call_sip_rtp
 
 [IPVersion]=ipv4
 [localHostRTP]=[localHostRTP(0)]
@@ -351,12 +423,10 @@ FAILED: Testcase=200_srtp_sendFileWave
 [localPortSIP]=[localPortSIP]
 [remoteHostSIP]=[remoteHostSIP(0)]
 [remotePortSIP]=[remotePortSIP]
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\rtpflow\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-FAILED: Testcase=000_sendFlowReceivePacket
-FAILED: Testcase=002_testAllParameters
-Exception in thread "Thread-94" java.lang.NoSuchMethodError: setRoutingOption
+Exception in thread "Thread-5" java.lang.NoSuchMethodError: setRoutingOption
         at jpcap.JpcapCaptor.nativeOpenLive(Native Method)
         at jpcap.JpcapCaptor.openDevice(JpcapCaptor.java:68)
         at com.devoteam.srit.xmlloader.core.protocol.probe.PJpcapThread.<init>(P
@@ -377,113 +447,6 @@ va:67)
 va:264)
         at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
 9)
-FAILED: Testcase=030_probe_capture
-com.devoteam.srit.xmlloader.core.exception.ExecutionException: SocketUDP: Error
-while sending message
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:141)
-        at com.devoteam.srit.xmlloader.udp.bio.ChannelUdpBIO.sendMessage(Channel
-UdpBIO.java:154)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.sendMessage(Stack.jav
-a:622)
-        at com.devoteam.srit.xmlloader.core.protocol.Trans.retransmitAutomaticRe
-sponses(Trans.java:143)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stac
-k.java:899)
-        at com.devoteam.srit.xmlloader.sip.StackSipCommon.doReceiveMessage(Stack
-SipCommon.java:236)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:843)
-
-Caused by: java.net.SocketException: Socket is closed
-        at java.net.DatagramSocket.send(Unknown Source)
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:138)
-        ... 6 more
-com.devoteam.srit.xmlloader.core.exception.ExecutionException: SocketUDP: Error
-while sending message
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:141)
-        at com.devoteam.srit.xmlloader.udp.bio.ChannelUdpBIO.sendMessage(Channel
-UdpBIO.java:154)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.sendMessage(Stack.jav
-a:622)
-        at com.devoteam.srit.xmlloader.core.protocol.Trans.retransmitAutomaticRe
-sponses(Trans.java:143)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stac
-k.java:899)
-        at com.devoteam.srit.xmlloader.sip.StackSipCommon.doReceiveMessage(Stack
-SipCommon.java:236)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:843)
-
-Caused by: java.net.SocketException: Socket is closed
-        at java.net.DatagramSocket.send(Unknown Source)
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:138)
-        ... 6 more
-com.devoteam.srit.xmlloader.core.exception.ExecutionException: SocketUDP: Error
-while sending message
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:141)
-        at com.devoteam.srit.xmlloader.udp.bio.ChannelUdpBIO.sendMessage(Channel
-UdpBIO.java:154)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.sendMessage(Stack.jav
-a:622)
-        at com.devoteam.srit.xmlloader.core.protocol.Trans.retransmitAutomaticRe
-sponses(Trans.java:143)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stac
-k.java:899)
-        at com.devoteam.srit.xmlloader.sip.StackSipCommon.doReceiveMessage(Stack
-SipCommon.java:236)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:843)
-
-Caused by: java.net.SocketException: Socket is closed
-        at java.net.DatagramSocket.send(Unknown Source)
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:138)
-        ... 6 more
-com.devoteam.srit.xmlloader.core.exception.ExecutionException: SocketUDP: Error
-while sending message
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:141)
-        at com.devoteam.srit.xmlloader.udp.bio.ChannelUdpBIO.sendMessage(Channel
-UdpBIO.java:154)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.sendMessage(Stack.jav
-a:622)
-        at com.devoteam.srit.xmlloader.core.protocol.Trans.retransmitAutomaticRe
-sponses(Trans.java:143)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stac
-k.java:899)
-        at com.devoteam.srit.xmlloader.sip.StackSipCommon.doReceiveMessage(Stack
-SipCommon.java:236)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:843)
-
-Caused by: java.net.SocketException: Socket is closed
-        at java.net.DatagramSocket.send(Unknown Source)
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:138)
-        ... 6 more
-com.devoteam.srit.xmlloader.core.exception.ExecutionException: SocketUDP: Error
-while sending message
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:141)
-        at com.devoteam.srit.xmlloader.udp.bio.ChannelUdpBIO.sendMessage(Channel
-UdpBIO.java:154)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.sendMessage(Stack.jav
-a:622)
-        at com.devoteam.srit.xmlloader.core.protocol.Trans.retransmitAutomaticRe
-sponses(Trans.java:143)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack.doReceiveMessage(Stac
-k.java:899)
-        at com.devoteam.srit.xmlloader.sip.StackSipCommon.doReceiveMessage(Stack
-SipCommon.java:236)
-        at com.devoteam.srit.xmlloader.core.protocol.Stack$1.run(Stack.java:843)
-
-Caused by: java.net.SocketException: Socket is closed
-        at java.net.DatagramSocket.send(Unknown Source)
-        at com.devoteam.srit.xmlloader.udp.bio.SocketUdpBIO.send(SocketUdpBIO.ja
-va:138)
-        ... 6 more
-FAILED: Testcase=200_srtp_sendFileWave
 
 [IPVersion]=ipv4
 [localHostHTTP]=[localHostHTTP(0)]
@@ -496,7 +459,7 @@ FAILED: Testcase=200_srtp_sendFileWave
 [proxyHostHTTP]=[proxyHostHTTP(0)]
 [proxyPortHTTP]=[proxyPortHTTP(0)]
 [proxyPortSecHTTP]=[remotePortSecHTTP(0)]
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\http\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 
@@ -511,7 +474,7 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [proxyHostHTTP]=[proxyHostHTTP(0)]
 [proxyPortHTTP]=[proxyPortHTTP(0)]
 [proxyPortSecHTTP]=[remotePortSecHTTP(0)]
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\http\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
@@ -540,7 +503,7 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [remoteHostRAD]=[remoteHostRAD(0)]
 [remotePortRAD]=60000
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\radius\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
@@ -570,7 +533,7 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [remotePortIMAP]=[remotePortIMAP]
 [remoteServer]=true
 [serverPortTLS]=[serverPortTLS]
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\imap\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
@@ -672,10 +635,9 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [remoteServer]=true
 [transport]=TCP
 [pause]=0.0
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\sigtran\m3ua\CAP\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-FAILED: Testcase=801_Wireshark_Sample_camel2
 
 [IPVersion]=ipv4
 [localHostH323]=[localHostH323(0)]
@@ -684,7 +646,7 @@ FAILED: Testcase=801_Wireshark_Sample_camel2
 [remoteHostH323]=[remoteHostH323(0)]
 [remotePortH323]=[remotePortH323]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\h323\h225CS\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
@@ -704,10 +666,9 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [remoteHostH248]=[remoteHostH248(0)]
 [remotePortH248]=[remotePortH248]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\h248\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
-FAILED: Testcase=090_bad_msg
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
  Please check that point.
 [IPVersion]=ipv4
@@ -733,7 +694,7 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [remoteHostMGCP]=[remoteHostMGCP(0)]
 [remotePortMGCP]=[remotePortMGCP]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\mgcp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 WARNING : The editable parameter "[iterations]" does not exist in the test pool.
@@ -753,7 +714,7 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [remoteHostGTP]=[remoteHostGTP(0)]
 [remotePortGTP]=[remotePortGTP]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\gtp\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 
@@ -762,7 +723,7 @@ Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 [localClient]=true
 [remoteHostETH]=[remoteHostETH(0)]
 [remoteServer]=true
-[iterations]=10
+[iterations]=1
 Run -seq test "..\tutorial\ethernet\test.xml"
 Available commands: (S)top, (K)ill, (R)eport (ENTER to validate):
 Exception in thread "Thread-5" java.lang.NoSuchMethodError: setRoutingOption
@@ -786,5 +747,4 @@ va:67)
 va:264)
         at com.devoteam.srit.xmlloader.core.ThreadRunner.run(ThreadRunner.java:5
 9)
-FAILED: Testcase=ARP Request
 Press any key to continue . . .
