@@ -135,13 +135,20 @@ public class ChannelSctp extends Channel
 			//InetAddress localAddr = InetAddress.getByName(getLocalHost());
 			// TODO Take localAddr into account
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
-            sctpSocket.bind(getLocalPort());
+            int intLocalPort = getLocalPort(); 
+            sctpSocket.bind(intLocalPort);
             if (this.initmsg != null)
             {
             	sctpSocket.setInitMsg(this.initmsg);
             }
                         
-            InetSocketAddress remoteSocketAddress = new InetSocketAddress(getRemoteHost(), getRemotePort());
+            String strRemoteHost = getRemoteHost();
+            if (strRemoteHost == null || "0.0.0.0".equals(strRemoteHost))
+            {
+            	strRemoteHost = InetAddress.getByName(strRemoteHost).getCanonicalHostName();
+            }
+            int intRemotePort = getRemotePort();            
+            InetSocketAddress remoteSocketAddress = new InetSocketAddress(strRemoteHost, intRemotePort);
             sctpSocket.connect(remoteSocketAddress);
         
             this.localPort = sctpSocket.getLocalInetPort();
