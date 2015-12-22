@@ -3,13 +3,24 @@
 				  M.T.S.
 -------------------------------------------------------------------------------
 
-			Version : 6.2.1_beta (revision SVN xxx) le dd/mm/yyyy
+			Version : 6.2.1_beta (revision SVN xxx) le 22/12/2015
 
 Evolutions : 
   * Add a <parameter> operation called "number.abs" to calculate the absolute 
-    value (the value without the sign) of a number. 
+    value (the value without the sign) of a number.
+  * Ajout d'un operation <parameter> qui s'appelle "binary.elementSetFrom" 
+    pour analyser des elements sans passer par les formats XML (optimisation 
+    en vue des tests de charge chez Orange)
+  * Ajouter le Replacer standard de Diameter sur les listepoints => pour 
+    supporter des variables multiples dans la grammaire du <createListenpointDIAMETER>  
+  * Ameliorer l'operation <parameter> "string.xpath" lorsque un element 
+    contient une liste de sous-elements
     
 Fault report :
+  * Diameter (dk stack) : Dans le champ Origin-Host:264 on a toujours 
+    une adresse IP alors que l'on veut en général un nom de domaine 
+    => suppression de la résolution DNS sur les listenpoints et channels 
+    (laisser faire le système) <= Bernard et Philippe
 
 Migration :   
 
