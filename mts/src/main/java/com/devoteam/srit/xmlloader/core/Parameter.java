@@ -32,7 +32,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +41,7 @@ import org.dom4j.Node;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultAttribute;
+import org.dom4j.tree.DefaultCDATA;
 import org.dom4j.tree.DefaultElement;
 import org.dom4j.tree.DefaultText;
 
@@ -219,10 +219,18 @@ public class Parameter {
 	        List<Node> list = (List<Node>) obj;
 	        for (Node node : list)
 	        {
-	            add(node.asXML());
+	        	addObject(node);
 	        }
 	    }
-	    else if (obj instanceof DefaultElement)
+	    else 
+	    {
+	    	addObject((Node) obj);
+	    }
+    }
+    
+    public void addObject(Object obj) 
+    {
+	    if (obj instanceof DefaultElement)
 	    {
 	        Node node = (Node) obj;
 	        add(node.asXML());
@@ -232,7 +240,7 @@ public class Parameter {
 	    	Node node = (Node) obj;
 	        add(node.getStringValue());
 	    }
-	    else if (obj instanceof DefaultText)
+	    else if (obj instanceof DefaultText || obj instanceof DefaultCDATA)
 	    {
 	    	Node node = (Node) obj;
 	        add(node.getText());
@@ -240,7 +248,7 @@ public class Parameter {
 	    else
 	    {
 	        add(obj.toString());
-	    }
+	    }  
     }
     
     public void addAll(Collection collection) {
