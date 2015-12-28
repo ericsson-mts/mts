@@ -591,25 +591,12 @@ public class MsgDiamCommon extends Msg
         else if ("IPAddress".equalsIgnoreCase(typeDico) || "IPAddress".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = new AVP_OctetString(avp).queryValue();
-	    	if (val.length == 4 || val.length == 16)
-	    	{
-	    		value = Utils.toIPAddress(val);
-	    	}
-	    	else
-	    	{
-	    		throw new ExecutionException("Decoding : bad value for the type \"IPAddress\" for the AVP.");	    	
-	    	}
+	    	value = Utils.toIPAddress(val);
 	    }
 		else if ("Address".equalsIgnoreCase(typeDico) || "Address".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = new AVP_OctetString(avp).queryValue();
-	    	if (val.length == 4 || val.length == 16)
-	    	{
-	    		value = Utils.toIPAddress(val);
-	    	}
-	    	else
-	    	{
-	    		throw new ExecutionException("Decoding : bad value for the type \"Address\" for the AVP.");	    	}
+	    	value = Utils.toIPAddress(val);
 	    }   
 	    else if ("Time".equalsIgnoreCase(typeDico) || "Time".equalsIgnoreCase(typeBase))
 	    {

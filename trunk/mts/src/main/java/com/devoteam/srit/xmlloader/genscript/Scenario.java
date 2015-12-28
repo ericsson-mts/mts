@@ -86,9 +86,7 @@ public class Scenario {
             // Si le port utilisé n'est pas celui par défault
             if(!defaultPort.equals(filtre.getHostPort().toString())){
                 // On creait un listenpoint
-                if(!filtre.getProtocole().equals("DIAMETER")){
-                    mapListenPoint.put(filtre.getHostPort().toString(), new ListenPoint(filtre.getProtocole(), "listenPoint"+filtre.getHostPort().toString(), filtre.getHostName(), filtre.getHostPort().toString(), null, null, null));
-                }
+                mapListenPoint.put(filtre.getHostPort().toString(), new ListenPoint(filtre.getProtocole(), "listenPoint"+filtre.getHostPort().toString(), filtre.getHostName(), filtre.getHostPort().toString(), null, null, null));
             }
         }
     }
@@ -112,7 +110,7 @@ public class Scenario {
     public FiltreGenerator support(FiltreGenerator fg){
         FiltreGenerator retour = null;
         for(FiltreGenerator f : listeFiltres){
-            if(f.getProtocole().contains(fg.getProtocole()) && f.getHostName().equals(fg.getHostName()) && f.getHostPort().toString().equals(fg.getHostPort().toString())){
+            if(fg.getProtocole().startsWith(f.getProtocole()) && f.getHostName().equals(fg.getHostName()) && f.getHostPort().toString().equals(fg.getHostPort().toString())){
                 retour = f;
             }
         }

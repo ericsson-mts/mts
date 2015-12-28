@@ -1614,11 +1614,36 @@ public class Utils
     	return null;
     }
 
+    private static byte[] subTabBytes(byte[] data, int begin, int end)    
+    {
+    	byte[] result = new byte[end - begin];
+    	int j = 0;
+    	for (int i = begin; i < end; i++)
+    	{
+    		result[j] = data[i];
+    		j++;
+    	}
+    	return result;
+    }
+    
     public static String toIPAddress(byte[] data) throws Exception
     {	
-		InetAddress inetAddr = InetAddress.getByAddress(data);
+    	// take the last byte if data is too long
+    	Array array = new DefaultArray(data);    	
+		// for IPV6 address
+    	if (array.length >= 16)
+    	{
+    		array = array.subArray(array.length - 16, 16);
+    	}
+    	else
+    	{
+    		array = array.subArray(array.length - 4, 4);
+    	}
+    	// convert IP address to string
+		InetAddress inetAddr = InetAddress.getByAddress(array.getBytes());
 		String strRes = inetAddr.getHostAddress();
-		if (data.length == 16)
+		// for IPV6 address
+		if (data.length >= 16)
 		{
 			strRes = "[" + strRes + "]";
 		}
