@@ -102,6 +102,12 @@ public class OperationParameter extends Operation {
                     lockAndReplace(runner);
                     GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
                     text = this.getRootElement().getText();
+                    byte[] bytes = text.getBytes("ISO-8859-1");
+                    text = new String(bytes, "ISO-8859-1");
+                    //text = text.replaceAll("&amp;", "&");                    
+                    //text = text.replaceAll("&gt;", ">");
+                    //text = text.replaceAll("&lt;", ">");
+                    //text = text.replaceAll("&quot;", "\"");                                        
                 }
                 finally {
                     unlockAndRestore();

@@ -170,7 +170,8 @@ public class genscriptCmd {
         catch (Exception e) {
             System.out.println("EXCEPTION => " + e);
             e.printStackTrace();
-            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "EXCEPTION => ");            System.exit(-10);
+            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.CORE, e, "EXCEPTION => ");            
+            System.exit(-10);
         }
     }
 }
