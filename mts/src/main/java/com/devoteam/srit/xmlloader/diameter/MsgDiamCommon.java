@@ -610,13 +610,13 @@ public class MsgDiamCommon extends Msg
 	    else if ("UTF8String".equalsIgnoreCase(typeDico) || "UTF8String".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = (new AVP_OctetString(avp)).queryValue();
-	    	value = new String(val);
+	    	value = new String(val, "UTF8");
 	    }
 		// base types
 	    else if ("OctetString".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = (new AVP_OctetString(avp)).queryValue();
-	    	value = new String(val);
+	    	value = new String(val, "UTF8");
 	    }
 		else if ("Integer32".equalsIgnoreCase(typeBase))
 	    {

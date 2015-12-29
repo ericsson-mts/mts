@@ -47,7 +47,7 @@ public class StringField extends FieldAbstract
     public String getValue(Array array) throws Exception 
     {
     	Array arrayValue = array.subArray(this.offset / 8);
-        return new String(arrayValue.getBytes());
+        return new String(arrayValue.getBytes(), "UTF8");
     }
 
     @Override
