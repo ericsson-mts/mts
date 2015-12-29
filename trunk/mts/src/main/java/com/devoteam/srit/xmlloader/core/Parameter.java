@@ -194,7 +194,7 @@ public class Parameter {
 		int iPosXMLLine = xml.indexOf("<?xml");
 		if (iPosXMLLine < 0)
 		{
-			xml = "<?xml version='1.0'?>" + xml;
+			xml = "<?xml version='1.0' encoding=\"ISO-8859-1\"?>" + xml;
 		}
 		
 		// remove the namespace because the parser does not support them if there are not declare in the root node

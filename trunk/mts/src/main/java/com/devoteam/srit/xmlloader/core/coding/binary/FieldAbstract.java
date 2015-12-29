@@ -31,6 +31,7 @@ import gp.utils.arrays.SupArray;
 import com.devoteam.srit.xmlloader.asn1.ASNToXMLConverter;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -158,6 +159,7 @@ public abstract class FieldAbstract
         try
         {
         	strVal = this.getValue(array);
+        	strVal = Utils.escapeXML(strVal);
         }
         catch (Exception e)
         {
@@ -168,19 +170,11 @@ public abstract class FieldAbstract
         elemString.append(ASNToXMLConverter.indent(indent));
         elemString.append("<field");
         elemString.append(" name=\"" + this.name + "\"");
-        boolean cdata = false;
         if (strVal != null)
         {
-        	cdata = searchListChar(strVal, "<>&\"\'");
-	        if (!cdata)
-	       	{
-		        elemString.append(" value=\"");
-		        if (strVal != null)
-		        {
-		        	elemString.append(strVal);
-		        }
-		        elemString.append("\"");
-	        }
+        	elemString.append(" value=\"");
+		    elemString.append(strVal);
+		    elemString.append("\"");
         }
         String type = this.getClass().getSimpleName().split("Field")[0];
         if ("NumberBCD".equalsIgnoreCase(type))
@@ -210,7 +204,8 @@ public abstract class FieldAbstract
 	        {
 	        	elemString.append(" lengthBit=\"" + intLen + "\"");
 	        }
-        }	    	
+        }
+        /*
     	if (cdata)
     	{
     		elemString.append(">");
@@ -221,8 +216,9 @@ public abstract class FieldAbstract
     	}
     	else
     	{
+    	*/
     		elemString.append("/>\n");
-    	}
+    	//}
 	    return elemString.toString();
     }
     

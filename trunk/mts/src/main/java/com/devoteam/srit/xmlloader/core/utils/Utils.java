@@ -1101,6 +1101,35 @@ public class Utils
 
         return (Window) container;
     }
+    
+    public static String escapeXML(String s)
+    {
+        StringBuilder sb = new StringBuilder();
+        int n = s.length();
+        for (int i = 0; i < n; i++)
+        {
+            char c = s.charAt(i);
+            switch (c)
+            {
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                case '&':
+                    sb.append("&amp;");
+                    break;
+                case '"':
+                    sb.append("&quot;");
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+            }
+        }
+        return sb.toString();
+    }
 
     public static String escapeHTML(String s)
     {
@@ -1595,6 +1624,25 @@ public class Utils
 	    return document;
 	}
 
+    public static boolean hasPrintableChar(String str)
+    {	
+    	boolean result = true;
+    	if (str !=  null)
+    	{
+    		for (int i = 0; i < str.length(); i++)
+    		{
+    			Character character = str.charAt(i);
+    			int val = Character.getNumericValue(character); 
+	    		if (val <= 0x1f)
+	    		{
+	    			result = false;
+	    			break;
+	    		}
+	    	}
+    	}
+    	return result;
+    }
+    
 	private static String charOK = "_:/<> -.";
     public static String getPrintableChar(String str)
     {	
@@ -1629,18 +1677,18 @@ public class Utils
     public static String toIPAddress(byte[] data) throws Exception
     {	
     	// take the last byte if data is too long
-    	Array array = new DefaultArray(data);    	
+    	byte[] resBytes;    	
 		// for IPV6 address
-    	if (array.length >= 16)
+    	if (data.length >= 16)
     	{
-    		array = array.subArray(array.length - 16, 16);
+    		resBytes = subTabBytes( data, data.length - 16, 16);
     	}
     	else
     	{
-    		array = array.subArray(array.length - 4, 4);
+    		resBytes = subTabBytes( data, data.length - 4, 4);
     	}
     	// convert IP address to string
-		InetAddress inetAddr = InetAddress.getByAddress(array.getBytes());
+		InetAddress inetAddr = InetAddress.getByAddress(resBytes);
 		String strRes = inetAddr.getHostAddress();
 		// for IPV6 address
 		if (data.length >= 16)
