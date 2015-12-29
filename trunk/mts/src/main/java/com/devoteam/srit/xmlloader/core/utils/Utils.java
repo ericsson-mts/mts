@@ -184,12 +184,12 @@ public class Utils
     	return filename;
     }
 
-    public static String unescapeEntities(String text)
+    public static String unescapeXMLEntities(String text)
     {
         text = text.replace("&lt;", "<");
         text = text.replace("&gt;", ">");
         text = text.replace("&quot;", "\"");
-        text = text.replace("&apos", "\'");
+        text = text.replace("&apos;", "\'");
         text = text.replace("&amp;", "&");
         return text;
     }
@@ -1102,7 +1102,7 @@ public class Utils
         return (Window) container;
     }
     
-    public static String escapeXML(String s)
+    public static String escapeXMLEntities(String s)
     {
         StringBuilder sb = new StringBuilder();
         int n = s.length();
@@ -1122,6 +1122,9 @@ public class Utils
                     break;
                 case '"':
                     sb.append("&quot;");
+                    break;
+                case '\'':
+                    sb.append("&apos;");
                     break;
                 default:
                     sb.append(c);
@@ -1631,8 +1634,7 @@ public class Utils
     	{
     		for (int i = 0; i < str.length(); i++)
     		{
-    			Character character = str.charAt(i);
-    			int val = Character.getNumericValue(character); 
+    			int val = (int) str.charAt(i); 
 	    		if (val <= 0x1f)
 	    		{
 	    			result = false;

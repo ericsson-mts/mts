@@ -104,10 +104,6 @@ public class OperationParameter extends Operation {
                     text = this.getRootElement().getText();
                     byte[] bytes = text.getBytes("ISO-8859-1");
                     text = new String(bytes, "ISO-8859-1");
-                    //text = text.replaceAll("&amp;", "&");                    
-                    //text = text.replaceAll("&gt;", ">");
-                    //text = text.replaceAll("&lt;", ">");
-                    //text = text.replaceAll("&quot;", "\"");                                        
                 }
                 finally {
                     unlockAndRestore();
