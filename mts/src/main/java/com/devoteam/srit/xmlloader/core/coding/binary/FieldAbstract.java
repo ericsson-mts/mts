@@ -159,7 +159,7 @@ public abstract class FieldAbstract
         try
         {
         	strVal = this.getValue(array);
-        	strVal = Utils.escapeXML(strVal);
+        	strVal = Utils.escapeXMLEntities(strVal);
         }
         catch (Exception e)
         {
@@ -169,19 +169,31 @@ public abstract class FieldAbstract
         StringBuilder elemString = new StringBuilder();
         elemString.append(ASNToXMLConverter.indent(indent));
         elemString.append("<field");
-        elemString.append(" name=\"" + this.name + "\"");
-        if (strVal != null)
-        {
-        	elemString.append(" value=\"");
-		    elemString.append(strVal);
-		    elemString.append("\"");
-        }
+        elemString.append(" name=\"");
+        elemString.append(this.name);
+        elemString.append("\"");
         String type = this.getClass().getSimpleName().split("Field")[0];
         if ("NumberBCD".equalsIgnoreCase(type))
         {
         	type = "Number_BCD";
+        }        
+        if (strVal != null)
+        {        
+        	elemString.append(" value=\"");
+        	// if there are non printable characters
+        	if (!Utils.hasPrintableChar(strVal))
+        	{
+        		strVal = Utils.unescapeXMLEntities(strVal);
+        		Array arrayVal = new DefaultArray(strVal.getBytes());
+        		strVal = Array.toHexString(arrayVal);
+        		type = "Binary";
+        	}
+        	elemString.append(strVal);        	
+		    elemString.append("\"");
         }
-        elemString.append(" type=\"" + type + "\"");	        
+        elemString.append(" type=\"");
+        elemString.append(type);
+        elemString.append("\"");	        
         int intLen = this.length;
         if (intLen < 0 && strVal != null)
         { 
@@ -198,27 +210,18 @@ public abstract class FieldAbstract
         {
 	        if (intLen % 8 == 0)
 	        {
-	        	elemString.append(" length=\"" + intLen / 8 + "\"");
+	        	elemString.append(" length=\"");
+	        	elemString.append((int) (intLen / 8));
+	        	elemString.append("\"");
 	        }
 	        else
 	        {
-	        	elemString.append(" lengthBit=\"" + intLen + "\"");
+	        	elemString.append(" lengthBit=\"");
+	        	elemString.append( (int) intLen);
+	        	elemString.append("\"");
 	        }
         }
-        /*
-    	if (cdata)
-    	{
-    		elemString.append(">");
-    		elemString.append("<![CDATA[");
-    		elemString.append(strVal);	    	
-    		elemString.append("]]>");
-    		elemString.append("</field>\n");
-    	}
-    	else
-    	{
-    	*/
-    		elemString.append("/>\n");
-    	//}
+    	elemString.append("/>\n");
 	    return elemString.toString();
     }
     

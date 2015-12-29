@@ -246,7 +246,7 @@ public class XMLTree implements Serializable
      */
     public String toString()
     {
-        return Utils.unescapeEntities(root.asXML());
+        return Utils.unescapeXMLEntities(root.asXML());
     }
 
     public XMLTree clone()
