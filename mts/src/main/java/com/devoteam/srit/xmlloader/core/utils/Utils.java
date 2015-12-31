@@ -184,16 +184,6 @@ public class Utils
     	return filename;
     }
 
-    public static String unescapeXMLEntities(String text)
-    {
-        text = text.replace("&lt;", "<");
-        text = text.replace("&gt;", ">");
-        text = text.replace("&quot;", "\"");
-        text = text.replace("&apos;", "\'");
-        text = text.replace("&amp;", "&");
-        return text;
-    }
-
     /**
      * Return the exception's stack trace
      *
@@ -1102,6 +1092,16 @@ public class Utils
         return (Window) container;
     }
     
+    public static String unescapeXMLEntities(String text)
+    {
+        text = text.replace("&lt;", "<");
+        text = text.replace("&gt;", ">");
+        text = text.replace("&quot;", "\"");
+        text = text.replace("&apos;", "\'");
+        text = text.replace("&amp;", "&");
+        return text;
+    }
+    
     public static String escapeXMLEntities(String s)
     {
         StringBuilder sb = new StringBuilder();
@@ -1608,7 +1608,7 @@ public class Utils
 		int iPosXMLLine = xml.indexOf("<?xml");
 		if (iPosXMLLine < 0)
 		{
-			xml = "<?xml version='1.0'?>" + xml;
+			xml = "<?xml version='1.0' encoding='UTF-8'?>" + xml;
 		}
 		
 		// remove the namespace because the parser does not support them if there are not declare in the root node
@@ -1620,9 +1620,11 @@ public class Utils
 		// remove doctype information (dtd files for the XML syntax)
 		xml = xml.replaceAll("<!DOCTYPE\\s+\\w+\\s+\\w+\\s+[^>]+>", "");
 		
-		InputStream input = new ByteArrayInputStream(xml.getBytes());
+		InputStream input = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+		//InputStream input = new ByteArrayInputStream(xml.getBytes());
 	    SAXReader reader = new SAXReader(false);
 	    reader.setEntityResolver(new XMLLoaderEntityResolver());
+	    reader.setEncoding("UTF-8");
 	    Document document = reader.read(input);
 	    return document;
 	}

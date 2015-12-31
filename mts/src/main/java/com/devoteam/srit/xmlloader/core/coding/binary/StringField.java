@@ -47,14 +47,14 @@ public class StringField extends FieldAbstract
     public String getValue(Array array) throws Exception 
     {
     	Array arrayValue = array.subArray(this.offset / 8);
-        return new String(arrayValue.getBytes(), "ISO-8859-1");
+        return new String(arrayValue.getBytes(), "UTF-8");
     }
 
     @Override
     public void setValue(String value, int offset, SupArray array) throws Exception 
     {
     	this.offset = offset;
-        Array valueArray = new DefaultArray(value.getBytes("ISO-8859-1"));
+        Array valueArray = new DefaultArray(value.getBytes("UTF-8"));
         super.setValueFromArray( valueArray, offset, array);
     }
     
