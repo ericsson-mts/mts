@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-15"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
 
@@ -6,8 +6,8 @@
 
     <call name="diameter.openChannel_SendCER_RecCEA"/>
 
-    <parameter name="[normalString]" operation="set"><![CDATA[ Â²&amp;Ã©&quot;&apos;(-Ã¨_Ã§Ã )=^$Ã¹*&lt;,;:! ]]></parameter>            
-    <parameter name="[shiftString]" operation="set"><![CDATA[ Â°+Â¨Â£%Âµ&gt;./Â§ ]]></parameter>        
+    <parameter name="[normalString]" operation="set"><![CDATA[ ²&amp;é&quot;&apos;(-è_çà)=^$ù*&lt;,;:! ]]></parameter>            
+    <parameter name="[shiftString]" operation="set"><![CDATA[ °+¨£%œ&gt;./§ ]]></parameter>        
     <parameter name="[altgrString]" operation="set"><![CDATA[ ~#{[|`\^@]} ]]></parameter>    
     
     <parameter name="[binaryAll]" operation="set" value=""/>
@@ -101,7 +101,7 @@
     <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
     <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Length']/attribute::value"/>
-    <!--test parameter="[Length]" condition="number.equals" value="424"/-->
+    <test parameter="[Length]" condition="number.equals" value="424"/>
     <parameter name="[Type]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Type']/attribute::value"/>
     <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
     <parameter name="[EAP_AKA_Subtype]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_EAP-AKA_23']/field[@name='EAP AKA Subtype']/attribute::value"/>
@@ -133,7 +133,7 @@
     <parameter name="[altgrString]" operation="string.regexreplaces" value="[altgrString]" value2="&amp;apos;" value3="&apos;"/>
     <parameter name="[altgrString]" operation="string.regexreplaces" value="[altgrString]" value2="&amp;amp;" value3="&amp;"/>                                  
     <test parameter="[IdentityValue(8)]" condition="string.equals" value="[altgrString]"/>            
-    <!--test parameter="[IdentityValue(9)]" condition="binary.equals" value="[binaryAll]"/-->               
+    <test parameter="[IdentityValue(9)]" condition="binary.equals" value="[binaryAll]"/>               
     <parameter name="[stringAll]" operation="binary.ToString" value="[binaryAll]" value2="ISO-8859-15"/>        
     <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;gt;" value3="&gt;"/>    
     <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;lt;" value3="&lt;"/>
@@ -141,14 +141,14 @@
     <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;apos;" value3="&apos;"/>    
     <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;amp;" value3="&amp;"/>    
     <parameter name="[IdentityValue9Str]" operation="binary.ToString" value="[IdentityValue(9)]" value2="ISO-8859-15"/>                                    
-    <!--test parameter="[IdentityValue9Str]" condition="string.equals" value="[stringAll]"/-->
+    <test parameter="[IdentityValue9Str]" condition="string.equals" value="[stringAll]"/>
 
     <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>    
     <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
     <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
-    <!--test parameter="[Length]" condition="number.equals" value="424"/-->
+    <test parameter="[Length]" condition="number.equals" value="424"/>
     <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>    
     <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>
     <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Subtype" value3="eap/dictionary_EAP.xml"/>    
@@ -162,11 +162,11 @@
     <test parameter="[IdentityBin(3)]" condition="binary.equals" value="0E040009313233343536373839000000"/>
     <test parameter="[IdentityBin(4)]" condition="binary.equals" value="0E05000e31323334353637383961626364650000"/>            
     <test parameter="[IdentityBin(5)]" condition="binary.equals" value="0E0300083132333435363738"/>
-    <parameter name="[normalBinary]" operation="string.ToBinary" value="[normalString]" value2="UTF-8"/>    
-    <test parameter="[IdentityBin(6)]" condition="binary.equals" value="0E09001e[normalBinary]0000"/>
-    <parameter name="[shiftBinary]" operation="string.ToBinary" value="[shiftString]" value2="UTF-8"/>    
-    <test parameter="[IdentityBin(7)]" condition="binary.equals" value="0E060011[shiftBinary]000000"/>
-    <parameter name="[altgrBinary]" operation="string.ToBinary" value="[altgrString]" value2="UTF-8"/>    
+    <parameter name="[normalBinary]" operation="string.ToBinary" value="[normalString]" value2="ISO-8859-15"/>    
+    <test parameter="[IdentityBin(6)]" condition="binary.equals" value="0E070018[normalBinary]"/>
+    <parameter name="[shiftBinary]" operation="string.ToBinary" value="[shiftString]" value2="ISO-8859-15"/>    
+    <test parameter="[IdentityBin(7)]" condition="binary.equals" value="0E04000C[shiftBinary]"/>
+    <parameter name="[altgrBinary]" operation="string.ToBinary" value="[altgrString]" value2="ISO-8859-15"/>    
     <test parameter="[IdentityBin(8)]" condition="binary.equals" value="0E05000d[altgrBinary]000000"/>                
     <test parameter="[IdentityBin(9)]" condition="binary.equals" value="0E410100[binaryAll]"/>
     <parameter name="[Identity]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value" value3="eap/dictionary_EAP.xml"/>    
@@ -179,9 +179,9 @@
     <test parameter="[Identity(6)]" condition="string.equals" value="[normalString]"/>    
     <test parameter="[Identity(7)]" condition="string.equals" value="[shiftString]"/>
     <test parameter="[Identity(8)]" condition="string.equals" value="[altgrString]"/>
-    <!--test parameter="[Identity(9)]" condition="string.equals" value="[stringAll]"/-->
-    <parameter name="[IdentityValue9bin]" operation="string.toBinary" value="[Identity(9)]" value2="UTF-8"/>
-    <!--test parameter="[IdentityValue9bin]" condition="binary.equals" value="[binaryAllReplace]"/-->    
+    <test parameter="[Identity(9)]" condition="string.equals" value="[stringAll]"/>
+    <parameter name="[IdentityValue9bin]" operation="string.toBinary" value="[Identity(9)]" value2="ISO-8859-15"/>
+    <test parameter="[IdentityValue9bin]" condition="binary.equals" value="[binaryAll]"/>    
                 
     <parameter name="[IdentityOff]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value.offset" value3="eap/dictionary_EAP.xml"/>    
     <test parameter="[IdentityOff]" condition="number.equals" value="0"/>
