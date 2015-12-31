@@ -224,7 +224,8 @@ public abstract class FieldAbstract
     	elemString.append("/>\n");
 	    return elemString.toString();
     }
-    
+
+    /*
     private static boolean searchListChar(String str, String listChar)
     {
     	if (str == null)
@@ -240,6 +241,7 @@ public abstract class FieldAbstract
     	}
     	return false;
     }
+    */
     
     protected void permuteByte(byte[] bytes) throws Exception 
     {
