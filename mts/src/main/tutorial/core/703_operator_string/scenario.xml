@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-2"?>
 
 <scenario>
 
@@ -6,6 +6,10 @@
 	<test parameter="[string]" condition="string.equals" value="aABb" />
 	<parameter name="[boolean]" value="[string]" operation="string.equals" value2="aABb" />
 	<test parameter="[boolean]" condition="boolean.equals" value="true" />
+
+  <parameter name="[normalString]" operation="set"><![CDATA[ ²&é"'(-è_çà)=^$ù*<,;:! ]]></parameter>            
+  <parameter name="[shiftString]" operation="set"><![CDATA[ °+¨£%œ>./§ ]]></parameter>        
+  <parameter name="[altgrString]" operation="set"><![CDATA[ ~#{[|`\^@]} ]]></parameter>
 	
 	<test parameter="[string]" condition="string.equalsignorecase" value="AABB" />
 	<parameter name="[boolean]" value="[string]" operation="string.equalsignorecase" value2="aabb" />
@@ -194,10 +198,11 @@ ErrorList.list={...}
   <parameter name="[Response]" operation="string.digest" value="abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq" value2="SHA1" />
   <test parameter="[Response]" condition="binary.equals" value="84983E441C3BD26EBAAE4AA1F95129E5E54670F1"/>
 
-  <parameter name="[binData]" operation="set" value="BD029BBE7F51960BCF9EDB2B61F06F0FEB5A38B6" />
-  <parameter name="[binData]" operation="set" value="BE9B02BD0B96517F2BDB9ECF0F6FF0610FB6385AEB" />  
-  <!--parameter name="[zeros44]" operation="set" value="00" value2="44"/>
-  <parameter name="[binData]" operation="set" value="[data]"/-->
+  <parameter name="[data]" operation="set" value="BD029BBE7F51960BCF9EDB2B61F06F0FEB5A38B6" />
+  <!--parameter name="[binData]" operation="set" value="BE9B02BD0B96517F2BDB9ECF0F6FF0610FB6385AEB" /-->  
+  <parameter name="[zeros44]" operation="set" value="00" value2="44"/>
+  <!--parameter name="[binData]" operation="set" value="[zeros44][data]"/-->
+  <parameter name="[binData]" operation="set" value="[zeros44][data]"/>
   <parameter name="[strData]" operation="binary.toString" value="[binData]" />
   <parameter name="[sha1String]" operation="string.digest" value="[strData]" value2="SHA1" />
   <parameter name="[sha1Binary]" operation="binary.digest" value="[binData]" value2="SHA1" />
@@ -208,10 +213,10 @@ ErrorList.list={...}
   <!--parameter name="[Response]" operation="string.hmac" value="[strData]" value2="HmacSHA1" value3="[key]"/-->
   <!--test parameter="[Response]" condition="binary.equals" value="DA47B8BF909C3D82572407D571C23B792888D946"/-->
     
-  <!--parameter name="[data]" operation="set" value="e576d5ca 332e9930 018bf1ba ee2763c7 95b3c712" /-->
-  <parameter name="[data]" operation="set" value="cad576e530992e33baf18b01c76327ee" />
+  <parameter name="[data]" operation="set" value="e576d5ca332e9930018bf1baee2763c795b3c712" />
+  <!--parameter name="[data]" operation="set" value="cad576e530992e33baf18b01c76327ee12c7b395" /-->
   <parameter name="[zeros44]" operation="set" value="00" value2="44"/>
-  <parameter name="[binData]" operation="set" value="[data][zeros44]"/>
+  <parameter name="[binData]" operation="set" value="[zeros44][data]"/>
   <!--parameter name="[binData]" operation="set" value="cad576e530992e33baf18b01c76327ee12c7b3950000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" /-->
   <!--parameter name="[binData]" operation="binary.endian" value="[binData]" /-->
   <parameter name="[strData]" operation="binary.toString" value="[binData]" />
@@ -219,7 +224,8 @@ ErrorList.list={...}
   <parameter name="[binSHA1binary]" operation="binary.digest" value="[binData]" value2="SHA1" />
   <test parameter="[binSHA1string]" condition="binary.equals" value="[binSHA1string]"/>
   <!--parameter name="[binSHA1binary]" operation="binary.endian" value="[binSHA1binary]" /-->  
-  <test parameter="[binSHA1binary]" condition="binary.equals" value="e97cee9b73421ac0ab56b713fc899f8f8a01e899"/>  
+  <!--test parameter="[binSHA1binary]" condition="binary.equals" value="a5e895fe998868543fc5cc66dc2e234abb7adf1e"/-->
+  <!--test parameter="[binSHA1binary]" condition="binary.equals" value="536e5ebc4465582aa6a8ec9986ebb62025af1942"/-->  
 
   <parameter name="[binData]" operation="binary.random" value="100"/>
   <parameter name="[strData]" operation="binary.toString" value="[binData]" />
@@ -255,10 +261,10 @@ ErrorList.list={...}
   <parameter name="[strConcat]" operation="set" value="[strIdentity][strIK][strCK]"/-->    
   <parameter name="[MK]" operation="string.digest" value="[strConcat]" value2="SHA1" />
   <test parameter="[MK]" condition="binary.equals" value="5273151b660ecceac5368ad77c2356b6c440d08d" />      
-  <parameter name="[strMK]" operation="binary.tostring" value="[MK]"/>
+  <parameter name="[strMK]" operation="binary.tostring" value="[MK]" value2="ISO-8859-15"/>
   <!-- calculated by external C program -->
   <parameter name="[Kout]" operation="set" value="76015283ac829f34f5c40125d38061cf"/>
-  <parameter name="[strKout]" operation="binary.tostring" value="[Kout]"/>  
+  <parameter name="[strKout]" operation="binary.tostring" value="[Kout]" value2="ISO-8859-15"/>  
 	<parameter name="[MAC20]" operation="string.hmac" value="[EAPPayloadMAC0]" value2="HmacSHA1" value3="[strKout]" />
 	<parameter name="[number]" operation="string.length" value="[MAC20]" />
 	<test parameter="[number]" condition="number.equals" value="40" />

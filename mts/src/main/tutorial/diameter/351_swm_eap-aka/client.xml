@@ -27,12 +27,7 @@
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]d0d1d2d3d4d5d6d7d8d9dadbdcdddedf"/>
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]e0e1e2e3e4e5e6e7e8e9eaebecedeeef"/>
     <parameter name="[binaryAll]" operation="set" value="[binaryAll]f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"/>                
-    <parameter name="[stringAll]" operation="binary.ToString" value="[binaryAll]" value2="UTF-8"/>
-    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;" value3="&amp;amp;"/>    
-    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&gt;" value3="&amp;gt;"/>    
-    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&lt;" value3="&amp;lt;"/>
-    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&quot;" value3="&amp;quot;"/>                            
-    
+        
     <!-- prepare the EAP data to send -->
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
@@ -138,17 +133,14 @@
     <parameter name="[altgrString]" operation="string.regexreplaces" value="[altgrString]" value2="&amp;apos;" value3="&apos;"/>
     <parameter name="[altgrString]" operation="string.regexreplaces" value="[altgrString]" value2="&amp;amp;" value3="&amp;"/>                                  
     <test parameter="[IdentityValue(8)]" condition="string.equals" value="[altgrString]"/>            
-    <!--parameter name="[IdentityValue9Bin]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_IDENTITY:14']/field[@name='Value']/attribute::value"/-->
-    <!-- replace a6,a8,a8,b4,b8,bc,bd,be,bf by '3f' WHY ? I don't know -->     
-    <parameter name="[binaryAllReplace]" operation="string.regexreplaces" value="[binaryAll]" value2="a3a4" value3="a33f"/>        
-    <parameter name="[binaryAllReplace]" operation="string.regexreplaces" value="[binaryAllReplace]" value2="a5a6" value3="a53f"/>
-    <parameter name="[binaryAllReplace]" operation="string.regexreplaces" value="[binaryAllReplace]" value2="a7a8" value3="a73f"/>        
-    <parameter name="[binaryAllReplace]" operation="string.regexreplaces" value="[binaryAllReplace]" value2="b3b4" value3="b33f"/>
-    <parameter name="[binaryAllReplace]" operation="string.regexreplaces" value="[binaryAllReplace]" value2="b7b8" value3="b73f"/>        
-    <parameter name="[binaryAllReplace]" operation="string.regexreplaces" value="[binaryAllReplace]" value2="bcbdbe" value3="3f3f3f"/>                    
-    <!--test parameter="[IdentityValue(9)]" condition="binary.equals" value="[binaryAllReplace]"/-->  
-    <!--parameter name="[IdentityValue9Str]" operation="binary.ToString" value="[IdentityValue(9)]"/-->             
-    <!-- replace a6,a8,a8,b4,b8,bc,bd,be,bf by '3f' WHY ? I don't know -->    
+    <!--test parameter="[IdentityValue(9)]" condition="binary.equals" value="[binaryAll]"/-->               
+    <parameter name="[stringAll]" operation="binary.ToString" value="[binaryAll]" value2="ISO-8859-15"/>        
+    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;gt;" value3="&gt;"/>    
+    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;lt;" value3="&lt;"/>
+    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;quot;" value3="&quot;"/>
+    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;apos;" value3="&apos;"/>    
+    <parameter name="[stringAll]" operation="string.regexreplaces" value="[stringAll]" value2="&amp;amp;" value3="&amp;"/>    
+    <parameter name="[IdentityValue9Str]" operation="binary.ToString" value="[IdentityValue(9)]" value2="ISO-8859-15"/>                                    
     <!--test parameter="[IdentityValue9Str]" condition="string.equals" value="[stringAll]"/-->
 
     <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
