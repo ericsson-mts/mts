@@ -388,7 +388,7 @@ public class MsgDiameterParser
             }
             else if ("UTF8String".equalsIgnoreCase(type) || "UTF8String".equalsIgnoreCase(typeBase))
             {
-                avp = new AVP_OctetString(code, value.getBytes());
+                avp = new AVP_OctetString(code, value.getBytes("UTF-8"));
             }
             // base types
             else if ("OctetString".equalsIgnoreCase(typeBase))
