@@ -5,6 +5,12 @@
 <scenario>
 
     <call name="diameter.openChannel_SendCER_RecCEA"/>
+
+    <parameter name="[normalString]" operation="set"><![CDATA[ ²&é"'(-è_çà)= azertyuiop^$qsdfghjklmù*<wxcvbn,;:!]]></parameter>            
+    <parameter name="[shiftString]" operation="set"><![CDATA[ 1234567890°+AZERTYUIOP£QSDFGHJKLM%µ>WXCVBN?./§ ]]></parameter>        
+    <parameter name="[altgrString]" operation="set"><![CDATA[ €~#{[|`\^@]} ]]></parameter>    
+    <parameter name="[accentString]" operation="set"><![CDATA[ âêûîôÂÊÛÎÔäëüïöÄËÜÏÖ ]]></parameter>
+    <parameter name="[testcase:allString]" operation="set">[normalString][shiftString][altgrString][accentString]</parameter>
         
     <parameter name="[timeout]" operation="set" value="10" />
     <parameter name="[emptyList]" operation="list.create"/>
@@ -39,6 +45,8 @@
                vendorId="[vendorID]" mandatory="false" private="false"/>
           <avp code="Public-Identity" value="sip:+33333333333@sip.pfdev.fr" type="UTF8String" 
                vendorId="0" mandatory="false" private="false"/>
+          <avp code="Public-Identity:601" type="UTF8String" value="[allString]"  
+               vendorId="[vendorID]" mandatory="false" private="false"/>               
           <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
           <!-- grouped AVP -->
           <avp code="Auth-Data-Item:1018" vendorId="0" state="true">
