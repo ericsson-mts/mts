@@ -393,7 +393,7 @@ public class MsgDiameterParser
             // base types
             else if ("OctetString".equalsIgnoreCase(typeBase))
             {
-                avp = new AVP_OctetString(code, value.getBytes());
+                avp = new AVP_OctetString(code, value.getBytes("ISO-8859-15"));
             }
             else if ("Integer32".equalsIgnoreCase(typeBase))
             {
