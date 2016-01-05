@@ -11,7 +11,29 @@
     <parameter name="[altgrString]" operation="set"><![CDATA[ €~#{[|`\^@]} ]]></parameter>    
     <parameter name="[accentString]" operation="set"><![CDATA[ âêûîôÂÊÛÎÔäëüïöÄËÜÏÖ ]]></parameter>
     <parameter name="[testcase:allString]" operation="set">[normalString][shiftString][altgrString][accentString]</parameter>
-        
+    <parameter name="[testcase:allBinary_UTF-8]" operation="string.toBinary" value="[testcase:allString]" value2="UTF-8"/>
+    <parameter name="[testcase:allString_ISO-8859-15]" operation="binary.toString" value="[testcase:allBinary_UTF-8]" value2="ISO-8859-15"/>
+            
+    <parameter name="[binaryAll]" operation="set" value=""/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]000102030405060708090a0b0c0d0e0f"/>    
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]101112131415161718191a1b1c1d1e1f"/>    
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]202122232425262728292a2b2c2d2e2f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]303132333435363738393a3b3c3d3e3f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]404142434445464748494a4b4c4d4e4f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]505152535455565758595a5b5c5d5e5f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]606162636465666768696a6b6c6d6e6f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]707172737475767778797a7b7c7d7e7f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]808182838485868788898a8b8c8d8e8f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]909192939495969798999a9b9c9d9e9f"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]a0a1a2a3a4a5a6a7a8a9aaabacadaeaf"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]b0b1b2b3b4b5b6b7b8b9babbbcbdbebf"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]c0c1c2c3c4c5c6c7c8c9cacbcccdcecf"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]d0d1d2d3d4d5d6d7d8d9dadbdcdddedf"/>
+    <parameter name="[binaryAll]" operation="set" value="[binaryAll]e0e1e2e3e4e5e6e7e8e9eaebecedeeef"/>
+    <parameter name="[testcase:binaryAll]" operation="set" value="[binaryAll]f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"/>                
+    <parameter name="[testcase:stringAll_UTF-8]" operation="binary.toString" value="[testcase:binaryAll]" value2="UTF-8"/>
+    <parameter name="[testcase:stringAll_ISO-8859-15]" operation="binary.toString" value="[testcase:binaryAll]" value2="ISO-8859-15"/>
+                
     <parameter name="[timeout]" operation="set" value="10" />
     <parameter name="[emptyList]" operation="list.create"/>
     <parameter name="[stateValue]" operation="set" value="true"/>
@@ -45,7 +67,9 @@
                vendorId="[vendorID]" mandatory="false" private="false"/>
           <avp code="Public-Identity" value="sip:+33333333333@sip.pfdev.fr" type="UTF8String" 
                vendorId="0" mandatory="false" private="false"/>
-          <avp code="Public-Identity:601" type="UTF8String" value="[allString]"  
+          <avp code="Public-Identity:601" type="UTF8String" value="[testcase:allString]"  
+               vendorId="[vendorID]" mandatory="false" private="false"/>               
+          <avp code="Public-Identity:601" type="Binary" value="[testcase:binaryAll]"  
                vendorId="[vendorID]" mandatory="false" private="false"/>               
           <avp code="Number-Authentication-Items" value="1" vendorId="TGPP"/>
           <!-- grouped AVP -->
