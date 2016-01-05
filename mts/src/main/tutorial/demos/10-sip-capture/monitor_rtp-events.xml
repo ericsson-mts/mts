@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[network]" operation="set" value="eth3"/>  
+  <parameter name="[filter]" operation="set" value="(host [remoteHostSIP]) &amp;&amp; (port [remotePortSIP] || not (ip[6:2] &amp; 0x1fff == 0))"/>
+
+  <createProbeSIP name="probe" networkInterface="[network]" captureFilter="[filter]"/>
+		
+	<receiveMessageSIP name="wait_SIP_INVITE" timeout="0" request="true" type="INVITE">
+	</receiveMessageSIP>
+
+  <!--receiveMessageSIP name="wait_SIP_INVITE_100" timeout="[Timeout]" request="false" type="INVITE" result="100">
+	</receiveMessageSIP-->
+
+  <!--receiveMessageSIP name="wait_SIP_INVITE_180" timeout="[Timeout]" request="false" type="INVITE" result="180">
+	</receiveMessageSIP-->
+
+  <receiveMessageSIP name="wait_SIP_INVITE_200" timeout="[Timeout]" request="=false" type="INVITE" result="200">
+	</receiveMessageSIP>
+  
+  <receiveMessageSIP name="wait_SIP_ACK" timeout="[Timeout]" request="true" type="ACK">
+	</receiveMessageSIP>
+
+  <receiveMessageSIP name="wait_SIP_BYE" timeout="[Timeout]" request="true" type="BYE">
+	</receiveMessageSIP>
+
+  <receiveMessageSIP name="wait_SIP_BYE_200" timeout="[Timeout]" request="false" type="BYE" result="200">
+	</receiveMessageSIP>
+  
+</scenario>
