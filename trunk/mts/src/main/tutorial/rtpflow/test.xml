@@ -120,7 +120,7 @@
         <scenario file="030_probe_capture/probe.xml" name="default" state="[remoteServer]" routingName="default"/>
     </testcase>
 
-    <testcase name="100_call_sip_rtp" state="true" number="[iterations]" description="rtpflow" >
+    <testcase name="100_call_sip_rtpflow_wav" state="true" number="[iterations]" description="rtpflow" >
         <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
         <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
         <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
@@ -142,10 +142,38 @@
         <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
         <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
 
-        <scenario file="100_call_sip_rtp/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
-        <scenario file="100_call_sip_rtp/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
+        <scenario file="100_call_sip_rtp_wav/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
+        <scenario file="100_call_sip_rtp_wav/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
     </testcase>
-	
+    
+    <testcase name="100_call_sip_rtpflow_pdml" state="true" number="[iterations]" description="rtpflow" >
+        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
+        <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
+        <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
+        <parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)" />
+
+        <parameter name="[localPortSIP]" operation="set" value="5070"/>
+        <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
+        <parameter name="[remotePortSIP]" operation="set" value="5080"/>
+        <parameter name="[remotePortSIP1]" operation="set" value="[remotePortSIP]"/>
+        
+        <parameter name="[domainName]" operation="set" value="devoteam.com" description="Domain name for inviter and invitee identities" />
+        <parameter name="[inviter]" operation="set" value="bob" description="Inviter user name" />
+        <parameter name="[invitee]" operation="set" value="alice" description="Invitee user name" />	
+
+        <parameter name="file" operation="file.readmedia" value="008_sendFilePDMLWireshark/rtpflow.pdml"/>    
+        <parameter name="[testcase:payloadList]" operation="set" value="[[file(0)]]"/>
+        <parameter name="[timestampList]" operation="set" value="[[file(1)]]"/>
+        <parameter name="[seqList]" operation="set" value="[[file(2)]]"/>
+        <parameter name="[payloadType]" operation="set" value="[[file(3)]]"/>
+        <parameter name="[deltaTime]" operation="set" value="[[file(4)]]"/>
+        <parameter name="[markList]" operation="set" value="[[file(5)]]"/>
+        <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+
+        <scenario file="100_call_sip_rtp_pdml/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
+        <scenario file="100_call_sip_rtp_pdml/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
+    </testcase>
+    	
     <testcase name="200_srtp_sendFileWave" state="true" number="[iterations]" description="rtpflow : BUG does not work with NIO network library" >
         <scenario file="200_srtp_sendFileWave/RTPFLOW.xml" name="inviter" state="[localClient]" routingName="inviter"/>
         <scenario file="200_srtp_sendFileWave/RTPFLOW2.xml" name="invitee" state="[remoteServer]" routingName="invitee"/>
