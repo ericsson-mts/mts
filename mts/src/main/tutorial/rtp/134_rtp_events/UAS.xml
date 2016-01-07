@@ -97,7 +97,7 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
     <parameter name="[testcase:RTPSessionOpened]" operation="system.semaphorenotify"/>
 	
     <receiveMessageRTP name="ReceivePacketRTP1" type="dynamic:106">
-	<parameter name="[payload]" operation="protocol.setFromMessage" value="payload.binary"/>	
+	     <parameter name="[payload]" operation="protocol.setFromMessage" value="payload.binary"/>	
     </receiveMessageRTP >
 
     <parameter name="[eventID]" operation="binary.subbinary" value="[payload]" value2="0" value3="1"/>
@@ -112,12 +112,13 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
     <receiveMessageRTP name="ReceivePacketRTP4" type="dynamic:106"/>
     <receiveMessageRTP name="ReceivePacketRTP5" type="dynamic:106"/>
     <receiveMessageRTP name="ReceivePacketRTP6" type="dynamic:106"/>
-    <receiveMessageRTP name="ReceivePacketRTP7" type="dynamic:106"/>
+    <!--delete because UDP is not reliable and we are not sure that all packets arrived -->
+    <!--receiveMessageRTP name="ReceivePacketRTP7" type="dynamic:106"/>
     <receiveMessageRTP name="ReceivePacketRTP8" type="dynamic:106"/>
     <receiveMessageRTP name="ReceivePacketRTP9" type="dynamic:106"/>
     <receiveMessageRTP name="ReceivePacketRTP10" type="dynamic:106"/>
     <receiveMessageRTP name="ReceivePacketRTP11" type="dynamic:106"/>
-    <receiveMessageRTP name="ReceivePacketRTP12" type="dynamic:106"/>
+    <receiveMessageRTP name="ReceivePacketRTP12" type="dynamic:106"/-->
 
     <removeListenpointRTP name="invitee"/>
 

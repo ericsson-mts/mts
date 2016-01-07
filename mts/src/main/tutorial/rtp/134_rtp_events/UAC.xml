@@ -15,7 +15,7 @@
   	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
   	<parameter name="[seqnum]" operation="list.set" value="20510"/>
   	<parameter name="[timestamp]" operation="list.set" value="325295860"/>
-    	<parameter name="[endVolume]" operation="number.add" value="[volume]" value2="128"/>
+    <parameter name="[endVolume]" operation="number.add" value="[volume]" value2="128"/>
 
   	<parameter name="[localTag]" operation="string.random" value="10"/>
   	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
@@ -25,15 +25,13 @@
 	<parameter name="[portSdpInviter]" operation="set" value="10000" description="Port pour le bloc sdp de l'inviter du XMLloader"/>		
 	  
   	<sendMessageSIP name="Send INVITE" destScenario="invitee">
-<!--******************* BEGIN MESSAGE ********************-->
-<![CDATA[INVITE sip:[invitee]@[domainName] SIP/2.0
+<!--******************* BEGIN MESSAGE ********************--><![CDATA[INVITE sip:[invitee]@[domainName] SIP/2.0
 To: sip:[invitee]@[domainName]
 From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[localTag]
 Via: SIP/2.0/UDP [localHostSIP]:[localPortSIP];branch=[newBranchId]
 Call-ID: [newCallId]
 CSeq: [localCseqNumber] INVITE
-Max-Forwards: 70
-Proxy-Authorization: IMS_GPRS_SCHEMA token="999"    
+Max-Forwards: 70  
 Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
 Contact: <sip:[inviter]@[localHostSIP]:[localPortSIP]>
 Supported: timer
@@ -42,11 +40,6 @@ Session-Expires: 3600;refresher=uac
 Accept-Contact: +g.poc.talkburst;require;explicit
 P-Alerting-Mode: manual
 P-Asserted-Identity: "Bruno" <sip:[inviter]@[domainName]>,<tel:+3381164951574>
-P-Charging-Vector: icid-value=0.6645971655716005;ggsn=139.10.69.237;pdp-sig=yes;gcid=60ee19cf;auth-token=0.4849361942495226
-P-com.Siemens.MSISDN-ID: 3381164951574
-P-com.Siemens.IMSI-ID: 81164951574
-P-com.Siemens.SGSN-ID: 139.10.69.237
-P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
 Content-Type: multipart/mixed;boundary="----=_Part_0"
 Route: <sip:[invitee]@[remoteHostSIP]:[remotePortSIP];lr;mode=originating>
 Route: <sip:[inviter]@[localHostSIP]:[localPortSIP];lr;mode=terminating>
@@ -79,8 +72,7 @@ Content-Disposition: recipient-list
 </list>
 </resource-lists>
 ------=_Part_0--]]>
-<!--******************** END MESSAGE *********************-->
-	</sendMessageSIP>
+<!--******************** END MESSAGE *********************-->	</sendMessageSIP>
                 
   	<receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" request="false">
   	</receiveMessageSIP>
@@ -209,9 +201,9 @@ Content-Length: 0
 		<payload format="binary">15 [endVolume]:1 [duration]:2</payload>
 	</sendMessageRTP>
 
-	<pause name="Talk burst duration" seconds="1" state="true"/>
+	  <pause name="Talk burst duration" seconds="1" state="true"/>
 
-    	<removeListenpointRTP name="inviter"/>
+    <removeListenpointRTP name="inviter"/>
 
   	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>

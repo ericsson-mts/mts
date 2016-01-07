@@ -7,13 +7,14 @@
     <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/>
     <parameter name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortSIP]" operation="set" value="7070"/>
     <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>	
        
     <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
     <!--parameter name="[remoteHostSIP]" operation="set" value="192.168.0.1"/-->
     <parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>    
-    <!--parameter name="[remotePortSIP]" operation="set" value="7070"/-->
+    <parameter name="[remotePortSIP]" operation="set" value="7070"/>
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>    
     <parameter name="[Adresse-Server]" operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>	
 
@@ -22,7 +23,7 @@
     <parameter name="[transportResponse]" operation="set" value="udp"/>
         
     <!-- timers for the timeout -->
-    <parameter name="[Timeout]" operation="set" value="1"/>
+    <parameter name="[Timeout]" operation="set" value="5"/>
     
     <!--************ tutorial RTP **************-->    
     <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
@@ -99,7 +100,7 @@
     </testcase>
 
     <testcase name="110_probe_rtp-events" state="true" description="testcase sip monitor" >
-        <scenario file="monitor_rtp-events.xml" name="default" routingName="default"/>
+        <scenario file="monitor_rtp-events.xml" name="default" routingName="SIP,RTP"/>
     </testcase>
 
     <testcase name="120_call_sip_rtpflow_pdml" state="false" number="[iterations]" description="rtpflow" >
@@ -130,7 +131,7 @@
         <scenario file="../../rtpflow/100_call_sip_rtp_pdml/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="120_probe_rtp-events" state="true" description="testcase sip monitor" >
+    <testcase name="120_probe_rtpflow" state="true" description="testcase sip monitor" >
         <parameter name="[localPortSIP]" operation="set" value="5070"/>
         <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
         <parameter name="[remotePortSIP]" operation="set" value="5080"/>
