@@ -100,8 +100,8 @@ a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
 	     <parameter name="[payload]" operation="protocol.setFromMessage" value="payload.binary"/>	
     </receiveMessageRTP >
 
-    <parameter name="[eventID]" operation="binary.subbinary" value="[payload]" value2="0" value3="1"/>
-    <test parameter="[eventID]" condition="binary.equals" value="01"/>
+    <parameter name="[recEventDTMF]" operation="binary.subbinary" value="[payload]" value2="0" value3="1"/>
+    <test parameter="[recEventDTMF]" condition="binary.equals" value="[eventDTMF]"/>
     <parameter name="[volume]" operation="binary.subbinary" value="[payload]" value2="1" value3="1"/>
     <test parameter="[volume]" condition="binary.equals" value="0a"/>
     <parameter name="[duration]" operation="binary.subbinary" value="[payload]" value2="2" value3="2"/>
