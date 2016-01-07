@@ -114,21 +114,21 @@ Content-Length: 0
 	
     <parameter name="[testcase:RTPSessionOpened]" operation="system.semaphorewait"/>
 
-    <pause name="pause" seconds="0.1"/>
+    <pause name="pause" seconds="1"/>
 
     <!-- DTMF 1 begin -->
   	<parameter name="[seqnum]" operation="number.add" value="[seqnum]" value2="1"/>
   	<parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="160"/>
 	<sendMessageRTP listenpoint="inviter" remoteHost="[localHostRTP(0)]" remotePort="[SDPMediaPort0(0)]">
 	    <header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]"/>
-	    <payload format="binary">01 [volume]:1 [duration]:2</payload>
+	    <payload format="binary">[eventDTMF] [volume]:1 [duration]:2</payload>
     </sendMessageRTP>
     <pause name="pause" seconds="0.01"/>
   	<parameter name="[seqnum]" operation="number.add" value="[seqnum]" value2="1"/>
   	<parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="160"/>
 	<sendMessageRTP listenpoint="inviter" remoteHost="[localHostRTP(0)]" remotePort="[SDPMediaPort0(0)]">
 	    <header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]"/>
-	    <payload format="binary">01 [endVolume]:1 [duration]:2</payload>
+	    <payload format="binary">[eventDTMF] [endVolume]:1 [duration]:2</payload>
     </sendMessageRTP>
 
     <!-- DTMF 9 begin -->

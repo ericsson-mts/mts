@@ -31,9 +31,12 @@
   
   <receiveMessageSIP name="wait_SIP_ACK" timeout="[Timeout]" request="true" type="ACK"/>
 
-  <receiveMessageRTP type="dynamic:106" timeout="[Timeout]">
-      <parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
-  </receiveMessageRTP>
+  <receiveMessageRTP type="dynamic:106" timeout="[Timeout]"/>
+
+  <parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="payload.binary"/>
+  <parameter name="[eventDTMF]" operation="binary.subBinary" value="[payloadBinary]" value2="0" value3="1"/>
+  <test parameter="[eventDTMF]" condition="binary.equals" value="01"/>
+    
   <receiveMessageRTP type="dynamic:106" timeout="[Timeout]"/>
   <receiveMessageRTP type="dynamic:106" timeout="[Timeout]"/>
   <receiveMessageRTP type="dynamic:106" timeout="[Timeout]"/>
@@ -58,8 +61,8 @@
   <receiveMessageRTP type="dynamic:106" timeout="[Timeout]"/>
   <receiveMessageRTP type="dynamic:106" timeout="[Timeout]"/>  
 
-  <removeProbeRTPFLOW name="probe_rtpevents_0"/> 
-  <removeProbeRTPFLOW name="probe_rtpevents_1"/>
+  <removeProbeRTP name="probe_rtpevents_0"/> 
+  <removeProbeRTP name="probe_rtpevents_1"/>
             
   <receiveMessageSIP name="wait_SIP_BYE" timeout="[Timeout]" request="true" type="BYE"/>
 
@@ -68,9 +71,9 @@
   <goto  name="loop" label="Begin" state="true"/>
   
   <finally>
-      <removeProbeRTPFLOW name="probe_rtpevents_0"/> 
-      <removeProbeRTPFLOW name="probe_rtpevents_1"/>
-      <removeProbeSIP name="probe_invite"/>  
+      <removeProbeRTP name="probe_rtpevents_0"/> 
+      <removeProbeRTP name="probe_rtpevents_1"/>
+      <removeProbeSIP name="probe_rtpevents"/>  
   </finally>
 
 </scenario>
