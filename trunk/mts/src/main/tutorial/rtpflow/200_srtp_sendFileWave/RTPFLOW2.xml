@@ -134,7 +134,8 @@
 	<parameter name="[nbPacket]" operation="set" value="27"/>
 	
 	<sendMessageRTPFLOW listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">    
-	    <flow packetNumber="[nbPacket]" bitRate="[bitRate]" synchronous="true" packetLost="0">
+	    <flow packetNumber="[nbPacket]" bitRate="[bitRate]" synchronous="true" 
+            packetLost="[packetLost]" jitterDelay="[jitterDelay]">
 	    <header ssrc="1234567890" payloadType="[payloadType]" seqnum="0" timestamp="0"/>
 	    <payload format="binary">[payloadList]</payload>
 	    </flow>

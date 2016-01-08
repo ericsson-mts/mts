@@ -12,8 +12,8 @@
   	<parameter name="[newCseqNumber]" operation="number.random" value="10000000" description="random Cseq number"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10" description="random branchID for the Via header"/>
 
-    	<createListenpointSIP name="listenSIP_UAC" localHost="[localHostSIP]" localPort="[localPortSIP]"/>
-    	<createListenpointRTPFLOW name="[inviter]" localHost="[localHostRTP]" localPort="[localPortRTP]"/>
+  	<createListenpointSIP name="listenSIP_UAC" localHost="[localHostSIP]" localPort="[localPortSIP]"/>
+  	<createListenpointRTPFLOW name="[inviter]" localHost="[localHostRTP]" localPort="[localPortRTP]"/>
     
   	<sendMessageSIP name="Send INVITE" listenpoint="listenSIP_UAC">
 <![CDATA[INVITE sip:[invitee]@[localHostSIP]:[localPortSIP] SIP/2.0
@@ -39,7 +39,7 @@ a=rtpmap:97 amr/8000/1
 ]]>
 	</sendMessageSIP>
 	
-    	<parameter name="[inviteTimestamp]" operation="protocol.setFromMessage" value="message.timestamp"/>
+  <parameter name="[inviteTimestamp]" operation="protocol.setFromMessage" value="message.timestamp"/>
                 
 	<receiveMessageSIP name="Wait 100 Trying" listenpoint="listenSIP_UAC" request="false" type="INVITE" result="100">
 	</receiveMessageSIP>
@@ -82,9 +82,12 @@ Content-Length: 0
 ]]>
   	</sendMessageSIP>
 	
+    <pause name="pause" seconds="1"/>
+  
     <parameter name="[ssrc]" operation="number.random" value="10000000"/>
     <sendMessageRTPFLOW listenpoint="[inviter]" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]"> 
-      <flow duration="[CallDurationSec]" deltaTime="[deltaTime]">
+      <flow duration="[CallDurationSec]" deltaTime="[deltaTime]"
+            packetLost="[packetLost]" jitterDelay="[jitterDelay]">
           <header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqList]" timestamp="[timestampList]" mark="[markList]"/>
           <payload format="binary">[payloadList]</payload>
       </flow>

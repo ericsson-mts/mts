@@ -11,6 +11,13 @@
 		<parameter name="[localTag]" operation="string.random" value="10"/>
 		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
 		</receiveMessageSIP>
+    
+    <parameter name="[Text0]" operation="protocol.setFromMessage" value="content(0)"/>  
+    <test parameter="[Text0]" condition="string.contains" value="[messageNote]"/>
+    <test parameter="[Text0]" condition="string.contains" value="dialed-out"/>
+    <test parameter="[Text0]" condition="string.contains" value="null"/>
+    <test parameter="[Text0]" condition="string.contains" value="sip:blablabla"/>
+        
 		<sendMessageSIP name="Send 200 OK">
 <!--******************* BEGIN MESSAGE ********************-->
 <![CDATA[SIP/2.0 200 OK

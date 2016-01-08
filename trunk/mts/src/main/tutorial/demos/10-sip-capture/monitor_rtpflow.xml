@@ -32,8 +32,11 @@
   <receiveMessageSIP name="wait_SIP_ACK" timeout="[Timeout]" request="true" type="ACK"/>
     
   <receiveMessageRTPFLOW type="DVI4:17" timeout="30"/>
-  
-  <!--parameter name="[flowPayloadBinary]" operation="protocol.setFromMessage" value="flow.payload.binary"/-->
+
+  <parameter name="[jitterDelayMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+  <!--test parameter="[jitterDelayMean]" condition="number.lowerThan" value="20"/-->
+  <parameter name="[packetLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>  
+  <test parameter="[packetLost]" condition="number.equals" value="0"/>    
   
   <removeProbeRTPFLOW name="probe_rtpflow_0"/> 
   <removeProbeRTPFLOW name="probe_rtpflow_1"/>
