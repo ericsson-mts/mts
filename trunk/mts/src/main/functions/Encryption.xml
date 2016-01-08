@@ -2,8 +2,8 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
 
-    <!-- Calculate the PseudoRandomFunction : implement the RFC4187 -->
-    <function name="calcul_PseudoRandomFunction">
+    <!-- Calculate the PRF=PseudoRandomFunction : implement the RFC4187 -->
+    <function name="calcul_PRF">
         <input>
             <parameter name="[function:AT_IDENTITY]" type="string"/>
             <parameter name="[function:IK]" type="string"/>
@@ -16,7 +16,7 @@
             <parameter name="[binIdentity]" operation="string.tobinary" value="[AT_IDENTITY]"/>  
             <parameter name="[Concat]" operation="set" value="[binIdentity][IK][CK]"/>
             <parameter name="[strConcat]" operation="binary.tostring" value="[Concat]"/>  
-            <parameter name="[MK]" operation="string.digest" value="[strConcat]" value2="SHA1" />
+            <parameter name="[function:MK]" operation="string.digest" value="[strConcat]" value2="SHA1" />
             <!--test parameter="[MK]" condition="binary.equals" value="f4e4dbbae9ad7641802ab8c9a0c5e960187252c2" /-->
                   
             <!-- calculate PRF = Pseudo Random Function -->
@@ -27,10 +27,10 @@
               </condition>
               <then>
                 <parameter name="[resultPRF]" operation="system.command" value="./prng/prf [MK]"/>	
-                <parameter name="[PRF]" operation="set" value="[resultPRF.standardOut]"/>              
+                <parameter name="[function:PRF]" operation="set" value="[resultPRF.standardOut]"/>              
               </then>
               <else>
-                <parameter name="[PRF]" operation="set" value="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>
+                <parameter name="[function:PRF]" operation="set" value="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>
               </else>
             </if>
             
@@ -56,6 +56,8 @@
         </do>
 
         <output>
+            <parameter name="[function:MK]"/>        
+            <parameter name="[function:PRF]"/>
             <parameter name="[function:K_ENCR]"/>
             <parameter name="[function:K_AUTH]"/>
             <parameter name="[function:MSK]"/>
