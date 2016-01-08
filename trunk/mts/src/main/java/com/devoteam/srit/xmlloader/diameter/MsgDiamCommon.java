@@ -610,7 +610,7 @@ public class MsgDiamCommon extends Msg
 	    else if ("UTF8String".equalsIgnoreCase(typeDico) || "UTF8String".equalsIgnoreCase(typeBase))
 	    {
 	    	byte[] val = (new AVP_OctetString(avp)).queryValue();
-	    	value = new String(val, "UTF8");
+	    	value = new String(val, "UTF-8");
 	    }
 		// base types
 	    else if ("OctetString".equalsIgnoreCase(typeBase))
