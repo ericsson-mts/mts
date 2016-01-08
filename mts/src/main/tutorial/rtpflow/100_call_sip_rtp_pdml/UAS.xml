@@ -84,14 +84,22 @@ a=rtpmap:97 amr/8000/1
 	        <parameter name="[flowPayload]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
 	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
 	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
-	        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
-	        <!--
-	            TODO : This code has to be changed using a sliding window of 1 second for exemple
-	            DO NOT ERASE IT
-	        -->
 	        <!--<parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>-->
 	        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
 	  </receiveMessageRTPFLOW>
+
+    <parameter name="[lastJitterMean]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+    
+    <parameter name="[lastPacketLost]" operation="protocol.setFromMessage" value="qos.packetLost"/>
+    <parameter name="[tempPacketLost]" operation="number.substract" value="[lastPacketLost]" value2="2"/>    
+    <parameter name="[tempPacketLost]" operation="number.divide" value="[lastPacketLost]" value2="[packetNumber]"/>
+    <parameter name="[tempPacketLost]" operation="number.multiply" value="[tempPacketLost]" value2="100"/>
+    <test parameter="[tempPacketLost]" condition="number.lowerEqualThan" value="[packetLost]"/>
+    
+    <parameter name="[tempPacketLost]" operation="number.add" value="[lastPacketLost]" value2="3"/>
+    <parameter name="[tempPacketLost]" operation="number.divide" value="[tempPacketLost]" value2="[packetNumber]"/>
+    <parameter name="[tempPacketLost]" operation="number.multiply" value="[tempPacketLost]" value2="100"/>
+    <test parameter="[tempPacketLost]" condition="number.greaterEqualThan" value="[packetLost]"/>
 
   	<parameter name="[newCseqNumber]" operation="number.add" value="[lastCseqNumber]" value2="1"/>
   	<parameter name="[newBranchId]" operation="string.random" value="10"/>

@@ -29,9 +29,15 @@
     
     <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
     
+    <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
+    <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
+    <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
+    <parameter name="[packetLost]" operation="set" value="0" description="Packets lost (in percent)" />    
+    <parameter name="[jitterDelay]" operation="set" value="0" description="Jitter delay (in milliseconds)"/>        
+    
     <!-- value2 = deltaTime (millisecondes)-->
     <parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
-
+        
     <testcase name="000_sendFlowReceivePacket" state="true" number="[iterations]" description="rtpflow" >
         <scenario file="000_sendFlowReceivePacket/session1.xml" name="[localPortRTP]" state="[localClient]" routingName="[localPortRTP]"/>
         <scenario file="000_sendFlowReceivePacket/session2.xml" name="[remotePortRTP]" state="[remoteServer]" routingName="[remotePortRTP]"/>
@@ -121,11 +127,6 @@
     </testcase>
 
     <testcase name="100_call_sip_rtpflow_wav" state="true" number="[iterations]" description="rtpflow" >
-        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
-        <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
-        <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
-        <parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)" />
-
         <parameter name="[localPortSIP]" operation="set" value="5070"/>
         <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
         <parameter name="[remotePortSIP]" operation="set" value="5080"/>
@@ -136,7 +137,7 @@
         <parameter name="[invitee]" operation="set" value="alice" description="Invitee user name" />	
 
         <parameter name="[filename]" operation="set" value="rtpflow.wav" description="wav file for the RTP flow" />
-        <parameter name="fileWave" operation="file.readwave" value="[filename]" value2="20"/>
+        <parameter name="[fileWave]" operation="file.readwave" value="[filename]" value2="20"/>
         <parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
         <parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
         <parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
@@ -147,11 +148,6 @@
     </testcase>
     
     <testcase name="100_call_sip_rtpflow_pdml" state="true" number="[iterations]" description="rtpflow" >
-        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
-        <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
-        <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
-        <parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)" />
-
         <parameter name="[localPortSIP]" operation="set" value="5070"/>
         <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
         <parameter name="[remotePortSIP]" operation="set" value="5080"/>
@@ -161,13 +157,14 @@
         <parameter name="[inviter]" operation="set" value="bob" description="Inviter user name" />
         <parameter name="[invitee]" operation="set" value="alice" description="Invitee user name" />	
 
-        <parameter name="file" operation="file.readmedia" value="008_sendFilePDMLWireshark/rtpflow.pdml"/>    
-        <parameter name="[testcase:payloadList]" operation="set" value="[[file(0)]]"/>
-        <parameter name="[timestampList]" operation="set" value="[[file(1)]]"/>
-        <parameter name="[seqList]" operation="set" value="[[file(2)]]"/>
-        <parameter name="[payloadType]" operation="set" value="[[file(3)]]"/>
-        <parameter name="[deltaTime]" operation="set" value="[[file(4)]]"/>
-        <parameter name="[markList]" operation="set" value="[[file(5)]]"/>
+        <parameter name="[filename]" operation="set" value="008_sendFilePDMLWireshark/rtpflow.pdml" description="wav file for the RTP flow" />
+        <parameter name="[filePdml]" operation="file.readmedia" value="[filename]"/>    
+        <parameter name="[testcase:payloadList]" operation="set" value="[[filePdml(0)]]"/>
+        <parameter name="[timestampList]" operation="set" value="[[filePdml(1)]]"/>
+        <parameter name="[seqList]" operation="set" value="[[filePdml(2)]]"/>
+        <parameter name="[payloadType]" operation="set" value="[[filePdml(3)]]"/>
+        <parameter name="[deltaTime]" operation="set" value="[[filePdml(4)]]"/>
+        <parameter name="[markList]" operation="set" value="[[filePdml(5)]]"/>
         <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
 
         <scenario file="100_call_sip_rtp_pdml/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
@@ -175,6 +172,9 @@
     </testcase>
     	
     <testcase name="200_srtp_sendFileWave" state="true" number="[iterations]" description="rtpflow : BUG does not work with NIO network library" >
+        <parameter name="[packetLost]" operation="set" value="0" description="Packets lost (in percent)" />    
+        <parameter name="[jitterDelay]" operation="set" value="0" description="Jitter delay (in milliseconds)"/>        
+        
         <scenario file="200_srtp_sendFileWave/RTPFLOW.xml" name="inviter" state="[localClient]" routingName="inviter"/>
         <scenario file="200_srtp_sendFileWave/RTPFLOW2.xml" name="invitee" state="[remoteServer]" routingName="invitee"/>
     </testcase>

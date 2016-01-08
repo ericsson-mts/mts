@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[network]" operation="set" value="eth3"/>  
+  <parameter name="[filter]" operation="set" value="(host [remoteHostSIP]) and (port [remotePortSIP] or not (ip[6:2] &amp; 0x1fff == 0))"/>  
+  <createProbeSIP name="probe_invite" networkInterface="[network]" captureFilter="[filter]"/>
+		
+  <label name="Begin"/>    
+    
+	<receiveMessageSIP name="wait_SIP_MESSAGE" timeout="0" request="true" type="MESSAGE"/>      
+  
+  <parameter name="[Text0]" operation="protocol.setFromMessage" value="content(0)"/>  
+  <test parameter="[Text0]" condition="string.contains" value="[messageNote]"/>
+  <test parameter="[Text0]" condition="string.contains" value="dialed-out"/>
+  <test parameter="[Text0]" condition="string.contains" value="null"/>
+  <test parameter="[Text0]" condition="string.contains" value="sip:blablabla"/>
+  
+  <receiveMessageSIP name="wait_SIP_MESSAGE_200" timeout="[Timeout]" request="false" type="MESSAGE" result="200"/>
+  
+  <goto  name="loop" label="Begin" state="true"/>
+  
+  <finally>
+      <removeProbeSIP name="probe_invite"/>  
+  </finally>
+  
+</scenario>

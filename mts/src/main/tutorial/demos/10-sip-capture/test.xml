@@ -52,13 +52,46 @@
     <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" editable="true" />
     <!--parameter name="[remotePortSIP]" operation="set" value="5060"/-->    	    
     <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP]:[remotePortSIP]"/>
-    
-    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
 
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    
+    <!--************ tutorial RTPFLOW **************-->
+    <parameter name="[CallDurationSec]" operation="set" value="0.8" description="Duration (in sec.) of the call" />
+    <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
+    <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
+        
     <parameter name="[domainName]" operation="set" value="devoteam.com" editable="true" />
     <parameter name="[inviter]" operation="set" value="bob" editable="true" />
     <parameter name="[invitee]" operation="set" value="alice" editable="true" />	
         
+    <parameter name="[filename]" operation="set" value="../../rtpflow/008_sendFilePDMLWireshark/rtpflow.pdml" description="wav file for the RTP flow" />
+    <parameter name="[filePdml]" operation="file.readmedia" value="[filename]"/>    
+    <parameter name="[payloadList]" operation="set" value="[[filePdml(0)]]"/>
+    <parameter name="[timestampList]" operation="set" value="[[filePdml(1)]]"/>
+    <parameter name="[seqList]" operation="set" value="[[filePdml(2)]]"/>
+    <parameter name="[payloadType]" operation="set" value="[[filePdml(3)]]"/>
+    <parameter name="[deltaTime]" operation="set" value="[[filePdml(4)]]"/>
+    <parameter name="[markList]" operation="set" value="[[filePdml(5)]]"/>
+    <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+        
+    <testcase name="MESSAGE ---------------------------------------------------" state="false"/>
+    <testcase name="005_message" state="true" number="[iterations]" description="sip" >
+        <parameter name="[messageNote]" operation="set" value="Hello blablabla"/>    
+        <scenario file="../../sip/105_sip_message/UAC.xml" name="alice" state="[localClient]" routingName="alice"/>
+        <scenario file="../../sip/105_sip_message/UAS.xml" name="bob" state="[remoteServer]" routingName="bob"/>
+    </testcase>
+    <testcase name="005_message bad" state="true" number="[iterations]" description="sip" >
+        <parameter name="[messageNote]" operation="set" value="Hello badbadbad"/>    
+        <scenario file="../../sip/105_sip_message/UAC.xml" name="alice" state="[localClient]" routingName="alice"/>
+        <scenario file="../../sip/105_sip_message/UAS.xml" name="bob" state="[remoteServer]" routingName="bob"/>
+    </testcase>
+    
+    <testcase name="000_probe_message" state="true" description="testcase sip monitor" >
+        <parameter name="[messageNote]" operation="set" value="Hello blablabla"/>    
+        <scenario file="monitor_message.xml" name="default" routingName="default"/>
+    </testcase>
+    
+    <testcase name="BASIC CALL SIGNALING --------------------------------------" state="false"/>                
     <testcase name="100_invite_bye" state="false" description="testcase sip invite OK" >
         <parameter name="[waitSemaphore]" operation="set" value="false"/>    
         <scenario file="../../sip/100_sip_invite_bye/UAC.xml" name="alice" routingName="alice"/>        
@@ -89,6 +122,7 @@
         <scenario file="monitor_invite.xml" name="default" routingName="default"/>
     </testcase>
     
+    <testcase name="BASIC CALL RTP EVENTS -------------------------------------" state="false"/>
     <testcase name="110_rtp_events" state="false" number="[iterations]" description="rtp : Event message" >
         <parameter name="[waitSemaphore]" operation="set" value="false"/>     
         <parameter name="[payloadType]" operation="list.set" value="106"/>  
@@ -115,35 +149,34 @@
         <scenario file="monitor_rtp-events.xml" name="default" routingName="SIP,RTP"/>
     </testcase>
 
-    <testcase name="120_call_sip_rtpflow_pdml" state="false" number="[iterations]" description="rtpflow" >
-        <parameter name="[CallDurationSec]" operation="set" value="1" description="Duration (in sec.) of the call" />
-        <parameter name="[dialingDelay]" operation="set" value="0.5" description="Dialing delay (in seconds) : time between INVITE and 180 response" />    	       	       
-        <parameter name="[timeSpacing]" operation="set" value="0.005" description="Time spacing (in seconds) : time between real and theorical timestamp" />    	       	       
-        <parameter name="[packetLost]" operation="set" value="0.1" description="Packets lost (in percent)" />
-
+    <testcase name="BASIC CALL QOS --------------------------------------------" state="false"/>
+    <testcase name="120_call_sip_rtpflow_pdml" state="false" number="[iterations]" description="rtpflow" >    
         <parameter name="[localPortSIP]" operation="set" value="5070"/>
         <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
         <parameter name="[remotePortSIP]" operation="set" value="5080"/>
         <parameter name="[remotePortSIP1]" operation="set" value="[remotePortSIP]"/>
-        
-        <parameter name="[domainName]" operation="set" value="devoteam.com" description="Domain name for inviter and invitee identities" />
-        <parameter name="[inviter]" operation="set" value="bob" description="Inviter user name" />
-        <parameter name="[invitee]" operation="set" value="alice" description="Invitee user name" />	
 
-        <parameter name="file" operation="file.readmedia" value="../../rtpflow/008_sendFilePDMLWireshark/rtpflow.pdml"/>    
-        <parameter name="[testcase:payloadList]" operation="set" value="[[file(0)]]"/>
-        <parameter name="[timestampList]" operation="set" value="[[file(1)]]"/>
-        <parameter name="[seqList]" operation="set" value="[[file(2)]]"/>
-        <parameter name="[payloadType]" operation="set" value="[[file(3)]]"/>
-        <parameter name="[deltaTime]" operation="set" value="[[file(4)]]"/>
-        <parameter name="[markList]" operation="set" value="[[file(5)]]"/>
-        <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
-
+        <parameter name="[packetLost]" operation="set" value="0" description="Packets lost (in percent)" />    
+        <parameter name="[jitterDelay]" operation="set" value="0" description="Jitter delay (in milliseconds)"/>        
+                
         <scenario file="../../rtpflow/100_call_sip_rtp_pdml/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
         <scenario file="../../rtpflow/100_call_sip_rtp_pdml/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
     </testcase>
 
-    <testcase name="120_probe_rtpflow" state="true" description="testcase sip monitor" >
+    <testcase name="120_call_sip_rtpflow_pdml" state="false" number="[iterations]" description="rtpflow" >    
+        <parameter name="[localPortSIP]" operation="set" value="5070"/>
+        <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
+        <parameter name="[remotePortSIP]" operation="set" value="5080"/>
+        <parameter name="[remotePortSIP1]" operation="set" value="[remotePortSIP]"/>
+
+        <parameter name="[packetLost]" operation="set" value="10" description="Packets lost (in percent)" />    
+        <parameter name="[jitterDelay]" operation="set" value="100" description="Jitter delay (in milliseconds)"/>        
+                
+        <scenario file="../../rtpflow/100_call_sip_rtp_pdml/UAC.xml" name="[localPortSIP1],[localPortRTP]" state="[localClient]" routingName="[localPortSIP1],[localPortRTP]"/>
+        <scenario file="../../rtpflow/100_call_sip_rtp_pdml/UAS.xml" name="[remotePortSIP1],[remotePortRTP]" state="[remoteServer]" routingName="[remotePortSIP1],[remotePortRTP]"/>
+    </testcase>
+
+    <testcase name="120_probe_rtpflow" state="true" description="testcase sip monitor" >    
         <parameter name="[localPortSIP]" operation="set" value="5070"/>
         <parameter name="[localPortSIP1]" operation="set" value="[localPortSIP]"/>
         <parameter name="[remotePortSIP]" operation="set" value="5080"/>
