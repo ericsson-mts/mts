@@ -5,14 +5,18 @@
     <!-- Calculate the PRF=PseudoRandomFunction : implement the RFC4187 -->
     <function name="calcul_PRF">
         <input>
+            <!-- valeur de l'attribute AT_IDENTITY du message EAP Identity:1 -->
             <parameter name="[function:AT_IDENTITY]" type="string"/>
+            <!-- valeur du IK=Integrity Key -->            
             <parameter name="[function:IK]" type="string"/>
+            <!-- valeur du CK=Confidentiality Key -->
             <parameter name="[function:CK]" type="string"/>
+            <!-- valeur en hexadecimal du message à envoyer en mettant l'attribut AT_MAC à 0 -->            
             <parameter name="[function:EAPpayloadMAC0]" type="string"/>
         </input>
 
         <do>
-            <!-- calculate MSK = Master Session Key -->
+            <!-- calculate MK = Master Key -->
             <parameter name="[binIdentity]" operation="string.tobinary" value="[AT_IDENTITY]"/>  
             <parameter name="[Concat]" operation="set" value="[binIdentity][IK][CK]"/>
             <parameter name="[strConcat]" operation="binary.tostring" value="[Concat]"/>  
@@ -56,12 +60,19 @@
         </do>
 
         <output>
-            <parameter name="[function:MK]"/>        
+            <!-- valeur de la MK=Master  -->
+            <parameter name="[function:MK]"/>
+            <!-- valeur de la PRF=Pseudo Random Function  -->        
             <parameter name="[function:PRF]"/>
+            <!-- valeur du K-ENCR  -->
             <parameter name="[function:K_ENCR]"/>
+            <!-- valeur du K-AUTH  -->
             <parameter name="[function:K_AUTH]"/>
+            <!-- valeur de la MSK=Master Session Key  -->
             <parameter name="[function:MSK]"/>
-            <parameter name="[function:EMSK]"/>                                    
+            <!-- valeur de la EMSK=Extended Master Session Key  -->
+            <parameter name="[function:EMSK]"/>                    
+            <!-- valeur de l'attribut AT_MAC à envoyer  -->                
             <parameter name="[function:AT_MAC]"/>            
         </output>        
         
