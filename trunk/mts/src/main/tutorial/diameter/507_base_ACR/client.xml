@@ -2,6 +2,8 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
   
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
     <if>
        <condition>
           <test parameter="[waitSemaphore]" condition="boolean.equals" value="true"/>
@@ -10,8 +12,6 @@
           <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
        </then>
     </if>
-
-    <call name="diameter.openChannel_SendCER_RecCEA"/>
     
 <!--
 From RFC 3588 September 2003 :
