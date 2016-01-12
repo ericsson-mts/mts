@@ -5,18 +5,14 @@
     <!-- Calculate the PRF=PseudoRandomFunction : implement the RFC4187 -->
     <function name="calcul_PRF">
         <input>
-            <!-- valeur de l'attribute AT_IDENTITY du message EAP Identity:1 -->
             <parameter name="[function:AT_IDENTITY]" type="string"/>
-            <!-- valeur du IK=Integrity Key -->            
             <parameter name="[function:IK]" type="string"/>
-            <!-- valeur du CK=Confidentiality Key -->
             <parameter name="[function:CK]" type="string"/>
-            <!-- valeur en hexadecimal du message à envoyer en mettant l'attribut AT_MAC à 0 -->            
             <parameter name="[function:EAPpayloadMAC0]" type="string"/>
         </input>
 
         <do>
-            <!-- calculate MK = Master Key -->
+            <!-- calculate MSK = Master Session Key -->
             <parameter name="[binIdentity]" operation="string.tobinary" value="[AT_IDENTITY]"/>  
             <parameter name="[Concat]" operation="set" value="[binIdentity][IK][CK]"/>
             <parameter name="[strConcat]" operation="binary.tostring" value="[Concat]"/>  
@@ -50,29 +46,21 @@
                         
             <!-- calculate the AT_MAC attribute -->                          
             <parameter name="[strK_AUTH]" operation="binary.tostring" value="[function:K_AUTH]"/>  
-            <parameter name="[EAPPayloadMAC0]" operation="binary.toString" value="02020028170100000b050000000000000000000000000000000000000303004039bcb97622c4715a"/>    
+            <!--parameter name="[EAPPayloadMAC0]" operation="binary.toString" value="02020028170100000b050000000000000000000000000000000000000303004039bcb97622c4715a"/--> 
             <parameter name="[MAC20]" operation="string.hmac" value="[EAPPayloadMAC0]" value2="HmacSHA1" value3="[strK_AUTH]" />
             <parameter name="[number]" operation="string.length" value="[MAC20]" />
-            <!--test parameter="[number]" condition="number.equals" value="40" /-->
             <parameter name="[function:AT_MAC]" operation="binary.subbinary" value="[MAC20]" value2="0" value3="16"/>  
             <!--test parameter="[function:AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071" /-->
                                  
         </do>
 
         <output>
-            <!-- valeur de la MK=Master  -->
-            <parameter name="[function:MK]"/>
-            <!-- valeur de la PRF=Pseudo Random Function  -->        
+            <parameter name="[function:MK]"/>        
             <parameter name="[function:PRF]"/>
-            <!-- valeur du K-ENCR  -->
             <parameter name="[function:K_ENCR]"/>
-            <!-- valeur du K-AUTH  -->
             <parameter name="[function:K_AUTH]"/>
-            <!-- valeur de la MSK=Master Session Key  -->
             <parameter name="[function:MSK]"/>
-            <!-- valeur de la EMSK=Extended Master Session Key  -->
-            <parameter name="[function:EMSK]"/>                    
-            <!-- valeur de l'attribut AT_MAC à envoyer  -->                
+            <parameter name="[function:EMSK]"/>                                    
             <parameter name="[function:AT_MAC]"/>            
         </output>        
         
