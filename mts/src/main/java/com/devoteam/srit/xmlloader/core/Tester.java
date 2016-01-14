@@ -103,9 +103,14 @@ public class Tester
     {
 
         //
-        // Initialize tread pool
+        // Initialize global config parameters
         //
         int value = Config.getConfigByName("tester.properties").getInteger("core.NUMBER_THREADS_POOL");
+        // we delete the confuig parameter in the tester.properties because it does not work
+        // it is not similar than setting it on the arguments of the process WHY ? I don't know
+        //String charset = Config.getConfigByName("tester.properties").getString("core.CHARSET_ENCODING", "ISO-8859-15");        
+        //System.setProperty("file.encoding", charset);        
+        
         ThreadPool.init(value);
         
         //
