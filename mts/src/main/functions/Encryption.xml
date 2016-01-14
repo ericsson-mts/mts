@@ -6,9 +6,9 @@
     <function name="calcul_PRF">
         <input>
             <parameter name="[function:AT_IDENTITY]" type="string"/>
-            <parameter name="[function:IK]" type="string"/>
-            <parameter name="[function:CK]" type="string"/>
-            <parameter name="[function:EAPpayloadMAC0]" type="string"/>
+            <parameter name="[function:IK]" type="binary"/>
+            <parameter name="[function:CK]" type="binary"/>
+            <parameter name="[function:EAPpayloadMAC0]" type="binary"/>
         </input>
 
         <do>
@@ -46,8 +46,8 @@
                         
             <!-- calculate the AT_MAC attribute -->                          
             <parameter name="[strK_AUTH]" operation="binary.tostring" value="[function:K_AUTH]"/>  
-            <!--parameter name="[EAPPayloadMAC0]" operation="binary.toString" value="02020028170100000b050000000000000000000000000000000000000303004039bcb97622c4715a"/--> 
-            <parameter name="[MAC20]" operation="string.hmac" value="[EAPPayloadMAC0]" value2="HmacSHA1" value3="[strK_AUTH]" />
+            <parameter name="[binEAPpayloadMAC0]" operation="binary.toString" value="[EAPpayloadMAC0]"/> 
+            <parameter name="[MAC20]" operation="string.hmac" value="[binEAPpayloadMAC0]" value2="HmacSHA1" value3="[strK_AUTH]" />
             <parameter name="[number]" operation="string.length" value="[MAC20]" />
             <parameter name="[function:AT_MAC]" operation="binary.subbinary" value="[MAC20]" value2="0" value3="16"/>  
             <!--test parameter="[function:AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071" /-->
