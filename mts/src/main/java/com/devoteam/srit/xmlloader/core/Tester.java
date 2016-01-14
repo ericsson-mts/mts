@@ -35,7 +35,10 @@ import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+
+import java.lang.reflect.Field;
 import java.net.URI;
+import java.nio.charset.Charset;
 
 
 /**
@@ -106,10 +109,12 @@ public class Tester
         // Initialize global config parameters
         //
         int value = Config.getConfigByName("tester.properties").getInteger("core.NUMBER_THREADS_POOL");
-        // we delete the confuig parameter in the tester.properties because it does not work
+        // we delete the config parameter in the tester.properties because it does not work
         // it is not similar than setting it on the arguments of the process WHY ? I don't know
-        //String charset = Config.getConfigByName("tester.properties").getString("core.CHARSET_ENCODING", "ISO-8859-15");        
-        //System.setProperty("file.encoding", charset);        
+        //String strCharset = Config.getConfigByName("tester.properties").getString("core.CHARSET_ENCODING", "ISO-8859-15");        
+        //System.setProperty("file.encoding", strCharset);
+        //System.out.println(System.getProperty("file.encoding"));
+        //System.out.println(Charset.defaultCharset());
         
         ThreadPool.init(value);
         
