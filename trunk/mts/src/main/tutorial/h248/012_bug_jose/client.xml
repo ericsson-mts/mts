@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- send Add request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[MEGACO/2 [172.20.105.130]:2944 Transaction = 79724364{ Context = $ { Priority = 0, Add =ip/0/tinari/${ Media { Stream  = 1 { Local { v=0
+c=IN IP4 $
+m=audio $ RTP/AVP -
+} , Remote { v=0
+c=IN IP4 172.18.128.19
+m=audio 10000 RTP/AVP -
+} , LocalControl { Mode = Inactive , ds/dscp=b8, gm/rsb=ON, gm/saf=ON, gm/sam="172.18.128.19", ipdc/realm=811 } } }, Events  = 1000{ hangterm/thb{timerx = 3600 } , g/cause } }, Add =ip/0/tinari/${ Media { Stream  = 1 { Local { v=0
+c=IN IP4 $
+m=audio $ RTP/AVP -
+} , LocalControl { Mode = Inactive , ds/dscp=b8, gm/rsb=ON, ipdc/realm=911 } } }, Events  = 1000{ g/cause } } } }]]>
+    </sendMessageH248>
+
+    <!-- receive Add response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+        <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.*.Context.value" />
+        <parameter name="[termID]" operation="protocol.setFromMessage" value="descr.*.Context.*.value" />
+    </receiveMessageH248>
+
+    <!-- send Add acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+    <!-- send Subtract request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=[contextID]{
+  Priority = 1,                 
+  Subtract=[termID] {}
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Subtract response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Subtract" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+
+    <!-- send Subtract acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>
