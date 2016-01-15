@@ -23,7 +23,9 @@
 
 package com.devoteam.srit.xmlloader.ucp;
 
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.ucp.data.*;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
@@ -31,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import org.dom4j.io.SAXReader;
 import org.dom4j.*;
 
@@ -275,7 +278,7 @@ public class UcpDictionary
         value = element.attributeValue("mandatory");
         if(value != null)
         {
-            att.setMandatory(Boolean.parseBoolean(value));
+            att.setMandatory(Utils.parseBoolean(value, "mandatory"));
         }
         else
         {

@@ -36,6 +36,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
 import com.devoteam.srit.xmlloader.rtp.StackRtp;
 import com.devoteam.srit.xmlloader.rtp.srtp.RawPacket;
@@ -239,7 +240,7 @@ public class ListenpointRtpFlow extends Listenpoint
         if (header != null) {
             String qosMeasurmentStr = header.attributeValue("qosMeasurment");
             if (qosMeasurmentStr != null) {
-                qosMeasurment = Boolean.parseBoolean(qosMeasurmentStr);
+                qosMeasurment = Utils.parseBoolean(qosMeasurmentStr, "qosMeasurment");
             }
         }
 
@@ -247,7 +248,7 @@ public class ListenpointRtpFlow extends Listenpoint
         if (header != null) {
             String ignoreReceivedMessagesStr = header.attributeValue("ignoreReceivedMessages");
             if (ignoreReceivedMessagesStr != null) {
-                ignoreReceivedMessages = Boolean.parseBoolean(ignoreReceivedMessagesStr);
+                ignoreReceivedMessages = Utils.parseBoolean(ignoreReceivedMessagesStr, "ignoreReceivedMessages");
             }
         }
 

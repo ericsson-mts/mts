@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.diameter.dictionary;
 
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -185,11 +186,18 @@ public class Application
         }
         
         boolean constrained = false ;
-        if(null != root.attributeValue("constrained")) constrained = Boolean.parseBoolean(root.attributeValue("constrained"));
+        String strConstrained = root.attributeValue("constrained");
+        if(null != root.attributeValue("constrained"))
+        {
+        	constrained = Utils.parseBoolean(strConstrained, "constrained");
+        }
         
         VendorDef vendor_id = null ;
-        if(null != root.attributeValue("vendor-id")) vendor_id = Dictionary.getInstance().getVendorDefByName(root.attributeValue("vendor-id"), _name);
-        
+        String strVendorId = root.attributeValue("vendor-id");
+        if(null != root.attributeValue("vendor-id")) 
+        {
+        	vendor_id = Dictionary.getInstance().getVendorDefByName(strVendorId, _name);
+        }
         
         TypeDef type = null ;
         {

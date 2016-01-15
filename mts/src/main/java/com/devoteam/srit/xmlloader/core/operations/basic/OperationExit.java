@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExitExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementDefaultParser;
 
 import org.dom4j.Element;
@@ -51,14 +52,18 @@ public class OperationExit extends Operation {
     public Operation execute(Runner runner) throws Exception {
         GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, this);
 
-        boolean failed;
+        boolean failed = false;
         String exception;
         try {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "Operation after pre-parsing \n", this);
             this.name = getAttribute("name");
             this._key[1] = this.name;
-            failed = Boolean.parseBoolean(getAttribute("failed"));
+            String strFailed = getAttribute("failed");
+            if (strFailed != null)
+            {
+            	failed = Utils.parseBoolean(strFailed, "failed");
+            }
             exception = getAttribute("exception");
             
         }

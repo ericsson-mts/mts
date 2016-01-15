@@ -30,6 +30,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 
 import gp.utils.arrays.Array;
@@ -153,18 +154,32 @@ public class FvoParameter {
         _type = type;
     }
 
-    public void parseElement(Element root) throws Exception {
+    public void parseElement(Element root) throws Exception {           
+        //Create the FvoParameter
         String id = root.attributeValue("id");
-        String name = root.attributeValue("name");
-        String longParameter = root.attributeValue("longParameter");
-        String type = root.attributeValue("type");
-        String littleEndian = root.attributeValue("littleEndian");
-
-        List<Element> listFields = root.elements("field");
-
-        // TODO: eventually complete data with information from dictionary
+        if (id != null) {
+        	String name = root.attributeValue("name");
+            setName(name);
+        }
+        if (id != null) {
+            setId(Integer.decode(id));
+        }
+        if (id != null) {
+            setId(Integer.decode(id));
+        }
         
+        String type = root.attributeValue("type");
+        if (type != null) {
+            setType(type);
+        }
+
+        String littleEndian = root.attributeValue("littleEndian");
+        if (littleEndian != null) {
+            setLittleEndian(Utils.parseBoolean(littleEndian, "littleEndian"));
+        }
+
         // search for errors in XML
+        String longParameter = root.attributeValue("longParameter");
         if (type != null) {
             if (!(type.equalsIgnoreCase("F") || type.equalsIgnoreCase("V") || type.equalsIgnoreCase("O"))) {
                 throw new ExecutionException("Parameter type value must be set at 'F', 'V' or 'O'\n" + root.asXML().replace("	", ""));
@@ -177,24 +192,7 @@ public class FvoParameter {
             }
         }
 
-        //TODO case pointerLength>2
-        //Create the FvoParameter
-        if (id != null) {
-            setName(name);
-        }
-        if (id != null) {
-            setId(Integer.decode(id));
-        }
-        if (type != null) {
-            setType(type);
-        }
-        if (id != null) {
-            setId(Integer.decode(id));
-        }
-        if (littleEndian != null) {
-            setLittleEndian(Boolean.parseBoolean(littleEndian));
-        }
-
+        List<Element> listFields = root.elements("field");
         if (!listFields.isEmpty()) {
             for (int cpt = 0; cpt < listFields.size(); cpt++) {
                 Element element = listFields.get(cpt);

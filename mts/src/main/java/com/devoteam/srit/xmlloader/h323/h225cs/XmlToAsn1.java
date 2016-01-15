@@ -111,7 +111,7 @@ public class XmlToAsn1 {
     {
         if (type.equals("java.lang.Boolean")||type.equals("boolean"))  
         {
-            return Boolean.valueOf(element.getTextTrim()).booleanValue();
+            return Utils.parseBoolean(element.getTextTrim(), "type");
         }
         else if (type.equals("java.lang.String")||type.equals("String")) 
         {

@@ -160,7 +160,7 @@ public class Function {
                 }
                 else if ("boolean".equalsIgnoreCase(type)) {
                     try {
-                        Boolean.parseBoolean((String) o);
+                        Utils.parseBoolean((String) o, "type");
                     }
                     catch (Exception e) {
                         throw new ExecutionException("parameter content is not a boolean\r\n" + parameter, e);

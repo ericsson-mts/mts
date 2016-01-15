@@ -595,11 +595,12 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	Array array = Array.fromHexString(string1);
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
                 	int nbBits = Integer.valueOf(param_2.get(i).toString()).intValue();
-                	Parameter paramEndian = operands.get("value3");
+                	Parameter paramEndian = operands.get("value3");               
                     boolean endian = true;
                     if (paramEndian != null)
                     {
-                    	endian = Boolean.valueOf(paramEndian.get(i).toString()).booleanValue();
+                    	String strEndian = paramEndian.get(i).toString();
+                    	endian = Utils.parseBoolean(strEndian, "value3");
                     }
                     Array arrayResult = encodeNumberBits(array, nbBits, endian);
                 	result.add(Array.toHexString(arrayResult));
@@ -611,10 +612,11 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                 	Parameter param_2 = assertAndGetParameter(operands, "value2");
                 	int nbBits = Integer.valueOf(param_2.get(i).toString()).intValue();
                 	Parameter paramEndian = operands.get("value3");
+                	String strEndian = paramEndian.get(i).toString();
                     boolean endian = true;
                     if (paramEndian != null)
                     {
-                    	endian = Boolean.valueOf(paramEndian.get(i).toString()).booleanValue();
+                    	endian = Utils.parseBoolean(strEndian, "value3");
                     }
                     Array arrayResult = decodeNumberBits(array, nbBits, endian);
                 	result.add(Array.toHexString(arrayResult));
