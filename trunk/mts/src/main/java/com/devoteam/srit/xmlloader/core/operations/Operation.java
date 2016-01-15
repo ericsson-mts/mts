@@ -132,6 +132,15 @@ public abstract class Operation implements Serializable {
     }
 
     /**
+     * Returns an attribute of the root element of the XMLTree.
+     *
+     * @return String
+     */
+    public String getAttribute(String attributeName, String defaut) {
+        return _xmlTree.getTreeRoot().attributeValue(attributeName, defaut);
+    }
+
+    /**
      * Add the increments of statistic current counter
      */
     private void addStatCurrent1(Object value) throws Exception {

@@ -34,11 +34,10 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Probe;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-
-
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import org.dom4j.Element;
 
@@ -87,7 +86,7 @@ public class OperationSendMessage extends Operation {
                 else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
                     GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
                 }
-                req = Boolean.valueOf(request);
+                req = Utils.parseBoolean(request, "request");
             }
 
             // instanciates the msg

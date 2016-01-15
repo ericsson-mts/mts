@@ -558,7 +558,7 @@ public class Listenpoint
         String listenUDPAttr = root.attributeValue("listenUDP");
         if (listenUDPAttr != null)
         {
-            this.listenUDP = Boolean.parseBoolean(listenUDPAttr);
+            this.listenUDP = Utils.parseBoolean(listenUDPAttr, "listenUDP");
         }
         else
         {
@@ -567,7 +567,7 @@ public class Listenpoint
         String listenTCPAttr = root.attributeValue("listenTCP");
         if (listenTCPAttr != null)
         {
-            this.listenTCP = Boolean.parseBoolean(listenTCPAttr);
+            this.listenTCP = Utils.parseBoolean(listenTCPAttr, "listenTCP");
         }
         else
         {
@@ -576,7 +576,7 @@ public class Listenpoint
         String listenSCTPAttr = root.attributeValue("listenSCTP");
         if (listenSCTPAttr != null)
         {
-            this.listenSCTP = Boolean.parseBoolean(listenSCTPAttr);
+            this.listenSCTP = Utils.parseBoolean(listenSCTPAttr, "listenSCTP");
         }
         else
         {
@@ -585,7 +585,7 @@ public class Listenpoint
         String listenTLSAttr = root.attributeValue("listenTLS");
         if (listenTLSAttr != null)
         {
-            this.listenTLS = Boolean.parseBoolean(listenTLSAttr);
+            this.listenTLS = Utils.parseBoolean(listenTLSAttr, "listenTLS");
         }
         else
         {

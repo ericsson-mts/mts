@@ -32,6 +32,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import java.util.LinkedList;
 
@@ -138,7 +139,7 @@ public class FvoDictionary {
                 }
                 String littleEndian = param.attributeValue("littleEndian");
                 if(littleEndian != null){
-                    parameter.setLittleEndian(Boolean.parseBoolean(littleEndian));
+                    parameter.setLittleEndian(Utils.parseBoolean(littleEndian, "littleEndian"));
                 }
 
                 if (parameter.getType().equalsIgnoreCase("F")) {
@@ -177,11 +178,11 @@ public class FvoDictionary {
         }
         String longParameter = node.attributeValue("longParameter");
         if (longParameter != null) {
-            parameter.setLongParameter(Boolean.parseBoolean(longParameter));
+            parameter.setLongParameter(Utils.parseBoolean(longParameter, "longParameter"));
         }
         String littleEndian = node.attributeValue("littleEndian");
         if(littleEndian != null){
-            parameter.setLittleEndian(Boolean.valueOf(littleEndian));
+            parameter.setLittleEndian(Utils.parseBoolean(littleEndian, "littleEndian"));
         }
 
         //FIELDS

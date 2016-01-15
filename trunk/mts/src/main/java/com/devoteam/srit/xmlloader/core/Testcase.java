@@ -71,7 +71,12 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         defaultHierarchyMember.setParent(test);
         _root = root;
         _parameters = new ParameterPool(null, ParameterPool.Level.testcase, test.getParameterPool());
-        _interruptible = Boolean.valueOf(_root.attributeValue("interruptible", "true"));
+        String strInterruptible = _root.attributeValue("interruptible", "true");
+        _interruptible = true;
+        if (strInterruptible != null)
+        {
+        	_interruptible = Utils.parseBoolean(strInterruptible, "interruptible");
+        }
         _name = _root.attributeValue("name");
         _name = Utils.replaceFileName(this._name);
         // assert the name is not empty (can cause problems with log files and stats)
@@ -88,7 +93,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         String strState = _root.attributeValue("state");
         if (strState != null)
         {
-        	_state = Boolean.parseBoolean(strState);
+        	_state = Utils.parseBoolean(strState, "state");
         }
 
         // do 1, 2, 3 in one go because of runner

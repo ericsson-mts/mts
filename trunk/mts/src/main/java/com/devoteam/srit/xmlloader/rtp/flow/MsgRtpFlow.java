@@ -720,7 +720,7 @@ public class MsgRtpFlow extends Msg {
 
         String synchronous = flow.attributeValue("synchronous");
         if (synchronous != null) {
-            this.synchronous = Boolean.parseBoolean(synchronous);
+            this.synchronous = Utils.parseBoolean(synchronous, "synchronous");
         }
    }
 

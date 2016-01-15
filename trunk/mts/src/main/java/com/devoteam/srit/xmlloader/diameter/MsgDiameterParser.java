@@ -135,7 +135,7 @@ public class MsgDiameterParser
     	String strRequest = element.attributeValue("request");
         if (strRequest != null)
         {
-        	request = Boolean.parseBoolean(strRequest);
+        	request = Utils.parseBoolean(strRequest, "request");
         }
         if(request == null)
         {
@@ -151,7 +151,7 @@ public class MsgDiameterParser
         }
         if (proxyable != null)
         {
-        	messageHeader.setProxiable(Boolean.parseBoolean(proxyable));
+        	messageHeader.setProxiable(Utils.parseBoolean(proxyable, "proxiable"));
         }
         
         // Parse the Error
@@ -162,7 +162,7 @@ public class MsgDiameterParser
         }
         if (error != null)
         {
-        	messageHeader.setError(Boolean.parseBoolean(error));
+        	messageHeader.setError(Utils.parseBoolean(error, "error"));
         }
         
         // Parse the Retransmit flag
@@ -173,7 +173,7 @@ public class MsgDiameterParser
         }        
         if (retransmit != null)
         {
-        	messageHeader.setRetransmit(Boolean.parseBoolean(retransmit));
+        	messageHeader.setRetransmit(Utils.parseBoolean(retransmit, "retransmit"));
         }
         
         // Parse the Flags : NOT USED
@@ -238,7 +238,7 @@ public class MsgDiameterParser
         boolean stateBool = true;
         if (stateAttr != null)
         {
-            stateBool = Boolean.parseBoolean(stateAttr);
+            stateBool = Utils.parseBoolean(stateAttr, "state");
         }
         if (!stateBool)
         {
@@ -468,8 +468,12 @@ public class MsgDiameterParser
         {
         	mandatoryAttr = element.attributeValue("m");
         }
-        boolean mandatoryBool = Boolean.parseBoolean(mandatoryAttr);
-        if (mandatoryAttr == null)
+        boolean mandatoryBool = false;
+        if (mandatoryAttr != null)
+        {
+        	mandatoryBool = Utils.parseBoolean(mandatoryAttr, "m[andatory]");
+        }
+        else
         {
         	if (avpDef != null && "mustnot".equals(avpDef.get_mandatory()))
         	{
@@ -487,8 +491,12 @@ public class MsgDiameterParser
         {
         	privateAttr = element.attributeValue("p");
         }
-        boolean privateBool = Boolean.parseBoolean(privateAttr);
-        if (privateAttr == null)
+        boolean privateBool = false;
+        if (privateAttr != null)
+        {
+        	Utils.parseBoolean(privateAttr, "p[rivate]");
+        }
+        else
         {
         	if (avpDef != null && "mustnot".equals(avpDef.get_protected()))
         	{

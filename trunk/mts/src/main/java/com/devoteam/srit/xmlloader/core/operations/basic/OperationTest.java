@@ -35,9 +35,12 @@ import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.pluggable.ParameterTestRegistry;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableParameterTest;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.dom4j.Attribute;
 import org.dom4j.Element;
 
@@ -100,7 +103,7 @@ public class OperationTest extends Operation {
                 throw new ParameterException("error parsing a variable name or index in operands (" + strNot + "), final size is not 1");
             }
             strNot = aRes.get(0);
-            not = Boolean.parseBoolean(strNot.toLowerCase());
+            not = Utils.parseBoolean(strNot, "not");
         }
 
         /*

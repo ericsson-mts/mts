@@ -372,7 +372,7 @@ public class Utils
     /**
      * Tests if the string is a boolean.
      */
-    public static boolean parseBoolean(String text, String data)
+    public static boolean parseBoolean(String text, String name)
     {
     	text = text.trim();
     	int iPos = text.indexOf(":");
@@ -393,7 +393,7 @@ public class Utils
 			{
 				if (!label.equalsIgnoreCase("true") && !label.equals(text))
 				{
-					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\".");
+					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + name + "\".");
 				}
 				return true;
 			}
@@ -401,13 +401,13 @@ public class Utils
 			{
 				if (!label.equalsIgnoreCase("false") && !label.equals(text))
 				{
-					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\".");
+					GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "The boolean value \"" + text + "\"  is not valid for the boolean data \"" + name + "\".");
 				}
 				return false;
 			}
 			else
 			{
-				throw new RuntimeException("The boolean value \"" + text + "\"  is not valid for the boolean data \"" + data + "\"."); 
+				throw new RuntimeException("The boolean value \"" + text + "\"  is not valid for the boolean data \"" + name + "\"."); 
 		    }
 
     	}
@@ -423,7 +423,7 @@ public class Utils
 	    	}
 	    	else
 	    	{
-	    		throw new RuntimeException("Bad value value for the boolean data : \"" + text + "\""); 
+	    		throw new RuntimeException("The boolean value \"" + text + "\" is not valid  for the boolean data : \"" + name + "\""); 
 	    	}
     	}
 	}

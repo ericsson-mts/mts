@@ -28,6 +28,8 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.AssertException;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 import java.util.Map;
 
 /**
@@ -54,7 +56,7 @@ public class PluggableParameterTestListPool extends AbstractPluggableParameterTe
         if(param != null)
         {
             if(param.length() != 1) throw new ParameterException("value should have a size of one in test " + name);
-            expected = Boolean.parseBoolean(param.get(0).toString());
+            expected = Utils.parseBoolean(param.get(0).toString(), "value");
         }
         if (runner.getParameterPool().exists(parameter) != expected)
         {

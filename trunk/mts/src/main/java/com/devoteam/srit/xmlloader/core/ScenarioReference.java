@@ -64,7 +64,8 @@ public class ScenarioReference implements Serializable {
         String strState = elements.attributeValue("state");
         if (strState != null)
         {
-        	_state = Boolean.parseBoolean(strState);
+        	_state = Utils.parseBoolean(strState, "state");
+        	//_state = Boolean.parseBoolean(strState);
         }
         _filename = elements.attributeValue("file");
         if(null == _filename)
