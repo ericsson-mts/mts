@@ -32,11 +32,14 @@ import com.devoteam.srit.xmlloader.core.utils.CSVReader;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.rtp.flow.WAVReader;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,8 +55,10 @@ import javax.sound.sampled.AudioFileFormat;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+
 import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary;
 import com.devoteam.srit.xmlloader.rtp.flow.CodecDictionary.Protocol;
+
 import java.util.Vector;
 
 /**
@@ -251,6 +256,7 @@ public class PluggableParameterOperatorFile extends AbstractPluggableParameterOp
                 Document document = null;
                 try {
 	                SAXReader reader = new SAXReader();
+	                reader.setEntityResolver(new XMLLoaderEntityResolver());
 	                in = SingletonFSInterface.instance().getInputStream(filePathURI);
 	                document = reader.read(in);
 	                in.close();

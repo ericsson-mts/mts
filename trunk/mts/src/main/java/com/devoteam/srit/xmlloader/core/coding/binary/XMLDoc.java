@@ -189,7 +189,7 @@ public class XMLDoc implements Serializable {
                         }
 
                         public String getEncoding() {
-                            return "UTF-8";
+                            return "ISO-8859-15";
                         }
 
                         public void setEncoding(String encoding) {

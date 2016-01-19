@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.asn1;
 import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -333,7 +334,7 @@ public class TestANS1Object
 		ASNInitializer.getInstance().initValue(-1, index, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
-        String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        String retInit = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n\n";
         retInit += msgInit.toXML();
         
         // write XML data into a file
@@ -352,6 +353,7 @@ public class TestANS1Object
         if(!fileRead.exists()) fileRead.createNewFile();
         InputStream in = new FileInputStream(fileRead);
         SAXReader reader = new SAXReader(false);
+        reader.setEntityResolver(new XMLLoaderEntityResolver());
         Document document = reader.read(in);	 
         Element root = document.getRootElement();
         List<Element> elements = root.elements();
@@ -370,7 +372,7 @@ public class TestANS1Object
         msgXML.parseFromXML(root, className);
 
 		// convert the ASN1 object into XML data
-        String retXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        String retXML = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n\n";
         retXML += msgXML.toXML();
 
         File fileXML = new File(destDirectory + simpleClassName + "_difference.xml");
@@ -412,7 +414,7 @@ public class TestANS1Object
 		ASNInitializer.getInstance().initValue(index, index, "", msgInit, null, null, objectInit, null);
 		
 		// convert the ASN1 object into XML data
-        String retInit = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        String retInit = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n\n";
         retInit += msgInit.toXML();
                 
         // encode ASN1 object into binary
@@ -426,7 +428,7 @@ public class TestANS1Object
         msgBin.decode(arrayInit, className, rule);
 
 		// convert the ASN1 object into XML data
-        String retBin = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
+        String retBin = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\n\n";
         retBin += msgBin.toXML();
         
         String simpleClassName = classObj.getSimpleName();

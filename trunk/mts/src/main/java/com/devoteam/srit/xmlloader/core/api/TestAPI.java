@@ -84,7 +84,7 @@ public class TestAPI {
         try {
             HashMapFileSystem fs = (HashMapFileSystem) SingletonFSInterface.instance();
             String testFile =
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                    "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>"
                     + "<test name=\"test\">"
                     + "<testcase name=\"testcase\">"
                     + "<scenario name=\"scenario\">scenario.xml</scenario>"
@@ -93,7 +93,7 @@ public class TestAPI {
             fs.addFile(new URI("test.xml"), testFile);
 
             String scenarioFile =
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                    "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>"
                     + "<scenario>"
                     + "<log>MYTAG\n"
                     + "toto=tutu\n"

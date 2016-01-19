@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.h323.h225cs;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 
 import gp.utils.arrays.DefaultArray;
 
@@ -54,6 +55,7 @@ public class XmlToAsn1 {
     {
         Document document = null;
         SAXReader reader = new SAXReader();
+        reader.setEntityResolver(new XMLLoaderEntityResolver());       
         try 
         {
             document = reader.read(xmlFileName);

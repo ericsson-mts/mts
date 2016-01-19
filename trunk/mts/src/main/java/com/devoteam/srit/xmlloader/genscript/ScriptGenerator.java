@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,6 +39,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -87,6 +89,8 @@ public class ScriptGenerator {
             File xml = fileRoot;
             Document testDoc;
             SAXReader reader = new SAXReader();
+            reader.setEntityResolver(new XMLLoaderEntityResolver());
+            
             testDoc = reader.read(xml);
             Element testExistant = testDoc.getRootElement();
 
@@ -375,7 +379,7 @@ public class ScriptGenerator {
         // Creation de l'arborescence
         pathRoot.mkdirs();
         // On creait le fichier de test
-        String testStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + System.getProperty("line.separator");
+        String testStr = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>" + System.getProperty("line.separator");
         testStr += test.toXmlElement().asXML();
         // Réalisation de l'indentation
         testStr = testStr.replaceAll("><", ">" + System.getProperty("line.separator") + "<");

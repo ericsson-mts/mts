@@ -34,6 +34,7 @@ import org.dom4j.io.SAXReader;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.StackSigtran;
 
@@ -77,6 +78,8 @@ public class TlvDictionary {
         int k = 0;
 
         SAXReader reader = new SAXReader();
+        reader.setEntityResolver(new XMLLoaderEntityResolver());
+       
         Document document = reader.read(stream);
 
         Element root = (Element) document.selectSingleNode("/dictionary");
