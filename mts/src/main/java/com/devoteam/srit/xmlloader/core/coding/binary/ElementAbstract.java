@@ -245,6 +245,7 @@ public abstract class ElementAbstract implements Cloneable
             if (field != null) 
             {
             	String value = element1.attributeValue("value");
+            	value = Utils.unescapeXMLEntities(value);
             	if (value == null)
             	{
             		value = element1.elementText("value");
