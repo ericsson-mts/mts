@@ -186,10 +186,8 @@ public abstract class FieldAbstract
         		strVal = Array.toHexString(arrayVal);
         		type = "Binary";
         	}
-        	else
-        	{
-        		strVal = Utils.escapeXMLEntities(strVal);
-        	}
+    		// replace escape XML character
+    		strVal = Utils.escapeXMLEntities(strVal);
         	elemString.append(strVal);        	
 		    elemString.append("\"");
         }

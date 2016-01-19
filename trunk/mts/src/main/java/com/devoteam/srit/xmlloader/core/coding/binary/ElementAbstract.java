@@ -251,6 +251,7 @@ public abstract class ElementAbstract implements Cloneable
             	}
             	if (value != null)
             	{
+                    // replace escape XML character
             		value = Utils.unescapeXMLEntities(value);
 			        field.setValue(value, offset, this.fieldsArray);
             	}
