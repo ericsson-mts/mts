@@ -714,7 +714,7 @@ public abstract class ElementAbstract implements Cloneable
     	elemString.append("\"");
     	if (fieldsArray != null)
         {
-    		elemString.append(" value=\"");
+    		elemString.append(" binary=\"");
             elemString.append(Array.toHexString(fieldsArray));
             elemString.append("\"");
         }
