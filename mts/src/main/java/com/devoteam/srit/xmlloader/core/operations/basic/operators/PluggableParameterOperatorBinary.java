@@ -979,7 +979,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     	byte[] decodeInlineByteTab = Array.fromBase64String(inline).getBytes();
     	
     	if (decodeInlineByteTab.length != 30)
-    		throw new ParameterException("concatened master key and master salt length is not equal to 30 bytes : " + new String(decodeInlineByteTab, "UTF-8"));
+    		throw new ParameterException("concatened master key and master salt length is not equal to 30 bytes : " + new String(decodeInlineByteTab));
     	
     	byte[] masterKey = new byte[16];
     	byte[] masterSalt = new byte[14];
@@ -988,8 +988,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     		masterKey[i] = decodeInlineByteTab[i];
     	for (int i = 0; i < 14; i++)
     		masterSalt[i] = decodeInlineByteTab[i + 16];
-    	ret[0] = new String(masterKey, "UTF-8");
-    	ret[1] = new String(masterSalt, "UTF-8");
+    	ret[0] = new String(masterKey);
+    	ret[1] = new String(masterSalt);
     	
     	return ret;
     }

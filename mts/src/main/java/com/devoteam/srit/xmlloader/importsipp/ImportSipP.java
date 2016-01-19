@@ -22,7 +22,6 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.tree.DefaultCDATA;
-
 import org.xml.sax.SAXException;
 
 import com.devoteam.srit.xmlloader.core.PropertiesEnhanced;
@@ -31,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.TextExceptionHandler;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
@@ -138,6 +138,7 @@ public class ImportSipP {
 			 	//Get the source XML file, and parse it using SAX parser */
 			 	String filepath = sippfile; 
 			 	SAXReader reader = new SAXReader();
+			 	reader.setEntityResolver(new XMLLoaderEntityResolver());		 	
 			 	Document sourceDocument = reader.read(filepath);
 			 		
 			 	//Create the resulting XML file, with the root element 'scenario'
@@ -339,6 +340,7 @@ public class ImportSipP {
 	 */
 	public static void addNodeWithParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile, int scenarioNum) throws SAXException, IOException, DocumentException{	
 		SAXReader reader = new SAXReader();
+		reader.setEntityResolver(new XMLLoaderEntityResolver());		
 		Document template = reader.read("../conf/importsipp/Templates/"+templateFile+".xml");
 		Element templateRoot = template.getRootElement();
 		if(sippNode.size()>0)
@@ -381,6 +383,7 @@ public class ImportSipP {
 	public static void addNodeCheckParameters(ArrayList<Element> sippNode, Element resultDocRoot, Document resultDoc, String templateFile, int scenarioNum) throws SAXException, IOException, DocumentException{		
 		//Parsing the corresponding template file
 	 	SAXReader reader = new SAXReader();
+	 	reader.setEntityResolver(new XMLLoaderEntityResolver()); 	
 	 	Document template = reader.read("../conf/importsipp/Templates/"+templateFile+".xml");
 		Element templateRoot = template.getRootElement(); 
 		if(sippNode.size()>0)//if scenario
@@ -734,6 +737,7 @@ public class ImportSipP {
 				{	
 					//Read the test file
 					SAXReader reader = new SAXReader();
+					reader.setEntityResolver(new XMLLoaderEntityResolver());					
 					Document doc = reader.read(testFileName);
 					Element root = doc.getRootElement();
 					Element testCaseMain = null ; 

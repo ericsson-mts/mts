@@ -195,7 +195,7 @@ public class ListenpointRtp extends Listenpoint
 		}
 		
 		if (masterKeyAndSaltFromB64.length != 30)
-			throw new Exception("masterKeyAndSalt from Base64 has length not equals to 30 bytes : " + new String(masterKeyAndSaltFromB64, "UTF-8"));
+			throw new Exception("masterKeyAndSalt from Base64 has length not equals to 30 bytes : " + new String(masterKeyAndSaltFromB64));
 		
 		for (int i = 0; i < 16; i++)
     		masterKey[i] = masterKeyAndSaltFromB64[i];

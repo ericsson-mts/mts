@@ -73,7 +73,7 @@ public class HttpLoaderClient extends Thread
         
         Long beginThreadResponse = System.currentTimeMillis(); // top chrono des reponses
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setHttpElementCharset(params, "UTF-8");
+        HttpProtocolParams.setHttpElementCharset(params, "ISO-8859-15");
         HttpProtocolParams.setContentCharset(params, "text");
         HttpProtocolParams.setUserAgent(params, "XmlLoader");
         HttpProtocolParams.setUseExpectContinue(params, true);
@@ -100,7 +100,7 @@ public class HttpLoaderClient extends Thread
         // Create a HTTP message object corresponding to the string message
         
         HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setHttpElementCharset(params, "UTF-8");
+        HttpProtocolParams.setHttpElementCharset(params, "ISO-8859-15");
         HttpProtocolParams.setContentCharset(params, "text");
         HttpProtocolParams.setUserAgent(params, "XmlLoader");
         HttpProtocolParams.setUseExpectContinue(params, true);

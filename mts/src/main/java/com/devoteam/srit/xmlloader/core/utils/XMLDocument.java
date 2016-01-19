@@ -24,16 +24,17 @@
 package com.devoteam.srit.xmlloader.core.utils;
 
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
-
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.net.URI;
 import java.rmi.RemoteException;
 import java.util.LinkedList;
+
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,6 +42,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultDocument;
@@ -253,7 +255,7 @@ public class XMLDocument implements Serializable
 
                         public String getEncoding()
                         {
-                            return "UTF-8";
+                            return "ISO-8859-15";
                         }
 
                         public void setEncoding(String encoding)

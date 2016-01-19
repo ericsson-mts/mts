@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -88,6 +89,7 @@ public class ASNToXMLConverter
 	{
 		Document document = null;
 		SAXReader reader = new SAXReader();
+		reader.setEntityResolver(new XMLLoaderEntityResolver());
 		try 
 		{
 			document = reader.read(xmlFileName);

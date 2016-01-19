@@ -195,7 +195,7 @@ public class SipManagerTest {
 	        "Content-Type: application/resource-lists+xml\r\n" +
 	        "Content-Disposition: recipient-list\r\n" +
 	        "\r\n" +
-	        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+	        "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>\r\n" +
 	        "<resource-lists xmlns=\"urn:ietf:params:xml:ns:resource-lists\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" +
 	        "<list>\r\n" +
 	        "<entry uri=\"bob\"/>\r\n" +

@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.smpp;
 
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.smpp.data.SmppAttribute;
 import com.devoteam.srit.xmlloader.smpp.data.SmppChoice;
 import com.devoteam.srit.xmlloader.smpp.data.SmppGroup;

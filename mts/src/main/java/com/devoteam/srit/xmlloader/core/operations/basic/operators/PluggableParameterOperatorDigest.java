@@ -171,11 +171,10 @@ public class PluggableParameterOperatorDigest extends AbstractPluggableParameter
         Mac mac = Mac.getInstance(key.getAlgorithm());
         mac.init(key);
 
-        // Encode the string into bytes using utf-8 and digest it
+        // Encode the string into bytes
         byte[] utf8 = Utils.parseBinaryString(input);
-
+        // performs digest on it
         byte[] digest = mac.doFinal(utf8);
-
         // Convert the digest into a string
         StringBuilder output = new StringBuilder(digest.length * 2);
         for (int i = 0; i < digest.length; i++)

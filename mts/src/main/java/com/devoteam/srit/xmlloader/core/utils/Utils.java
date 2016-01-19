@@ -1616,7 +1616,7 @@ public class Utils
 		int iPosXMLLine = xml.indexOf("<?xml");
 		if (iPosXMLLine < 0)
 		{
-			xml = "<?xml version='1.0' encoding='UTF-8'?>" + xml;
+			xml = "<?xml version='1.0' encoding='ISO-8859-15'?>" + xml;
 		}
 		
 		// remove the namespace because the parser does not support them if there are not declare in the root node
@@ -1628,11 +1628,9 @@ public class Utils
 		// remove doctype information (dtd files for the XML syntax)
 		xml = xml.replaceAll("<!DOCTYPE\\s+\\w+\\s+\\w+\\s+[^>]+>", "");
 		
-		InputStream input = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-		//InputStream input = new ByteArrayInputStream(xml.getBytes());
+		InputStream input = new ByteArrayInputStream(xml.getBytes());
 	    SAXReader reader = new SAXReader(false);
 	    reader.setEntityResolver(new XMLLoaderEntityResolver());
-	    reader.setEncoding("UTF-8");
 	    Document document = reader.read(input);
 	    return document;
 	}

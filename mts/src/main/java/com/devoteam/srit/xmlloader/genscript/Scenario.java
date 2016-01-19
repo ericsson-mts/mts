@@ -122,7 +122,7 @@ public class Scenario {
     public String toXml() throws Exception{
         if(scenarioStr == null){
             scenarioStr = "";
-            scenarioStr += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+System.getProperty("line.separator");
+            scenarioStr += "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>"+System.getProperty("line.separator");
             scenarioStr += "<scenario>"+System.getProperty("line.separator");
             
             // Insertion des listenpoints

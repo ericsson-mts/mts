@@ -34,6 +34,7 @@ import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.AssSourceDiagnostic;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueOC;
 import com.devoteam.srit.xmlloader.sigtran.ap.tcap.DialogueServiceProvider;
@@ -93,6 +94,7 @@ public class XMLToASNParser
     {
         Document document = null;
         SAXReader reader = new SAXReader();
+        reader.setEntityResolver(new XMLLoaderEntityResolver()); 
         try 
         {
             document = reader.read(xmlFileName);

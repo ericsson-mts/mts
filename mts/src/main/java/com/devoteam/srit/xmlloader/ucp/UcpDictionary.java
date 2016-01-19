@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.ucp;
 
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.ucp.data.*;
 
 import java.io.File;

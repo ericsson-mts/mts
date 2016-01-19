@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -225,8 +227,10 @@ public class Param {
 
                 // Création de l'arbre DOM correspondant au message
                 SAXReader reader = new SAXReader();
+                reader.setEntityResolver(new XMLLoaderEntityResolver());
+               
                 try{
-                    Document document = reader.read(new ByteArrayInputStream(text.getBytes("UTF-8")));
+                    Document document = reader.read(new ByteArrayInputStream(text.getBytes("ISO-8859-15")));
                     // Création de l'objet XPATH ) selectionner 
                     XPath xpath = new DefaultXPath(xpathRule);
 

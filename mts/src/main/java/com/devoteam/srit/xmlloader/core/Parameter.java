@@ -195,7 +195,7 @@ public class Parameter {
 		if (iPosXMLLine < 0)
 		{
 			// when java writes string, it is in ISO-8859-nn format
-			xml = "<?xml version='1.0' encoding=\"UTF-8\"?>\n" + xml;
+			xml = "<?xml version='1.0' encoding=\"ISO-8859-15\"?>\n" + xml;
 		}
 		
 		// remove the namespace because the parser does not support them if there are not declare in the root node
@@ -207,10 +207,9 @@ public class Parameter {
 		// remove doctype information (dtd files for the XML syntax)
 		xml = xml.replaceAll("<!DOCTYPE\\s+\\w+\\s+\\w+\\s+[^>]+>", "");
 		
-		InputStream input = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+		InputStream input = new ByteArrayInputStream(xml.getBytes());
 	    SAXReader reader = new SAXReader(false);
 	    reader.setEntityResolver(new XMLLoaderEntityResolver());
-	    reader.setEncoding("UTF-8");
 	    Document document = reader.read(input);
 	    
 	    XPath xpathObject = document.createXPath(xpath);

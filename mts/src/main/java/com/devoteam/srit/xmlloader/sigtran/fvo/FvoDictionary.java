@@ -33,6 +33,7 @@ import org.dom4j.io.SAXReader;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 
 import java.util.LinkedList;
 
@@ -77,6 +78,7 @@ public class FvoDictionary {
      */
     final void parseFile(InputStream stream) throws Exception {
         SAXReader reader = new SAXReader();
+        reader.setEntityResolver(new XMLLoaderEntityResolver());     
         Document document = reader.read(stream);
 
         //DICTIONARY level
