@@ -14,6 +14,8 @@ diameter.RecDER_SendDEA
     <function name="diameter.SendDER_RecDEA">
         <input>
           <parameter name="[function:binInputEAP]" type="binary"/>
+          <parameter name="[function:EAPType]" type="string"/>
+          <parameter name="[function:EAPResult]" type="string"/>
         </input>
 
         <do>
@@ -70,7 +72,8 @@ From 3GPP TS 29.273 V8.3.0 :
       			</sendMessageDIAMETER>
       
       			<!-- attente DEA apres echange MAR/MAA avec HSS -->
-      			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" type="Diameter-EAP:268">
+      			<receiveMessageDIAMETER name="Receive Answer DEA" request="false" 
+                                    type="Diameter-EAP:268.[EAPType]" result="DIAMETER_MULTI_ROUND_AUTH:1001.[EAPResult]">
                 <parameter name="[binOutputEAP]" operation="protocol.setFromMessage" value="avp.EAP-Payload:462.binary"/>
       			</receiveMessageDIAMETER>
             
@@ -82,14 +85,15 @@ From 3GPP TS 29.273 V8.3.0 :
     </function>
 
     <function name="diameter.RecDER_SendDEA">
-        <input>
-          <parameter name="[function:binInputEAP]" type="binary" />        
+        <input>        
+          <parameter name="[function:binInputEAP]" type="binary" />
+          <parameter name="[function:EAPType]" type="string"/>                  
         </input>
 
         <do>
 
     			<!-- réception du DER 268(Identity) extract User-Name et info message  -->
-    			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268" >
+    			<receiveMessageDIAMETER name="Receive Request DER" request="true" type="Diameter-EAP:268.[EAPType]" >
             <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>          
             <parameter name="[lastCommandCode]" operation="protocol.setFromMessage" value="header.command"/>
             <parameter name="[lastApplicationID]" operation="protocol.setFromMessage" value="header.applicationID"/>    

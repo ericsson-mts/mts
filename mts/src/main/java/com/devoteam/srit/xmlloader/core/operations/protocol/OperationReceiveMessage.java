@@ -103,10 +103,12 @@ public class OperationReceiveMessage extends Operation {
         }
         if (type != null) 
         {
+        	type = type.replace(StackFactory.SEP_SUB_INFORMATION, ":");
             addParameterTestTag(rootNode, "string.contains", "message.typeComparison", ":" + type + ":");
         }
         if (result != null) 
         {
+        	result = result.replace(StackFactory.SEP_SUB_INFORMATION, ":");
             addParameterTestTag(rootNode, "string.contains", "message.resultComparison", ":" + result + ":");
         }
         if (probe != null) 
