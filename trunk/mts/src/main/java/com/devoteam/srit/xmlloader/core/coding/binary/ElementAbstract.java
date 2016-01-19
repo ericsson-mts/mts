@@ -689,7 +689,14 @@ public abstract class ElementAbstract implements Cloneable
         elemString.append("<element ");
         if (this.tag != Integer.MIN_VALUE)
         {
-	        elemString.append("tag=\"");
+        	if (!(this instanceof ElementQ931))
+        	{
+        		elemString.append("tag=\"");
+        	}
+        	else
+        	{
+        		elemString.append("identifier=\"");
+        	}
 	    	if (this.label != null)
 	    	{
 	    		elemString.append(this.label + ":");
@@ -712,7 +719,8 @@ public abstract class ElementAbstract implements Cloneable
     	elemString.append(" coding=\"");
    		elemString.append(this.coding);
     	elemString.append("\"");
-    	if (fieldsArray != null)
+    	if (fieldsArray != null && (fields.size() > 1 || 
+    	   (fields.size() == 1 && !(fields.get(0) instanceof BinaryField))))
         {
     		elemString.append(" binary=\"");
             elemString.append(Array.toHexString(fieldsArray));
