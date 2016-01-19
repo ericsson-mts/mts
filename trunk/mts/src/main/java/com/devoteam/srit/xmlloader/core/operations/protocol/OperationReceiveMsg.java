@@ -91,10 +91,12 @@ public class OperationReceiveMsg extends Operation
         }
         if (type != null)
         {
+        	type = type.replace(StackFactory.SEP_SUB_INFORMATION, ":");
             addParameterTestTag(root, "string.contains", "message.typeComparison", ":" + type + ":");
         }        
         if (result != null)
         {
+        	result = result.replace(StackFactory.SEP_SUB_INFORMATION, ":");
             addParameterTestTag(root, "string.contains", "message.resultComparison", ":" + result + ":");
         }
         
