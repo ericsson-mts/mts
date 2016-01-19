@@ -197,14 +197,7 @@
     <test parameter="[Identity(10)]" condition="string.equals" value="[stringAll]"/>
     <parameter name="[IdentityValue10bin]" operation="string.toBinary" value="[Identity(10)]" value2="ISO-8859-15"/>
     <test parameter="[IdentityValue10bin]" condition="binary.equals" value="[binaryAll]"/>    
-                
-    <parameter name="[IdentityOff]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value.offset" value3="binary/dictionary_EAP.xml"/>    
-    <test parameter="[IdentityOff]" condition="number.equals" value="0"/>
-    <parameter name="[IdentityLen]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value.length" value3="binary/dictionary_EAP.xml"/>    
-    <test parameter="[IdentityLen]" condition="list.isEmpty"/>    
-    <parameter name="[IdentityLen]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.AT_IDENTITY:14.field.Value.lengthBit" value3="binary/dictionary_EAP.xml"/>    
-    <test parameter="[IdentityLen]" condition="list.isEmpty"/>    
-    
+                    
     <!-- prepare the EAP data to send -->
     <parameter name="[messageEAP]" operation="set">
 <![CDATA[
