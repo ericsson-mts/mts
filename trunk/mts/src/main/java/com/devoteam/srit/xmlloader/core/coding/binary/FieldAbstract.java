@@ -159,7 +159,6 @@ public abstract class FieldAbstract
         try
         {
         	strVal = this.getValue(array);
-        	strVal = Utils.escapeXMLEntities(strVal);
         }
         catch (Exception e)
         {
@@ -183,10 +182,13 @@ public abstract class FieldAbstract
         	// if there are non printable characters
         	if (!Utils.hasPrintableChar(strVal))
         	{
-        		strVal = Utils.unescapeXMLEntities(strVal);
         		Array arrayVal = new DefaultArray(strVal.getBytes());
         		strVal = Array.toHexString(arrayVal);
         		type = "Binary";
+        	}
+        	else
+        	{
+        		strVal = Utils.escapeXMLEntities(strVal);
         	}
         	elemString.append(strVal);        	
 		    elemString.append("\"");
