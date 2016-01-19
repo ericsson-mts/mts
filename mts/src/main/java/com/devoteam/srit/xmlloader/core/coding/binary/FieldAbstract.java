@@ -316,24 +316,6 @@ public abstract class FieldAbstract
     			var.add(strVal);
     		}
         }
-    	else if (params.length == offset + 1 && (params[offset].equalsIgnoreCase("length"))) 
-        {
-    		if (this.length >= 0)
-    		{
-    			var.add(this.length / 8);
-    		}
-        }
-    	else if (params.length == offset + 1 && (params[offset].equalsIgnoreCase("lengthBit"))) 
-        {
-    		if (this.length >= 0)
-    		{
-    			var.add(this.length);
-    		}
-        }
-    	else if (params.length == offset + 1 && (params[offset].equalsIgnoreCase("offset"))) 
-        {
-    		var.add(this.offset);
-        }
         else
         {
            	Parameter.throwBadPathKeywordException(path);
