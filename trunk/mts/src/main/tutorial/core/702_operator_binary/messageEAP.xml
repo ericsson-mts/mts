@@ -24,13 +24,13 @@
     </element></element>           
 ]]>
 </parameter>
-    <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="binary/dictionary_EAP.xml"/>
     <test parameter="[binInputEAP]" condition="binary.equals" value="0201002e041401020304050607080910111213141516171819206162636465666768696a4a494847464544434241"/>
 
     <parameter name="[binOutputEAP]" operation="set" value="[binInputEAP]"/>
 
     <!-- test binary.elementToXml -->
-    <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binOutputEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binOutputEAP]" value2="binary/dictionary_EAP.xml"/>
     <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
     <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -45,17 +45,17 @@
     <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
 
     <!-- test binary.elementSetFrom -->
-    <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>    
-    <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
-    <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Length]" condition="number.equals" value="46"/>
-    <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>    
+    <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[Type]" condition="string.equals" value="MD5-Challenge:4"/>
-    <parameter name="[MD5-value]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_MD5-Challenge_4.value.field.value" value3="eap/dictionary_EAP.xml"/>    
+    <parameter name="[MD5-value]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_MD5-Challenge_4.value.field.value" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[MD5-value]" condition="binary.equals" value="0102030405060708091011121314151617181920"/>
-    <parameter name="[MD5-name]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_MD5-Challenge_4.name.field.name" value3="eap/dictionary_EAP.xml"/>    
+    <parameter name="[MD5-name]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_MD5-Challenge_4.name.field.name" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[MD5-name]" condition="string.equals" value="abcdefghijJIHGFEDCBA"/>
 
     <!-- test binary.elementFromXml -->
@@ -83,13 +83,13 @@
 </element>
 ]]>
 </parameter>
-    <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[binInputEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="binary/dictionary_EAP.xml"/>
     <test parameter="[binInputEAP]" condition="binary.equals" value="0201002cfe989680b2d05e00303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f"/>
 
     <parameter name="[binOutputEAP]" operation="set" value="[binInputEAP]"/>
 
     <!-- test binary.elementToXml -->
-    <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binOutputEAP]" value2="eap/dictionary_EAP.xml"/>
+    <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binOutputEAP]" value2="binary/dictionary_EAP.xml"/>
     <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
     <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -106,19 +106,19 @@
     <test parameter="[vendorData]" condition="binary.equals" value="303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f"/>
 
     <!-- test binary.elementSetFrom -->
-    <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Code]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Code" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Code]" condition="string.equals" value="Response:2"/>
-    <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Id]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Id" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Id]" condition="number.equals" value="1"/>
-    <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Length]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Length" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Length]" condition="number.equals" value="44"/>
-    <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[Type]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.HeaderEAP.field.Type" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[Type]" condition="string.equals" value="Expanded Types:254"/>
-    <parameter name="[vendorId]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_Expanded Types_254.field.Vendor-Id" value3="eap/dictionary_EAP.xml"/>    
+    <parameter name="[vendorId]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_Expanded Types_254.field.Vendor-Id" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[vendorId]" condition="number.equals" value="10000000"/>    
-    <parameter name="[vendorType]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_Expanded Types_254.field.Vendor-Type" value3="eap/dictionary_EAP.xml"/>
+    <parameter name="[vendorType]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_Expanded Types_254.field.Vendor-Type" value3="binary/dictionary_EAP.xml"/>
     <test parameter="[vendorType]" condition="number.equals" value="3000000000"/>
-    <parameter name="[vendorData]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_Expanded Types_254.field.Vendor-Data" value3="eap/dictionary_EAP.xml"/>    
+    <parameter name="[vendorData]" operation="binary.elementSetFrom" value="[binOutputEAP]" value2="element.Message_Expanded Types_254.field.Vendor-Data" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[vendorData]" condition="binary.equals" value="303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f"/>
                       
 </scenario>
