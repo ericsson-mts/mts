@@ -352,7 +352,9 @@ public class MsgDiameterParser
             	}
             	
             }
-
+            // replace escape XML character
+            value = Utils.unescapeXMLEntities(value);
+            
             // Create the AVP
             if ("IPAddress".equalsIgnoreCase(type) || "IPAddress".equalsIgnoreCase(typeBase))
             {

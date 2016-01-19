@@ -420,9 +420,7 @@ public class MsgDiamCommon extends Msg
      * prints as String an avp and it's sub-avps (recursive)
      */
     private String avpToXml(AVP avp, int indent, String applicationId) throws Exception
-    {
-        String ret = "" ;
-        
+    {       
         // retrieve the vendorId code
         String vendorIdCode = Integer.toString(avp.vendor_id);
 
@@ -443,7 +441,7 @@ public class MsgDiamCommon extends Msg
         // retrieve the base type (using top-parent recursively)
         String typeBase = getAVPTypeBase(typeDico, applicationId);
         
-        ret += Utils.indent(indent) + "<avp";
+        String ret = Utils.indent(indent) + "<avp";
         
         // display the AVP label and code
         long code = avp.code & 0xFFFFFFFFL;
@@ -459,8 +457,17 @@ public class MsgDiamCommon extends Msg
         try
         {
         	String value = getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
+        	// if there are non printable characters
+        	if (!Utils.hasPrintableChar(value))
+        	{
+        		Array arrayVal = new DefaultArray(value.getBytes());
+        		value = Array.toHexString(arrayVal);
+        		typeDico = "Binary";
+        	}
         	if (value != null)
         	{
+        		// replace escape XML character
+        		value = Utils.escapeXMLEntities(value);
         		ret += " value=\"" + value + "\"";
         	}
         }
