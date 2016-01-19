@@ -29,7 +29,7 @@
 			</receiveMessageDIAMETER>
       
       <!-- check the EAP received data -->
-      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="binary/dictionary_EAP.xml"/>
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
       <test parameter="[Code]" condition="string.equals" value="Response:2"/>
       <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -41,15 +41,15 @@
       <parameter name="[Identity]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='Message_Identity_1']/field[@name='Type-Data']/attribute::value"/>
       <test parameter="[Identity]" condition="string.equals" value="0208014460005000@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
                   
-      <parameter name="[code]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
+      <parameter name="[code]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Code" value3="binary/dictionary_EAP.xml"/>
       <test parameter="[Code]" condition="string.equals" value="Response:2"/>
-      <parameter name="[Id]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
+      <parameter name="[Id]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Id" value3="binary/dictionary_EAP.xml"/>
       <test parameter="[Id]" condition="number.equals" value="1"/>
-      <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
+      <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Length" value3="binary/dictionary_EAP.xml"/>
       <test parameter="[Length]" condition="number.equals" value="59"/>
-      <parameter name="[Type]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[Type]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Type" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[Type]" condition="string.equals" value="Identity:1"/>    
-      <parameter name="[Identity]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.Message_Identity_1.field.Type-Data" value3="eap/dictionary_EAP.xml"/>        
+      <parameter name="[Identity]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.Message_Identity_1.field.Type-Data" value3="binary/dictionary_EAP.xml"/>        
       <test parameter="[Identity]" condition="string.equals" value="0208014460005000@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
 
 			<!-- recherche user dans la table -->
@@ -119,7 +119,7 @@
 </element>             
 ]]>
 </parameter>
-      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="binary/dictionary_EAP.xml"/>
       
       <!-- check the EAP data to send -->
       <test parameter="[binaryEAP]" condition="binary.equals" value="010200c01701000001050000027f6f8909616c3ca4c836a02f7642be02050000598451caa6ce0000a52ffc02ec24118b0b050000beafd710332dd3c27033c241bcb070538601000081050000fba14079d7d0e05175eb39c560be666c82190000dbdb27475b908288f989747ff01e9247a4ff1d07cf81da16e220c0a64247f01e314781278cae2683e93f7cd033a9ee2877ccea2d492e244c4dc4657528b8fc8209d7391bd0806b913dfedbb10e050b58a041578708fe8efc760374949320bd26"/>  
@@ -187,7 +187,7 @@
 			</receiveMessageDIAMETER>
 
       <!-- check the EAP received data -->
-      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryEAP]" value2="binary/dictionary_EAP.xml"/>
       <parameter name="[Code]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Code']/attribute::value"/>
       <test parameter="[Code]" condition="string.equals" value="Response:2"/>
       <parameter name="[Id]" operation="string.xpath" value="[xmlEAP]" value2="//element[@label='HeaderEAP']/field[@name='Id']/attribute::value"/>
@@ -209,25 +209,25 @@
       <parameter name="[AT_RES]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RES:3']/field[@name='Value']/attribute::value"/>
       <test parameter="[AT_RES]" condition="binary.equals" value="39bcb97622c4715a"/>
   
-      <parameter name="[code]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Code" value3="eap/dictionary_EAP.xml"/>
+      <parameter name="[code]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Code" value3="binary/dictionary_EAP.xml"/>
       <test parameter="[Code]" condition="string.equals" value="Response:2"/>
-      <parameter name="[Id]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Id" value3="eap/dictionary_EAP.xml"/>
+      <parameter name="[Id]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Id" value3="binary/dictionary_EAP.xml"/>
       <test parameter="[Id]" condition="string.equals" value="2"/>
-      <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Length" value3="eap/dictionary_EAP.xml"/>
+      <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Length" value3="binary/dictionary_EAP.xml"/>
       <test parameter="[Length]" condition="string.equals" value="40"/>
-      <parameter name="[Type]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Type" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[Type]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.HeaderEAP.field.Type" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[Type]" condition="string.equals" value="EAP-AKA:23"/>    
-      <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Subtype" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Subtype" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[EAP_AKA_Subtype]" condition="string.equals" value="AKA-Challenge:1"/>
-      <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Reserved" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[EAP_AKA_Subtype]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.Message_EAP-AKA_23.field.EAP AKA Reserved" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[EAP_AKA_Reserved]" condition="string.equals" value="0"/>
-      <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_MAC:11.field.Reserved" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_MAC:11.field.Reserved" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[Reserved]" condition="number.equals" value="0"/>
-      <parameter name="[AT_MAC]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_MAC:11.field.Value" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[AT_MAC]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_MAC:11.field.Value" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071"/>
-      <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RES:3.field.Length" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RES:3.field.Length" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[Length]" condition="number.equals" value="64"/>
-      <parameter name="[AT_RES]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RES:3:11.field.Value" value3="eap/dictionary_EAP.xml"/>    
+      <parameter name="[AT_RES]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RES:3:11.field.Value" value3="binary/dictionary_EAP.xml"/>    
       <test parameter="[AT_RES]" condition="binary.equals" value="39bcb97622c4715a"/>
 					
       <!-- prepare the EAP data to send -->
@@ -243,7 +243,7 @@
 </element>            
 ]]>
   </parameter>
-      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="eap/dictionary_EAP.xml"/>
+      <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="binary/dictionary_EAP.xml"/>
       
       <!-- check the EAP data to send -->
       <test parameter="[binaryEAP]" condition="binary.equals" value="03010004"/>          
