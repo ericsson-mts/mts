@@ -160,7 +160,7 @@ set ARGS1="../tutorial/genscript/trace_DIAM_Cisco_CSG.pcap"
 set ARGS2="../tutorial/genscript/out/testout.xml"
 rem call genscript.bat %ARGS0% %ARGS1% %ARGS2%
 
-
+rem does not work because of message checking why ?
 set ARGS0="DIAMETER:164.48.219.44:50708" 
 set ARGS1="../tutorial/genscript/trace_DIAM_swm_ok.pcap"
 set ARGS2="../tutorial/genscript/out/testout.xml"
