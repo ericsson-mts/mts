@@ -647,7 +647,14 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Parameter param_2 = assertAndGetParameter(operands, "value2");
                     String dicoFile = param_2.get(i).toString();
             	    Dictionary dico = Dictionary.getInstance(dicoFile.trim());
-                    ElementAbstract newElement = elementDecodeToXml(string1, dico);
+
+                    Parameter param_3 = operands.get("value3");
+                    String elementName = null;
+                    if (param_3 != null)
+                    {
+                    	elementName = param_3.get(i).toString();
+                    }
+                    ElementAbstract newElement = elementDecodeToXml(string1, dico, elementName);
                                         
                     // get the XML data                  
                     String xmlData = newElement.toXml(0);
@@ -664,8 +671,14 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                     Parameter param_3 = assertAndGetParameter(operands, "value3");
                     String dicoFile = param_3.get(i).toString();
                     Dictionary dico = Dictionary.getInstance(dicoFile.trim());
-                                       
-                    ElementAbstract newElement = elementDecodeToXml(string1, dico);
+                             
+                    Parameter param_4 = operands.get("value4");
+                    String elementName = null;
+                    if (param_4 != null)
+                    {
+                    	elementName = param_4.get(i).toString();
+                    }
+                    ElementAbstract newElement = elementDecodeToXml(string1, dico, elementName);
                                         
                     // get the data from element using path        
                     newElement.getParameter(result, params, path, 0, dico);
@@ -1170,12 +1183,21 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
 		return arrayResult;
     }
 
-    public static ElementAbstract elementDecodeToXml(String data, Dictionary dico) throws Exception
+    public static ElementAbstract elementDecodeToXml(String data, Dictionary dico, String elementLabel) throws Exception
     {    
     	Array array = Array.fromHexString(data);
 	    
 	    // get the element from the dictionary and clone it
-	    ElementAbstract elemDico = dico.getElementMessage();
+    	ElementAbstract elemDico = null;
+    	if (elementLabel != null)
+    	{
+    		elemDico = dico.getElementByLabel(elementLabel);
+    	}
+    	else
+    	{
+    		elemDico = dico.getElementMessage();
+    	}
+    	
 	    ElementAbstract newElement = ElementAbstract.buildFactory(elemDico.getCoding()); 
 	    if (elemDico != null)
 		{

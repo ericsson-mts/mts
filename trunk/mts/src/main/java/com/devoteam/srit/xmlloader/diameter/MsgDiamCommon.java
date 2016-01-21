@@ -167,7 +167,7 @@ public class MsgDiamCommon extends Msg
 		ElementAbstract newElement = null;
 		try 
 		{
-			newElement = PluggableParameterOperatorBinary.elementDecodeToXml(data, dico);
+			newElement = PluggableParameterOperatorBinary.elementDecodeToXml(data, dico, null);
 		}
 		catch (Exception e)
 		{
