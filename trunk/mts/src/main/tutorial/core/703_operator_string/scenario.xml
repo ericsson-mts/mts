@@ -289,41 +289,32 @@ ErrorList.list={...}
 	<parameter name="[AT_MAC]" operation="binary.subbinary" value="[MAC20]" value2="0" value3="16"/>  
 	<test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071" />  
 
-  <parameter name="[osname]" operation="system.readproperty" value="os.name"/>            
-  <if>
-    <condition>
-      <test parameter="[osname]" condition="string.matches" value=".*Windows.*"/>
-    </condition>
-    <then>
-
-      <call name="calcul_PRF">
-          <input>
-              <parameter name="[function:AT_IDENTITY]" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
-              <parameter name="[function:IK]" value="ee78ba18d36aeb993acb600a9718305f"/>
-              <parameter name="[function:CK]" value="c16f01e478cdffc371923bf70fbe4205"/>
-              <parameter name="[function:EAPpayloadMAC0]" value="02020028170100000b050000000000000000000000000000000000000303004039bcb97622c4715a"/>
-          </input>
-          <output>
-              <parameter name="[function:MK]"/>        
-              <parameter name="[function:PRF]"/>          
-              <parameter name="[function:K_ENCR]"/>
-              <parameter name="[function:K_AUTH]"/>
-              <parameter name="[function:MSK]"/>
-              <parameter name="[function:EMSK]"/>         
-              <parameter name="[function:AT_MAC]"/>
-          </output>        
-      </call> 
-      <test parameter="[MK]" condition="binary.equals" value="5273151b660ecceac5368ad77c2356b6c440d08d"/>      
-      <test parameter="[PRF]" condition="binary.equals" value="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>      
-      <test parameter="[K_ENCR]" condition="binary.equals" value="432ace6bc3cbbf014a393ed41515ccf3"/>     
-      <test parameter="[K_AUTH]" condition="binary.equals" value="76015283ac829f34f5c40125d38061cf"/>  
-      <test parameter="[MSK]" condition="binary.equals" value="af4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453c" />
-      <test parameter="[EMSK]" condition="binary.equals" value="d733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b" />
-      <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071" />  
-        
-    </then>
-  </if>
-  
+  <call name="calcul_PRF">
+      <input>
+          <parameter name="[function:AT_IDENTITY]" value="0208014469111223@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
+          <parameter name="[function:IK]" value="ee78ba18d36aeb993acb600a9718305f"/>
+          <parameter name="[function:CK]" value="c16f01e478cdffc371923bf70fbe4205"/>
+          <parameter name="[function:EAPpayloadMAC0]" value="02020028170100000b050000000000000000000000000000000000000303004039bcb97622c4715a"/>
+          <parameter name="[function:PRF]" value="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>              
+      </input>
+      <output>
+          <parameter name="[function:MK]"/>        
+          <parameter name="[function:PRF]"/>          
+          <parameter name="[function:K_ENCR]"/>
+          <parameter name="[function:K_AUTH]"/>
+          <parameter name="[function:MSK]"/>
+          <parameter name="[function:EMSK]"/>         
+          <parameter name="[function:AT_MAC]"/>
+      </output>        
+  </call> 
+  <test parameter="[MK]" condition="binary.equals" value="5273151b660ecceac5368ad77c2356b6c440d08d"/>      
+  <test parameter="[PRF]" condition="binary.equals" value="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>      
+  <test parameter="[K_ENCR]" condition="binary.equals" value="432ace6bc3cbbf014a393ed41515ccf3"/>     
+  <test parameter="[K_AUTH]" condition="binary.equals" value="76015283ac829f34f5c40125d38061cf"/>  
+  <test parameter="[MSK]" condition="binary.equals" value="af4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453c" />
+  <test parameter="[EMSK]" condition="binary.equals" value="d733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b" />
+  <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071" />  
+          
   <!-- payload from Diameter-EAP-Answer(268)_AKA-Challenge(1) Frame #7
        bernard request 2 -->
   <parameter name="[strIdentity]" operation="set" value="0208044460005000@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
@@ -425,6 +416,34 @@ ErrorList.list={...}
          
     </then>
   </if>
+
+  <!-- payload from Diameter-EAP-Answer(268)_AKA-Challenge(1) Frame #9
+     on C:/Projets/PrestaOrange2/doc_thierry_lhelias/trace_SWm_SWx_S6b_091215_1528_GS6_SIM1387.pcap network capture -->
+  <call name="calcul_PRF">
+      <input>
+          <parameter name="[function:AT_IDENTITY]" value="0208014469111387@nai.epc.mnc001.mcc208.3gppnetwork.org"/>
+          <parameter name="[function:IK]" value="74c9d74a1aff2764f16d38cbffe23092"/>
+          <parameter name="[function:CK]" value="a13a53c43652af2da77decd1279ae987"/>
+          <parameter name="[function:EAPpayloadMAC0]" value="010200c017010000010500009e8939e84e017b31b0b8695c1c26031402050000a0f408aa24ac0000c98c4e44152479cb0b050000000000000000000000000000000000008601000081050000c4877d2983446c5d12a5583b01484fea82190000653e089c53fd97df806b1582622ffb27dcf66ae44b07fbe974f505c79295eeb4a558423e64bab41c97950dd132bcd3dd9133b38d6fc99708fb55df280cb4fc91ab91a3c8c354a3f516414238c881362913e20f8ccb964b4d648c2592188ca154"/>
+          <parameter name="[function:PRF]" value="A9D86CACFC5BE22D5CD61BE431A2DF0A84A41C621F8F5EF8EC90A15D9D78A5FB8DD3116C69B40CAC8BD92656BAAF3B5DDFD8B2D915B754F110F3CD590E05C12FA977DE0A0858BC319999AC40C6D76297E4E7502090FB6A171F7392FFF621EE95C03B8FB06BD3E1D6429762C9D97CE2E50BB4EA2A272806FA46FEAA78FB3ED5A3D1383E16B1CFED6DC7F101DCB406C92B7E2DB200066F2B84F6A4C3ED63D94007"/>              
+      </input>
+      <output>
+          <parameter name="[function:MK]"/>        
+          <parameter name="[function:PRF]"/>          
+          <parameter name="[function:K_ENCR]"/>
+          <parameter name="[function:K_AUTH]"/>
+          <parameter name="[function:MSK]"/>
+          <parameter name="[function:EMSK]"/>         
+          <parameter name="[function:AT_MAC]"/>
+      </output>        
+  </call> 
+  <test parameter="[MK]" condition="binary.equals" value="7DFFA580175F0DAD4305EF2BD24DAC73F7F198E3"/>      
+  <test parameter="[PRF]" condition="binary.equals" value="A9D86CACFC5BE22D5CD61BE431A2DF0A84A41C621F8F5EF8EC90A15D9D78A5FB8DD3116C69B40CAC8BD92656BAAF3B5DDFD8B2D915B754F110F3CD590E05C12FA977DE0A0858BC319999AC40C6D76297E4E7502090FB6A171F7392FFF621EE95C03B8FB06BD3E1D6429762C9D97CE2E50BB4EA2A272806FA46FEAA78FB3ED5A3D1383E16B1CFED6DC7F101DCB406C92B7E2DB200066F2B84F6A4C3ED63D94007"/>      
+  <test parameter="[K_ENCR]" condition="binary.equals" value="A9D86CACFC5BE22D5CD61BE431A2DF0A"/>     
+  <test parameter="[K_AUTH]" condition="binary.equals" value="84A41C621F8F5EF8EC90A15D9D78A5FB"/>  
+  <test parameter="[MSK]" condition="binary.equals" value="8DD3116C69B40CAC8BD92656BAAF3B5DDFD8B2D915B754F110F3CD590E05C12FA977DE0A0858BC319999AC40C6D76297E4E7502090FB6A171F7392FFF621EE95" />
+  <test parameter="[EMSK]" condition="binary.equals" value="C03B8FB06BD3E1D6429762C9D97CE2E50BB4EA2A272806FA46FEAA78FB3ED5A3D1383E16B1CFED6DC7F101DCB406C92B7E2DB200066F2B84F6A4C3ED63D94007" />
+  <test parameter="[AT_MAC]" condition="binary.equals" value="0BF485513A6EA13B309E6FE6F89BB1EB" />  
           
   <parameter name="[data]" operation="set" value="00" />
   <!--parameter name="[data]" operation="set" value="96c50e44ccf8c28ee4ede037dc08f8e555194e56" /-->

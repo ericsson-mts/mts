@@ -9,6 +9,7 @@
             <parameter name="[function:IK]" type="binary"/>
             <parameter name="[function:CK]" type="binary"/>
             <parameter name="[function:EAPpayloadMAC0]" type="binary"/>
+            <parameter name="[function:PRF]" type="binary" default="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>
         </input>
 
         <do>
@@ -29,9 +30,6 @@
                 <parameter name="[resultPRF]" operation="system.command" value="./prng/prf [MK]"/>	
                 <parameter name="[function:PRF]" operation="set" value="[resultPRF.standardOut]"/>              
               </then>
-              <else>
-                <parameter name="[function:PRF]" operation="set" value="432ace6bc3cbbf014a393ed41515ccf376015283ac829f34f5c40125d38061cfaf4935409d6656d163a3d315fffa471bb74e800a37572050d51a8ebabba192204cffa3ed3391fcb996faf655c6bb152e196893f117d1b56a688a756281e4453cd733416851d2c3eb26daa1654c77cd9fe52147a36a407d8399df365d441e5430755e759c4b5f0094ced7d345d79fede5ad03dca0343ff7021e7e000b02a55e9b"/>
-              </else>
             </if>
             
             <!-- cut the PRF result -->            
