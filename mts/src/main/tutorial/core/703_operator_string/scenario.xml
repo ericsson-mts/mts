@@ -417,7 +417,7 @@ ErrorList.list={...}
     </then>
   </if>
 
-  <!-- payload from Diameter-EAP-Answer(268)_AKA-Challenge(1) Frame #9
+  <!-- payload from Diameter-EAP-Answer(268)_AKA-Challenge(1) Frame #4
      on C:/Projets/PrestaOrange2/doc_thierry_lhelias/trace_SWm_SWx_S6b_091215_1528_GS6_SIM1387.pcap network capture -->
   <call name="calcul_PRF">
       <input>
@@ -445,6 +445,54 @@ ErrorList.list={...}
   <test parameter="[EMSK]" condition="binary.equals" value="C03B8FB06BD3E1D6429762C9D97CE2E50BB4EA2A272806FA46FEAA78FB3ED5A3D1383E16B1CFED6DC7F101DCB406C92B7E2DB200066F2B84F6A4C3ED63D94007" />
   <test parameter="[AT_MAC]" condition="binary.equals" value="0BF485513A6EA13B309E6FE6F89BB1EB" />  
           
+  <parameter name="[AT_ENCR_DATA]" operation="set" value="653e089c53fd97df806b1582622ffb27dcf66ae44b07fbe974f505c79295eeb4a558423e64bab41c97950dd132bcd3dd9133b38d6fc99708fb55df280cb4fc91ab91a3c8c354a3f516414238c881362913e20f8ccb964b4d648c2592188ca154"/>
+  <parameter name="[AT_IV]" operation="set" value="c4877d2983446c5d12a5583b01484fea"/>
+  <parameter name="[MSG_Decoded]"  operation="binary.decrypt" value="[AT_ENCR_DATA]" value2="AES/CBC/NoPadding" value3="[K_ENCR]" value4="[AT_IV]"/>          
+  <test parameter="[MSG_Decoded]" condition="binary.equals" value="8407001732705674494F30756747774E485567766438725A48674B008511003D34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267000000" />
+
+  <parameter name="[index]" operation="set" value="0"/>  
+  <parameter name="[AT_NEXT_PSEUDONYM__Code]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="1"/>  
+  <test parameter="[AT_NEXT_PSEUDONYM__Code]" condition="binary.equals" value="84" />
+  <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>  
+  <parameter name="[AT_NEXT_PSEUDONYM__LengthWord]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="1"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__LengthWord]" condition="binary.equals" value="07" />
+  <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+  <parameter name="[AT_NEXT_PSEUDONYM__Length]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="2"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__Length]" condition="binary.equals" value="0017" />
+  <parameter name="[lengthWord]" operation="binary.toNumber" value="[AT_NEXT_PSEUDONYM__LengthWord]"/>
+  <parameter name="[lengthWord]" operation="number.substract" value="[lengthWord]" value2="1"/>  
+  <parameter name="[lengthByte]" operation="number.multiply" value="[lengthWord]" value2="4"/>  
+  <parameter name="[index]" operation="number.add" value="[index]" value2="2"/>  
+  <parameter name="[AT_NEXT_PSEUDONYM__ValuePadding]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[lengthByte]"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__ValuePadding]" condition="binary.equals" value="32705674494F30756747774E485567766438725A48674B00" />
+  <parameter name="[length]" operation="binary.toNumber" value="[AT_NEXT_PSEUDONYM__Length]"/>
+  <parameter name="[AT_NEXT_PSEUDONYM__Value]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[length]"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__Value]" condition="binary.equals" value="32705674494F30756747774E485567766438725A48674B" />
+  <parameter name="[AT_NEXT_PSEUDONYM__Padding]"  operation="binary.subbinary" value="[AT_NEXT_PSEUDONYM__ValuePadding]" value2="[length]"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__Padding]" condition="binary.equals" value="00" />
+
+  <parameter name="[lengthByte]" operation="number.add" value="[lengthByte]" value2="4"/>
+  <parameter name="[index]" operation="set" value="[lengthByte]"/> 
+  <parameter name="[AT_NEXT_REAUTH__Code]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="1"/>  
+  <test parameter="[AT_NEXT_REAUTH__Code]" condition="binary.equals" value="85" />
+  <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>  
+  <parameter name="[AT_NEXT_REAUTH__LengthWord]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="1"/>
+  <test parameter="[AT_NEXT_REAUTH__LengthWord]" condition="binary.equals" value="11" />
+  <parameter name="[index]" operation="number.add" value="[index]" value2="1"/>
+  <parameter name="[AT_NEXT_REAUTH__Length]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="2"/>
+  <test parameter="[AT_NEXT_REAUTH__Length]" condition="binary.equals" value="003d" />
+  <parameter name="[lengthWord]" operation="binary.toNumber" value="[AT_NEXT_REAUTH__LengthWord]"/>
+  <parameter name="[lengthWord]" operation="number.substract" value="[lengthWord]" value2="1"/>  
+  <parameter name="[lengthByte]" operation="number.multiply" value="[lengthWord]" value2="4"/>  
+  <parameter name="[index]" operation="number.add" value="[index]" value2="2"/>  
+  <parameter name="[AT_NEXT_REAUTH__ValuePadding]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[lengthByte]"/>
+  <test parameter="[AT_NEXT_REAUTH__ValuePadding]" condition="binary.equals" value="34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267000000" />
+  <parameter name="[length]" operation="binary.toNumber" value="[AT_NEXT_REAUTH__Length]"/>
+  <parameter name="[AT_NEXT_REAUTH__Value]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[length]"/>
+  <test parameter="[AT_NEXT_REAUTH__Value]" condition="binary.equals" value="34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267" />
+  <parameter name="[AT_NEXT_REAUTH__Padding]"  operation="binary.subbinary" value="[AT_NEXT_REAUTH__ValuePadding]" value2="[length]"/>
+  <test parameter="[AT_NEXT_REAUTH__Padding]" condition="binary.equals" value="000000" />
+        
   <parameter name="[data]" operation="set" value="00" />
   <!--parameter name="[data]" operation="set" value="96c50e44ccf8c28ee4ede037dc08f8e555194e56" /-->
   <parameter name="[zeros44]" operation="set" value="00" value2="44"/>
