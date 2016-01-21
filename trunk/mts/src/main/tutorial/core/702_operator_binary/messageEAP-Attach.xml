@@ -74,8 +74,8 @@
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
         <field name="Value" value="027f6f8909616c3ca4c836a02f7642be" type="Binary" description=""/>
     </element>
-    <!-- Attribute AT_AUTH:2 => IETF RFC 4187 chapter 10.7 page 56 -->
-    <element tag="AT_AUTH:2" coding="EAP" description="">
+    <!-- Attribute AT_AUTN:2 => IETF RFC 4187 chapter 10.7 page 56 -->
+    <element tag="AT_AUTN:2" coding="EAP" description="">
         <field name="Reserved" value="0" type="Integer" length="2" description=""/>
         <field name="Value" value="598451caa6ce0000a52ffc02ec24118b" type="Binary" description=""/>
     </element>
@@ -126,10 +126,10 @@
     <parameter name="[AT_RAND]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RAND:1']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_RAND]" condition="binary.equals" value="027f6f8909616c3ca4c836a02f7642be"/>    
 
-    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_AUTH:2']/field[@name='Reserved']/attribute::value"/>
+    <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_AUTN:2']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[AT_AUTH]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_AUTH:2']/field[@name='Value']/attribute::value"/>
-    <test parameter="[AT_AUTH]" condition="binary.equals" value="598451caa6ce0000a52ffc02ec24118b"/>    
+    <parameter name="[AT_AUTN]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_AUTN:2']/field[@name='Value']/attribute::value"/>
+    <test parameter="[AT_AUTN]" condition="binary.equals" value="598451caa6ce0000a52ffc02ec24118b"/>    
 
     <parameter name="[Reserved]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_MAC:11']/field[@name='Reserved']/attribute::value"/>
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
@@ -170,10 +170,10 @@
     <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RAND:1.field.Value" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[AT_RAND]" condition="binary.equals" value="027f6f8909616c3ca4c836a02f7642be"/>    
 
-    <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_AUTH:2.field.Reserved" value3="binary/dictionary_EAP.xml"/>    
+    <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_AUTN:2.field.Reserved" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
-    <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_AUTH:2.field.Reserved" value3="binary/dictionary_EAP.xml"/>    
-    <test parameter="[AT_AUTH]" condition="binary.equals" value="598451caa6ce0000a52ffc02ec24118b"/>    
+    <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_AUTN:2.field.Reserved" value3="binary/dictionary_EAP.xml"/>    
+    <test parameter="[AT_AUTN]" condition="binary.equals" value="598451caa6ce0000a52ffc02ec24118b"/>    
 
     <parameter name="[Reserved]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_MAC:11.field.Reserved" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[Reserved]" condition="number.equals" value="0"/>
@@ -211,7 +211,7 @@
       <field name="Reserved" value="0" type="Integer" length="2"/>
       <field name="Value" value="027f6f8909616c3ca4c836a02f7642be" type="Binary" length="16"/>
    </element>
-   <element tag="AT_AUTH:2" coding="EAP" value="0000598451caa6ce0000a52ffc02ec24118b">
+   <element tag="AT_AUTN:2" coding="EAP" value="0000598451caa6ce0000a52ffc02ec24118b">
       <field name="Reserved" value="0" type="Integer" length="2"/>
       <field name="Value" value="598451caa6ce0000a52ffc02ec24118b" type="Binary" length="16"/>
    </element>
