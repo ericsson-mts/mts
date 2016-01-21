@@ -59,16 +59,12 @@ public class ElementEAP extends ElementAbstract
             Array data = array.subArray(2, length - 2);
             
             // remove padding data if the last field is a type of String
+            int lengthPadding = 0;
             if (!this.fields.isEmpty() && this.fields.get(this.fields.size() - 1) instanceof StringField)
             {
-	            int lengthPadding = ElementEAP.removePaddingBytes(data);
-	            length = length - lengthPadding;
+	            lengthPadding = ElementEAP.removePaddingBytes(data);
             }
-            if (length > data.length)
-            {
-            	//length = data.length;
-            }
-            Array dataArray = data.subArray(0, length - 2);
+            Array dataArray = data.subArray(0, length - lengthPadding - 2);
 
             decodeFieldsTagElementsFromArray(dataArray, dictionary);            
             return length;

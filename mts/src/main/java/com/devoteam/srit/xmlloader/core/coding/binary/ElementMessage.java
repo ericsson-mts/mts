@@ -49,51 +49,44 @@ public class ElementMessage extends ElementAbstract
     
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
-	{
-		
-		if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
-        {						
-        	// decode the message for not tag elements
-			ElementAbstract elementHeader = this.getElement(0);
-			int currentLength = 0;
-			if (elementHeader != null)
-			{
-	        	currentLength = elementHeader.decodeFromArray(array, dictionary);
-	        	String key = "Message";
-	        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
-	        	if (fieldType != null && fieldType.offset / 8 < array.length)
-	        	{	  
-	        		String typeValue = fieldType.getValue(array);
-	        		typeValue = typeValue.replace(":", "_");
-	        		key += "_" + typeValue;
-	        	}
-				ElementAbstract elementMessage = dictionary.getElementByLabel(key);
-				if (elementMessage != null)
-				{
-					elementMessage.setLabel(key);
-					Array data = array.subArray(currentLength);
-					currentLength += elementMessage.decodeFromArray(data, dictionary);
-					this.elements.add(elementMessage);
-				}
-				else
-				{
-					currentLength = decodeNotTagElementsFromArray(array, dictionary);
-				}
-			}
-        	if (array.length > currentLength)
-        	{
-            	// decode the message for tag elements
-	            Array data = array.subArray(currentLength);
-		        this.subelementsArray = new SupArray();
-		    	this.subelementsArray.addFirst(data);
-		    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
-		    	this.elements.addAll(elementsRead);
+	{		
+    	// decode the message for not tag elements
+		ElementAbstract elementHeader = this.getElement(0);
+		int currentLength = 0;
+		if (elementHeader != null)
+		{
+        	currentLength = elementHeader.decodeFromArray(array, dictionary);
+        	String key = "Message";
+        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
+        	if (fieldType != null && fieldType.offset / 8 < array.length)
+        	{	  
+        		String typeValue = fieldType.getValue(array);
+        		typeValue = typeValue.replace(":", "_");
+        		key += "_" + typeValue;
         	}
-            return array.length;
-	    }
-        
-        return 0;
-        
+			ElementAbstract elementMessage = dictionary.getElementByLabel(key);
+			if (elementMessage != null)
+			{
+				elementMessage.setLabel(key);
+				Array data = array.subArray(currentLength);
+				currentLength += elementMessage.decodeFromArray(data, dictionary);
+				this.elements.add(elementMessage);
+			}
+			else
+			{
+				currentLength = decodeNotTagElementsFromArray(array, dictionary);
+			}
+		}
+    	if (array.length > currentLength)
+    	{
+        	// decode the message for tag elements
+            Array data = array.subArray(currentLength);
+	        this.subelementsArray = new SupArray();
+	    	this.subelementsArray.addFirst(data);
+	    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
+	    	this.elements.addAll(elementsRead);
+    	}
+        return array.length;        
     }
 
 	@Override    
@@ -103,23 +96,20 @@ public class ElementMessage extends ElementAbstract
 		this.subelementsArray = super.encodeToArray();
         
         SupArray sup = new SupArray();
-        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
-        {
-        	int length = this.fieldsArray.length + this.subelementsArray.length;
-        	ElementAbstract elementHeader = getElement(0);
-        	FieldAbstract fieldLength = elementHeader.getFieldsByName("Length");
-        	if (fieldLength == null)
-        	{
-        		fieldLength = elementHeader.getFieldsByName("length");
-        	}
-        	if (fieldLength != null)
-        	{
-        		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);
-        	}
-		    sup.addLast(this.fieldsArray);
-		    sup.addLast(this.subelementsArray);
-        }
-        
+    	int length = this.fieldsArray.length + this.subelementsArray.length;
+    	ElementAbstract elementHeader = getElement(0);
+    	FieldAbstract fieldLength = elementHeader.getFieldsByName("Length");
+    	if (fieldLength == null)
+    	{
+    		fieldLength = elementHeader.getFieldsByName("length");
+    	}
+    	if (fieldLength != null)
+    	{
+    		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);
+    	}
+	    sup.addLast(this.fieldsArray);
+	    sup.addLast(this.subelementsArray);
+	    
         return sup;
     }
 
