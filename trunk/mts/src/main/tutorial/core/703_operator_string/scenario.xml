@@ -445,6 +445,8 @@ ErrorList.list={...}
   <test parameter="[EMSK]" condition="binary.equals" value="C03B8FB06BD3E1D6429762C9D97CE2E50BB4EA2A272806FA46FEAA78FB3ED5A3D1383E16B1CFED6DC7F101DCB406C92B7E2DB200066F2B84F6A4C3ED63D94007" />
   <test parameter="[AT_MAC]" condition="binary.equals" value="0BF485513A6EA13B309E6FE6F89BB1EB" />  
           
+          
+  <!-- decoding of the AT_ENCR_DATA attribute -->
   <parameter name="[AT_ENCR_DATA]" operation="set" value="653e089c53fd97df806b1582622ffb27dcf66ae44b07fbe974f505c79295eeb4a558423e64bab41c97950dd132bcd3dd9133b38d6fc99708fb55df280cb4fc91ab91a3c8c354a3f516414238c881362913e20f8ccb964b4d648c2592188ca154"/>
   <parameter name="[AT_IV]" operation="set" value="c4877d2983446c5d12a5583b01484fea"/>
   <parameter name="[MSG_Decoded]"  operation="binary.decrypt" value="[AT_ENCR_DATA]" value2="AES/CBC/NoPadding" value3="[K_ENCR]" value4="[AT_IV]"/>          
@@ -466,8 +468,10 @@ ErrorList.list={...}
   <parameter name="[AT_NEXT_PSEUDONYM__ValuePadding]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[lengthByte]"/>
   <test parameter="[AT_NEXT_PSEUDONYM__ValuePadding]" condition="binary.equals" value="32705674494F30756747774E485567766438725A48674B00" />
   <parameter name="[length]" operation="binary.toNumber" value="[AT_NEXT_PSEUDONYM__Length]"/>
-  <parameter name="[AT_NEXT_PSEUDONYM__Value]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[length]"/>
-  <test parameter="[AT_NEXT_PSEUDONYM__Value]" condition="binary.equals" value="32705674494F30756747774E485567766438725A48674B" />
+  <parameter name="[AT_NEXT_PSEUDONYM__Binary]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[length]"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__Binary]" condition="binary.equals" value="32705674494F30756747774E485567766438725A48674B" />
+  <parameter name="[AT_NEXT_PSEUDONYM__String]"  operation="binary.toString" value="[AT_NEXT_PSEUDONYM__Binary]"/>
+  <test parameter="[AT_NEXT_PSEUDONYM__String]" condition="string.equals" value="2pVtIO0ugGwNHUgvd8rZHgK" />  
   <parameter name="[AT_NEXT_PSEUDONYM__Padding]"  operation="binary.subbinary" value="[AT_NEXT_PSEUDONYM__ValuePadding]" value2="[length]"/>
   <test parameter="[AT_NEXT_PSEUDONYM__Padding]" condition="binary.equals" value="00" />
 
@@ -487,12 +491,35 @@ ErrorList.list={...}
   <parameter name="[index]" operation="number.add" value="[index]" value2="2"/>  
   <parameter name="[AT_NEXT_REAUTH__ValuePadding]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[lengthByte]"/>
   <test parameter="[AT_NEXT_REAUTH__ValuePadding]" condition="binary.equals" value="34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267000000" />
-  <parameter name="[length]" operation="binary.toNumber" value="[AT_NEXT_REAUTH__Length]"/>
-  <parameter name="[AT_NEXT_REAUTH__Value]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[length]"/>
-  <test parameter="[AT_NEXT_REAUTH__Value]" condition="binary.equals" value="34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267" />
+  <parameter name="[length]" operation="binary.toNumber" value="[AT_NEXT_REAUTH__Length]"/>  
+  <parameter name="[AT_NEXT_REAUTH__Binary]"  operation="binary.subbinary" value="[MSG_Decoded]" value2="[index]" value3="[length]"/>
+  <test parameter="[AT_NEXT_REAUTH__Binary]" condition="binary.equals" value="34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267" />
+  <parameter name="[AT_NEXT_REAUTH__String]"  operation="binary.toString" value="[AT_NEXT_REAUTH__Binary]"/>
+  <test parameter="[AT_NEXT_REAUTH__String]" condition="string.equals" value="4rZZO3dQa/mMZCZ8hZusNGG@nai.epc.mnc001.mcc208.3gppnetwork.org" />    
   <parameter name="[AT_NEXT_REAUTH__Padding]"  operation="binary.subbinary" value="[AT_NEXT_REAUTH__ValuePadding]" value2="[length]"/>
   <test parameter="[AT_NEXT_REAUTH__Padding]" condition="binary.equals" value="000000" />
         
+  <!-- encoding of the AT_ENCR_DATA attribute -->
+  <parameter name="[messageEAP]" operation="set">
+<![CDATA[
+<element label="MessageEAP" coding="Message" value="" description="">
+    <!-- Attribute AT_NEXT_PSEUDONYM:132 => IETF RFC 4187 chapter 10.10 page 57 -->
+    <element tag="AT_NEXT_PSEUDONYM:132" coding="EAPLength" description="">
+        <field name="Value" value="[AT_NEXT_PSEUDONYM__String]" type="String" description=""/>
+    </element>
+    <!-- Attribute AT_NEXT_REAUTH_ID:133 => IETF RFC 4187 chapter 10.11 page 58 -->
+    <element tag="AT_NEXT_REAUTH_ID:133" coding="EAPLength" description="">
+        <field name="Value" value="[AT_NEXT_REAUTH__String]" type="String" description=""/>
+    </element>
+</element>           
+]]>
+</parameter>
+  <parameter name="[binaryEAP]" operation="binary.elementFromXml" value="[messageEAP]" value2="binary/dictionary_EAP.xml"/>
+  <test parameter="[binaryEAP]" condition="binary.equals" value="8407001732705674494F30756747774E485567766438725A48674B008511003D34725A5A4F336451612F6D4D5A435A38685A75734E4747406E61692E6570632E6D6E633030312E6D63633230382E336770706E6574776F726B2E6F7267000000"/>
+        
+  <parameter name="[MSG_Encoded]"  operation="binary.encrypt" value="[binaryEAP]" value2="AES/CBC/NoPadding" value3="[K_ENCR]" value4="[AT_IV]"/>          
+  <test parameter="[MSG_Encoded]" condition="binary.equals" value="[AT_ENCR_DATA]" />
+                  
   <parameter name="[data]" operation="set" value="00" />
   <!--parameter name="[data]" operation="set" value="96c50e44ccf8c28ee4ede037dc08f8e555194e56" /-->
   <parameter name="[zeros44]" operation="set" value="00" value2="44"/>

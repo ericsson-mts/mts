@@ -112,7 +112,10 @@ public class ElementMessage extends ElementAbstract
         	{
         		fieldLength = elementHeader.getFieldsByName("length");
         	}
-        	fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);        			  
+        	if (fieldLength != null)
+        	{
+        		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);
+        	}
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
         }
