@@ -60,11 +60,8 @@ public class StackH225cs extends Stack
         super();
 
         // initialise dictionary
-        XMLDoc xml = new XMLDoc();
-        xml.setXMLFile(new URI("../conf/sigtran/q931.xml"));
-        xml.parse();
-        Element root = xml.getDocument().getRootElement();
-        dictionary = new Dictionary(root, "Q931");
+        String file = "../conf/sigtran/q931.xml";
+        this.dictionary = new Dictionary(file);
     }
 
     /** 
