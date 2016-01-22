@@ -51,9 +51,9 @@ public class ElementValue extends ElementAbstract
     }
 
 	@Override    
-    public SupArray encodeToArray() throws Exception
+    public SupArray encodeToArray(Dictionary dictionary) throws Exception
 	{
-		this.subelementsArray = super.encodeToArray();
+		this.subelementsArray = super.encodeToArray(dictionary);
 
         SupArray sup = new SupArray();
 	    sup.addLast(this.fieldsArray);

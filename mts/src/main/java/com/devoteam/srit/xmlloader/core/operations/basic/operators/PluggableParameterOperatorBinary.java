@@ -638,7 +638,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         	        newElement.parseFromXML(xmlRoot, dico, elemDico, false);
         	                    	    
             	    // encode the element
-                	result.add(Array.toHexString(newElement.encodeToArray()));
+                	result.add(Array.toHexString(newElement.encodeToArray(dico)));
                 }
                 else if (name.equalsIgnoreCase(NAME_BIN_ELEMENT_TOXML))
                 {

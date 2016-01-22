@@ -91,16 +91,16 @@ public class ElementMessage extends ElementAbstract
     }
 
 	@Override    
-    public SupArray encodeToArray() throws Exception
+    public SupArray encodeToArray(Dictionary dictionary) throws Exception
 	{
 		// encode the sub-element
-		this.subelementsArray = super.encodeToArray();
+		this.subelementsArray = super.encodeToArray(dictionary);
         
         SupArray sup = new SupArray();
     	int length = this.fieldsArray.length + this.subelementsArray.length;
     	ElementAbstract elementHeader = getElement(0);
-    	//String fieldNameForLength = dictionary.getFieldNameForLength();
-    	FieldAbstract fieldLength = elementHeader.getFieldsByName("Length");
+    	String fieldNameForLength = dictionary.getFieldNameForLength();
+    	FieldAbstract fieldLength = elementHeader.getFieldsByName(fieldNameForLength);
     	if (fieldLength != null)
     	{
     		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);

@@ -33,10 +33,10 @@ public class ElementTL1V extends ElementAbstract {
     }
 
 	@Override
-    public SupArray encodeToArray() throws Exception 
+    public SupArray encodeToArray(Dictionary dictionary) throws Exception 
 	{
 		// encode the sub-element
-		this.subelementsArray = super.encodeToArray();
+		this.subelementsArray = super.encodeToArray(dictionary);
 		
         SupArray sup = new SupArray();
         Integer08Array idArray = new Integer08Array(this.tag);
