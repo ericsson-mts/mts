@@ -50,7 +50,10 @@ public class Dictionary
 	
     private String _layer;
     
-    private ElementAbstract elementMessage = null;
+    // data for generic element/field structure
+    private ElementAbstract elementForMessage = null;
+    private String fieldNameForLength = null;
+    private String fieldNameForType = null;
 	
     private Map<String,ElementAbstract> elementsMapByLabel = new HashMap<String, ElementAbstract>();
     private Map<Integer,ElementAbstract> elementsMapByTag = new HashMap<Integer, ElementAbstract>();
@@ -124,10 +127,22 @@ public class Dictionary
             elemInfo.parseFromXML(elem, this, null, true);
             
             addElement(elemInfo);
+                        
             if (i == 0)
             {
-            	this.elementMessage = elemInfo;
-            }
+            	// data for generic element/field structure
+            	this.elementForMessage = elemInfo;
+            	FieldAbstract fieldForLength = elemInfo.getFieldByDescriptionKeyword("length");
+            	if (fieldForLength != null)
+            	{
+            		this.fieldNameForLength = fieldForLength.name;
+            	}
+            	FieldAbstract fieldForType = elemInfo.getFieldByDescriptionKeyword("type");
+            	if (fieldForType != null)
+            	{
+            		this.fieldNameForType = fieldForType.name;
+            	}
+            }            
             i++;
         }
     }
@@ -257,9 +272,20 @@ public class Dictionary
     	return null;
     }
 
-	public ElementAbstract getElementMessage() 
+
+	public ElementAbstract getElementForMessage() 
 	{
-		return elementMessage;
+		return elementForMessage;
+	}
+
+	public String getFieldNameForLength() 
+	{
+		return fieldNameForLength;
+	}
+
+	public String getFieldNameForType() 
+	{
+		return fieldNameForType;
 	}
 
 }

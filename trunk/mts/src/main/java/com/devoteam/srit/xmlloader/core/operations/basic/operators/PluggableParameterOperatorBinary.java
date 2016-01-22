@@ -1195,7 +1195,7 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     	}
     	else
     	{
-    		elemDico = dico.getElementMessage();
+    		elemDico = dico.getElementForMessage();
     	}
     	
 	    ElementAbstract newElement = ElementAbstract.buildFactory(elemDico.getCoding()); 
