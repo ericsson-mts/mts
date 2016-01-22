@@ -359,7 +359,7 @@ public class XMLToASNParser
     		//elementClone.copyToClone(elementDico);
     		ElementAbstract elmt = new ElementValue();
         	elmt.parseFromXML(element, message.dictionary, elementDico, false);
-        	Array array = elmt.encodeToArray();
+        	Array array = elmt.encodeToArray(message.dictionary);
         	if (array.length > 0)
         	{
         		return array.getBytes();

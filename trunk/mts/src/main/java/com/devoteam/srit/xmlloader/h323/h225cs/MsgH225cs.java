@@ -100,7 +100,7 @@ public class MsgH225cs extends Msg {
     	SupArray arr = null;
        try
        {
-    	   List<ElementAbstract> elements_asn1 = msgQ931.getElementsFromTag("126");
+    	   //List<ElementAbstract> elements_asn1 = msgQ931.getElementsFromTag("126");
 	       arr = new SupArray();
 	       TPKTPacket tpkt = new TPKTPacket(msgQ931.getLength() + 4);
 	       arr.addLast(tpkt.getValue());

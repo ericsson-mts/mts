@@ -389,7 +389,7 @@ public abstract class ElementAbstract implements Cloneable
 		while (iterF.hasNext())
 		{
 			FieldAbstract field = (FieldAbstract) iterF.next();
-			if (field.description.toLowerCase().contains("[" + keyword + "]"))
+			if (field.description !=  null && field.description.toLowerCase().contains("[" + keyword + "]"))
 			{
 				return field;
 			}            
@@ -571,7 +571,7 @@ public abstract class ElementAbstract implements Cloneable
     
     public abstract int decodeFromArray(Array array, Dictionary dictionary) throws Exception;
     
-    public SupArray encodeToArray() throws Exception
+    public SupArray encodeToArray(Dictionary dictionary) throws Exception
     {
     	SupArray sup = new SupArray();
 		// encode the sub-element
@@ -579,7 +579,7 @@ public abstract class ElementAbstract implements Cloneable
 		while (iter.hasNext())
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
-			Array array = elemInfo.encodeToArray();
+			Array array = elemInfo.encodeToArray(dictionary);
 			sup.addLast(array);
 		}
 		return sup;
@@ -633,7 +633,7 @@ public abstract class ElementAbstract implements Cloneable
     {
     	if (params.length == offset + 2) 
         {
-    		Array array = this.encodeToArray();
+    		Array array = this.encodeToArray(dictionary);
     		var.add(Array.toHexString(array));
         }
         else if (params.length == offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 

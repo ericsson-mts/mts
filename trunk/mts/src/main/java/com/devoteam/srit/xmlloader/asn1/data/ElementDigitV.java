@@ -55,9 +55,9 @@ public class ElementDigitV extends ElementAbstract
     }
 
 	@Override    
-    public SupArray encodeToArray() throws Exception
+    public SupArray encodeToArray(Dictionary dictionary) throws Exception
 	{
-		this.subelementsArray = super.encodeToArray();
+		this.subelementsArray = super.encodeToArray(dictionary);
 
 		String digit = getFieldsByName("digits").getValue(this.fieldsArray);
 		int length = digit.length();

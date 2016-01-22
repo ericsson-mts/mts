@@ -271,7 +271,7 @@ public class MessageGTP
 	    	while (iter.hasNext())
 	    	{
 	    		ElementAbstract elem = (ElementAbstract) iter.next();
-	    		array.addLast(elem.encodeToArray());
+	    		array.addLast(elem.encodeToArray(null));
 	    	}
 	    }
 	    if (this.tpdu != null)
@@ -311,22 +311,7 @@ public class MessageGTP
 	{
 		return toXml();
 	}
-	
-	public int getLength()  throws Exception 
-	{
-	
-	    int msglength = 0;
-	    msglength = header.encodeToArray().length;
-	    Iterator<ElementAbstract> iter = this.elements.iterator();
-	    while (iter.hasNext())
-	    {
-	    	ElementAbstract elem = (ElementAbstract) iter.next();
-	        msglength += elem.encodeToArray().length;
-	
-	    }
-	    return msglength;
-	}
-	
+		
 	public String getSyntax() {
 		return syntax;
 	}

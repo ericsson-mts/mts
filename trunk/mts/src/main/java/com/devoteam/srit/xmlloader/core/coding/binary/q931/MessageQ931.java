@@ -155,7 +155,7 @@ public class MessageQ931
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-            array.addLast(elem.encodeToArray());
+            array.addLast(elem.encodeToArray(null));
         }
         return array;
     }
@@ -229,7 +229,7 @@ public class MessageQ931
 	    while (iter.hasNext())
 	    {
 	    	ElementAbstract elem = (ElementAbstract) iter.next();
-            msglength += elem.encodeToArray().length;
+            msglength += elem.encodeToArray(null).length;
 
         }
         return msglength;

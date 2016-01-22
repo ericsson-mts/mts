@@ -288,7 +288,7 @@ public class ASNInitializer
 	        		Array array = null;
 	        		try
 	        		{
-	        			array = elementDico.encodeToArray();
+	        			array = elementDico.encodeToArray(message.dictionary);
 	            		return array.getBytes();
 	        		}
 	        		catch (Exception e)
