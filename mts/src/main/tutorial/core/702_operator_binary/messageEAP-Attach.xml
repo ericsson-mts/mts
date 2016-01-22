@@ -258,8 +258,7 @@
         <field name="Value" value="b70f5d335df7606d83b4c87d820e6071" type="Binary" description=""/>
     </element>
     <!-- Attribute AT_RAND attribute : EAP-RES => IETF RFC 4187 chapter 10.8 page 56 -->
-    <element tag="AT_RES:3" coding="EAP" description="">
-        <field name="Reserved" value="64" type="Integer" length="2" description=""/>
+    <element tag="AT_RES:3" coding="EAPLengthBit" description="">
         <field name="Value" value="39bcb97622c4715a" type="Binary" description=""/>        
     </element>
 </element>              
@@ -288,8 +287,6 @@
     <parameter name="[AT_MAC]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_MAC:11']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071"/>
 
-    <parameter name="[Length]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RES:3']/field[@name='Length']/attribute::value"/>
-    <test parameter="[Length]" condition="number.equals" value="64"/>
     <parameter name="[AT_RES]" operation="string.xpath" value="[xmlEAP]" value2="//element[@tag='AT_RES:3']/field[@name='Value']/attribute::value"/>
     <test parameter="[AT_RES]" condition="binary.equals" value="39bcb97622c4715a"/>
 
@@ -312,8 +309,6 @@
     <parameter name="[AT_MAC]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_MAC:11.field.Value" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[AT_MAC]" condition="binary.equals" value="b70f5d335df7606d83b4c87d820e6071"/>
 
-    <parameter name="[Length]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RES:3.field.Length" value3="binary/dictionary_EAP.xml"/>    
-    <test parameter="[Length]" condition="number.equals" value="64"/>
     <parameter name="[AT_RES]" operation="binary.elementSetFrom" value="[binaryEAP]" value2="element.AT_RES:3:11.field.Value" value3="binary/dictionary_EAP.xml"/>    
     <test parameter="[AT_RES]" condition="binary.equals" value="39bcb97622c4715a"/>
 

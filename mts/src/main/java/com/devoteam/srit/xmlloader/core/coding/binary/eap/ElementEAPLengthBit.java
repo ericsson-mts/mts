@@ -38,10 +38,10 @@ import gp.utils.arrays.SupArray;
  *
  * @author Fabien Henry
  */
-public class ElementEAPLength extends ElementAbstract
+public class ElementEAPLengthBit extends ElementAbstract
 {
 
-    public ElementEAPLength()
+    public ElementEAPLengthBit()
     {
     	
     }
@@ -51,31 +51,26 @@ public class ElementEAPLength extends ElementAbstract
 	{
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
         
-        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
+        int lengthDiv4 = new Integer08Array(array.subArray(1, 1)).getValue();
+        Array elementData = array.subArray(4, (lengthDiv4 - 1) * 4);        
+        // par rapport à ElementEAPLength => add "/ 8"
+        int length = new Integer16Array(array.subArray(2, 2)).getValue() / 8;
+        if (length > elementData.length)
         {
-            int lengthDiv4 = new Integer08Array(array.subArray(1, 1)).getValue();
-            Array elementData = array.subArray(4, (lengthDiv4 - 1) * 4);        	
-            int length = new Integer16Array(array.subArray(2, 2)).getValue();
-            if (length > elementData.length)
-            {
-            	length = elementData.length;
-            }
-            Array dataArray = elementData.subArray(0, length);
+        	length = elementData.length;
+        }
+        Array dataArray = elementData.subArray(0, length);
 
-            // remove padding data if the last field is a type of String
-            if (!this.fields.isEmpty() && this.fields.get(this.fields.size() - 1) instanceof StringField)
-            {
-            	int lengthPadding = ElementEAP.removePaddingBytes(dataArray);
-            	length = length - lengthPadding;
-            }
-            dataArray = dataArray.subArray(0, length);
-            
-            decodeFieldsTagElementsFromArray(dataArray, dictionary);
-            return lengthDiv4 * 4;
-	    }
+        // remove padding data if the last field is a type of String
+        if (!this.fields.isEmpty() && this.fields.get(this.fields.size() - 1) instanceof StringField)
+        {
+        	int lengthPadding = ElementEAP.removePaddingBytes(dataArray);
+        	length = length - lengthPadding;
+        }
+        dataArray = dataArray.subArray(0, length);
         
-        return 1;
-        
+        decodeFieldsTagElementsFromArray(dataArray, dictionary);
+        return lengthDiv4 * 4;        
     }
 
 	@Override    
@@ -99,8 +94,9 @@ public class ElementEAPLength extends ElementAbstract
         	// length divide by 4
 		    Integer08Array lengthDiv4Array = new Integer08Array(lengthDiv4);		    
 		    sup.addLast(lengthDiv4Array);
-		    // real length in bytes
-		    Integer16Array lengthArray = new Integer16Array(length);
+		    // real length in bits
+        	// par rapport à ElementEAPLength => add "* 8"
+		    Integer16Array lengthArray = new Integer16Array(length * 8);
 		    sup.addLast(lengthArray);			    
 		    sup.addLast(this.fieldsArray);
 		    sup.addLast(this.subelementsArray);
