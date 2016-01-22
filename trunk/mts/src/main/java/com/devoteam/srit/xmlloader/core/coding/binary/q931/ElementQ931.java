@@ -28,7 +28,6 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.Integer08Array;
-import gp.utils.arrays.Integer16Array;
 import gp.utils.arrays.SupArray;
 
 

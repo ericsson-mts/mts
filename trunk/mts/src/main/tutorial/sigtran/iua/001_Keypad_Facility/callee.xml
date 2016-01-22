@@ -15,7 +15,7 @@
         
     <sendMessageSIGTRAN name="Send SIGTRAN ALERTING" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">       	
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">       
-	    <!-- ALERTING = b0000001 = h1 = d1-->
+	          <!-- ALERTING = b0000001 = h1 = d1-->
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="ALERTING"/>            	    
         </ISDN>        
         <UA name="IUA" file="iua.xml">
@@ -24,13 +24,13 @@
                 <field name="Interface_Identifier"  value="[lastInterfaceId]"/>
             </parameter>
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
-	            <field name="Spare_Bit" value="0"/>
-	            <field name="Zero_Bit" value="0"/>
-	            <field name="TEI" value="0"/>
-	            <field name="Un_Bit" value="1"/>
-	            <field name="Spare" value="0"/>
-	    </parameter>
+              	<field name="SAPI" value="0"/>
+  	            <field name="Spare_Bit" value="0"/>
+  	            <field name="Zero_Bit" value="0"/>
+  	            <field name="TEI" value="0"/>
+  	            <field name="Un_Bit" value="1"/>
+  	            <field name="Spare" value="0"/>
+	          </parameter>
             <parameter tag="Protocol_Data">
                 <field name="Protocol_Data" value="TO BE DEFINE IN THE UPPER LAYER !"/>
             </parameter>
@@ -40,8 +40,8 @@
 
     <sendMessageSIGTRAN name="Send SIGTRAN CONNECT" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">       	    
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
-	    <!-- CONNECT = b0000111 =h7 =d7-->
-            <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="CONNECT"/>        
+	           <!-- CONNECT = b0000111 =h7 =d7-->
+              <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="CONNECT"/>        
         </ISDN>
 
         <UA name="IUA" file="iua.xml">
@@ -50,13 +50,13 @@
                 <field name="Interface_Identifier"  value="[lastInterfaceId]"/>
             </parameter>
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
-	            <field name="Spare_Bit" value="0"/>
-	            <field name="Zero_Bit" value="0"/>
-	            <field name="TEI" value="1"/>
-	            <field name="Un_Bit" value="1"/>
-	            <field name="Spare" value="0"/>
-	    </parameter>
+              	<field name="SAPI" value="0"/>
+  	            <field name="Spare_Bit" value="0"/>
+  	            <field name="Zero_Bit" value="0"/>
+  	            <field name="TEI" value="1"/>
+  	            <field name="Un_Bit" value="1"/>
+  	            <field name="Spare" value="0"/>
+	          </parameter>
             <parameter tag="Protocol_Data">
                 <field name="Protocol_Data" value="TO BE DEFINE IN THE UPPER LAYER !"/>
             </parameter>
@@ -73,19 +73,19 @@
 
     <sendMessageSIGTRAN name="Send SIGTRAN DISCONNECT" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">                	
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
-	    <!-- DISCONNECT = b1000101 = h45 =d69-->
+	          <!-- DISCONNECT = b1000101 = h45 =d69-->
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="DISCONNECT"/>           
             <!-- Cause = b0001000 = h8 = d8-->
-	    <element identifier="Cause">
-	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
-	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
-	        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
-	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>	        
-	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Cause value" lengthBit="7" type="enumeration" value="Normal call clearing"/>
-    	    </element>
+	          <element identifier="Cause"  coding="Q931">
+      	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+      	        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+      	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
+      	        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
+      	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+      	        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>	        
+      	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+      	        <field name="Cause value" lengthBit="7" type="enumeration" value="Normal call clearing"/>
+    	      </element>
         </ISDN>
         <UA name="IUA" file="iua.xml">
             <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
@@ -115,8 +115,8 @@
 
     <sendMessageSIGTRAN name="Send SIGTRAN RELEASE COMPLETE" listenpoint="[listenpointCallee]" remoteHost="[hostCallerIUA]" remotePort="[portCallerIUA]">                	   
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
-		<!-- RELEASE COMPLETE= b1011010 = h5A =d90-->
-	       	<header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="RELEASE COMPLETE"/>	        	
+		       <!-- RELEASE COMPLETE= b1011010 = h5A =d90-->
+	       	 <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="RELEASE COMPLETE"/>	        	
         </ISDN>        
         <UA name="IUA" file="iua.xml">
             <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
@@ -124,13 +124,13 @@
                 <field name="Interface_Identifier"  value="[lastInterfaceId]"/>
             </parameter>
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
-	            <field name="Spare_Bit" value="0"/>
-	            <field name="Zero_Bit" value="0"/>
-	            <field name="TEI" value="1"/>
-	            <field name="Un_Bit" value="1"/>
-	            <field name="Spare" value="0"/>
-	    </parameter>
+              	<field name="SAPI" value="0"/>
+  	            <field name="Spare_Bit" value="0"/>
+  	            <field name="Zero_Bit" value="0"/>
+  	            <field name="TEI" value="1"/>
+  	            <field name="Un_Bit" value="1"/>
+  	            <field name="Spare" value="0"/>
+  	        </parameter>
             <parameter tag="Protocol_Data">
                 <field name="Protocol_Data" value=""/>
             </parameter>

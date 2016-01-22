@@ -33,6 +33,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLength;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLengthBit;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTL1V;
 import com.devoteam.srit.xmlloader.gtp.data.ElementTLIV;
@@ -80,7 +81,13 @@ public abstract class ElementAbstract implements Cloneable
     public static ElementAbstract buildFactory(String coding) throws Exception
     {
     	ElementAbstract newElement = null;
-		if ("TLIV".equals(coding))
+    	if (coding == null)
+		{
+    		GlobalLogger.instance().logDeprecatedMessage("element identifier=\"...\"",
+            "element identifier=\"...\" coding=\"Q931\"");
+			newElement = new ElementQ931();
+		}
+    	else if ("TLIV".equals(coding))
 		{
 			newElement = new ElementTLIV();
 		}
