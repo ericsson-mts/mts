@@ -697,7 +697,7 @@
 			</xs:element>
       <xs:element name="binary.elementFromXml">
 				<xs:annotation>
-					<xs:documentation>Parse an element structure from XML format and encode it to binary data using a dictionary.</xs:documentation>
+					<xs:documentation>Parse an element/field structure from XML format and encode it to binary data using a dictionary.</xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
@@ -719,7 +719,7 @@
 			</xs:element>
       <xs:element name="binary.elementToXml">
 				<xs:annotation>
-					<xs:documentation>Decode an element structure from binary data and convert it to XML format using a dictionary.</xs:documentation>
+					<xs:documentation>Decode an element/field structure from binary data and convert it to XML format using a dictionary.</xs:documentation>
 				</xs:annotation>
 				<xs:complexType>
 					<xs:attribute name="name" type="xs:string" use="required">
@@ -729,7 +729,7 @@
 					</xs:attribute>
 					<xs:attribute name="value" type="xs:string" use="required">
 						<xs:annotation>
-							<xs:documentation>The binary data to encode and convetrt to XML.</xs:documentation>
+							<xs:documentation>The binary data to encode and convert to XML.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
           <xs:attribute name="value2" type="xs:string" use="required">
@@ -737,8 +737,45 @@
 							<xs:documentation>The dictionary file path.</xs:documentation>
 						</xs:annotation>
 					</xs:attribute>
+          <xs:attribute name="value3" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>The element label we use to decode the data; by default if not specified we use the first element in the dictionary.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>          
 				</xs:complexType>
-			</xs:element>																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												
+			</xs:element>
+      <xs:element name="binary.elementSetFrom">
+				<xs:annotation>
+					<xs:documentation>Decode an element/field structure from binary data using a dictionary and get some information specified by a message path. By default the first element in the given dictionary file is used to decode; but you can with "value4" use another element (which is required to have coding="message").The resulting data are store in the parameter you specified with "value1" attribute and you can of course use it anywhere in your scenario.</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The resulting XML data.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The binary data to encode and extract data from.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+						<xs:annotation>                                                                              
+							<xs:documentation>The message keyword to tell which part of the message you want to get. It should be something like element.XXX.YYY.field.ZZZ to get the field called ZZZ in the element YYY in the element XXX.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>          
+          <xs:attribute name="value3" type="xs:string" use="required">
+						<xs:annotation>
+							<xs:documentation>The dictionary file path.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>
+          <xs:attribute name="value4" type="xs:string" use="optional">
+						<xs:annotation>
+							<xs:documentation>The element label from the previous dictionary we use to decode the data; by default if not specified we use the first element in the dictionary.</xs:documentation>
+						</xs:annotation>
+					</xs:attribute>          
+				</xs:complexType>
+			</xs:element>																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												      																																																																																																												
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="OperationBoolean">
