@@ -125,11 +125,11 @@ public class Dictionary
         for (Element elem : list) 
         {
             ElementAbstract elemInfo = null;
-            if ("Q931".equalsIgnoreCase(syntax))
+            //if ("Q931".equalsIgnoreCase(syntax))
             {
-            	elemInfo = ElementAbstract.buildFactory("Q931");
+            	//elemInfo = ElementAbstract.buildFactory("Q931");
             }
-            else
+            //else
             {
             	String coding = elem.attributeValue("coding");
             	elemInfo = ElementAbstract.buildFactory(coding);

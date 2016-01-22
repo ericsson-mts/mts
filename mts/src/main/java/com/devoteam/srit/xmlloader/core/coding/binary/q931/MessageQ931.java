@@ -79,7 +79,7 @@ public class MessageQ931
         ElementAbstract elem = null;
         for (Element element : elementsInf) 
         {
-        	element.addAttribute("coding", "Q931");
+        	//element.addAttribute("coding", "Q931");
             elemInfo = this.dictionary.getElementFromXML(element);
             elem = (ElementQ931) elemInfo.cloneAttribute();
             // FH Manage a new Element like ElementQ931big for id = User-User:126

@@ -16,72 +16,72 @@
     <parameter name="[testcase:newInterfaceId]" operation="number.random" value="2147516416"/>
     
     <sendMessageSIGTRAN name="Send SIGTRAN SETUP" listenpoint="[listenpointCaller]" remoteHost="[Host-Callee]" remotePort="[Port-Callee]">    
-        <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
-	    <!-- SETUP = b00000101 = h5 = d5-->
-            <header discriminator="Recommendation Q.931/I.451" callReference="[newCallReference]"  type="SETUP"/>
-	    <!-- Sending complete= b10100001 = hA1 = d161-->
-            <!-- ONLY for Circuit, Bearer message -->            	    
-    	    <element identifier="Sending complete"/>
-	   <!-- Bearer capability = b0000100 =h4 = d4--> 
-           <element identifier="Bearer capability">
-                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
-                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
-                <field name="Information transfert capability" lengthBit="5" type="enumeration" value="Speech"/>
-                <field name="ext2" lengthBit="1" type="boolean" value="1" />
-                <field name="Transfert mode" lengthBit="2" type="enumeration" value="Circuit mode"/>
-                <field name="Information transfert rate" lengthBit="5" type="enumeration" value="64 kbit/s -"/>
-                <field name="ext3" lengthBit="1" type="boolean" value="1" />
-                <field name="Layer 1 ident" lengthBit="2" type="integer" value="1"/>
-                <field name="User information layer 1 protocol" lengthBit="5" type="enumeration" value="G.711 A-law"/>
-            </element> 
-	    <!-- Channel identification = b0011000 = h18 = d24-->
-            <element identifier="Channel identification">
-                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
-                <field name="Interface identifier present" lengthBit="1" type="enumeration" value="0"/>
-                <field name="Interface type" lengthBit="1" type="enumeration" value="Other interface"/>
-                <field name="Spare" lengthBit="1" type="integer" value="0"/>
-                <field name="Preferred/Exclusive" lengthBit="1" type="enumeration" value="preferred"/>
-                <field name="D-channel indicator" lengthBit="1" type="enumeration" value="not D-channel"/>
-                <field name="Information channel selection" lengthBit="2" type="enumeration" value="B1 channel"/>
-                <!--field name="ext2" lengthBit="1" type="boolean" value="1"/>
-                <field name="Interface identifier" lengthBit="7" type="integer" value="65"/-->
-                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
-                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
-                <field name="Number/map" lengthBit="1" type="enumeration" value="indicated by number"/>
-                <field name="Channel type/map element type" lengthBit="4" type="enumeration" value="B-channel units"/>
-                <field name="ext4" lengthBit="1" type="boolean" value="1"/>
-                <field name="Channel number" lengthBit="7" type="integer" value="1"/>
-            </element>            
-	    <!-- Calling party number = b01101100 = h6C = d108-->
-	    <element identifier="Calling party number">
-	        <field name="ext1" lengthBit="1" type="boolean"  value="0"/>
-	        <field name="Type of number" lengthBit="3" type="enumeration" value="National number"/>
-	        <field name="Numbering plan identification" lengthBit="4" type="enumeration" value="ISDN/telephony numbering plan"/>
-  	        <field name="ext2" lengthBit="1" type="boolean"  value="1"/>
-	        <field name="Presentation indicator" lengthBit="2" type="enumeration" value="Presentation allowed"/>
-	        <field name="ext3" lengthBit="3" type="integer" value="0"/>        
-	        <field name="Screening indicator" lengthBit="2" type="enumeration" value="User-provided, not screened"/>
-	        <field name="Number digits"  type="string" value="1000000101"/>
-	    </element>	    
-            <!-- Keypad facility = b0101100 = h2C = d44-->
-            <!-- ONLY for Circuit, Bearer message -->
-	    <element identifier="Keypad facility">
-		<field name="Display identification" type="string" value="123"/>
-	    </element>
-        </ISDN>
-        <UA name="IUA" file="iua.xml">
+          <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+              <!-- SETUP = b00000101 = h5 = d5-->
+              <header discriminator="Recommendation Q.931/I.451" callReference="[newCallReference]"  type="SETUP"/>
+              <!-- Sending complete= b10100001 = hA1 = d161-->
+              <!-- ONLY for Circuit, Bearer message -->            	    
+               <element identifier="Sending complete" coding="Q931"/>
+               <!-- Bearer capability = b0000100 =h4 = d4--> 
+               <element identifier="Bearer capability" coding="Q931">
+                    <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                    <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                    <field name="Information transfert capability" lengthBit="5" type="enumeration" value="Speech"/>
+                    <field name="ext2" lengthBit="1" type="boolean" value="1" />
+                    <field name="Transfert mode" lengthBit="2" type="enumeration" value="Circuit mode"/>
+                    <field name="Information transfert rate" lengthBit="5" type="enumeration" value="64 kbit/s -"/>
+                    <field name="ext3" lengthBit="1" type="boolean" value="1" />
+                    <field name="Layer 1 ident" lengthBit="2" type="integer" value="1"/>
+                    <field name="User information layer 1 protocol" lengthBit="5" type="enumeration" value="G.711 A-law"/>
+              </element> 
+              <!-- Channel identification = b0011000 = h18 = d24-->
+              <element identifier="Channel identification" coding="Q931">
+                  <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                  <field name="Interface identifier present" lengthBit="1" type="enumeration" value="0"/>
+                  <field name="Interface type" lengthBit="1" type="enumeration" value="Other interface"/>
+                  <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                  <field name="Preferred/Exclusive" lengthBit="1" type="enumeration" value="preferred"/>
+                  <field name="D-channel indicator" lengthBit="1" type="enumeration" value="not D-channel"/>
+                  <field name="Information channel selection" lengthBit="2" type="enumeration" value="B1 channel"/>
+                  <!--field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                  <field name="Interface identifier" lengthBit="7" type="integer" value="65"/-->
+                  <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+                  <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                  <field name="Number/map" lengthBit="1" type="enumeration" value="indicated by number"/>
+                  <field name="Channel type/map element type" lengthBit="4" type="enumeration" value="B-channel units"/>
+                  <field name="ext4" lengthBit="1" type="boolean" value="1"/>
+                  <field name="Channel number" lengthBit="7" type="integer" value="1"/>
+              </element>            
+              <!-- Calling party number = b01101100 = h6C = d108-->
+              <element identifier="Calling party number" coding="Q931">
+                  <field name="ext1" lengthBit="1" type="boolean"  value="0"/>
+                  <field name="Type of number" lengthBit="3" type="enumeration" value="National number"/>
+                  <field name="Numbering plan identification" lengthBit="4" type="enumeration" value="ISDN/telephony numbering plan"/>
+                  <field name="ext2" lengthBit="1" type="boolean"  value="1"/>
+                  <field name="Presentation indicator" lengthBit="2" type="enumeration" value="Presentation allowed"/>
+                  <field name="ext3" lengthBit="3" type="integer" value="0"/>        
+                  <field name="Screening indicator" lengthBit="2" type="enumeration" value="User-provided, not screened"/>
+                  <field name="Number digits"  type="string" value="1000000101"/>
+              </element>	    
+              <!-- Keypad facility = b0101100 = h2C = d44-->
+              <!-- ONLY for Circuit, Bearer message -->
+              <element identifier="Keypad facility" coding="Q931">
+                  <field name="Display identification" type="string" value="123"/>
+              </element>
+          </ISDN>
+          <UA name="IUA" file="iua.xml">
             <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>
             <parameter tag="Integer_Interface_Identifier">
                 <field name="Interface_Identifier"  value="[newInterfaceId]"/>
             </parameter>
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
-	            <field name="Spare_Bit" value="0"/>
-	            <field name="Zero_Bit" value="0"/>
-	            <field name="TEI" value="1"/>
-	            <field name="Un_Bit" value="1"/>
-	            <field name="Spare" value="0"/>
-	    </parameter>
+              	<field name="SAPI" value="0"/>
+  	            <field name="Spare_Bit" value="0"/>
+  	            <field name="Zero_Bit" value="0"/>
+  	            <field name="TEI" value="1"/>
+  	            <field name="Un_Bit" value="1"/>
+  	            <field name="Spare" value="0"/>
+	          </parameter>
             <parameter tag="Protocol_Data">
                 <field name="Protocol_Data" value="TO BE DEFINE IN THE UPPER LAYER !"/>
             </parameter>
@@ -104,7 +104,7 @@
 
     <sendMessageSIGTRAN name="Send SIGTRAN CONNECT ACK" listenpoint="[listenpointCaller]" remoteHost="[Host-Callee]" remotePort="[Port-Callee]">        
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">        
-	    <!-- CONNECT ACK = b0001111 = hF = d15-->
+	      <!-- CONNECT ACK = b0001111 = hF = d15-->
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="CONNECT ACKNOWLEDGE"/>      
         </ISDN>
         <UA name="IUA" file="iua.xml">
@@ -113,13 +113,13 @@
                 <field name="Interface_Identifier"  value="[lastInterfaceId]"/>
             </parameter>
             <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
-	            <field name="Spare_Bit" value="0"/>
-	            <field name="Zero_Bit" value="0"/>
-	            <field name="TEI" value="1"/>
-	            <field name="Un_Bit" value="1"/>
-	            <field name="Spare" value="0"/>
-	    </parameter>
+              	<field name="SAPI" value="0"/>
+  	            <field name="Spare_Bit" value="0"/>
+  	            <field name="Zero_Bit" value="0"/>
+  	            <field name="TEI" value="1"/>
+  	            <field name="Un_Bit" value="1"/>
+  	            <field name="Spare" value="0"/>
+	          </parameter>
             <parameter tag="Protocol_Data">
                 <field name="Protocol_Data" value="TO BE DEFINE IN THE UPPER LAYER !"/>
             </parameter>
@@ -136,37 +136,37 @@
 
     <sendMessageSIGTRAN name="Send SIGTRAN RELEASE" listenpoint="[listenpointCaller]" remoteHost="[Host-Callee]" remotePort="[Port-Callee]">            
         <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
-	    <!-- RELEASE = b1001101 =h4D =d77-->	    
+	          <!-- RELEASE = b1001101 =h4D =d77-->	    
             <header discriminator="Recommendation Q.931/I.451" callReference="[lastCallReference]"  type="RELEASE"/>            
             <!-- Cause = b0001000 = h8 = d8-->
-	    <element identifier="Cause">
-	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
-	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
-	        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
-	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>	        
-	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
-	        <field name="Cause value" lengthBit="7" type="enumeration" value="Normal call clearing"/>
-    	    </element>
-        </ISDN>        
-        <UA name="IUA" file="iua.xml">
-            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
-            <parameter tag="Integer_Interface_Identifier">
-                <field name="Interface_Identifier"  value="[lastInterfaceId]"/>
-            </parameter>
-            <parameter tag="DLCI">
-            	    <field name="SAPI" value="0"/>
-	            <field name="Spare_Bit" value="0"/>
-	            <field name="Zero_Bit" value="0"/>
-	            <field name="TEI" value="1"/>
-	            <field name="Un_Bit" value="1"/>
-	            <field name="Spare" value="0"/>
-	    </parameter>
-            <parameter tag="Protocol_Data">
-                <field name="Protocol_Data" value="TO BE DEFINE IN THE UPPER LAYER !"/>
-            </parameter>
-        </UA>	        
+            <element identifier="Cause" coding="Q931">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>	        
+                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+                <field name="Cause value" lengthBit="7" type="enumeration" value="Normal call clearing"/>
+            </element>
+            </ISDN>        
+            <UA name="IUA" file="iua.xml">
+                <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+                <parameter tag="Integer_Interface_Identifier">
+                    <field name="Interface_Identifier"  value="[lastInterfaceId]"/>
+                </parameter>
+                <parameter tag="DLCI">
+                  	<field name="SAPI" value="0"/>
+      	            <field name="Spare_Bit" value="0"/>
+      	            <field name="Zero_Bit" value="0"/>
+      	            <field name="TEI" value="1"/>
+      	            <field name="Un_Bit" value="1"/>
+      	            <field name="Spare" value="0"/>
+          	    </parameter>
+                <parameter tag="Protocol_Data">
+                    <field name="Protocol_Data" value="TO BE DEFINE IN THE UPPER LAYER !"/>
+                </parameter>
+            </UA>	        
     </sendMessageSIGTRAN>
 
     <receiveMessageSIGTRAN name="Wait SIGTRAN RELEASE COMPLETE" listenpoint="[listenpointCaller]"  type="RELEASE COMPLETE:90">

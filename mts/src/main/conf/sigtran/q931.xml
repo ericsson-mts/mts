@@ -22,9 +22,9 @@
         </field>
 
         <field name="Message type" lengthBit="7" type="enumeration">
-		<!-- Escape to nationally specific message type (Note) -->
+		        <!-- Escape to nationally specific message type (Note) -->
             <enum value="b0000000" name="ESCAPE SPECIFIC" />
-		<!-- 0 0 0  Call establishment message: -->
+		        <!-- 0 0 0  Call establishment message: -->
             <enum value="b0000001" name="ALERTING" />
             <enum value="b0000010" name="CALL PROCEEDING" />
             <enum value="b0000111" name="CONNECT" />
@@ -32,7 +32,7 @@
             <enum value="b0000011" name="PROGRESS" />
             <enum value="b0000101" name="SETUP" />
             <enum value="b0001101" name="SETUP ACKNOWLEDGE" />
-		<!-- 0 0 1  Call information phase message: -->
+		        <!-- 0 0 1  Call information phase message: -->
             <enum value="b0100110 " name="RESUME" />
             <enum value="b0101110" name="RESUME ACKNOWLEDGE" />
             <enum value="b0100010" name="RESUME REJECT" />
@@ -40,13 +40,13 @@
             <enum value="b0101101" name="SUSPEND ACKNOWLEDGE" />
             <enum value="b0100001" name="SUSPEND REJECT" />
             <enum value="b0100000" name="USER INFORMATION" />
-		<!-- 0 1 0  Call clearing messages: -->
+		        <!-- 0 1 0  Call clearing messages: -->
             <enum value="b1000101" name="DISCONNECT" />
             <enum value="b1001101" name="RELEASE" />
             <enum value="b1011010" name="RELEASE COMPLETE" />
             <enum value="b1000110" name="RESTART"/>
             <enum value="b1001110" name="RESTART ACKNOWLEDGE" />
-		<!-- 0 1 1  Miscellaneous messages: -->
+		        <!-- 0 1 1  Miscellaneous messages: -->
             <enum value="b1111001" name="CONGESTION CONTROL" />
             <enum value="b1111011" name="INFORMATION" />
             <enum value="b1101110" name="NOTIFY" />
@@ -56,7 +56,7 @@
     </header>
     
     <!-- Bearer capability = b0000100 =h4 =d4-->
-    <element identifier="b0000100" name="Bearer capability">
+    <element identifier="b0000100" name="Bearer capability" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Coding standard" lengthBit="2" type="enumeration">
             <enum value="b00" name="ITU-T standardized coding" />
@@ -101,17 +101,17 @@
     </element>
     
     <!-- Display identification = b0101000 = h28 = d40-->
-    <element identifier="b0101000" name="Display identification">
+    <element identifier="b0101000" name="Display identification" coding="Q931">
         <field name="Display identification" type="string"/>
     </element>
     
     <!-- Call identity = b0010000 = h10 = d16-->
-    <element identifier="b0010000" name="Call identity">
+    <element identifier="b0010000" name="Call identity" coding="Q931">
         <field name="Call identity" type="string"/>
     </element>
     
     <!-- Channel identification = b0011000 = h18 = d24-->
-    <element identifier="b0011000" name="Channel identification">
+    <element identifier="b0011000" name="Channel identification" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Interface identifier present" lengthBit="1" type="enumeration">
             <enum value="b0" name="Interface implicitly identified" />
@@ -160,7 +160,7 @@
     </element>
     
     <!--Progress indicator= b0011110 = h1E = d30-->
-    <element identifier="b0011110" name="Progress indicator">
+    <element identifier="b0011110" name="Progress indicator" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Coding standard" lengthBit="2" type="enumeration" >
             <enum value="b00" name="ITU-T standardized coding" />
@@ -190,7 +190,7 @@
     </element>
 
     <!-- Network-specific facilities= b0100000 = h20 = d32 -->
-    <element identifier="b0100000" name="Network-specific facilities">
+    <element identifier="b0100000" name="Network-specific facilities" coding="Q931">
         <field name="Length of network identification" lengthBit="8" type="integer"/>
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Type of network identification" lengthBit="3" type="enumeration" >
@@ -209,7 +209,7 @@
     </element>
    
     <!-- Date/time = b0101001 = h29= d41-->
-    <element identifier="b0101001" name="Date/time">
+    <element identifier="b0101001" name="Date/time" coding="Q931">
         <field name="Year" lengthBit="8" type="integer" />
         <field name="Month" lengthBit="8" type="integer" />
         <field name="Day" lengthBit="8" type="integer" />
@@ -219,12 +219,12 @@
     </element>
     
     <!-- Keypad facility = b0101100 = h2C = d44-->
-    <element identifier="b0101100" name="Keypad facility">
+    <element identifier="b0101100" name="Keypad facility" coding="Q931">
         <field name="Display identification" type="string"/>
     </element>
     
     <!-- Signal= b0110100 = h34 = d52-->
-    <element identifier="b0110100" name="Signal">
+    <element identifier="b0110100" name="Signal" coding="Q931">
         <field name="Signal value" lengthBit="8" type="enumeration">
             <enum value="b00000000" name="Dial tone on" />
             <enum value="b00000001" name="Ring back tone on" />
@@ -250,10 +250,10 @@
     </element>
     
      <!-- More data = b10100000 =hA0 =d160-->
-    <element identifier="b10100000" name="More data"/>
+    <element identifier="b10100000" name="More data" coding="Q931"/>
     
      <!-- Restart indicator= b01111001 =h79 =d121-->
-    <element identifier="b01111001" name="Restart indicator">
+    <element identifier="b01111001" name="Restart indicator" coding="Q931">
         <field name="Class" lengthBit="8" type="enumeration">
             <enum value="b10000000" name="Indicated channels" />
             <enum value="b10000110" name="Single interface" />
@@ -262,7 +262,7 @@
     </element>
 
     <!-- Calling party number = b01101100 = h6C = d108-->
-    <element identifier="b01101100" name="Calling party number">
+    <element identifier="b01101100" name="Calling party number" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Type of number" lengthBit="3" type="enumeration">
             <enum value="b000" name="Unknown" />
@@ -300,7 +300,7 @@
     </element>
     
     <!-- Calling party subaddress = b1101101 =h6D = d109-->
-    <element identifier=" b1101101" name="Calling party subaddress">
+    <element identifier=" b1101101" name="Calling party subaddress" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Type of subaddress" lengthBit="3" type="enumeration">
             <enum value="b000" name="NSAP" />
@@ -315,7 +315,7 @@
     </element>
     
     <!-- Notification indicator = b00100111 =h27 =d39-->
-    <element identifier="b00100111" name="Notification indicator">
+    <element identifier="b00100111" name="Notification indicator" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Notification description" lengthBit="7" type="enumeration">
             <enum value="b0000000" name="User suspended" />
@@ -325,7 +325,7 @@
     </element>
     
     <!-- Cause = b0001000 = h8 = d8-->
-    <element identifier="b0001000" name="Cause">
+    <element identifier="b0001000" name="Cause" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Coding standard" lengthBit="2" type="enumeration" >
             <enum value="b00" name="ITU-T standardized coding" />
@@ -430,7 +430,7 @@
     </element>
     
     <!-- Call state = b00010100 =h14 =d20-->
-    <element identifier="b0010100" name="Call state">
+    <element identifier="b0010100" name="Call state" coding="Q931">
         <field name="Coding standard" lengthBit="2" type="enumeration" >
             <enum value="b00" name="ITU-T standardized coding" />
             <enum value="b01" name="ISO/IEC Standard" />
@@ -461,7 +461,7 @@
     </element>
 
     <!-- Called party number = b1110000 =h70 = d112-->
-    <element identifier=" b1110000" name="Called party number">
+    <element identifier=" b1110000" name="Called party number" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Type of number" lengthBit="3" type="enumeration">
             <enum value="b000" name="Unknown" />
@@ -485,7 +485,7 @@
     </element>
     
     <!-- Called party subaddress = b01110001 = h71 = d113-->
-    <element identifier=" b1101101" name="Called party subaddress">
+    <element identifier=" b1101101" name="Called party subaddress" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Type of subaddress" lengthBit="3" type="enumeration">
             <enum value="b000" name="NSAP" />
@@ -500,7 +500,7 @@
     </element>
     
     <!-- Transit network selection = b1111000 = h78 = d120-->
-    <element identifier=" b1111000" name="Transit network selection">
+    <element identifier=" b1111000" name="Transit network selection" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Type of network identification" lengthBit="3" type="enumeration" >
             <enum value="b000" name="User specified" />
@@ -516,7 +516,7 @@
     </element>
     
     <!-- Low layer compatibility = b1111100 = h7C = d124--> 	
-    <element identifier="b1111100" name="Low layer compatibility">
+    <element identifier="b1111100" name="Low layer compatibility" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Coding standard" lengthBit="2" type="enumeration" >
             <enum value="b00" name="ITU-T standardized coding" />
@@ -780,7 +780,7 @@
     </element>
     
     <!-- High layer compatibility= b1111101 = h7D = d125-->
-    <element identifier="b1111101" name="High layer compatibility">
+    <element identifier="b1111101" name="High layer compatibility" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Coding standard" lengthBit="2" type="enumeration" >
             <enum value="b00" name="ITU-T standardized coding" />
@@ -846,7 +846,7 @@
     </element>
 
     <!-- User-user= b1111110 = h7E = d126-->
-    <element identifier="b1111110" name="User-User">
+    <element identifier="b1111110" name="User-User" coding="Q931">
         <field name="Protocol discriminator" lengthBit="8" type="enumeration" >
             <enum value="b00000000" name="User-specific protocol" />
             <enum value="b00000001" name="OSI high layer protocols" />
@@ -868,25 +868,25 @@
     </element>
 
     <!-- Sending complete= b10100001 =hA1 =d161-->
-    <element identifier="b10100001" name="Sending complete"/>
+    <element identifier="b10100001" name="Sending complete" coding="Q931"/>
 
     <!-- More data= b10100000-->
-    <element identifier="b10100000" name="More data"/>       
+    <element identifier="b10100000" name="More data" coding="Q931"/>       
 
     <!-- Repeat indicator = b11010010 = hD2 = d210-->
     <!--field Repeat indicator = Prioritized list for selecting one possibility -->
-    <element identifier=" b11010010" name="Repeat indicator = Prioritized"/>
+    <element identifier=" b11010010" name="Repeat indicator = Prioritized" coding="Q931"/>
 
     <!-- Congestion level ready= b10110000 = hB0 = d176-->
     <!--field Congestion level= Receiver ready -->
-    <element identifier=" b10110000" name="Congestion level = Ready"/>
+    <element identifier=" b10110000" name="Congestion level = Ready" coding="Q931"/>
 
     <!-- Congestion level not ready= b10111111 = hBF = d191-->
     <!--field Congestion level= Receiver not ready -->
-    <element identifier=" b10110000" name="Congestion level = Not ready"/>
+    <element identifier=" b10110000" name="Congestion level = Not ready" coding="Q931"/>
 
     <!-- Information rate = b1100000 =h60 =d96-->
-    <element identifier="b1100000" name="Information rate">
+    <element identifier="b1100000" name="Information rate" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Spare1" lengthBit="2" type="integer" />
         <field name="Incoming information rate" lengthBit="5" type="enumeration">
@@ -970,7 +970,7 @@
     </element>
 
     <!-- End-to-end transit delay = b1000010 =h42 =d66-->
-    <element identifier="b1000010" name="End-to-end transit delay">
+    <element identifier="b1000010" name="End-to-end transit delay" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Spare1" lengthBit="5" type="integer" />
         <field name="Cumulative transit delay value1" lengthBit="2" type="integer" />
@@ -995,7 +995,7 @@
     </element>
 
     <!-- Transit delay selection and indication = b1000011 =h43 =d67-->
-    <element identifier="b1000011" name="Transit delay selection and indication">
+    <element identifier="b1000011" name="Transit delay selection and indication" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Spare1" lengthBit="5" type="integer" />
         <field name="Transit delay selection and indication value1" lengthBit="2" type="integer" />
@@ -1006,7 +1006,7 @@
     </element>
 
     <!-- Packet layer binary parameters = b1000100 =h44 =d68-->
-    <element identifier="b1000100" name="Packet layer binary parameters">
+    <element identifier="b1000100" name="Packet layer binary parameters" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="Spare" lengthBit="2" type="integer" />
         <field name="Fast selected" lengthBit="2" type="enumeration">
@@ -1030,7 +1030,7 @@
     </element>
     
     <!-- Packet layer window size = b1000101 =h45 =d69-->
-    <element identifier="b1000101" name="Packet layer window size">
+    <element identifier="b1000101" name="Packet layer window size" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Forward value" lengthBit="7" type="integer" />
         <field name="ext2" lengthBit="1" type="boolean" />
@@ -1038,7 +1038,7 @@
     </element>
 
     <!-- Packet size = b1000110 =h46 =d70-->
-    <element identifier="b1000110" name="Packet size">
+    <element identifier="b1000110" name="Packet size" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Forward value" lengthBit="7" type="integer" />
         <field name="ext2" lengthBit="1" type="boolean" />
@@ -1046,7 +1046,7 @@
     </element>
 
     <!-- Closed user group = b1000111 =h47 =d71-->
-    <element identifier="b1000111" name="Closed user group">
+    <element identifier="b1000111" name="Closed user group" coding="Q931">
         <field name="ext" lengthBit="1" type="boolean" />
         <field name="spare" lengthBit="4" type="integer" />
         <field name="CUG indication" lengthBit="3" type="enumeration" >
@@ -1058,7 +1058,7 @@
     </element>
 
     <!-- Reverse charging indication = b1001010 =h4A =d74-->
-    <element identifier="b1001010" name="Reverse charging indication">
+    <element identifier="b1001010" name="Reverse charging indication" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="spare" lengthBit="4" type="integer" />
         <field name="Reverse charging indication" lengthBit="3" type="enumeration" >
@@ -1068,7 +1068,7 @@
     </element>
 
     <!-- Redirecting number = b1110100 =h74 =d116-->
-    <element identifier="b1110100" name="Redirecting number">
+    <element identifier="b1110100" name="Redirecting number" coding="Q931">
         <field name="ext1" lengthBit="1" type="boolean" />
         <field name="Type of number" lengthBit="3" type="enumeration" >
             <enum value="b000" name="Unknown"/>
