@@ -245,13 +245,10 @@ public class MessageQ931
     	this.dictionary = MessageQ931.dictionaries.get(syntax);
     	if (this.dictionary == null)
     	{
-	        XMLDoc xml = new XMLDoc();
-	        xml.setXMLFile(new URI(syntax));
-	        xml.parse();
-	        Element rootDico = xml.getDocument().getRootElement();
-	        this.dictionary = new Dictionary(rootDico, "Q931");
-	        MessageQ931.dictionaries.put(syntax, dictionary);
-    	}
+    		String file = syntax;
+	        this.dictionary = new Dictionary(file);
+	        dictionaries.put(syntax, dictionary);
+	    }
     }
 
 }

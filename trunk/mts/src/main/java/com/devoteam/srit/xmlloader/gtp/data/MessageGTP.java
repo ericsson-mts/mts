@@ -343,12 +343,8 @@ public class MessageGTP
 		this.dictionary = MessageGTP.dictionaries.get(syntax);
 		if (this.dictionary == null)
 		{
-	        XMLDoc xml = new XMLDoc();
 	        String file = "../conf/gtp/dictionary_GTP" + syntax + ".xml";
-	        xml.setXMLFile(new URI(file));
-	        xml.parse();
-	        Element rootDico = xml.getDocument().getRootElement();
-	        this.dictionary = new Dictionary(rootDico, syntax);
+	        this.dictionary = new Dictionary(file);
 	        dictionaries.put(syntax, dictionary);
 		}
 	}

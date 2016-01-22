@@ -88,7 +88,7 @@ public class Dictionary
     	}
     }
     
-	private Dictionary(String file) throws Exception 
+	public Dictionary(String file) throws Exception 
     {
     	this();    	
 		XMLDoc xml = new XMLDoc();
@@ -96,15 +96,10 @@ public class Dictionary
 	    xml.setXMLFile(new URI(path));
 	    xml.parse();
 	    Element rootDico = xml.getDocument().getRootElement();
-	    parseFromXML(rootDico, (String) null);
-    }
-
-    public Dictionary(Element rootDico, String syntax) throws Exception 
-    {
-    	parseFromXML(rootDico, syntax);
+	    parseFromXML(rootDico);
     }
     
-    private void parseFromXML(Element rootDico, String syntax) throws Exception
+    private void parseFromXML(Element rootDico) throws Exception
     {     
         _layer = rootDico.attributeValue("layer");
         
@@ -124,17 +119,8 @@ public class Dictionary
         int i = 0;
         for (Element elem : list) 
         {
-            ElementAbstract elemInfo = null;
-            //if ("Q931".equalsIgnoreCase(syntax))
-            {
-            	//elemInfo = ElementAbstract.buildFactory("Q931");
-            }
-            //else
-            {
-            	String coding = elem.attributeValue("coding");
-            	elemInfo = ElementAbstract.buildFactory(coding);
-            }
-            
+        	String coding = elem.attributeValue("coding");
+        	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding);
             elemInfo.parseFromXML(elem, this, null, true);
             
             addElement(elemInfo);
