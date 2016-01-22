@@ -52,26 +52,20 @@ public class ElementEAP extends ElementAbstract
 	{
         this.tag = new Integer08Array(array.subArray(0, 1)).getValue();
         
-        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
-        {
-            int length = new Integer08Array(array.subArray(1, 1)).getValue();
-            length = length * 4;
-            Array data = array.subArray(2, length - 2);
-            
-            // remove padding data if the last field is a type of String
-            int lengthPadding = 0;
-            if (!this.fields.isEmpty() && this.fields.get(this.fields.size() - 1) instanceof StringField)
-            {
-	            lengthPadding = ElementEAP.removePaddingBytes(data);
-            }
-            Array dataArray = data.subArray(0, length - lengthPadding - 2);
-
-            decodeFieldsTagElementsFromArray(dataArray, dictionary);            
-            return length;
+	    int lengthDiv4 = new Integer08Array(array.subArray(1, 1)).getValue();
+	    int length = lengthDiv4 * 4 - 2;
+	    Array data = array.subArray(2, length);
+	    
+	    // remove padding data if the last field is a type of String
+	    if (!this.fields.isEmpty() && this.fields.get(this.fields.size() - 1) instanceof StringField)
+	    {
+	        int lengthPadding = ElementEAP.removePaddingBytes(data);
+	        length = length - lengthPadding; 
 	    }
-        
-        return 1;
-        
+	    Array dataArray = data.subArray(0, length);
+	
+	    decodeFieldsTagElementsFromArray(dataArray, dictionary);            
+	    return lengthDiv4 * 4;        
     }
 
 	@Override    
@@ -84,24 +78,18 @@ public class ElementEAP extends ElementAbstract
         Integer08Array idArray = new Integer08Array(this.tag);
         sup.addLast(idArray);
         
-        if (!this.fieldsByName.isEmpty() || !this.elements.isEmpty())
-        {
-        	int length = this.fieldsArray.length + this.subelementsArray.length;
-        	if ((length + 2) % 4 != 0)
-        	{
-        		// throw new ExecutionException("ERROR : The length of data for an \"EAP\" element should be a multiple of 4; please use a \"EAPLength\" element instead of.");
-        	}
-        	int lengthDiv4 = (length + 1) / 4 + 1;
-		    Integer08Array lengthDiv4Array = new Integer08Array(lengthDiv4);
-		    sup.addLast(lengthDiv4Array);		    
-		    sup.addLast(this.fieldsArray);
-		    sup.addLast(this.subelementsArray);
-		    // padding		    
-		    int lengthPadding = (lengthDiv4 - 1) * 4 + 2 - length;
-		    byte[] bytesPadding = getPaddingBytes(lengthPadding);
-		    sup.addLast(new DefaultArray(bytesPadding));
-        }
-        
+    	int length = this.fieldsArray.length + this.subelementsArray.length;
+    	int lengthDiv4 = (length + 1) / 4 + 1;
+	    Integer08Array lengthDiv4Array = new Integer08Array(lengthDiv4);
+	    sup.addLast(lengthDiv4Array);		    
+	    sup.addLast(this.fieldsArray);
+	    sup.addLast(this.subelementsArray);
+
+	    // padding		    
+	    int lengthPadding = (lengthDiv4 - 1) * 4 + 2 - length;
+	    byte[] bytesPadding = getPaddingBytes(lengthPadding);
+	    sup.addLast(new DefaultArray(bytesPadding));
+	    
         return sup;
     }
 

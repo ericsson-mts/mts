@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAP;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLength;
+import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLengthBit;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.ElementQ931;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -118,6 +119,10 @@ public abstract class ElementAbstract implements Cloneable
 		else if ("EAPLength".equals(coding))
 		{
 			newElement = new ElementEAPLength();
+		}
+		else if ("EAPLengthBit".equals(coding))
+		{
+			newElement = new ElementEAPLengthBit();
 		}		
 		else if ("Message".equals(coding))
 		{
