@@ -57,7 +57,8 @@ public class ElementMessage extends ElementAbstract
 		{
         	currentLength = elementHeader.decodeFromArray(array, dictionary);
         	String key = "Message";
-        	FieldAbstract fieldType = elementHeader.getFieldsByName("Type");	        	
+        	String fieldNameForType = dictionary.getFieldNameForType();	 
+        	FieldAbstract fieldType = elementHeader.getFieldsByName(fieldNameForType);
         	if (fieldType != null && fieldType.offset / 8 < array.length)
         	{	  
         		String typeValue = fieldType.getValue(array);
@@ -98,11 +99,8 @@ public class ElementMessage extends ElementAbstract
         SupArray sup = new SupArray();
     	int length = this.fieldsArray.length + this.subelementsArray.length;
     	ElementAbstract elementHeader = getElement(0);
+    	//String fieldNameForLength = dictionary.getFieldNameForLength();
     	FieldAbstract fieldLength = elementHeader.getFieldsByName("Length");
-    	if (fieldLength == null)
-    	{
-    		fieldLength = elementHeader.getFieldsByName("length");
-    	}
     	if (fieldLength != null)
     	{
     		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);

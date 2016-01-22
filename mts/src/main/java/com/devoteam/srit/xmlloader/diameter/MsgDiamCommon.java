@@ -162,7 +162,7 @@ public class MsgDiamCommon extends Msg
     	String eapType = null;
 		// for message with EAP data
     	com.devoteam.srit.xmlloader.core.coding.binary.Dictionary dico = 
-    	com.devoteam.srit.xmlloader.core.coding.binary.Dictionary.getInstance("../conf/binary/dictionary_EAP.xml");
+    	com.devoteam.srit.xmlloader.core.coding.binary.Dictionary.getInstance("binary/dictionary_EAP.xml");
     	
 		ElementAbstract newElement = null;
 		try 

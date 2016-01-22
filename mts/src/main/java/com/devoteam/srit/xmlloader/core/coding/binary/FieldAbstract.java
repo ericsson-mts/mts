@@ -44,6 +44,8 @@ public abstract class FieldAbstract
 {
 	
 	protected String name;
+    protected String description;
+    
     protected int length = Integer.MIN_VALUE;
 
 	protected int offset;
@@ -58,6 +60,7 @@ public abstract class FieldAbstract
     public void parseFromXML(Element rootXML, boolean parseDico) 
     {
         this.name = rootXML.attributeValue("name");
+        this.description = rootXML.attributeValue("description");
         String lengthBit = rootXML.attributeValue("lengthBit");
         if (lengthBit != null && (this.length >= 0 || parseDico)) 
         {

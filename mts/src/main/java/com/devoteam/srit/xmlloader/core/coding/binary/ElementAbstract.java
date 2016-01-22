@@ -373,6 +373,30 @@ public abstract class ElementAbstract implements Cloneable
                 
     }
 
+    /**
+     * get FieldAbsctract for generic element/field structure
+     * with a description that contains a given keyword (between [] character)
+     * @return
+     */
+    public FieldAbstract getFieldByDescriptionKeyword(String keyword) 
+    {
+    	keyword = keyword.toLowerCase();
+    	if (elements.size() > 0)
+    	{
+    		return elements.get(0).getFieldByDescriptionKeyword(keyword);
+    	}
+		Iterator<FieldAbstract> iterF = this.fields.iterator();
+		while (iterF.hasNext())
+		{
+			FieldAbstract field = (FieldAbstract) iterF.next();
+			if (field.description.toLowerCase().contains("[" + keyword + "]"))
+			{
+				return field;
+			}            
+        }
+        return null;
+    }
+
     public int getLengthElem() 
     {
         int length = 0;
