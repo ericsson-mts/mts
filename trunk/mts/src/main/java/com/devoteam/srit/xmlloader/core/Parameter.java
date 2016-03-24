@@ -225,7 +225,7 @@ public class Parameter {
 	    }
 	    else 
 	    {
-	    	addObject((Node) obj);
+	    	addObject(obj);
 	    }
     }
     
