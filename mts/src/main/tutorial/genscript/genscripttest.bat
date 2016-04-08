@@ -4,6 +4,7 @@ rmdir out /s/q
 
 cd ..\..\bin
 
+
 echo --------------------------------------------
 echo -- TEST SIP SUR UDP AVEC PORT PAR DEFAULT --
 echo --------------------------------------------
@@ -170,6 +171,18 @@ set ARGS0="DIAMETER:164.48.219.44:13868"
 set ARGS1="../tutorial/genscript/trace_DIAM_swm_ok.pcap"
 set ARGS2="../tutorial/genscript/out/testout.xml"
 call genscript.bat %ARGS0% %ARGS1% %ARGS2%
+
+
+set ARGS0="DIAMETER:164.48.219.55:3871" 
+set ARGS1="../tutorial/genscript/EX24_DIAMETER.pcap"
+set ARGS2="../tutorial/genscript/out/testout.xml"
+call genscript.bat %ARGS0% %ARGS1% %ARGS2%
+
+set ARGS0="DIAMETER:164.48.219.55:65293" 
+set ARGS1="../tutorial/genscript/EX24_DIAMETER.pcap"
+set ARGS2="../tutorial/genscript/out/testout.xml"
+call genscript.bat %ARGS0% %ARGS1% %ARGS2%
+
 
 echo ------------------------------
 echo -- TEST DES SCRIPTS GENERES --
