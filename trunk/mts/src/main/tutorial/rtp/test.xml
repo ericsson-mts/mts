@@ -146,6 +146,17 @@
         <scenario file="134_rtp_events/UAS.xml" name="invitee" state="[remoteServer]" routingName="invitee"/>
     </testcase>
 
+    <testcase name="134_rtp_events_element" state="true" number="[iterations]" description="rtp : Event message" >
+        <parameter name="[waitSemaphore]" operation="set" value="false"/>     
+        <parameter name="[payloadType]" operation="list.set" value="106"/>
+        <parameter name="[eventDTMF]" operation="list.set" value="01"/>      	
+        <parameter name="[volume]" operation="list.set" value="10"/>
+        <parameter name="[duration]" operation="list.set" value="160"/>
+
+        <scenario file="134_rtp_events_element/UAC.xml" name="inviter" state="[localClient]" routingName="inviter"/>
+        <scenario file="134_rtp_events_element/UAS.xml" name="invitee" state="[remoteServer]" routingName="invitee"/>
+    </testcase>
+
     <testcase name="140_probe_capture" state="true" number="[iterations]" description="rtp : probe capture" >
         <parameter name="[waitSemaphore]" operation="set" value="true"/>        
         <parameter name="[payloadType]" operation="list.set" value="106"/>
