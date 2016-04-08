@@ -88,31 +88,31 @@
     <test parameter="[SN]" condition="binary.equals" value="0001FD"/>    
         
     <parameter name="[SNExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Sequence-number.field.ext1"/>        
-    <test parameter="[SNExt1]" condition="number.equals" value="1"/>
+    <test parameter="[SNExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[SNSequenceNumber]" operation="protocol.setFromMessage" value="isdn.element.PSTN Sequence-number.field.Sequence number"/>        
     <test parameter="[SNSequenceNumber]" condition="number.equals" value="125"/>
 
     <parameter name="[CR]" operation="protocol.setFromMessage" value="isdn.element.PSTN Cadenced-ringing"/>            
     <test parameter="[CR]" condition="binary.equals" value="01018A"/>        
     <parameter name="[CRExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Cadenced-ringing.field.ext1"/>        
-    <test parameter="[CRExt1]" condition="number.equals" value="1"/>
+    <test parameter="[CRExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[CRCadencedRingingType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Cadenced-ringing.field.Cadenced-ringing type"/>        
     <test parameter="[CRCadencedRingingType]" condition="number.equals" value="10"/>
 
     <parameter name="[PS]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal"/>            
     <test parameter="[PS]" condition="binary.equals" value="0203F6D4BE"/>            
     <parameter name="[PSExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.ext1"/>        
-    <test parameter="[PSExt1]" condition="number.equals" value="1"/>
+    <test parameter="[PSExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[PSPulseType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.Pulse type"/>        
     <test parameter="[PSPulseType]" condition="string.equals" value="Register recall (timed loop open):118"/>
     <parameter name="[PSExt2]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.ext2"/>        
-    <test parameter="[PSExt2]" condition="number.equals" value="1"/>
+    <test parameter="[PSExt2]" condition="boolean.equals" value="True:1"/>
     <parameter name="[PSSuppressionIndicator]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.Suppression indicator"/>        
     <test parameter="[PSSuppressionIndicator]" condition="string.equals" value="Suppression allowed by pre-defined line signal from TE:2"/>
     <parameter name="[PSPulseDurationType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.Pulse duration type"/>        
     <test parameter="[PSPulseDurationType]" condition="number.equals" value="20"/>
     <parameter name="[PSExt3]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.ext3"/>        
-    <test parameter="[PSExt3]" condition="number.equals" value="1"/>
+    <test parameter="[PSExt3]" condition="boolean.equals" value="True:1"/>
     <parameter name="[PSAcknowledgeRequestIndicator]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.Acknowledge request indicator"/>        
     <test parameter="[PSAcknowledgeRequestIndicator]" condition="string.equals" value="Ending acknowledgement requested when finished each pulse:1"/>
     <parameter name="[PSNumberOfPulses]" operation="protocol.setFromMessage" value="isdn.element.PSTN Pulsed-signal.field.Number of pulses"/>        
@@ -121,60 +121,60 @@
     <parameter name="[SS]" operation="protocol.setFromMessage" value="isdn.element.PSTN Steady-signal"/>            
     <test parameter="[SS]" condition="binary.equals" value="03018C"/>                
     <parameter name="[SSExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Steady-signal.field.ext1"/>        
-    <test parameter="[SSExt1]" condition="number.equals" value="1"/>
+    <test parameter="[SSExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[SSSteadySignalType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Steady-signal.field.Steady-signal type"/>        
     <test parameter="[SSSteadySignalType]" condition="string.equals" value="Alternate reduced power/no power:12"/>
 
     <parameter name="[DS]" operation="protocol.setFromMessage" value="isdn.element.PSTN Digit-signal"/>            
     <test parameter="[DS]" condition="binary.equals" value="0401DF"/>                
     <parameter name="[DSExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Digit-signal.field.ext1"/>        
-    <test parameter="[DSExt1]" condition="number.equals" value="1"/>
+    <test parameter="[DSExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[DSDigitAcknowledgeRequestIndicator]" operation="protocol.setFromMessage" value="isdn.element.PSTN Digit-signal.field.Digit acknowledge request indicator"/>        
     <test parameter="[DSDigitAcknowledgeRequestIndicator]" condition="string.equals" value="Ending acknowledgement requested when digit transmission is finished:1"/>
     <parameter name="[DSSpare]" operation="protocol.setFromMessage" value="isdn.element.PSTN Digit-signal.field.spare"/>        
-    <test parameter="[DSSpare]" condition="number.equals" value="1"/>
+    <test parameter="[DSSpare]" condition="boolean.equals" value="True:1"/>
     <parameter name="[DSDigitInformation]" operation="protocol.setFromMessage" value="isdn.element.PSTN Digit-signal.field.Digit information"/>        
     <test parameter="[DSDigitInformation]" condition="number.equals" value="15"/>
 
     <parameter name="[RU]" operation="protocol.setFromMessage" value="isdn.element.PSTN Resource-unavailable"/>            
     <test parameter="[RU]" condition="binary.equals" value="140A10111213141516171819"/>                
     <parameter name="[RUExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Resource-unavailable.field.ext1"/>        
-    <!--test parameter="[RUExt1]" condition="number.equals" value="1"/-->
+    <!--test parameter="[RUExt1]" condition="boolean.equals" value="True:1"/-->
     <parameter name="[RUCopyOfInformation]" operation="protocol.setFromMessage" value="isdn.element.PSTN Resource-unavailable.field.Copy of information element with failed request"/>        
-    <!--test parameter="[RUCopyOfInformation]" condition="number.equals" value="1"/-->
+    <!--test parameter="[RUCopyOfInformation]" condition="boolean.equals" value="True:1"/-->
 
     <parameter name="[EM]" operation="protocol.setFromMessage" value="isdn.element.PSTN Enable-meetering"/>            
     <test parameter="[EM]" condition="binary.equals" value="2205F480BFEFB1"/>                
     <parameter name="[EMExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Enable-meetering.field.ext1"/>        
-    <test parameter="[EMExt1]" condition="number.equals" value="1"/>
+    <test parameter="[EMExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[EMPulseType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Enable-meetering.field.Pulse type"/>        
     <!--test parameter="[EMPulseType]" condition="string.equals" value="Pulsed b-wire connected to earth:116"/-->
     <parameter name="[EMExt2]" operation="protocol.setFromMessage" value="isdn.element.PSTN Enable-meetering.field.ext2"/>        
-    <!--test parameter="[EMExt2]" condition="number.equals" value="1"/-->
+    <!--test parameter="[EMExt2]" condition="boolean.equals" value="True:1"/-->
     <parameter name="[EMRateType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Enable-meetering.field.Rate type"/>        
     <!--test parameter="[EMRateType]" condition="string.equals" value="Nometering pulses to be applied automatically.:1"/-->
 
     <parameter name="[MR]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report"/>            
     <test parameter="[MR]" condition="binary.equals" value="2303E4CA81"/>                
     <parameter name="[MRExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.ext1"/>        
-    <test parameter="[MRExt1]" condition="number.equals" value="1"/>
+    <test parameter="[MRExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[MRPulseCountHIGH]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.Pulse count HIGH"/>        
     <!--test parameter="[MRPulseCountHIGH]" condition="number.equals" value="100"/-->
     <parameter name="[MRExt2]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.ext2"/>        
-    <!--test parameter="[MRExt2]" condition="number.equals" value="1"/-->    
+    <!--test parameter="[MRExt2]" condition="boolean.equals" value="True:1"/-->    
     <parameter name="[MRReportType]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.Report type"/>        
     <!--test parameter="[MRReportType]" condition="string.equals" value="Positive acknowledgement of new automatic metering instructions"/-->    
     <parameter name="[MRPulseCountLOW]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.Pulse count LOW"/>        
     <!--test parameter="[MRPulseCountLOW]" condition="number.equals" value="10"/-->
     <parameter name="[MRExt3]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.ext3"/>        
-    <!--test parameter="[MRExt3]" condition="number.equals" value="1"/-->    
+    <!--test parameter="[MRExt3]" condition="boolean.equals" value="True:1"/-->    
     <parameter name="[MRFailureReason]" operation="protocol.setFromMessage" value="isdn.element.PSTN Metering-report.field.Failure Reason"/>        
     <!--test parameter="[MRFailureReason]" condition="string.equals" value="Port blocked (FE203/204)"/-->    
 
     <!--parameter name="[A]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation"/>            
     <test parameter="[A]" condition="binary.equals" value="FF"/>                
     <parameter name="[AExt1]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation.field.ext1"/>        
-    <test parameter="[AExt1]" condition="number.equals" value="1"/>
+    <test parameter="[AExt1]" condition="boolean.equals" value="True:1"/>
     <parameter name="[AAttenuationValue]" operation="protocol.setFromMessage" value="isdn.element.PSTN Attenuation.field.Attenuation value"/>        
     <test parameter="[AAttenuationValue]" condition="number.equals" value="127"/-->       
 

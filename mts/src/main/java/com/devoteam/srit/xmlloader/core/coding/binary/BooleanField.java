@@ -58,7 +58,15 @@ public class BooleanField extends FieldAbstract
     @Override
     public String getValue(Array array) throws Exception 
     {
-        return Integer.toString(array.getBits(this.offset, this.length));
+    	int val = array.getBits(this.offset, this.length);
+    	if (val == 0)
+    	{
+    		return "False:0";
+    	}
+    	else
+    	{
+    		return "True:1";
+    	}
     }
 
     @Override
