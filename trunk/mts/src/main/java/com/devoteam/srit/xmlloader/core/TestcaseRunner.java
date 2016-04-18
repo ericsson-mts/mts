@@ -38,7 +38,6 @@ import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener
 import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationSender;
 import gp.utils.scheduler.Task;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -418,13 +417,6 @@ public class TestcaseRunner extends Runner implements Task,
             GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Terminate a testcase (time = ", duration_stats, " s) for the transaction : ", toString());
             StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TESTCASE, _testcase.getName(), "_completeNumber"), 1);
 
-            Iterator iter = _testcase.getScenarioPathByNameMap().entrySet().iterator();
-            // while (iter.hasNext())
-            {
-            	// ScenarioReference scenario = (ScenarioReference) iter.next();
-            	// if (scenario.)
-            }
-
             for (Entry<String, RunnerState> entry : _states.entrySet()) 
             {
             	RunnerState scenarioState = entry.getValue();
@@ -434,9 +426,6 @@ public class TestcaseRunner extends Runner implements Task,
             		break;
             	}
             }
-            // if (getState().isFailed()) {
-            //    StatPool.getInstance().addValue(new StatKey(StatPool.PREFIX_TESTCASE, _testcase.getName(), "_failedNumber"), 1);
-            //}
         }
 
         // Test, based on time, number of runs, or current state, if the
@@ -446,10 +435,6 @@ public class TestcaseRunner extends Runner implements Task,
 
         getState()._timeCurrent = current_time;
         getState()._executionsCurrent++;
-
-
-        // compute progression
-        //getState()._progression = 0;
 
         if (getState()._timeEnd > 0) {
             long timeProgression = (getState()._timeCurrent - getState()._timeBegin) * 100 / (getState()._timeEnd - getState()._timeBegin);
