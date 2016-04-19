@@ -6,8 +6,22 @@
 			Version : 6.2.2_beta (revision SVN nnnn) le dd/mm/yyyy
 
 Evolutions : 
+  * Add new operation string.jpath for getting information from JSON data (code 
+    from JC Le Rouzic)
+  * Add a new testcase for encoding/decoding RTP Event message using a generic 
+    mechanism based on <element>/<field> structure (same concept as for EAP-AKA 
+    protocol)
+  * Add a new <parameter> called "binary.elementSetFrom" to analyze the elements 
+    without using the XML format (optimisating in order to make load testing 
+    for Orange)       
+  * Add a new operation for PRF (Pseudo Random Fonction) caculation  
+  * Implement the calcul of the AT_ENCR_DATA attribute (EAP_AKA protocol)   
+  * Test the java JDK1.8 => OK   
+
     
 Fault report :
+  * Fix a bad cast on the string.xpath <parameter> operation (on JC Le Rouzic 
+    request)
 
 Migration :   
 
@@ -22,9 +36,6 @@ Migration :
 Evolutions : 
   * Add a <parameter> operation called "number.abs" to calculate the absolute 
     value (the value without the sign) of a number.
-  * Ajout d'un operation <parameter> qui s'appelle "binary.elementSetFrom" 
-    pour analyser des elements sans passer par les formats XML (optimisation 
-    en vue des tests de charge chez Orange)
   * Ajouter le Replacer standard de Diameter sur les listepoints => pour 
     supporter des variables multiples dans la grammaire du <createListenpointDIAMETER>  
   * Ameliorer l'operation <parameter> "string.xpath" lorsque un element 
