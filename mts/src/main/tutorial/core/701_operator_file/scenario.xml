@@ -122,14 +122,7 @@
     
     <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_header.csv" value2="bidon" />
     <test parameter="[csv]" condition="list.size"  value="0" />
-    
-    <parameter name="[timestampBegin]" operation="system.timestamp" />
-    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_user.csv" value2="inviter" />
-    <test parameter="[csv]" condition="list.size"  value="79904" />
-    <parameter name="[timestampEnd]" operation="system.timestamp" />
-    <parameter name="[duration]" operation="number.substract" value="[timestampEnd]" value2="[timestampBegin]" />
-    <test parameter="[duration]" condition="number.lowerThan"  value="500" />
-    
+        
     <parameter name="[result]" operation="file.create" value="701_operator_file/write_file_col.csv" />
     <parameter name="[csvRead1]" operation="file.readcsv" value="701_operator_file/read_no_header.csv" value2="1" />
     <parameter name="[result1]" operation="file.writeCsvCol" value="701_operator_file/write_file_col.csv" value2="[csvRead1]" />
@@ -155,5 +148,15 @@
     <test parameter="[csvWriteRead2(1)]" condition="string.equals"  value="titi" />
     <parameter name="[csvWriteRead3]" operation="file.readcsv" value="701_operator_file/write_file_raw.csv" value2="3" />
     <test parameter="[csvWriteRead3]" condition="string.equals"  value="toto" />
-
+    
+    <parameter name="[timestampBegin]" operation="system.timestamp" />
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_user.csv" value2="inviter" />
+    <test parameter="[csv]" condition="list.size"  value="79904" />
+    <parameter name="[timestampEnd]" operation="system.timestamp" />
+    <parameter name="[duration]" operation="number.substract" value="[timestampEnd]" value2="[timestampBegin]" />
+    <test parameter="[duration]" condition="number.lowerThan"  value="500" />
+    
+    <parameter name="[csvSize]" operation="list.size" value="[csv]"/>
+    <parameter name="[csvSize]" operation="number.substract" value="[csvSize]" value2="1"/>
+                
 </scenario>
