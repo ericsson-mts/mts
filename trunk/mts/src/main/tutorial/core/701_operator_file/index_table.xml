@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <parameter name="[timestampBegin]" operation="system.timestamp" />
+    <parameter name="[csv]" operation="file.readcsv" value="701_operator_file/read_user.csv" value2="inviter" />
+    <test parameter="[csv]" condition="list.size"  value="79904" />
+    <parameter name="[timestampEnd]" operation="system.timestamp" />
+    <parameter name="[duration]" operation="number.substract" value="[timestampEnd]" value2="[timestampBegin]" />
+    <test parameter="[duration]" condition="number.lowerThan"  value="500" />
+    
+    <parameter name="[csvSize]" operation="list.size" value="[csv]"/>
+    <parameter name="[csvSize]" operation="number.substract" value="[csvSize]" value2="1"/>
+    <for index="[index]" from="0" to="[csvSize]">
+    <!--for index="[index]" from="0" to="2000"-->
+          <parameter name="[csv_user_[csv([index])]]" operation="set" value="[index]"/>
+    </for>
+    <parameter name="[user]" operation="set" value="[csv(1000)]"/>      
+    <parameter name="[index10000]" operation="list.find" value="[csv]" value2="[user]"/>
+    <test parameter="[index10000]" condition="number.equals" value="1000"/>
+    <parameter name="[index10000]" operation="set" value="[csv_user_[user]]"/>
+    <test parameter="[index10000]" condition="number.equals" value="1000"/>    
+                
+</scenario>
