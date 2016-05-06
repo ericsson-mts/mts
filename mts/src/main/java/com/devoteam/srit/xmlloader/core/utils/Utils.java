@@ -1704,15 +1704,28 @@ public class Utils
 		if (data.length >= 16)
 		{
 			strRes = "[" + strRes + "]";
+			strRes = compacteIPV6Address(strRes);
 		}
-		strRes = strRes.replaceFirst(":0:", "::");
-		strRes = strRes.replaceFirst(":0:", ":");
-		strRes = strRes.replaceFirst(":0:", ":");
-		strRes = strRes.replaceFirst(":0:", ":");
-		strRes = strRes.replaceFirst(":0:", ":");
-		strRes = strRes.replaceFirst(":0:", ":");
-		strRes = strRes.replaceFirst(":0:", ":");
-		strRes = strRes.replaceFirst(":0:", ":");
 		return strRes;
     }
+
+    /**
+     * Compacte IP V6 adress : replace "0:" by "::"
+     * @param address
+     * @return
+     * @throws Exception
+     */
+    public static String compacteIPV6Address(String address) throws Exception
+    {
+    	address = address.replaceFirst(":0:", "::");
+    	address = address.replaceFirst(":0:", ":");
+    	address = address.replaceFirst(":0:", ":");
+    	address = address.replaceFirst(":0:", ":");
+    	address = address.replaceFirst(":0:", ":");
+    	address = address.replaceFirst(":0:", ":");
+    	address = address.replaceFirst(":0:", ":");
+    	address = address.replaceFirst(":0:", ":");
+    	return address;
+    }
+    
 }

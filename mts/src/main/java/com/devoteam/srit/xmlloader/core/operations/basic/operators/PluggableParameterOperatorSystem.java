@@ -116,7 +116,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         }
         else if (name.equalsIgnoreCase(S_TIMESTAMP)) {
         	if (null != param_1 && param_1.length() != 1) {
-                    throw new ParameterException("value attribute should have a size of 1 for operation system.ipaddress");
+                    throw new ParameterException("value attribute should have a size of 1.");
         	}
 
         	String var2 = "1970";
@@ -136,7 +136,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         }
         else if (name.equalsIgnoreCase(S_MACADDRESS)) {
         	if (null != param_1 && param_1.length() != 1) {
-        		throw new ParameterException("value attribute should have a size of 1 for operation system.ipaddress");
+        		throw new ParameterException("value attribute should have a size of 1.");
         	}
         	try {
         		// add loopback address
@@ -146,7 +146,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         			byte[] mac = network.getHardwareAddress();
         			String res = "";
         			for (int j = 0; j < mac.length; j++)
-    					res += String.format("%02x%s", mac[j], (j < mac.length - 1) ? ":" : "");
+    					   res += String.format("%02x%s", mac[j], (j < mac.length - 1) ? ":" : "");
     				result.add(res);
     			}
         		else
@@ -172,7 +172,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         }
         else if (name.equalsIgnoreCase(S_IPADDRESS)) {
         	if (null != param_1 && param_1.length() != 1) {
-        		throw new ParameterException("value attribute should have a size of 1 for operation system.ipaddress");
+        		throw new ParameterException("value attribute should have a size of 1.");
         	}
         	String version = "4";
         	if (operands.get("value2") != null)
@@ -186,26 +186,34 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         		ArrayList<String> array = new ArrayList<String>();
         		for (Enumeration e = NetworkInterface.getNetworkInterfaces(); e.hasMoreElements();) {
         			NetworkInterface eth = (NetworkInterface) e.nextElement();
-        			if (null == param_1 || param_1.get(0).toString().equals(eth.getName())) {
-        				for (Enumeration addr = eth.getInetAddresses(); addr.hasMoreElements();) {
+        			if (null == param_1 || param_1.get(0).toString().equals(eth.getName())) 
+        			{
+        				for (Enumeration addr = eth.getInetAddresses(); addr.hasMoreElements();) 
+        				{
         					address = (InetAddress) addr.nextElement();
         					if (version.contains("6") && address instanceof Inet6Address)
         					{
-        						// remove loopback address
-	                            if (!address.isLoopbackAddress())
-	                            {
-	        						Inet6Address a = (Inet6Address) address;
-	        						result.add(new String("[" + a.getHostAddress().split("%")[0] + "]"));
-	                            }
-        					}
+	        					// remove loopback address
+			                    if (!address.isLoopbackAddress())
+			                    {
+								   Inet6Address a = (Inet6Address) address;
+								   String strRes = a.getHostAddress();
+								   // remove mask network
+								   strRes = strRes.split("%")[0];
+								   strRes = Utils.compacteIPV6Address(strRes);
+								   // add [ ] at the end
+								   strRes = "[" + strRes + "]"; 
+								   result.add(strRes);
+			                    }
+	        				}
         					if (version.contains("4") && address instanceof Inet4Address)
-                            {
-                            	// remove loopback address
-	                            if (!address.isLoopbackAddress())
-	                            {
-	                            	result.add(address.getHostAddress()); // obtain the ip value from the specified interface
-	                            }
-                            }
+        					{
+			                	// remove loopback address
+	   		                    if (!address.isLoopbackAddress())
+			                    {
+	   		                    	result.add(address.getHostAddress()); // obtain the ip value from the specified interface
+			                    }
+        					}
         				}
         			}
         		}
@@ -214,7 +222,7 @@ public class PluggableParameterOperatorSystem extends AbstractPluggableParameter
         			if (version.contains("4"))
         				result.add("127.0.0.1");
         			if (version.contains("6"))
-        				result.add("[::1]");
+        				result.add("[0::1]");
     			}
         	}
         	catch (Exception e) {
