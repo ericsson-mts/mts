@@ -24,7 +24,12 @@ Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
                                 * [ AVP ]
 -->
 
-    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[testcase:localHostsV4]" operation="system.ipaddress" value2="IPV4"/>
+    <parameter name="[hostIPV4Binary]" operation="binary.fromIP" value="[localHostsV4]"/>
+    <parameter name="[hostIPV4Binary]" operation="set" value="0001[hostIPV4Binary]"/>
+    <parameter name="[testcase:localHostsV6]" operation="system.ipaddress" value2="IPV6"/>    
+    <parameter name="[hostIPV6Binary]" operation="binary.fromIP" value="[localHostsV6]"/>
+    <parameter name="[hostIPV6Binary]" operation="set" value="0002[hostIPV6Binary]"/>    
     <sendMessageDIAMETER name="Send Request RFC3588 CER" remoteURL="diameter://[remoteDIAM]" destScenario="peer2">
         <header request="true" command="Capabilities-Exchange:257" applicationId="Diameter Common Messages:0" proxiable="false" error="false" retransmit="false"/>
 
@@ -34,7 +39,8 @@ Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
         <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
 
         <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
-        <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHosts]"/>
+        <avp code="Host-IP-Address:257" mandatory="true" type="binary" value="[hostIPV4Binary]"/>
+        <avp code="Host-IP-Address:257" mandatory="true" type="binary" value="[hostIPV6Binary]"/>
 
         <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
         <!-- A Vendor-Id value of zero in the CER or CEA messages is reserved and indicates that this field is ignored. -->
@@ -80,6 +86,12 @@ Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer RFC3588 CEA" request="false" type="Capabilities-Exchange:257" result="DIAMETER_SUCCESS:2001">
+        <parameter name="[hostIPBinary]" operation="protocol.setFromMessage" value="avp.Host-IP-Address:257.binary"/>    
     </receiveMessageDIAMETER>
     
+    <parameter name="[hostIPBinary]" operation="binary.subBinary" value="[hostIPBinary]" value2="2"/>
+    <parameter name="[hostIPValue]" operation="binary.toIP" value="[hostIPBinary]"/>
+    <test parameter="[hostIPValue]" condition="list.contains" value="[testcase:localHostsV4(0)]"/>    
+    <test parameter="[hostIPValue]" condition="list.contains" value="[testcase:localHostsV6(0)]"/>
+        
 </scenario>
