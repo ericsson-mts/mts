@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <test name="IMAP non regression load tests">
 
-    <parameter name="[listenIp]" operation="set" value="0.0.0.0"/>
-    <parameter name="[remoteHostIMAP]" operation="system.ipaddress"/>
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostIMAP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostIMAP]" operation="set" value="[localHostIMAP(0)]" description="local address of the MTS host" editable="true" />
+    <parameter name="[localPortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortIMAP]" operation="set" value="[localPortIMAP]" description="local port of the MTS host" editable="true" />
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
+    
+    <parameter name="[remoteHostIMAP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostIMAP]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostIMAP]" operation="set" value="[remoteHostIMAP(0)]" description="remote address of the SUT host" editable="true" />
+    <!--parameter name="[remotePortIMAP]" operation="set" value="1234"/-->
+    <parameter name="[remotePortIMAP]" operation="file.readproperty" value="imap.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remotePortIMAP]" operation="set" value="[remotePortIMAP]" description="remote port of the SUT host" editable="true" />
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
+
     <parameter name="[cpt]" operation="set" value="1"/>
     
     <for from="9140" index="[i]" to="9145">
         <testcase name="test_[i]" state="true">
-            <parameter name="[port]" operation="set" value="[i]"/>
+            <parameter name="[localPortIMAP]" operation="set" value="[i]"/>
+            <parameter name="[remotePortIMAP]" operation="set" value="[i]"/>
+            
             <scenario file="scenario/client.xml" name="client_[i]" routingName="client_[i]"/>
             <scenario file="scenario/server.xml" name="[i]" routingName="[i]"/>
         </testcase>

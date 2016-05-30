@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    <parameter name="[connection]" operation="set" value="scenario_[port]" />
 
     <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
-    <openChannelIMAP name="[connection]" remoteHost="[serverRemoteIp(0)]" remotePort="[port]"/>
+    
+    <parameter name="[connection]" operation="set" value="scenario_[remotePortIMAP]" />    
+    <openChannelIMAP name="[connection]" remoteHost="[remoteHostIMAP]" remotePort="[remotePortIMAP]"/>
     
     <parameter name="[tagReq]" operation="string.random" value="4" />
     <!-- envoi requete capability-->
