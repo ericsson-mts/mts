@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <function name="encode">
+        <input>
+            <parameter name="[function:event]" type="string" />
+            <parameter name="[function:flag_E]" type="boolean" />
+            <parameter name="[function:flag_R]" type="boolean" default="false:0"/>            
+            <parameter name="[function:volume]" type="number" />
+            <parameter name="[function:duration]" type="number" />
+        </input>    
+        <do>    
+            <parameter name="[messageRTPEvent]" operation="set">
+            <![CDATA[
+            <element label="MessageRTPEvent" coding="Message" value="" description="">
+                <!-- Header => IETF RFC 2833 chapter 3.5 page 5 -->
+                <element label="HeaderRTPEvent" coding="V" description="">
+                    <field name="event" value="[event]" type="EnumLong" length="1" description=""/>
+                    <field name="flag_E" value="[flag_E]" lengthBit="1" type="boolean" description="End flag"/>            
+                    <field name="flag_R" value="[flag_R]" lengthBit="1" type="boolean" description="Reserved flag"/>                                
+                    <field name="volume" value="[volume]" lengthBit="6" type="integer" description=""/>
+                    <field name="duration" value="[duration]" length="2" type="integer" description=""/>        
+            </element></element>           
+            ]]>
+            </parameter>
+            <!-- use binary.elementFromXml operation -->            
+            <parameter name="[binaryRTPEvent]" operation="binary.elementFromXml" value="[messageRTPEvent]" value2="binary/dictionary_RTPEvent.xml"/>
+        </do>
+        <output>
+            <parameter name="[function:binaryRTPEvent]" />
+        </output>
+    </function>
+
+	  <createListenpointUDP name="client" localHost="[localHost]" localPort="[localPort]"/>
+
+  	<!--parameter name="[testcase:messageID]" operation="number.random" value="65535"/-->
+    <parameter name="[testcase:messageID]" operation="set" value="12514"/>
+    <!--parameter name="[testcase:token]" operation="binary.random" value="4"/-->
+    <parameter name="[testcase:token]" operation="set" value="a7004d56"/>
+	
+    <parameter name="[testcase:serverListen]" operation="system.semaphorewait"/>      
+
+    <!-- GET request -->
+    <parameter name="[messageCOAP]" operation="set">
+    <![CDATA[
+    <element label="COAP" coding="Message" description="">
+        <!-- Header => IETF RFC 7252 chapter 3 page 16 -->
+        <element label="HeaderCOAP" coding="V" description="">
+          <field name="Ver" value="RFC #7252:1" type="EnumLong" lengthBit="2" description="Version"/>
+          <field name="T" value="Confirmable:0" type="EnumLong" lengthBit="2" description="Type"/>
+          <field name="TKL" value="4" type="Integer" lengthBit="4" description="Token Length"/>
+          <!-- Code => IETF RFC 7252 chapter 12.1 page 86 -->
+          <field name="Code" value="0.01 GET:1" type="EnumLong" length="1" description="c.dd : Class(3bits).Digit(5bits)"/>
+          <field name="Message ID" value="[messageID]" type="Integer" length="2" description=""/>
+          <field name="Token" value="[token]" type="Binary" length="4" description=""/>          
+        </element>                    
+    </element>
+    ]]>
+    </parameter>
+
+    <!-- use binary.elementFromXml operation -->            
+    <parameter name="[binaryCOAP]" operation="binary.elementFromXml" value="[messageCOAP]" value2="binary/dictionary_COAP.xml"/>
+    <test parameter="[binaryCOAP]" condition="binary.equals" value="440130e2a7004d56"/>
+
+    <!--test parameter="[binaryCOAP]" condition="binary.equals" value="010a00a0"/-->
+  	<sendMessageUDP name="send GET request" listenpoint="client" remoteHost="[remoteHost]" remotePort="[remotePort]">
+	    <data format="binary">h[binaryCOAP]</data>
+    </sendMessageUDP>
+                
+  	<receiveMessageUDP name="receive GET Response" listenpoint="client" type="DATAGRAM">
+  	</receiveMessageUDP>
+			
+</scenario>
