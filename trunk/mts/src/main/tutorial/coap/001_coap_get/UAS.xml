@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <function name="decodeRTPEvent">
+        <input>
+            <parameter name="[function:binaryRTPEvent]"  type="binary" />
+        </input>        
+        <do>        
+            <!-- use binary.elementToXml operation -->
+            <parameter name="[xmlEAP]" operation="binary.elementToXml" value="[binaryRTPEvent]" value2="binary/dictionary_RTPEvent.xml"/>
+                 
+            <!-- use binary.elementSetFrom operation -->                 
+            <parameter name="[event]" operation="binary.elementSetFrom" value="[binaryRTPEvent]" value2="element.HeaderRTPEvent.field.event" value3="binary/dictionary_RTPEvent.xml"/>
+            <parameter name="[flag_E]" operation="binary.elementSetFrom" value="[binaryRTPEvent]" value2="element.HeaderRTPEvent.field.flag_E" value3="binary/dictionary_RTPEvent.xml"/>    
+            <parameter name="[flag_R]" operation="binary.elementSetFrom" value="[binaryRTPEvent]" value2="element.HeaderRTPEvent.field.flag_R" value3="binary/dictionary_RTPEvent.xml"/>    
+            <parameter name="[volume]" operation="binary.elementSetFrom" value="[binaryRTPEvent]" value2="element.HeaderRTPEvent.field.volume" value3="binary/dictionary_RTPEvent.xml"/>    
+            <parameter name="[duration]" operation="binary.elementSetFrom" value="[binaryRTPEvent]" value2="element.HeaderRTPEvent.field.duration" value3="binary/dictionary_RTPEvent.xml"/>
+                            
+        </do>                 
+        <output>
+            <parameter name="[function:event]"/>
+            <parameter name="[function:flag_E]"/>
+            <parameter name="[function:flag_R]"/>            
+            <parameter name="[function:volume]"/>
+            <parameter name="[function:duration]"/>
+        </output>  
+    </function>
+    	
+	  <createListenpointUDP name="server" localHost="[remoteHost]" localPort="[remotePort]"/>
+
+    <parameter name="[testcase:serverListen]" operation="system.semaphorenotify"/>
+      
+    <receiveMessageUDP name="Receive GET request" listenpoint="server" type="DATAGRAM">
+        <parameter name="[lastRemoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[lastRemotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>        
+        <parameter name="[lastBinaryCOAP]" operation="protocol.setFromMessage" value="data.binary"/>	
+    </receiveMessageUDP >
+    <test parameter="[lastBinaryCOAP]" condition="binary.equals" value="440130e2a7004d56"/>    
+
+    <!-- use binary.elementToXml operation -->
+    <parameter name="[xmlCOAP]" operation="binary.elementToXml" value="[lastBinaryCOAP]" value2="binary/dictionary_COAP.xml"/>
+         
+    <!-- use binary.elementSetFrom operation -->                 
+    <parameter name="[lastVersion]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Ver" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastVersion]" condition="string.equals" value="RFC #7252:1"/>    
+    <parameter name="[lastType]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.T" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastType]" condition="string.equals" value="Confirmable:0"/>        
+    <parameter name="[lastTKL]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.TKL" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastTKL]" condition="number.equals" value="4"/>        
+    <parameter name="[lastCode]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Code" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastCode]" condition="string.equals" value="0.01 GET:1"/>        
+    <parameter name="[lastMessageID]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Message ID" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastMessageID]" condition="number.equals" value="12514"/>
+    <parameter name="[lastToken]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Token" value3="binary/dictionary_COAP.xml"/>    
+    <test parameter="[lastToken]" condition="binary.equals" value="a7004d56"/>    
+        
+  	<sendMessageUDP name="Send GET Response" listenpoint="server" remoteHost="[lastRemoteHost]" remotePort="[lastRemotePort]">
+        <data format="binary">h11111111</data>  	
+    </sendMessageUDP>
+				
+</scenario>

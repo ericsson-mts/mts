@@ -16,71 +16,71 @@
     <element label="COAP" coding="Message" description="">
         <!-- Header => IETF RFC 7252 chapter 3 page 16 -->
         <element label="HeaderCOAP" coding="V" description="">
-          <field name="Ver" type="EnumLong" lengthBits="2" description="Version">
+          <field name="Ver" type="EnumLong" lengthBit="2" description="Version">
             <enum name="Undefined" value="0"/>          
             <enum name="RFC #7252" value="1"/>          
             <enum name="Future" value="2-3"/>                        
           </field>                    
-          <field name="T" lengthBits="2" type="EnumLong" description="Type">
+          <field name="T" type="EnumLong" lengthBit="2" description="Type">
             <enum name="Confirmable" value="0"/>          
             <enum name="Non-confirmable" value="1"/>          
             <enum name="Acknowledgement" value="2"/>                        
             <enum name="Reset" value="3"/>
           </field>
-          <field name="TKL" lengthBits="4" type="Integer" description="Token Length"/>
+          <field name="TKL" type="Integer" lengthBit="4" description="Token Length"/>
           <!-- Code => IETF RFC 7252 chapter 12.1 page 86 -->
-          <field name="Code" length="1" type="EnumLong" description="c.dd : Class(3bits).Digit(5bits)">
+          <field name="Code" type="EnumLong" length="1" description="c.dd : Class(3bits).Digit(5bits)">
             <!-- Class 0 = 0.0 : Indicates an Empty message (see Section 4.1).--> 
-            <enum name="0" value="0.00 Empty" description="Indicates an Empty message (see Section 4.1)."/>
+            <enum name="0.00 Empty" value="0" description="Indicates an Empty message (see Section 4.1)."/>
             <!-- Class 0 = 0.01-0.31 : Indicates a request. Values in this range are assigned 
                  by the "CoAP Method Codes" sub-registry (see Section 12.1.1). -->            
-            <enum name="1" value="0.01 GET" description="RFC #7252 : See Table 5: CoAP Method Codes"/>
-            <enum name="2" value="0.02 POST" description="RFC #7252 : See Table 5: CoAP Method Codes"/>
-            <enum name="3" value="0.03 PUT" description="RFC #7252 : See Table 5: CoAP Method Codes"/>
-            <enum name="4" value="0.04 DELETE" description="RFC #7252 : See Table 5: CoAP Method Codes"/>            
-            <enum name="[05-31]" value="0.[05-31] Unassigned"/>                      
+            <enum name="0.01 GET" value="1" description="RFC #7252 : See Table 5: CoAP Method Codes"/>
+            <enum name="0.02 POST" value="2" description="RFC #7252 : See Table 5: CoAP Method Codes"/>
+            <enum name="0.03 PUT" value="3" description="RFC #7252 : See Table 5: CoAP Method Codes"/>
+            <enum name="0.04 DELETE" value="4" description="RFC #7252 : See Table 5: CoAP Method Codes"/>            
+            <enum name="0.[05-31] Unassigned" value="05-31"/>                      
             <!-- class 1 = 1.00-1.32 : Reserved -->            
-            <enum name="[32-63]" value="1.[00-31] Reserved"/>
+            <enum name="1.[00-31] Reserved" value="32-63"/>
             <!-- class 2-5 : Indicates a response.  Values in this range are assigned by
              the "CoAP Response Codes" sub-registry (see Section 12.1.2). -->
-            <enum name="64" value="2.00 Unassigned" />
-            <enum name="65" value="2.01 Created" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="66" value="2.02 Deleted" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="67" value="2.03 Valid" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="68" value="2.04 Changed" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="69" value="2.05 Content" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="70-95" value="2.[06-31] Unassigned"/>
-            <enum name="[96-127]" value="3.[00.31] Reserved" />
-            <enum name="128" value="4.00 Bad Request" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="129" value="4.01 Unauthorized" description="RFC #7252 : See Table 6: CoAP Response Codes"/>         
-            <enum name="130" value="4.02 Bad Option" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="131" value="4.03 Forbidden" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="132" value="4.04 Not Found" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="133" value="4.05 Method Not Allowed" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="134" value="4.06 Not Acceptable" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="139" value="4.[07-11] Unassigned"/>
-            <enum name="140" value="4.12 Precondition Failed" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="141" value="4.13 Request Entity Too Large" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="142" value="4.14 Unassigned"/>
-            <enum name="143" value="4.15 Unsupported Content-Format" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="144-159" value="4.[16-31] Unassigned" />            
-            <enum name="160" value="5.00 Internal Server Error" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="161" value="5.01 Not Implemented" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="162" value="5.02 Bad Gateway" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="163" value="5.03 Service Unavailable" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="164" value="5.04 Gateway Timeout" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="165" value="5.05 Proxying Not Supported" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
-            <enum name="166-191" value="5.[06-31] Unassigned" />      
+            <enum name="2.00 Unassigned" value="64" />
+            <enum name="2.01 Created" value="65" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="2.02 Deleted" value="66" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="2.03 Valid" value="67" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="2.04 Changed" value="68" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="2.05 Content" value="69" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="2.[06-31] Unassigned" value="70-95"/>
+            <enum name="3.[00.31] Reserved" value="96-127" />
+            <enum name="4.00 Bad Request" value="128" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.01 Unauthorized" value="129" description="RFC #7252 : See Table 6: CoAP Response Codes"/>         
+            <enum name="4.02 Bad Option" value="130" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.03 Forbidden" value="131" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.04 Not Found" value="132" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.05 Method Not Allowed" value="133" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.06 Not Acceptable" value="134" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.[07-11] Unassigned" value="139"/>
+            <enum name="4.12 Precondition Failed" value="140" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.13 Request Entity Too Large" value="141" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.14 Unassigned" value="142"/>
+            <enum name="4.15 Unsupported Content-Format" value="143" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="4.[16-31] Unassigned" value="144-159" />            
+            <enum name="5.00 Internal Server Error" value="160" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="5.01 Not Implemented" value="161" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="5.02 Bad Gateway" value="162" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="5.03 Service Unavailable" value="163" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="5.04 Gateway Timeout" value="164" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="5.05 Proxying Not Supported" value="165" description="RFC #7252 : See Table 6: CoAP Response Codes"/>
+            <enum name="5.[06-31] Unassigned" value="166-191" />      
             <!-- class 2-5 : 6.00-7.31 Reserved -->                            
-            <enum name="192-223" value="6.[00-31] Reserved" />
-            <enum name="224-255" value="7.[00-31] Reserved" />                    
+            <enum name="6.[00-31] Reserved" value="192-223" />
+            <enum name="7.[00-31] Reserved" value="224-255" />                    
           </field>
-          <field name="Message ID" length="2" type="Integer" description=""/>
-          <field name="Token" length="4" type="Binary" description=""/>          
+          <field name="Message ID" type="Integer" length="2" description=""/>
+          <field name="Token" type="Binary" length="4" description="Token length"/>          
         </element>                    
     </element>
 
-    <element label="ElementsEAP" coding="Message" description="">
+    <element label="ElementsCOAP" coding="Message" description="">
     </element>
 
     <!-- ******************************** COAP messages ******************************** -->
