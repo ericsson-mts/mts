@@ -55,9 +55,9 @@ public class ElementMessage extends ElementAbstract
 		int currentLength = 0;
 		if (elementHeader != null)
 		{
-        	currentLength = elementHeader.decodeFromArray(array, dictionary);
-        	String key = "Message";
+        	currentLength = elementHeader.decodeFromArray(array, dictionary);        
         	String fieldNameForType = dictionary.getFieldNameForType();	 
+        	String key = "Message";        	
         	FieldAbstract fieldType = elementHeader.getFieldsByName(fieldNameForType);
         	if (fieldType != null && fieldType.offset / 8 < array.length)
         	{	  
