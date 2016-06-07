@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.asn1.data.ElementDigitV;
 import com.devoteam.srit.xmlloader.asn1.data.ElementLengthV;
 import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementCOAPOption;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAP;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLength;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLengthBit;
@@ -86,7 +87,7 @@ public abstract class ElementAbstract implements Cloneable
     		GlobalLogger.instance().logDeprecatedMessage("element identifier=\"...\"",
             "element identifier=\"...\" coding=\"Q931\"");
 			newElement = new ElementQ931();
-		}
+		}    	
     	else if ("TLIV".equals(coding))
 		{
 			newElement = new ElementTLIV();
@@ -135,9 +136,13 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			newElement = new ElementMessage();
 		}
+		else if ("COAP".equals(coding))
+		{
+			newElement = new ElementCOAPOption();
+		}    	
 		else
 		{
-     		throw new ExecutionException("ERROR : The coding attribute \"" + coding + "\" for the element is mandatory because the element is not present in the dictionary.");
+     		throw new ExecutionException("ERROR : For the element the coding attribute \"" + coding + "\" value is unknown.");
 		}
 		newElement.coding = coding;
 		return newElement;

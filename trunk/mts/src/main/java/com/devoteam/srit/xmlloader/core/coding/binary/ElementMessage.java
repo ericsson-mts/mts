@@ -100,10 +100,13 @@ public class ElementMessage extends ElementAbstract
     	int length = this.fieldsArray.length + this.subelementsArray.length;
     	ElementAbstract elementHeader = getElement(0);
     	String fieldNameForLength = dictionary.getFieldNameForLength();
-    	FieldAbstract fieldLength = elementHeader.getFieldsByName(fieldNameForLength);
-    	if (fieldLength != null)
+    	if (elementHeader != null)
     	{
-    		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);
+    		FieldAbstract fieldLength = elementHeader.getFieldsByName(fieldNameForLength);
+	    	if (fieldLength != null)
+	    	{
+	    		fieldLength.setValue(Integer.toString(length), fieldLength.offset, elementHeader.fieldsArray);
+	    	}
     	}
 	    sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
