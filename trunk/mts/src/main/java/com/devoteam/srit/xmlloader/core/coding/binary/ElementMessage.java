@@ -80,20 +80,15 @@ public class ElementMessage extends ElementAbstract
 			{
 				//currentLength = decodeNotTagElementsFromArray(array, dictionary);
 	            Array data = array.subArray(currentLength);
-	            if (this instanceof ElementCOAPMessage)
-	            {
-	            	ElementCOAPMessage COAPMessage = (ElementCOAPMessage) this;  
-	            	COAPMessage.setCurrentTag(0);
-	            }
 	        
 	            List<ElementAbstract> elementsTempo = new ArrayList<ElementAbstract>(); 							
 	            Iterator<ElementAbstract> iter = this.elements.iterator();
 	            elementsTempo.add(iter.next());
 				while (iter.hasNext() && currentLength != 0)
 				{
-					ElementCOAPOption elemInfo = (ElementCOAPOption) iter.next();
-					elemInfo = (ElementCOAPOption) ElementAbstract.buildFactory(elemInfo.coding, this);
-					int tag =  elemInfo.decodeTagFromArray(data, dictionary);
+					ElementAbstract elemInfo = iter.next();
+					elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
+					int tag =  ((ElementCOAPOption) elemInfo).decodeTagFromArray(data, dictionary);
 					if (tag >=0)
 					{
 						ElementAbstract elemDico = dictionary.getElementByTag(tag);

@@ -16,7 +16,43 @@
 
     <!-- use binary.elementToXml operation -->
     <parameter name="[xmlCOAP]" operation="binary.elementToXml" value="[lastBinaryCOAP]" value2="binary/dictionary_COAP.xml"/>
+    <parameter name="[lastVersion]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='Ver']/attribute::value"/>
+    <test parameter="[lastVersion]" condition="string.equals" value="RFC #7252:1"/>    
+    <parameter name="[lastType]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='T']/attribute::value"/>
+    <test parameter="[lastType]" condition="string.equals" value="Confirmable:0"/>        
+    <parameter name="[lastTKL]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='TKL']/attribute::value"/>
+    <test parameter="[lastTKL]" condition="number.equals" value="4"/>        
+    <parameter name="[lastCode]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='Code']/attribute::value"/>
+    <test parameter="[lastCode]" condition="string.equals" value="0.01 GET:1"/>        
+    <parameter name="[lastMessageID]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='Message ID']/attribute::value"/>
+    <test parameter="[lastMessageID]" condition="number.equals" value="[testcase:messageID]"/>
+    <parameter name="[lastToken]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='Token']/attribute::value"/>    
+    <test parameter="[lastToken]" condition="binary.equals" value="[testcase:token]"/>    
 
+    <parameter name="[lastIf-Match]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='If-Match:1']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastIf-Match]" condition="binary.equals" value="0102030405060708"/>    
+    <parameter name="[lastURIHost]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Uri-Host:3']/field[@name='data']/attribute::value"/>
+    <test parameter="[lastURIHost]" condition="string.equals" value="abcde"/>        
+    <parameter name="[lastEtag]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='ETag:4']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastEtag]" condition="binary.equals" value="F1F2F3F4F5"/>    
+    <parameter name="[lastIf-None-Match]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='If-None-Match:5']/field[@name='data']/attribute::value"/>    
+    <!--test parameter="[lastIf-None-Match]" condition="binary.equals" value=""/-->    
+    <test parameter="[lastIf-None-Match]" condition="list.isEmpty"/>
+    <parameter name="[lastUri-Port]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Uri-Port:7']/field[@name='data']/attribute::value"/>     
+    <test parameter="[lastUri-Port]" condition="number.equals" value="23456"/>    
+    <parameter name="[lastLocation-Path]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Location-Path:8']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastLocation-Path]" condition="string.equals" value="zyxwv"/>    
+    <parameter name="[lastUri-Path]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Uri-Path:11']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastUri-Path]" condition="string.equals" value="0123"/>    
+    <parameter name="[lastContent-Format]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Content-Format:12']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastContent-Format]" condition="string.equals" value="application/xml:41"/>    
+    <parameter name="[lastMax-Age]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Max-Age:14']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastMax-Age]" condition="number.equals" value="4294967295"/>    
+    <parameter name="[lastUri-Query]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Uri-Query:15']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastUri-Query]" condition="string.equals" value="aaaaa"/>    
+    <parameter name="[lastAccept]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Accept:17']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastAccept]" condition="string.equals" value="application/link-format:40"/>    
+    
     <parameter name="[lastURIHost]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.URI-Host:3.field.data" value3="binary/dictionary_COAP.xml"/>
     <test parameter="[lastURIHost]" condition="string.equals" value="abcde"/>        
          
