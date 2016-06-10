@@ -31,12 +31,12 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementMessage;
  *
  * @author Fabien Henry
  */
-public class ElementMessageCOAP extends ElementMessage
+public class ElementCOAPMessage extends ElementMessage
 {
 
 	private int currentTag =0;
 	
-	public ElementMessageCOAP(ElementAbstract parent)
+	public ElementCOAPMessage(ElementAbstract parent)
     {
     	super(parent);
     }

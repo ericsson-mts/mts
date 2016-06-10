@@ -59,7 +59,7 @@ public class ElementCOAPOption extends ElementAbstract
 		int currentTag = 0;
 		if (this.parentElement != null)
 		{
-			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			ElementCOAPMessage messageCOAP = (ElementCOAPMessage) this.parentElement;
 			currentTag = messageCOAP.getCurrentTag();
 		}
 
@@ -76,7 +76,7 @@ public class ElementCOAPOption extends ElementAbstract
 		// set the current because tag encoding is relative to the previous one
 		if (this.parentElement != null)
 		{
-			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			ElementCOAPMessage messageCOAP = (ElementCOAPMessage) this.parentElement;
 			messageCOAP.setCurrentTag(this.tag);
 		}
 	    
@@ -93,7 +93,7 @@ public class ElementCOAPOption extends ElementAbstract
 		int currentTag = 0;
 		if (this.parentElement != null)
 		{
-			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			ElementCOAPMessage messageCOAP = (ElementCOAPMessage) this.parentElement;
 			currentTag = messageCOAP.getCurrentTag();
 		}
 		
@@ -109,7 +109,7 @@ public class ElementCOAPOption extends ElementAbstract
 		// set the current because tag encoding is relative to the previous one
 		if (this.parentElement != null)
 		{
-			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			ElementCOAPMessage messageCOAP = (ElementCOAPMessage) this.parentElement;
 			messageCOAP.setCurrentTag(this.tag);
 		}
 		

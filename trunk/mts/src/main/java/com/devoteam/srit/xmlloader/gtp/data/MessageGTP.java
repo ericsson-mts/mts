@@ -188,7 +188,7 @@ public class MessageGTP
 		{
 			fieldArray = array.subArray(offset, fieldLength);
 		}
-		this.elements = ElementAbstract.decodeTagElementsFromArray(fieldArray, this.dictionary);
+		this.elements = ElementAbstract.decodeTag1OctetElementsFromArray(fieldArray, this.dictionary);
 	}
 
 	public void decodeFromBytes(byte[] data) throws Exception
@@ -231,7 +231,7 @@ public class MessageGTP
 			this.tpdu.decodeFromArray(elementArray, dictionary);
 		}
 		else
-			this.elements = ElementAbstract.decodeTagElementsFromArray(elementArray, this.dictionary);
+			this.elements = ElementAbstract.decodeTag1OctetElementsFromArray(elementArray, this.dictionary);
 	}
 
 	/** Get a parameter from the message */

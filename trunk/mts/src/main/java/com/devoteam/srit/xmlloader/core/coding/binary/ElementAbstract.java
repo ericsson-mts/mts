@@ -29,7 +29,7 @@ import com.devoteam.srit.xmlloader.asn1.data.ElementLengthV;
 import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementCOAPOption;
-import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementMessageCOAP;
+import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementCOAPMessage;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAP;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLength;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLengthBit;
@@ -152,9 +152,9 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			newElement = new ElementCOAPOption(parent);
 		}    	
-		else if ("MessageCOAP".equals(coding))
+		else if ("COAPMessage".equals(coding))
 		{
-			newElement = new ElementMessageCOAP(parent);
+			newElement = new ElementCOAPMessage(parent);
 		}    	    	
 		else
 		{
@@ -466,9 +466,35 @@ public abstract class ElementAbstract implements Cloneable
     }
 
     /*
-     * Decode the sub-element for element starting with the tag (ElementT*)
+     * Decode the sub-element for element starting with the tag (ElementT* : tag encoded sur 1 octet)
      */
-	public static List<ElementAbstract> decodeTagElementsFromArray(Array data, Dictionary dictionary) throws Exception 
+	public static List<ElementAbstract> decodeTag1OctetElementsFromArray(Array data, Dictionary dictionary) throws Exception 
+	{
+		List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
+	    int offset = 0;
+	    while (offset < data.length) 
+	    {
+	        int tag = new Integer08Array(data.subArray(offset, 1)).getValue();
+	        ElementAbstract elemDico = dictionary.getElementByTag(tag);
+	        if (elemDico == null)
+	        {
+				throw new ExecutionException("The element tag \"" + tag + "\" can not be decoded because it is not present in the dictionary.");
+	        }
+
+	        ElementAbstract elemNew = (ElementAbstract) elemDico.clone();	
+	        int length = elemNew.decodeFromArray(data.subArray(offset), dictionary);
+	        offset += length;
+	        
+	        elements.add(elemNew);
+	    }
+	    return elements;
+	
+	}
+
+    /*
+     * Decode the sub-element for element starting with the tag defined in the dictionary
+     */
+	public static List<ElementAbstract> decodeTagElementsIntoDicoFromArray(Array data, Dictionary dictionary) throws Exception 
 	{
 		List<ElementAbstract> elements = new ArrayList<ElementAbstract>();
 	    int offset = 0;
@@ -501,20 +527,13 @@ public abstract class ElementAbstract implements Cloneable
 	    {
 	        this.fieldsArray = new SupArray();
 	        this.fieldsArray.addFirst(data);
-	        if (fields.size() >= 4)
-	        {
-		        //System.out.println(this + fields.get(0).getValue(this.fieldsArray));
-		        //System.out.println(this + fields.get(1).getValue(this.fieldsArray));
-		        //System.out.println(this + fields.get(2).getValue(this.fieldsArray));
-		        //System.out.println(this + fields.get(3).getValue(this.fieldsArray));
-	        }
 	    }
 	    // cas when there are some sub elements
 	    else if (!this.elements.isEmpty())
 	    {
 	        this.subelementsArray = new SupArray();
 	    	this.subelementsArray.addFirst(data);
-	    	this.elements = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
+	    	this.elements = ElementAbstract.decodeTag1OctetElementsFromArray(this.subelementsArray, dictionary);
 	    }
 	}
 
@@ -570,6 +589,7 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
 			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
+			//ElementAbstract elemDico = dictionary.getElementByTag(elemInfo.getTag());
 			elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
 			if (elemDico != null)
 			{
