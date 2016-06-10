@@ -14,7 +14,7 @@
     <!-- GET request -->
     <parameter name="[messageCOAP]" operation="set">
     <![CDATA[
-    <element label="COAP" coding="MessageCOAP" description="">
+    <element label="COAP" coding="COAPMessage" description="">
         <!-- Header => IETF RFC 7252 chapter 3 page 16 -->
         <element label="HeaderCOAP" coding="V" description="">
           <field name="Ver" value="RFC #7252:1" type="EnumLong" lengthBit="2" description="Version"/>
@@ -80,7 +80,7 @@
     </sendMessageUDP>
 
     <parameter name="[binaryMessageID]" operation="number.toBinary" value="[messageID]"/>        
-    <test parameter="[testcase:binaryCOAP]" condition="binary.equals" value="4401[binaryMessageID][testcase:token]18010203040506070825616263646515F1F2F3F4F510225BA0157a797877763430313233122b670029FFFFFF156161616161220028"/>
+    <test parameter="[testcase:binaryCOAP]" condition="binary.equals" value="4401[binaryMessageID][testcase:token]18010203040506070825616263646515F1F2F3F4F510225BA0157a79787776343031323312002924FFFFFFFF156161616161220028"/>
                 
   	<receiveMessageUDP name="receive GET Response" listenpoint="client" type="DATAGRAM">
         <parameter name="[lastBinaryCOAP]" operation="protocol.setFromMessage" value="data.binary"/>    

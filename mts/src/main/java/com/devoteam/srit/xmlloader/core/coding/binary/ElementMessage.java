@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
@@ -49,7 +50,7 @@ public class ElementMessage extends ElementAbstract
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
 	{		
-    	// decode the message for not tag elements
+    	// decode the message header elements
 		ElementAbstract elementHeader = this.getElement(0);
 		int currentLength = 0;
 		if (elementHeader != null)
@@ -75,15 +76,34 @@ public class ElementMessage extends ElementAbstract
 			else
 			{
 				currentLength = decodeNotTagElementsFromArray(array, dictionary);
+	            /*
+	            Array data = array.subArray(currentLength);
+		        this.subelementsArray = new SupArray();
+		    	this.subelementsArray.addFirst(data);
+				Iterator<ElementAbstract> iter = this.elements.iterator();
+				iter.hasNext();
+				while (iter.hasNext())
+				{
+					ElementAbstract elemInfo = (ElementAbstract) iter.next();
+					currentLength = elemInfo.decodeFromArray(data, dictionary);
+					ElementAbstract elemDico = dictionary.getElementByTag(elemInfo.getTag());
+					elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
+					if (elemDico != null)
+					{
+						elemInfo.copyToClone(elemDico);
+					}
+					data = data.subArray(currentLength);
+				}
+				*/
 			}
 		}
     	if (array.length > currentLength)
     	{
-        	// decode the message for tag elements
+        	//decode the message for tag elements
             Array data = array.subArray(currentLength);
 	        this.subelementsArray = new SupArray();
 	    	this.subelementsArray.addFirst(data);
-	    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTagElementsFromArray(this.subelementsArray, dictionary);
+	    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTag1OctetElementsFromArray(this.subelementsArray, dictionary);
 	    	this.elements.addAll(elementsRead);
     	}
         return array.length;        
