@@ -39,9 +39,9 @@ import gp.utils.arrays.SupArray;
 public class ElementTLV extends ElementAbstract
 {
 
-    public ElementTLV()
+    public ElementTLV(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

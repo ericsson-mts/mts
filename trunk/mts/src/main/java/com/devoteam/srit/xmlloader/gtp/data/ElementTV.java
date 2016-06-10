@@ -38,9 +38,9 @@ import gp.utils.arrays.SupArray;
 public class ElementTV extends ElementAbstract
 {
 
-    public ElementTV()
+    public ElementTV(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

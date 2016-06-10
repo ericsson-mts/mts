@@ -123,7 +123,7 @@ public class Dictionary
         for (Element elem : list) 
         {
         	String coding = elem.attributeValue("coding");
-        	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding);
+        	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding, null);
             elemInfo.parseFromXML(elem, this, null, true);
             
             addElement(elemInfo);
@@ -226,7 +226,7 @@ public class Dictionary
         
         // the element is not present in the dictionary
         String coding = elementRoot.attributeValue("coding");
-        ElementAbstract newElement = ElementAbstract.buildFactory(coding);
+        ElementAbstract newElement = ElementAbstract.buildFactory(coding, null);
         return newElement;
     }
     

@@ -42,9 +42,9 @@ import gp.utils.arrays.SupArray;
 public class ElementCOAPOption extends ElementAbstract
 {
 
-    public ElementCOAPOption()
+    public ElementCOAPOption(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override
@@ -54,15 +54,32 @@ public class ElementCOAPOption extends ElementAbstract
 		{
 			return 0;
 		}
+		
+		// get the current because tag encoding is relative to the previous one
+		int currentTag = 0;
+		if (this.parentElement != null)
+		{
+			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			currentTag = messageCOAP.getCurrentTag();
+		}
+
 		Array deltaLengthArray = array.subArray(0, 1);
 	    int deltaLength = new Integer08Array(deltaLengthArray).getValue();
 	    
-	    this.tag = deltaLength / 16; 
+	    this.tag = currentTag + (deltaLength / 16); 
 	    int length = deltaLength % 16;
 	    
 	    Array dataArray = array.subArray(1, length);
 	    	
 	    decodeFieldsTagElementsFromArray(dataArray, dictionary);
+	    
+		// set the current because tag encoding is relative to the previous one
+		if (this.parentElement != null)
+		{
+			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			messageCOAP.setCurrentTag(this.tag);
+		}
+	    
 	    return length + 1;
     }
 
@@ -72,50 +89,31 @@ public class ElementCOAPOption extends ElementAbstract
 		// encode the sub-element
 		this.subelementsArray = super.encodeToArray(dictionary);
 
-        SupArray sup = new SupArray();
-        
+		// get the current because tag encoding is relative to the previous one
+		int currentTag = 0;
+		if (this.parentElement != null)
+		{
+			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			currentTag = messageCOAP.getCurrentTag();
+		}
+		
+		SupArray sup = new SupArray();
+    
     	int length = this.fieldsArray.length + this.subelementsArray.length;    	
-    	int deltaLength = this.tag*16 + length;
+    	int deltaLength = (this.tag - currentTag) * 16 + length;
         Integer08Array idArray = new Integer08Array(deltaLength);
         sup.addLast(idArray);
 	    sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
 	    
-        return sup;
+		// set the current because tag encoding is relative to the previous one
+		if (this.parentElement != null)
+		{
+			ElementMessageCOAP messageCOAP = (ElementMessageCOAP) this.parentElement;
+			messageCOAP.setCurrentTag(this.tag);
+		}
+		
+	    return sup;
     }
 
-	/*
-	 * get padding array
-	 */
-    protected static byte[] getPaddingBytes(int lengthPadding)
-	{
-	    byte[] bytes = new byte[lengthPadding];
-	    for (int i = 0; i < lengthPadding; i++)
-	    {
-	    	bytes[i] = 0;
-	    }
-	    return bytes;
-	}
-	
-	/*
-	 * remove padding data
-	 */
-    protected static int removePaddingBytes(Array data)
-    {
-	    int i = data.length - 1;
-	    int lengthPadding = 0;
-	    if (data.length > 0)
-	    {
-		    while (i >= 0 && data.get(i) == 0)
-		    {
-		    	lengthPadding++;
-		    	i--;
-		    }
-		    if (i == 0)
-		    {
-		    	return 0;
-		    }
-	    }
-	    return lengthPadding;
-    }
 }

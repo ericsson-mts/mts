@@ -92,7 +92,7 @@ public class ASNDictionary extends Dictionary
         for (Element elem : listElement) 
         {
         	String coding = elem.attributeValue("coding");
-        	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding);            
+        	ElementAbstract elemInfo = ElementAbstract.buildFactory(coding, null);            
             elemInfo.parseFromXML(elem, this, null, true);
             addElement(elemInfo);
         }

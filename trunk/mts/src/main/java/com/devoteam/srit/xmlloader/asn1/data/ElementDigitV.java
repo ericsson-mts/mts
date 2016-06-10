@@ -39,8 +39,9 @@ import gp.utils.arrays.SupArray;
 public class ElementDigitV extends ElementAbstract
 {
 
-    public ElementDigitV()
+    public ElementDigitV(ElementAbstract parent)
     {
+    	super(parent);
     	this.coding = "DV";
     }
     
