@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.asn1.data.ElementLengthV;
 import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementCOAPOption;
+import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementMessageCOAP;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAP;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLength;
 import com.devoteam.srit.xmlloader.core.coding.binary.eap.ElementEAPLengthBit;
@@ -78,68 +79,83 @@ public abstract class ElementAbstract implements Cloneable
     protected SupArray fieldsArray;
     
 	protected SupArray subelementsArray;
+	
+	protected ElementAbstract parentElement;
 
-    public static ElementAbstract buildFactory(String coding) throws Exception
+	public ElementAbstract(ElementAbstract parent)
+	{
+		parentElement = parent;
+	}
+	
+    public static ElementAbstract buildFactory(String coding, ElementAbstract parent) throws Exception
     {
     	ElementAbstract newElement = null;
     	if (coding == null)
 		{
     		GlobalLogger.instance().logDeprecatedMessage("element identifier=\"...\"",
             "element identifier=\"...\" coding=\"Q931\"");
-			newElement = new ElementQ931();
+			newElement = new ElementQ931(parent);
 		}    	
     	else if ("TLIV".equals(coding))
 		{
-			newElement = new ElementTLIV();
+			newElement = new ElementTLIV(parent);
 		}
 		else if ("TLV".equals(coding))
 		{
-			newElement = new ElementTLV();
+			newElement = new ElementTLV(parent);
 		}
 		else if ("TL1V".equals(coding))
 		{
-			newElement = new ElementTL1V();
+			newElement = new ElementTL1V(parent);
 		}
 		else if ("TV".equals(coding))
 		{
-			newElement = new ElementTV();
+			newElement = new ElementTV(parent);
 		} 
 		else if ("Q931".equals(coding))
 		{
-			newElement = new ElementQ931();
+			newElement = new ElementQ931(parent);
 		}
 		else if ("V".equals(coding))
 		{
-			newElement = new ElementValue();
+			newElement = new ElementValue(parent);
 		}
 		else if ("LV".equals(coding))
 		{
-			newElement = new ElementLengthV();
+			newElement = new ElementLengthV(parent);
 		}
 		else if ("DV".equals(coding))
 		{
-			newElement = new ElementDigitV();
+			newElement = new ElementDigitV(parent);
 		}
 		else if ("EAP".equals(coding))
 		{
-			newElement = new ElementEAP();
+			newElement = new ElementEAP(parent);
 		}
 		else if ("EAPLength".equals(coding))
 		{
-			newElement = new ElementEAPLength();
+			newElement = new ElementEAPLength(parent);
 		}
 		else if ("EAPLengthBit".equals(coding))
 		{
-			newElement = new ElementEAPLengthBit();
+			newElement = new ElementEAPLengthBit(parent);
 		}		
 		else if ("Message".equals(coding))
 		{
-			newElement = new ElementMessage();
+			newElement = new ElementMessage(parent);
 		}
-		else if ("COAP".equals(coding))
+		else if ("COAPOption".equals(coding))
 		{
-			newElement = new ElementCOAPOption();
+			newElement = new ElementCOAPOption(parent);
+		}
+		else if ("COAPOption".equals(coding))
+		{
+			newElement = new ElementCOAPOption(parent);
 		}    	
+		else if ("MessageCOAP".equals(coding))
+		{
+			newElement = new ElementMessageCOAP(parent);
+		}    	    	
 		else
 		{
      		throw new ExecutionException("ERROR : For the element the coding attribute \"" + coding + "\" value is unknown.");
@@ -314,7 +330,7 @@ public abstract class ElementAbstract implements Cloneable
         	String coding = elemElement.attributeValue("coding");
     		if (coding !=  null)
         	{
-        		elem = ElementAbstract.buildFactory(coding);
+        		elem = ElementAbstract.buildFactory(coding, this);
         		if (subElemDico == null)
         		{
         			elem = (ElementAbstract) subElemDico.cloneAttribute();
@@ -338,7 +354,7 @@ public abstract class ElementAbstract implements Cloneable
         {
 			ElementAbstract elemInfo = (ElementAbstract) it.next();
 			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
-			elemInfo = ElementAbstract.buildFactory(elemInfo.coding);
+			elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
 			if (elemDico != null)
 			{
 				elemInfo.copyToClone(elemDico);
@@ -554,7 +570,7 @@ public abstract class ElementAbstract implements Cloneable
 		{
 			ElementAbstract elemInfo = (ElementAbstract) iter.next();
 			ElementAbstract elemDico = dictionary.getElementByLabel(elemInfo.getLabel());
-			elemInfo = ElementAbstract.buildFactory(elemInfo.coding);
+			elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
 			if (elemDico != null)
 			{
 				elemInfo.copyToClone(elemDico);
@@ -602,7 +618,7 @@ public abstract class ElementAbstract implements Cloneable
     
     public ElementAbstract cloneAttribute() throws Exception
     {
-		ElementAbstract newElement = buildFactory(this.coding);
+		ElementAbstract newElement = buildFactory(this.coding, this.parentElement);
 		
 		newElement.coding = this.coding;
 		newElement.tag = this.tag;

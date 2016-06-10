@@ -42,9 +42,9 @@ import gp.utils.arrays.SupArray;
 public class ElementEAP extends ElementAbstract
 {
 
-    public ElementEAP()
+    public ElementEAP(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

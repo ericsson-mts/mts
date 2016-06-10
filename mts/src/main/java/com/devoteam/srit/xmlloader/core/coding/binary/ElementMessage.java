@@ -40,11 +40,10 @@ import gp.utils.arrays.SupArray;
  */
 public class ElementMessage extends ElementAbstract
 {
-	
 
-    public ElementMessage()
+    public ElementMessage(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

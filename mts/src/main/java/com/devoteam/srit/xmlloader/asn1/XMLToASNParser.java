@@ -357,7 +357,7 @@ public class XMLToASNParser
     		// Est ce que c'est réellement un pb ? a voir à l'usage
     		//ElementAbstract elementClone = new ElementValue();
     		//elementClone.copyToClone(elementDico);
-    		ElementAbstract elmt = new ElementValue();
+    		ElementAbstract elmt = new ElementValue(null);
         	elmt.parseFromXML(element, message.dictionary, elementDico, false);
         	Array array = elmt.encodeToArray(message.dictionary);
         	if (array.length > 0)

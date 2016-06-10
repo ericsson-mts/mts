@@ -41,9 +41,9 @@ import gp.utils.arrays.SupArray;
 public class ElementEAPLengthBit extends ElementAbstract
 {
 
-    public ElementEAPLengthBit()
+    public ElementEAPLengthBit(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

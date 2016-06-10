@@ -40,9 +40,9 @@ import gp.utils.arrays.SupArray;
 public class ElementTLIV extends ElementAbstract
 {
 	
-    public ElementTLIV()
+    public ElementTLIV(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

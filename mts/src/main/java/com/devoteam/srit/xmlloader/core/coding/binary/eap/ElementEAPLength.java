@@ -41,9 +41,9 @@ import gp.utils.arrays.SupArray;
 public class ElementEAPLength extends ElementAbstract
 {
 
-    public ElementEAPLength()
+    public ElementEAPLength(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

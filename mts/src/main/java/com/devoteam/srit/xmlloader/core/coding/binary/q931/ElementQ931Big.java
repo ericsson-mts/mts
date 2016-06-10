@@ -39,9 +39,9 @@ import gp.utils.arrays.SupArray;
 public class ElementQ931Big extends ElementAbstract
 {
 
-    public ElementQ931Big()
+    public ElementQ931Big(ElementAbstract parent)
     {
-    	
+    	super(parent);
     }
     
 	@Override

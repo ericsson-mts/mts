@@ -39,8 +39,9 @@ import gp.utils.arrays.SupArray;
 public class ElementLengthV extends ElementAbstract
 {
 
-    public ElementLengthV()
+    public ElementLengthV(ElementAbstract parent)
     {
+    	super(parent);
     	this.coding = "LV";
     }
     

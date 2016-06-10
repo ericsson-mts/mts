@@ -15,10 +15,10 @@ import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 
 public class ElementTL1V extends ElementAbstract {
 
-	public ElementTL1V()
-	{
-		
-	}
+	public ElementTL1V(ElementAbstract parent)
+    {
+    	super(parent);
+    }
 	
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception

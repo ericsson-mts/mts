@@ -21,46 +21,32 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.asn1.data;
+package com.devoteam.srit.xmlloader.core.coding.binary.coap;
 
-import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
-
-import gp.utils.arrays.Array;
-import gp.utils.arrays.Integer08Array;
-import gp.utils.arrays.Integer16Array;
-import gp.utils.arrays.SupArray;
+import com.devoteam.srit.xmlloader.core.coding.binary.ElementMessage;
 
 
 /**
  *
  * @author Fabien Henry
  */
-public class ElementValue extends ElementAbstract
+public class ElementMessageCOAP extends ElementMessage
 {
 
-    public ElementValue(ElementAbstract parent)
+	private int currentTag =0;
+	
+	public ElementMessageCOAP(ElementAbstract parent)
     {
     	super(parent);
-    	this.coding = "V";
     }
     
-	@Override
-    public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
-	{
-		return decodeFieldsNotTagElementsFromArray(array, dictionary);
-    }
+    public int getCurrentTag() {
+		return currentTag;
+	}
 
-	@Override    
-    public SupArray encodeToArray(Dictionary dictionary) throws Exception
-	{
-		this.subelementsArray = super.encodeToArray(dictionary);
-
-        SupArray sup = new SupArray();
-	    sup.addLast(this.fieldsArray);
-	    sup.addLast(this.subelementsArray);
-	    
-        return sup;
-    }
-
+	public void setCurrentTag(int currentTag) {
+		this.currentTag = currentTag;
+	}
+    
 }
