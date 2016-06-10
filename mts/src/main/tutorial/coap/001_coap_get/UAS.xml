@@ -18,8 +18,7 @@
     <parameter name="[xmlCOAP]" operation="binary.elementToXml" value="[lastBinaryCOAP]" value2="binary/dictionary_COAP.xml"/>
 
     <parameter name="[lastURIHost]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.URI-Host:3.field.data" value3="binary/dictionary_COAP.xml"/>
-    <!--test parameter="[lastURIHost]" condition="string.equals" value="abcde"/-->    
-    <test parameter="[lastURIHost]" condition="binary.equals" value="6162636465"/>    
+    <test parameter="[lastURIHost]" condition="string.equals" value="abcde"/>        
          
     <!-- use binary.elementSetFrom operation -->                 
     <parameter name="[lastVersion]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Ver" value3="binary/dictionary_COAP.xml"/>
@@ -38,24 +37,26 @@
     <parameter name="[lastIf-Match]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.If-Match:1.field.data" value3="binary/dictionary_COAP.xml"/>    
     <test parameter="[lastIf-Match]" condition="binary.equals" value="0102030405060708"/>    
     <parameter name="[lastURIHost]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.URI-Host:3.field.data" value3="binary/dictionary_COAP.xml"/>
-    <!--test parameter="[lastURIHost]" condition="string.equals" value="abcde"/-->    
-    <test parameter="[lastURIHost]" condition="binary.equals" value="6162636465"/>    
+    <test parameter="[lastURIHost]" condition="string.equals" value="abcde"/>        
     <parameter name="[lastEtag]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Etag:4.field.data" value3="binary/dictionary_COAP.xml"/>    
     <test parameter="[lastEtag]" condition="binary.equals" value="F1F2F3F4F5"/>    
     <parameter name="[lastIf-None-Match]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.If-None-Match:5.field.data" value3="binary/dictionary_COAP.xml"/>    
     <!--test parameter="[lastIf-None-Match]" condition="binary.equals" value=""/-->    
     <test parameter="[lastIf-None-Match]" condition="list.isEmpty"/>
     <parameter name="[lastUri-Port]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Uri-Port:7.field.data" value3="binary/dictionary_COAP.xml"/>    
-    <!--test parameter="[lastUri-Port]" condition="number.equals" value="23456"/-->
-    <test parameter="[lastUri-Port]" condition="binary.equals" value="5ba0"/>    
+    <test parameter="[lastUri-Port]" condition="number.equals" value="23456"/>    
     <parameter name="[lastLocation-Path]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Location-Path:8.field.data" value3="binary/dictionary_COAP.xml"/>    
-    <!--test parameter="[lastLocation-Path]" condition="string.equals" value="zyxwv"/-->    
+    <test parameter="[lastLocation-Path]" condition="string.equals" value="zyxwv"/>    
     <parameter name="[lastUri-Path]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Uri-Path:11.field.data" value3="binary/dictionary_COAP.xml"/>    
-    <!--test parameter="[lastUri-Path]" condition="string.equals" value="0123"/-->    
+    <test parameter="[lastUri-Path]" condition="string.equals" value="0123"/>    
     <parameter name="[lastContent-Format]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Content-Format:12.field.data" value3="binary/dictionary_COAP.xml"/>    
-    <!--test parameter="[lastContent-Format]" condition="number.equals" value="11111"/-->    
+    <test parameter="[lastContent-Format]" condition="string.equals" value="application/xml:41"/>    
     <parameter name="[lastMax-Age]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Max-Age:14.field.data" value3="binary/dictionary_COAP.xml"/>    
-    <!--test parameter="[lastMax-Age]" condition="number.equals" value="4294967295"/-->    
+    <test parameter="[lastMax-Age]" condition="number.equals" value="4294967295"/>    
+    <parameter name="[lastUri-Query]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Uri-Query:15.field.data" value3="binary/dictionary_COAP.xml"/>    
+    <test parameter="[lastUri-Query]" condition="string.equals" value="aaaaa"/>    
+    <parameter name="[lastAccept]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Accept:17.field.data" value3="binary/dictionary_COAP.xml"/>    
+    <test parameter="[lastAccept]" condition="string.equals" value="application/link-format:40"/>    
         
     <!-- GET request -->
     <parameter name="[messageCOAP]" operation="set">

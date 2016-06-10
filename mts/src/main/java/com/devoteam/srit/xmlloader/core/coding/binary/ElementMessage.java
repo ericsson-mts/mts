@@ -23,11 +23,14 @@
 
 package com.devoteam.srit.xmlloader.core.coding.binary;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
+import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementCOAPMessage;
+import com.devoteam.srit.xmlloader.core.coding.binary.coap.ElementCOAPOption;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.Integer08Array;
@@ -75,26 +78,37 @@ public class ElementMessage extends ElementAbstract
 			}
 			else
 			{
-				currentLength = decodeNotTagElementsFromArray(array, dictionary);
-	            /*
+				//currentLength = decodeNotTagElementsFromArray(array, dictionary);
 	            Array data = array.subArray(currentLength);
-		        this.subelementsArray = new SupArray();
-		    	this.subelementsArray.addFirst(data);
-				Iterator<ElementAbstract> iter = this.elements.iterator();
-				iter.hasNext();
-				while (iter.hasNext())
+	            if (this instanceof ElementCOAPMessage)
+	            {
+	            	ElementCOAPMessage COAPMessage = (ElementCOAPMessage) this;  
+	            	COAPMessage.setCurrentTag(0);
+	            }
+	        
+	            List<ElementAbstract> elementsTempo = new ArrayList<ElementAbstract>(); 							
+	            Iterator<ElementAbstract> iter = this.elements.iterator();
+	            elementsTempo.add(iter.next());
+				while (iter.hasNext() && currentLength != 0)
 				{
-					ElementAbstract elemInfo = (ElementAbstract) iter.next();
-					currentLength = elemInfo.decodeFromArray(data, dictionary);
-					ElementAbstract elemDico = dictionary.getElementByTag(elemInfo.getTag());
-					elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
-					if (elemDico != null)
+					ElementCOAPOption elemInfo = (ElementCOAPOption) iter.next();
+					elemInfo = (ElementCOAPOption) ElementAbstract.buildFactory(elemInfo.coding, this);
+					int tag =  elemInfo.decodeTagFromArray(data, dictionary);
+					if (tag >=0)
 					{
-						elemInfo.copyToClone(elemDico);
+						ElementAbstract elemDico = dictionary.getElementByTag(tag);
+						if (elemDico != null)
+						{
+							elemInfo.copyToClone(elemDico);
+						}
+						currentLength +=  elemInfo.decodeFromArray(data, dictionary);
+						elementsTempo.add(elemInfo);
+						data = array.subArray(currentLength);
 					}
-					data = data.subArray(currentLength);
 				}
-				*/
+				this.elements = elementsTempo;
+		        this.subelementsArray = new SupArray();
+		    	this.subelementsArray.addFirst(array);
 			}
 		}
     	if (array.length > currentLength)
@@ -103,7 +117,7 @@ public class ElementMessage extends ElementAbstract
             Array data = array.subArray(currentLength);
 	        this.subelementsArray = new SupArray();
 	    	this.subelementsArray.addFirst(data);
-	    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTag1OctetElementsFromArray(this.subelementsArray, dictionary);
+	    	List<ElementAbstract> elementsRead = ElementAbstract.decodeTag1OctetElementsFromArray(data, dictionary);
 	    	this.elements.addAll(elementsRead);
     	}
         return array.length;        
