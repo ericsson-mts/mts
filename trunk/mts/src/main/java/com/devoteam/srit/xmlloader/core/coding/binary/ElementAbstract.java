@@ -653,6 +653,7 @@ public abstract class ElementAbstract implements Cloneable
     	this.tag = source.tag;
     	this.label = source.label;
     	this.fieldsArray = null;
+    	this.subelementsArray = null;
 		// encode the sub-element
 		Iterator<ElementAbstract> iter = source.elements.iterator();
 		while (iter.hasNext())

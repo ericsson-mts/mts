@@ -46,6 +46,28 @@ public class ElementCOAPOption extends ElementAbstract
     {
     	super(parent);
     }
+
+    public int decodeTagFromArray(Array array, Dictionary dictionary) throws Exception
+	{
+		if (array.length <= 0)
+		{
+			return -1;
+		}
+
+		// get the current because tag encoding is relative to the previous one
+		int currentTag = 0;
+		if (this.parentElement != null)
+		{
+			ElementCOAPMessage messageCOAP = (ElementCOAPMessage) this.parentElement;
+			currentTag = messageCOAP.getCurrentTag();
+		}
+		
+		Array deltaLengthArray = array.subArray(0, 1);
+	    int deltaLength = new Integer08Array(deltaLengthArray).getValue();
+	    
+	    this.tag = currentTag + (deltaLength / 16);
+	    return this.tag;		
+	}
     
 	@Override
     public int decodeFromArray(Array array, Dictionary dictionary) throws Exception
@@ -115,5 +137,13 @@ public class ElementCOAPOption extends ElementAbstract
 		
 	    return sup;
     }
+
+	/*
+	public void copyToClone(ElementAbstract source) throws Exception
+    {
+		super.copyToClone(source);
+		//this.parentElement = ((ElementCOAPOption) source).parentElement;
+    }
+    */
 
 }
