@@ -56,7 +56,7 @@
           <field name="data" value="aaaaa" type="String" description=""/>
         </element>                                                                                                                                                                                                                                                                                                                                                              
         <element tag="Accept:17" coding="COAPOption" description="">
-          <field name="data" value="application/link-format:40" type="EnumLong" length="2" description=""/>
+          <field name="data" value="application/link-format:40" type="EnumLong" length="1" description=""/>
         </element>                                                                                                                                                                                                                                                                                                                                                              
         <!--element tag="Uri-Query:15" coding="COAPOption" description="">
           <field name="data" value="aaaaa" type="String" description=""/>
@@ -80,7 +80,7 @@
     </sendMessageUDP>
 
     <parameter name="[binaryMessageID]" operation="number.toBinary" value="[messageID]"/>        
-    <test parameter="[testcase:binaryCOAP]" condition="binary.equals" value="4401[binaryMessageID][testcase:token]18010203040506070825616263646515F1F2F3F4F510225BA0157a79787776343031323312002924FFFFFFFF156161616161220028"/>
+    <test parameter="[testcase:binaryCOAP]" condition="binary.equals" value="4401[binaryMessageID][testcase:token]18010203040506070825616263646515F1F2F3F4F510225BA0157a79787776343031323312002924FFFFFFFF1561616161612128"/>
                 
   	<receiveMessageUDP name="receive GET Response" listenpoint="client" type="DATAGRAM">
         <parameter name="[lastBinaryCOAP]" operation="protocol.setFromMessage" value="data.binary"/>    
