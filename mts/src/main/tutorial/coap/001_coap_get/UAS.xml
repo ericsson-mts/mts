@@ -97,7 +97,7 @@
     <!-- GET request -->
     <parameter name="[messageCOAP]" operation="set">
     <![CDATA[
-    <element label="COAP" coding="Message" description="">
+    <element label="COAP" coding="COAPMessage" description="">
         <!-- Header => IETF RFC 7252 chapter 3 page 16 -->
         <element label="HeaderCOAP" coding="V" description="">
           <field name="Ver" value="RFC #7252:1" type="EnumLong" lengthBit="2" description="Version"/>
@@ -107,18 +107,34 @@
           <field name="Code" value="2.05 Content:69" type="EnumLong" length="1" description="c.dd : Class(3bits).Digit(5bits)"/>
           <field name="Message ID" value="[messageID]" type="Integer" length="2" description=""/>
           <field name="Token" value="[token]" type="Binary" length="4" description=""/>          
-        </element>                    
+        </element> 
+        <element tag="Accept:17" coding="COAPOption" description="">
+          <field name="data" value="application/link-format:40" type="EnumLong" length="2" description=""/>
+        </element> 
+        <element tag="Location-Query:20" coding="COAPOption" description="">
+          <field name="data" value="loc" type="String" description=""/>
+        </element>                        
+        <element tag="Proxy-Uri:35" coding="COAPOption" description="">
+          <field name="data" value="prox" type="String" description=""/>
+        </element>
+        <element tag="Ericsson_specific_tag:10000" coding="COAPOption" description="">
+          <field name="data" value="eric" type="String" description=""/>
+        </element>
+        <element tag="Content:100000" coding="COAPOption" description="">
+          <field name="data" value="cont" type="String" description=""/>
+        </element>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     </element>
     ]]>
     </parameter>
         
     <!-- use binary.elementFromXml operation -->            
     <parameter name="[testcase:binaryCOAP]" operation="binary.elementFromXml" value="[messageCOAP]" value2="binary/dictionary_COAP.xml"/>
-    <parameter name="[binaryMessageID]" operation="number.toBinary" value="[messageID]"/>    
-    <test parameter="[binaryCOAP]" condition="binary.equals" value="6445[binaryMessageID][testcase:token]"/>
                 
   	<sendMessageUDP name="Send GET Response" listenpoint="server" remoteHost="[lastRemoteHost]" remotePort="[lastRemotePort]">
         <data format="binary">h[binaryCOAP]</data>  	
     </sendMessageUDP>
+
+    <parameter name="[binaryMessageID]" operation="number.toBinary" value="[messageID]"/>    
+    <test parameter="[binaryCOAP]" condition="binary.equals" value="6445[binaryMessageID][testcase:token]d2040028336c6f63d40270726f78"/>
 				
 </scenario>

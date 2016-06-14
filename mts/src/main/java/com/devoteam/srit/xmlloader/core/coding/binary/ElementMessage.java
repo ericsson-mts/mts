@@ -89,7 +89,7 @@ public class ElementMessage extends ElementAbstract
 					ElementAbstract elemInfo = iter.next();
 					elemInfo = ElementAbstract.buildFactory(elemInfo.coding, this);
 					int tag =  ((ElementCOAPOption) elemInfo).decodeTagFromArray(data, dictionary);
-					if (tag >=0)
+					if (tag >= 0)
 					{
 						ElementAbstract elemDico = dictionary.getElementByTag(tag);
 						if (elemDico != null)

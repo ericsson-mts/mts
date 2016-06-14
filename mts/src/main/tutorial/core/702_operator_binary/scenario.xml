@@ -7,8 +7,10 @@
     <parameter name="[RAND]" operation="binary.subbinary" value="[clear]" value2="0" value3="32"/>
     <test parameter="[RAND]" condition="binary.equals" value="4024de44f03f477f9c39d559a3aa26912d51c03142f900001bea21607e3c6ac2" />
     <parameter name="[AUTH]" operation="binary.subbinary" value="[clear]" value2="32" /> 
-    <parameter name="[AUTH]" operation="binary.tostring" value="[AUTH]" />  
-    <parameter name="[AUTH]" operation="binary.tonumber" value="[AUTH]" />         
+    <parameter name="[AUTH]" operation="binary.tostring" value="[AUTH]" />    
+    <test parameter="[AUTH]" condition="binary.equals" value="cdd06e00" />
+    <parameter name="[AUTH]" operation="binary.tonumber" value="[AUTH]" />     
+    <test parameter="[AUTH]" condition="number.equals" value="3452988928" />        
     <parameter name="[XNONCE]" operation="binary.tobase64" value="[clear]" />
     <test parameter="[XNONCE]" condition="string.equals" value="[NONCE]" />
 
