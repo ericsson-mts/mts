@@ -107,7 +107,8 @@
           <field name="Code" value="2.05 Content:69" type="EnumLong" length="1" description="c.dd : Class(3bits).Digit(5bits)"/>
           <field name="Message ID" value="[messageID]" type="Integer" length="2" description=""/>
           <field name="Token" value="[token]" type="Binary" length="4" description=""/>          
-        </element> 
+        </element>
+        <!-- Not Supported by Wireshark --> 
         <element tag="Accept:17" coding="COAPOption" description="">
           <field name="data" value="application/json:50" type="EnumLong" length="1" description=""/>
         </element> 
@@ -117,11 +118,20 @@
         <element tag="Proxy-Uri:35" coding="COAPOption" description="">
           <field name="data" value="prox" type="String" description=""/>
         </element>
+        <!-- Not Supported by Wireshark -->
+        <element tag="Proxy-Scheme:39" coding="COAPOption" description="">
+          <field name="data" value="scheme" type="String" description=""/>
+        </element>
+        <!-- Not Supported by Wireshark -->               
+        <element tag="Size1:60" coding="COAPOption" description="">
+          <field name="data" value="2000000000" length="4" type="Integer" description=""/>
+        </element>                         
+        <!-- Not Supported by Wireshark -->                                                                                                                                                                                                                                                                                                                                              
         <element tag="Ericsson-Specific-Tag:10000" coding="COAPOption" description="">
           <field name="data" value="eric" type="String" description=""/>
         </element>
         <element tag="Content:1000000" coding="COAPOption" description="">
-          <field name="data" value="636f6e74" type="Binary" description=""/>
+          <field name="data" value="cont" type="String" description=""/>
         </element>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     </element>
     ]]>
@@ -135,6 +145,6 @@
     </sendMessageUDP>
 
     <parameter name="[binaryMessageID]" operation="number.toBinary" value="[messageID]"/>    
-    <test parameter="[binaryCOAP]" condition="binary.equals" value="6445[binaryMessageID][testcase:token]d10432336c6f63d40270726f78e425e065726963f4636f6e74"/>
+    <test parameter="[binaryCOAP]" condition="binary.equals" value="6445[binaryMessageID][testcase:token]d10432336c6f63d40270726f7846736368656D65d40877359400e425C765726963fF636f6e74"/>
 				
 </scenario>

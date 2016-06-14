@@ -54,20 +54,11 @@
         </element>                                                                                                                                                                                                                                                                                                                                                              
         <element tag="Uri-Query:15" coding="COAPOption" description="">
           <field name="data" value="aaaaa" type="String" description=""/>
-        </element>                                                                                                                                                                                                                                                                                                                                                              
+        </element>  
+        <!-- Not Supported by Wireshark -->                                                                                                                                                                                                                                                                                                                                                                    
         <element tag="Accept:17" coding="COAPOption" description="">
           <field name="data" value="application/link-format:40" type="EnumLong" length="1" description=""/>
         </element>                                                                                                                                                                                                                                                                                                                                                              
-        <!--element tag="Uri-Query:15" coding="COAPOption" description="">
-          <field name="data" value="aaaaa" type="String" description=""/>
-        </element>                                                                                                                                                                                                                                                                                                                                                              
-        <element tag="Uri-Query:15" coding="COAPOption" description="">
-          <field name="data" value="aaaaa" type="String" description=""/>
-        </element>                                                                                                                                                                                                                                                                                                                                                              
-        <element tag="Uri-Query:15" coding="COAPOption" description="">
-          <field name="data" value="aaaaa" type="String" description=""/>
-        </element-->                                                                                                                                                                                                                                                                                                                                                              
-
     </element>
     ]]>
     </parameter>
@@ -112,10 +103,14 @@
     <test parameter="[lastLocation-Query]" condition="string.equals" value="loc"/>    
     <parameter name="[lastProxy-Uri]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Proxy-Uri:35']/field[@name='data']/attribute::value"/>    
     <test parameter="[lastProxy-Uri]" condition="string.equals" value="prox"/>
+    <parameter name="[lastProxy-Scheme]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Proxy-Scheme:39']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastProxy-Scheme]" condition="string.equals" value="scheme"/>
+    <parameter name="[lastSize1]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Size1:60']/field[@name='data']/attribute::value"/>    
+    <test parameter="[lastSize1]" condition="number.equals" value="2000000000"/>
     <parameter name="[lastEricsson-Specific-Tag]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Ericsson-Specific-Tag:10000']/field[@name='data']/attribute::value"/>        
     <test parameter="[lastEricsson-Specific-Tag]" condition="string.equals" value="eric"/>       
     <parameter name="[lastContent]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Content:1000000']/field[@name='data']/attribute::value"/>        
-    <test parameter="[lastContent]" condition="binary.equals" value="636f6e74"/>       
+    <test parameter="[lastContent]" condition="string.equals" value="cont"/>       
                   
     <!-- use binary.elementSetFrom operation -->      
     <parameter name="[lastVersion]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Ver" value3="binary/dictionary_COAP.xml"/>
@@ -137,9 +132,13 @@
     <test parameter="[lastLocation-Query]" condition="string.equals" value="loc"/>    
     <parameter name="[lastProxy-Uri]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Proxy-Uri:35.field.data" value3="binary/dictionary_COAP.xml"/>    
     <test parameter="[lastProxy-Uri]" condition="string.equals" value="prox"/>
+    <parameter name="[lastProxy-Scheme]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Proxy-Scheme:39.field.data" value3="binary/dictionary_COAP.xml"/>    
+    <test parameter="[lastProxy-Scheme]" condition="string.equals" value="scheme"/>
+    <parameter name="[lastSize1]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Size1:60.field.data" value3="binary/dictionary_COAP.xml"/>    
+    <test parameter="[lastSize1]" condition="number.equals" value="2000000000"/>
     <parameter name="[lastEricsson-Specific-Tag]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Ericsson-Specific-Tag:10000.field.data" value3="binary/dictionary_COAP.xml"/>    
     <test parameter="[lastEricsson-Specific-Tag]" condition="string.equals" value="eric"/>       
     <parameter name="[lastContent]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Content:1000000.field.data" value3="binary/dictionary_COAP.xml"/>    
-    <test parameter="[lastContent]" condition="binary.equals" value="636f6e74"/>       
+    <test parameter="[lastContent]" condition="string.equals" value="cont"/>       
     			
 </scenario>
