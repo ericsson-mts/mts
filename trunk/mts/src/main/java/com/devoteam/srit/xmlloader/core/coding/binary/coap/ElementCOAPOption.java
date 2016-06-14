@@ -121,10 +121,36 @@ public class ElementCOAPOption extends ElementAbstract
 		
 		SupArray sup = new SupArray();
     
-    	int length = this.fieldsArray.length + this.subelementsArray.length;    	
-    	int deltaLength = (this.tag - currentTag) * 16 + length;
-        Integer08Array idArray = new Integer08Array(deltaLength);
-        sup.addLast(idArray);
+    	int length = this.fieldsArray.length + this.subelementsArray.length;
+    	int deltaTag = this.tag - currentTag;
+    	if (deltaTag <= 12)
+    	{
+	    	int deltaLength = (this.tag - currentTag) * 16 + length;
+	        Integer08Array deltaArray = new Integer08Array(deltaLength);
+	        sup.addLast(deltaArray);
+    	}
+    	else if (deltaTag <= 255)
+    	{
+	    	int deltaLength = (13) * 16 + length;
+	    	Integer08Array delta1Array = new Integer08Array(deltaLength);
+	    	sup.addLast(delta1Array);
+	    	Integer08Array tag1Array = new Integer08Array(deltaTag - 13);
+	    	sup.addLast(tag1Array);
+    	}
+    	else if (deltaTag <= 65535)
+    	{
+	    	int deltaLength = (14) * 16 + length;
+	    	Integer08Array delta1Array = new Integer08Array(deltaLength);
+	    	sup.addLast(delta1Array);
+	    	Integer16Array tag1Array = new Integer16Array(deltaTag - 14 -255);
+	    	sup.addLast(tag1Array);
+    	}
+    	else
+    	{
+	    	int deltaLength = (15) * 16 + length;
+	    	Integer08Array delta1Array = new Integer08Array(deltaLength);
+	    	sup.addLast(delta1Array);
+    	}    	    	
 	    sup.addLast(this.fieldsArray);
 	    sup.addLast(this.subelementsArray);
 	    
@@ -137,13 +163,5 @@ public class ElementCOAPOption extends ElementAbstract
 		
 	    return sup;
     }
-
-	/*
-	public void copyToClone(ElementAbstract source) throws Exception
-    {
-		super.copyToClone(source);
-		//this.parentElement = ((ElementCOAPOption) source).parentElement;
-    }
-    */
 
 }

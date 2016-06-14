@@ -47,6 +47,8 @@ import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer08Array;
 import gp.utils.arrays.SupArray;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -443,24 +445,26 @@ public abstract class ElementAbstract implements Cloneable
     {
     	if (tag.length() > 0)
     	{
-	    	if (tag.charAt(0) == 's')
+    		// case the tab starts with 's|S' character
+	    	if (tag.charAt(0) == 's' || tag.charAt(0) == 'S')
 	        {
 				return null;
 	        }
-			byte[] idBytes = new byte[]{};
-	    	try
-	    	{
-	    		idBytes = Utils.parseBinaryString(tag);
-	    	}
-	    	catch (Exception e)
-	    	{
-	    		return null;
-	    	}
-	    	if (idBytes.length != 1)
-	        {
-	    		return null;
-	        }
-	    	return idBytes[0] & 0xff;
+    		
+			byte[] idBytes = new byte[]{};	
+			try
+			{
+				idBytes = Utils.parseBinaryString(tag);
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+	    	// convert to string
+	    	String idStr = Utils.toHexaString(idBytes, 0, -1, "");
+	    	// convert to unsigned int
+	    	Long idLong = Long.parseLong(idStr, 16);
+	        return (int) (idLong & 0xffffffff);
     	}
     	return null;
     }

@@ -48,13 +48,5 @@ public class ElementCOAPMessage extends ElementMessage
 	public void setCurrentTag(int currentTag) {
 		this.currentTag = currentTag;
 	}
-	
-	/*
-	public void copyToClone(ElementAbstract source) throws Exception
-    {
-		super.copyToClone(source);
-		//this.currentTag = ((ElementCOAPMessage) source).currentTag;
-    }
-    */
-    
+	    
 }
