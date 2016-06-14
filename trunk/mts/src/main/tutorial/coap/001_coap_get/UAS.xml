@@ -20,8 +20,8 @@
     <test parameter="[lastVersion]" condition="string.equals" value="RFC #7252:1"/>    
     <parameter name="[lastType]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='T']/attribute::value"/>
     <test parameter="[lastType]" condition="string.equals" value="Confirmable:0"/>        
-    <parameter name="[lastTKL]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='TKL']/attribute::value"/>
-    <test parameter="[lastTKL]" condition="number.equals" value="4"/>        
+    <parameter name="[lastTokenLength]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='TKL']/attribute::value"/>
+    <test parameter="[lastTokenLength]" condition="number.equals" value="4"/>        
     <parameter name="[lastCode]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='Code']/attribute::value"/>
     <test parameter="[lastCode]" condition="string.equals" value="0.01 GET:1"/>        
     <parameter name="[lastMessageID]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@label='HeaderCOAP']/field[@name='Message ID']/attribute::value"/>
@@ -31,8 +31,8 @@
 
     <parameter name="[lastIf-Match]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='If-Match:1']/field[@name='data']/attribute::value"/>    
     <test parameter="[lastIf-Match]" condition="binary.equals" value="0102030405060708"/>    
-    <parameter name="[lastURIHost]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Uri-Host:3']/field[@name='data']/attribute::value"/>
-    <test parameter="[lastURIHost]" condition="string.equals" value="abcde"/>        
+    <parameter name="[lastURI-Host]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='Uri-Host:3']/field[@name='data']/attribute::value"/>
+    <test parameter="[lastURI-Host]" condition="string.equals" value="abcde"/>        
     <parameter name="[lastEtag]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='ETag:4']/field[@name='data']/attribute::value"/>    
     <test parameter="[lastEtag]" condition="binary.equals" value="F1F2F3F4F5"/>    
     <parameter name="[lastIf-None-Match]" operation="string.xpath" value="[xmlCOAP]" value2="//element[@tag='If-None-Match:5']/field[@name='data']/attribute::value"/>    
@@ -61,8 +61,8 @@
     <test parameter="[lastVersion]" condition="string.equals" value="RFC #7252:1"/>    
     <parameter name="[lastType]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.T" value3="binary/dictionary_COAP.xml"/>
     <test parameter="[lastType]" condition="string.equals" value="Confirmable:0"/>        
-    <parameter name="[lastTKL]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.TKL" value3="binary/dictionary_COAP.xml"/>
-    <test parameter="[lastTKL]" condition="number.equals" value="4"/>        
+    <parameter name="[lastTokenLength]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.TKL" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastTokenLength]" condition="number.equals" value="4"/>        
     <parameter name="[lastCode]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Code" value3="binary/dictionary_COAP.xml"/>
     <test parameter="[lastCode]" condition="string.equals" value="0.01 GET:1"/>        
     <parameter name="[lastMessageID]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.HeaderCOAP.field.Message ID" value3="binary/dictionary_COAP.xml"/>
@@ -72,8 +72,8 @@
 
     <parameter name="[lastIf-Match]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.If-Match:1.field.data" value3="binary/dictionary_COAP.xml"/>    
     <test parameter="[lastIf-Match]" condition="binary.equals" value="0102030405060708"/>    
-    <parameter name="[lastURIHost]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.URI-Host:3.field.data" value3="binary/dictionary_COAP.xml"/>
-    <test parameter="[lastURIHost]" condition="string.equals" value="abcde"/>        
+    <parameter name="[lastURI-Host]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.URI-Host:3.field.data" value3="binary/dictionary_COAP.xml"/>
+    <test parameter="[lastURI-Host]" condition="string.equals" value="abcde"/>        
     <parameter name="[lastEtag]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.Etag:4.field.data" value3="binary/dictionary_COAP.xml"/>    
     <test parameter="[lastEtag]" condition="binary.equals" value="F1F2F3F4F5"/>    
     <parameter name="[lastIf-None-Match]" operation="binary.elementSetFrom" value="[lastBinaryCOAP]" value2="element.If-None-Match:5.field.data" value3="binary/dictionary_COAP.xml"/>    
@@ -109,7 +109,7 @@
           <field name="Token" value="[token]" type="Binary" length="4" description=""/>          
         </element> 
         <element tag="Accept:17" coding="COAPOption" description="">
-          <field name="data" value="application/link-format:40" type="EnumLong" length="2" description=""/>
+          <field name="data" value="application/json:50" type="EnumLong" length="1" description=""/>
         </element> 
         <element tag="Location-Query:20" coding="COAPOption" description="">
           <field name="data" value="loc" type="String" description=""/>
@@ -117,11 +117,11 @@
         <element tag="Proxy-Uri:35" coding="COAPOption" description="">
           <field name="data" value="prox" type="String" description=""/>
         </element>
-        <element tag="Ericsson_specific_tag:10000" coding="COAPOption" description="">
+        <element tag="Ericsson-Specific-Tag:10000" coding="COAPOption" description="">
           <field name="data" value="eric" type="String" description=""/>
         </element>
-        <element tag="Content:100000" coding="COAPOption" description="">
-          <field name="data" value="cont" type="String" description=""/>
+        <element tag="Content:1000000" coding="COAPOption" description="">
+          <field name="data" value="636f6e74" type="Binary" description=""/>
         </element>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     </element>
     ]]>
@@ -135,6 +135,6 @@
     </sendMessageUDP>
 
     <parameter name="[binaryMessageID]" operation="number.toBinary" value="[messageID]"/>    
-    <test parameter="[binaryCOAP]" condition="binary.equals" value="6445[binaryMessageID][testcase:token]d2040028336c6f63d40270726f78e425e065726963f4636f6e74"/>
+    <test parameter="[binaryCOAP]" condition="binary.equals" value="6445[binaryMessageID][testcase:token]d10432336c6f63d40270726f78e425e065726963f4636f6e74"/>
 				
 </scenario>
