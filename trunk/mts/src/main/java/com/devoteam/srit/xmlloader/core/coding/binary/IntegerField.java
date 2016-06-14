@@ -58,7 +58,16 @@ public class IntegerField extends FieldAbstract
     @Override
     public String getValue(Array array) throws Exception 
     {
-    	long valueLong = array.getBitsL(this.offset, this.length);
+    	long valueLong = 0;
+    	if (this.length <= array.length * 8)
+    	{
+    		valueLong = array.getBitsL(this.offset, this.length);
+    	}
+    	else
+    	{
+    		valueLong = array.getBitsL(this.offset, array.length * 8);
+    	}
+    	
     	return Long.toString(valueLong);
     }
 
