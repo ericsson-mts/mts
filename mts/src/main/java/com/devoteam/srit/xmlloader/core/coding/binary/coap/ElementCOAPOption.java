@@ -74,13 +74,13 @@ public class ElementCOAPOption extends ElementAbstract
     	{
     		Array delta1LengthArray = array.subArray(1, 1);
     	    int delta1 = new Integer08Array(delta1LengthArray).getValue();
-    	    this.tag = currentTag + delta1 + 13;
+    	    this.tag = currentTag + delta1 + (13);
     	}
     	else if (delta == 14)
     	{
     		Array delta2LengthArray = array.subArray(1, 2);
     	    int delta2 = new Integer16Array(delta2LengthArray).getValue();
-    	    this.tag = currentTag + delta2 + 14 + 255;
+    	    this.tag = currentTag + delta2 + (14) + 255;
     	}
     	else
     	{
@@ -123,7 +123,7 @@ public class ElementCOAPOption extends ElementAbstract
     	{
     		Array delta1LengthArray = array.subArray(1, 1);
     	    int delta1 = new Integer08Array(delta1LengthArray).getValue();
-    	    this.tag = currentTag + delta1 + 13;
+    	    this.tag = currentTag + delta1 + (13);
     	    dataArray = array.subArray(2, length);
     	    length = length + 2;
     	}
@@ -131,7 +131,7 @@ public class ElementCOAPOption extends ElementAbstract
     	{
     		Array delta2LengthArray = array.subArray(1, 2);
     	    int delta2 = new Integer16Array(delta2LengthArray).getValue();
-    	    this.tag = currentTag + delta2 + 14 + 255;
+    	    this.tag = currentTag + delta2 + (14) + 255;
     	    dataArray = array.subArray(3, length);
     	    length = length + 3;
     	}
@@ -182,7 +182,7 @@ public class ElementCOAPOption extends ElementAbstract
 	    	int deltaLength = (13) * 16 + length;
 	    	Integer08Array delta1Array = new Integer08Array(deltaLength);
 	    	sup.addLast(delta1Array);
-	    	Integer08Array tag1Array = new Integer08Array(deltaTag - 13);
+	    	Integer08Array tag1Array = new Integer08Array(deltaTag - (13));
 	    	sup.addLast(tag1Array);
     	}
     	else if (deltaTag <= 65535)
@@ -190,12 +190,12 @@ public class ElementCOAPOption extends ElementAbstract
 	    	int deltaLength = (14) * 16 + length;
 	    	Integer08Array delta2Array = new Integer08Array(deltaLength);
 	    	sup.addLast(delta2Array);
-	    	Integer16Array tag2Array = new Integer16Array(deltaTag - 14 -255);
+	    	Integer16Array tag2Array = new Integer16Array(deltaTag - (14) -255);
 	    	sup.addLast(tag2Array);
     	}
     	else
     	{
-	    	int deltaLength = (15) * 16 + length;
+	    	int deltaLength = (15) * 16 + (15);
 	    	Integer08Array delta3Array = new Integer08Array(deltaLength);
 	    	sup.addLast(delta3Array);
     	}    	    	
