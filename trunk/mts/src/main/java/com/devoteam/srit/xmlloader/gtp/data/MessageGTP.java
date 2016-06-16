@@ -251,9 +251,12 @@ public class MessageGTP
 	    		elem.getParameter(var, params, path, 0, dictionary);
 	    	}
 	    }
-	    else if (path.equalsIgnoreCase("data.binary"))
+	    else if (path.equalsIgnoreCase("pdu.binary") || path.equalsIgnoreCase("data.binary"))
 	    {
-	    	this.tpdu.getParameter(var, params, path, 0, dictionary);
+	    	if (this.tpdu != null)
+	    	{
+	    		this.tpdu.getParameter(var, params, path, 0, dictionary);
+	    	}
 	    }
 	    else
 	    {
