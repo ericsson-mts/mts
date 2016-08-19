@@ -4,12 +4,21 @@
     <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
     <parameter name="[localHostETH]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostETH]" operation="set" value="[localHostETH(0)]" description="local address of the MTS host" editable="true" />
+    <!--parameter name="[localHostETH]" operation="set" value="lo"/-->
+    <!--parameter name="[localHostETH]" operation="set" value="localhost"/-->    
+    <!--parameter name="[localHostETH]" operation="set" value="127.0.0.1"/-->
+    <!--parameter name="[localHostETH]" operation="set" value="eth0"/-->    
+    <!--parameter name="[localHostETH]" operation="set" value="164.48.219.36"/-->        
+    <parameter name="[localHostETH]" operation="set" value="[localHostETH(0)]" description="local address of the MTS host" editable="true" />    
     <parameter name="[localBinaryIP]" operation="binary.fromIp" value="[localHostETH]"/>
     <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
     
     <parameter name="[remoteHostETH]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <!--parameter name="[remoteHostETH]" operation="set" value="172.16.21.32"/-->
+    <!--parameter name="[remoteHostETH]" operation="set" value="lo"/-->
+    <!--parameter name="[remoteHostETH]" operation="set" value="localhost"/-->    
+    <!--parameter name="[remoteHostETH]" operation="set" value="127.0.0.1"/-->
+    <!--parameter name="[remoteHostETH]" operation="set" value="eth0"/-->    
+    <!--parameter name="[remoteHostETH]" operation="set" value="164.48.219.36"/-->    
     <parameter name="[remoteHostETH]" operation="set" value="[remoteHostETH(0)]" description="remote address of the SUT host" editable="true" />
     <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true" />
     
