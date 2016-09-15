@@ -283,9 +283,9 @@
     <test parameter="[ips(0)]" condition="string.equals" value="192.168.1.1"/>
     <test parameter="[ips(1)]" condition="string.equals" value="192.168.1.2"/>
 
-    <!-- sql server is not available in general   
-    <parameter name="[sql]" operation="system.querySql" value="localhost::root::test" value2="create database testSystem;" />
-    
+    <!-- sql server is not available in general -->  
+    <!--parameter name="[sql]" operation="system.querySql" value="localhost::root::test" value2="create database testSystem;" />
+      
     <parameter name="[sql]" operation="system.querySql" value="localhost::::testSystem" value2="create table Premier (first integer, second integer, third integer);" />
     <parameter name="[sql]" operation="system.querySql" value="::root::testSystem" value2="insert into Premier values (1,2,3);" />
     <parameter name="[sql]" operation="system.querySql" value="::::testSystem" value2="insert into Premier values (4,5,6);" />
@@ -296,11 +296,10 @@
     <parameter name="[premiereValeur]" operation="list.getfirst" value="[sql.first]"/>
     <test parameter="[premiereValeur]" condition="number.equals" value="1"/>
     <parameter name="[derniereValeur]" operation="list.getlast" value="[sql.third]"/>
-    <test parameter="[derniereValeur]" condition="number.equals" value="6"/>
+    <test parameter="[derniereValeur]" condition="number.equals" value="6"/-->
     
     <finally>
-    	<parameter name="[sql]" operation="system.querySql" value="localhost::::test" value2="drop database testSystem"/>
+    	<!--parameter name="[sql]" operation="system.querySql" value="localhost::::test" value2="drop database testSystem"/-->
     </finally>
-    -->
 
 </scenario>
