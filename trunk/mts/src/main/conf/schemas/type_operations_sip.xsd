@@ -2,6 +2,63 @@
 
 <!--                                                                       START OF SIP PROTOCOL -->
 
+<!--                                                                          openChannel -->
+    <xs:complexType name="openChannelSIPType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="localHost" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>String</xs:appinfo>
+                        <xs:documentation>The channel local host (sometimes called the source host). It should of course be one of the local addresses of the host or a host name with a DNS resolution.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="localPort" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>Integer</xs:appinfo>
+                        <xs:documentation>The channel local port (sometimes called the source port). The default value is chosen by the tool.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                        <xs:attribute name="localURL" type="xs:string" use="optional">
+                            <xs:annotation>
+                                <xs:appinfo>String (url)</xs:appinfo>
+                                <xs:documentation>The local URL of the channel (sometimes called the source information).</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>             
+                <xs:attribute name="remoteHost" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:appinfo>String</xs:appinfo>
+                        <xs:documentation>The channel remote host (sometimes called the destination host). It could be an IP address or a host name with a DNS resolution.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="remotePort" type="xs:string" use="required">
+                    <xs:annotation>
+                        <xs:appinfo>Integer</xs:appinfo>
+                        <xs:documentation>The channel remote port (sometimes called the remote port).</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                        <xs:attribute name="remoteURL" type="xs:string" use="optional">
+                            <xs:annotation>
+                                <xs:appinfo>String (url)</xs:appinfo>
+                                <xs:documentation>The remote URL of the channel (sometimes called the destination information).</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute> 
+                        <xs:attribute name="transport" type="xs:string" use="optional">
+                            <xs:annotation>
+                                <xs:appinfo>enumeration (UDP, TCP, SCTP, TLS, RFC)</xs:appinfo>
+                                <xs:documentation>The channel transport.</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                         closeChannel -->
+    <xs:complexType name="closeChannelSIPType">
+        <xs:complexContent>
+            <xs:extension base="operationType"/>
+        </xs:complexContent>
+    </xs:complexType>
+
 	<!--                                                                          createListenpoint -->
 	<xs:complexType name="createListenpointSIPType">
 		<xs:complexContent>
@@ -118,6 +175,12 @@
 	<xs:complexType name="sendMessageSIPType">
 		<xs:simpleContent>
 			<xs:extension base="operationTypeSimple">
+			    <xs:attribute name="channel" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>String</xs:appinfo>
+                        <xs:documentation>The name of the channel to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
 				<xs:attribute name="listenpoint" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:appinfo>String</xs:appinfo>
