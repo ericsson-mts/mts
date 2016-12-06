@@ -66,21 +66,11 @@
     <test parameter="[firstlineReasonPhrase]" condition="list.isempty"/>
     
     <parameter name="[headers]" operation="protocol.setFromMessage" value="header"/>
-    <!-- test non pertinent car l'ordre des headers n'est pas celui du message -->
-    <!-- il faudrait utiliser une TreeMap au lieu d'une Hashmap java -->    
     <parameter name="[headersIndex]" operation="findMatches" value="[headers]" value2="^From.*"/>
-    <or>
-        <test parameter="[headersIndex]" condition="number.equals" value="9"/> <!-- for jre  before or equals 1.7 -->
-        <test parameter="[headersIndex]" condition="number.equals" value="13"/> <!-- for jre  after 1.7 -->
-    </or>        
+    <test parameter="[headersIndex]" condition="number.equals" value="2"/> <!-- for jre  before or equals 1.7 -->
     <parameter name="[headersSize]" operation="list.size" value="[headers]"/>
-    <!-- test non pertinent car l'ordre des headers n'est pas celui du message -->
-    <!-- il faudrait utiliser une TreeMap au lieu d'une Hashmap java -->    
     <test parameter="[headersSize]" condition="string.equals" value="28"/>
-    <or>
-        <test parameter="[headers(0)]" condition="string.contains" value="To:"/>  <!-- for jre  before or equals 1.7 -->
-        <test parameter="[headers(25)]" condition="string.contains" value="To:"/> <!-- for jre  after 1.7 -->
-    </or>
+    <test parameter="[headers(0)]" condition="string.contains" value="To:"/>  <!-- for jre  before or equals 1.7 -->
     
     <parameter name="[others]" operation="protocol.setFromMessage" value="header.Others"/>
     <parameter name="[othersIndex]" operation="findMatches" value="[others]" value2="^Content-Length.*"/>
@@ -88,10 +78,7 @@
     <!-- test non pertinent car l'ordre des headers n'est pas celui du message -->
     <!-- il faudrait utiliser une TreeMap au lieu d'une Hashmap java -->
     <test parameter="[othersSize]" condition="string.equals" value="19"/>
-    <or>
-        <test parameter="[others(0)]" condition="string.contains" value="Content-Type:"/>  <!-- for jre  before or equals 1.7 -->
-        <test parameter="[others(10)]" condition="string.contains" value="Content-Type:"/> <!-- for jre  after 1.7 -->
-    </or>        
+    <test parameter="[others(9)]" condition="string.contains" value="Content-Type:"/> <!-- for jre  after 1.7 -->        
     
     <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
     <test parameter="[To]" condition="string.contains" value=" &lt;tel:1234&gt;"/>
