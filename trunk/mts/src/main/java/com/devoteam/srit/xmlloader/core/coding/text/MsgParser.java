@@ -31,11 +31,11 @@ public class MsgParser {
 
     private HashSet<String> multiHeader = new HashSet<String>();
     private HashMap<String, String> compressedHeader = new HashMap<String, String>();
-    private HashMap<Object, Header> parsingList;
+    private LinkedHashMap<Object, Header> parsingList;
 
     // --- construct --- //
     public MsgParser() {
-        this.parsingList = new HashMap<Object, Header>();
+        this.parsingList = new LinkedHashMap<Object, Header>();
     }
 
     // --- construct --- //
