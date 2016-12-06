@@ -695,6 +695,53 @@
 					</xs:attribute>
 				</xs:complexType>
 			</xs:element>
+
+      <xs:element name="binary.compress">
+                <xs:annotation>
+                    <xs:documentation>Perform a compression of the binary data using the given "value2" algorithm.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The resulting binary data.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="value" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The binary data to compress.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The algorithm to use (gzip).</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>                                                                                                                                                                                                                       
+      <xs:element name="binary.uncompress">
+                <xs:annotation>
+                    <xs:documentation>Perform an uncompression of the binary data using the given "value2" algorithm.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The resulting binary data.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="value" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The binary data to uncompress.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+          <xs:attribute name="value2" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The algorithm to use (gzip).</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+
       <xs:element name="binary.elementFromXml">
 				<xs:annotation>
 					<xs:documentation>Parse an element/field structure from XML format and encode it to binary data using a dictionary.</xs:documentation>
