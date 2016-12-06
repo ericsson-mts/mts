@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-
     <parameter name="[NONCE]" operation="set" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
     <parameter name="[clear]" operation="binary.frombase64" value="[NONCE]" />        
     <parameter name="[RAND]" operation="binary.subbinary" value="[clear]" value2="0" value3="32"/>
@@ -306,5 +305,22 @@
     <parameter name="[binary]" operation="set" value="73e6cc9933670e"/>
     <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="9" value3="true"/>
     <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
-                  
+
+    <parameter name="[string]" operation="set" value="test_zip_string"/>
+    <parameter name="[binary]" operation="string.tobinary" value="[string]"/>
+    <parameter name="[compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
+    <test parameter="[compressed]" condition="binary.equals" value="1f8b08000000000000002b492d2e89afca2c882f2e29cacc4b070025e7a3df0f000000"/>
+
+    <!-- Test GZIP compress / uncompress with one pre-determined string -->
+    <parameter name="[binary]" operation="set" value="1f8b08000000000000002b492d2e89afca2c882f2e29cacc4b070025e7a3df0f000000"/>
+    <parameter name="[uncompressed]" operation="binary.uncompress" value="[binary]" value2="gzip"/>
+    <parameter name="[string]" operation="binary.toString" value="[uncompressed]"/>
+    <test parameter="[string]" condition="string.equals" value="test_zip_string"/>
+    
+    <!-- Test GZIP compress / uncompress with this current XML file content -->
+    <parameter name="[binary]" operation="file.readbinary" value="./702_operator_binary/scenario.xml"/>
+    <parameter name="[compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
+    <parameter name="[uncompressed]" operation="binary.uncompress" value="[compressed]" value2="gzip"/>
+    <test parameter="[binary]" condition="binary.equals" value="[uncompressed]" />
+               
 </scenario>

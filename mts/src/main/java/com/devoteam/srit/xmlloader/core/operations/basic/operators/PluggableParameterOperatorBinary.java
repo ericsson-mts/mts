@@ -56,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
@@ -111,6 +113,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
     final private String NAME_BIN_ELEMENT_FROMXML = "binary.elementFromXml";
     final private String NAME_BIN_ELEMENT_TOXML = "binary.elementToXml";
     final private String NAME_BIN_ELEMENT_SETFROM = "binary.elementSetFrom";
+    final private String NAME_BIN_COMPRESS = "binary.compress";
+    final private String NAME_BIN_UNCOMPRESS = "binary.uncompress";
 
     
     public PluggableParameterOperatorBinary()
@@ -150,6 +154,8 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
         this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_FROMXML));
         this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_TOXML));
         this.addPluggableName(new PluggableName(NAME_BIN_ELEMENT_SETFROM));
+        this.addPluggableName(new PluggableName(NAME_BIN_COMPRESS));
+        this.addPluggableName(new PluggableName(NAME_BIN_UNCOMPRESS));
     }
 
     @Override
@@ -682,6 +688,52 @@ public class PluggableParameterOperatorBinary extends AbstractPluggableParameter
                                         
                     // get the data from element using path        
                     newElement.getParameter(result, params, path, 0, dico);
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_COMPRESS))
+                {
+                    String string1 = param_1.get(i).toString();                 
+                    String algo    = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2").get(i).toString();
+                
+                    if (algo.equalsIgnoreCase("gzip"))
+                    {
+                        byte[] data = DefaultArray.fromHexString(string1).getBytes() ;
+                        
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        GZIPOutputStream      gzos = new GZIPOutputStream(baos);
+                                  
+                        gzos.write(data);
+                        gzos.close();
+
+                        DefaultArray array = new DefaultArray(baos.toByteArray()) ;
+                        
+                        result.add( DefaultArray.toHexString(array) ) ;
+                    }
+                
+                }
+                else if (name.equalsIgnoreCase(NAME_BIN_UNCOMPRESS))
+                {
+                    String string1 = param_1.get(i).toString();                 
+                    String algo    = PluggableParameterOperatorList.assertAndGetParameter(operands, "value2").get(i).toString();
+                
+                    if (algo.equalsIgnoreCase("gzip"))
+                    {
+                        byte[] data_in = DefaultArray.fromHexString(string1).getBytes() ;
+                        
+                        GZIPInputStream gzis = new GZIPInputStream(new ByteArrayInputStream(data_in, 0, data_in.length));
+                        
+                        byte[] data_out = new byte[data_in.length];
+                        
+                        ByteArrayOutputStream baos =  new ByteArrayOutputStream();
+                        
+                        int len;
+                        
+                        while( (len=gzis.read(data_out, 0, data_out.length)) != -1 )
+                        {
+                            baos.write(data_out, 0, len);
+                        }
+                        
+                        result.add( DefaultArray.toHexString(new DefaultArray(baos.toByteArray())) ) ;
+                    }
                 }
                 else
                 {
