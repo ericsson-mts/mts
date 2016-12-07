@@ -1,14 +1,14 @@
 #!/bin/sh
 
 OPTIONS="-level:WARN -stor:file -gen:false -show:false -param:[iterations]+1"
-#MODE1=1MODE1=-seq
+MODE1=-seq
 
 echo "Run the unit tests"
 cd ../bin
 rm -rf ../logs/*
 
 echo ************** functional testing
-sh ./startCmd.sh ../tutorial/core/test.xml $MODE1 -param:param_1+one -param:[param_2]+two -param:[param_3]+three %OPTIONS%
+sh ./startCmd.sh ../tutorial/core/test.xml $MODE1 -param:param_1+one -param:[param_2]+two -param:[param_3]+three $OPTIONS
 sh ./startCmd.sh ../tutorial/diameter/test.xml $MODE1 -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.dk.StackDiameter $OPTIONS
 sh ./startCmd.sh ../tutorial/diameter/test_light.xml $MODE1 -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+false $OPTIONS
 sh ./startCmd.sh ../tutorial/diameter/test_light.xml $MODE1 -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+true $OPTIONS
