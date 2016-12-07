@@ -306,12 +306,12 @@
     <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="9" value3="true"/>
     <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
 
+    <!-- Test GZIP compress / uncompress with one pre-determined string -->
     <parameter name="[string]" operation="set" value="test_zip_string"/>
     <parameter name="[binary]" operation="string.tobinary" value="[string]"/>
     <parameter name="[compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
     <test parameter="[compressed]" condition="binary.equals" value="1f8b08000000000000002b492d2e89afca2c882f2e29cacc4b070025e7a3df0f000000"/>
 
-    <!-- Test GZIP compress / uncompress with one pre-determined string -->
     <parameter name="[binary]" operation="set" value="1f8b08000000000000002b492d2e89afca2c882f2e29cacc4b070025e7a3df0f000000"/>
     <parameter name="[uncompressed]" operation="binary.uncompress" value="[binary]" value2="gzip"/>
     <parameter name="[string]" operation="binary.toString" value="[uncompressed]"/>
