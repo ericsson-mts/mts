@@ -101,7 +101,7 @@ public class GUIMenuHelper {
     public static final String HELP_DOCUMENTATION = "HELP_DOCUMENTATION";
     public static final String XML_GRAMMAR = "HELP_GRAMMAR";
     public static final String HELP_WEBSITE = "HELP_WEBSITE";
-    public static final String GOOGLE_CODE = "GOOGLE_CODE";
+    public static final String SOURCE_FORGE = "SOURCE_FORGE";
     public static final String HELP_ABOUT = "HELP_ABOUT";
     
     private JMenuBar jMenuBar;
@@ -489,7 +489,7 @@ public class GUIMenuHelper {
         jMenu.add(createJMenuItem(actionListener, "XML Grammar", XML_GRAMMAR));
         jMenu.add(new javax.swing.JSeparator());
         jMenu.add(createJMenuItem(actionListener, "Web Site", HELP_WEBSITE));
-        jMenu.add(createJMenuItem(actionListener, "Google Code", GOOGLE_CODE));
+        jMenu.add(createJMenuItem(actionListener, "Source Forge", SOURCE_FORGE));
         jMenu.add(new javax.swing.JSeparator());
         jMenu.add(createJMenuItem(actionListener, "About", HELP_ABOUT));
         
