@@ -356,13 +356,13 @@ class TesterGuiHelper implements ActionListener {
                 ex.printStackTrace();
             }
         }
-        else if (actionCommand.equals(GUIMenuHelper.GOOGLE_CODE)) {
+        else if (actionCommand.equals(GUIMenuHelper.SOURCE_FORGE)) {
             try {
                 String browser = Config.getConfigByName("tester.properties").getString("stats.BROWSER_PATH");
                 browser = Utils.normalizePath(browser);
                 if (browser != null)
             	{
-	                String urlName = "http://code.google.com/p/mts-project/";
+	                String urlName = "https://sourceforge.net/projects/mts-ericsson/";
 	                Runtime.getRuntime().exec(browser + " " + urlName); // le lien est dans urlName
             	}
             }
