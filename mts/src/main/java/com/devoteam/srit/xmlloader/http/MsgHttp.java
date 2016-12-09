@@ -478,19 +478,31 @@ public class MsgHttp extends Msg
             //
             // Set the Content-Length header if the transfer-encoding is not "chunked"
             //
-            Header[] contentEncoding = currentMessage.getHeaders("Transfer-Encoding");
+            Header[] contentEncoding = currentMessage.getHeaders("Content-Encoding");
+            Header[] transferEncoding = currentMessage.getHeaders("Transfer-Encoding");
             Header[] contentType = currentMessage.getHeaders("Content-Type");
             Header[] contentLength = currentMessage.getHeaders("Content-Length");
+
             if(contentType.length > 0 && contentType[0].getValue().toLowerCase().contains("multipart"))
             {
                 // do nothing, we should not add a CRLF at the end of the data when multipart
             }
-            else
+
+            /**
+             * Do not add CRLF at the end of the content in case Content-Encoding is GZIP
+             * This is a (bad) patch :/
+             * 
+             * @Todo Must be re-think and fixed. 
+             *       We should not add CRLF except in case of chunked feature (at least)
+             *       But if I try to delete this additional CRLF, most of tutorials tests does not
+             *       work anymore.   
+             */
+            else if( contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip") )
             {
                 messageContent += "\r\n"; // it seems necessary to end the data by a CRLF (???)
             }
 
-            if(contentEncoding.length == 0 || !contentEncoding[0].getValue().contains("chunked"))
+            if(transferEncoding.length == 0 || !transferEncoding[0].getValue().contains("chunked"))
             {
             	if (contentLength.length == 0)
             	{
