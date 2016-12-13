@@ -328,7 +328,8 @@ public class MsgHttp extends Msg
     @Override
     public void parseFromXml(Boolean request1, Element root, Runner runner) throws Exception
     {
-    	String text = root.getText().trim();
+    	String text = root.getText();
+    	
         BasicHttpResponse responseMessage = null;
         BasicHttpEntityEnclosingRequest requestMessage = null;
 
@@ -522,6 +523,7 @@ public class MsgHttp extends Msg
             }
 
             HttpEntity entity = new ByteArrayEntity(messageContent.getBytes());
+
             if (null != responseMessage)
             {
             	responseMessage.setEntity(entity);
