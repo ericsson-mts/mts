@@ -3,10 +3,11 @@
 <scenario>
     
     <receiveMessageHTTP name="Wait POST" request="true" type="POST">
-        <parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
-        <parameter name="compressed" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
     </receiveMessageHTTP>
 
+    <parameter name="[compressed]" operation="string.toBinary" value="[content]"/>
     <parameter name="[uncompressed]" operation="binary.uncompress" value="[compressed]" value2="gzip"/>
     <parameter name="[string]" operation="binary.toString" value="[uncompressed]"/>
     <test parameter="[string]" condition="string.equals" value="Http content part"/>
