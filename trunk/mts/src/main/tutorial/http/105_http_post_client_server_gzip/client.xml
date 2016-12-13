@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[string]" operation="set" value="Http content part"/>
+    <parameter name="[binary]" operation="string.tobinary" value="[string]"/>
+    <parameter name="[compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
+
+    <sendMessageHTTP name="Send POST" remoteURL="http://[remoteHTTP]">
+<![CDATA[POST http://[remoteHTTP] HTTP/1.1
+Host: [proxyHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: gzip
+User-Agent: XMLLoader
+Content-Length: x
+
+[compressed]]]>
+    </sendMessageHTTP>
+
+    <receiveMessageHTTP name="Send 200 OK" request="false" type="POST" result="200">
+    </receiveMessageHTTP>
+
+</scenario> 
