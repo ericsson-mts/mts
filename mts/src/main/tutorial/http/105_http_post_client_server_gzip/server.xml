@@ -7,18 +7,20 @@
         <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
     </receiveMessageHTTP>
 
-    <parameter name="[compressed]" operation="string.toBinary" value="[content]"/>
+    <parameter name="[compressed2]" operation="string.toBinary" value="[content]" value2="ISO-8859-1"/>
+    <test parameter="[compressed2]" condition="binary.equals" value="[testcase:compressed]"/>    
     <parameter name="[uncompressed]" operation="binary.uncompress" value="[compressed]" value2="gzip"/>
-    <parameter name="[string]" operation="binary.toString" value="[uncompressed]"/>
-    <test parameter="[string]" condition="string.equals" value="Http content part"/>
+    <parameter name="[string]" operation="binary.toString" value="[uncompressed]" value2="ISO-8859-1"/>
+    <test parameter="[string]" condition="string.equals" value="[testcase:string]"/>
+
 
     <sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
 <![CDATA[HTTP/1.1 200 OK
 Accept-charset:text/html
 Content-Type:text/html
-Content-Encoding:utf-8
+Content-Charset:ISO-8859-1
 User-Agent:XMLLoader
-Content-Length:12
+Content-Length: x
 
 host message]]>
     </sendMessageHTTP>
