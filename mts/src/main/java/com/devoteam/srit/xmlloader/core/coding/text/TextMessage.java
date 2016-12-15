@@ -162,12 +162,6 @@ public class TextMessage {
 	        content = content.trim();
         }
         
-        // Calculate the Content-Length header is not present in the message or has an invalid value
-        if (completeContentLength) 
-        {
-            completeContentLengthHeader(content.length());
-        }
-
         // parse the headers
         this.parser = new MsgParser(multiHeader, compressedHeader);
         parser.parse(headers, "\r", ':', "<>", "\"\"");
@@ -185,6 +179,12 @@ public class TextMessage {
             {
                 content += "\r\n";
             }
+        }
+
+        // Calculate the Content-Length header is not present in the message or has an invalid value
+        if (completeContentLength) 
+        {
+            completeContentLengthHeader(content.length());
         }
 
         // calculate the complete message

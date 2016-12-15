@@ -33,7 +33,9 @@
     
     <!--test parameter="[receivedMessageLength]" condition="string.equals" value="2155"/--> <!-- Jain SIP stack -->
     <!--test parameter="[receivedMessageLength]" condition="string.equals" value="2294"/--> <!-- Light SIP stack -->
-    <test parameter="[receivedMessageLength]" condition="string.equals" value="[testcase:sentMessageLength]"/>
+    <!-- because of the nsn.ADD_CONTENT_LENGTH = "3" config parameter -->
+    <parameter name="[receivedMessageLength]" operation="number.add" value="[receivedMessageLength]" value2="6"/>
+    <test parameter="[receivedMessageLength]" condition="number.equals" value="[testcase:sentMessageLength]"/>
     
     <parameter name="[timestamp1]" operation="system.timestamp" value="1970"/>
     <parameter name="[timestamp2]" operation="protocol.setFromMessage" value="message.timestamp"/>  
@@ -533,11 +535,11 @@
     
     <parameter name="[session]" operation="protocol.setFromMessage" value="session"/>
     <log>[session]</log>
-    <parameter name="[sessionID]" operation="protocol.setFromMessage" value="session.id"/>
+    <!--parameter name="[sessionID]" operation="protocol.setFromMessage" value="session.id"/>
     <test parameter="[sessionID]" condition="string.equals" value="[sessID]"/>
     
     <parameter name="[sessionName]" operation="protocol.setFromMessage" value="session.name"/>
-    <test parameter="[sessionName]" condition="string.equals" value="200_out&lt;BR&gt;ACK_in"/>
+    <test parameter="[sessionName]" condition="string.equals" value="200_out&lt;BR&gt;ACK_in"/-->
     
     <parameter name="[msgInit]" operation="protocol.setFromMessage" value="session.initial"/>
     <test parameter="[msgInit]" condition="string.equals" value="[msgSessionInit]"/>

@@ -73,10 +73,7 @@ public abstract class StackSipCommon extends Stack
         
         DefaultRouter.resetInstance();
         
-        if (getConfig().getBoolean("nsn.ADD_CRLF_CONTENT", false))
-        {
-            this.addCRLFContent++;
-        }
+        this.addCRLFContent = getConfig().getInteger("nsn.ADD_CRLF_CONTENT", 0);
     }
         
     /** Creates a specific SIP Msg */
