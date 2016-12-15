@@ -646,7 +646,7 @@ public abstract class Stack
         boolean ret = false;
         try {
             long delay = msg.getTimestamp() - System.currentTimeMillis();
-            if (delay >= 0) {
+            if (delay > 0) {
                 RetransmitMsgTask retransmitTask = new RetransmitMsgTask(this, msg, srcRunner, destRunner, answerHandler);
                 retransmissionTimer.schedule(retransmitTask, delay);
             }
