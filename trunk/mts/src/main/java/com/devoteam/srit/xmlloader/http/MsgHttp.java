@@ -133,7 +133,7 @@ public class MsgHttp extends Msg
 
                 }
                 inputStream.close();
-                messageContent = Utils.newString(array.getBytes());
+                messageContent = new String(array.getBytes());
             }
         }
         else

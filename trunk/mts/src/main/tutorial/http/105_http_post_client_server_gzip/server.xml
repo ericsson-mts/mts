@@ -7,10 +7,10 @@
         <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
     </receiveMessageHTTP>
 
-    <parameter name="[compressed2]" operation="string.toBinary" value="[content]" value2="ISO-8859-1"/>
+    <parameter name="[compressed2]" operation="string.toBinary" value="[content]" value2="ISO-8859-15"/>
     <test parameter="[compressed2]" condition="binary.equals" value="[testcase:compressed]"/>    
     <parameter name="[uncompressed]" operation="binary.uncompress" value="[compressed]" value2="gzip"/>
-    <parameter name="[string]" operation="binary.toString" value="[uncompressed]" value2="ISO-8859-1"/>
+    <parameter name="[string]" operation="binary.toString" value="[uncompressed]" value2="ISO-8859-15"/>
     <test parameter="[string]" condition="string.equals" value="[testcase:string]"/>
 
 

@@ -182,6 +182,7 @@ public class XMLDocument implements Serializable
 
                     final URI finalPath = URIFactory.resolve(_this.schemaFile,systemId);//"./" + schemaFile).substring(0, ("./" + schemaFile).lastIndexOf("/") + 1) + systemId;
                     return new LSInput() {
+                    	String charset;
                         public InputStream getByteStream()
                         {
                             try
@@ -255,11 +256,12 @@ public class XMLDocument implements Serializable
 
                         public String getEncoding()
                         {
-                            return "ISO-8859-15";
+                        	return this.charset;
                         }
 
                         public void setEncoding(String encoding)
                         {
+                        	this.charset = encoding;
                         }
 
                         public boolean getCertifiedText()
