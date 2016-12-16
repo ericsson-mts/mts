@@ -4,11 +4,11 @@
 
     <!--parameter name="[string]" operation="set" value="Http content part"/-->
     <parameter name="[testcase:string]" operation="string.random" value="10000"/>
-    <parameter name="[binary]" operation="string.tobinary" value="[string]" value2="ISO-8859-1"/>
+    <parameter name="[binary]" operation="string.tobinary" value="[string]" value2="ISO-8859-15"/>
     <parameter name="[testcase:compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
     <!--parameter name="[testcase:compressed]" operation="set" value="1f8b08000000000000003348362f0bf64a4bcf32cf2c284aad7234f33772f72af3720e0a718d0aadcc098f080b483235cfadf04e29c94d4ac94a4fcab1487331332d32f7700ca9f2a9cc2e4b2974cc772bf03328f54f8ba84ccc8c70f4f274cf8c342cc8498948330c880a4d2cf70700e05249f464000000"/-->    
     <!--parameter name="[testcase:compressed]" operation="set" value="a8b4"/-->
-    <parameter name="[content]" operation="binary.toString" value="[testcase:compressed]" value2="ISO-8859-1"/>
+    <parameter name="[content]" operation="binary.toString" value="[testcase:compressed]" value2="ISO-8859-15"/>
     <parameter name="[uncompressed]" operation="binary.uncompress" value="[testcase:compressed]" value2="gzip"/>
     <parameter name="[string2]" operation="binary.toString" value="[uncompressed]" value2="ISO-8859-1"/>
     <!--test parameter="[string2]" condition="string.equals" value="[testcase:string]"/-->    

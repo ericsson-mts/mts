@@ -116,41 +116,6 @@ public class Utils
         return done;
     }
 
-
-    public static String newString(byte[] bytes)
-    {
-        char[] chars = new char[bytes.length];
-        for(int i=0; i<bytes.length; i++) chars[i] = (char) (bytes[i]&0xff);
-        return new String(chars);
-    }
-
-    public static byte[] getStringBytes(String string)
-    {
-        char[] chars = new char[string.length()];
-        byte[] bytes = new byte[string.length()];
-        string.getChars(0, string.length(), chars,0);
-        for(int i=0; i<chars.length; i++) bytes[i] = (byte) (chars[i]&0xff);
-        return bytes;
-    }
-
-    /*
-    public static String[] splitPath(String path)
-    {
-    	int posDot = path.indexOf(':');
-        if (posDot > 0 && posDot < path.length() - 1)
-        {
-            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.CORE,
-    			"Deprecated separator \":\" in path " + path,
-    			" please use \".\" instead.");
-        	return Utils.splitNoRegex(path, ":");
-        }
-        else
-        {
-            return Utils.splitNoRegex(path, ".");
-        }
-    }
-    */
-
     public static String[] splitPath(String path)
     {
     	int posDot = path.indexOf('.');
