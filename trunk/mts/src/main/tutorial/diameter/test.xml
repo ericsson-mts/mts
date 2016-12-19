@@ -489,7 +489,8 @@
         <scenario name="server" file="815_channel/server.xml" state="[remoteServer]" routingName="DIAMETER"/>
     </testcase>
 
-    <testcase name="815_channel_tls" state="true" number="[iterations]" description="diameter" >
+    <!-- DIAMETER transtorted on TLS does not work with the DK DAIMETER stack --> 
+    <testcase name="815_channel_tls" state="false" number="[iterations]" description="diameter" >
         <parameter name="[transport]" operation="set" value="TLS"/>
         <parameter name="[remotePortDIAM]" operation="number.add" value="[localPortDIAM]" value2="1"/>
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
