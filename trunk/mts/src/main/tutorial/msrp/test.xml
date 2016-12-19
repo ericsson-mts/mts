@@ -18,34 +18,37 @@
     <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS"/>
     <parameter editable="true" name="[serverTlsPort]" operation="set" value="[serverTlsPort]"/>
 
-    <testcase name="msrp/000_classicSequence_TCP" state="true">
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    
+     
+    <testcase name="msrp/000_classicSequence_TCP" number="[iterations]" state="true">
         <parameter name="[transport]" operation="set" value="TCP"/>
         <scenario file="000_classicSequence/client1.xml" name="Toto" routingName="Toto"/>
         <scenario file="000_classicSequence/client2.xml" name="MSRP" routingName="MSRP"/>
     </testcase>
 
-    <testcase name="msrp/001_classicSequence_TLS" state="true">
+    <testcase name="msrp/001_classicSequence_TLS" number="[iterations]" state="true">
         <parameter name="[transport]" operation="set" value="TLS"/>
         <scenario file="000_classicSequence/client1.xml" name="Toto" routingName="Toto"/>
         <scenario file="000_classicSequence/client2.xml" name="MSRP" routingName="MSRP"/>
     </testcase>
     
-    <testcase name="msrp/002_messagesAndparameters" state="true">
+    <testcase name="msrp/002_messagesAndparameters" number="[iterations]" state="true">
         <scenario file="002_parameters/client1.xml" name="Alice" routingName="Alice"/>
         <scenario file="002_parameters/client2.xml" name="Bob" routingName="Bob"/>
     </testcase>
         
-    <testcase name="msrp/003_Chunk" state="true">
+    <testcase name="msrp/003_Chunk" number="[iterations]" state="true">
     <parameter name="[remotePortMSRP]" operation="set" value="7855"/>    
         <scenario file="003_chunk/client1.xml" name="Alice" routingName="Alice"/>
         <scenario file="003_chunk/client2.xml" name="MSRP" routingName="MSRP"/>
     </testcase>    
 
-    <testcase name="msrp/004_connection" state="true">
+    <testcase name="msrp/004_connection" number="[iterations]" state="true">
         <scenario file="004_connection/client.xml" name="true" routingName="true"/>
     </testcase>
 
-    <testcase name="msrp/005_passive_client" state="true">
+    <testcase name="msrp/005_passive_client" number="[iterations]" state="true">
         <parameter name="[transport]" operation="set" value="TCP"/>
         <scenario file="005_passive_client/client1.xml" name="MSRP" routingName="MSRP"/>
         <scenario file="005_passive_client/client2.xml" name="TCP" routingName="TCP"/>

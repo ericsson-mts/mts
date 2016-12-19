@@ -15,13 +15,16 @@
     <!--parameter name="[remotePortSTUN]" operation="set" value="1234"/-->
     <parameter description="remote port of the SUT host" editable="true" name="[remotePortSTUN]" operation="set" value="[remotePortSTUN]"/>
     
-    <testcase description="test a binding request" name="000_bindingRequest" state="true">
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+        
+    
+    <testcase description="test a binding request" name="000_bindingRequest" number="[iterations]" state="true">
         <scenario file="000_bindingRequest/Stun_client.xml" name="Stun_client" routingName="Stun_client"/>
         <scenario file="000_bindingRequest/Stun_server.xml" name="STUN" routingName="STUN"/>
     </testcase>
 
     
-    <testcase description="test the setFromMessage operation" name="001_setFromMessage" state="true">
+    <testcase description="test the setFromMessage operation" name="001_setFromMessage" number="[iterations]" state="true">
         <scenario file="001_setFromMessage/Stun_client.xml" name="Stun_client" routingName="Stun_client"/>
         <scenario file="001_setFromMessage/Stun_server.xml" name="STUN" routingName="STUN"/>
     </testcase>
