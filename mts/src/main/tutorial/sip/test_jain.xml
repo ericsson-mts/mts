@@ -21,6 +21,9 @@
     <parameter name="[transportRequest]" operation="set" value="udp"/>
     <parameter name="[transportResponse]" operation="set" value="UDP"/>
         
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>        
+        
+        
     <!-- timers for the retransmissions-->
     <parameter name="[retransmitNumber]" operation="set" value="4"/>
     <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
@@ -37,75 +40,75 @@
     <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
     <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
     
-    <testcase description="test sip" name="001_stats" state="true">
+    <testcase description="test sip" name="001_stats" number="[iterations]" state="true">
         <scenario name="alice" routingName="">001_stats/UAC.xml</scenario>
         <scenario name="bob" routingName="SIP">001_stats/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="002_no_parameter" state="true">
+    <testcase description="test sip" name="002_no_parameter" number="[iterations]" state="true">
         <scenario name="alice">002_no_parameter/UAC.xml</scenario>
         <scenario name="5080">002_no_parameter/UAS.xml</scenario>
     </testcase>
     
-    <testcase description="test sip" name="005_set_from_msg" state="false">
+    <testcase description="test sip" name="005_set_from_msg" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">005_set_from_msg/UAC.xml</scenario>
         <scenario name="1234" routingName="1234">005_set_from_msg/UAS.xml</scenario>
     </testcase>
 
 
-    <testcase description="test sdp" name="006_set_from_sdp" state="false">
+    <testcase description="test sdp" name="006_set_from_sdp" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">006_set_from_sdp/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">006_set_from_sdp/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="009_echo" state="true">
+    <testcase description="test sip" name="009_echo" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">009_echo/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">009_echo/UAS.xml</scenario>
     </testcase>
 
 
-    <testcase description="test sip" name="100_invite_bye" state="true">
+    <testcase description="test sip" name="100_invite_bye" number="[iterations]" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="false"/>
         <scenario name="alice" routingName="alice">100_sip_invite_bye/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">100_sip_invite_bye/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="100_invite_404" state="true">
+    <testcase description="test sip" name="100_invite_404" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">100_sip_invite_404/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">100_sip_invite_404/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="100_invite_no200" state="true">
+    <testcase description="test sip" name="100_invite_no200" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">100_sip_invite_no200/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">100_sip_invite_no200/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="100_invite_nobye" state="true">   
+    <testcase description="test sip" name="100_invite_nobye" number="[iterations]" state="true">   
         <scenario name="alice" routingName="alice">100_sip_invite_nobye/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">100_sip_invite_nobye/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="100_invite_cancel" state="true">
+    <testcase description="test sip" name="100_invite_cancel" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">100_sip_invite_cancel/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">100_sip_invite_cancel/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="100_invite_bye_uas" state="true">
+    <testcase description="test sip" name="100_invite_bye_uas" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">100_sip_invite_bye_uas/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">100_sip_invite_bye_uas/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="101_re_invite" state="true">
+    <testcase description="test sip" name="101_re_invite" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">101_sip_reinvite/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">101_sip_reinvite/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="102_register" state="true">    
+    <testcase description="test sip" name="102_register" number="[iterations]" state="true">    
         <scenario name="alice" routingName="alice">102_sip_register/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">102_sip_register/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="102_register_digest" state="true">
+    <testcase description="test sip" name="102_register_digest" number="[iterations]" state="true">
       	<parameter name="[domainName]" operation="set" value="ericsson.com"/>
       	<parameter name="[userName]" operation="set" value="alice"/>       
         <parameter name="[password]" operation="set" value="ims30ims30"/>    
@@ -114,7 +117,7 @@
         <scenario name="bob" routingName="bob">102_sip_register_digest/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="102_register_call" state="true">
+    <testcase description="test sip" name="102_register_call" number="[iterations]" state="true">
   	    <parameter name="[domainName]" operation="set" value="asterisk"/>
       	<parameter name="[userTo]" operation="set" value="1111"/>
         <parameter name="[userFrom]" operation="set" value="0000"/>
@@ -124,113 +127,113 @@
         <scenario name="7070" routingName="7070">102_sip_register_call/registrar.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="103_publish" state="true">
+    <testcase description="test sip" name="103_publish" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">103_sip_publish/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">103_sip_publish/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="104_subscribe_notify" state="true">
+    <testcase description="test sip" name="104_subscribe_notify" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">104_sip_subscribe_notify/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">104_sip_subscribe_notify/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="105_message" state="true">
+    <testcase description="test sip" name="105_message" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">105_sip_message/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">105_sip_message/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="105_message_digest" state="true">
+    <testcase description="test sip" name="105_message_digest" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">105_sip_message_digest/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">105_sip_message_digest/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="106_refer" state="true">
+    <testcase description="test sip" name="106_refer" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">106_sip_refer/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">106_sip_refer/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="107_invite_prack_reinvite" state="true">
+    <testcase description="test sip" name="107_invite_prack_reinvite" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">107_sip_invite_prack_reinvite/UAC.xml</scenario>
         <scenario name="bob" routingName="7070">107_sip_invite_prack_reinvite/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="107_invite_prack_update" state="true">
+    <testcase description="test sip" name="107_invite_prack_update" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">107_sip_invite_prack_update/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">107_sip_invite_prack_update/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="108_info" state="true">
+    <testcase description="test sip" name="108_info" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">108_sip_info/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">108_sip_info/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="109_retransmit" state="false">
+    <testcase description="test sip" name="109_retransmit" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">109_sip_retransmit/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">109_sip_retransmit/UAS.xml</scenario>
     </testcase>
 
-	<testcase description="test sip" name="110_options" state="true">
+	<testcase description="test sip" name="110_options" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">110_sip_options/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">110_sip_options/UAS.xml</scenario>
     </testcase>
 	
 	
-    <testcase description="test sip" name="111_update" state="true">
+    <testcase description="test sip" name="111_update" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">111_sip_update/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">111_sip_update/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="112_publish_md5" state="true">
+    <testcase description="test sip" name="112_publish_md5" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">112_sip_publish_md5/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">112_sip_publish_md5/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="113_invite_trans" state="true">
+    <testcase description="test sip" name="113_invite_trans" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">113_sip_invite_trans/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">113_sip_invite_trans/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="114_invite_remote" state="true">
+    <testcase description="test sip" name="114_invite_remote" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">114_sip_invite_remote/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">114_sip_invite_remote/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="115_no_via" state="true">
+    <testcase description="test sip" name="115_no_via" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">115_sip_no_via/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">115_sip_no_via/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="116_foo" state="true">
+    <testcase description="test sip" name="116_foo" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">116_sip_foo/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">116_sip_foo/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="117_bad" state="false">
+    <testcase description="test sip" name="117_bad" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">117_sip_bad/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">117_sip_bad/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="118_invite_tls" state="true">
+    <testcase description="test sip" name="118_invite_tls" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">118_sip_invite_tls/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">118_sip_invite_tls/UAS.xml</scenario>
     </testcase>
     
-    <testcase description="test sip" name="119_sip_listenpoint" state="true">
+    <testcase description="test sip" name="119_sip_listenpoint" number="[iterations]" state="true">
         <scenario name="5070" routingName="5070">119_sip_listenpoint/UAC.xml</scenario>
         <scenario name="5080" routingName="5080">119_sip_listenpoint/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="120_receiveMessage" state="true">
+    <testcase description="test sip" name="120_receiveMessage" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">120_sip_receiveMessage/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">120_sip_receiveMessage/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="121_delay" state="true">
+    <testcase description="test sip" name="121_delay" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">121_sip_delay/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">121_sip_delay/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="130_probe_udp" state="true">
+    <testcase description="test sip" name="130_probe_udp" number="[iterations]" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         <parameter name="[transportRequest]" operation="set" value="udp"/>
         <parameter name="[transportResponse]" operation="set" value="UDP"/>
@@ -240,7 +243,7 @@
         <scenario name="default" routingName="default">130_sip_probe/probe.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="130_probe_tcp" state="true">
+    <testcase description="test sip" name="130_probe_tcp" number="[iterations]" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         <parameter name="[transportRequest]" operation="set" value="tcp"/>
         <parameter name="[transportResponse]" operation="set" value="TCP"/>
@@ -250,11 +253,11 @@
         <scenario name="default" routingName="default">130_sip_probe/probe.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="130_probe_file" state="true">
+    <testcase description="test sip" name="130_probe_file" number="[iterations]" state="true">
         <scenario name="default" routingName="default">130_sip_probe/probe_file.xml</scenario>
     </testcase>
     
-    <testcase description="test sip" name="131_probe_regexfilter" state="true">
+    <testcase description="test sip" name="131_probe_regexfilter" number="[iterations]" state="true">
         <parameter name="[waitSemaphore]" operation="set" value="true"/>
         
         <scenario name="alice" routingName="alice">100_sip_invite_bye/UAC.xml</scenario>
@@ -262,62 +265,62 @@
         <scenario name="default" routingName="default">131_sip_probe_regexfilter/probe.xml</scenario>
     </testcase>    
 
-    <testcase description="test sip" name="200_invite_bye" state="true">
+    <testcase description="test sip" name="200_invite_bye" number="[iterations]" state="true">
         <scenario name="alice" routingName="alice">200_sip_invite_bye/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">200_sip_invite_bye/UAS.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="252_proxy" state="false">
+    <testcase description="test sip" name="252_proxy" number="[iterations]" state="false">
         <scenario name="[localPortSIP]" routingName="[localPortSIP]">252_sip_proxy/SIP.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="301_invite_bye" state="false">
+    <testcase description="test sip" name="301_invite_bye" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">301_sip_invite_bye/scenario.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="302_register" state="false">
+    <testcase description="test sip" name="302_register" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">302_sip_register/scenario.xml</scenario>
     </testcase>
     
-    <testcase description="test fonction sip UAS " name="150_uas" state="false">
+    <testcase description="test fonction sip UAS " name="150_uas" number="[iterations]" state="false">
         <scenario name="[localPortSIP]" routingName="[localPortSIP]">150_sip_uas/SIP.xml</scenario>
         <scenario name="client" routingName="client">150_sip_uas/uac.xml</scenario>
     </testcase>
 
-    <testcase description="test fonction sip UAS " name="150_uas_register" state="false">
+    <testcase description="test fonction sip UAS " name="150_uas_register" number="[iterations]" state="false">
         <scenario name="[localPortSIP]" routingName="[localPortSIP]">150_sip_uas_register/SIP.xml</scenario>
         <scenario name="client" routingName="client">150_sip_uas_register/uac.xml</scenario>
     </testcase>
 
-    <testcase description="test fonction sip UAC " name="151_uac" state="false">
+    <testcase description="test fonction sip UAC " name="151_uac" number="[iterations]" state="false">
         <scenario name="client" routingName="client">151_sip_uac/uac.xml</scenario>
     </testcase>
 
-    <testcase description="test fonction sip UAC " name="151_uac_register" state="false">
+    <testcase description="test fonction sip UAC " name="151_uac_register" number="[iterations]" state="false">
         <scenario name="client" routingName="client">151_sip_uac_register/uac.xml</scenario>
     </testcase>
 
-    <testcase description="test fonction SIP proxy" name="152_proxy" state="false">
+    <testcase description="test fonction SIP proxy" name="152_proxy" number="[iterations]" state="false">
         <scenario name="[localPortSIP]" routingName="[localPortSIP]">152_sip_proxy/SIP.xml</scenario>
     </testcase>
 
-    <testcase description="test fonction SIP B2B transparent without filtering on Via and Record-Route headers" name="153_b2b_transparent" state="false">
+    <testcase description="test fonction SIP B2B transparent without filtering on Via and Record-Route headers" name="153_b2b_transparent" number="[iterations]" state="false">
         <scenario name="[localPortSIP]" routingName="[localPortSIP]">153_sip_b2b_transparent/SIP.xml</scenario>
     </testcase>
 
-    <testcase description="test fonction SIP B2B transparent with filtering on Via and Record-Route headers" name="153_b2b_non_transp" state="false">
+    <testcase description="test fonction SIP B2B transparent with filtering on Via and Record-Route headers" name="153_b2b_non_transp" number="[iterations]" state="false">
         <scenario name="[localPortSIP]" routingName="[localPortSIP]">153_sip_b2b_non_transp/SIP.xml</scenario>
     </testcase>
 	
-    <testcase description="SIP registrar server" name="154_registrar" state="false">
+    <testcase description="SIP registrar server" name="154_registrar" number="[iterations]" state="false">
 	<scenario name="[localPortSIP]" routingName="[localPortSIP]">154_sip_registrar/SIP.xml</scenario>
     </testcase>
 
-    <testcase description="SIP registrar server" name="155_stateless" state="false">
+    <testcase description="SIP registrar server" name="155_stateless" number="[iterations]" state="false">
 	<scenario name="[localPortSIP]" routingName="[localPortSIP]">155_sip_stateless/SIP.xml</scenario>
     </testcase>
 
-    <testcase description="test sip" name="156_supervision" state="false">
+    <testcase description="test sip" name="156_supervision" number="[iterations]" state="false">
         <parameter name="[LevelSupervision]" operation="set" value="ERROR"/>	
         <parameter name="[PeriodSupervision]" operation="set" value="10"/>	
 
@@ -330,15 +333,15 @@
         <scenario name="supervision" routingName="supervision">156_sip_supervision/supervision.xml</scenario>
     </testcase>    
 
-    <testcase description="test sip" name="157_probe" state="false">
+    <testcase description="test sip" name="157_probe" number="[iterations]" state="false">
         <scenario name="probe" routingName="probe">130_sip_probe/probe.xml</scenario>
     </testcase>   
 
-    <testcase description="SIP registrar server authentification" name="158_registrar_authentification" state="false">
+    <testcase description="SIP registrar server authentification" name="158_registrar_authentification" number="[iterations]" state="false">
 		<scenario name="[localPortSIP]" routingName="[localPortSIP]">158_sip_registrar_authentification/SIP.xml</scenario>
     </testcase>	
 	
-    <testcase description="test sip" name="160_boucle" state="false">
+    <testcase description="test sip" name="160_boucle" number="[iterations]" state="false">
         <scenario name="alice" routingName="alice">160_sip_boucle/UAC.xml</scenario>
         <scenario name="bob" routingName="bob">160_sip_boucle/UAS.xml</scenario>
     </testcase>
