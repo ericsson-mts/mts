@@ -27,12 +27,14 @@ import com.devoteam.srit.xmlloader.asn1.data.ElementValue;
 import com.devoteam.srit.xmlloader.asn1.dictionary.ASNDictionary;
 import com.devoteam.srit.xmlloader.asn1.dictionary.Embedded;
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.EnumStringField;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sigtran.ap.tcap.ObjectId;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -113,21 +115,38 @@ public class ASNGetParameter
 	        }
 
 	        // return the object as XML
-			String retObject = processSimpleObject(parameter, path, resultPath, message, parentObj, objClass, name);			
+			Object retObject = processSimpleObject(parameter, path, resultPath, message, parentObj, objClass, name);			
 	        									
 			if (retObject != null)
 			{
+				// remove the layer of the path (at the beginning)
 				int pos = path.indexOf(TAG_SEPARATOR);
 				String pathWithoutLayer = path; 
 				if (pos >= 0)
 				{
 					pathWithoutLayer = path.substring(pos);
 				}
-				if (resultPath.endsWith(pathWithoutLayer)) 
+				// remove the end of the path (after the ".field.")				
+				int posField = pathWithoutLayer.indexOf(".field.");
+				String pathWithoutLayerField = pathWithoutLayer;
+				if (posField >= 0)
+				{
+					pathWithoutLayerField = pathWithoutLayer.substring(0, posField);
+				}
+				if (resultPath.endsWith(pathWithoutLayerField)) 
 				{
 					if (retObject != null)
 					{
-						parameter.add(retObject);
+						if (retObject instanceof byte[])
+						{
+							byte[] bytes = (byte[]) retObject;
+							getParameterElement(parameter, path, message, parentObj, name, bytes);
+							return;
+						}
+						else
+						{
+							parameter.add(retObject);
+						}
 						return;
 					}
 				}
@@ -138,11 +157,23 @@ public class ASNGetParameter
 					tempResultPath = resultPath.substring(0, pos + 1);
 					tempResultPath += name;
 				}				
-				if (tempResultPath.endsWith(pathWithoutLayer)) 
+				if (tempResultPath.endsWith(pathWithoutLayerField)) 
 				{
 					if (retObject != null)
 					{
-						parameter.add(retObject);
+						if (retObject != null)
+						{
+							if (retObject instanceof byte[])
+							{
+								byte[] bytes = (byte[]) retObject;
+								getParameterElement(parameter, path, message, parentObj, name, bytes);
+								return;
+							}
+							else
+							{
+								parameter.add(retObject);
+							}
+						}
 						return;
 					}
 				}
@@ -212,7 +243,7 @@ public class ASNGetParameter
 	}
 		
 	// get the XML data for simple object : null means a complex object
-	private String processSimpleObject(Parameter parameter, String path, String resultPath, ASNMessage message, Object parentObj, Object object, String name)
+	private Object processSimpleObject(Parameter parameter, String path, String resultPath, ASNMessage message, Object parentObj, Object object, String name)
 			throws Exception 
 	{
 		String type = object.getClass().getCanonicalName();
@@ -323,8 +354,9 @@ public class ASNGetParameter
 		}
 		else if (type.equals("byte[]")) 
 		{
-			byte[] bytes = (byte[]) object;
+			return object;
 			
+			/*
 			String ret = Utils.toHexaString(bytes, "");
 			
 			// get the element definition (enumeration binary data) from the dictionary
@@ -349,9 +381,10 @@ public class ASNGetParameter
         		catch (Exception e)
         		{
         			// nothing to do
-        		}
+        		}        
         	}
         	return ret;
+        	*/
 		} 
 		else if (type.endsWith(".EnumType")) 
 		{
@@ -380,6 +413,47 @@ public class ASNGetParameter
 		}
 		return null;
 	}
+
+	
+	public void getParameterElement(Parameter parameter, String path, ASNMessage message, Object parentObj, String name, byte[] bytes)
+	{
+		// get the element definition (enumeration binary data) from the dictionary
+		ElementAbstract elementDico = null;
+		if (message != null)
+		{
+	    	elementDico = message.getElementFromDico(name, parentObj, path, bytes);
+		}
+		if (elementDico != null)
+		{
+			Array array = new DefaultArray(bytes);
+			try
+			{
+				elementDico.decodeFromArray(array, message.dictionary);
+				String[] params = Utils.splitPath(path);
+				if (path.contains(".field."))
+				{
+					elementDico.getParameter(parameter, params, path, params.length - 4, message.dictionary);
+				}
+				else
+				{
+					elementDico.getParameter(parameter, params, path, params.length - 2, message.dictionary);
+				}
+			}
+			catch (Exception e)
+			{
+				// nothing to do
+			}        
+		}
+		else
+		{
+			if (!(parentObj instanceof ObjectId))
+			{
+				String str = Utils.toHexaString(bytes, "");
+				parameter.add(str);
+			}
+		}
+	}
+	
 
 	public static Object processEmbeddedObject(Embedded embedded, Object object) throws Exception
 	{

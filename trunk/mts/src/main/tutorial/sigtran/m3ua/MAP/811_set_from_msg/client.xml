@@ -202,18 +202,13 @@
     <test parameter="[localValue]" condition="string.equals" value="sendRoutingInfoForSM:45"/>
     
     <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>
-    <!-- BUG a voir retourne 2 valeurs Why ?-->
-    <!--test parameter="[applicationContextName]" condition="list.size" value="1"/-->
-    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <test parameter="[applicationContextName]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>
-    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <test parameter="[applicationContextName]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>
-    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <test parameter="[applicationContextName]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     
-    <!--test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invoke.C1.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
@@ -258,13 +253,13 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;gprsSupportIndicator.C7&gt;&lt;/gprsSupportIndicator.C7&gt;"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_MTI.C8&gt;823102423&lt;/sm_RP_MTI.C8&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_SMEA.C9&gt;04040ea11e27&lt;/sm_RP_SMEA.C9&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_SMEA.C9&gt;08040ea11e27"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;/RoutingInfoForSMArg.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/--> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
     
     <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="45" result="RESULT">
         <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
@@ -272,15 +267,15 @@
 
     <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
     
-    <!--test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;returnResultLast.C2.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;resultretres&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;resultretres.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;opCode.Choice&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;localValue.BoxedType&gt;&lt;Long&gt;sendRoutingInfoForSM:45&lt;/Long&gt;&lt;/localValue.BoxedType&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/opCode.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/resultretres&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/resultretres.Sequence&gt;"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;returnparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSM_Res.Sequence&gt;"/>
@@ -319,8 +314,8 @@
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;unknown:0&quot; "/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;501c7ead3fd5&quot; "/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/msc_Number.C0.BoxedType&gt;"/-->
-    
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/msc_Number.C0.BoxedType&gt;"/>  
+    <!-- BUG present dans le fichier server mais pas envoye WHY ? -->
     <!--test parameter="[xml]" condition="string.contains" value="&lt;sgsn_Number.C1.BoxedType&gt;&lt;Bytes&gt;"/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;extension:0&quot; "/>
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;unknown:0&quot; "/>
@@ -328,7 +323,7 @@
     <test parameter="[xml]" condition="string.contains" value=" value=&quot;313eb8973440724491710f105d2ed236f9995091&quot; "/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sgsn_Number.C1.BoxedType.BoxedType&gt;"/-->
     
-    <!--test parameter="[xml]" condition="string.contains" value="&lt;/additional_Number.C6.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/additional_Number.C6.Choice&gt;"/>
 
     <test parameter="[xml]" condition="string.contains" value="&lt;extensionContainer.C4.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;privateExtensionList.C0.BoxedType&gt;"/>
@@ -349,7 +344,7 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/returnparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/returnResultLast.C2.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/--> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
 	
     <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
           

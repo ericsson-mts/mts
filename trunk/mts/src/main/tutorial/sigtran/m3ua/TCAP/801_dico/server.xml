@@ -43,9 +43,7 @@
   	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 	
-    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
-    
-    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invoke.C1.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;localValue.BoxedType&gt;&lt;Long&gt;mo-forwardSM:46&lt;/Long&gt;&lt;/localValue.BoxedType&gt;"/>
@@ -69,10 +67,9 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;/sm_RP_UI.BoxedType&gt;"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;/Mo_forwardSM_Arg.Sequence&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/> 
 
-    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;TCAP&quot;&gt;"/>
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;begin.A2.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;otid.BoxedType&gt;&lt;Bytes.A8&gt;00000001&lt;/Bytes.A8&gt;&lt;/otid.BoxedType&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;direct_reference&gt;&lt;ObjectIdentifier&gt;dialogue-as-id:0.0.17.773.1.1.1&lt;/ObjectIdentifier&gt;&lt;/direct_reference&gt;"/>
@@ -83,8 +80,7 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;localValue&gt;mo-forwardSM:46&lt;/localValue&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;parameter&gt;30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03&lt;/parameter&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/> 
     
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
