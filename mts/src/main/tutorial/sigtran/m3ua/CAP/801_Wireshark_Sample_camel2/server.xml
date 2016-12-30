@@ -31,8 +31,7 @@
         
     </sendMessageSIGTRAN>
     
-    <!--receiveMessageSIGTRAN name="Wait DATA1" request="true" type="initialDP:0"-->
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="0">
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="initialDP:0">    
       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -47,31 +46,89 @@
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
     
-    <!-- ESSAI pas concluant d'analyse avec les xpath : pas de wilcards possible -->
-    <!--parameter name="[asnChild]" operation="string.xpath" value="[xml]" value2="/ASN/*"/>
-    <test parameter="[asnChild]" condition="list.size" value="1"/>    
-    <test parameter="[asnChild]" condition="string.startsWith" value="&lt;Component"/>
-    <parameter name="[tag]" operation="string.regexmatches" value="[asnChild]" value2="&lt;Component.*&gt;"/>
-    <test parameter="[tag]" condition="list.size" value="1"/>    
-    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="1"/>
-    <parameter name="[taglength]" operation="string.length" value="[tag]"/>
-    <parameter name="[taglength]" operation="number.substract" value="[taglength]" value2="2"/>
-    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="0" value3="[taglength]"/>    
-    <parameter name="[componentChild]" operation="string.xpath" value="[asnChild]" value2="/[tag]/*"/>
-    <test parameter="[componentChild]" condition="list.size" value="1"/>            
-    <test parameter="[componentChild]" condition="string.startsWith" value="&lt;invoke"/>
-    <parameter name="[tag]" operation="string.regexmatches" value="[componentChild]" value2="&lt;invoke.*&gt;"/>
-    <test parameter="[tag]" condition="list.size" value="3"/>
-    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="1"/>
-    <parameter name="[taglength]" operation="string.length" value="[tag]"/>
-    <parameter name="[taglength]" operation="number.substract" value="[taglength]" value2="2"/>
-    <parameter name="[tag]" operation="string.substring" value="[tag]" value2="0" value3="[taglength]"/>    
-    <parameter name="[invokeChild]" operation="string.xpath" value="[componentChild]" value2="/[tag(0)]/*"/>
-    <test parameter="[invokeChild]" condition="list.size" value="3"/>            
-    <test parameter="[invokeChild(0)]" condition="string.startsWith" value="&lt;invokeID"/>
-    <test parameter="[invokeChild(1)]" condition="string.startsWith" value="&lt;opCode"/>
-    <test parameter="[invokeChild(2)]" condition="string.startsWith" value="&lt;invokeparameter"/-->    
-    
+    <!-- control logs setFromMessage -->    
+    <parameter name="[invoke]" operation="protocol.setFromMessage" value="asn.Component.invoke"/>
+  	<test parameter="[invoke]" condition="list.size" value="0"/>
+    <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>
+  	<test parameter="[invokeID]" condition="number.equals" value="1"/>
+    <parameter name="[opCode]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
+  	<test parameter="[opCode]" condition="string.equals" value="initialDP:0"/>
+	  <parameter name="[serviceKey]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.serviceKey"/>
+  	<test parameter="[serviceKey]" condition="number.equals" value="110"/>
+        
+    <parameter name="[calledPartyNumber]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber"/>
+    <parameter name="[calledPartyNumber]" operation="protocol.setFromMessage" value="asn.calledPartyNumber"/>    
+    <test parameter="[calledPartyNumber]" condition="binary.equals" value="839021721090000f"/>
+    <parameter name="[Called_OddEven]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber.field.Odd/even (O/E)"/>
+  	<test parameter="[Called_OddEven]" condition="string.equals" value="odd number of address signals:1"/>        
+    <parameter name="[Called_NOA]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber.field.Nature of address"/>
+  	<test parameter="[Called_NOA]" condition="string.equals" value="national (significant) number:3"/>        
+    <parameter name="[Called_INN]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber.field.Internal Network Number (INN)"/>
+  	<test parameter="[Called_INN]" condition="string.equals" value="routing to internal number not allowed:1"/>        
+    <parameter name="[Called_NP]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber.field.Numbering plan"/>
+  	<test parameter="[Called_NP]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>        
+    <parameter name="[Called_spare]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber.field.spare"/>
+  	<test parameter="[Called_spare]" condition="number.equals" value="0"/>        
+    <parameter name="[Called_digits]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.calledPartyNumber.field.digits"/>
+  	<test parameter="[Called_digits]" condition="binary.equals" value="1227010900f0"/>
+
+    <parameter name="[callingPartyNumber]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber"/>
+    <test parameter="[callingPartyNumber]" condition="binary.equals" value="039757"/>
+    <parameter name="[Calling_OddEven]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.Odd/even (O/E)"/>
+  	<test parameter="[Calling_OddEven]" condition="string.equals" value="even number of address signals:0"/>        
+    <parameter name="[Calling_NOA]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.Nature of address"/>
+  	<test parameter="[Calling_NOA]" condition="string.equals" value="national (significant) number:3"/>        
+    <parameter name="[Calling_NI]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.Number Incomplete (NI)"/>
+  	<test parameter="[Calling_NI]" condition="string.equals" value="incomplete:1"/>        
+    <parameter name="[Calling_NP]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.Numbering plan"/>
+  	<test parameter="[Calling_NP]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>        
+    <parameter name="[Calling_APR]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.Address presentation restricted"/>
+  	<test parameter="[Calling_APR]" condition="string.equals" value="presentation restricted:1"/>        
+    <parameter name="[Calling_Screening]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.Screening"/>
+  	<test parameter="[Calling_Screening]" condition="string.equals" value="network provided:3"/>        
+    <parameter name="[Calling_digits]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartyNumber.field.digits"/>
+  	<test parameter="[Calling_digits]" condition="number.equals" value="75"/>
+
+    <parameter name="[CallingPartyCategory]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.callingPartysCategory.field.category"/>
+  	<test parameter="[CallingPartyCategory]" condition="string.equals" value="ordinary calling subscriber:10"/>        
+
+    <parameter name="[originalCallingPartyID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID"/>
+    <test parameter="[originalCallingPartyID]" condition="binary.equals" value="831407010900"/>
+    <parameter name="[OriginalCalling_OddEven]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID.field.Odd/even (O/E)"/>
+  	<test parameter="[OriginalCalling_OddEven]" condition="string.equals" value="odd number of address signals:1"/>        
+    <parameter name="[OriginalCalling_spare1]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID.field.spare1"/>
+  	<test parameter="[OriginalCalling_spare1]" condition="number.equals" value="0"/>        
+    <parameter name="[OriginalCalling_NP]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID.field.Numbering plan"/>
+  	<test parameter="[OriginalCalling_NP]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>        
+    <parameter name="[OriginalCalling_APR]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID.field.Address presentation restricted"/>
+  	<test parameter="[OriginalCalling_APR]" condition="string.equals" value="presentation restricted:1"/>        
+    <parameter name="[OriginalCalling_spare2]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID.field.spare2"/>
+  	<test parameter="[OriginalCalling_spare2]" condition="number.equals" value="0"/>        
+    <parameter name="[OriginalCalling_digits]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.originalCalledPartyID.field.digits"/>
+  	<test parameter="[OriginalCalling_digits]" condition="number.equals" value="70109000"/>
+
+    <parameter name="[bearerCapability]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability"/>
+    <test parameter="[bearerCapability]" condition="binary.equals" value="8090a3"/>
+    <parameter name="[BC_ext1]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.ext1"/>
+  	<test parameter="[BC_ext1]" condition="string.equals" value="last octet:1"/>        
+    <parameter name="[BC_CS]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.Coding standard"/>
+  	<test parameter="[BC_CS]" condition="string.equals" value="ITU-T standardized coding as described below:0"/>        
+    <parameter name="[BC_ICT]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.Information transfer capability"/>
+  	<test parameter="[BC_ICT]" condition="string.equals" value="Speech:0"/>        
+    <parameter name="[BC_ext2]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.ext2"/>
+  	<test parameter="[BC_ext2]" condition="string.equals" value="last octet:1"/>        
+    <parameter name="[BC_TM]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.Transfer mode"/>
+  	<test parameter="[BC_TM]" condition="string.equals" value="Circuit mode:0"/>        
+    <parameter name="[BC_ITR]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.Information transfer rate"/>
+  	<test parameter="[BC_ITR]" condition="string.equals" value="64 kbit/s:16"/>        
+    <parameter name="[BC_ext3]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.ext3"/>
+  	<test parameter="[BC_ext3]" condition="string.equals" value="last octet:1"/>        
+    <parameter name="[BC_LID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.Layer identifier"/>
+  	<test parameter="[BC_LID]" condition="string.equals" value="layer 1 ident:1"/>        
+    <parameter name="[BC_UIL1P]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.InitialDPArg.bearerCapability.field.User information layer 1 protocol"/>
+  	<test parameter="[BC_UIL1P]" condition="string.equals" value="Recommendation G.711 A-law:3"/>        
+                                
+    <!-- control logs messages -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>
@@ -296,9 +353,7 @@
     <test parameter="[gmscAddressNumberingPlan]" condition="string.equals" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1"/>
     <parameter name="[gmscAddressDigits]" operation="string.xpath" value="[gmscAddress]" value2="//field[@name='digits']/attribute::value"/>
     <test parameter="[gmscAddressDigits]" condition="list.size" value="1"/>
-    <test parameter="[gmscAddressDigits]" condition="string.equals" value="2207750007"/>
-    
-    <!-- TODO -->
+    <test parameter="[gmscAddressDigits]" condition="string.equals" value="2207750007"/>  
     	
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
@@ -668,6 +723,8 @@
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
 
+
+    <!-- control logs messages -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>
@@ -944,6 +1001,8 @@
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
 
+
+    <!-- control logs messages -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>
@@ -992,6 +1051,8 @@
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
 
+
+    <!-- control logs messages -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>
@@ -1203,6 +1264,37 @@
     <parameter name="[xmlCAPdata]" operation="protocol.setFromMessage" value="asn.binary"/>
     <test parameter="[xmlCAPdata]" condition="binary.equals" value="[data]"/>
 
+    <!-- control logs setFromMessage -->    
+    <parameter name="[invoke]" operation="protocol.setFromMessage" value="asn.Component.invoke"/>
+  	<test parameter="[invoke]" condition="list.size" value="0"/>
+    <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>
+  	<test parameter="[invokeID]" condition="number.equals" value="3"/>
+    <parameter name="[opCode]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
+  	<test parameter="[opCode]" condition="string.equals" value="releaseCall:22"/>
+    
+    <parameter name="[allCallSegments]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause"/>
+    <parameter name="[allCallSegments]" operation="protocol.setFromMessage" value="asn.allCallSegments.Cause"/>    
+    <test parameter="[allCallSegments]" condition="binary.equals" value="8495"/>
+    <parameter name="[ACS_ext1]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.ext1"/>
+  	<test parameter="[ACS_ext1]" condition="string.equals" value="last octet:1"/>        
+    <parameter name="[ACS_CS]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.Coding standard"/>
+  	<test parameter="[ACS_CS]" condition="string.equals" value="ITU-T standardized coding, as described below:0"/>        
+    <parameter name="[ACS_Spare]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.Spare"/>
+  	<test parameter="[ACS_Spare]" condition="number.equals" value="0"/>        
+    <parameter name="[ACS_Loc]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.Location"/>
+  	<test parameter="[ACS_Loc]" condition="string.equals" value="public network serving the remote user (RLN):4"/>
+    <parameter name="[ACS_ext2]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.ext2"/>
+    <test parameter="[ACS_ext2]" condition="list.size" value="0"/>    
+   	<!--test parameter="[ACS_ext2]" condition="string.equals" value="last octet:1"/-->        
+    <parameter name="[ACS_Recomm]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.Recommandation"/>
+    <test parameter="[ACS_Recomm]" condition="list.size" value="0"/>    
+  	<!--test parameter="[ACS_Recomm]" condition="string.equals" value="public land mobile networks, Q.1031/Q.1051:5"/-->            
+    <parameter name="[ACS_ext3]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.ext3"/>
+  	<test parameter="[ACS_ext3]" condition="string.equals" value="last octet:1"/>        
+    <parameter name="[ACS_CauseValue]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeparameter.ReleaseCallArg.allCallSegments.Cause.field.Cause value"/>
+  	<test parameter="[ACS_CauseValue]" condition="string.equals" value="Class 001 normal event : Call rejected:21"/>        
+
+    <!-- control logs messages -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>

@@ -40,10 +40,12 @@
       <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
     </receiveMessageSIGTRAN>
         
+    <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke"/>
+    <test parameter="[invokeID]" condition="list.size" value="0"/>        
     <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>
-    <test parameter="[invokeID]" condition="string.equals" value="1"/>
+    <test parameter="[invokeID]" condition="number.equals" value="1"/>
     <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.invokeID"/>
-    <test parameter="[invokeID]" condition="string.equals" value="1"/>
+    <test parameter="[invokeID]" condition="number.equals" value="1"/>
     
     <parameter name="[localValue]" operation="protocol.setFromMessage" value="asn.Component.invoke.opCode.localValue"/>
     <test parameter="[localValue]" condition="string.equals" value="sendRoutingInfoForSM:45"/>
@@ -51,18 +53,14 @@
     <test parameter="[localValue]" condition="string.equals" value="sendRoutingInfoForSM:45"/>
     
     <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.TCMessage.begin.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>
-    <!-- BUG a voir retourne 2 valeurs Why ?-->
-    <!--test parameter="[applicationContextName]" condition="list.size" value="1"/-->
-    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <test parameter="[applicationContextName]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>
-    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
+    <test parameter="[applicationContextName]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[applicationContextName]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>
-    <test parameter="[applicationContextName(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[applicationContextName(1)]" condition="string.equals" value="060704000001001502"/>
-    
-    <!--test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
+    <test parameter="[applicationContextName]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>    
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSMArg.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;msisdn.C0.BoxedType&gt;&lt;Bytes&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;extension:0&quot; "/>
@@ -99,13 +97,13 @@
     <test parameter="[xml]" condition="string.contains" value="&lt;gprsSupportIndicator.C7&gt;&lt;/gprsSupportIndicator.C7&gt;"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_MTI.C8&gt;823102423&lt;/sm_RP_MTI.C8&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_SMEA.C9&gt;04040ea11e27&lt;/sm_RP_SMEA.C9&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_SMEA.C9&gt;08040ea11e27"/>
     
     <test parameter="[xml]" condition="string.contains" value="&lt;/RoutingInfoForSMArg.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
-    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/--> 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
 
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         
@@ -161,12 +159,12 @@
                          <field name="numbering plan" value="4" type="EnumLong" lengthBit="4" />
                          <field name="digits" value="501c7ead3fd5" type="Number_BCD" />
                       </Bytes></msc_Number.C0.BoxedType>
-                      <!--sgsn_Number.C1.BoxedType><Bytes>
+                      <sgsn_Number.C1.BoxedType><Bytes>
                             <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
                             <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
                             <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
                             <field name="digits" value="3127474b71e9a21d41423c69cd7d2ba25ce373b1" type="Number_BCD" />
-                      </Bytes></sgsn_Number.C1.BoxedType-->
+                      </Bytes></sgsn_Number.C1.BoxedType>
                    </additional_Number.C6.Choice>
                 </locationInfoWithLMSI.C0.Sequence>
                 <extensionContainer.C4.Sequence>

@@ -176,27 +176,16 @@
     <test parameter="[protocol_version]" condition="list.size" value="1"/>
     <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>    
     <parameter name="[result]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result"/>
-    <test parameter="[result]" condition="list.size" value="1"/>
     <test parameter="[result]" condition="string.equals" value="020100"/>
     <parameter name="[associate_result]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result.Associate_result"/>
     <test parameter="[associate_result]" condition="list.size" value="1"/>    
@@ -205,7 +194,6 @@
     <test parameter="[associate_result]" condition="list.size" value="1"/>    
     <test parameter="[associate_result]" condition="string.equals" value="0"/>
     <parameter name="[result_source_diagnostic]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result_source_diagnostic"/>
-    <test parameter="[result_source_diagnostic]" condition="list.size" value="1"/>
     <test parameter="[result_source_diagnostic]" condition="string.equals" value="a103020100"/>        
     <parameter name="[associate_source_diagnostic]" operation="protocol.setFromMessage" value="tcap.end.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueResponse.AARE_apduSequenceType.result_source_diagnostic.Associate_source_diagnostic"/>
     <test parameter="[associate_source_diagnostic]" condition="list.size" value="0"/>    
@@ -220,7 +208,7 @@
     <test parameter="[dialogue_service_user]" condition="string.equals" value="0"/>
         
     <!-- control AP part -->
-    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <test parameter="[xml]" condition="string.contains" value="&lt;Integer&gt;1&lt;/Integer&gt;"/>
             
     <!-- control dialoguePortion -->
@@ -247,7 +235,6 @@
     <test parameter="[protocol_version]" condition="list.size" value="1"/>
     <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
     <parameter name="[application_context_name]" operation="string.xpath" value="[dialogueResponse]" value2="//application_context_name.C1.BoxedType/ObjectIdentifier.C1/ObjectIdentifier/text()"/>
-    <test parameter="[application_context_name]" condition="list.size" value="1"/>
     <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[result]" operation="string.xpath" value="[dialogueResponse]" value2="//result.C2.BoxedType"/>
     <test parameter="[result]" condition="list.size" value="1"/>

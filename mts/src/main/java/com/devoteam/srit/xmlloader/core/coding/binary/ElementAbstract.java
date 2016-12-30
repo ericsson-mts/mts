@@ -682,6 +682,7 @@ public abstract class ElementAbstract implements Cloneable
     		Array array = this.encodeToArray(dictionary);
     		var.add(Array.toHexString(array));
         }
+    	/*
         else if (params.length == offset + 4 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {
         	FieldAbstract field = this.fieldsByName.get(params[offset + 3]);
@@ -704,7 +705,8 @@ public abstract class ElementAbstract implements Cloneable
         		}
         	}
         }
-        else if (params.length >= offset + 5 && (params[offset + 2].equalsIgnoreCase("field"))) 
+        */
+        else if (params.length >= offset + 3 && (params[offset + 2].equalsIgnoreCase("field"))) 
         {
         	FieldAbstract field = this.fieldsByName.get(params[offset + 3]);
         	if (field != null)

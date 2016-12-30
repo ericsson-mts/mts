@@ -68,28 +68,18 @@
     <test parameter="[protocol_version]" condition="list.size" value="1"/>
     <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.begin.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
-    <test parameter="[application_context_name]" condition="list.size" value="2"/>
-    <test parameter="[application_context_name(0)]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
-    <test parameter="[application_context_name(1)]" condition="binary.equals" value="060704000001001502"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
 
-    <!-- check log AP part -->
-    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    <!-- control log AP part -->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="asn.xml"/>
     <test parameter="[xml]" condition="string.contains" value="value=&quot;33660650769&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="value=&quot;33661307173&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="value=&quot;SMS-SUBMIT / SMS-SUBMIT-REPORT:1&quot;"/>
@@ -101,7 +91,7 @@
     <test parameter="[xml]" condition="string.contains" value="value=&quot;3 d(ays):169&quot;"/>
     <test parameter="[xml]" condition="string.contains" value="value=&quot;f3f97c3e9f03&quot;"/>
             
-    <!-- controlcheck log dialoguePortion -->
+    <!-- control log dialoguePortion -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
     <parameter name="[begin]" operation="string.xpath" value="[xml]" value2="//begin.A2.Sequence"/>
     <test parameter="[begin]" condition="list.size" value="1"/>
@@ -128,7 +118,7 @@
     <test parameter="[application_context_name]" condition="list.size" value="1"/>
     <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
     
-    <!-- check log components -->
+    <!-- control log components -->
     <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
     <parameter name="[component]" operation="string.xpath" value="[xml]" value2="//Component.A12.Choice"/>
     <test parameter="[component]" condition="list.size" value="1"/>
