@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  	<parameter name="[userName]" operation="set" value="[inviter]"/>
+  	
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+
+	<sendMessageSIP name="Send REGISTER" destScenario="Registrar">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER sip:[remoteSIP] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Expires: 3600
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[userName]@[localSIP]>
+Route: <sip:[userName]@[remoteSIP];lr>
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+    </sendMessageSIP>
+
+	<receiveMessageSIP name="200 OK" type="REGISTER" result="200" request="false">
+	</receiveMessageSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+	
+</scenario>

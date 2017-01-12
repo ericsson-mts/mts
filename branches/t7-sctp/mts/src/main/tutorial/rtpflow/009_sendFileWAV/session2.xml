@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />	
+		
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+	<parameter name="[testcase:payloadList]" operation="set" value="[[fileWave(0)]]"/>
+	<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+	<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>	
+
+	<receiveMessageRTPFLOW listenpoint="invitee" type="[payloadType]" timeout="60">
+	        <parameter name="[payloadTypeList]" operation="protocol.setFromMessage" value="header.payloadType"/>		
+	        <parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
+	        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+	        <!--
+	            TODO : This code has to be changed using a sliding window of 1 second for exemple
+	            DO NOT ERASE IT
+	        -->
+	        <!--<parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>-->
+	        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+	</receiveMessageRTPFLOW>
+
+	<!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadPLayer, do not change it -->
+	<!-- value4 = bitsPerSample (optional) -->
+	<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
+	<parameter name="file" operation="file.writewave" value="009_sendFileWAV/rtpflowReceived.wav" 
+	value2="[payloadType]"
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	value6="2"
+	/>
+
+    	<test parameter="[testcase:payloadList]" condition="list.flowContains" value="[flowPayloadPlayer]"/>
+	
+ 	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>	
+	
+	<receiveMessageRTPFLOW listenpoint="invitee" type="[payloadType]" timeout="60">
+	        <parameter name="[payloadTypeList]" operation="protocol.setFromMessage" value="header.payloadType"/>		
+	        <parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
+	        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+	        <!--
+	            TODO : This code has to be changed using a sliding window of 1 second for exemple
+	            DO NOT ERASE IT
+	        -->
+	        <!--<parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>-->
+	        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+	</receiveMessageRTPFLOW>
+
+	<!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadPLayer, do not change it -->
+	<!-- value4 = bitsPerSample (optional) -->
+	<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
+	<parameter name="file" operation="file.writewave" value="009_sendFileWAV/rtpflowReceived.wav" 
+	value2="[payloadType]"	
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	value6="1"
+	/>
+	
+    	<test parameter="[testcase:payloadList]" condition="list.flowContains" value="[flowPayloadPlayer]"/>	
+	
+    	<finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

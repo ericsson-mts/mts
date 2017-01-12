@@ -1,0 +1,21 @@
+# change allocated memory
+
+# for attach in debug
+# -Xdebug -Xrunjdwp:transport=dt_socket,suspend=n,server=y,address=8888
+
+# to not check class at run (useful for the sctp stack)
+# -noverify
+
+# Recommanded values by Oracle : less freezes due to garbage collector but lower performances (~20%) 
+# but it can be used without problems if we have CPU time to spare
+-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode \
+
+# Activate the logging on the garbage collection working
+-XX:+PrintGCDetails -XX:+PrintGCTimeStamps
+
+# to use a large number of IP addresses (around 10000 ipaddresses)
+# -Djava.net.preferIPv4Stack=true
+
+# Plantage de la JVM lors d'accès à distance par Xming Xss => 5Mo
+# Sinon pour les tests en charge la valeur minimale pour le paramètre 
+# Xss est 160ko sur LINUX 228ko sur un CentOS 64bits et 128ko sur Windows

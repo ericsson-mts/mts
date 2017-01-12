@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="AdviceAccumulatedChargesOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1234"/>
+        <attribute name="AC" value="abcd"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="AdviceAccumulatedChargesOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="CT" operation="protocol.setFromMessage" value="attribute.CT"/>
+        <parameter name="AAC" operation="protocol.setFromMessage" value="attribute.AAC"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[CT]" condition="string.equals" value="5656565656"/>
+        <test parameter="[AAC]" condition="string.equals" value="78"/>
+        <test parameter="[SM]" condition="string.equals" value="ca roule:une fois de plus"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

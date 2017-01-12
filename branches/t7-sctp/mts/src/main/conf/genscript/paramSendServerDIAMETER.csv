@@ -1,0 +1,12 @@
+[test:OriginHost];set;XPATH#//avp[@code="264"]/@value#@value
+[test:OriginRealm];set;XPATH#//avp[@code="296"]/@value#@value
+[test:DestHost];set;XPATH#//avp[@code="293"]/@value#@value
+[test:DestRealm];set;XPATH#//avp[@code="283"]/@value#@value
+[testcase:UserName];set;XPATH#//avp[@code="1"]/@value#@value
+[recHopByHop];number.random,1000000;XPATH#//header/@hopByHop#@hopByHop
+[recEndToEnd];number.random,1000000;XPATH#//header/@endToEnd#@endToEnd
+[recSessionId];;XPATH#//avp[@code="263"]/@value#@value
+[test:DIAMETERLocalHost];system.ipaddress,eth3;PATHKEY#channel.localHost
+[test:DIAMETERRemoteHost];system.ipaddress,eth3;PATHKEY#channel.remoteHost
+[test:DIAMETERLocalPort];set;PATHKEY#channel.localPort
+[test:DIAMETERRemotePort];set;PATHKEY#channel.remotePort

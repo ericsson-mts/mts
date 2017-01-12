@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Chapter : 3.1.6
+    Message : Bearer USER INFORMATION(32)
+
+    The following scenarios send the Q931 message with the following elements :
+    
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M (Note 2) 2-*
+Message type 4.4 Both M 1
+Sending complete 4.5 Both O (Note 3) 1
+Display 4.5 n u O (Note 4) (Note 5)
+Keypad facility 4.5 u n O (Note 6) 2-34
+Signal 4.5 n u O (Note 7) 2-3
+Called party number 4.5 both O (Note 8) 2-*
+
+-->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS USER INFORMATION" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+    
+    	<ASN1 file="h2250v7.asn"/>    
+    
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+	
+	    <!-- USER INFORMATION = b0100000 = h20 = d32-->		
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="USER INFORMATION"/>
+	
+     	    <!-- More data = b10100000 =hA0 =d160-->
+            <element identifier="More data" />
+
+	    <!-- User-User= b1111110 = h7E = d126-->
+	    <!-- BUG it is not possible to use the name of the element at this point -->
+            <element identifier="b1111110">
+                <field name="Protocol discriminator" lengthBit="8" type="integer" value="5"/>
+                <field name="User information" type="binary" value="20a8060008914a0004014006006d002e006a0065006d0065006322c00900003d1443616c6c67656e33323320706f67616373616d00000a302e39616c706861340000000a01061206b800f8fdf93ecd9ed6119ab2000476222017005d0d8007000a01038f80231100c0fef93ecd9ed6119ab2000476222017010001000100010002800100"/>            
+            </element>
+            
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

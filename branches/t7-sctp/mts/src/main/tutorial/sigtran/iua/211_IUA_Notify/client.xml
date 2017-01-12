@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+
+    Reference document : rfc4233.txt (obsolete rfc3057.txt)
+    Chapter 3.3.3.2
+    
+    Message : Notify
+    Class : 0 (Management_Messages)
+    Type : 1 (Notify)
+    
+    
+    The following scenarios send the IUA message with the following elements :  
+    
+    Tags (integer)
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Tag = 0x000d           |           Length = 8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Status Type            |    Status Identification      |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Tag = 0x0011           |           Length = 8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                        ASP Identifier                         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |     Tag (0x1=integer)         |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /                     Interface Identifiers                     /
+   \                                                               \
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |    Tag (0x8=integer range)    |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Interface Identifier Start1*                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                  Interface Identifier Stop1*                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Interface Identifier Start2*                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                  Interface Identifier Stop2*                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+           .                                       .
+           .                                       .
+           .                                       .
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Interface Identifier StartN*                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                  Interface Identifier StopN*                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /            Additional Interface Identifier Parameters         /
+   \                  of Tag Type 0x1 or 0x8                       \
+   /                                                               /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |         Tag = 0x0004          |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /                         INFO String                           /
+   \                                                               \
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    
+    Tags (string)    
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Tag = 0x000d           |           Length = 8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Status Type            |    Status Identification      |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Tag = 0x0011           |           Length = 8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                        ASP Identifier                         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |       Tag (0x3=string)        |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /                     Interface Identifiers                     /
+   \                                                               \
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /           Additional Interface Identifier Parameters          /
+   \                      of Tag Type 0x3                          \
+   /                                                               /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |         Tag = 0x0004          |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /                         INFO String                           /
+   \                                                               \
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+    
+      
+-->
+
+<scenario>
+			
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
+                
+        <UA name="IUA" file="iua.xml">
+        
+            <header messageClass="MGMT:Management" messageType="Notify"/>						
+
+            <parameter tag="Status_Notify">
+	        <field name="Status_Type" value="AS-STATE_CHANGE:Application Server State Change"/>
+	        <field name="Status_Identification" value="AS-ACTIVE:Application Server Active"/>
+	    </parameter>
+
+            <parameter tag="ASP_Identifier">
+                <field name="ASP_Identifier"  value="200000"/>
+            </parameter>
+            
+            <!-- integer interface identifier -->                                    
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="100"/>
+                <field name="Interface_Identifier"  value="200"/>
+                <field name="Interface_Identifier"  value="300"/>                
+            </parameter>
+            <parameter tag="Range_Interface_Identifier">
+	        <field name="Interface_Identifier_Start" value="400"/>
+		<field name="Interface_Identifier_Stop" value="409"/>            
+	        <field name="Interface_Identifier_Start" value="500"/>
+		<field name="Interface_Identifier_Stop" value="509"/>            
+		<field name="Interface_Identifier_Start" value="600"/>
+		<field name="Interface_Identifier_Stop" value="609"/> 		
+            </parameter>            
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="700"/>
+                <field name="Interface_Identifier"  value="701"/>
+                <field name="Interface_Identifier"  value="702"/>                
+                <field name="Interface_Identifier"  value="703"/>
+                <field name="Interface_Identifier"  value="704"/>                                
+                <field name="Interface_Identifier"  value="705"/>
+                <field name="Interface_Identifier"  value="706"/>
+                <field name="Interface_Identifier"  value="707"/>                
+                <field name="Interface_Identifier"  value="708"/>
+                <field name="Interface_Identifier"  value="709"/>                                                
+            </parameter>
+            <parameter tag="Range_Interface_Identifier">
+	        <field name="Interface_Identifier_Start" value="800"/>
+		<field name="Interface_Identifier_Stop" value="890"/>            
+	        <field name="Interface_Identifier_Start" value="900"/>
+		<field name="Interface_Identifier_Stop" value="990"/>            
+            </parameter>            
+
+            <parameter tag="Diagnostic_Information">
+	        <field name="Diagnostic_Information" value="abcdefghi"/>
+            </parameter>            
+            
+        </UA>	
+
+    </sendMessageSIGTRAN>
+
+    <pause seconds="0.1"/>
+    
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
+                
+        <UA name="IUA" file="iua.xml">
+        
+            <header messageClass="MGMT:Management" messageType="Notify"/>						
+
+            <parameter tag="Status_Notify">
+	        <field name="Status_Type" value="Other"/>
+	        <field name="Status_Identification" value="Insufficient ASP resources active in AS"/>
+	    </parameter>
+
+            <parameter tag="ASP_Identifier">
+                <field name="ASP_Identifier"  value="200000"/>
+            </parameter>
+            
+            <!-- string interface identifier -->
+            <parameter tag="String_Interface_Identifier">
+                <field name="Interface_Identifier"  value="100"/>
+                <field name="Interface_Identifier"  value="200"/>
+                <field name="Interface_Identifier"  value="300"/>                
+            </parameter>
+            <parameter tag="String_Interface_Identifier">
+                <field name="Interface_Identifier"  value="700"/>
+                <field name="Interface_Identifier"  value="701"/>
+                <field name="Interface_Identifier"  value="702"/>                
+                <field name="Interface_Identifier"  value="703"/>
+                <field name="Interface_Identifier"  value="704"/>                                
+                <field name="Interface_Identifier"  value="705"/>
+                <field name="Interface_Identifier"  value="706"/>
+                <field name="Interface_Identifier"  value="707"/>                
+                <field name="Interface_Identifier"  value="708"/>
+                <field name="Interface_Identifier"  value="709"/>                                                
+            </parameter>
+
+            <parameter tag="Diagnostic_Information">
+	        <field name="Diagnostic_Information" value="abcdefghi"/>
+            </parameter>            
+            
+        </UA>	
+
+    </sendMessageSIGTRAN>
+
+</scenario>

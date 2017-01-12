@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+         The example shows a ModifyConnection command that simply sets
+the connection mode of a connection to "send/receive" - the "notified
+entity" is set as well:
+-->
+
+<scenario>
+    
+
+ <parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+
+    <sendMessageMGCP  name="Create Connection" remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+MDCX [transactionId] aaln/1@rgw-2567.whatever.net MGCP 1.0
+C: A3C47F21456789F0
+I: FDE234C8
+N: ca@ca1.whatever.net
+M: sendrecv
+]]>
+
+    </sendMessageMGCP>
+
+     <receiveMessageMGCP request="false">
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+   
+  
+</scenario>

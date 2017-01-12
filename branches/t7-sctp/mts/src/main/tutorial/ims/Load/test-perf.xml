@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    	<parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" operation="set" value="0.100"/>
+    	<parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" operation="set" value="3"/>
+    	<parameter description="Duration (in sec.) of the call" editable="true" name="[CallDurationSec]" operation="set" value="30"/>    	
+    	<parameter description="Call Attempting per Second" editable="true" name="[CAPS]" operation="set" value="1"/>
+    	<parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="5"/>
+    	<parameter description="Number of users provisionned in the database" editable="true" name="[NumberUserDatabase]" operation="set" value="10"/>
+	<!--                     -->
+	
+		<parameter name="[freeInvitersNames]" operation="set" value="alice0"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice1"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice2"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice3"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice4"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice5"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice6"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice7"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice8"/>
+		<parameter name="[freeInvitersNames]" operation="addLast" value="[freeInvitersNames]" value2="alice9"/>
+		
+		<parameter name="[freeInviteesNames]" operation="set" value="bob0"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob1"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob2"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob3"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob4"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob5"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob6"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob7"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob8"/>
+		<parameter name="[freeInviteesNames]" operation="addLast" value="[freeInviteesNames]" value2="bob9"/>
+		
+		<parameter name="[testcase:SEMusers]" operation="system.semaphorenotify" value="1"/>
+	
+    	<!-- INTERNAL PARAMETERS -->
+    	<!--                     -->
+	<parameter description="Delay (in sec.) between two INVITE" name="[delayINVITE]" operation="set" value="1000"/>
+	<parameter name="[temp]" operation="multiply" value="[CAPS]" value2="[delayINVITE]"/>	
+	<parameter description="Number of UAC testcases in the test" name="[NumberScenario]" operation="divide" value="[temp]" value2="1000"/>	
+	
+	<parameter name="[NumberUserDatabase]" operation="substract" value="[NumberUserDatabase]" value2="1"/>
+	
+    	<parameter description="Addresse du XMLloader" name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    	<parameter description="Port du XMLloader" name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>
+
+		<parameter description="PCSCF Address" name="[Host-Server]" operation="set" value="192.168.130.20"/>
+    	<parameter name="[Port-Server]" operation="set" value="4060"/>    	
+    	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+
+		<parameter name="[domainName]" operation="set" value="ims.net"/>
+    	<parameter name="[inviteeName]" operation="set" value="bob"/>
+    	<parameter name="[inviterName]" operation="set" value="alice"/>
+		<parameter name="[index]" operation="set" value="0"/>
+	
+	<!-- Temporary due to bug with 2 <for> tag in the test file -->	 	  	
+	<parameter name="[index1]" operation="set" value="0"/>	  	  	
+		
+	<!--                   -->
+    	<!-- RUNNER PARAMETERS -->
+    	<!--                   -->
+	
+    	<runner>
+        	<property name="runner.TEST_DURATION" value="1"/>
+        	<property name="runner.STARTUP_DURATION" value="1"/>        
+        	<property name="runner.PERIOD" value="1"/>               
+        	<property name="runner.STRICT_PERIOD" value="true"/>               
+    	</runner>
+
+	<testcase description="Registering users" name="Client Registration" number="1" state="true">
+		<scenario file="register.xml" name="Register" routingName="Register"/>
+	</testcase>
+
+	<testcase description="Unregistering users" name="Client Unregistration" number="1" state="true">
+		<scenario file="unregister.xml" name="Unregister" routingName="Unregister"/>
+	</testcase>
+	
+	<!-- Temporary due to bug with 2 <for> tag in the test file -->
+  	<!--for index="[index1]" from="001" to="[NumberScenario]" step="1"-->   
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">   			
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>		
+
+	<testcase description="SAR" name="SAR - forced unregistration" state="false">    			
+		<scenario file="SAR.xml" name="SAR" routingName="SAR"/>
+	</testcase>
+		
+  	<for from="001" index="[number]" step="1" to="[NumberScenario]">   
+  		<testcase description="load [number]" name="[inviterName][number]" number="1" state="true">    			
+			<scenario file="UAC.xml" name="UAC" routingName="UAC"/>
+		</testcase>
+	</for>
+		
+</test>

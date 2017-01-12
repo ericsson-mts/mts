@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+  <!ENTITY register    SYSTEM "../Library/register_provider.xml">
+ ]>
+
+
+
+<scenario>
+	<parameter name="[clientName]" operation="set" value="[client_UAS]"/>
+	<parameter name="[clientName2]" operation="set" value="[client_UAC]"/>
+	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
+	
+	<parameter name="[LocalPort]" operation="set" value="[port_UAS]"/>
+	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>
+	
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
+	
+	
+		<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+		<parameter name="[Expires]" 		operation="set" value="3600"/>
+		<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	&register;
+		
+	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>
+	
+	<receiveMessageSIP name="Wait INVITE"  type="INVITE" request="true">
+		<parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To"/>  
+	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  
+	<parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFromI]" operation="protocol.setFromMessage" value="header.From"/> 	
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastCseqI]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	 <parameter name="[lastViaI]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+    <parameter name="[localTagI]" operation="string.random" value="10"/>
+	<parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+    </receiveMessageSIP>
+
+	  <sendMessageSIP name="Send 100 Trying" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo];tag=[localTagI]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+  
+<parameter name="[newRseq]" operation="number.random" value="1000"/>  
+<parameter name="[newRseq]" operation="number.add" value="[newRseq]" value2="1"/>
+  
+  <sendMessageSIP name="Send 183 Session Progress" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 183 Session Progress
+Record-Route:[Record-Route]
+To: [lastToI];tag=[localTagI]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Require: 100rel
+Rseq: [newRseq]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName2] 999 999 IN IP4 [LocalPort]]
+s=-
+c=IN IP4 [LocalPort]
+t=0 0
+m=audio 8000 RTP/AVP 98 99
+b=AS:75
+a=curr: qos local none
+a=curr: qos remote none
+a=des: mandatory local sendrecv
+a=des: mandatory remote sendrecv
+a=conf:qos remote sendrecv
+a=rtpmap:98 H263
+a=fmtp:98 profile-level-id=0
+a=rtpmap:99 MP4V-ES
+m=audio 8283 RTP/AVP 97 96
+b=AS:25.4
+a=curr: qos local none
+a=curr: qos remote none
+a=des: mandatory local sendrecv
+a=des: mandatory remote sendrecv
+a=conf:qos remote sendrecv
+a=rtpmap:97 AMR
+a=fmtp:97 mode-set=1,2,5,7 maxframes=2
+a=rtpmap:96 telephone-event]]>
+ </sendMessageSIP>
+ 
+
+ 
+<receiveMessageSIP name="Wait PRACK" type="PRACK" request="true">
+<parameter name="[lastCseqP]" operation="protocol.setFromMessage" value="header.CSeq"/>
+<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+	
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+</receiveMessageSIP>
+                                                                                                                            
+    <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+Record-Route:[Record-Route]
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCseqP]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Length: 0
+]]>
+
+  </sendMessageSIP>
+
+  <receiveMessageSIP name="Wait UPDATE" type="UPDATE" request="true">
+ <parameter name="[lastCseqU]" operation="protocol.setFromMessage" value="header.CSeq"/>
+ <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+</receiveMessageSIP>
+  
+  <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+Record-Route:[Record-Route]
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCseqU]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName2] 999 999 IN IP4 [LocalPort]
+s=-
+c=IN IP4 [LocalPort]
+t=0 0
+m=audio 8000 RTP/AVP 98 99
+b=AS:75
+a=curr: qos local none
+a=curr: qos remote none
+a=des: mandatory local sendrecv
+a=des: mandatory remote sendrecv
+a=rtpmap:98 H263
+a=fmtp:98 profile-level-id=0
+m=audio 8283 RTP/AVP 97 96
+b=AS:25.4
+a=curr: qos local none
+a=curr: qos remote none
+a=des: mandatory local sendrecv
+a=des: mandatory remote sendrecv
+a=rtpmap:97 AMR
+a=fmtp:97 mode-set=1,2,5,7 maxframes=2
+a=rtpmap:96 telephone-event]]> 
+  </sendMessageSIP>
+  
+<parameter name="[testcase:SEMA]" operation="system.semaphorewait"/>
+
+ <parameter name="[newRseq]" operation="number.add" value="[newRseq]" value2="1"/> 	
+  
+<sendMessageSIP name="Send 180 Ringing" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 180 Ringing
+Record-Route:[Record-Route]
+Via: [lastViaI]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCseqI]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Require: 100rel
+Rseq: [newRseq]
+Content-Length: 0]]>
+ </sendMessageSIP> 
+ 
+ 
+ 
+ 
+ 
+<receiveMessageSIP name="Wait PRACK" type="PRACK" request="true">
+ <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/> 
+<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+  <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+</receiveMessageSIP>
+ 
+  
+ 	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [Cseq]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+    
+	 <parameter name="[testcase:SEM8]" operation="system.semaphorenotify"/>
+	
+	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Record-Route:[Record-Route]
+To: [lastToI];tag=[localTagI]
+From: [lastFromI]
+Via: [lastViaI]
+Call-ID: [lastCallId]
+CSeq: [lastCseqI]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Length: 0
+]]>
+  </sendMessageSIP> 
+	
+	<receiveMessageSIP name="Wait ACK" type="ACK" request="true">
+  </receiveMessageSIP> 
+  
+  <parameter name="[testcase:SEM7]" operation="system.semaphorenotify"/>
+  
+ <receiveMessageSIP name="Wait BYE" type="BYE" request="true">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>         
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+    <parameter name="[newCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>          
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+    <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>              
+  </receiveMessageSIP>
+
+ 	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Record-Route:[Record-Route]
+Via: [Via]
+Call-ID: [newCallId]
+CSeq: [CSeq]
+Content-Length: 0
+]]>
+  </sendMessageSIP>
+   <parameter name="[testcase:SEM5]" operation="system.semaphorewait"/>
+<finally>  
+
+ <parameter name="[Expires]" 		operation="set" value="0"/>
+	
+	
+	&register;
+   <parameter name="[testcase:SEM6]" operation="system.semaphorenotify"/>
+ </finally> 
+ 
+</scenario>	

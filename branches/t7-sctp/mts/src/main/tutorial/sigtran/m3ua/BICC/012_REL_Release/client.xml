@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: 	conf/schemas/scenario.xsd 
+							 	conf/schemas/type_operations_sigtran
+							 	
+	 Related dictionary file:	conf/sigtran/dictionary_m3ua.xml
+	 							conf/sigtran/dictionary_bicc.xml
+	 							
+	 References:				IETF RFC_4666 (M3UA)
+	 							IUT-T Q_1902.3 (BICC)
+-->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 12/08/2009
+    Author     : jbrisseau
+    Description: Send a BICC-REL message.
+-->
+
+
+<scenario>
+	
+
+<!--
+    MESSAGE : REL (message 133, mss-1.pcap)
+    
+-->
+
+
+	<sendMessageSIGTRAN	name="Send BICC_REL" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+        <SS7 name="bicc" file="bicc.xml">
+            <header>
+                <field name="CIC" length="4" value="13"/>
+                <field name="Message_Type" length="1" value="12" />
+            </header>
+
+			<parameter id="18"		type="V">
+				<field		lengthBit="1" value="1"/>
+				<field		lengthBit="2" value="0"/>
+				<field		lengthBit="1" value="0"/>
+				<field		lengthBit="4" value="2"/>
+				<field		lengthBit="1" value="1"/>
+				<field		lengthBit="7" value="16"/>
+			</parameter>
+
+        </SS7>
+
+		<UA name="m3ua" file="m3ua.xml">
+			<header 	version="1" 
+						reserved="0" 
+						messageClass="1" 
+						messageType="1"/>
+						
+			<parameter tag="Network_Appearence">
+                <field name="Network_Appearence" value="1"/>
+			</parameter>
+			
+			<parameter tag="Protocol_Data">
+				<field name="Originating_Point_Code"					value="3450"/>
+				<field name="Destination_Point_Code"					value="3454"/>
+				<field name="SI"										value="BICC"/>
+				<field name="NI"										value="2"/>
+				<field name="MP"										value="0"/>
+				<field name="SLS"										value="6"/>
+				<field name="FVO"	format="fvo"/>
+			</parameter>
+		</UA>
+	</sendMessageSIGTRAN>
+	
+
+	
+</scenario>

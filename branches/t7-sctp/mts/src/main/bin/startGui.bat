@@ -1,0 +1,1 @@
+startClass com.devoteam.srit.xmlloader.gui.TesterGui fork %*

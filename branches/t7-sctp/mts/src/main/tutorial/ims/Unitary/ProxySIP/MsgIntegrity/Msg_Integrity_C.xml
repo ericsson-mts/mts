@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 					operation="set" value="[PortUAC]"/>
+	<parameter name="[testcase:LocalAddressUAC]" 	operation="set" value="[HardAddressUAC]"/>	
+
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+
+
+
+	<parameter name="[testcase:NewCallID]" 	operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[testcase:localTag]" 	operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[testcase:NewCseq]" 	operation="set" 		value="1"/>			
+	<parameter name="[newBranchId]" 		operation="identifier" 	value="newString"	value2="10"/>
+
+<!--Definition of Content header-->
+	<parameter name="[testcase:Content]" operation="set" value="v=0"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="o=mhandley 2890844526 2890842807 IN IP4 126.16.64.4"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="s=SDP Seminar"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="i=A Seminar on the session description protocol"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="u=http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="e=mjh@isi.edu (Mark Handley)"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="c=IN IP4 224.2.17.12/127"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="t=3034423619 3042462419"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="a=type:H332"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="a=recvonly:20"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="b=CT:128"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="m=video 49232/2 RTP/AVP 98"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="i=mavideo"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="a=rtpmap:97 amr/8000/1"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="a=fmtp:97 mode-set=1;octet-align=1;crc=0"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="b=SA:256"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="c=IN IP4 224.2.17.12/127"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="m=audio 49230/3 RTP/AVP 96"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="i=monaudio"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="a=rtpmap:96 L8/8000"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="b=CT:128"/>
+	<parameter name="[testcase:Content]" operation="addlast" value="[testcase:Content]" value2="c=IN IP4 224.2.17.12/127"/> 
+
+<!-- End of Content definition-->
+	
+<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[HardAddressUAS] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Max-Forwards: 10
+Route: <sip:[Adresse-Proxy];lr>
+Contact: "[InviterName]"<sip:[LocalAddressUAC]>
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: x
+
+[testcase:Content]
+]]>
+</sendRequestSIP>
+
+
+
+</scenario>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+<function name="subscribe">
+
+<input>
+	<parameter name="[LocalHost]" />
+	<parameter name="[LocalPort]" />
+	<parameter name="[RemoteHost]" />
+	<parameter name="[RemotePort]" />
+	<parameter name="[Transport]"      			default="udp"  />
+	<parameter name="[Expires]"           	type="number"	default="3600" />
+	<parameter name="[Domain]"           	default="imslab.fr.am" />
+	<parameter name="[IdentUser]" /> <!-- alice|MSISDN|IMSI([MCC][MNC][MSIN]) -->
+	<parameter name="[Event]" />
+</input>
+
+<do>
+	<parameter name="[newCseq]" operation="number.random" value="10" /> 
+	<parameter name="[localTag]" operation="number.random" value="10" /> 
+        <parameter name="[newCallId]" operation="number.random" value="10000000" /> 
+        <parameter name="[newBranchId]" operation="string.random" value="10" /> 
+        <parameter name="[MaxForwards]" operation="set" value="70" /> 
+
+        <parameter name="[provider]" operation="set" value="[scenarioName]" /> 
+	
+       	<parameter name="[LocalAddress]"        operation="set"                 value="[LocalHost]:[LocalPort]"/>
+       	<parameter name="[RemoteAddress]"       operation="set"                 value="[RemoteHost]:[RemotePort]"/>
+       	<parameter name="[IMPI-User]"           operation="set"                 value="[IdentUser]@[Domain]"/>
+       	<parameter name="[IMPU-User]"           operation="set"                 value="sip:[IMPI-User]"/>
+
+	<if>
+		<condition>
+			<test parameter="[Event]" condition="string.equals" value="reg" />
+		</condition>
+	<then>
+	        <parameter name="[Accept]"        operation="set"                 value="application/reginfo+xml"/>
+  	</then>
+  	</if>
+       
+	<if>
+		<condition>
+			<test parameter="[Event]" condition="string.equals" value="presence" />
+		</condition>
+	<then>
+	        <parameter name="[Accept]"        operation="set"                 value="application/pidf+xml"/>
+  	</then>
+  	</if>
+       
+        <createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[Transport]"/>
+
+        <sendMessageSIP name="Send SUBSCRIBE" listenpoint="[provider]">
+        	<![CDATA[ 
+                SUBSCRIBE [IMPU-User] SIP/2.0
+                Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+                Max-Forwards: [MaxForwards]
+                Route: <sip:[RemoteAddress]>
+                To: <[IMPU-User]>
+                From: <[IMPU-User]>;tag=[localTag]
+                Call-ID: [newCallId]
+                CSeq: [newCseq] SUBSCRIBE
+                Contact: <sip:[LocalAddress]>
+                Accept: [Accept]
+                Event: [Event]
+                Expires: [Expires]
+                Content-Length: 0
+		]]> 
+	</sendMessageSIP>
+    
+	<receiveMessageSIP name="receive SUBSCRIBE response" type="SUBSCRIBE" request="false">
+  			<parameter name="[StatusCode]" 		operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+	</receiveMessageSIP>
+
+  	<if>
+  		<condition>
+  			<test parameter="[StatusCode]" condition="string.matches" value="2[0-9][0-9]"/>
+  		</condition>
+  	<then></then>
+  	<else>
+  		<exit failed="true"/>
+  	</else>
+  	</if>
+
+	<receiveMessageSIP name="Wait NOTIFY" type="NOTIFY" request="true">
+	  	<parameter name="[To]" operation="protocol.setFromMessage" value="header.To" /> 
+	    	<parameter name="[From]" operation="protocol.setFromMessage" value="header.From" /> 
+	      	<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+	        <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+	        <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via" /> 
+	        <parameter name="[localTag]" operation="string.random" value="10" />
+	</receiveMessageSIP>
+	
+	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+		<![CDATA[ 
+	        SIP/2.0 200 OK
+	        To: [From]
+	        From: [To]
+	        Via: [Via]
+	        Call-ID: [CallId]
+	        CSeq: [CSeq]
+	        Max-Forwards: 70
+	        Content-Length: 0
+		]]> 
+    	</sendMessageSIP> 
+
+</do>
+
+<output>
+</output>
+
+</function>
+
+</scenario>

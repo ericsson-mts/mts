@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="receive data record transfer request" request="true" type="Data Record Transfer Request:240">
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="0ff0002a00017e01fc0023010100410010636563692065737420756e2074657374000b7365636f6e642074657374"/>
+    
+    <sendMessageGTP name="send data record transfer response"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerPrime type="Data Record Transfer Response:241" sequenceNumber="1"/>
+        <element tag="cause:1" >
+            <field name="cause" value="1"/>
+        </element>
+        <element tag="requestsResponded:253" >
+            <field name="sequenceNumber01" value="10"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive data record transfer request">
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+ 
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <test parameter="[binary]" condition="binary.equals" value="0ff0000d00027e04f90006000200050009"/>
+    
+    <sendMessageGTP name="send data record transfer response"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerPrime type="Data Record Transfer Response:241" sequenceNumber="2"/>
+        <element tag="cause:1" >
+            <field name="cause" value="2"/>
+        </element>        
+        <element tag="requestsResponded:253" >
+            <field name="sequenceNumber01" value="18"/>
+            <field name="sequenceNumber02" value="302"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive data record transfer request">
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>  
+    </receiveMessageGTP>
+ 
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>     
+    <test parameter="[binary]" condition="binary.equals" value="0ff0000b00037e03fa000400060001"/>
+    
+    <sendMessageGTP name="send data record transfer response"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerPrime type="Data Record Transfer Response:241" sequenceNumber="3"/>
+        <element tag="cause:1" >
+            <field name="cause" value="3"/>
+        </element>        
+        <element tag="requestsResponded:253" >
+            <field name="sequenceNumber01" value="1"/>
+        </element>
+    </sendMessageGTP>
+
+</scenario>

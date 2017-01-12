@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+    <parameter name="[connection]" operation="set" value="connectionSMPP" />
+
+    <openChannelSMPP name="[connection]" remoteHost="[test:remoteHostSMPP]" remotePort="[test:remotePortSMPP]"/>
+    
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter" sequence_number="[seqNum]" />
+        <attribute name="system_id" value="IMSLoader"/>
+        <attribute name="password" value="coucou"/>
+        <attribute name="system_type" value="windows MC"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="8"/>
+        <attribute name="addr_npi" value="3"/>
+        <attribute name="address_range" value="255.255.255.0"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="bind_transmitter:2" result="0"/>
+    
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 2 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 3 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 4 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 5 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 6 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="2"/>
+    </receiveMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 7 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 8 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="3"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="2"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="1"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="10"/>
+        <attribute name="sm_length" value="44"/>
+        <attribute name="short_message" value="envoi du second sms de test en transmission."/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="3"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="8"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="4"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="7"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="5"/>
+    </receiveMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="submit_sm:4" result="0">
+        <parameter name="num" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <test parameter="[num]" condition="string.equals" value="6"/>
+    </receiveMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/><!-- 9 -->
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="[seqNum]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="unbind:6" result="0"/>
+
+    <finally>
+        <closeChannelSMPP name="[connection]"/>
+    </finally>
+</scenario>

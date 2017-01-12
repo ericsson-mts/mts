@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionary_RTPEvent.xml
+    Created on : 24 novembre 2016, 08:58
+    Author     : fhenry
+    Description: RTP Event messages (RFC2833 : RTP Payload for DTMF Digits, Telephony Tones and Telephony Signals
+)
+                 
+    Warning    : after changes, please quit MTS aaplication and start again
+                 to take modifications into account
+
+-->
+
+<dictionary>
+
+    <element label="MessageRTPEvent" coding="Message" description="">
+        <!-- Header => IETF RFC 2833 chapter 3.5 page 5 -->
+        <element label="HeaderRTPEvent" coding="V" description="">
+          <field name="event" type="EnumLong" length="1" description="">
+            <!--IETF RFC 2833 chapter 3.10 page 10 table 1 -->
+            <enum name="DTMF_[0-9]" value="0-9"/>                                    
+            <enum name="DTMF_*" value="10" description="star character"/>
+            <enum name="DTMF_#" value="11" description="dash character"/>
+            <enum name="DTMF_A" value="12"/>
+            <enum name="DTMF_B" value="13"/>
+            <enum name="DTMF_C" value="14"/>
+            <enum name="DTMF_D" value="15"/>
+            <enum name="DTMF_flash" value="16"/>
+            <enum name="undefined" value="17-31"/>
+            <!--IETF RFC 2833 chapter 3.11 page 13 table 3 -->
+            <enum name="DATA_MODEM_FAX" value="32-49"/>
+            <enum name="undefined" value="50-63"/>            
+            <!--IETF RFC 2833 chapter 3.12 page 16 table 4 -->                        
+            <enum name="LINE" value="64-89"/>
+            <enum name="undefined" value="90-95"/>        
+            <!--IETF RFC 2833 chapter 3.13 page 17 table 5 -->    
+            <enum name="EXTENDED_LINE" value="96-112"/>
+            <enum name="undefined" value="113-127"/>
+            <!--IETF RFC 2833 chapter 3.14 page 18 table 6 -->            
+            <enum name="TRUNK" value="128-173"/>
+            <enum name="undefined" value="174-255"/>
+          </field>                    
+          <field name="flag_E" lengthBit="1" type="boolean" description="End flag"/>            
+          <field name="flag_R" lengthBit="1" type="boolean" description="Reserved flag"/>                                
+          <field name="volume" lengthBit="6" type="integer" description=""/>
+          <field name="duration" length="2" type="integer" description=""/>
+        </element>                    
+    </element>
+
+    <!--element label="ElementsRTPEvent" coding="Message" description="">
+    </element-->
+
+    <!-- ******************************** EAP messages ******************************** -->
+
+
+    <!-- Message "Identity_1" => IETF RFC 3748 chapter 5.1 page 28 -->               
+    <!--element label="Message_Identity_1" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element-->
+
+    <!-- Message "Notification_2" => IETF RFC 3748 chapter 5.2 page 29 -->               
+    <!--element label="Message_Notification_2" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element-->
+
+</dictionary>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+  <!ENTITY register    SYSTEM "../Library/register_provider.xml">
+ ]>
+
+<scenario>
+
+	<parameter name="[clientName]" operation="set" value="[client_UAC]"/>
+	<parameter name="[clientName2]" operation="set" value="[client_UAS]"/>
+	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
+	
+	<parameter name="[LocalPort]" operation="set" value="[port_UAC]"/>
+	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>
+	
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
+
+	<parameter name="[Expires]" 		operation="set" value="3600"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+		&register;
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+	 <parameter name="[testcase:SEM2]" operation="system.semaphorewait"/>
+	 
+	 
+	    <parameter name="[newCallID]" operation="number.random" value="10000000"/>	 
+	 		<parameter name="[localTag]" operation="string.random" value="10"/>
+	    <parameter name="[newCseq" operation="number.add" value="[newCseq]" value2="1"/>			
+	    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+	    
+<sendMessageSIP name="Send Message" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[MESSAGE sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
+Call-ID: [newCallID]
+CSeq: [newCseq] MESSAGE
+From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+To: sip:[clientName2]@[100_DOMAIN_ADDR]
+Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Route: [SCSCF]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Type: test/plain
+P-Preferred-Identity: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+User-Agent: [UserAgent]
+Content-Length: x
+
+Ad'taleur
+]]>
+</sendMessageSIP>	
+   
+  
+                
+  <receiveMessageSIP name="Wait 200 OK" type="MESSAGE" result="200" request="false">
+  </receiveMessageSIP>
+
+  <parameter name="[testcase:SEM5]" operation="system.semaphorenotify"/>
+  
+  
+<finally>   
+  <parameter name="[testcase:SEM6]" operation="system.semaphorewait"/>
+  	  <parameter name="[Expires]" 		operation="set" value="0"/>
+	
+	
+	&register;
+  
+ </finally> 
+  
+</scenario>

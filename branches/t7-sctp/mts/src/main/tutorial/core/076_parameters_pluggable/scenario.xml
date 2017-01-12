@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <!--
+      - Define an array containing the values {Toto, Titi}
+      -->
+    <parameter name="[names]" operation="set" value="Toto" />
+    <parameter name="[names]" value="[names]" operation="list.addLast" value2="Titi" />
+    
+    <!--
+      - Execute the sayhello operator. The [hello] array should now contain:
+      - {"Hello, Toto", "Hello, Titi"}
+      -->
+    <parameter name="[hello]" operation="sayhello" value="[names]" />
+
+    <!--
+      - Test the results:
+      -->
+    
+    <if>
+        <condition>
+            <test parameter="[hello(0)]" condition="string.equals"  value="Hello, Toto" />
+            <test parameter="[hello(1)]" condition="string.equals"  value="Hello, Titi" />
+            <test parameter="[hello]" condition="sayshello"  value="[names]" />
+        </condition>
+        <else>
+            <exit failed="true" />
+        </else>
+    </if>
+</scenario>

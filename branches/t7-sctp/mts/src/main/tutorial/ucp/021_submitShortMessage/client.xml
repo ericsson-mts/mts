@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="SubmitShortMessage" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="012345"/>
+        <attribute name="OAdC" value="09876"/>
+        <attribute name="AC" value=""/>
+        <attribute name="NRq" value="1"/>
+        <attribute name="NAdC" value="1920870340125000"/>
+        <attribute name="NT" value="4"/>
+        <attribute name="NPID" value="0539"/>
+        <attribute name="LRq" value=""/>
+        <attribute name="LRAd" value="23"/>
+        <attribute name="LPID" value="3210"/>
+        <attribute name="DD" value=""/>
+        <attribute name="DDT" value=""/>
+        <attribute name="VP" value="3012961212"/>
+        <attribute name="RPID" value=""/>
+        <attribute name="SCTS" value=""/>
+        <attribute name="Dst" value=""/>
+        <attribute name="Rsn" value=""/>
+        <attribute name="DSCTS" value=""/>
+        <attribute name="MT" value="3"/>
+        <attribute name="NB" value=""/>
+        <attribute name="AMsg" value="azerty_{}[]()^~ @à" encoding="true"/>
+        <attribute name="MMS" value=""/>
+        <attribute name="PR" value=""/>
+        <attribute name="DCs" value=""/>
+        <attribute name="MCLs" value=""/>
+        <attribute name="RPI" value=""/>
+        <attribute name="CPg" value=""/>
+        <attribute name="RPLy" value=""/>
+        <attribute name="OTOA" value=""/>
+        <attribute name="HPLMN" value=""/>
+        <attribute name="XSer">
+            <xser type="01" length="15" value="060504157200001234567889010234"/>
+            <xser type="02" length="01" value="00"/>
+            <xser type="03" length="01" value="02"/>
+            <xser type="04" length="02" value="020A"/>
+        </attribute>
+        <attribute name="RES4" value=""/>
+        <attribute name="RES5" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="SubmitShortMessage" result="A"/>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

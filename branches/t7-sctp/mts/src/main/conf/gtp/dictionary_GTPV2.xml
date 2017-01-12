@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary.xml
+    Created on : 1 decembre 2012, 08:58
+    Author     : fhenry
+    Description: GTPv2 header and information elements decoding
+                 according to 3GPP TS 29.274 V12.1.0.
+
+    Warning    : after modifications, please think to modify tutorial
+                 GTP scripts in the same way.
+
+    Warning 1  : When an IE contains a variable number of fields (e.g. Bearer TFT:84),
+                 there is a difference depending on MTS send or receive.
+                 MTS can send how many fields as needed (you just have to
+                 precise "lengthBit" and "type" attributes).
+                 When MTS receive a GTP message, dictionary is used to decode
+                 the fields. Number of fields in the dictionary is static.
+                 So if needed, dictionary will have to be updated to add missing
+                 fields.
+
+    Warning 2  : When an IE could be defined in a several ways (e.g. PAA:79
+                 or grouped Bearer Context:93 IE which definition depends of
+                 the command and the instance of the IE),
+                 all these definitions are merged.
+
+-->
+
+<dictionary>
+
+    <header>
+
+        <field name="Version" lengthBit="3" type="enumeration">
+            <enum value="2" name="3GPP TS 29.274 : GTPv2-C" />
+        </field>
+        <field name="Piggy Flag" lengthBit="1" type="boolean"> </field>
+        <field name="TEID Flag" lengthBit="1" type="boolean"> </field>
+        <field name="Spare1" lengthBit="3" type="integer"> </field>
+        <field name="Message Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="Reserved" />
+            <enum value="1" name="Echo Request" />
+            <enum value="2" name="Echo Response" />
+            <enum value="3" name="Version Not Supported Indication" />
+            <enum value="4 - 24" name="Reserved for S101 interface" />
+            <enum value="25 - 31" name="Reserved for Sv interface" />
+            <!--SGSN/MME/ TWAN/ePDG to PGW (S4/S11, S5/S8, S2a, S2b)-->
+            <enum value="32" name="Create Session Request" />
+            <enum value="33" name="Create Session Response" />
+            <enum value="36" name="Delete Session Request" />
+            <enum value="37" name="Delete Session Response" />
+            <!-- SGSN/MME/ePDG to PGW (S4/S11, S5/S8, S2b)-->
+            <enum value="34" name="Modify Bearer Request" />
+            <enum value="35" name="Modify Bearer Response" />
+            <!--SGSN/MME to PGW (S4/S11, S5/S8)-->
+            <enum value="38" name="Change Notification Request" />
+            <enum value="39" name="Change Notification Response" />
+            <enum value="40 - 63" name="For future use" />
+            <enum value="164" name="Resume Notification" />
+            <enum value="165" name="Resume Acknowledge" />
+            <!--Messages without explicit response" -->
+            <enum value="64" name="Modify Bearer Command" />
+            <!--(MME/SGSN/ TWAN/ePDG to PGW – S11/S4, S5/S8, S2a, S2b)-->
+            <enum value="65" name="Modify Bearer Failure Indication" />
+            <!--(PGW to MME/SGSN/ TWAN/ePDG – S5/S8, S11/S4, S2a, S2b)-->
+            <enum value="66" name="Delete Bearer Command" />
+            <!--(MME/SGSN to PGW – S11/S4, S5/S8)-->
+            <enum value="67" name="Delete Bearer Failure Indication" />
+            <!--(PGW to MME/SGSN – S5/S8, S11/S4))-->
+            <enum value="68" name="Bearer Resource Command" /> 
+            <!-- (MME/SGSN to PGW – S11/S4, S5/S8)-->
+            <enum value="69" name="Bearer Resource Failure Indication" /> 
+            <!--  (PGW to MME/SGSN – S5/S8, S11/S4) -->
+            <enum value="70" name="Downlink Data Notification Failure Indication" />
+            <!-- (SGSN/MME to SGW – S4/S11)-->
+            <enum value="71" name="Trace Session Activation" />
+            <!--(MME/SGSN/ TWAN/ePDG to PGW – S11/S4, S5/S8, S2a, S2b)-->
+            <enum value="72" name="Trace Session Deactivation" />
+            <!--(MME/SGSN/ TWAN/ePDG to PGW – S11/S4, S5/S8, S2a, S2b)-->
+            <enum value="73" name="Stop Paging Indication" />
+            <!--(SGW to MME/SGSN – S11/S4)-->
+            <enum value="74 - 94" name="For future use" />
+            <!--PGW to SGSN/MME/ TWAN/ePDG (S5/S8, S4/S11, S2a, S2b)-->
+            <enum value="95" name="Create Bearer Request" />
+            <enum value="96" name="Create Bearer Response" />
+            <enum value="97" name="Update Bearer Request" />
+            <enum value="98" name="Update Bearer Response" />
+            <enum value="99" name="Delete Bearer Request" />
+            <enum value="100" name="Delete Bearer Response" />
+            <!--PGW to MME, MME to PGW, SGW to PGW, SGW to MME, PGW to TWAN/ePDG, TWAN/ePDG to PGW (S5/S8, S11, S2a, S2b)-->
+            <enum value="101" name="Delete PDN Connection Set Request" />
+            <enum value="102" name="Delete PDN Connection Set Response" />
+            <!--  PGW to SGSN/MME(S5, S4/S11)-->
+            <enum value="103" name="PGW Downlink Triggering Notification" />
+            <enum value="104" name="PGW Downlink Triggering Acknowledge" />
+            <enum value="105 - 127" name="For future use" />
+            <!--MME to MME, SGSN to MME, MME to SGSN, SGSN to SGSN (S3/S10/S16)-->
+            <enum value="128" name="Identification Request" />
+            <enum value="129" name="Identification Response" />
+            <enum value="130" name="Context Request" />
+            <enum value="131" name="Context Response" />
+            <enum value="132" name="Context Acknowledge" />
+            <enum value="133" name="Forward Relocation Request" />
+            <enum value="134" name="Forward Relocation Response" />
+            <enum value="135" name="Forward Relocation Complete Notification" />
+            <enum value="136" name="Forward Relocation Complete Acknowledge" />
+            <enum value="137" name="Forward Access Context Notification" />
+            <enum value="138" name="Forward Access Context Acknowledge" />
+            <enum value="139" name="Relocation Cancel Request" />
+            <enum value="140" name="Relocation Cancel Response" />
+            <enum value="141" name="Configuration Transfer Tunnel" />
+            <enum value="142 - 148" name="For future use" />
+            <enum value="152" name="RAN Information Relay" />
+            <!--SGSN to MME, MME to SGSN (S3)-->
+            <enum value="149" name="Detach Notification" />
+            <enum value="150" name="Detach Acknowledge" />
+            <enum value="151" name="CS Paging Indication" />
+            <enum value="153" name="Alert MME Notification" />
+            <enum value="154" name="Alert MME Acknowledge" />
+            <enum value="155" name="UE Activity Notification" />
+            <enum value="156" name="UE Activity Acknowledge" />
+            <enum value="157" name="ISR Status Indication" />
+            <enum value="158 - 159" name="For future use" />
+            <!--SGSN/MME to SGW, SGSN to MME (S4/S11/S3) SGSN to SGSN (S16), SGW to PGW (S5/S8)-->
+            <enum value="162" name="Suspend Notification" />
+            <enum value="163" name="Suspend Acknowledge" />
+            <!--SGSN/MME to SGW (S4/S11)-->
+            <enum value="160" name="Create Forwarding Tunnel Request" />
+            <enum value="161" name="Create Forwarding Tunnel Response" />
+            <enum value="166" name="Create Indirect Data Forwarding Tunnel Request" />
+            <enum value="167" name="Create Indirect Data Forwarding Tunnel Response" />
+            <enum value="168" name="Delete Indirect Data Forwarding Tunnel Request" />
+            <enum value="169" name="Delete Indirect Data Forwarding Tunnel Response" />
+            <enum value="170" name="Release Access Bearers Request" />
+            <enum value="171" name="Release Access Bearers Response" />
+            <enum value="172 - 175" name="For future use" />
+            <!--SGW to SGSN/MME (S4/S11)-->
+            <enum value="176" name="Downlink Data Notification" />
+            <enum value="177" name="Downlink Data Notification Acknowledge" />
+            <enum value="179" name="PGW Restart Notification" />
+            <enum value="180" name="PGW Restart Notification Acknowledge" />
+            <!--SGW to SGSN (S4)-->
+            <enum value="178" name="Reserved. Allocated in earlier version of the specification." />
+            <enum value="181 - 199" name="For future use" />
+            <!--SGW to PGW, PGW to SGW (S5/S8)-->
+            <enum value="200" name="Update PDN Connection Set Request" />
+            <enum value="201" name="Update PDN Connection Set Response" />
+            <enum value="202 - 210" name="For future use" />
+            <!--MME to SGW (S11)-->
+            <enum value="211" name="Modify Access Bearers Request" />
+            <enum value="212" name="Modify Access Bearers Response" />
+            <enum value="213 - 230" name="For future use" />
+            <!-- MBMS GW to MME/SGSN (Sm/Sn) -->
+            <enum value="231" name="MBMS Session Start Request" />
+            <enum value="232" name="MBMS Session Start Response" />
+            <enum value="233" name="MBMS Session Update Request" />
+            <enum value="234" name="MBMS Session Update Response" />
+            <enum value="235" name="MBMS Session Stop Request" />
+            <enum value="236" name="MBMS Session Stop Response" />
+            <enum value="237 - 239" name="For future use" />
+            <enum value="240 - 247" name="Reserved for Sv interface" />
+            <!-- Other -->
+            <enum value="248 - 255" name="For future use" />
+        </field>
+        <field name="Message Length" lengthBit="16" type="integer"> </field>
+        <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
+        <field name="Sequence Number" lengthBit="24" type="integer"> </field>
+        <field name="Spare2" lengthBit="8" type="integer"> </field>
+        
+    </header>
+
+    <!-- 0 : Reserved. -->
+
+    <!-- 1 : International Mobile Subscriber Identity (IMSI). -->
+    <element tag="IMSI:1" coding="TLIV" description="International Mobile Subscriber Identity">
+    		<field name="IMSI" type="number_bcd" description="International Mobile Subscriber Identity"/>
+    </element>
+
+    <!-- 2 : Cause. -->
+    <element tag="Cause:2" coding="TLIV">
+        <field name="Cause value" lengthBit="8" type="enumeration">
+            <enum value="0" name="Reserved. Shall not be sent and if received the Cause shall be treated as an invalid IE"/>
+            <enum value="1" name="Reserved"/>
+            <enum value="2" name="Local Detach"/>
+            <enum value="3" name="Complete Detach"/>
+            <enum value="4" name="RAT changed from 3GPP to Non-3GPP"/>
+            <enum value="5" name="ISR deactivation"/>
+            <enum value="6" name="Error Indication received from RNC/eNodeB/S4-SGSN"/>
+            <enum value="7" name="IMSI Detach Only"/>
+            <enum value="8" name="Reactivation Requested"/>
+            <enum value="9" name="PDN reconnection to this APN disallowed"/>
+            <enum value="10" name="Access changed from Non-3GPP to 3GPP"/>
+            <enum value="11" name="PDN connection inactivity timer expires"/>
+            <enum value="12" name="PGW not responding"/>
+            <enum value="13" name="Network Failure"/>
+            <enum value="14" name="QoS parameter mismatch"/>
+            <enum value="15" name="Spare. This value range shall be used by Cause values in an initial/request message. See NOTE 5."/>
+            <enum value="16" name="Request accepted"/>
+            <enum value="17" name="Request accepted partially"/>
+            <enum value="18" name="New PDN type due to network preference."/>
+            <enum value="19" name="New PDN type due to single address bearer only."/>
+            <enum value="20-63" name="Spare"/>
+            <enum value="64" name="Context Not Found"/>
+            <enum value="65" name="Invalid Message Format"/>
+            <enum value="66" name="Version not supported by next peer"/>
+            <enum value="67" name="Invalid length"/>
+            <enum value="68" name="Service not supported"/>
+            <enum value="69" name="Mandatory IE incorrect"/>
+            <enum value="70" name="Mandatory IE missing"/>
+            <enum value="71" name="Shall not be used. See NOTE 2 and NOTE 3."/>
+            <enum value="72" name="System failure"/>
+            <enum value="73" name="No resources available"/>
+            <enum value="74" name="Semantic error in the TFT operation"/>
+            <enum value="75" name="Syntactic error in the TFT operation"/>
+            <enum value="76" name="Semantic errors in packet filter(s)"/>
+            <enum value="77" name="Syntactic errors in packet filter(s)"/>
+            <enum value="78" name="Missing or unknown APN"/>
+            <enum value="79" name="Shall not be used. See NOTE 2 and NOTE 3."/>
+            <enum value="80" name="GRE key not found"/>
+            <enum value="81" name="Relocation failure"/>
+            <enum value="82" name="Denied in RAT"/>
+            <enum value="83" name="Preferred PDN type not supporte"/>
+            <enum value="84" name="All dynamic addresses are occupied"/>
+            <enum value="85" name="UE context without TFT already activated. See NOTE 6."/>
+            <enum value="86" name="Protocol type not supported"/>
+            <enum value="87" name="UE not responding. See NOTE 7."/>
+            <enum value="88" name="UE refuses"/>
+            <enum value="89" name="Service denied. See NOTE 7."/>
+            <enum value="90" name="Unable to page UE"/>
+            <enum value="91" name="No memory available"/>
+            <enum value="92" name="User authentication failed"/>
+            <enum value="93" name="APN access denied – no subscription"/>
+            <enum value="94" name="Request rejected (reason not specified)"/>
+            <enum value="95" name="P-TMSI Signature mismatch"/>
+            <enum value="96" name="IMSI/IMEI not known"/>
+            <enum value="97" name="Semantic error in the TAD operation"/>
+            <enum value="98" name="Syntactic error in the TAD operation"/>
+            <enum value="99" name="Shall not be used. See NOTE 2 and NOTE 3."/>
+            <enum value="100" name="Remote peer not responding"/>
+            <enum value="101" name="Collision with network initiated request"/>
+            <enum value="102" name="Unable to page UE due to Suspension"/>
+            <enum value="103" name="Conditional IE missing"/>
+            <enum value="104" name="APN Restriction type Incompatible with currently active PDN connection"/>
+            <enum value="105" name="Invalid overall length of the triggered response message and a piggybacked initial message"/>
+            <enum value="106" name="Data forwarding not supported"/>
+            <enum value="107" name="Invalid reply from remote peer"/>
+            <enum value="108" name="Fallback to GTPv1"/>
+            <enum value="109" name="Invalid peer"/>
+            <enum value="110" name="Temporarily rejected due to handover procedure in progress"/>
+            <enum value="111" name="Modifications not limited to S1-U bearers"/>
+            <enum value="112" name="Request rejected for a PMIPv6 reason (see 3GPP TS 29.275 [26])."/>
+            <enum value="113" name="APN Congestion"/>
+            <enum value="114" name="Bearer handling not supported"/>
+            <enum value="115" name="UE already re-attached. See NOTE 7."/>
+            <enum value="116" name="Multiple PDN connections for a given APN not allowed"/>
+            <enum value="117-239" name="Spare"/>
+            <enum value="240-255" name="Spare"/>
+          </field>
+        <field name="spare" lengthBit="5" type="integer"/>
+        <field name="PCE" lengthBit="1" type="boolean" description="PDN Connection IE Error"/>
+        <field name="BCE" lengthBit="1" type="boolean" description="Bearer Context IE Error"/> 
+        <field name="CS" lengthBit="1" type="enumeration" description="Cause Source">
+            <enum value="1" name="Originated by the remote node"/>
+            <enum value="0" name="Originated by the node sending the message"/>
+        </field>
+    </element>
+
+    <!-- 3 : Recovery (Restart Counter). -->
+    <element tag="Recovery:3" coding="TLIV">
+        <field name="Recovery" lengthBit="8" type="integer"/>
+    </element>
+    
+    <!-- 4 to 50 : Reserved for S101 interface. -->
+    <!-- 51 : STN-SR. -->
+    <!-- 52 to 70 : Reserved for Sv interface. -->
+
+    <!-- 71 : Access Point Name (APN). -->
+    <element tag="APN:71" coding="TLIV" description="Access Point Name">
+        <field name="APN01" type="length_string" description="Access Point Name"/>
+        <field name="APN02" type="length_string" description="Access Point Name"/>
+        <field name="APN03" type="length_string" description="Access Point Name"/>
+        <field name="APN04" type="length_string" description="Access Point Name"/>
+        <!--field name="APN05" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN06" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN07" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN08" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN09" type="length_string" description="Access Point Name"/-->
+        <!--field name="APN10" type="length_string" description="Access Point Name"/-->
+    </element>
+    
+    <!-- 72 : Aggregate Maximum Bit Rate (AMBR). -->
+    <element tag="AMBR:72" coding="TLIV" description="Aggregate Maximum Bit Rate">
+        <field name="APN-AMBR for uplink" lengthBit="32" type="integer"/>
+        <field name="APN-AMBR for downlink" lengthBit="32" type="integer"/>
+    </element>
+
+    <!-- 73 : EPS Bearer ID (EBI). -->
+    <element tag="EBI:73" coding="TLIV" description="EPS Bearer ID">
+        <field name="spare" lengthBit="4" type="integer"/>
+        <field name="EBI" lengthBit="4" type="integer" description="EPS Bearer ID"/>
+    </element>
+    
+    <!-- 74 : IP Address. -->
+    <element tag="IP Address:74" coding="TLIV">
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if length == 20 -->
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if length == 8 -->
+    </element>
+    
+    <!-- 75 : Mobile Equipment Identity (MEI). -->
+    <element tag="MEI:75" coding="TLIV" description="Mobile Equipment Identity">
+        <!-- ou alors de type "number_bcd" A VERIFIER -->    
+        <field name="MEI" type="binary" description="Mobile Equipment Identity"/>
+    </element>
+    
+    <!-- 76 : MSISDN. -->
+    <element tag="MSISDN:76" coding="TLIV" description="Mobile Subscriber ISDN Number">
+    		<field name="MSISDN" type="number_bcd" description="Mobile Subscriber ISDN Number"/>
+    </element>
+
+    <!-- 77 : Indication. -->
+    <element tag="Indication:77" coding="TLIV">
+        <field name="DAF" lengthBit="1" type="boolean" description="Dual Address Bearer Flag"/>
+        <field name="DTF" lengthBit="1" type="boolean" description="Direct Tunnel Flag"/>
+        <field name="HI" lengthBit="1" type="boolean" description="Handover Indication"/>
+        <field name="DFI" lengthBit="1" type="boolean" description="Direct Forwarding Indication"/>
+        <field name="OI" lengthBit="1" type="boolean" description="Operation Indication"/>
+        <field name="ISRSI" lengthBit="1" type="boolean" description="Idle mode Signalling Reduction Supported Indication"/>
+        <field name="ISRAI" lengthBit="1" type="boolean" description="Idle mode Signalling Reduction Activation Indication"/>           
+        <field name="SGWCI" lengthBit="1" type="boolean" description="SGW Change Indication"/>
+
+        <field name="SQCI" lengthBit="1" type="boolean" description="Subscribed QoS Change Indication"/>
+        <field name="UIMSI" lengthBit="1" type="boolean" description="Unauthenticated IMSI"/>
+        <field name="CFSI" lengthBit="1" type="boolean" description="Change F-TEID support indication"/>
+        <field name="CRSI" lengthBit="1" type="boolean" description="Change Reporting support indication"/>
+        <field name="P" lengthBit="1" type="boolean" description="Piggybacking Supported"/>
+        <field name="PT" lengthBit="1" type="boolean" description="Protocol Type"/>
+        <field name="SI" lengthBit="1" type="boolean" description="Scope Indication"/>
+        <field name="MSV" lengthBit="1" type="boolean" description="MS Validated"/>
+
+        <field name="RetLoc" lengthBit="1" type="boolean" description="Retrieve Location Indication Flag"/>
+        <field name="PBIC" lengthBit="1" type="boolean" description="Propagate BBAI Information Change"/>
+        <field name="SRNI" lengthBit="1" type="boolean" description="SGW Restoration Needed Indication"/>
+        <field name="S6AF" lengthBit="1" type="boolean" description="Static IPv6 Address Flag"/>
+        <field name="S4AF" lengthBit="1" type="boolean" description="Static IPv4 Address Flag"/>
+        <field name="MBMDT" lengthBit="1" type="boolean" description="Management Based MDT allowed flag"/>
+        <field name="ISRAU" lengthBit="1" type="boolean" description="ISR is activated for the UE"/>
+        <field name="CCRSI" lengthBit="1" type="boolean" description="CSG Change Reporting support indication"/>
+        <field name="Spare" lengthBit="6" type="integer"/>
+        <field name="CLII" lengthBit="1" type="boolean" description="Change of Location Information Indication"/>
+        <field name="CPSR" lengthBit="1" type="boolean" description="CS to PS SRVCC indication"/>
+    </element>
+    
+    <!-- 78 : Protocol Configuration Options (PCO). -->
+    <!-- TODO complex element see TS 24008 -->
+    <element tag="PCO:78" coding="TLIV" description="Protocol Configuration Options">
+        <field name="PCO" type="binary" description="Protocol Configuration Options"/>
+    </element>
+     
+    <!-- 79 : PDN Address Allocation (PAA). -->
+    <!-- conditional fields -->
+    <element tag="PAA:79" coding="TLIV" description="PDN Address Allocation">
+        <field name="spare" lengthBit="5" type="integer"/>
+        <field name="PDN Type" lengthBit="3" type="enumeration">
+            <enum value="1" name="IPv4"/>
+            <enum value="2" name="IPv6"/>
+            <enum value="3" name="IPv4v6"/>
+            <enum value="0" name="reserved"/>
+        </field>
+        <field name="IPv6 prefix length" lengthBit="8" type="integer"/>   <!-- if PDN Type == 2 or 3 -->
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if PDN Type == 2 or 3 -->
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if PDN Type == 1 -->
+    </element>
+    
+    <!-- 80 : Bearer Level Quality of Service (Bearer QoS). -->
+    <element tag="Bearer QoS:80" coding="TLIV" description="Bearer Quality of Service">
+        <field name="spare1" lengthBit="1" type="boolean"/>
+        <field name="PCI" lengthBit="1" type="boolean" description="Pre-emption Capability"/> 
+        <field name="PL" lengthBit="4" type="integer" description="Priority Level"/>
+        <field name="spare2" lengthBit="1" type="boolean"/>        
+        <field name="PVI" lengthBit="1" type="boolean" description="Pre-emption Vulnerability"/>
+        <field name="Label QCI" lengthBit="8" type="integer"/>
+        <field name="Maximum bit rate for uplink" lengthBit="40" type="integer"/>
+        <field name="Maximum bit rate for downlink" lengthBit="40" type="integer"/>
+        <field name="Guaranteed bit rate for uplink" lengthBit="40" type="integer"/>
+        <field name="Guaranteed bit rate for downlink" lengthBit="40" type="integer"/> 
+    </element>
+    
+    <!-- 81 : Flow Quality of Service (Flow QoS). -->
+
+    <!-- 82 : RAT Type. -->
+    <element tag="RAT Type:82" coding="TLIV">
+        <field name="RAT Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="reserved" />
+            <enum value="1" name="UTRAN" />
+            <enum value="2" name="GERAN" />
+            <enum value="3" name="WLAN" />
+            <enum value="4" name="GAN" />
+            <enum value="5" name="HSPA Evolution" />
+            <enum value="6" name="EUTRAN" />
+            <enum value="7" name="Virtual" />
+            <enum value="8-255" name="spare" />
+        </field>
+    </element>
+    
+    <!-- 83 : Serving Network. -->
+    <element tag="Serving Network:83" coding="TLIV">
+        <field name="MMC" type="number_mmc"/>
+    </element>
+    
+    <!-- 84 : EPS Bearer Level Traffic Flow Template (Bearer TFT). -->
+	<element tag="Bearer TFT:84" coding="TLIV" description="EPS Bearer Level Traffic Flow Template">
+      <field name="TFT operation code" lengthBit="3" type="integer" /> 
+      <field name="E bit" lengthBit="1" type="boolean" />
+      <field name="Number of packet filters" lengthBit="4" type="integer" />
+      <field name="Spare" lengthBit="2" type="integer" />
+      <field name="Packet Filter Direction" lengthBit="2" type="integer" />
+      <field name="Packet Filter Identifier" lengthBit="4" type="integer" />
+      <field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" />
+      <field name="Length of Packet Filter contents " lengthBit="8" type="integer"  description="NOMBRE TOTAL en decimal d'Octets"/>
+      <field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+      <field name="my ipv4 address" type="ipv4_address"  description="IPv4 address" />
+      <field name="my ipv4 address mask" type="ipv4_address"  description="IPv4 address mask"/>					
+      <field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+      <field name="Protocol identifier/Next header type" lengthBit="8" type="integer" />  
+      <field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+      <field name="Single local port type" lengthBit="16" type="integer" />
+      <field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" />
+      <field name="Single remote port type" lengthBit="16" type="integer" />
+	</element>
+	
+    <!-- 85 : Traffic Aggregation Description (TAD). -->
+
+    <!-- 86 : User Location Information (ULI). -->
+    <!-- conditional fields -->
+    <element tag="ULI:86" coding="TLIV" description="User Location Information">
+        <field name="spare1" lengthBit="2" type="integer"/>
+        <field name="LAI" lengthBit="1" type="boolean"/>        
+        <field name="ECGI" lengthBit="1" type="boolean"/>
+        <field name="TAI" lengthBit="1" type="boolean"/>
+        <field name="RAI" lengthBit="1" type="boolean"/>
+        <field name="SAI" lengthBit="1" type="boolean"/>
+        <field name="CGI" lengthBit="1" type="boolean"/>
+    		<!-- CGI Field CONDITIONNAL -->
+    		<!--field name="CGI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/-->
+    		<!-- <field name="CGI_MNC" lengthBit="8" type="integer" description="Mobile Network Code"/> -->
+    		<!--field name="CGI_LAC" lengthBit="16" type="integer" description="Location Area Code"/>
+    		<field name="CGI_CI" lengthBit="16" type="integer" description="Cell Identity"/-->
+    		<!-- SAI Field CONDITIONNAL -->
+    		<!--field name="SAI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/> 
+    		<field name="SAI_LAC" lengthBit="16" type="integer" description="Location Area Code"/>
+    		<field name="SAI_SAC" lengthBit="16" type="integer" description="Service Area Code"/-->
+    		<!-- RAI Field CONDITIONNAL -->
+    		<!--field name="RAI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/> 
+    		<field name="RAI_LAC" lengthBit="16" type="integer" description="Location Area Code"/>
+    		<field name="RAI_RAC" lengthBit="8" type="integer" description="Routing Area Code"/>
+    		<field name="RAI_RAC1" lengthBit="8" type="integer" description="Routing Area Code = 11111111"/-->
+    		<!-- TAI Field CONDITIONNAL -->
+    		<field name="TAI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/> 
+    		<field name="TAI_TAC" lengthBit="16" type="integer" description="Tracking Area Code"/>
+    		<!-- ECGI Field CONDITIONNAL -->
+    		<field name="ECGI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/>
+    		<field name="ECGI_spare" lengthBit="4" type="integer"/>
+    		<field name="ECGI_ECI" lengthBit="28" type="integer"/>
+    		<!-- LAI Field CONDITIONNAL -->
+    		<field name="LAI_MCC_MNC" type="number_mmc" description="Mobile Country Code,Mobile Network Code"/> 
+    		<field name="LAI_LAC" lengthBit="16" type="integer" description="Location Area Code"/>
+    </element>        
+
+    <!-- 87 : Fully Qualified Tunnel Endpoint Identifier (F-TEID). -->
+    <!-- conditional fields -->
+    <element tag="F-TEID:87" coding="TLIV" description="Fully Qualified Tunnel Endpoint Identifier">
+        <field name="V4" lengthBit="1" type="boolean"/>
+        <field name="V6" lengthBit="1" type="boolean"/>
+        <field name="Interface Type" lengthBit="6" type="enumeration">
+            <enum value="0" name="S1-U eNodeB"/>
+            <enum value="1" name="S1-U SGW GTP-U"/>
+            <enum value="2" name="S12 RNC GTP-U"/>
+            <enum value="3" name="S12 SGW GTP-U"/>
+            <enum value="4" name="S5/S8 SGW GTP-U"/>
+            <enum value="5" name="S5/S8 PGW GTP-U"/>
+            <enum value="6" name="S5/S8 SGW GTP-C"/>
+            <enum value="7" name="S5/S8 PGW GTP-C"/>
+            <enum value="8" name="S5/S8 SGW PMIPv6" description="the 32 bit GRE key is encoded in 32 bit TEID field and since alternate CoA is not used the control plane and user plane addresses are the same for PMIPv6"/>
+            <enum value="9" name="S5/S8 PGW PMIPv6" description="the 32 bit GRE key is encoded in 32 bit TEID field and the control plane and user plane addresses are the same for PMIPv6"/>
+            <enum value="10" name="S11 MME GTP-C"/>
+            <enum value="11" name="S11/S4 SGW GTP-C"/>
+            <enum value="12" name="S10 MME GTP-C"/>
+            <enum value="13" name="S3 MME GTP-C"/>
+            <enum value="14" name="S3 SGSN GTP-C"/>
+            <enum value="15" name="S4 SGSN GTP-U"/>
+            <enum value="16" name="S4 SGW GTP-U"/>
+            <enum value="17" name="S4 SGSN GTP-C"/>
+            <enum value="18" name="S16 SGSN GTP-C"/>
+            <enum value="19" name="eNodeB GTP-U" description="for DL data forwarding"/>
+            <enum value="20" name="eNodeB GTP-U" description="for UL data forwarding"/>
+            <enum value="21" name="RNC GTP-U" description="for data forwarding"/>
+            <enum value="22" name="SGSN GTP-U" description="for data forwarding"/>
+            <enum value="23" name="SGW GTP-U" description="for DL data forwarding"/>
+            <enum value="24" name="Sm MBMS GW GTP-C"/>
+            <enum value="25" name="Sn MBMS GW GTP-C"/>
+            <enum value="26" name="Sm MME GTP-C"/>
+            <enum value="27" name="Sn SGSN GTP-C"/>
+            <enum value="28" name="SGW GTP-U" information="for UL data forwarding"/>
+            <enum value="29" name="Sn SGSN GTP-U"/> 
+            <enum value="30" name="S2b ePDG GTP-C"/> 
+            <enum value="31" name="S2b-U ePDG GTP-U"/> 
+            <enum value="32" name="S2b PGW GTP-C"/> 
+            <enum value="33" name="S2b-U PGW GTP-U"/> 
+            <enum value="34" name="S2a TWAN GTP-U"/>
+            <enum value="35" name="S2a TWAN GTP-C"/>
+            <enum value="36" name="S2a PGW GTP-C"/>
+            <enum value="37" name="S2a PGW GTP-U"/>
+            <enum value="38-63" name="spare and reserved for future use"/>
+        </field>
+        <field name="TEID / GRE Key" lengthBit="32" type="integer" description="GRE key ?"/>
+        <field name="IPv4 address" type="ipv4_address"/>  <!-- if V4 == true -->
+        <field name="IPv6 address" type="ipv6_address"/>  <!-- if V6 == true -->
+    </element>
+
+    <!-- 88 : TMSI. -->
+    <!-- 89 : Global CN-Id. -->
+    <!-- 90 : S103 PDN Data Forwarding Info (S103PDF). -->
+    <!-- 91 : S1-U Data Forwarding Info (S1UDF). -->
+
+    <!-- 92 : Delay Value. -->
+	  <element tag="Delay value:92" coding="TLIV" description="Delay Value in integer multiples of 50 millisecs, or zero">
+        <field name="Delay value" lengthBit="8" type="integer"/>  
+    </element>
+
+    <!-- 93 : Bearer Context . -->
+    <element tag="Bearer Context:93" coding="TLIV">
+        <element tag="Cause:2" coding="TLIV"/>
+        <element tag="EBI:73" coding="TLIV"/>
+        <element tag="Bearer QoS:80" coding="TLIV"/>
+        <element tag="F-TEID:87" coding="TLIV"/>
+        <element tag="Charging ID:94" coding="TLIV"/>
+    </element>
+    
+    <!-- 94 : Charging ID. -->
+     <element tag="Charging ID:94" coding="TLIV">
+        <field name="Charging ID value" lengthBit="32" type="integer"/>   
+    </element>
+    
+    <!-- 95 : Charging Characteristics. -->
+     <element tag="Charging Characteristics:95" name="Charging Characteristics" coding="TLIV">
+        <field name="Charging Characteristics value" lengthBit="16" type="integer"/>   
+    </element>
+    
+    <!-- 96 : Trace Information. -->
+    <!-- TODO complex element see TS 32422 -->
+    <!--element tag="Trace Information:96">
+        <field name="" ../>
+    </element-->
+
+    <!-- 97 : Bearer Flags. -->
+	<element tag="Bearer Flags:97" coding="TLIV" description="Bearer Flags">
+  		<field name="spare" lengthBit="4" type="integer" />
+  		<field name="flag ASI" lengthBit="1" type="boolean" description="Activity Status Indicator"/>  <!-- Activity Status Indicator : if 1, bearer context is preserved in CN without RAB established-->
+  		<field name="flag Vind" lengthBit="1" type="boolean" description="SRVCC Indicator"/> <!-- vSRVCC indicator to indicate bearer is an IMS video bearer and is candidate for PS to CS (v)SRVCC HO  -->
+  		<field name="flag VB" lengthBit="1" type="boolean" description="Voice Bearer Indicator"/>   <!-- to indicate a voice bearer when doing PSto CS (v)SRVCC HO -->
+  		<field name="flag PCC" lengthBit="1" type="boolean" description="Prohibit Payload Compression Indicator"/>  <!-- Prohibit Payload Compression  -->
+	</element>
+     
+    <!-- 98 : Reserved. -->
+    <!-- 99 : PDN Type. -->
+    <element tag="PDN Type:99" coding="TLIV">
+        <field name="spare" lengthBit="5" type="integer"/>
+        <field name="PDN Type" lengthBit="3" type="enumeration">
+            <enum value="1" name="IPv4"/>
+            <enum value="2" name="IPv6"/>
+            <enum value="3" name="IPv4v6"/>
+            <enum value="0" name="reserved"/>
+        </field>
+    </element>
+
+    <!-- 100 : Procedure Transaction ID. -->
+	<element tag="PTI:100" coding="TLIV" description="Procedure Transaction Id">
+  		<field name="Procedure Transaction ID" lengthBit="8" type="integer"/>
+  		<!-- 	Bits							-->
+  		<!-- 	8	7	6	5	4	3	2	1		-->
+  		<!-- 	0	0	0	0	0	0	0	0		No procedure transaction identity assigned	-->
+  		<!-- 	0	0	0	0	0	0	0	1		\		-->
+  		<!-- 	to		} Procedure transaction identity value		-->
+  		<!-- 	1	1	1	1	1	1	1	0		/		-->
+  		<!-- 	1	1	1	1	1	1	1	1		Reserved		-->
+	</element>			
+	
+    <!-- 101 : Reserved. -->
+    <!-- 102 : Reserved. -->
+    <!-- 103 : MM Context (GSM Key and Triplets). -->
+    <!-- 104 : MM Context (UMTS Key, Used Cipher and Quintuplets). -->
+    <!-- 105 : MM Context (GSM Key, Used Cipher and Quintuplets). -->
+    <!-- 106 : MM Context (UMTS Key and Quintuplets). -->
+    <!-- 107 : MM Context (EPS Security Context, Quadruplets and Quintuplets). -->
+    <!-- 108 : MM Context (UMTS Key, Quadruplets and Quintuplets). -->
+    <!-- 109 : PDN Connection. -->
+    <!-- 110 : PDU Numbers. -->
+    <!-- 111 : P-TMSI. -->
+    <!-- 112 : P-TMSI Signature. -->
+    <!-- 113 : Hop Counter. -->
+
+    <!-- 114 : UE Time Zone. -->
+   <element tag="UE Time Zone:114" coding="TLIV">   
+        <field name="Time Zone" lengthBit="8" type="integer"/>
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
+            <enum value="0" name="No adjustment for Daylight Saving Time"/>
+            <enum value="1" name="+1 hour adjustment for Daylight Saving Time"/>
+            <enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
+            <enum value="3" name="Spare"/>
+        </field>
+    </element>
+    
+    <!-- 115 : Trace Reference. -->
+    <!-- 116 : Complete Request Message. -->
+    <!-- 117 : GUTI. -->
+    <!-- 118 : F-Container. -->
+    <!-- 119 : F-Cause. -->
+    <!-- 120 : PLMN ID. -->
+    <!-- 121 : Target Identification. -->
+    <!-- 122 : Reserved . -->
+    <!-- 123 : Packet Flow ID . -->
+    <!-- 124 : RAB Context . -->
+    <!-- 125 : Source RNC PDCP Context Info. -->
+
+    <!-- 126 : UDP Source Port Number. -->
+    <element tag="Port Number:126" coding="TLIV">
+        <field name="Port Number" lengthBit="16" type="integer"/>
+    </element>
+    
+    <!-- 127 : APN Restriction. -->
+    <element tag="APN Restriction:127" coding="TLIV">
+        <field name="Restriction Type value" lengthBit="8" type="enumeration">
+            <enum value="0" name="No Existing Contexts or Restriction"/>
+            <enum value="1" name="Public-1 : MMS"/>
+            <enum value="2" name="Public-2 : Internet"/>
+            <enum value="3" name="Private-1 : Corporate (e.g. who use MMS)"/>
+            <enum value="4" name="Private-2 : Corporate (e.g. who do not use MMS)"/>
+            <enum value="5-255" name="Not used"/>
+        </field>
+    </element>
+        
+    <!-- 128 : Selection Mode. -->
+    <element tag="Selection Mode:128" coding="TLIV">
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Selection Mode" lengthBit="2" type="enumeration">
+            <enum value="0" name="MS or network provided APN, subscribed verified" />
+            <enum value="1" name="MS provided APN, subscription not verified" />
+            <enum value="2" name="Network provided APN, subscription not verified" />
+            <enum value="3" name="For future use." description="Shall not be sent. If received, shall be interpreted as the value &quot;2&quot;.\" />
+        </field>
+    </element>
+    
+    <!-- 129 : Source Identification. -->
+    <!-- 130 : Reserved. -->
+
+    <!-- 131 : Change Reporting Action. -->
+	<element tag="Change Reporting Action:131" coding="TLIV" description="Action">
+  		<field name="Action" lengthBit="8" type="integer"/>
+	</element>		
+
+    <!-- 132 : Fully Qualified PDN Connection Set Identifier (FQ-CSID). -->
+    <!-- conditional fields -->
+    <element tag="FQ-CSID:132" coding="TLIV" description="Fully qualified PDN Connection Set Identifier ">
+        <field name="Node-ID Type" lengthBit="4" type="enumeration">
+            <enum value="0" name="Global unicast IPv4"/>
+            <enum value="1" name="Global unicast IPv6"/>
+            <enum value="2" name="MCC/MNC operator"/>
+            <enum value="3-15" name="reserved"/>
+        </field>
+        <field name="Number of CSIDs" lengthBit="4" type="integer"/>
+        <field name="Node-ID ipv4" type="ipv4_address"/>     <!-- if Node-ID == 0 -->
+        <field name="Node-ID ipv6" type="ipv6_address"/>     <!-- if Node-ID == 1 -->
+        <field name="Node-ID MCC/MNC" lengthBit="20" type="integer"/>  <!-- if Node-ID == 2 -->
+        <field name="Node-ID operator" lengthBit="12" type="integer"/>  <!-- if Node-ID == 2 -->
+        <field name="ICSID01" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+        <field name="ICSID02" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+        <field name="ICSID03" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>*
+        <field name="ICSID04" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+        <field name="ICSID05" lengthBit="16" type="integer" description="PDN Connection Set Identifier "/>
+    </element>
+    
+    <!-- 133 : Channel needed. -->
+    <!-- 134 : eMLPP Priority. -->
+
+    <!-- 135 : Node Type. -->
+	 <element tag="Node Type:135" coding="TLIV" description="Originating Node Type">
+            <field name="Node Type" lengthBit="8" type="integer" description=" O for MME/1 for SGSN"/>
+    </element>
+	
+    <!-- 136 : Fully Qualified Domain Name (FQDN). -->
+    <!-- 137 : Transaction Identifier (TI). -->
+    <!-- 138 : MBMS Session Duration. -->
+    <!-- 139 : MBMS Service Area. -->
+    <!-- 140 : MBMS Session Identifier. -->
+    <!-- 141 : MBMS Flow Identifier. -->
+    <!-- 142 : MBMS IP Multicast Distribution. -->
+    <!-- 143 : MBMS Distribution Acknowledge. -->
+    <!-- 144 : RFSP Index. -->
+
+    <!-- 145 : User CSG Information (UCI). -->
+    <element tag="UCI:145" coding="TLIV" description="User CSG Information">
+        <field name="MMC" type="number_mmc"/>
+        <field name="spare1" lengthBit="5" type="integer"/>
+        <field name="CSG ID" lengthBit="27" type="integer"/>
+        <field name="Access mode" lengthBit="2" type="enumeration">
+            <enum value="0" name="Closed Mode"/>
+            <enum value="1" name="Hybrid Mode"/>
+            <enum value="2-3" name="Reserved"/>
+        </field>
+        <field name="spare2" lengthBit="4" type="integer"/>
+        <field name="LCSG" lengthBit="1" type="boolean" description="UE leaves CSG cell/Hybrid cell"/>
+        <field name="CMI" lengthBit="1" type="enumeration">
+            <enum value="0" name="Non CSG membership"/>
+            <enum value="1" name="CSG membership"/>
+        </field>
+    </element>
+    
+    <!-- 146 : CSG Information Reporting Action. -->
+	<element tag="CSG IRA:146" coding="TLIV" description="CSG Information Reporting Action">
+		<field name="spare1" lengthBit="5" type="integer" />
+		<field name="UCIUHC" lengthBit="1" type="boolean" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through the CSG Cell."/>
+		<field name="UCISHC" lengthBit="1" type="boolean" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through Subscribed Hybrid Cell."/>
+		<field name="UCICSG" lengthBit="1" type="boolean" description="shall indicate to start Reporting User CSG Info when the UE enters/leaves/access through Unsubscribed Hybrid Cell."/>
+	</element>
+	
+    <!-- 147 : CSG ID. -->
+    <!-- 148 : CSG Membership Indication (CMI). -->
+    <!-- 149 : Service indicator. -->
+    <!-- 150 : Detach Type. -->
+
+    <!-- 151 : Local Distiguished Name (LDN). -->
+    <element tag="LDN:151" coding="TLIV" description="MME/S4-SGSN LDN">
+        <field name="LDN" type="string" description="Local Distinguished Name"/>
+    </element>
+    
+    <!-- 152 : Node Features. -->
+    <!-- 153 : MBMS Time to Data Transfer. -->
+    <!-- 154 : Throttling. -->
+    <!-- 155 : Allocation/Retention Priority (ARP). -->
+
+    <!-- 156 : EPC Timer. -->
+	<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->	
+	<element tag="EPC Timer:156" coding="TLIV" description="EPC Timer information">
+		<field name="Timer unit" lengthBit="3" type="integer" />
+		<field name="Timer value" lengthBit="5" type="integer"/>
+	</element>
+
+    <!-- 157 : Signalling Priority Indication. -->
+    <element tag="Signalling Priority Indication:157" coding="TLIV">
+        <field name="spare1" lengthBit="7" type="integer"/>
+        <field name="LAPI" type="boolean" description="Low Access Priority Indication"/>
+    </element>
+    
+    <!-- 158 : Temporary Mobile Group Identity (TMGI). -->
+    <!-- 159 : Additional MM context for SRVCC. -->
+    <!-- 160 : Additional flags for SRVCC. -->
+    <!-- 161 : Reserved. -->
+    <!-- 162 : MDT Configuration. -->
+
+    <!-- 163 : Additional Protocol Configuration Options (APCO). -->
+    <!-- TODO complex element see TS 29275 -->
+    <element tag="APCO:163" coding="TLIV" description="Additional Protocol Configuration Options ">
+        <field name="APCO" type="binary" description="Additional Protocol Configuration Options "/>
+    </element>
+    
+    <!-- 164 : Absolute Time of MBMS Data Transfer. -->
+
+    <!-- 165 : H(e)NB Information Reporting . -->
+	<element tag="H(e)NB:165" coding="TLIV" description="H(e)NB Information Reporting">
+		<field name="spare1" lengthBit="7" type="integer" />
+		<field name="FTI" lengthBit="1" type="boolean" description="shall indicate to start reporting H(e)NB local IP address and UDP port number information change"/>
+	</element>
+
+    <!-- 166 : IPv4 Configuration Parameters (IP4CP). -->
+	<!-- parameter wrongly decoded by wireshark: IE Type: Unknown (166) -->	
+	<element tag="IP4CP:166" coding="TLIV" description="IPv4 Configuration Parameters ">
+			<field name="Subnet Prefix Length" lengthBit="8" type="integer" />
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" lengthBit="32" type="ipv4_address" description="IPv4 Default Router Address"/>   <!-- if length == 8 -->
+		</element>
+	
+    <!-- 167 : Change to Report Flags . -->
+    <!-- 168 : Action Indication. -->
+
+    <!-- 169 : TWAN Identifier. -->
+    <!-- conditional fields -->
+    <element tag="TWAN Identifier:169" coding="TLIV" >
+        <field name="spare1" lengthBit="6" type="integer"/>
+        <field name="BSSIDI" lengthBit="1" type="boolean" description="BSSID Indicator"/>
+        <field name="SSIDI" lengthBit="1" type="boolean" description="SSID Indicator"/>
+        <field name="BSSID" lengthBit="40" type="binary"/>        <!-- if BSSIDI == true -->
+        <field name="SSID Length" lengthBit="8" type="integer"/>  <!-- if SSIDI == true -->
+        <field name="SSID" type="binary"/>                        <!-- if SSIDI == true -->
+    </element>
+    
+    <!-- 170 : ULI Timestamp. -->
+    <!-- 171 to 254 : Spare. For future use. -->
+
+    <!-- 255 : Private Extension. -->
+    <element tag="Private Extension:255" coding="TLIV">
+        <field name="Enterprise ID" lengthBit="16" type="integer"/>
+        <field name="Proprietary value" type="string"/>
+    </element>
+</dictionary>

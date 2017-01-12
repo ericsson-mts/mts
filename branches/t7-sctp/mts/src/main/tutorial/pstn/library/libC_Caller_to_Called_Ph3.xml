@@ -1,0 +1,111 @@
+<!--
+Function description: Session release (third part after Caller_to_Called_Ph2
+Please also refer to Caller_to_Called_Ph1 and Caller_to_Called_Ph2
+-->
+
+<!--
+|
+|
+Expected procedure is "RTP_WITHOUT_ESTABLISHMENT"
+|
+|
+-->
+<if>
+	<condition>
+      		<test parameter="[expected_Scenario]" condition="equals" value="RTP_WITHOUT_ESTABLISHMENT" />
+	</condition>
+	<then> 
+
+		<!-- Notification of termination of INVITE via a 487-->
+		<receiveMessageSIP name="Wait 487 OK" listenpoint="[provider_Name]" type="INVITE" result="487">
+		</receiveMessageSIP>
+
+		<!-- INVITE + 487 are aknoledged via ACK-->
+		<sendMessageSIP name="Send ACK" listenpoint="[provider_Name]">
+    	
+<![CDATA[ACK sip:[called_Subscriber]@[domainName_Service] SIP/2.0
+To: "[called_Subscriber]" <sip:[called_Subscriber]@[domainName_Service]>
+From: "[caller_Subscriber]" <sip:[caller_Subscriber]@[domainName_Service]>;tag=[localTag]
+Via: SIP/2.0/UDP [caller_ipAddressSip]:[caller_portSip];branch=[newBranchId]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] ACK
+Route: <sip:[called_Subscriber]@[sbcHost_Service]:[sbcPort_Service];lr>  
+Max-Forwards: [MaxForwards]
+Contact: <sip:[caller_Subscriber]@[caller_ipAddressSip]:[caller_portSip]>
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+		</sendMessageSIP>
+
+	</then>
+
+	<else>
+
+		<parameter name="[message_received]" operation="set" value="false"/>
+
+		<receiveMessageSIP name="Wait BYE" type="BYE" failedOnTimeout="false" timeout="0.5">
+			<parameter name="[message_received]" operation="set" value="true"/> 
+			<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>  	
+			<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>  	
+			<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>  	
+			<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>  		
+			<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/> 
+			<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>  		
+		</receiveMessageSIP>
+
+	<if>
+		<condition>
+			<test parameter="[message_received]" condition="equals" value="true" />
+		</condition>
+
+		<then>
+			<!-- If a BYE is received from AS, sending of a 200 ok -->
+
+			<sendMessageSIP name="Send 200 OK" listenpoint="[provider_Name]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[ipAddressSip_Service]:[portSip_Service]>
+User-Agent: IMSLoader
+Max-Forwards: 70
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+
+
+		</then>
+		<else>
+
+
+			<!-- BYE is sent by the client -->
+
+			<parameter name="[newCseqNumber]" operation="add" value="[newCseqNumber]"  value2="1"/>
+			<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+	 	
+			<sendMessageSIP name="Send BYE" listenpoint="[provider_Name]">
+    	
+<![CDATA[BYE [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [newCseqNumber] BYE
+Route: <sip:[called_Subscriber]@[sbcHost_Service]:[sbcPort_Service];lr> 
+Via: SIP/2.0/UDP [caller_ipAddressSip]:[caller_portSip];branch=[newBranchId]
+Contact: <sip:[caller_Subscriber]@[caller_ipAddressSip]:[caller_portSip]>
+Max-Forwards: 70
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+			</sendMessageSIP>
+
+			<receiveMessageSIP name="Wait 200 OK" listenpoint="[provider_Name]" type="BYE" result="200">
+			</receiveMessageSIP>
+
+		</else>
+	</if>
+
+	</else>
+</if>

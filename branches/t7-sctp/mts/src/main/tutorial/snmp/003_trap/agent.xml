@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario agent -->
+<scenario>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait"/>
+
+    <parameter name="[requestId]" operation="number.random" value="1000000" />
+    <!-- snmpv2 trap-->
+    <sendMessageSNMP remoteHost="[remoteHostSNMP]" remotePort="162">
+        <header version="2" community="public"/>
+        <pdu name="trap" requestId="[requestId]">
+            <variableBinding name="sysUpTIme" value="25678"/>
+            <variableBinding name="snmpTrapOID" value="123"/>
+            <variableBinding name="ianaLangJavaByteCode" type="integer32" value="2"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <parameter name="[requestId]" operation="number.random" value="1000000" />
+    <!-- snmpv2 trap-->
+    <sendMessageSNMP remoteHost="[remoteHostSNMP]" remotePort="162">
+        <header version="2" community="public"/>
+        <pdu name="trap" requestId="[requestId]">
+            <variableBinding name="sysUpTIme" value="25678"/>
+            <variableBinding name="snmpTrapOID" value="1.3.6.1.6.3.1.1.5.4"/><!-- linkUp OID-->
+            <variableBinding name="ifIndex" type="integer32" value="7"/>
+            <variableBinding name="ifAdminStatus" type="integer32" value="1"/>
+            <variableBinding name="ifOperStatus" type="integer32" value="1"/>
+        </pdu>
+    </sendMessageSNMP>
+
+
+    <parameter name="[requestId]" operation="number.random" value="1000000" />
+    <!-- snmpv1 trap-->
+    <sendMessageSNMP remoteHost="[remoteHostSNMP]" remotePort="162">
+        <header version="1" community="public"/>
+        <pdu name="trap" requestId="[requestId]" enterprise="1.2.1.4.6.3" 
+        agentAddress="[remoteHostSNMP]" genericTrap="coldStart" specificTrap="0"
+        timestamp="123456789">
+            <variableBinding name="ifIndex" type="integer32" value="7"/>
+            <variableBinding name="ifAdminStatus" type="integer32" value="1"/>
+            <variableBinding name="ifOperStatus" type="integer32" value="1"/>
+        </pdu>
+    </sendMessageSNMP>
+
+</scenario>

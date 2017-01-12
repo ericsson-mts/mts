@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="inviter" />
+	
+	<parameter name="[test:RTPSessionOpened]" operation="system.semaphorewait" value="1"/>	
+	<!-- <semaphore name="SEM1" action="wait" /> -->	
+		
+  	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <header ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
+	    <payload format="text">Packet #1</payload>		
+	    <payload format="text">abcdefghijklmnopqrstuvwxyz</payload>		
+	    <payload format="text">0123456789</payload>		
+	    <payload format="binary">
+	    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+	    <!--$0 $01 $2 $03 $4 $5 $06 $7 $8 $09 $A $b $0C $d $E $0f $10 -->
+	    <!--b01010101 b10101010 b11111111 b0 b101 -->		
+	    </payload>
+	    <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <header ssrc="[ssrc]" payloadType="17" seqnum="1" timestamp="1000"/>
+	    <payload format="text">Packet #2</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <header ssrc="[ssrc]" payloadType="17" seqnum="2" timestamp="2000"/>
+	    <payload format="text">Packet #3</payload>		
+	</sendMessageRTP>
+
+	<finally>	
+		<removeListenpointRTP name="inviter" />
+    </finally>
+
+</scenario>

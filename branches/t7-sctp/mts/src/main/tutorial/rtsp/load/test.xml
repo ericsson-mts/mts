@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="RTSP non regression load tests">
+    
+    <for from="9140" index="[i]" to="9145">
+        <testcase name="test_[i]" state="true">
+            <parameter name="[port]" operation="set" value="[i]"/>
+            <scenario file="scenario/UAC.xml" name="client_[i]" routingName="client_[i]"/>
+            <scenario file="scenario/UAS.xml" name="[i]" routingName="[i]"/>
+        </testcase>
+    </for>
+</test>

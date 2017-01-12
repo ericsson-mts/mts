@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE SIPimport [
+  <!ENTITY proxyTo SYSTEM "../library/proxyTo.xml">
+]>	
+<!--
+~~~~~~~~~~~~~~~~~~~
+|     Parameters INPUT     |
+~~~~~~~~~~~~~~~~~~~
+- proxyURI
+
+-->
+
+<scenario>
+
+
+  <label name="Begin"/>
+  <receiveMessageSIP name="Wait msg" timeout="0"/>
+
+  <parameter name="[proxyURI]" operation="set" value="[remoteSIP]"/>
+    
+  &proxyTo;
+  <goto  name="loop" label="Begin" state="true"/>
+  
+</scenario>

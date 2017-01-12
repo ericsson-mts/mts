@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[testcase:begin]" operation="system.semaphorewait"/>
+    <parameter name="[testcase:begin]" operation="list.remove"/>
+    <pause milliseconds="[testcase:delay]"/>
+    <parameter name="[testcase:delay]" operation="number.substract" value="[testcase:delay]" value2="0"/>
+    <parameter name="[testcase:sema_reg]" operation="system.semaphorenotify" value="2"/>
+    
+</scenario>

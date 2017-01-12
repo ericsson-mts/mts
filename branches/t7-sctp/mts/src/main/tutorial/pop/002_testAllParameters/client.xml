@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+    <parameter name="[connection]" operation="set" value="connectionPOP" />
+
+    <openChannelPOP name="[connection]" remoteHost="[remoteHostPOP]" remotePort="[remotePortPOP]"/>
+
+    <!-- envoi requete USER-->
+    <sendMessagePOP name="Send USER" channel="[connection]">
+<![CDATA[
+USER [login]
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse USER -->
+    <receiveMessagePOP name="Receive USER" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.text" />
+    </receiveMessagePOP>
+
+	<!-- perform test -->
+    <test parameter="[reponse]" condition="string.equals" value="OK" />
+    <test parameter="[text]" condition="string.contains" value="[login]" />
+    
+    <!-- envoi requete PASS-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+PASS [password]
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse PASS -->
+    <receiveMessagePOP name="Receive PASS" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+    </receiveMessagePOP>
+
+	<!-- perform test -->
+    <test parameter="[reponse]" condition="string.equals" value="OK" />
+
+    <!-- envoi requete RETR-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+RETR 1
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse RETR -->
+    <receiveMessagePOP name="Receive RETR" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <parameter name="[data]" operation="protocol.setFromMessage" value="response.text" />
+        <parameter name="[msg]" operation="protocol.setFromMessage" value="content" />
+    </receiveMessagePOP>
+
+	<!-- perform test -->
+    <test parameter="[reponse]" condition="string.equals" value="OK" />
+    <test parameter="[data]" condition="string.contains" value="354 octets" />
+    <test parameter="[data]" condition="string.contains" value="Hy all! Is this test working or not???" />
+    <test parameter="[data]" condition="string.contains" value="This line is useful to check the good working of the TOP command in pop." />
+    <test parameter="[data]" condition="string.contains" value="Bye." />
+    <test parameter="[msg]" condition="string.contains" value="+OK 354 octets" />
+
+    <finally>
+        <closeChannelPOP name="[connection]"/>
+    </finally>
+
+</scenario>

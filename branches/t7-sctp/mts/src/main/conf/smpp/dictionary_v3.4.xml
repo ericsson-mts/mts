@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary_v3.4.xml
+    Created on : 4 février 2009, 08:58
+    Author     : bbouvier
+    Description:
+-->
+
+<dictionary>
+
+    <message name="bind_transmitter" id="00000002">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <attribute name="password" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="9"/>
+        <attribute name="system_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="13"/>
+        <attribute name="interface_version" format="INT" sizeMax="1"/>
+        <attribute name="addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="address_range" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="41"/>
+    </message>
+
+    <message name="bind_transmitter_resp" id="80000002">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <tlv name="sc_interface_version" tag="0210" format="INT" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="bind_receiver" id="00000001">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <attribute name="password" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="9"/>
+        <attribute name="system_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="13"/>
+        <attribute name="interface_version" format="INT" sizeMax="1"/>
+        <attribute name="addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="address_range" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="41"/>
+    </message>
+
+    <message name="bind_receiver_resp" id="80000001">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <tlv name="sc_interface_version" tag="0210" format="INT" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="bind_transceiver" id="00000009">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <attribute name="password" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="9"/>
+        <attribute name="system_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="13"/>
+        <attribute name="interface_version" format="INT" sizeMax="1"/>
+        <attribute name="addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="address_range" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="41"/>
+    </message>
+
+    <message name="bind_transceiver_resp" id="80000009">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <tlv name="sc_interface_version" tag="0210" format="INT" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="outbind" id="0000000B">
+        <attribute name="system_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="16"/>
+        <attribute name="password" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="9"/>
+    </message>
+
+    <message name="unbind" id="00000006"/>
+    <message name="unbind_resp" id="80000006"/>
+
+    <message name="enquire_link" id="00000015"/>
+    <message name="enquire_link_resp" id="80000015"/>
+
+    <message name="alert_notification" id="00000102">
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="esme_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="esme_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="esme_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <tlv name="ms_availability_status" tag="0422" format="INT" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="generic_nack" id="80000000"/>
+
+    <message name="submit_sm" id="00000004">
+        <attribute name="service_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="6"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="dest_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="dest_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="destination_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="esm_class" format="INT" sizeMax="1"/>
+        <attribute name="protocol_id" format="INT" sizeMax="1"/>
+        <attribute name="priority_flag" format="INT" sizeMax="1"/>
+        <attribute name="schedule_delivery_time" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="validity_period" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="registered_delivery" format="INT" sizeMax="1"/>
+        <attribute name="replace_if_present_flag" format="INT" sizeMax="1"/>
+        <attribute name="data_coding" format="INT" sizeMax="1"/>
+        <attribute name="sm_default_msg_id" format="INT" sizeMax="1"/>
+        <attribute name="sm_length" format="INT" sizeMax="1"/>
+        <attribute name="short_message" format="OCTETSTRING" sizeMin="0" sizeMax="254"/>
+        <tlv name="alert_on_msg_delivery" tag="130C" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="callback_num" tag="0381" format="OCTETSTRING" sizeMin="4" sizeMax="19" mandatory="false"/>
+        <tlv name="callback_num_atag" tag="0303" format="OCTETSTRING" sizeMin="1" sizeMax="65" mandatory="false"/>
+        <tlv name="callback_num_pres_ind" tag="0302" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_addr_subunit" tag="0005" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_subaddress" tag="0203" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="destination_port" tag="020B" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="display_time" tag="1201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="its_reply_type" tag="1380" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="its_session_info" tag="1383" format="OCTETSTRING" sizeMin="2" sizeMax="2" mandatory="false"/>
+        <tlv name="language_indicator" tag="020D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="message_payload" tag="0424" format="OCTETSTRING" sizeMin="0" sizeMax="tlv_length" mandatory="false"/>
+        <tlv name="more_messages_to_send" tag="0426" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="ms_msg_wait_facilities" tag="0030" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="ms_validity" tag="1204" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="number_of_messages" tag="0304" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="payload_type" tag="0019" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="privacy_indicator" tag="0201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sar_msg_ref_num" tag="020C" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="sar_segment_seqnum" tag="020F" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sar_total_segments" tag="020E" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sms_signal" tag="1203" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_addr_subunit" tag="000D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="source_port" tag="020A" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_subaddress" tag="0202" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="user_message_reference" tag="0204" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="user_response_code" tag="0205" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="ussd_service_op" tag="0501" format="OCTETSTRING" sizeMin="1" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="submit_sm_resp" id="80000004">
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+    </message>
+
+    <message name="data_sm" id="00000103">
+        <attribute name="service_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="6"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="dest_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="dest_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="destination_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="esm_class" format="INT" sizeMax="1"/>
+        <attribute name="registered_delivery" format="INT" sizeMax="1"/>
+        <attribute name="data_coding" format="INT" sizeMax="1"/>
+        <tlv name="alert_on_msg_delivery" tag="130C" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="callback_num" tag="0381" format="OCTETSTRING" sizeMin="4" sizeMax="19" mandatory="false"/>
+        <tlv name="callback_num_atag" tag="0303" format="OCTETSTRING" sizeMin="1" sizeMax="65" mandatory="false"/>
+        <tlv name="callback_num_pres_ind" tag="0302" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_addr_subunit" tag="0005" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_bearer_type" tag="0007" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_network_type" tag="0006" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_subaddress" tag="0203" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="dest_telematics_id" tag="0008" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="destination_port" tag="020B" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="display_time" tag="1201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="its_reply_type" tag="1380" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="its_session_info" tag="1383" format="OCTETSTRING" sizeMin="2" sizeMax="2" mandatory="false"/>
+        <tlv name="language_indicator" tag="020D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="message_payload" tag="0424" format="OCTETSTRING" sizeMin="0" sizeMax="tlv_length" mandatory="false"/>
+        <tlv name="message_state" tag="0427" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="more_messages_to_send" tag="0426" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="ms_msg_wait_facilities" tag="0030" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="ms_validity" tag="1204" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="network_error_code" tag="0423" format="OCTETSTRING" sizeMin="3" sizeMax="3" mandatory="false"/>
+        <tlv name="number_of_messages" tag="0304" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="payload_type" tag="0019" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="privacy_indicator" tag="0201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="qos_time_to_live" tag="0017" format="INT" sizeMax="4" mandatory="false"/>
+        <tlv name="receipted_message_id" tag="001E" format="C-OCTETSTRING" sizeMin="1" sizeMax="65" mandatory="false"/>
+        <tlv name="sar_msg_ref_num" tag="020C" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="sar_segment_seqnum" tag="020F" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sar_total_segments" tag="020E" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="set_dpf" tag="0421" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sms_signal" tag="1203" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_addr_subunit" tag="000D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="source_bearer_type" tag="000F" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="source_network_type" tag="000E" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="source_port" tag="020A" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_subaddress" tag="0202" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="source_telematics_id" tag="0010" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="user_message_reference" tag="0204" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="user_response_code" tag="0205" format="INT" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="data_sm_resp" id="80000103">
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <tlv name="additional_status_info_text" tag="001D" format="C-OCTETSTRING" sizeMin="1" sizeMax="256" mandatory="false"/>
+        <tlv name="delivery_failure_reason" tag="0425" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dpf_result" tag="0420" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="network_error_code" tag="0423" format="OCTETSTRING" sizeMin="3" sizeMax="3" mandatory="false"/>
+    </message>
+
+    <message name="submit_multi" id="00000021">
+        <attribute name="service_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="6"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="number_of_dests" format="INT" sizeMax="1"/>
+        <attribute name="dest_address" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="24" numberOfTime="number_of_dests">
+            <attribute name="dest_flag" format="INT" sizeMax="1" />
+            <choice>
+                <group value="1">
+                    <attribute name="dest_addr_ton" format="INT" sizeMax="1"/>
+                    <attribute name="dest_addr_npi" format="INT" sizeMax="1"/>
+                    <attribute name="destination_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+                </group>
+                <group value="2">
+                    <attribute name="dl_name" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+                </group>
+            </choice>
+        </attribute>
+        <attribute name="esm_class" format="INT" sizeMax="1"/>
+        <attribute name="protocol_id" format="INT" sizeMax="1"/>
+        <attribute name="priority_flag" format="INT" sizeMax="1"/>
+        <attribute name="schedule_delivery_time" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="validity_period" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="registered_delivery" format="INT" sizeMax="1"/>
+        <attribute name="replace_if_present_flag" format="INT" sizeMax="1"/>
+        <attribute name="data_coding" format="INT" sizeMax="1"/>
+        <attribute name="sm_default_msg_id" format="INT" sizeMax="1"/>
+        <attribute name="sm_length" format="INT" sizeMax="1"/>
+        <attribute name="short_message" format="OCTETSTRING" sizeMin="0" sizeMax="254"/>
+        <tlv name="alert_on_msg_delivery" tag="130C" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="callback_num" tag="0381" format="OCTETSTRING" sizeMin="4" sizeMax="19" mandatory="false"/>
+        <tlv name="callback_num_atag" tag="0303" format="OCTETSTRING" sizeMin="1" sizeMax="65" mandatory="false"/>
+        <tlv name="callback_num_pres_ind" tag="0302" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_addr_subunit" tag="0005" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="dest_subaddress" tag="0203" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="destination_port" tag="020B" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="display_time" tag="1201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="language_indicator" tag="020D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="message_payload" tag="0424" format="OCTETSTRING" sizeMin="0" sizeMax="tlv_length" mandatory="false"/>
+        <tlv name="ms_msg_wait_facilities" tag="0030" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="ms_validity" tag="1204" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="payload_type" tag="0019" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="privacy_indicator" tag="0201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sar_msg_ref_num" tag="020C" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="sar_segment_seqnum" tag="020F" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sar_total_segments" tag="020E" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sms_signal" tag="1203" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_addr_subunit" tag="000D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="source_port" tag="020A" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_subaddress" tag="0202" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="user_message_reference" tag="0204" format="INT" sizeMax="2" mandatory="false"/>
+    </message>
+
+    <message name="submit_multi_resp" id="80000021">
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="no_unsuccess" format="INT" sizeMax="1"/>
+        <attribute name="unsucess_sme" format="C-OCTETSTRING-VAR" sizeMin="7" sizeMax="27" numberOfTime="no_unsuccess">
+            <attribute name="dest_addr_ton" format="INT" sizeMax="1"/>
+            <attribute name="dest_addr_npi" format="INT" sizeMax="1"/>
+            <attribute name="destination_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+            <attribute name="error_status_code" format="INT" sizeMax="4"/>
+        </attribute>
+    </message>
+
+    <message name="deliver_sm" id="00000005">
+        <attribute name="service_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="6"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="dest_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="dest_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="destination_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="esm_class" format="INT" sizeMax="1"/>
+        <attribute name="protocol_id" format="INT" sizeMax="1"/>
+        <attribute name="priority_flag" format="INT" sizeMax="1"/>
+        <attribute name="schedule_delivery_time" format="C-OCTETSTRING" sizeMin="1" sizeMax="1"/>
+        <attribute name="validity_period" format="C-OCTETSTRING" sizeMin="1" sizeMax="1"/>
+        <attribute name="registered_delivery" format="INT" sizeMax="1"/>
+        <attribute name="replace_if_present_flag" format="INT" sizeMax="1"/>
+        <attribute name="data_coding" format="INT" sizeMax="1"/>
+        <attribute name="sm_default_msg_id" format="INT" sizeMax="1"/>
+        <attribute name="sm_length" format="INT" sizeMax="1"/>
+        <attribute name="short_message" format="OCTETSTRING" sizeMin="0" sizeMax="254"/>
+        <tlv name="callback_num" tag="0381" format="OCTETSTRING" sizeMin="4" sizeMax="19" mandatory="false"/>
+        <tlv name="dest_subaddress" tag="0203" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="destination_port" tag="020B" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="its_session_info" tag="1383" format="OCTETSTRING" sizeMin="2" sizeMax="2" mandatory="false"/>
+        <tlv name="language_indicator" tag="020D" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="message_payload" tag="0424" format="OCTETSTRING" sizeMin="0" sizeMax="tlv_length" mandatory="false"/>
+        <tlv name="message_state" tag="0427" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="network_error_code" tag="0423" format="OCTETSTRING" sizeMin="3" sizeMax="3" mandatory="false"/>
+        <tlv name="payload_type" tag="0019" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="privacy_indicator" tag="0201" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="receipt_message_id" tag="001E" format="C-OCTETSTRING" sizeMin="1" sizeMax="65" mandatory="false"/>
+        <tlv name="sar_msg_ref_num" tag="020C" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="sar_segment_seqnum" tag="020F" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="sar_total_segments" tag="020E" format="INT" sizeMax="1" mandatory="false"/>
+        <tlv name="source_port" tag="020A" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="source_subaddress" tag="0202" format="OCTETSTRING" sizeMin="2" sizeMax="23" mandatory="false"/>
+        <tlv name="user_message_reference" tag="0204" format="INT" sizeMax="2" mandatory="false"/>
+        <tlv name="user_response_code" tag="0205" format="INT" sizeMax="1" mandatory="false"/>
+    </message>
+
+    <message name="deliver_sm_resp" id="80000005">
+        <attribute name="message_id" format="C-OCTETSTRING" sizeMin="1" sizeMax="1"/>
+    </message>
+
+    <message name="cancel_sm" id="00000008">
+        <attribute name="service_type" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="6"/>
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="dest_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="dest_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="destination_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+    </message>
+
+    <message name="cancel_sm_resp" id="80000008"/>
+
+    <message name="query_sm" id="00000003">
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+    </message>
+
+    <message name="query_sm_resp" id="80000003">
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="final_date" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="message_state" format="INT" sizeMax="1"/>
+        <attribute name="error_code" format="INT" sizeMax="1"/>
+    </message>
+
+    <message name="replace_sm" id="00000007">
+        <attribute name="message_id" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="65"/>
+        <attribute name="source_addr_ton" format="INT" sizeMax="1"/>
+        <attribute name="source_addr_npi" format="INT" sizeMax="1"/>
+        <attribute name="source_addr" format="C-OCTETSTRING-VAR" sizeMin="1" sizeMax="21"/>
+        <attribute name="schedule_delivery_time" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="validity_period" format="C-OCTETSTRING" sizeMin="1" sizeMax="17"/>
+        <attribute name="registered_delivery" format="INT" sizeMax="1"/>
+        <attribute name="sm_default_msg_id" format="INT" sizeMax="1"/>
+        <attribute name="sm_length" format="INT" sizeMax="1"/>
+        <attribute name="short_message" format="OCTETSTRING" sizeMin="0" sizeMax="254"/>
+    </message>
+
+    <message name="replace_sm_resp" id="80000007"/>
+    
+</dictionary>

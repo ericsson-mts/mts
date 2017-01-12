@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- receive Notify request-->
+    <receiveMessageH248 name="Receive request" request="true" type="Notify">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+        <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.*.Context.value" />
+        <parameter name="[termID]" operation="protocol.setFromMessage" value="descr.*.Context.*.*.value" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- send Notify response -->
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Reply = [transaction] {
+ ImmAckRequired,
+ Context=[contextID]{
+  Priority = 1,                 
+  Notify=[ip/1/access/[termID(0)],ip/1/core/[termID(1)]]{
+   Error=422 {"Erreur de syntaxe dans l action"}
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Notify acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+    
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+</scenario>

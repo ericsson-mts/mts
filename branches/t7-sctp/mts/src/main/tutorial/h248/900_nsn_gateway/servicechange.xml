@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- call flow for Nokia-Siemens equipment -->
+<!-- provide from HNTrelatching capture file -->
+
+<scenario>
+    
+<!-- "AuditValue" message -->
+    <parameter name="[newTransID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request"  remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/1 [[localHostH248]]:[localPortH248] 
+ Transaction=1
+ {
+  Context=-
+  {
+   ServiceChange=ROOT{Services{Method=Restart, Reason="901 Cold Boot", Version=2, Profile=ETSI_BGF/1, 20080721T14013777}}
+  }
+ }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+   
+    <!--test parameter="[transID]" condition="string.equals" value="[newTransID]" /-->
+
+    <sendMessageH248 name="Send acknowledge"  remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/1 [[localHostH248]]:[localPortH248] K {1}
+]]>
+    </sendMessageH248>
+
+</scenario>

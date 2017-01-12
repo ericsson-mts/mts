@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- receive request-->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>
+
+    <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+    <test parameter="[text]" condition="string.startsWith" value="!/" />
+    <test parameter="[text]" condition="string.contains" value="T=" />
+    <test parameter="[text]" condition="string.endsWith" value="}" />
+
+    <!-- test descr:T:C:A:M:ST:L:parameters -->        
+    <parameter name="[local]" operation="protocol.setFromMessage" value="descr.T.C.A.M.ST.L.parameters" />
+    <test parameter="[local]" condition="list.size" value="2" />
+
+    <!-- test Version:xxx -->
+    <parameter name="[SDPVersion0]" operation="protocol.setFromSdp" value="[local]" value2="Version"/>
+    <test parameter="[SDPVersion0]" condition="string.equals" value="0"/>
+
+    <!-- test Origin:xxx -->
+    <parameter name="[SDPOrigin0]" operation="protocol.setFromSdp" value="[local]" value2="Origin"/>
+    <test parameter="[SDPOrigin0]" condition="string.contains" value="mhandley 2890844526 2890842807 IN IP4 [localHostH248]"/>
+    <parameter name="[SDPOriginAddress]" operation="protocol.setFromSdp" value="[local]" value2="Origin:Address"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="[localHostH248]"/>
+    <parameter name="[SDPOriginAddressType]" operation="protocol.setFromSdp" value="[local]" value2="Origin:AddressType"/>
+    <test parameter="[SDPOriginAddressType]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPOriginSessionVersion0]" operation="protocol.setFromSdp" value="[local]" value2="Origin:SessionVersion"/>
+    <test parameter="[SDPOriginSessionVersion0]" condition="string.equals" value="2890842807"/>
+    <parameter name="[SDPOriginSessionId0]" operation="protocol.setFromSdp" value="[local]" value2="Origin:SessionId"/>
+    <test parameter="[SDPOriginSessionId0]" condition="string.equals" value="2890844526"/>
+    <parameter name="[SDPOriginNetworkType]" operation="protocol.setFromSdp" value="[local]" value2="Origin:NetworkType"/>
+    <test parameter="[SDPOriginNetworkType]" condition="string.equals" value="IN"/>
+    <parameter name="[SDPOriginAddress]" operation="protocol.setFromSdp" value="[local]" value2="Origin:Address"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="[localHostH248]"/>
+    <parameter name="[SDPOriginUserName0]" operation="protocol.setFromSdp" value="[local]" value2="Origin:UserName"/>
+    <test parameter="[SDPOriginUserName0]" condition="string.equals" value="mhandley"/>
+
+    <!-- test Email:xxx -->
+    <parameter name="[SDPEmail0]" operation="protocol.setFromSdp" value="[local]" value2="Email"/>
+    <test parameter="[SDPEmail0]" condition="string.contains" value="mjh@isi.edu"/>
+
+    <!-- test Connection:xxx -->
+    <parameter name="[SDPConnection0]" operation="protocol.setFromSdp" value="[local]" value2="Connection"/>
+    <test parameter="[SDPConnection0]" condition="string.contains" value="IN IP4 [localHostH248]/127"/>
+    <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromSdp" value="[local]" value2="Connection:Address"/>
+    <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="[localHostH248]"/>
+    <parameter name="[SDPConnectionAddressType0]" operation="protocol.setFromSdp" value="[local]" value2="Connection:AddressType"/>
+    <test parameter="[SDPConnectionAddressType0]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPConnectionNetworkType0]" operation="protocol.setFromSdp" value="[local]" value2="Connection:NetworkType"/>
+    <test parameter="[SDPConnectionNetworkType0]" condition="string.equals" value="IN"/>
+
+    <!-- test Information:xxx -->
+    <parameter name="[SDPInformation0]" operation="protocol.setFromSdp" value="[local]" value2="Information"/>
+    <test parameter="[SDPInformation0]" condition="string.contains" value="A Seminar on the session description protocol"/>
+
+    <!-- test Uri:xxx -->
+    <parameter name="[SDPUri0]" operation="protocol.setFromSdp" value="[local]" value2="Uri"/>
+    <test parameter="[SDPUri0]" condition="string.contains" value="http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps"/>
+
+    <!-- test Media:xxx -->
+    <parameter name="[SDPMedia0]" operation="protocol.setFromSdp" value="[local]" value2="Media"/>
+    <test parameter="[SDPMedia0(0)]" condition="string.contains" value="49232/2 RTP/AVP 98"/>
+    <test parameter="[SDPMedia0(1)]" condition="string.contains" value="49230/3 RTP/AVP 96"/>
+    <test parameter="[SDPMedia0(2)]" condition="string.contains" value="49232/2 RTP/AVP 98"/>
+    <test parameter="[SDPMedia0(3)]" condition="string.contains" value="49230/3 RTP/AVP 96"/>
+    <parameter name="[SDPMediaInformation0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Information"/>
+    <test parameter="[SDPMediaInformation0(0)]" condition="string.equals" value="mavideo"/>
+    <test parameter="[SDPMediaInformation0(1)]" condition="string.equals" value="monaudio"/>
+    <test parameter="[SDPMediaInformation0(2)]" condition="string.equals" value="mavideo"/>
+    <test parameter="[SDPMediaInformation0(3)]" condition="string.equals" value="monaudio"/>
+    <parameter name="[SDPMediaAttribute0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Attribut"/>
+    <test parameter="[SDPMediaAttribute0(0)]" condition="string.contains" value="a=rtpmap:98 amr/8000/1"/>
+    <test parameter="[SDPMediaAttribute0(1)]" condition="string.contains" value="a=fmtp:98 mode-set=1,octet-align=1,crc=0"/>
+    <test parameter="[SDPMediaAttribute0(2)]" condition="string.contains" value="a=rtpmap:96 L8/8000"/>
+    <test parameter="[SDPMediaAttribute0(3)]" condition="string.contains" value="a=rtpmap:98 amr/8000/1"/>
+    <test parameter="[SDPMediaAttribute0(4)]" condition="string.contains" value="a=fmtp:98 mode-set=1,octet-align=1,crc=0"/>
+    <test parameter="[SDPMediaAttribute0(5)]" condition="string.contains" value="a=rtpmap:96 L8/8000"/>
+    <parameter name="[SDPMediaAttributeRTPMAPValue0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Attribut:rtpmap"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(0)]" condition="string.equals" value="98 amr/8000/1"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(1)]" condition="string.equals" value="96 L8/8000"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(2)]" condition="string.equals" value="98 amr/8000/1"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(3)]" condition="string.equals" value="96 L8/8000"/>
+    <parameter name="[SDPMediaAttributeFMTPValue0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Attribut:fmtp"/>
+    <test parameter="[SDPMediaAttributeFMTPValue0(0)]" condition="string.contains" value="98 mode-set=1,octet-align=1,crc=0"/>
+    <parameter name="[SDPMediaPort0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Port"/>
+    <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
+    <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+    <test parameter="[SDPMediaPort0(2)]" condition="string.equals" value="49232"/>
+    <test parameter="[SDPMediaPort0(3)]" condition="string.equals" value="49230"/>
+    <parameter name="[SDPMediaProtocol0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Protocol"/>
+    <test parameter="[SDPMediaProtocol0(0)]" condition="string.equals" value="RTP/AVP"/>
+    <test parameter="[SDPMediaProtocol0(1)]" condition="string.equals" value="RTP/AVP"/>
+    <parameter name="[SDPMediaFormat0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Format"/>
+    <test parameter="[SDPMediaFormat0(0)]" condition="string.equals" value="98"/>
+    <test parameter="[SDPMediaFormat0(1)]" condition="string.equals" value="96"/>
+    <test parameter="[SDPMediaFormat0(2)]" condition="string.equals" value="98"/>
+    <test parameter="[SDPMediaFormat0(3)]" condition="string.equals" value="96"/>
+    <parameter name="[SDPMediaPortCount0]" operation="protocol.setFromSdp" value="[local]" value2="Media:PortCount"/>
+    <test parameter="[SDPMediaPortCount0(0)]" condition="string.equals" value="2"/>
+    <test parameter="[SDPMediaPortCount0(1)]" condition="string.equals" value="3"/>
+    <test parameter="[SDPMediaPortCount0(2)]" condition="string.equals" value="2"/>
+    <test parameter="[SDPMediaPortCount0(3)]" condition="string.equals" value="3"/>
+    <parameter name="[SDPMediaType0]" operation="protocol.setFromSdp" value="[local]" value2="Media:Type"/>
+    <test parameter="[SDPMediaType0(0)]" condition="string.equals" value="video"/>
+    <test parameter="[SDPMediaType0(1)]" condition="string.equals" value="audio"/>
+    <test parameter="[SDPMediaType0(2)]" condition="string.equals" value="video"/>
+    <test parameter="[SDPMediaType0(3)]" condition="string.equals" value="audio"/>
+    <parameter name="[SDPMediaBandWidth]" operation="protocol.setFromSdp" value="[local]" value2="Media:BandWidth"/>
+    <test parameter="[SDPMediaBandWidth(0)]" condition="string.contains" value="b=SA:256"/>
+    <test parameter="[SDPMediaBandWidth(1)]" condition="string.contains" value="b=CT:128"/>
+    <test parameter="[SDPMediaBandWidth(2)]" condition="string.contains" value="b=SA:256"/>
+    <test parameter="[SDPMediaBandWidth(3)]" condition="string.contains" value="b=CT:128"/>
+    <parameter name="[SDPMediaBandWidthType]" operation="protocol.setFromSdp" value="[local]" value2="Media:BandWidth:Type"/>
+    <test parameter="[SDPMediaBandWidthType(0)]" condition="string.equals" value="SA"/>
+    <test parameter="[SDPMediaBandWidthType(1)]" condition="string.equals" value="CT"/>
+    <test parameter="[SDPMediaBandWidthType(2)]" condition="string.equals" value="SA"/>
+    <test parameter="[SDPMediaBandWidthType(3)]" condition="string.equals" value="CT"/>
+    <parameter name="[SDPMediaBandWidthValue]" operation="protocol.setFromSdp" value="[local]" value2="Media:BandWidth:Value"/>
+    <test parameter="[SDPMediaBandWidthValue(0)]" condition="string.equals" value="256"/>
+    <test parameter="[SDPMediaBandWidthValue(1)]" condition="string.equals" value="128"/>
+    <test parameter="[SDPMediaBandWidthValue(2)]" condition="string.equals" value="256"/>
+    <test parameter="[SDPMediaBandWidthValue(3)]" condition="string.equals" value="128"/>
+    <parameter name="[SDPMediaMimeParameters0]" operation="protocol.setFromSdp" value="[local]" value2="Media:MimeParameters"/>
+    <!-- BUG : return always empty ? -->
+    <test parameter="[SDPMediaMimeParameters0]" condition="list.isEmpty"/>
+    <parameter name="[SDPMediaMimeTypes0]" operation="protocol.setFromSdp" value="[local]" value2="Media:MimeTypes"/>
+    <!-- BUG : return always empty ? -->
+    <test parameter="[SDPMediaMimeTypes0]" condition="list.isEmpty"/>
+
+    <!-- test SessionName:xxx -->
+    <parameter name="[SDPSessionName]" operation="protocol.setFromSdp" value="[local]" value2="SessionName"/>
+    <test parameter="[SDPSessionName]" condition="string.contains" value="SDP Seminar"/>
+
+    <!-- test Time:xxx -->
+    <parameter name="[SDPTime]" operation="protocol.setFromSdp" value="[local]" value2="Time"/>
+    <test parameter="[SDPTime]" condition="string.contains" value="t=3034423619 3042462419"/>
+    <parameter name="[SDPTimeStart]" operation="protocol.setFromSdp" value="[local]" value2="Time:Start"/>
+    <!--test parameter="[SDPTimeStart]" condition="string.equals" value="2873397496"/-->
+    <parameter name="[SDPTimeStop]" operation="protocol.setFromSdp" value="[local]" value2="Time:Stop"/>
+    <!--test parameter="[SDPTimeStop]" condition="string.equals" value="2873404696"/-->
+
+    <!-- test BandWidth:xxx -->
+    <parameter name="[SDPBandWidth]" operation="protocol.setFromSdp" value="[local]" value2="BandWidth"/>
+    <test parameter="[SDPBandWidth]" condition="string.contains" value="b=CT:128"/>
+    <parameter name="[SDPBandWidthType]" operation="protocol.setFromSdp" value="[local]" value2="BandWidth:Type"/>
+    <test parameter="[SDPBandWidthType]" condition="string.equals" value="CT"/>
+    <parameter name="[SDPBandWidthValue]" operation="protocol.setFromSdp" value="[local]" value2="BandWidth:Value"/>
+    <test parameter="[SDPBandWidthValue]" condition="string.equals" value="128"/>
+
+    <!-- test Attribut:xxx -->
+    <parameter name="[SDPAttribute0]" operation="protocol.setFromSdp" value="[local]" value2="Attribut"/>
+    <test parameter="[SDPAttribute0(0)]" condition="string.contains" value="a=type:H332"/>
+    <test parameter="[SDPAttribute0(1)]" condition="string.contains" value="a=recvonly:20"/>
+    <parameter name="[SDPAttributeRecvonly0]" operation="protocol.setFromSdp" value="[local]" value2="Attribut:recvonly"/>
+    <test parameter="[SDPAttributeRecvonly0]" condition="string.equals" value="20"/>
+
+    <!-- test ZoneAdjustment:xxx -->
+    <!-- BUG : perform an exception if z= line is present -->
+    <parameter name="[SDPZoneAdjustment]" operation="protocol.setFromSdp" value="[local]" value2="ZoneAdjustment"/>
+
+    <!-- test content(N):Sdp:RepeatTime:xxx -->
+    <!-- BUG : perform a loop if r= line is present -->
+    <parameter name="[SDPRepeatTime]" operation="protocol.setFromSdp" value="[local]" value2="RepeatTime"/>
+    <parameter name="[SDPRepeatTimeDuration]" operation="protocol.setFromSdp" value="[local]" value2="RepeatTime:Duration"/>
+    <parameter name="[SDPRepeatTimeInterval]" operation="protocol.setFromSdp" value="[local]" value2="RepeatTime:Duration:Interval"/>
+    <parameter name="[SDPRepeatTimeOffset]" operation="protocol.setFromSdp" value="[local]" value2="RepeatTime:Duration:Offset"/>
+
+    <!-- test descr:T:C:A:M:ST:R:parameters -->        
+    <parameter name="[remote]" operation="protocol.setFromMessage" value="descr.T.C.A.M.ST.R.parameters" />
+    <test parameter="[remote]" condition="list.size" value="1" />
+
+    <!-- send response -->
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[remoteHostH248]]:[remotePortH248] Reply=[transID]{Context=817{Add=ip/1/access1/14296{Media{Local{v=0
+c=IN IP4 172.20.168.100
+b=AS:6
+m=audio 22322 RTP/AVP -
+},Remote{v=0
+c=IN IP4 172.20.196.232
+m=audio 10057 RTP/AVP -
+}}},Add=ip/1/core/14297{Media{Local{v=0
+c=IN IP4 172.20.168.84
+b=AS:6
+m=audio 29378 RTP/AVP -
+}}}}}
+]]>
+    </sendMessageH248>
+
+    <!-- receive acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+    
+</scenario>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    <parameter name="[tunnelEndpointId]" operation="set" value="875561310"/>
+    <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
+
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Modify Bearer Command:64" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+			<element tag="AMBR:72" coding="TLIV" description="Aggregate Maximum Bit Rate">
+				<field name="APN-AMBR for uplink" lengthBit="32" type="integer" value="10000"/>
+				<field name="APN-AMBR for downlink" lengthBit="32" type="integer" value="20000"/>
+			</element>
+		
+			<element tag="Bearer Context:93" >
+				<element tag="EBI:73" description="EPS Bearer ID">
+					<field name="spare" value="0"/>
+					<field name="EBI" value="0"/>
+				</element>
+				
+				<element tag="Bearer QoS:80" description="Bearer Quality of Service">
+					<field name="spare1" value="0"/>
+					<field name="PCI" value="true:1" description="Pre-emption Capability"/>
+					<field name="PL" value="2" description="Priority Level"/>
+					<field name="spare2" value="false:0"/>
+					<field name="PVI" value="true:1" description="Pre-emption Vulnerability"/>
+					<field name="Label QCI" value="1"/> 
+					<field name="Maximum bit rate for uplink" value="43"/>
+					<field name="Maximum bit rate for downlink" value="43"/>
+					<field name="Guaranteed bit rate for uplink" value="43"/>
+					<field name="Guaranteed bit rate for downlink" value="43"/>
+				</element>
+			</element>
+			
+			<element tag="Private Extension:255" coding="TLIV">
+				<field name="Enterprise ID" lengthBit="16" type="integer" value="1234"/>
+				<field name="Proprietary value" type="string" value="entreprise Dupont"/>
+			</element>
+	</sendMessageGTP>
+	
+</scenario>

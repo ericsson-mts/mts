@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+<createListenpointSMTP name="listenpoint" localHost="[remoteHostSMTP]" localPort="[remotePortSMTP]"/>
+<parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+<!--*************************************EHLO******************************************************-->
+<receiveMessageSMTP name="Receive EHLO" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Receive EHLO" transactionId="[tranid]"><![CDATA[250-hotmail.com
+250-8BITMIME
+250-SIZE
+250 DSN
+]]></sendMessageSMTP>
+	
+	
+<!--*************************************MAIL******************************************************-->
+<receiveMessageSMTP name="Receive Request MAIL request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Receive Send MAIL request" transactionId="[tranid]"><![CDATA[250 OK]]>
+</sendMessageSMTP>
+
+<!--*************************************RCPT******************************************************-->
+<receiveMessageSMTP name="Receive Request RCPT request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]"><![CDATA[250 OK]]>
+</sendMessageSMTP>
+
+
+<!--*************************************RCPT******************************************************-->
+<receiveMessageSMTP name="Receive Request RCPT request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]"><![CDATA[550 No such user here]]>
+</sendMessageSMTP>
+
+<!--*************************************DATA******************************************************-->
+<receiveMessageSMTP name="Receive Request DATA request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response DATA request" transactionId="[tranid]"><![CDATA[354 Start mail input; end with <CRLF>.<CRLF>]]>
+</sendMessageSMTP>
+
+<!--*************************************CNTT******************************************************-->
+<receiveMessageSMTP name="Receive Request CNTT request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response CNTT request" transactionId="[tranid]"><![CDATA[250 OK]]>
+</sendMessageSMTP>
+
+<!--*************************************QUIT******************************************************-->
+<receiveMessageSMTP name="Quit" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Quit" transactionId="[tranid]"><![CDATA[221 hotmail.com Service closing transmission channel]]>
+</sendMessageSMTP>
+
+<removeListenpointSMTP name="listenpoint"/>
+
+</scenario>

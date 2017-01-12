@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+	<!--name="Send Request to server"-->
+<openChannelSMTP name="session1" localHost="[localHostSMTP]" remoteHost="[remoteHostSMTP]" remotePort="2220"/>
+	<!--openChannelSMTP name="session1" localHost="localhost" localPort="12345" remoteHost="localhost" remotePort="2222" /-->
+<sendMessageSMTP name="Send EHLO" channel="session1" ><![CDATA[EHLO gmail.com]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send MAIL FROM" channel="session1" ><![CDATA[MAIL FROM:<Smith@gmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Request RCPT TO" channel="session1" ><![CDATA[RCPT TO:<Jones@hotmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Request RCPT TO" channel="session1" ><![CDATA[RCPT TO:<Green@hotmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Request DATA" channel="session1" ><![CDATA[DATA]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Request CNTT" channel="session1" ><![CDATA[1
+.
+]]></sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Request QUIT" channel="session1" ><![CDATA[QUIT]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session1" >	
+</receiveMessageSMTP>
+<closeChannelSMTP name="session1"/>
+</scenario>

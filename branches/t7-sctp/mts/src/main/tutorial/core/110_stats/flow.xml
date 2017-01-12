@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[aValue]" operation="set" value="10" />
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    <stats>
+        <flow name="flow1" summary="f1" complete="flowDescr1.complete">
+            <increase>[aValue]</increase>
+            <increase>[aValue]</increase>
+            <increase>[aValue]</increase>            
+            <increase milliseconds="[timestamp]">[aValue]</increase>
+            <increase milliseconds="[timestamp]">[aValue]</increase>
+            <increase milliseconds="[timestamp]">[aValue]</increase>
+        </flow>
+        <flow name="flow2" summary="sum2" complete="flowDescr2.complete">
+        </flow>        
+    </stats>
+    
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <flow name="flow1" summary="sum2" complete="flowDescr1">
+            <decrease>10</decrease>
+            <decrease milliseconds="[timestamp]">10</decrease>
+        </flow>
+        <flow name="flow2">
+            <increase>20</increase>
+            <increase milliseconds="[timestamp]">20</increase>
+        </flow>                        
+    </stats>
+
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <counter name="flow1">
+            <decrease>10</decrease>
+            <decrease milliseconds="[timestamp]">10</decrease>
+        </counter>                
+        <counter name="flow2">
+            <decrease>10</decrease>
+            <decrease milliseconds="[timestamp]">10</decrease>
+        </counter>                        
+    </stats>
+
+</scenario>

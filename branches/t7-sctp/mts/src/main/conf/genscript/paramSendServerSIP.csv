@@ -1,0 +1,15 @@
+[recVia];set;PATHKEY#header.Via
+[recCSeq];set;PATHKEY#header.CSeq
+[recCallID];set;PATHKEY#header.Call-ID
+[recFrom];set;PATHKEY#header.From
+[recToAddress];set;PATHKEY#header.To.Address
+[ToTag];string.random,10;REGEX#To: .+#tag=[\w]+#=[\w]+#[\w]+
+[testcase:FromURI];set;PATHKEY#header.From.Address.URI
+[testcase:FromUser];set;PATHKEY#header.From.Address.URI.User
+[testcase:ToURI];set;PATHKEY#header.To.Address.URI
+[testcase:ToUser];set;PATHKEY#header.To.Address.URI.User
+x;set;REGEX#Content-Length: [\d]+#[\d]+
+[test:SIPLocalHost];system.ipaddress,eth3;PATHKEY#channel.localHost
+[test:SIPRemoteHost];system.ipaddress,eth3;PATHKEY#channel.remoteHost
+[test:SIPLocalPort];set;PATHKEY#channel.localPort
+[test:SIPRemotePort];set;PATHKEY#channel.remotePort

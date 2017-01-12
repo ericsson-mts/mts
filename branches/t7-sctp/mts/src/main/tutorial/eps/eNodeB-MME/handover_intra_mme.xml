@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="[test:sequenceNumber]" operation="number.add" value="[sequenceNumber]" value2="1" />
+	<!--<parameter name="[teidsgw]" operation="set" value="1234567890" />-->
+		
+	<openSocketUDP socketName="socket" localPort="40000" remoteHost="[UE]" remotePort="40000" />
+	<receiveDataUDP socketName="socket" >
+        <parameter name="[ret]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveDataUDP>
+	<test parameter="[ret]" condition="string.equals" value="RRC: Measurement Report" />
+	<closeSocketUDP socketName="socket" />
+	
+	
+	<openSocketUDP socketName="socket" localPort="42000" remoteHost="[targeteNodeB]" remotePort="42000" />
+	<sendDataUDP socketName="socket">
+        <data format="binary">d[teidsgw]</data>
+    </sendDataUDP>
+	<receiveDataUDP socketName="socket" >
+        <parameter name="[ret]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveDataUDP>
+	<test parameter="[ret]" condition="string.equals" value="ACK" />
+	<closeSocketUDP socketName="socket" />
+	
+	<parameter name="[targeteNodeB_Binary]" operation="binary.fromIp" value="[targeteNodeB]" />
+	
+	<openSocketUDP socketName="socket" localPort="41001" remoteHost="[UE]" remotePort="41000" />
+	<sendDataUDP socketName="socket">
+        <data format="binary">h[targeteNodeB_Binary]</data>
+    </sendDataUDP>
+	<closeSocketUDP socketName="socket" />
+	
+	<sendMessageGTP name="send message"
+                    remoteHost="[sgwS11IP]" remotePort="[gtpcPort]" transport="[gtpcTransportProto]">
+        <headerV2 type="Modify Bearer Request:34" tunnelEndpointId="[F-TEID.TEID / GRE Key(0)]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="Bearer Context:93" description="Bearer context" >
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="5"/>
+            </element>
+            <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="true:1"/>
+                <field name="V6" value="false:0"/>
+                <field name="Interface Type" value="S1 eNodeB GTP-U:0"/>
+                <field name="TEID / GRE Key" value="145021136" description="GRE?"/>
+                <field name="IPv4 address" value="[targeteNodeB]"/>
+            </element>
+        </element>
+    </sendMessageGTP>
+	<parameter name="[test:stopeNodeB1]" operation="set" value="true" />
+</scenario>

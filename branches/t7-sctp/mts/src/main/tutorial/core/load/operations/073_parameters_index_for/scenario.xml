@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[index]" operation="set" value="0" />
+
+    <label name="loop" />
+	
+    <parameter name="[result]" operation="set" value="[array([index])]" />
+
+    <parameter name="[index]" operation="number.add" value="[index]" value2="1" />
+
+    <if>
+        <condition>
+            <test condition="string.equals" parameter="[index]" value="10" />
+        </condition>
+        <else>
+            <goto label="loop" />
+        </else>
+    </if>
+</scenario>

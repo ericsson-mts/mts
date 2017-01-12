@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<test name="echo client GTPv2-C">
+    	<parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+
+    	<parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    	<parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" description="local address of the MTS host" editable="true" />
+	<!--parameter name="[localHostSIP]" operation="set" value="[2001:db8::fef5:a35e]"/--> <!-- MTS IPv6 -->
+	<!--parameter name="[remoteHostSIP]" operation="set" value="10.32.0.5"/--> <!-- PCSCF COMM4INNOV IPv4 -->
+ 	<parameter name="[remoteHostSIP]" operation="set" value="192.168.90.218"/> <!-- PCSCF OPENIMS IPv4 -->
+	<!--parameter name="[remoteHostSIP]" operation="set" value="[2001:db8::fea4:db0c]"/--> <!-- PCSCF IPv6 -->
+	<parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP]" description="remote address of the SUT host" editable="true" />
+	<parameter name="[remotePortSIP]" operation="set" value="5060"/> <!-- PCSCF PORT -->
+  <parameter name="[remotePortSIP]" operation="set" value="[remotePortSIP]" description="remote port of the SUT host" editable="true" />
+	<parameter name="[transportSIP]" operation="set" value="udp"/> 
+
+  <parameter name="[callDuration]" operation="set" value="10" description="Call duration in seconds" editable="true"/>
+
+	<parameter description="User 1 port" editable="true" name="[Port-User1]" operation="set" value="7074"/>
+	<parameter description="User 2 port" editable="true" name="[Port-User2]" operation="set" value="7072"/>
+	<parameter description="User 1 port RTP Audio" editable="true" name="[Port-RTP-User1]" operation="set" value="10000"/>
+	<parameter description="User 2 port RTP Audio" editable="true" name="[Port-RTP-User2]" operation="set" value="11000"/>
+	<parameter description="User 1 port RTP Video" editable="true" name="[Port-RTP-Video-User1]" operation="set" value="12000"/>
+	<parameter description="User 2 port RTP Video" editable="true" name="[Port-RTP-Video-User2]" operation="set" value="14000"/>
+	<parameter description="User 1 name" editable="true" name="[User1]" operation="set" value="abonne 0001"/>
+	<parameter description="User 2 name" editable="true" name="[User2]" operation="set" value="abonne 0002"/>
+	<parameter description="User 1 MSIN" editable="true" name="[MSIN-User1]" operation="set" value="7777777777"/>
+	<parameter description="User 2 MSIN" editable="true" name="[MSIN-User2]" operation="set" value="8888888888"/>
+	<parameter description="User 1 MSISDN" editable="true" name="[MSISDN-User1]" operation="set" value="+33638060000"/>
+	<parameter description="User 2 MSISDN" editable="true" name="[MSISDN-User2]" operation="set" value="+33638060001"/>
+    <parameter description="ID Authentication SIP 1" editable="true" name="[IDAuth-User1]" operation="set" value="33638060000"/>
+    <parameter description="ID Authentication SIP 2" editable="true" name="[IDAuth-User2]" operation="set" value="+33638060001"/>
+	<parameter description="User 1 IMEI" editable="true" name="[IMEI-User1]" operation="set" value="33638060000"/>
+    <parameter description="User 2 IMEI" editable="true" name="[IMEI-User2]" operation="set" value="+33638060001"/>
+    <parameter description="User 1 Password" editable="true" name="[Password-User1]" operation="set" value="com4innov"/>    
+	<parameter description="User 2 Password" editable="true" name="[Password-User2]" operation="set" value="com4innov"/>
+ 	<parameter description="Mobile Country Code" editable="true" name="[MCC]" operation="set" value="208"/>
+ 	<parameter description="Mobile Network Code" editable="true" name="[MNC]" operation="set" value="20"/>
+ 	<parameter description="Mobile Network Code 3 digits" editable="true" name="[MNC3]" operation="set" value="020"/>
+	<!-- <parameter description="domaine name" name="[USIM_DOMAIN_ADDR]" operation="set" value="ims.mnc[MNC3].mcc[MCC].3gppnetwork.org"/> -->
+	<parameter description="domaine name" name="[USIM_DOMAIN_ADDR]" operation="set" value="com4innov.com"/>
+	<parameter description="domaine name" name="[100_DOMAIN_ADDR]" operation="set" value="com4innov.com"/>
+	<parameter description="User 1 public identity" name="[IMPU-User1]" operation="set" value="+33638060000"/>
+	<parameter description="User 2 public identity" name="[IMPU-User2]" operation="set" value="+33638060001"/>
+	<parameter description="User 1 nextnonce" name="[Nextnonce-User1]" operation="set" value="NONE"/>
+	<parameter description="User 2 nextnonce" name="[Nextnonce-User2]" operation="set" value="NONE"/>
+
+       
+    <parameter description="S-CSCF IP" editable="true" name="[SCSCF]" operation="set" value="192.168.90.220"/> 
+	<parameter description="User Agent" editable="true" name="[UserAgent]" operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/> 
+
+  	<parameter name="filePdml" operation="file.readmedia" value="amr_wb.pdml"/>
+	<parameter editable="true" name="[sendRTP]" operation="set" value="true"/>
+
+	<parameter name="[test:payloadList]" operation="set" value="[[filePdml(0)]]"/> 
+   	<parameter name="[timestampList]" operation="set" value="[[filePdml(1)]]"/> 
+   	<parameter name="[seqList]" operation="set" value="[[filePdml(2)]]"/> 
+   	<parameter name="[payloadType]" operation="set" value="[[filePdml(3)]]"/> 
+   	<parameter name="[deltaTime]" operation="set" value="[[filePdml(4)]]"/> 
+   	<parameter name="[markList]" operation="set" value="[[filePdml(5)]]"/> 
+    <parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/> 
+    <parameter name="[ssrc]" operation="number.random" value="10000000"/>
+
+	<parameter name="[OsProperty]" operation="system.readproperty" value="os.name"/>
+
+        <!--testcase name="SIP REGISTER Alice from USIM" state="true">
+        	<scenario file="eps_ims_register_alice_from_usim.xml" name="alice" routingName="alice"/>
+        </testcase>
+        <testcase name="SIP REGISTER Bob from USIM" state="true">
+        	<scenario file="eps_ims_register_bob_from_usim.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP RE-REGISTER Alice from USIM" state="true">
+        	<scenario file="eps_ims_re-register_alice_from_usim.xml" name="alice" routingName="alice"/>
+        </testcase>
+        <testcase name="SIP RE-REGISTER Bob from USIM" state="true">
+        	<scenario file="eps_ims_re-register_bob_from_usim.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP DE-REGISTER Alice from USIM" state="true">
+        	<scenario file="eps_ims_de-register_alice_from_usim.xml" name="alice" routingName="alice"/>
+        </testcase>
+        <testcase name="SIP DE-REGISTER Bob from USIM" state="true">
+        	<scenario file="eps_ims_de-register_bob_from_usim.xml" name="bob" routingName="bob"/>
+        </testcase-->
+        <!--testcase name="SIP REGISTER Alice from ISIM" state="false">
+        	<scenario file="eps_ims_register_alice_from_isim.xml" name="alice" routingName="alice"/>
+        </testcase-->
+        <testcase name="SIP REGISTER Bob from ISIM" state="false">
+        	<scenario file="eps_ims_register_bob_from_isim.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <!--testcase name="SIP RE-REGISTER Alice from ISIM" state="false">
+        	<scenario file="eps_ims_re-register_alice_from_isim.xml" name="alice" routingName="alice"/>
+        </testcase-->
+        <testcase name="SIP RE-REGISTER Bob from ISIM" state="false">
+        	<scenario file="eps_ims_re-register_bob_from_isim.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <!--testcase name="SIP DE-REGISTER Alice from ISIM" state="false">
+        	<scenario file="eps_ims_de-register_alice_from_isim.xml" name="alice" routingName="alice"/>
+        </testcase-->
+        <testcase name="SIP DE-REGISTER Bob from ISIM" state="false">
+        	<scenario file="eps_ims_de-register_bob_from_isim.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <!--testcase name="SIP SUBSCRIBE REGINFO Alice" state="false">
+        	<scenario file="eps_ims_subscribe_reginfo_alice.xml" name="alice" routingName="alice"/>
+        </testcase>
+        <testcase name="SIP SUBSCRIBE REGINFO Bob" state="false">
+        	<scenario file="eps_ims_subscribe_reginfo_bob.xml" name="bob" routingName="bob"/>
+        </testcase-->
+        <!--testcase name="SIP INVITE BASIC FROM ALICE - VOICE_MO" state="false">
+           <scenario file="eps_ims_invite_basic_alice_voice.xml" name="alice" routingName="alice"/> 
+        </testcase-->
+
+        <for from="001" index="[index]" step="1" to="10">
+            <testcase name="SIP INVITE BASIC BOB - VOICE_MT [index]" state="false"> 
+                <scenario file="eps_ims_invite_basic_bob_voice.xml" name="bob" routingName="SIP,RTPFLOW"/>
+            </testcase>
+        </for>
+
+        <testcase name="SIP INVITE BASIC BOB - LOOPBACK_MT" state="true"> 
+           <scenario file="eps_ims_invite_basic_bob_loopback.xml" name="bob" routingName="SIP,RTP"/>
+        </testcase>
+        <!--testcase name="SIP INVITE BASIC BOB - VIDEO_MT" state="false"> 
+           <scenario file="eps_ims_invite_basic_bob_video.xml" name="bob" routingName="SIP,RTPFLOW"/>
+        </testcase-->
+        <!--testcase name="SIP INVITE BASIC BOB FROM ALICE - VOICE" state="true">
+           <scenario file="eps_ims_invite_basic_alice_voice.xml" name="alice" routingName="alice"/> 
+           <scenario file="eps_ims_invite_basic_bob_voice.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE BASIC BOB FROM ALICE - VIDEO" state="true">
+            <scenario file="eps_ims_invite_basic_alice_video.xml" name="alice" routingName="alice"/> 
+            <scenario file="eps_ims_invite_basic_bob_video.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK FROM ALICE - VOICE_MO" state="true"> 
+           <scenario file="eps_ims_invite_prack_bob_voice.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB - VOICE_MT" state="true"> 
+           <scenario file="eps_ims_invite_prack_bob_voice.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VOICE" state="true">
+           <scenario file="eps_ims_invite_prack_alice_voice.xml" name="alice" routingName="alice"/> 
+           <scenario file="eps_ims_invite_prack_bob_voice.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VIDEO" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_video.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob_video.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VIDEO2VOICEonly" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_video2audio_only.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob_video2audio_only.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VOICE OIR temporary" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_oir_temp.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob_voice_oir_temp.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VOICE OIR ad hoc" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_oir_adhoc.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob_voice_oir_adhoc.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VOICE CFU" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_cfu.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob_voice_cfu.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VOICE CFNRc" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_cfnrc.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_invite_prack_bob_voice_cfnrc.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - VOICE consult VMS" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_consult_vms.xml" name="alice" routingName="alice"/> 
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - BAIC" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_baic.xml" name="alice" routingName="alice"/> 
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE - BAOC" state="true">
+	       	<scenario file="eps_ims_invite_prack_alice_voice_baoc.xml" name="alice" routingName="alice"/> 
+        </testcase>
+        <testcase name="SIP re-INVITE PRACK BOB FROM ALICE - VOICE2VIDEO" state="true">
+	       	<scenario file="eps_ims_re-invite_prack_alice_audio2video.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_re-invite_prack_bob_audio2video.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP re-INVITE PRACK BOB FROM ALICE - VOICE2VIDEO reject" state="true">
+	       	<scenario file="eps_ims_re-invite_prack_alice_audio2video_reject.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_re-invite_prack_bob_audio2video_reject.xml" name="bob" routingName="bob"/>
+        </testcase>
+        <testcase name="SIP re-INVITE PRACK BOB FROM ALICE - VIDEO hold and resume" state="true">
+	       	<scenario file="eps_ims_re-invite_prack_alice_video_hold_resume.xml" name="alice" routingName="alice"/> 
+                <scenario file="eps_ims_re-invite_prack_bob_video_hold_resume.xml" name="bob" routingName="bob"/>
+        </testcase-->
+</test>

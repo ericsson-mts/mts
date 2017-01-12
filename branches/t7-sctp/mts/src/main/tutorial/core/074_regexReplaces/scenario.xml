@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[param]" operation="set" value="ceci est la regex a remplacer" />
+
+    <parameter name="[param_replaced]" operation="regexReplaces" value="[param]" value2="regex a remplacer" value3="REMPLACEE"/>
+
+    <if>
+        <condition>
+            <test condition="string.equals" parameter="[param_replaced]" value="ceci est la REMPLACEE" />
+        </condition>
+        <else>
+            <exit failed="true" />
+        </else>
+    </if>
+
+</scenario>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="RTP regression tests" name="RTP">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+
+    <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHost]" operation="set" value="[localHost(0)]" description="local address of the MTS host" editable="true" />
+    <parameter name="[localPort]" operation="set" value="10000" description="local port of the MTS host" editable="true" />
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
+    
+    <parameter name="[remoteHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHost]" operation="set" value="172.16.21.32"/-->    
+    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]" description="remote address of the SUT host" editable="true" />
+    <parameter name="[remotePort]" operation="set" value="20000" description="remote port of the SUT host" editable="true" />
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com" editable="true" />
+    <parameter name="[inviter]" operation="set" value="bob" editable="true" />
+    <parameter name="[invitee]" operation="set" value="alice" editable="true" />	
+
+    <testcase name="001_coap_get" state="true" number="[iterations]" description="rtp : Event message" >      
+        <scenario file="001_coap_get/UAC.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="001_coap_get/UAS.xml" name="server" state="[remoteServer]" routingName="server"/>
+    </testcase>
+
+</test>

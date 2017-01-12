@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <openChannelSCTP name="channel" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]">
+        <sctp num_ostreams="30000" max_instreams="40000" />
+    </openChannelSCTP>        
+           
+    <sendMessageSCTP channel="channel">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+
+</scenario>

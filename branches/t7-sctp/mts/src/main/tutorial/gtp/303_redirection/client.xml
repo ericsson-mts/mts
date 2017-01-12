@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+    <sendMessageGTP name="send redirection request"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerPrime type="Redirection Request:6" sequenceNumber="1"/>
+        <element tag="cause:1" >
+            <field name="cause" value="9"/>
+        </element>
+        <element tag="addressOfRecommandedNode:254" >
+            <field name="IP v4 Address" value="ac1015cf"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive redirection response" request="false" type="Redirection Request:6" result="7" >
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <test parameter="[binary]" condition="binary.equals" value="0f07000400010107"/>
+
+</scenario>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="Charge tests with Asterisk" name="Charge_AGW">
+
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+	<parameter description="number of simultaneous calls" editable="true" name="[CallsNumber]" operation="set" value="3"/>
+	<parameter name="[CallsNumber_to]" operation="number.multiply" value="[CallsNumber]" value2="2"/>
+	<!-- <parameter name="[CallsNumber_to]" operation="number.substract" value="[CallsNumber_to]" value2="1"/> --> 
+	<parameter description="Duration (in day) of the test " editable="true" name="[TestDurationDay]" operation="set" value="0"/>
+	<parameter description="Duration (in hour) of the test " editable="true" name="[TestDurationHour]" operation="set" value="0"/>
+	<parameter description="Duration (in min.) of the test " editable="true" name="[TestDurationMin]" operation="set" value="4"/>
+	<parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="0"/> 
+
+	<parameter description="Duration (in sec.) between the each call, min 4sec " editable="true" name="[BetweenCallSec]" operation="set" value="10"/> 
+	<!-- calculate duree entre appel avec un minimum de 4sec  -->
+	<parameter name="[DurationBetweenCall]" operation="set" value="[BetweenCallSec]"/>
+
+	
+	<parameter description="time (in sec.) before start the test " editable="true" name="[StartTestSec]" operation="set" value="0"/>
+	
+	<!-- calculate the test duration -->
+	<parameter name="[TestDurationDay]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+	<parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[TestDurationDay]"/>
+	<parameter name="[TestDurationHour]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+	<parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[TestDurationHour]"/>
+	<parameter name="[TestDurationMin]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+	<parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[TestDurationMin]"/>
+	
+	<!--parameter du plan de numerotation d'asterik -->	
+	<!--parameter name="[csvFilename]" operation="list.set" value="../../conf/pstn/numplan/plan.csv" /-->
+	<!-- MANTIS : "file.readCsv" does not read UNIX files on Windows -->
+	<parameter name="[csvFilename]" operation="list.set" value="./plan.csv"/>
+	<parameter name="[num_asterisk_TAB]" operation="file.readCsv" value="./plan.csv" value2="0"/>
+	<parameter name="[telNumber_TAB]" operation="file.readCsv" value="./plan.csv" value2="1"/>
+	<parameter name="[Name_TAB]" operation="file.readCsv" value="./plan.csv" value2="3"/>
+	<parameter name="[call_Comment]" operation="file.readCsv" value="./plan.csv" value2="4"/>
+
+	<!--parameter name="[domainName]" operation="set" value="devoteam.com"/-->	
+	<parameter name="[domainName]" operation="set" value="asterisk.com"/>	    	
+	    
+    	<!--local info SIP/RTP -->	    	    
+	<parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>	
+    	<parameter name="[localHost]" operation="set" value="[localHost(0)]"/> 
+		<!-- <parameter name="[localHost]" operation="set" value="[localHost(0)]"/> si une adresse IP sur la machine-->
+    	
+		<!-- init 1er port SIP and 1er port RTP (pour SUB09 et SUB10)-->
+    	<parameter name="[ClientlocalPortSIP]" operation="set" value="15009"/>    	    
+    	<parameter name="[ServerlocalPortSIP]" operation="set" value="16009"/>  
+  	    
+    	<parameter name="[ClientlocalPortRTP]" operation="set" value="21009"/>
+    	<parameter name="[ServerlocalPortRTP]" operation="set" value="22009"/>    
+    
+    <!-- remote info SIP Asterisk -->
+	<!--  	<parameter name="[remoteHostSIP]" operation="set" value="172.16.21.10"/> -->	
+  	
+	<parameter name="[remoteHostSIP]" operation="set" value="192.168.90.233"/>			
+	<parameter name="[remotePortSIP]" operation="set" value="5060"/>    	        
+    			
+	<!-- value2 = deltaTime (millisecondes)-->
+    	<parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
+
+	
+	<for from="1" index="[index]" step="2" to="[CallsNumber_to]">
+		<testcase description="Call setup for analog to analog users" name="[call_Comment([index])]" state="false">
+
+		
+			<!-- parameters for calling (inviter or client) -->	
+			<parameter name="[index_inviter]" operation="number.substract" value="[index]" value2="1"/>					
+			<parameter name="[inviter]" operation="set" value="[num_asterisk_TAB([index_inviter])]"/>
+			<parameter name="[name_inviter]" operation="set" value="[Name_TAB([index_inviter])]"/>
+			<parameter name="[UAClocalPortSIP]" operation="number.add" value="[ClientlocalPortSIP]" value2="[index_inviter]"/>    	    
+			<parameter name="[UAClocalPortRTP]" operation="number.add" value="[ClientlocalPortRTP]" value2="[index_inviter]"/>  	    
+
+			<!-- parameters for called (invitee or server) -->
+			<parameter name="[index_invitee]" operation="set" value="[index]"/>		
+			<parameter name="[UASlocalPortSIP]" operation="number.add" value="[ServerlocalPortSIP]" value2="[index_invitee]"/>  
+			<parameter name="[UASlocalPortRTP]" operation="number.add" value="[ServerlocalPortRTP]" value2="[index_invitee]"/>   				
+			<parameter name="[invitee]" operation="set" value="[telNumber_TAB([index_invitee])]"/>
+			<parameter name="[name_invitee]" operation="set" value="[Name_TAB([index_invitee])]"/>			
+			<parameter name="[inviteeReg]" operation="set" value="[num_asterisk_TAB([index_invitee])]"/>
+
+			<!--                       -->
+			<!-- RUNPROFILE PARAMETERS -->
+			<!--                      -->
+			<runProfile>
+				<start delay="[StartTestSec]"/>
+				<step period="0" time="0"/>
+				<step period="0" time="10"/>
+				<end delay="[TestDurationSec]"/>
+			</runProfile> 	
+			
+			<!-- senarios for client and server -->				
+			<scenario file="sip_rtp_flow/UAC.xml" name="Client[index]" routingName="Client[index]"/>
+			<scenario file="sip_rtp_flow/UAS.xml" name="Server[index]" routingName="Server[index]"/>
+		</testcase>
+	</for>
+
+
+</test>

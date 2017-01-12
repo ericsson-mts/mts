@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : dictionary.xsd
+    Created on : 28 mai 2007, 21:14
+    Author     : Gege
+    Description:
+        Purpose of XML Schema document follows.
+-->
+
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified">
+                
+    <xs:element name="dictionary" type="dictionaryType" />
+
+    <xs:complexType name="dictionaryType">
+        <xs:sequence>
+            <xs:element name="base"          type="baseType" />
+            <xs:element name="application"   type="applicationType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="applicationType">
+        <xs:sequence>
+            <xs:element name="command"  type="commandType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="vendor"   type="vendorType"   minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="typedefn" type="typedefnType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="avp"      type="avpType"      minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="id"     type="xs:integer" use="required" />
+        <xs:attribute name="name"   type="xs:string"          use="required" />
+        <xs:attribute name="uri"    type="xs:string" />
+    </xs:complexType>
+    
+    <xs:complexType name="baseType">
+        <xs:sequence>
+            <xs:element name="command"  type="commandType"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="vendor"   type="vendorType"   minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="typedefn" type="typedefnType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="avp"      type="avpType"      minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="uri"    type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="commandType">
+        <xs:attribute name="name"        type="xs:string"   use="required" />
+        <xs:attribute name="code"        type="xs:integer"  use="required" />
+        <xs:attribute name="vendor-id"   type="xs:string"   use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="vendorType">
+        <xs:attribute name="vendor-id"   type="xs:string"   use="required" />
+        <xs:attribute name="code"        type="xs:integer"  use="required" />
+        <xs:attribute name="name"        type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="typedefnType">
+        <xs:attribute name="type-name"   type="xs:string"   use="required" />
+        <xs:attribute name="type-parent" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="avpType">
+        <xs:sequence>
+            <xs:element name="type"    type="typeType"    minOccurs="0" />
+            <xs:element name="grouped" type="groupedType" minOccurs="0" />
+            <xs:element name="enum"    type="enumType"    minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="code"        type="xs:integer"  use="required" />
+        <xs:attribute name="name"        type="xs:string"   use="required" />
+        <xs:attribute name="constrained" type="xs:boolean" />
+        <xs:attribute name="vendor-id"   type="xs:string" />
+        <xs:attribute name="may-encrypt" type="yesNoType" />
+        <xs:attribute name="mandatory"   type="mayMustType" />
+        <xs:attribute name="protected"   type="mayMustType" />
+        <xs:attribute name="vendor-bit"  type="mayMustType" />
+    </xs:complexType>
+
+    <xs:complexType name="groupedType">
+        <xs:sequence>
+            <xs:element name="gavp" type="gavpType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="gavpType">
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="typeType">
+        <xs:attribute name="type-name" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="enumType">
+        <xs:attribute name="code"   type="xs:integer" use="required" />
+        <xs:attribute name="name"   type="xs:string"  use="required" />
+    </xs:complexType>
+
+    <xs:simpleType name="mayMustType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="may" />
+            <xs:enumeration value="must" />
+            <xs:enumeration value="mustnot" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="yesNoType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="yes" />
+            <xs:enumeration value="no" />
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
+

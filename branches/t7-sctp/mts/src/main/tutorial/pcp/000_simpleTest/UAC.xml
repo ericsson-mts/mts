@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <parameter name="[channel]" operation="set" value="channelPCP" />
+    <openChannelPCP name="[channel]" localHost="[localHostPCP]" localPort="[localPortPCP]"
+                                     remoteHost="[remoteHostPCP]" remotePort="[remotePortPCP]" />
+
+    <sendMessagePCP name="Send Flist" channel="[channel]">
+        <flist>
+          <POID xmlns="">0.0.0.1 /account 1234</POID>
+          <AR_ACCOUNT_OBJ xmlns="">0.0.0.1 /account 9876</AR_ACCOUNT_OBJ>
+          <INCLUDE_CHILDREN xmlns="">123</INCLUDE_CHILDREN>
+          <NAMEINFO elem="1">
+              <ADDRESS>10200 South De Anza Blvd</ADDRESS>
+              <CITY>Cupertino</CITY>
+              <CANON_COMPANY>Portal Software</CANON_COMPANY>
+              <CANON_COUNTRY>USA</CANON_COUNTRY>
+          </NAMEINFO>
+          <NAMEINFO elem="2">
+              <ADDRESS>my address</ADDRESS>
+              <CITY>Lannion</CITY>
+              <CANON_COMPANY>Devoteam</CANON_COMPANY>
+              <CANON_COUNTRY>France</CANON_COUNTRY>
+          </NAMEINFO>
+          <WRITE_ACCESS xmlns="">some string</WRITE_ACCESS>
+        </flist>
+    </sendMessagePCP>
+
+    <receiveMessagePCP name="Wait another flist">
+    </receiveMessagePCP>
+
+    <finally>    
+        <closeChannelPCP name="[channel]"/>
+    </finally>    
+
+</scenario>

@@ -1,0 +1,860 @@
+
+    <xs:complexType name="operationType">
+        <xs:attribute name="name"    	    type="xs:string"        use="optional">    
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Generic: The operation name</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+        <xs:attribute name="description"    type="xs:string"        use="optional">
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Generic: The operation description (just a comment)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+        <xs:attribute name="state"    	    type="xs:string"        use="optional">    
+			<xs:annotation>
+				<xs:appinfo>Boolean</xs:appinfo>
+				<xs:documentation>Generic: A flag to run or not the operation (equivalent to put the operation in comment code)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="operationTypeSimple">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">    
+            <xs:attribute name="name"    	    type="xs:string"        use="optional">    
+    			<xs:annotation>
+    				<xs:appinfo>String</xs:appinfo>
+    				<xs:documentation>Generic: The operation name</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+            <xs:attribute name="description"    type="xs:string"        use="optional">
+    			<xs:annotation>
+    				<xs:appinfo>String</xs:appinfo>
+    				<xs:documentation>Generic: The operation description (just a comment)</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+            <xs:attribute name="state"    	    type="xs:string"        use="optional">    
+    			<xs:annotation>
+    				<xs:appinfo>Boolean</xs:appinfo>
+    				<xs:documentation>Generic: A flag to run or not the operation (equivalent to put the operation in comment code)</xs:documentation>
+    			</xs:annotation>
+    		</xs:attribute>
+            </xs:extension>
+      	</xs:simpleContent>
+    </xs:complexType>
+
+<!--                                                                                       pause -->
+    <xs:complexType name="pauseType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="seconds" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Float</xs:appinfo>
+        				<xs:documentation>Pause duration in seconds</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="milliseconds" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Integer</xs:appinfo>
+        				<xs:documentation>Pause duration in milliseconds</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+<!--                                                                                        goto -->
+    <xs:complexType name="gotoType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="label"   type="xs:string" use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Target label name</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                       label -->
+    <xs:complexType name="labelType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                       exit -->
+    <xs:complexType name="exitType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="failed"  type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Boolean</xs:appinfo>
+        				<xs:documentation>Failed status: if true, the test will end as a failure (logged at ERROR level), 
+                else false, as a success (logged at WARNING level)</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="exception"  type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Description of the exception; this is automacally logged</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                   semaphore -->
+    <xs:complexType name="semaphoreType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="action"  type="semaphoreActionType" use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Action to do on this semaphore: notify or wait</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="timeout" type="xs:string" default="30" >
+        			<xs:annotation>
+        				<xs:appinfo>Float</xs:appinfo>
+        				<xs:documentation>Timeout value in seconds of wait actions</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="permits" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Integer</xs:appinfo>
+        				<xs:documentation>Number of permit to give or take</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="semaphoreActionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="notify" />
+            <xs:enumeration value="wait" />
+        </xs:restriction>
+    </xs:simpleType>
+
+<!--                                                                                    sqlQuery -->
+    <xs:complexType name="sqlQueryType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="query"   type="xs:string" use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>SQL query</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                      system -->
+    <xs:complexType name="systemType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="command"  type="xs:string" use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>System (shell or dos) command</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                          if -->
+    <xs:complexType name="ifType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:all>
+                    <xs:element name="condition"  type="conditionType" />
+                    <xs:element name="then"       type="doType" minOccurs="0" />
+                    <xs:element name="else"       type="doType" minOccurs="0" />
+                </xs:all>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="conditionType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="test"  type="testType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"  type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"  type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"  type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+<!--                                                                                          while -->
+    <xs:complexType name="whileType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence>
+                    <xs:element name="condition"  type="conditionType" />
+                    <xs:element name="do"         type="doType" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                          try/finally -->
+    <xs:complexType name="tryType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence>
+                    <xs:element name="do"         type="doType" minOccurs="0" />
+                    <xs:element name="finally"    type="doType" minOccurs="0" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+
+<!--                                                                                          while -->
+    <xs:complexType name="switchType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence>
+                    <xs:element name="case"     type="caseType" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="default"  type="doType"   minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+                <xs:attribute name="parameter"  type="xs:string" use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Value that will be tested to execute the switch</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    
+    <xs:complexType name="caseType">
+        <xs:complexContent>
+            <xs:extension base="doType">
+                <xs:attribute name="equals"  type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>String the parameter will be compared against (equality)</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="matches"  type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>String the parameter will be compared against (regex matching)</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>    
+
+	
+<!--                                                                                       for -->
+	<xs:complexType name="forType">
+        <xs:complexContent>
+            <xs:extension base="doType">    
+				<xs:attribute name="index"    type="xs:string"  use="required">    
+					<xs:annotation>
+						<xs:appinfo>String (parameter name)</xs:appinfo>
+						<xs:documentation>The name of the index parameter for the loop. This parameter is available for the user inside the loop.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="from" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The starting value for the loop index.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="to" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The ending value for the loop index.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="step" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Integer</xs:appinfo>
+						<xs:documentation>The value to increase the index at each loop run (it could be a negative integer). The default value is 1.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+            </xs:extension>
+      	</xs:complexContent>
+    </xs:complexType>
+
+
+<!--                                                                                        test -->
+    <xs:complexType name="testType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:attribute name="parameter" type="xs:string"         use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Tested parameter</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="condition" type="xs:string"         use="required" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Name of the test operator (see #####)</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value"     type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Value the parameter will be tested against</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="not"     type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Boolean</xs:appinfo>
+        				<xs:documentation>If true, invert the test condition (default is false).</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                   parameter -->
+    <xs:complexType name="parameterType">
+        <xs:simpleContent>
+            <xs:extension base="operationTypeSimple">
+                <xs:attribute name="operation" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Name of the operations that will be applied to the operands. You could use all the characters with an ASCI code less than 128 except the following characters &lt;&gt;&#x22;&#x26;(): which interact with the XML syntax.</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            	<xs:attribute name="value"     type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 1</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            	<xs:attribute name="value2"    type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 2</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            	<xs:attribute name="value3"    type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 3</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            	<xs:attribute name="value4"    type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 4</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value5"    type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 5</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value6"    type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 6</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value7"    type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Operand 7</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>            
+    </xs:complexType>
+
+<!--                                                                     generic receiveMessage -->
+    <xs:complexType name="receiveMessageType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="and"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="or"         type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="not"        type="conditionType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+				<xs:attribute name="channel" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The channel name to transport the message. Don't use it with listenpoint (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="listenpoint" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The listenpoint name to transport the message. Don't use it with channel (incompatible)</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="request" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting for a request whereas false means a response. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="type" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message type we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="result" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>String</xs:appinfo>
+						<xs:documentation>The message result (for response only) we are waiting for. If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="timeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Float</xs:appinfo>
+						<xs:documentation>The timeout i.e. the maximum time (in seconds) we are waiting for. The default value is configurable (ppp.properties/operations.RECEIVE_TIMEOUT) If not specified, then no filtering is required</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnReceive" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are not waiting a message i.e. if we will receive a message , then the operation status is set to FAILED. The default value is false.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="failedOnTimeout" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:appinfo>Boolean</xs:appinfo>
+						<xs:documentation>True means that we are waiting a message i.e. if we won't receive any message , then the operation status is set to FAILED. The default value is true.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+<!--                                                                                       log -->
+    <xs:complexType name="logType">
+        <xs:simpleContent>
+            <xs:extension base="operationTypeSimple">
+                <xs:attribute name="level" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Level of the logs (0/1/2/3 or DEBUG/INFO/WARN/ERROR)</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="type" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>Destination logger for this log : Main or Scenario</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+<!--                                                                                      user statistics -->
+    <xs:complexType name="statsType">
+        <xs:complexContent>
+            <xs:extension base="operationType">
+                <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="counter"   type="statsCounterType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="flow"      type="statsFlowType" minOccurs="0" maxOccurs="unbounded" />
+                    <!-- DEPRECATED -->
+                    <xs:element name="histogram" type="statsHistogramType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="value" type="statsHistogramType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="percent"   type="statsPercentType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="text"   type="statsTextType" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="reset"     type="statsResetType" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="statsCounterType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="increase"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="decrease"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"        type="xs:string" use="required" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Name of the stats counter</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="summary"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Summary description of stat counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="complete" type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Complete description of the counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="shortDesc"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="longDesc"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="statsFlowType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="increase"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="decrease"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"        type="xs:string" use="required" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Name of the stats counter</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="summary"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Summary description of stat counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="complete" type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Complete description of the counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="shortDesc"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="longDesc"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="statsHistogramType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="newValue"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"        type="xs:string" use="required" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Name of the stats counter</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="summary"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Summary description of stat counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="complete" type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Complete description of the counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="shortDesc"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="longDesc"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="statsPercentType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="incValue"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="incTotal"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"        type="xs:string" use="required" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Name of the stats counter</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="summary"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Summary description of stat counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="complete" type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Complete description of the counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="shortDesc"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="longDesc"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="statsTextType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="newValue"  type="statsAddType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name"        type="xs:string" use="required" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Name of the stats counter</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="summary"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Summary description of stat counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="complete" type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo>String</xs:appinfo>
+				<xs:documentation>Complete description of the counter (used in display only)</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="shortDesc"   type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="longDesc"    type="xs:string" >
+			<xs:annotation>
+				<xs:appinfo></xs:appinfo>
+				<xs:documentation>DEPRECATED</xs:documentation>
+			</xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="statsAddType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">    
+                <xs:attribute name="value" type="xs:string" use="optional">
+        			<xs:annotation>
+        				<xs:appinfo>Float</xs:appinfo>
+        				<xs:documentation>Value that will be added to the counter</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="seconds" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Float</xs:appinfo>
+        				<xs:documentation>Timestamp in seconds at which the counter is added</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="milliseconds" type="xs:string" >
+        			<xs:annotation>
+        				<xs:appinfo>Integer</xs:appinfo>
+        				<xs:documentation>Timestamp in milliseconds at which the counter is added</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>    
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="statsResetType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">    
+                <xs:attribute name="path" type="xs:string" use="optional">
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>The path in the stats tree to reach the counter to reset</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="name" type="xs:string" use="optional">
+        			<xs:annotation>
+        				<xs:appinfo>String</xs:appinfo>
+        				<xs:documentation>The name of the counter to reset</xs:documentation>
+        			</xs:annotation>
+                </xs:attribute>
+            </xs:extension>    
+        </xs:simpleContent>
+    </xs:complexType>
+
+<!--                                                                                          function -->
+<xs:complexType name="functionType">
+    <xs:sequence>
+        <xs:element name="input"       type="inputFunctionType" minOccurs="0" maxOccurs="1" />
+        <xs:element name="do"          type="doType" minOccurs="0" maxOccurs="1" />
+        <xs:element name="output"      type="outputFunctionType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="file"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>file to import functions from</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>name of the function</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="inputFunctionType">
+    <xs:sequence>
+        <xs:element name="parameter"        type="parameterInputFunctionType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="outputFunctionType">
+    <xs:sequence>
+        <xs:element name="parameter"        type="parameterOutputFunctionType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+</xs:complexType>
+
+<!--                                                                                          function -->
+<xs:complexType name="callType">
+    <xs:sequence>
+        <xs:element name="input"        type="inoutputCallType" minOccurs="0" maxOccurs="1" />
+        <xs:element name="output"       type="inoutputCallType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute name="name"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>name of the function to call</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+</xs:complexType>
+
+<xs:complexType name="inoutputCallType">
+    <xs:sequence>
+        <xs:element name="parameter"        type="parameterInputOutputCallType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+</xs:complexType>
+
+<!--                                                                                          arg -->
+<xs:complexType name="parameterInputFunctionType">
+    <xs:attribute name="name"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>name of the input argument</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="default"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>default value of the input argument, if not passed to the function. If not defined, the argument will be mandatory in call</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="type"    type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>type of the input argument, used to do some checks</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+</xs:complexType>
+
+<!--                                                                                          arg -->
+<xs:complexType name="parameterOutputFunctionType">
+    <xs:attribute name="name"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>value of the output argument</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+</xs:complexType>
+
+
+
+
+<xs:complexType name="parameterInputOutputCallType">
+    <xs:attribute name="name"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>name of the argument</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="value"     type="xs:string" >
+        <xs:annotation>
+            <xs:appinfo>String</xs:appinfo>
+            <xs:documentation>value of the argument that will be passed to the function</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+</xs:complexType>
+
+<!--/xs:schema-->    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <label name="gotoLabel"/> 
+    
+	<try>
+		<do>
+		<parameter name="[error]" operation="set" value="true"/>
+		<parameter name="[flagResponse]" operation="set" value="false"/>
+		<parameter name="[flagRequest]" operation="set" value="false"/>
+			<receiveMessageHTTP timeout="0">
+				<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+				<parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+				<parameter name="[host]" operation="protocol.setFromMessage" value="header.Host"/>
+				<parameter name="[channelname]" operation="protocol.setFromMessage" value="channel.name"/>
+				<parameter name="[channelport]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+			</receiveMessageHTTP>
+			<parameter name="[messageFormat]" operation="protocol.setFromMessage" value="message.request"/>
+			<if>
+					<condition>
+						<test parameter="[messageFormat]" condition="boolean.equals" value="true"/>
+					</condition>
+				<then>
+					<parameter name="[flagRequest]" operation="set" value="true"/>
+					<openChannelHTTP name="[channelname]-proxy" remoteURL="http://[proxyTarHost]:[proxyTarPort]"/>
+			<!--Send a message to the supplier IMS Loader.com-->
+			<sendMessageHTTP channel="[channelname]-proxy">
+	<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[POST /index.php HTTP/1.1
+Host: 192.168.90.50
+Accept-charset:text/html
+Content-Type:text/plain
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+Content-Length:xx
+
+[content]]]>
+	<!--******************** END MESSAGE *********************-->
+			</sendMessageHTTP>
+			<parameter name="[transaction_id2]" operation="protocol.setFromMessage" value="message.transactionId"/>
+			<parameter name="[transId_[transaction_id2]]" operation="set" value="[transaction_id]"/>
+			</then>
+			<else>
+				<parameter name="[flagResponse]" operation="set" value="true"/>
+				<parameter name="[temp]" operation="set" value="[transId_[transaction_id]]"/>
+				<sendMessageHTTP transactionId="[temp]">
+	<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Accept-charset:text/html
+Content-Type:text/plain
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+Content-Length:xx
+
+[content]]]>
+	<!--******************** END MESSAGE *********************-->
+				</sendMessageHTTP>
+				<closeChannelHTTP name="[channelname]-proxy"/>
+				
+			</else>
+			</if>
+			<parameter name="[error]" operation="set" value="false"/>
+		</do>
+		<finally>
+				<if>
+					<condition>
+						<test parameter="[error]" condition="boolean.equals" value="true"/>
+					</condition>
+					<then>
+						<if>
+							<condition>
+								<test parameter="[flagResponse]" condition="boolean.equals" value="true"/>
+							</condition>
+						<then>
+							<sendMessageHTTP transactionId="[temp]">
+	<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 404 KO
+Accept-charset:text/html
+Content-Type:text/plain
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+Content-Length:xx
+
+]]>
+	<!--******************** END MESSAGE *********************-->
+							</sendMessageHTTP>
+						</then>
+						<else>
+							<if>
+								<condition>
+									<test parameter="[flagRequest]" condition="boolean.equals" value="true"/>
+								</condition>
+							<then>
+								<closeChannelHTTP name="[channelname]-proxy"/>
+							</then>
+							</if>
+						</else>
+						</if>
+					</then>	
+				</if>
+				<closeChannelHTTP name="[channelname]-proxy"/>
+				<parameter name="[temp]" operation="list.remove" />
+		</finally>
+	</try>
+	
+	<parameter name="[aParameter]" operation="set" value="gotoLabel" />
+	
+	<goto  name="goto_label" label="[aParameter]" state="true"/>
+	
+</scenario>

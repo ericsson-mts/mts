@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <!-- attend message USER-->
+    <receiveMessagePOP request="true">
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[arg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- perform test -->
+    <test parameter="[command]" condition="string.equals" value="USER"/>
+    <test parameter="[arg]" condition="string.equals" value="test.imsloader@devoteam.com"/>
+    
+    <!-- envoi reponse USER-->
+    <sendMessagePOP name="Send USER" transactionId="[transactionId]">
+<![CDATA[
++OK [arg] is a real hoopy frood
+]]>
+    </sendMessagePOP>
+    
+    <!-- attend message PASS-->
+    <receiveMessagePOP request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- envoi reponse PASS-->
+    <sendMessagePOP name="PASS" transactionId="[transactionId]">
+<![CDATA[
++OK [arg]'s maildrop has 2 messages (320 octets)
+]]>
+    </sendMessagePOP>
+
+    <!-- attend message RETR-->
+    <receiveMessagePOP request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId" />
+    </receiveMessagePOP>
+
+    <!-- envoi reponse RETR-->
+    <sendMessagePOP name="RETR" transactionId="[transactionId]">
+<![CDATA[
++OK 354 octets
+Date: Fri, 17 Oct 2008 21:52:25
+From: Me <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@devoteam.com
+Message-Id: <B27397-0100000@devoteam.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+Hy all! Is this test working or not???
+This line is useful to check the good working of the TOP command in pop.
+Bye.
+.
+]]>
+    </sendMessagePOP>
+
+</scenario>

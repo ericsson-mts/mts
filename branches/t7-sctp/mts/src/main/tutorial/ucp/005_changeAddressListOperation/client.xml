@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="ChangeAddressListOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="GAdC" value="1234"/>
+        <attribute name="AC" value="abcd"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="OAC" value=""/>
+        <attribute name="NPL" value="1"/>
+        <attribute name="RAd" value="test"/>
+        <attribute name="A/D" value="A"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ChangeAddressListOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="ChangeAddressListOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="GAdC" value="1234"/>
+        <attribute name="AC" value="abcd"/>
+        <attribute name="OAdC" value="18"/>
+        <attribute name="OAC" value=""/>
+        <attribute name="NPL" value=""/>
+        <attribute name="RAd" value=""/>
+        <attribute name="A/D" value="A"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ChangeAddressListOperation" result="N">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="EC" operation="protocol.setFromMessage" value="attribute.EC"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[EC]" condition="string.equals" value="06"/>
+        <test parameter="[SM]" condition="string.equals" value="malformed message"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

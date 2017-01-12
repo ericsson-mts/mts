@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <label name="ReceiveINVITE"/>
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+		<receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+	  <parameter name="[clientName]" operation="setFromAddress" value="[lastFrom]" value2="DisplayName"/>
+	  <parameter name="[URI]" operation="setFromAddress" value="[lastFrom]" value2="URI"/>
+	  <parameter name="[clientAddr]" operation="setFromUri" value="[URI]" value2="Host"/>
+		</receiveMessageSIP>
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Server: PoC-serv/OMA1.0 XmlLoader/v0.0
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[clientName]@[clientAddr]>
+Require: timer
+Supported: timer
+Session-Expires: 1800;refresher=uac
+P-Asserted-Identity: <sip:[clientName]@[100_DOMAIN_ADDR]>,<tel:+3381165049515>
+P-Charging-Vector: icid-value=000000018b0a45ed;ggsn=139.10.69.237;pdp-sig=yes;gcid=32665c1f;auth-token=0.18800729653403492
+P-Com.Siemens.IMSI-ID: 81165049515
+P-Com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Info: ggsn-addr=139.10.69.237;gcid=32665c1f;msisdn=3381165049515;imsi=81165049515;sgsn-addr=139.10.69.237;ccf=139.10.99.99;ccf_sec=139.10.99.99
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName] 999 999 IN IP4 [clientIpAddress]
+s=-
+c=IN IP4 [clientIpAddress]
+t=0 0
+m=audio [clientRtpPort] RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application [clientRtcpPort] udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+		<receiveMessageSIP name="Wait ack" request="true" type="ACK">
+		</receiveMessageSIP>
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+		<receiveMessageSIP name="Wait BYE" request="true" type="BYE">
+		<parameter name="[inviteTo]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[inviteFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[inviteCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  <parameter name="[localTag]" operation="string.random" value="10"/>
+		</receiveMessageSIP>
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [inviteTo];tag=[localTag]
+From: [inviteFrom]
+Via: [lastVia]
+Call-ID: [inviteCallId]
+CSeq: [lastCseq]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+
+    <goto name="goto ReceiveINVITE" label="ReceiveINVITE" state="true"/>		
+</scenario>

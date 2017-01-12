@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    	<createListenpointSIP name="listenSIP_UAS" localHost="[remoteHostSIP]" localPort="[remotePortSIP]"/>
+
+	<parameter name="[inviteePortRTP]" operation="set" value="20000" description="Port pour le bloc sdp de l'invitee du XMLloader"/>		    
+    	
+  	<receiveMessageSIP name="Wait INVITE" listenpoint="listenSIP_UAS" request="true" type="INVITE">
+        <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+        <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[lastCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+        <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[lastContactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+        <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+        <parameter name="[localTag]" operation="string.random" value="10"/>
+        <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+        <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+  	</receiveMessageSIP>
+
+  	<sendMessageSIP name="Send 100 Trying" listenpoint="listenSIP_UAS">
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Via: [lastVia]
+User-Agent: IMSLoader/V4.0
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+
+	<pause name="pause dialing delay" seconds="[dialingDelay]"/>
+
+  	<sendMessageSIP name="Send 180 Ringing" listenpoint="listenSIP_UAS">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Via: [lastVia]
+User-Agent: IMSLoader/V4.0
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+
+    <createListenpointRTPFLOW name="[invitee]" localHost="[remoteHostRTP]" localPort="[remotePortRTP]"/>
+
+  	<sendMessageSIP name="Send 200 OK" listenpoint="listenSIP_UAS">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Server: PoC-serv/OMA1.0 XmlLoader/v0.0
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Via: [lastVia]
+Contact: <sip:[inviter]@[localHostSIP]:[localPortSIP]>
+User-Agent: IMSLoader/V4.0
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[invitee] 999 999 IN IP4 [remoteHostRTP]
+s=-
+c=IN IP4 [remoteHostRTP]
+t=0 0
+m=audio [remotePortRTP] RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+]]>
+  	</sendMessageSIP>
+
+  	<receiveMessageSIP name="Wait ack" request="true" type="ACK">
+  	</receiveMessageSIP>
+    
+	<parameter name="[received]" operation="set" value="true"/>	
+
+	<parameter name="[timeout]" operation="number.add" value="[CallDurationSec]" value2="10"/>	
+	<receiveMessageRTPFLOW listenpoint="[invitee]" timeout="[timeout]">
+	        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>		
+	        <parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+	        <parameter name="[flowPayload]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
+	        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+	        <!--
+	            TODO : This code has to be changed using a sliding window of 1 second for exemple
+	            DO NOT ERASE IT
+	        -->
+	        <!--<parameter name="[mosMean]" operation="protocol.setFromMessage" value="qos.mosMean"/>-->
+	        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+	</receiveMessageRTPFLOW>
+
+	<!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadPLayer, do not change it -->
+	<!-- value4 = bitsPerSample (optional) -->
+	<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
+	<parameter name="file" operation="file.writewave" value="flowReceived.wav" 
+	value2="[payloadType]"	
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	value6="1"
+	/>  
+
+  	<parameter name="[newCseqNumber]" operation="number.add" value="[lastCseqNumber]" value2="1"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+  	  	
+  	<sendMessageSIP name="Send BYE" listenpoint="listenSIP_UAS">
+<![CDATA[BYE [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [newCseqNumber] BYE
+Route: <sip:[inviter]@[localHostSIP]:[localPortSIP];lr;mode=originating>
+Contact: <sip:[invitee]@[remoteHostSIP]:[remotePortSIP]>
+Via: SIP/2.0/UDP [remoteHostSIP]:[remotePortSIP];branch=[newBranchId]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: IMSLoader/V4.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+                
+  	<receiveMessageSIP name="Wait 200 OK" listenpoint="listenSIP_UAS" request="false" type="BYE" result="200">
+  	</receiveMessageSIP>
+    
+    <finally>
+        <removeListenpointRTPFLOW name="[invitee]"/>
+    </finally>
+    
+</scenario>

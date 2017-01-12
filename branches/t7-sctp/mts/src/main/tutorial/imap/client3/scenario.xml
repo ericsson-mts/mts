@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+
+    <parameter name="[remotePortIMAP]" operation="number.add" value="[remotePortIMAP]" value2="10000"/>
+    <openChannelIMAP name="[connection]" remoteHost="[remoteHostIMAP]" remotePort="[remotePortIMAP]"/>
+    
+    <parameter name="[tagReq]" operation="set" value="A001" />
+    <!-- envoi requete capability-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse CAPABILITY -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.done.result" />
+        <parameter name="[contenu]" operation="protocol.setFromMessage" value="response.done.text" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A002" />
+    <!-- envoi requete LOGIN-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGIN [login] [password]
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LOGIN -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    
+    <parameter name="[tagReq]" operation="set" value="A003" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LSUB "" "*"
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LIST "" "INBOX"
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    
+    <parameter name="[tagReq]" operation="set" value="A005" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] SELECT "INBOX"
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A006" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] EXPUNGE
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A007" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] FETCH 1:* (FLAGS)
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A008" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] FETCH 5 (RFC822.SIZE FLAGS BODY.PEEK[HEADER.FIELDS(From To Cc Subject Date Message-ID Priority X-Priority References Newsgroup In-Reply-To Content-Type)])
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A009" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] FETCH 5 (BODY.PEEK[HEADER.FIELDS(Content-Type Content-Transfer-Encoding)] BODY.PEEK[TEXT]<0.2048>)
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A010" />
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGOUT
+]]>
+    </sendMessageIMAP>
+    <receiveMessageIMAP channel="[connection]">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tag]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <closeChannelIMAP name="[connection]"/>
+
+</scenario>

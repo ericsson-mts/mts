@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[inviteeName1]" operation="set" value="bob"/>
+  <parameter name="[107_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+  <parameter name="[clientAddr]" operation="set" value="192.168.56.32"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+		<sendMessageSIP name="Send UPDATE" destScenario="bob">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[UPDATE sip:[inviteeName1]@[107_DOMAIN_ADDR] SIP/2.0
+To: "[inviteeName1]" <sip:[inviteeName1]@[107_DOMAIN_ADDR]>
+From: "[clientName]"<sip:[clientName]@[107_DOMAIN_ADDR]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] UPDATE
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburst
+Supported: timer
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Session-Expires: 3600;refresher=uac
+Accept-Contact: +g.poc.talkburst;require;explicit
+Content-Type: multipart/mixed;boundary="----=_Part_0"
+Route: <sip:ptt@[remoteSIP];lr;mode=originating>
+Route: <sip:ptt@[localSIP];lr;mode=originating>
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="UPDATE" result="200">
+		</receiveMessageSIP>
+</scenario>

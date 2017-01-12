@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpointIMAP" />
+    <parameter name="[localPortIMAP]" operation="number.add" value="[localPortIMAP]" value2="10000"/>
+    <createListenpointIMAP name="[listenpoint]" localHost="[localHostIMAP]" localPort="[localPortIMAP]" listenTLS="false" />
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <!-- attend message capability-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+    
+    <!-- envoi reponse final capability-->
+    <sendMessageIMAP name="Send CAPABILITY"  channel="[connection]">
+<![CDATA[
+* CAPABILITY IMAP4rev1 
+[tag] OK CAPABILITY completed
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend message select-->
+    <receiveMessageIMAP listenpoint="[listenpoint]" request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse final select-->
+    <sendMessageIMAP name="Send SELECT"  channel="[connection]">
+<![CDATA[
+* 172 EXISTS
+* 1 RECENT
+* OK [UNSEEN 12] Message 12 is first unseen
+* OK [UIDVALIDITY 3857529045] UIDs valid
+* OK [UIDNEXT 4392] Predicted next UID
+* FLAGS (\Answered \Flagged \Deleted \Seen \Draft)
+* OK [PERMANENTFLAGS (\Deleted \Seen \*)] Limited
+[tag] OK [READ-WRITE] SELECT completed
+]]>
+    </sendMessageIMAP>
+
+    <finally>
+        <removeListenpointIMAP name="[listenpoint]" />
+    </finally>
+
+</scenario>

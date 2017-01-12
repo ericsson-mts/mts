@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="PCP regression tests" name="PCP">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostPCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostPCP]" operation="set" value="[localHostPCP(0)]"/>
+    <parameter name="[localPortPCP]" operation="file.readProperty" value="pcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortPCP]" operation="set" value="10000"/>
+    
+    <parameter name="[remoteHostPCP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostPCP]" operation="set" value="172.16.21.32"/-->
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostPCP]" operation="set" value="[remoteHostPCP(0)]"/>
+    <parameter name="[remotePortPCP]" operation="file.readProperty" value="pcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortPCP]" operation="set" value="1234"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortPCP]" operation="set" value="[remotePortPCP]"/>
+
+    <testcase description="simple test" name="pcp/000_simpleTest" state="false">
+        <scenario file="000_simpleTest/UAC.xml" name="channelPCP" routingName="channelPCP"/>
+        <scenario file="000_simpleTest/UAS.xml" name="UAS" routingName="UAS"/>
+    </testcase>
+    <testcase description="simple test" name="pcp/001_wiresharkReplay" state="true">
+        <scenario file="001_wiresharkReplay/UAC.xml" name="TCP" routingName="TCP"/>
+        <scenario file="001_wiresharkReplay/UAS.xml" name="UAS" routingName="UAS"/>
+    </testcase>
+
+</test>

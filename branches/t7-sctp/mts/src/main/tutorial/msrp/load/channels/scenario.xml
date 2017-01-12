@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[i]" value="0" />
+
+    <while>
+        <condition>
+            <test parameter="[i]" condition="number.lowerThan" value="[NumberChannels]" />
+        </condition>
+        <do>
+            <openChannelMSRP name="channel_[i]" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]" />
+            <parameter name="[i]" operation="number.add" value="[i]" value2="1" />
+        </do>
+    </while>
+
+    <pause seconds="10" />
+
+    <parameter name="[i]" value="0" />
+    <while>
+        <condition>
+            <test parameter="[i]" condition="number.lowerThan" value="[NumberChannels]" />
+        </condition>
+        <do>
+            <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+            <parameter name="[localMessageID]" operation="string.random" value="10"/>
+            <parameter name="[contentSize]" operation="string.length" value="[content]"/>
+
+            <sendMessageMSRP channel="channel_[i]"><![CDATA[MSRP [localTransactionID] SEND
+To-Path: msrp://bob.exemple.com:8888/74986;tcp
+From-Path: msrp://alice.exemple.com:7777/564;tcp
+Message-ID: [localMessageID]
+Byte-Range: 1-[contentSize]/[contentSize]
+DestScenario:[destScenario]
+Content-Type: text/plain
+
+[content]
+-------[localTransactionID]$
+]]></sendMessageMSRP>
+            <receiveMessageMSRP />
+            
+            <parameter name="[i]" operation="number.add" value="[i]" value2="1" />
+        </do>
+    </while>
+
+    <pause seconds="10" />
+    
+    <parameter name="[i]" value="0" />
+    <while>
+        <condition>
+            <test parameter="[i]" condition="number.lowerThan" value="[NumberChannels]" />
+        </condition>
+        <do>
+            <closeChannelMSRP name="channel_[i]" />
+            <parameter name="[i]" operation="number.add" value="[i]" value2="1" />
+        </do>
+    </while>
+
+</scenario>

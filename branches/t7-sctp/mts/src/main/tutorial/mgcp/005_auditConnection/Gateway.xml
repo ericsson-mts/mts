@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Gateway.xml
+    Created on : 31 janvier 2011, 14:18
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+      The response indicates success and includes information for the
+RequestedInfo
+       
+-->
+
+<scenario>
+    
+   
+    <receiveMessageMGCP request="true">
+    </receiveMessageMGCP>
+    <parameter name="[mgcpverb]" operation="protocol.setFromMessage" value="MGCPCommandLine.MGCPVerb"/>
+    <test parameter="[mgcpverb]" condition="string.equals" value="AUCX"/>
+   
+    <parameter name="[version]" operation="protocol.setFromMessage" value="MGCPCommandLine.Version"/>
+    <test parameter="[version]" condition="string.equals" value="MGCP 1.0"/>
+	<parameter name="[transactionId]" operation="protocol.setFromMessage" value="MGCPCommandLine.transactionId" />
+    <sendMessageMGCP remoteHost="[localHostMGCP]" remotePort="[localPortMGCP]">
+<![CDATA[
+200 [transactionId] OK
+C: A3C47F21456789F0
+N: ca@ca1.whatever.net
+L: p:10, a:PCMU
+M: sendrecv
+P: PS=395, OS=22850, PR=615, OR=30937, PL=7, JI=26, LA=47
+
+v=0
+o=- 4723891 7428910 IN IP4 128.96.63.25
+s=-
+c=IN IP4 128.96.63.25
+t=0 0
+m=audio 1296 RTP/AVP 0
+]]>
+    </sendMessageMGCP>
+
+   
+   
+</scenario>

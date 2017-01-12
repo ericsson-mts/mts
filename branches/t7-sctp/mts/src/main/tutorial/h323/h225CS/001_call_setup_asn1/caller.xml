@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS SETUP" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+	
+	<ASN1 file="..\conf\h323\test_exemple.asn">
+		
+		<PersonnelRecord>
+			<value>
+				<name>
+					<value>
+						<givenName>John</givenName>
+						<initial>P</initial>
+						<familyName>Smith</familyName>
+					</value>	
+				</name>
+				<title>Director</title>
+				<number><value>51</value></number>
+				<dateOfHire><value>19710917</value></dateOfHire>
+				<nameOfSpouse>
+					<value>
+						<givenName>Mary</givenName>
+						<initial>T</initial>
+						<familyName>Smith</familyName>
+					</value>
+				</nameOfSpouse>
+				<children>
+					<instance>
+						<name>
+							<value>
+								<givenName>Ralph</givenName>
+								<initial>T</initial>
+								<familyName>Smith</familyName>
+							</value>
+						</name>
+						<dateOfBirth><value>19571111</value></dateOfBirth>
+					</instance>
+					<instance>
+						<name>
+							<value>
+								<givenName>Susan</givenName>
+								<initial>B</initial>
+								<familyName>Jones</familyName>
+							</value>
+						</name>
+					  <dateOfBirth><value>19590717</value></dateOfBirth>
+					</instance>
+				</children>
+			</value>			
+		</PersonnelRecord>	
+	</ASN1>  
+	
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+	
+	    <!-- SETUP = b00000101 = h5 = d5-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="SETUP"/>
+            
+	    <!-- Bearer capability = b0000100 =h4 = d4--> 
+            <element identifier="Bearer capability">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Information transfert capability" lengthBit="5" type="integer" value="Speech"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1" />
+                <field name="Transfert mode" lengthBit="2" type="enumeration" value="Circuit mode"/>
+                <field name="Information transfert rate" lengthBit="5" type="enumeration" value="64 kbit/s -"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1" />
+                <field name="Layer 1 ident" lengthBit="2" type="integer" value="1"/>
+                <field name="User information layer 1 protocol" lengthBit="5" type="enumeration" value="H.221 and H.242"/>
+            </element>
+	
+            <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification"  type="string" value="m.jemec"/>
+            </element>
+	
+	    <!-- User-User= b1111110 = h7E = d126-->
+	    <!-- BUG it is not possible to use the name of the element at thisq point -->
+            <element identifier="b1111110">
+		<field name="Protocol discriminator" lengthBit="8" type="enumeration" value="5"/>
+		<!-- mettre identifier en dur -->
+
+		<!-- PER v1 : field name="User information" type="binary" lengthBit="920" value="00000a20060008914a000401800d006d002e006a0065006d0065006340c00900003d1243616c6c67656e33323320706f67616373616d08302e39616c7068613400000a01061206b8000f8fdf93ecd9ed6119ab2004762220170000000a01038f80230c0fef93ecd9ed6119ab20047622201700"/-->
+		<field name="User information" type="binary" value="000005100000060008914a000401200d006d002e006a0065006d0065006340c00900003d1243616c6c67656e33323320706f67616373616d08302e39616c7068613400000a01061206b8000f8fdf93ecd9ed6119ab2004762220170000000a01038f80230c0fef93ecd9ed6119ab20047622201700"/>
+		<!-- PER\U V7 : field name="User information" type="binary" lengthBit="888" value="000288000003000448a500020090d006d002e006a0065006d0065006340c1200007a2486c2d8d8cecadc66646640e0decec2c6e6c2da10605c72c2d8e0d0c26800a01061206b807c7efc9f66cf6b08cd590023b11100b80050081c7c0118607f7c9f66cf6b08cd590023b11100b800"/-->
+
+		
+		<!--v1 : field name="User information" type="binary" lengthBit="1360" value="3081a73081a43081a106060008914a000430101e0e006d002e006a0065006d006500633033302b300902010902010002013d041343616c6c67656e33323320706f67616373616d0409302e39616c70686134010100010100300a04040a010612020206b801010004100f8fdf93ecd9ed6119ab20047622201705000500300b04040a01038f0203008023301204100c0fef93ecd9ed6119ab200476222017010100010100010100010100"/-->
+		<!--v7 : field name="User information" type="binary" lengthBit="856"  value="3081ae3081ab3081a306060008914a000430101e0e006d002e006a0065006d006500633033302b300902010902010002013d041343616c6c67656e33323320706f67616373616d0409302e39616c70686134010100010100300a04040a010612020206b801010004100f8fdf93ecd9ed6119ab20047622201705000500300b04040a01038f0203008023301204100c0fef93ecd9ed6119ab20047622201701010001010001010001010005000101000500"/-->
+		<!--field name="User information" type="binary" lengthBit="1056" value="20a8060008914a0004014006006d002e006a0065006d0065006322c00900003d1443616c6c67656e33323320706f67616373616d00000a302e39616c706861340000000a01061206b800f8fdf93ecd9ed6119ab2000476222017005d0d8007000a01038f80231100c0fef93ecd9ed6119ab2000476222017010001000100010002800100"/-->
+	    </element>
+	    
+        </ISDN>
+
+    </sendMessageH225CS>
+
+</scenario>

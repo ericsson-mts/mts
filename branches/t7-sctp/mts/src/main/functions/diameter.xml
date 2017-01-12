@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+functions defined in this scenario
+
+"public"
+diameter.openChannel_SendCER_RecCEA
+diameter.RecCER_SendCEA
+
+"private"
+
+-->
+<scenario>
+
+    <function name="diameter.openChannel_SendCER_RecCEA">
+        <input>
+        </input>
+
+        <do>
+
+            <if>
+              <condition>
+                <test parameter="[remoteServer]" condition="boolean.equals" value="false"/>
+              </condition>
+              <then>
+                  <pause name="synchro si on est client pur" seconds="0.0"/>
+              </then>
+            </if>       
+            <if>
+              <condition>
+                <test parameter="[firstClient]" condition="string.equals" value="true" not="true"/>
+              </condition>
+              <then>
+        
+                <!-- open a channel -->
+                <parameter name="[localPortDIAM]" operation="number.random" value="1025" value2="65535"/>
+                <openChannelDIAMETER name="channel_client" localHost="[localHostDIAM]" localPort="[localPortDIAM]" 
+                                     remoteHost="[remoteHostDIAM]" remotePort="[remotePortDIAM]" transport="[transport]" />
+        
+                <parameter name="[test:firstClient]" operation="set" value="true"/>
+        
+                <parameter name="[stackDiameter]" operation="file.readproperty" value="tester.properties" value2="protocol.STACK_CLASS_NAME_DIAMETER"/>
+                <if>
+                  <condition>
+                    <test parameter="[stackDiameter]" condition="string.contains" value="light"/>
+                  </condition>
+                  <then>
+
+                      <!--
+                      From RFC 3588 September 2003 :
+                      Capabilities-Exchange-Request ::= < Diameter Header: 257, REQ >
+                                                { Origin-Host }
+                                                { Origin-Realm }
+                                             1* { Host-IP-Address }
+                                                { Vendor-Id }
+                                                { Product-Name }
+                                                [ Origin-State-Id ]
+                                              * [ Supported-Vendor-Id ]
+                                              * [ Auth-Application-Id ]
+                                              * [ Inband-Security-Id ]
+                                              * [ Acct-Application-Id ]
+                                              * [ Vendor-Specific-Application-Id ]
+                                                  Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                                       1* [ Vendor-Id ]
+                                                                                       0*1{ Auth-Application-Id }
+                                                                                       0*1{ Acct-Application-Id }
+                                                [ Firmware-Revision ]
+                                              * [ AVP ]
+                      -->
+                      
+                      <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
+                      <sendMessageDIAMETER name="Send Request RFC3588 CER" channel="channel_client" destScenario="server">
+                          <header request="true" command="Capabilities-Exchange" applicationId="0" proxiable="false" error="false" retransmit="false"/>
+                  
+                          <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+                          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+                          <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+                          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+                  
+                          <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
+                          <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHosts]"/>
+                  
+                          <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
+                          <!-- A Vendor-Id value of zero in the CER or CEA messages is reserved and indicates that this field is ignored. -->
+                          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+                  
+                          <!-- The Product-Name AVP contains the vendor assigned name for the product. -->
+                          <avp code="Product-Name:269" mandatory="true" type="UTF8String" value="Ericsson MTS - Multiprotocol Test Suite"/>
+                  
+                          <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+                          <avp code="Origin-State-Id:278" mandatory="false" type="Unsigned32" value="0"/>
+                  
+                          <!-- To inform the peer that the sender supports (a subset of) the vendor-specific AVPs defined by the vendor identified in this AVP. -->
+                          <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="0"/>
+                          <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="10415"/>
+                          <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="13019"/>
+                          <!--avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="xxxxx"/>
+                          <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="yyyyy"/>
+                          <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="zzzzz"/-->
+                  
+                          <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Diameter Common Messages:0"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Diameter Credit Control:4"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Ericsson IMT 30 - Charging:1234"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Ericsson IMT 30 - Cx:4321"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP CX/DX:16777216"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Sh:16777217"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Gq:16777222"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="ETSI e4:16777231"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP S6a:16777251"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP S13:16777252"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Gx"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Gx:16777238"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Rx:16777236"/>
+                          <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP SWm:16777264"/>
+                          <!--avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="xxxxx"/-->
+                          <!--avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="yyyyy"/-->
+                          <!--avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="zzzzz"/-->
+                                                                                                                  
+                          <!-- The Inband-Security-Id AVP is used in order to advertise support of the Security portion of the application. -->
+                          <!-- Possible enumerated values : NO_INBAND_SECURITY (0) / TLS (1). -->
+                          <!--avp code="Inband-Security-Id" mandatory="false" type="Unsigned32" value="NO_INBAND_SECURITY"/-->
+                          <avp code="Inband-Security-Id:299" mandatory="false" type="Unsigned32" value="TLS"/>
+                  
+                          <!-- The Acct-Application-Id AVP is used in order to advertise support of the Accounting portion of an application. -->
+                          <!--avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="xxxxx"/-->
+                          <!--avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="yyyyy"/-->
+                          <!--avp code="Auth-Application-Id:259" mandatory="false" type="Unsigned32" value="zzzzz"/-->
+                          
+                          <!-- The Vendor-Specific-Application-Id AVP is used to advertise support of a vendor-specific Diameter Application. -->
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="None:0"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Common Messages:0"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Common Messages:0"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Base Accounting:3"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Base Accounting:3"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Credit Control:4"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Credit Control:4"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="Ericsson:193"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Charging:1234"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Charging:1234"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="Ericsson:193"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Cx:4321"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Cx:4321"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP CX/DX:16777216"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP CX/DX:16777216"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Sh:16777217"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Sh:16777217"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="ETSI:13019"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S6a:16777251"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S6a:16777251"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S13:16777252"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S13:16777252"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777224"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777224"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777238"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777238"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Rx:16777236"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Rx:16777236"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="ETSI:13019"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/-->
+                          </avp>
+                          <avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP SWm:16777264"/>
+                            <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP SWm:16777264"/-->
+                          </avp>                          
+                          <!--avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="xxxxx"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="xxxxx"/>
+                            <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="xxxxx"/>
+                          </avp-->
+                          <!--avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="yyyyy"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="yyyyy"/>
+                            <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="yyyyy"/>
+                          </avp-->
+                          <!--avp code="Vendor-Specific-Application-Id:260">
+                            <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="zzzzz"/>
+                            <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="zzzzz"/>
+                            <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="zzzzz"/>
+                          </avp-->
+                  
+                          <!-- The Firmware-Revision AVP is used to inform a Diameter peer of the firmware revision of the issuing device. -->
+                          <avp code="Firmware-Revision:267" mandatory="false" type="Unsigned32" value="61"/>
+                      </sendMessageDIAMETER>
+                  
+                      <receiveMessageDIAMETER name="Receive Answer RFC3588 CEA" request="false" type="Capabilities-Exchange:257" result="DIAMETER_SUCCESS:2001">
+                      </receiveMessageDIAMETER>
+
+                    </then>
+                  </if>
+                          
+              </then>
+            </if>
+            
+        </do>
+    </function>
+
+    <function name="diameter.RecCER_SendCEA">
+        <input>
+        </input>
+
+        <do>
+
+            <parameter name="[stackDiameter]" operation="file.readproperty" value="tester.properties" value2="protocol.STACK_CLASS_NAME_DIAMETER"/>
+            <if>
+              <condition>
+                <test parameter="[firstServer]" condition="string.equals" value="true" not="true"/>
+                <test parameter="[stackDiameter]" condition="string.contains" value="light"/>
+              </condition>
+              <then>
+                
+                  <parameter name="[test:firstServer]" operation="set" value="true"/>
+                  
+                  <receiveMessageDIAMETER name="Receive Request RFC3588 CER" request="true" type="Capabilities-Exchange:257">
+                      <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+                      <parameter name="[applicationID]" operation="protocol.setFromMessage" value="header.applicationID"/>                          
+                      <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+                      <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+                  </receiveMessageDIAMETER>
+      
+                  <!--
+                  From RFC 3588 September 2003 :
+                  Capabilities-Exchange-Answer ::= < Diameter Header: 257 >
+                                               { Result-Code }
+                                               { Origin-Host }
+                                               { Origin-Realm }
+                                            1* { Host-IP-Address }
+                                               { Vendor-Id }
+                                               { Product-Name }
+                                               [ Origin-State-Id ]
+                                               [ Error-Message ]
+                                             * [ Failed-AVP ]
+                                                 Failed-AVP ::= < AVP Header: 279 >
+                                                             1* {AVP}
+                                             * [ Supported-Vendor-Id ]
+                                             * [ Auth-Application-Id ]
+                                             * [ Inband-Security-Id ]
+                                             * [ Acct-Application-Id ]
+                                             * [ Vendor-Specific-Application-Id ]
+                                                 Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                                      1* [ Vendor-Id ]
+                                                                                      0*1{ Auth-Application-Id }
+                                                                                      0*1{ Acct-Application-Id }
+                                               [ Firmware-Revision ]
+                                             * [ AVP ]
+                  -->
+              
+                  <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
+                  <sendMessageDIAMETER name="Send Answer RFC3588 CEA">
+                      <header request="false" command="[commandCode]" applicationId="0" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>              
+                      <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+                      <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+                      <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+                      <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+
+                      <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
+                      <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS"/>
+              
+                      <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
+                      <avp code="Host-IP-Address:257" mandatory="true" type="IPAddress" value="[localHosts]"/>
+                      <!--avp code="Host-IP-Address" mandatory="true" type="IPAddress" value="[localHostDIAM]"/-->
+              
+                      <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
+                      <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+              
+                      <!-- The Product-Name AVP contains the vendor assigned name for the product. -->
+                      <avp code="Product-Name:269" mandatory="true" type="UTF8String" value="Ericsson MTS - Multiprotocol Test Suite"/>
+              
+                      <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+                      <avp code="Origin-State-Id:278" mandatory="false" type="Unsigned32" value="0"/>
+              
+                      <!-- The Error-Message AVP MAY accompany a Result-Code AVP as a human readable error message. -->
+                      <!--avp code="Error-Message:281" mandatory="false" type="UTF8String" value="xxxxx"/-->
+              
+                      <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
+                      <!--avp code="Failed-AVP:279">
+                        <avp code="xxxxx" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+                      </avp>
+                      <avp code="Failed-AVP:279">
+                        <avp code="yyyyy" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+                      </avp-->
+              
+                      <!-- To inform the peer that the sender supports (a subset of) the vendor-specific AVPs defined by the vendor identified in this AVP. -->
+                      <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="0"/>
+                      <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="10415"/>
+                      <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="13019"/>
+                      <!--avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="xxxxx"/>
+                      <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="yyyyy"/>
+                      <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="zzzzz"/-->
+              
+                      <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Diameter Common Messages:0"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Diameter Credit Control:4"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Ericsson IMT 30 - Charging:1234"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="Ericsson IMT 30 - Cx:4321"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP CX/DX:16777216"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Sh:16777217"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Gq:16777222"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="ETSI e4:16777231"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP S6a:16777251"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP S13:16777252"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Gx"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Gx:16777238"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP Rx:16777236"/>
+                      <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="3GPP SWm:16777264"/>
+                      <!--avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="xxxxx"/-->
+                      <!--avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="yyyyy"/-->
+                      <!--avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="zzzzz"/-->
+              
+                      <!-- The Inband-Security-Id AVP is used in order to advertise support of the Security portion of the application. -->
+                      <!-- Possible enumerated values : NO_INBAND_SECURITY (0) / TLS (1). -->
+                      <avp code="Inband-Security-Id" mandatory="false" type="Unsigned32" value="NO_INBAND_SECURITY"/>
+                      <!--avp code="Inband-Security-Id" mandatory="false" type="Unsigned32" value="TLS"/-->
+              
+                      <!-- The Acct-Application-Id AVP is used in order to advertise support of the Accounting portion of an application. -->
+                      <!--avp code="Acct-Application-Id" mandatory="false" type="Unsigned32" value="xxxxx"/-->
+                      <!--avp code="Acct-Application-Id" mandatory="false" type="Unsigned32" value="yyyyy"/-->
+                      <!--avp code="Auth-Application-Id" mandatory="false" type="Unsigned32" value="zzzzz"/-->
+              
+                      <!-- The Vendor-Specific-Application-Id AVP is used to advertise support of a vendor-specific Diameter Application. -->
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="None:0"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Common Messages:0"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Common Messages:0"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Base Accounting:3"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Base Accounting:3"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Credit Control:4"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Diameter Credit Control:4"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="Ericsson:193"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Charging:1234"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Charging:1234"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="Ericsson:193"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Cx:4321"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="Ericsson IMT 30 - Cx:4321"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP CX/DX:16777216"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP CX/DX:16777216"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Sh:16777217"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Sh:16777217"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="ETSI:13019"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S6a:16777251"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S6a:16777251"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S13:16777252"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP S13:16777252"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777224"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777224"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777238"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Gx:16777238"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Rx:16777236"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP Rx:16777236"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="ETSI:13019"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="ETSI e4:16777231"/-->
+                      </avp>
+                      <avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="3GPP:10415"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="3GPP SWm:16777264"/>
+                        <!--avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="3GPP SWm:16777264"/-->
+                      </avp>                          
+                      <!--avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="xxxxx"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="xxxxx"/>
+                        <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="xxxxx"/>
+                      </avp-->
+                      <!--avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="yyyyy"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="yyyyy"/>
+                        <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="yyyyy"/>
+                      </avp-->
+                      <!--avp code="Vendor-Specific-Application-Id:260">
+                        <avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="zzzzz"/>
+                        <avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="zzzzz"/>
+                        <avp code="Acct-Application-Id" mandatory="true" type="Unsigned32" value="zzzzz"/>
+                      </avp-->
+              
+                      <!-- The Firmware-Revision AVP is used to inform a Diameter peer of the firmware revision of the issuing device. -->
+                      <avp code="Firmware-Revision:267" mandatory="false" type="Unsigned32" value="61"/>
+              
+                  </sendMessageDIAMETER>        
+              
+              </then>
+            </if>
+
+        </do>
+    </function>
+
+    <function name="diameter.removeListenpoint">
+        <input>
+          <parameter name="[function:name]" type="String"/>
+        </input>
+
+        <do>
+            <if>
+              <condition>
+                <test parameter="[transport]" condition="string.equalsIgnoreCase" value="sctp" not="true"/>
+              </condition>
+              <then>
+                  <removeListenpointDIAMETER name="[function:name]"/>
+                  <pause name="pause" seconds="0.1"/>
+              </then>
+            </if>
+        </do>
+    </function>
+
+</scenario>

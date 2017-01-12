@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+    <sendMessageGTP name="send tunnel endpoint identifier data"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV1 type="Error Indication:26" tunnelEndpointId="1234567890" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+        <element tag="TunnelEndpointIdentifierData:16" >
+            <field name="TunnelEndpointIdentifierData" value="121212" lengthBit="32" type="integer"/>
+        </element>
+        <element tag="GSNAddress:133" >
+            <field name="GSNAddress" value="ABCD" type="string"/>
+        </element>
+        </sendMessageGTP>
+
+</scenario>

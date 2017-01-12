@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[ServiceTrigger]" operation="set" value=""/>   				
+		
+	<label name="Begin"/>
+		
+	<receiveMessage name="wait_SIP_request" timeout="0" failedOnTimeout="false">
+		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>  		
+		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>  						
+		<parameter name="[lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>  	
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[lastToTag]" operation="protocol.setFromMessage" value="header.To.parameter.tag"/>  	
+	  	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
+	  	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>	
+	  	<parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	  	<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  	<parameter name="[lastBranchId]" operation="protocol.setFromMessage" value="header.TopmostVia.Parameter.branch"/>
+	  	<parameter name="[lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>		
+	  	<parameter name="[lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>		  		  	
+	  	<parameter name="[lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>		  		  	
+	  	<parameter name="[lastMax-Forwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>	
+	  	<parameter name="[lastContent]" operation="protocol.setFromMessage" value="content"/>		  		  		  		  	
+		<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>  	
+		<parameter name="[lastToAddress]" operation="protocol.setFromMessage" value="header.To.Address"/>  	
+	  	<parameter name="[lastFromAddress]" operation="protocol.setFromMessage" value="header.From.Address"/>  	
+	  	<parameter name="[lastContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>		  		  		  		  		  	
+	  	<parameter name="[lastContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+	  	<parameter name="[lastServiceTrigger]" operation="protocol.setFromMessage" value="header.ServiceTrigger"/>		  		  		  		  		  	
+	</receiveMessage>
+
+	<if>
+	    <condition>
+	    	<test parameter="[lastIsRequest]" condition="string.equals" value="true"/>		  		  	
+	    </condition>
+	    <then>
+    		<goto  name="goto_Request" label="Request" state="true"/>	    	
+	    </then>
+	    <else>
+    		<goto  name="goto_Response" label="Response" state="true"/>	    		    
+	    </else>
+	</if>
+	
+	<label name="Request"/>	
+	
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>   
+	
+
+			
+		<!-- Max-Forwards -->
+	<if><condition><test parameter="[lastMax-Forwards]" condition="list.isEmpty" value="0"/></condition>
+	    <then>
+		</then>
+		<else>
+			<if><condition><test parameter="[lastMax-Forwards]" condition="string.equals" value="0"/></condition>
+			<then>
+			<sendMessageSIP name="Answer 483 Too Many Hop">
+<![CDATA[SIP/2.0 483 Too Many Hop
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+			</sendMessageSIP>
+			
+			
+			
+			<goto  name="goto_Begin" label="Begin" state="true"/></then>
+			<else>				
+				<parameter name="[lastMax-Forwards]" operation="number.substract" value="[lastMax-Forwards]" value2="1"/>
+			</else>
+			</if>
+		</else>
+	</if>
+	
+    	    	<!-- new From header tag -->		
+	    	<if>
+	    	    <condition>
+	    	    	<test parameter="[test:FromTag_[lastCallId]]" condition="exists"/>
+	    	    </condition>
+	    	    <else>
+    	    		<parameter name="[test:FromTag_[lastCallId]]" operation="string.random" value="10"/>
+	    	    </else>
+	    	</if>        	    	
+	    	<!-- new Call-ID header -->	
+	    	<if>
+	    	    <condition>
+	    	    	<test parameter="[test:CallID_[lastCallId]]" condition="exists"/>
+	    	    </condition>
+	    	    <else>
+	    		<parameter name="[test:CallID_[lastCallId]]" operation="number.random" value="1000000"/>	    		    		
+	    	    </else>
+	    	</if>    
+	    	<!-- new CSeq number -->		
+	    	<if>
+	    	    <condition>
+	    	    	<test parameter="[lastMethod]" condition="string.equals" value="ACK"/>	    	    
+	    	    </condition>
+	    	    <else>
+   			<parameter name="[test:CSeqNumber_[lastCallId]]" operation="number.uid" value="1000000"/>	    		    		
+	    	    </else>
+	    	</if>    	    	
+	    	<!-- new branch ID-->
+		<parameter name="[newBranchId]" operation="string.random" value="10"/>      				 
+		<!-- remove the first Route if existing -->		
+		<parameter name="[lastRoute]" operation="removeFirst" value="[lastRoute]"/>   		
+		<!-- Calculate the transactionID -->		
+		<parameter name="[newTransactionId]" operation="set" value="[test:CSeqNumber_[lastCallId]] [lastMethod]|z9hG4bK[newBranchId]"/>   		
+		<if>
+		    <condition>
+	    		<test parameter="[lastMethod]" condition="string.equals" value="ACK"/>		  		  	
+	    	    </condition>
+	    	    <else>
+		    	<!-- add header in context for the response -->
+		    	<parameter name="[test:lastTo_[newTransactionId]]" operation="set" value="[lastTo]"/>		
+			<parameter name="[test:lastFrom_[newTransactionId]]" operation="set" value="[lastFrom]"/>
+		  	<parameter name="[test:lastCallId_[newTransactionId]]" operation="set" value="[lastCallId]"/>
+		  	<parameter name="[test:lastCSeq_[newTransactionId]]" operation="set" value="[lastCSeq]"/>
+			<parameter name="[test:lastVia_[newTransactionId]]" operation="set" value="[lastVia]"/>	  		  		  				        		
+			<parameter name="[test:lastRecord-Route_[newTransactionId]]" operation="set" value="[lastRecord-Route]"/>
+			<parameter name="[test:lastRecord-Route_[newTransactionId]]" operation="list.addFirst" value="[test:lastRecord-Route_[newTransactionId]]" value2="&lt;sip:[localSIP];transport=[transportRequest];lr&gt;"/>
+	            </else>    
+		</if>   
+		<if><condition><test parameter="[lastSIPMethod]" condition="string.equals" value="INVITE"/></condition>
+		    <then>
+			<sendMessageSIP name="Answer 100 Trying ">
+<![CDATA[SIP/2.0 100 Trying
+Via: [lastVia]
+From: [lastTo]
+To: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+			</sendMessageSIP>
+		    </then>
+		</if>
+
+		<parameter name="[ToTag]" operation="set" value="[lastToAddress]"/>	    		    				    
+		<parameter name="[newCallId]" operation="set" value="[test:CallID_[lastCallId]]"/>
+        	<if>
+        	    <condition>
+			<test parameter="[lastToTag_[newCallId]]" condition="exists"/>        	    
+		    </condition>
+		    <then>
+   			<parameter name="[ToTag]" operation="set" value="[ToTag];tag=[lastToTag_[newCallId]]"/>	    		    				    
+		    </then>
+		    <else>
+		    </else>
+		</if>
+			<sendMessageSIP name="proxy_SIP_request">		
+<![CDATA[
+[lastFirstline]
+To: [ToTag]
+From: [lastFromAddress];tag=[test:FromTag_[lastCallId]]
+Call-ID: [test:CallID_[lastCallId]]
+CSeq: [test:CSeqNumber_[lastCallId]] [lastMethod]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Via: [lastVia]
+Route: [lastRoute]
+Record-Route: <sip:[localSIP];transport=[transportRequest];lr>
+Record-Route: [lastRecord-Route]
+Contact: [lastContact]
+Max-Forwards: [lastMax-Forwards]
+ServiceTrigger: [ServiceTrigger]
+ServiceTrigger: [lastServiceTrigger]
+Content-Type: [lastContentType]
+Content-Length: [lastContentLength]
+
+[lastContent]
+]]>
+		</sendMessageSIP>	
+            		    
+ 	<goto  name="loop" label="Begin" state="true"/>
+ 	
+	<label name="Response"/>	
+	 		    
+	<!-- remove the first Via if existing -->		
+	<parameter name="[lastVia]" operation="removeFirst" value="[lastVia]"/>   		
+        <!-- new To header tag-->		
+	<if>
+	    <condition>
+	    	<test parameter="[test:ToTag_[lastCallId]]" condition="exists"/>
+	    </condition>
+	    <else>
+    	    	<parameter name="[test:ToTag_[lastCallId]]" operation="string.random" value="10"/>
+	    </else>
+	</if>        	    		
+	<parameter name="[test:lastToTag_[lastCallId]]" operation="set" value="[lastToTag]"/>
+	<!-- Calculate the transactionID -->		
+	<parameter name="[newTransactionId]" operation="set" value="[lastCSeq]|[lastBranchId]"/>   		
+
+	<sendMessageSIP name="proxy_SIP_response">		
+<![CDATA[
+[lastFirstline]
+To: [test:lastTo_[newTransactionId]];tag=[test:ToTag_[lastCallId]]
+From: [test:lastFrom_[newTransactionId]]
+Call-ID: [test:lastCallId_[newTransactionId]]
+CSeq: [test:lastCSeq_[newTransactionId]]
+Via: [test:lastVia_[newTransactionId]]
+Record-Route: [test:lastRecord-Route_[newTransactionId]]
+Contact: [lastContact]
+ServiceTrigger: [ServiceTrigger]0
+ServiceTrigger: [lastServiceTrigger]
+Content-Type: [lastContentType]
+Content-Length: [lastContentLength]
+
+[lastContent]
+]]>
+	</sendMessageSIP>	
+
+	<if>
+	    <condition>
+    		<test parameter="[lastMethod]" condition="string.equals" value="BYE"/>		  		  	
+    	    </condition>
+    	    <then>    	    
+	        <parameter name="[test:FromTag_[newTransactionId]]" operation="unset"/>		
+		<parameter name="[test:CallID_[newTransactionId]]" operation="unset"/>
+	  	<parameter name="[test:CSeqNumber_[newTransactionId]]" operation="unset"/>
+	  	<parameter name="[test:lastToTag_[newTransactionId]]" operation="unset"/>
+		<parameter name="[test:lastVia_[newTransactionId]]" operation="unset"/>
+	  	<parameter name="[test:lastRecord-Route_[newTransactionId]]" operation="unset"/>		
+   	    </then>
+   	</if> 	 		
+
+ 	<goto  name="loop" label="Begin" state="true"/>
+ 	  	
+</scenario>

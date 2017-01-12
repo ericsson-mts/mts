@@ -1,0 +1,170 @@
+    <!-- rest counters used to the supervision only -->
+    <stats>
+        <reset path="> request > SIP > [RequestType]_cap" name="Requests"/>
+    </stats>
+    <stats>
+        <reset path="> request > SIP > [RequestType]_cap > [3-9][0-9][0-9]_cap" name="Responses"/>
+    </stats>
+    <stats>
+        <reset path="> request > SIP > [RequestType]_cap > [2][0-9][0-9]_cap" name="Responses"/>
+    </stats>
+    <stats>
+        <reset path="> request > SIP > [RequestType]_cap > .*_cap" name="Response Time"/>
+    </stats>
+    <stats>
+        <reset path="> request > SIP > [RequestType]_cap" name="Request retransmission"/>
+    </stats>
+    <stats>
+        <reset path="> request > SIP > [RequestType]_cap > .*_cap" name="Response retransmission"/>
+    </stats>
+    
+    <!-- wait a while --> 
+    <pause name="pause" seconds="[PeriodSupervision]"/>
+
+    <!-- supervise the number of transaction -->
+    <parameter name="[Trans]" operation="system.statCounter" value="> request > SIP > [RequestType]_cap" value2="Requests"/>
+    <if>
+        <condition>
+            <test parameter="[Trans]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[transCount]" operation="list.set" value="[[Trans(0)]]"/>
+        </then>
+        <else>
+            <parameter name="[transCount]" operation="list.set" value="0"/>
+        </else>    
+    </if>
+    <parameter name="[transFlow]" operation="number.divide" value="[transCount]" value2="[PeriodSupervision]"/>        
+    <stats>
+        <value name="[RequestType] Requests flow" summary="ReqFlow" complete="[RequestType] Requests flow per seconds">
+    	    <newValue>[transFlow]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[transFlow]" condition="number.greaterThan" value="[Threshold_trans_flow]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Transaction => count=[transCount], flow=[transFlow]/s</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Transaction flow greater than [Threshold_trans_flow]/s</log>
+            <!--set a SNMP alarm to the manager-->
+        </then>
+    </if>
+
+    <!-- supervise the percent of failed transaction -->
+    <parameter name="[TransFailed]" operation="system.statCounter" value="> request > SIP > [RequestType]_cap > [3-9][0-9][0-9]_cap" value2="Responses"/>
+    <if>
+        <condition>
+            <test parameter="[TransFailed]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[TransFailedCount]" operation="list.set" value="[[TransFailed(0)]]"/>
+        </then>
+        <else>
+            <parameter name="[TransFailedCount]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <parameter name="[TransOK]" operation="system.statCounter" value="> request > SIP > [RequestType]_cap > [2][0-9][0-9]_cap" value2="Responses"/>
+    <if>
+        <condition>
+            <test parameter="[TransOK]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[TransOKCount]" operation="list.set" value="[[TransOK(0)]]"/>
+        </then>
+        <else>
+            <parameter name="[TransOKCount]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <parameter name="[TransTotalCount]" operation="list.set" value="[TransFailedCount]"/>
+    <parameter name="[TransTotalCount]" operation="number.add" value="[TransTotalCount]" value2="[TransOKCount]"/>
+    <parameter name="[TransFailedPercent]" operation="number.divide" value="[TransFailedCount]" value2="[TransTotalCount]"/>
+    <parameter name="[TransFailedPercent]" operation="number.multiply" value="[TransFailedPercent]" value2="100"/>
+    <stats>
+        <value name="[RequestType] Response failed" summary="respKO" complete="[RequestType] Response failed (KO) in percent">
+    	    <newValue>[TransFailedPercent]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[TransFailedPercent]" condition="number.greaterThan" value="[Threshold_trans_failed]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Transaction failed => count=[TransFailedCount], percent=[TransFailedPercent]%</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Transaction failed greater than [Threshold_trans_failed]%</log>
+            <!-- set a SNMP alarm to the manager -->
+        </then>
+    </if>
+    
+    <!-- supervise the response time -->
+    <parameter name="[responseTime]" operation="system.statCounter" value="> request > SIP > [RequestType]_cap > .*_cap" value2="Response Time"/>
+    <if>
+        <condition>
+            <test parameter="[responseTime]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[responseTimeValue]" operation="list.set" value="[[responseTime(1)]]"/>
+        </then>
+        <else>
+            <parameter name="[responseTimeValue]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <stats>
+        <value name="[RequestType] Response time" summary="resp time" complete="[RequestType] Response time in seconds">
+    	    <newValue>[responseTimeValue]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[responseTimeValue]" condition="number.greaterThan" value="[Threshold_response_time]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Response Time average=[responseTimeValue]</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Response time greater than [Threshold_response_time]s</log>
+            <!-- set a SNMP alarm to the manager -->
+        </then>
+    </if>
+
+    <!-- supervise the retransmission percent -->
+    <parameter name="[retransReq]" operation="system.statCounter"  value="> request > SIP > [RequestType]_cap" value2="Request retransmission"/>
+    <if>
+        <condition>
+            <test parameter="[retransReq]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[retransTotalCount]" operation="list.set" value="[[retransReq(0)]]"/>
+            <parameter name="[retransTotalPercent]" operation="list.set" value="[[retransReq(2)]]"/>
+        </then>
+        <else>
+            <parameter name="[retransTotalCount]" operation="list.set" value="0"/>
+            <parameter name="[retransTotalPercent]" operation="list.set" value="0"/>
+        </else>
+    </if>
+    <parameter name="[retransResp]" operation="system.statCounter" value="> request > SIP > [RequestType]_cap > .*_cap" value2="Response retransmission"/>
+    <if>
+        <condition>
+            <test parameter="[retransResp]" condition="list.isEmpty" not="true"/>
+        </condition>
+        <then>
+            <parameter name="[retransTotalCount]" operation="number.add" value="[retransTotalCount]" value2="[[retransResp(0)]]"/>
+            <parameter name="[retransTotalPercent]" operation="number.add" value="[retransTotalPercent]" value2="[[retransResp(2)]]"/>
+        </then>
+        <else>
+        </else>
+    </if>
+    <parameter name="[retransTotalPercent]" operation="number.divide" value="[retransTotalPercent]" value2="2"/>
+    <stats>
+        <value name="[RequestType] Retransmit percent" summary="retrans" complete="[RequestType] Retransmissions in percent">
+    	    <newValue>[retransTotalPercent]</newValue>	
+        </value>                
+    </stats>
+    <if>
+        <condition>
+            <test parameter="[retransTotalPercent]" condition="number.greaterThan" value="[Threshold_retransmit]"/>
+        </condition>
+        <then>
+            <log name="log" type="scenario" level="[LevelSupervision]">[RequestType] Retransmissions => count=[retransTotalCount] percent=[retransTotalPercent]%</log>
+            <log name="log" type="scenario" level="[LevelSupervision]">ALARM : [RequestType] Retransmit percent > [Threshold_retransmit]%</log>
+            <!-- set a SNMP alarm to the manager -->
+        </then>
+    </if>

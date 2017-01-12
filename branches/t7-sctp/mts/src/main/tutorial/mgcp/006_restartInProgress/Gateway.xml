@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Gateway.xml
+    Created on : 31 janvier 2011, 14:18
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+        The  example illustrates a RestartInProgress message sent by an
+gateway to inform the Call Agent that the specified endpoint will be
+taken out-of-service in 300 seconds
+       
+-->
+
+<scenario>
+    <parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+  
+    
+    <sendMessageMGCP remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+RSIP [transactionId] aaln/1@rgw-2567.whatever.net MGCP 1.0
+RM: graceful
+RD: 300
+]]>
+    </sendMessageMGCP>
+
+    <receiveMessageMGCP request="false">
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+   
+  
+</scenario>

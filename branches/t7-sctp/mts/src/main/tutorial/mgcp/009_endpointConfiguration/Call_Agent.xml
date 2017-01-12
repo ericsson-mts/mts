@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+       EndpointConfiguration—Used by a call agent to inform
+       a gateway of coding characteristics (a-law or mu-law)
+       expected by the line side of the endpoint.
+-->
+
+<scenario>
+    <parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+    <sendMessageMGCP  name="Create Connection"  remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+EPCF [transactionId] wxx/T2@mynet.com MGCP 1.0
+B: e:mu
+]]>
+
+    </sendMessageMGCP>
+
+     <receiveMessageMGCP>
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+   
+</scenario>

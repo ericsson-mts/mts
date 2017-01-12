@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <createListenpointRTSP name="session5_0" localHost="0.0.0.0" localPort="15555"/>
+    <createListenpointRTSP name="session5_1" localHost="0.0.0.0" localPort="12222"/>
+
+    <sendMessageRTSP name="Send Describe" listenpoint="session5_0" >
+    <![CDATA[DESCRIBE rtsp://localhost:15555/demo/548/sound RTSP/1.0
+CSeq: 1 
+Accept: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Setup" listenpoint="session5_1" >
+    <![CDATA[DESCRIBE rtsp://localhost:15555/demo/548/sound RTSP/1.0
+CSeq: 1 
+Accept: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Play" listenpoint="session5_0" >
+    <![CDATA[PLAY rtsp://localhost:15555/demo/548/sound RTSP/1.0
+CSeq: 2
+Session: 91389234235
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="PLAY" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Play" listenpoint="session5_1" >
+    <![CDATA[PLAY rtsp://localhost:15555/demo/548/sound RTSP/1.0
+CSeq: 2
+Session: 91389234234
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="PLAY" result="200">
+    </receiveMessageRTSP>
+
+    <removeListenpointRTSP name="session5_0"/>
+    <removeListenpointRTSP name="session5_1"/>
+
+</scenario>

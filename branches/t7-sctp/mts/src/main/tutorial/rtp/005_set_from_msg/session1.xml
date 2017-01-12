@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]" />
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <header ssrc="0" payloadType="17" seqnum="0" timestamp="0" mark="0"/>
+	    <payload format="text">Packet #1</payload>		
+	    <payload format="text">abcdefghijklmnopqrstuvwxyz</payload>		
+	    <payload format="text">0123456789</payload>		
+	    <payload format="binary">
+	    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+	    H80 H81 H82 H83 H84 H85 H86 H87 H88 H89 H8A H8b H8C H8d H8E H8f
+	    B01010101 B10101010 B11111111 B0 B101
+	    </payload>
+	    <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+	</sendMessageRTP>
+	
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <header ssrc="0" payloadType="17" seqnum="1" timestamp="1000" mark="1"/>
+	    <payload format="text">Packet #2</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <header ssrc="0" payloadType="17" seqnum="2" timestamp="2000"/>
+	    <payload format="text">Packet #3</payload>		
+	</sendMessageRTP>
+
+	<receiveMessageRTP type="unassigned:27">
+		<parameter name="[headerSsrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+		<parameter name="[headerPayloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>
+		<parameter name="[headerSeqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+		<parameter name="[headerTimestamp]" operation="protocol.setFromMessage" value="header.timestamp"/>
+		<parameter name="[payloadText]" operation="protocol.setFromMessage" value="payload.text"/>
+		<parameter name="[payloadBinary]" operation="protocol.setFromMessage" value="payload.binary"/>
+	</receiveMessageRTP>
+	<receiveMessageRTP type="unassigned:27"/>
+	<!-- to avoid lost of packets -->	
+	<receivePacketRTP name="ReceivePacketRTP2" payloadType="unassigned:27"/>		
+	
+	<finally>
+		<removeListenpointRTP name="inviter" />
+   	</finally>
+		
+</scenario>

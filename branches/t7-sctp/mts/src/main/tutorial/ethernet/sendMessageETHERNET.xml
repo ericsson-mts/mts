@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+	<!-- send IP/UDP/SIP REGISTER message -->
+	<createProbeETHERNET name="capture" networkInterface="[localHostETH]" captureFilter="src host [localHostETH] and dst host [localHostETH]" />
+	
+	<sendMessageETHERNET name="send packet" probe="capture"> <!-- nic="0" is eth0 -->
+		<ethernet remoteMac="00:13:60:60:08:41" type="0800" /> <!-- type="0800" is for IP payload -->
+		<data format="binary">h4500016e000040004011</data> <!-- IP header -->
+		<data format="binary">hb67e</data> 		<!-- IP header checksum -->
+		<data format="binary">h[localBinaryIP]</data> 	<!-- IP@ SRC -->
+		<data format="binary">h[localBinaryIP]</data> 	<!-- IP@ DST -->
+  		<data format="binary">h1b9e13c4015ad3b2:8</data> <!-- UDP segment -->
+  		<data format="binary">h5245474953544552207369703a616c696365403139322e3136382e3134302e3232383a35303630205349502f322e300d0a546f3a2022616c69636522203c7369703a616c696365406465766f7465616d2e636f6d3e0d0a46726f6d3a2022616c69636522203c7369703a616c696365406465766f7465616d2e636f6d3e3b7461673d504c796e4833644d71320d0a43616c6c2d49443a30353230373235370d0a435365713a2030393339323838322052454749535445520d0a5669613a205349502f322e302f756470203137322e31362e32312e323a353036303b6272616e63683d7a39684734624b6f6468624538723932520d0a4d61782d466f7277617264733a2037300d0a436f6e746163743a203c7369703a616c696365403137322e31362e32312e323a353036303e0d0a457870697265733a20333630300d0a436f6e74656e742d4c656e6774683a20300d0a0d0a:338</data> <!-- SIP Message (REGISTER) -->
+  	</sendMessageETHERNET>
+	<receiveMessageETHERNET>
+		<parameter name="[data]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageETHERNET>
+	
+	<parameter name="[header]" operation="binary.subbinary" value="[data]" value2="0" value3="10" />
+	<parameter name="[checksum]" operation="binary.subbinary" value="[data]" value2="10" value3="2" />
+	<parameter name="[ipsrc]"  operation="binary.subbinary" value="[data]" value2="12" value3="4" />
+	<parameter name="[ipdst]"  operation="binary.subbinary" value="[data]" value2="16" value3="4" />
+	<parameter name="[udp]" operation="binary.subbinary" value="[data]" value2="20" value3="8" />
+	<parameter name="[sip]"  operation="binary.subbinary" value="[data]" value2="28" value3="338" />
+	
+	<!-- Don't forget to replace checksum, IPSRC and IPDST in binary string below (byte 10 to 20) by values you have set up in ETHERNET sent frame -->
+	<test parameter="[header]" condition="binary.equals" value="4500016e000040004011"/>
+	<test parameter="[checksum]" condition="binary.equals" value="b67e"/>
+	<test parameter="[ipsrc]" condition="binary.equals" value="[localBinaryIP]"/>
+	<test parameter="[ipdst]" condition="binary.equals" value="[localBinaryIP]"/>
+	<test parameter="[udp]" condition="binary.equals" value="1b9e13c4015ad3b2"/>
+	<test parameter="[sip]" condition="binary.equals" value="5245474953544552207369703a616c696365403139322e3136382e3134302e3232383a35303630205349502f322e300d0a546f3a2022616c69636522203c7369703a616c696365406465766f7465616d2e636f6d3e0d0a46726f6d3a2022616c69636522203c7369703a616c696365406465766f7465616d2e636f6d3e3b7461673d504c796e4833644d71320d0a43616c6c2d49443a30353230373235370d0a435365713a2030393339323838322052454749535445520d0a5669613a205349502f322e302f756470203137322e31362e32312e323a353036303b6272616e63683d7a39684734624b6f6468624538723932520d0a4d61782d466f7277617264733a2037300d0a436f6e746163743a203c7369703a616c696365403137322e31362e32312e323a353036303e0d0a457870697265733a20333630300d0a436f6e74656e742d4c656e6774683a20300d0a0d0a"/>
+	
+	<finally>
+		<removeProbeETHERNET name="capture" />
+	</finally>
+</scenario>

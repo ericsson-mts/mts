@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+ 	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[newCallId]" operation="identifier" value="newInteger" value2="10000000"/>
+	<parameter name="[newCseq]" operation="identifier" value="newInteger" value2="10000000"/>
+  	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+	<!--
+
+	<sendRequestSIP name="Send first REGISTER">
+<![CDATA[
+REGISTER sip:registrar.[DomainName]:5060 SIP/2.0
+Via: SIP/2.0/UDP [Adresse-XML-Loader];branch=[newBranchId]
+Max-Forwards: 70
+To: <sip:[UserName2]@[DomainName]>
+From: <sip:[UserName2]@[DomainName]>;tag=[localTag]
+Route: <sip:[Adresse-AS];transport=UDP;lr>
+Contact: "[UserName2]" <sip:[Adresse-XML-Loader]>;expires=3600
+Call-ID: [newCallId]
+CSeq: 1 REGISTER
+Authorization: Digest username="[UserName2]_private@[DomainName]", realm="registrar.[DomainName]", nonce="",uri="sip:registrar.[DomainName]", response=""
+Security-Client: ipsec-3gpp; alg=hmac-sha-1-96; spi-c=23456789; spi-s=12345678; port-c=2222;port-s=8888
+Require: sec-agree
+Proxy-Require: sec-agree
+Supported: path
+Content-Length: 0
+]]>
+	</sendRequestSIP>
+		
+	<receiveResponseSIP name="Wait 200 OK" method="REGISTER" result="401">
+	</receiveResponseSIP>
+
+	-->
+	<!--
+	
+	<sendRequestSIP name="Send second REGISTER">
+<![CDATA[
+REGISTER sip:registrar.[DomainName]:5060 SIP/2.0
+Via: SIP/2.0/UDP [Adresse-XML-Loader];branch=[newBranchId]
+Max-Forwards: 70
+To: <sip:[UserName2]@[DomainName]>
+From: <sip:[UserName2]@[DomainName]>;tag=[localTag]
+Route: <sip:[Adresse-AS]:5060;transport=UDP;lr>			
+Contact: "[UserName2]" <sip:[Adresse-XML-Loader]>;expires=3600
+Call-ID: [newCallId]
+CSeq: 2 REGISTER
+Authorization: Digest username="[UserName2]_private@[DomainName]", realm="registrar.[DomainName]", nonce="Token_for_[UserName2]_private@[DomainName]",algorithm="AKAv1-MD5",uri="sip:registrar.[DomainName]", response="Token_for_[UserName2]_private@[DomainName]"
+Security-Client: ipsec-3gpp; alg=hmac-sha-1-96; spi-c=23456789; spi-s=12345678; port-c=2222;port-s=8888
+Security-Verify: ipsec-3gpp; q=0.1; alg=hmac-sha-1-96; spi-c=98765432; spi-s=87654321; port-c=2222;port-s=8888
+Require: sec-agree
+Proxy-Require: sec-agree
+Supported: path
+Content-Length: 0
+]]>
+	</sendRequestSIP>
+
+	<receiveResponseSIP name="Wait 200 OK" method="REGISTER" result="200">
+	</receiveResponseSIP>
+		
+ 	-->
+		
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+	<receiveRequestSIP name="Wait INVITE" method="INVITE">
+	  	<parameter name="[lastTo]" operation="setFromMessage" value="header:To"/>
+	  	<parameter name="[lastFrom]" operation="setFromMessage" value="header:From"/>
+	  	<parameter name="[lastCallId]" operation="setFromMessage" value="header:Call-Id"/>	  			
+	  	<parameter name="[lastContact]" operation="setFromMessage" value="header:Contact"/>
+	  	<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>
+	  	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>
+	  	<parameter name="[lastPAssertedIdentity]" operation="setFromMessage" value="header:P-Asserted-Identity"/>
+	  	<parameter name="[lastContent]" operation="setFromMessage" value="content"/>
+	</receiveRequestSIP>
+	
+	<sendResponseSIP name="Send 200 OK">
+<![CDATA[ 
+SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[clientName]@[clientAddr]>
+Content-Length: 0
+]]>			
+	</sendResponseSIP >
+	
+	<receiveRequestSIP name="Wait ack" method="ACK">
+	</receiveRequestSIP>
+	
+	<receiveRequestSIP name="Wait BYE" method="BYE">
+	  	<parameter name="[lastCSeq]" operation="setFromMessage" value="header:CSeq"/>
+	  	<parameter name="[lastVia]" operation="setFromMessage" value="header:Via"/>	
+	</receiveRequestSIP>
+	<sendResponseSIP  name="Send 200 OK">
+<![CDATA[ 
+SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Contact: <sip:[clientName]@[clientAddr]>
+Content-Length: 0
+]]>
+	</sendResponseSIP >
+	
+	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify" />
+	
+	<sendRequestSIP name="Send second REGISTER">
+<![CDATA[
+REGISTER sip:registrar.[DomainName]:5060 SIP/2.0
+Via: SIP/2.0/UDP [Adresse-XML-Loader];branch=[newBranchId]
+Max-Forwards: 70
+To: <sip:[UserName2]@[DomainName]>
+From: <sip:[UserName2]@[DomainName]>;tag=[localTag]
+Route: <sip:[Adresse-AS]:5060;transport=UDP;lr>			
+Contact: "[UserName2]" <sip:[Adresse-XML-Loader]>;expires=0
+Call-ID: [newCallId]
+CSeq: 3 REGISTER
+Authorization: Digest username="[UserName2]_private@[DomainName]", realm="registrar.[DomainName]", nonce="",uri="sip:registrar.[DomainName]", response=""
+Security-Client: ipsec-3gpp; alg=hmac-sha-1-96; spi-c=23456789; spi-s=12345678; port-c=2222;port-s=8888
+Security-Verify: ipsec-3gpp; q=0.1; alg=hmac-sha-1-96; spi-c=98765432; spi-s=87654321; port-c=2222;port-s=8888
+Require: sec-agree
+Proxy-Require: sec-agree
+Supported: path
+Content-Length: 0
+]]>
+	</sendRequestSIP>
+	
+	<receiveResponseSIP name="Wait 200 OK" method="REGISTER" result="200">
+	</receiveResponseSIP>
+	
+</scenario>	
+

@@ -1,0 +1,139 @@
+<parameter name="[SessionDescription]" 	operation="xpath"	value="[SPT([index])]"	value2="//SessionDescription"/>
+<parameter name="[RequestURI]" 			operation="xpath"	value="[SPT([index])]"	value2="//RequestURI"/>
+<parameter name="[Method]" 				operation="xpath"	value="[SPT([index])]"	value2="//Method"/>
+<parameter name="[SessionCase]" 		operation="xpath"	value="[SPT([index])]"	value2="//SessionCase"/>
+<parameter name="[SIPHeader]" 			operation="xpath"	value="[SPT([index])]"	value2="//SIPHeader"/>
+<parameter name="[ConditionNegated]" 	operation="xpath"	value="[SPT([index])]"	value2="//ConditionNegated"/>
+<if>
+	<condition>
+		<test parameter="[SessionDescription]" condition="isempty"/>
+	</condition>
+	<then/>
+	<else>
+		<parameter name="[Line]" 		operation="xpath"	value="[SessionDescription]"	value2="//Line"/>
+		<parameter name="[Line]" 	operation="regexmatches"	value="[Line]"	value2="&gt;[^(&lt;)]+"/>
+		<parameter name="[Line]" 	operation="regexmatches"	value="[Line]"	value2="[ .-:@_0-9a-zA-Z]+"/>
+		<parameter name="[Content]" 	operation="xpath"	value="[SessionDescription]"	value2="//Content"/>
+		<parameter name="[ifcContent]" 	operation="regexmatches"	value="[ifcContent]" value2=".*[/n]*"/>
+		<parameter name="[testLine]" 	operation="findMatches"	value="[ifcContent]" value2="[Line].*"/>
+		<if>
+			<condition>
+				<test parameter="[testLine]" condition="isempty"/>
+			</condition>
+			<then>
+				<parameter name="[Rep]" 	operation="set"	value="false"/>
+			</then>
+			<else>
+				
+				<parameter name="[Rep]" 	operation="set"	value="true"/>
+				<if>
+					<condition>
+						<test parameter="[Content]" condition="isempty"/>
+					</condition>
+					<then/>
+					<else>	
+						<parameter name="[testHeader]" 	operation="set"	value="[ifcHeader([testLine])]"/>
+						<parameter name="[Content]" 	operation="regexmatches"	value="[Content]"	value2="&gt;[^(&lt;)]+"/>
+						<parameter name="[Content]" 	operation="regexmatches"	value="[Content]"	value2="[ .-:@_0-9a-zA-Z]+"/>
+						<parameter name="[Rep]" 	operation="contains"	value="[testLine]" value2="[Content]"/>
+					</else>
+				</if>
+			</else>
+		</if>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[RequestURI]" condition="isempty"/>
+	</condition>
+	<then/>
+	<else>
+		<parameter name="[RequestURI]" 	operation="regexmatches" 	value="[RequestURI]"	value2="sip[.-:@_0-9a-zA-Z]+"/>
+		<parameter name="[Rep]" 	operation="equals"	value="[RequestURI]"	value2="[lastURI]"/>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[Method]" condition="isempty"/>
+	</condition>
+	<then/>
+	<else>
+		<parameter name="[Method]" 	operation="regexmatches"	value="[Method]"	value2="&gt;[^(&lt;)]+"/>
+		<parameter name="[Method]" 	operation="regexmatches"	value="[Method]"	value2="[A-Z]+"/>
+		<parameter name="[Rep]" 	operation="equals"	value="[Method]"	value2="[lastSIPMethod]"/>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[SessionCase]" condition="isempty"/>
+	</condition>
+	<then/>
+	<else>
+		<parameter name="[SessionCase]" 	operation="regexmatches"	value="[SessionCase]"	value2="[0-9]"/>
+		<parameter name="[Rep]" 	operation="equals"	value="[SessionCase]"	value2="[SC]"/>
+	</else>
+</if>
+<if>
+	<condition>
+		<test parameter="[SIPHeader]" condition="isempty"/>
+	</condition>
+	<then/>
+	<else>
+		<parameter name="[Header]" 		operation="xpath"	value="[SIPHeader]"	value2="//Header"/>
+		<parameter name="[Header]" 	operation="regexmatches"	value="[Header]"	value2="&gt;[^(&lt;)]+"/>
+		<parameter name="[Header]" 	operation="regexmatches"	value="[Header]"	value2="[-a-zA-Z]+"/>
+		<parameter name="[Content]" 	operation="xpath"	value="[SIPHeader]"	value2="//Content"/>
+		<parameter name="[testHeader]" 	operation="findMatches"	value="[ifcHeader]" value2="[Header].*"/>
+		<if>
+			<condition>
+				<test parameter="[testHeader]" condition="isempty"/>
+			</condition>
+			<then>
+				<parameter name="[Rep]" 	operation="set"	value="false"/>
+			</then>
+			<else>
+				<parameter name="[Rep]" 	operation="set"	value="true"/>
+				<if>
+					<condition>
+						<test parameter="[Content]" condition="isempty"/>
+					</condition>
+					<then/>
+					<else>
+						<parameter name="[testHeader]" 	operation="set"	value="[ifcHeader([testHeader])]"/>
+						<parameter name="[Content]" 	operation="regexmatches"	value="[Content]"	value2="&gt;[^(&lt;)]+"/>
+						<parameter name="[Content]" 	operation="regexmatches"	value="[Content]"	value2="[ .-:@_0-9a-zA-Z]+"/>
+						<parameter name="[Rep]" 	operation="contains"	value="[testHeader]" value2="[Content]"/>
+					</else>
+				</if>
+			</else>
+		</if>
+	</else>	
+</if>
+<!--si condition negatif-->						
+<if>
+	<condition>
+		<test parameter="[ConditionNegated]" condition="isempty"/>
+	</condition>
+	<then/>
+	<else>
+		<parameter name="[ConditionNegated]" 	operation="regexmatches"	value="[ConditionNegated]"	value2="[0-9]"/>
+		<if>
+			<condition>
+				<test parameter="[ConditionNegated]" condition="equals" value="1"/>
+			</condition>
+			<then>
+				<if>
+					<condition>
+						<test parameter="[Rep]" condition="equals" value="true"/>
+					</condition>
+					<then>	
+						<parameter name="[Rep]" 	operation="set"	value="false"/>
+					</then>
+					<else>
+						<parameter name="[Rep]" 	operation="set"	value="true"/>
+					</else>
+				</if>
+			</then>
+		</if>
+	</else>
+</if>									

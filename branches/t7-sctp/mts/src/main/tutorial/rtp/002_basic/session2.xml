@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" transport="[transport]"/>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+	<receiveMessageRTP type="DVI4:17">
+	    <parameter name="[headerSsrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+	    <parameter name="[headerSeqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>		
+	</receiveMessageRTP>
+	<test parameter="[headerSsrc]" condition="number.equals" value="[ssrc]"/>      
+	<test parameter="[headerSeqnum]" condition="string.equals" value="0"/>      
+
+	<receiveMessageRTP type="DVI4:17">
+	    <parameter name="[headerSsrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+	    <parameter name="[headerSeqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>		
+	</receiveMessageRTP>
+	<test parameter="[headerSsrc]" condition="number.equals" value="[ssrc]"/>      
+	<test parameter="[headerSeqnum]" condition="string.equals" value="1"/>      
+
+	<receiveMessageRTP type="DVI4:17">
+	    <parameter name="[headerSsrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+	    <parameter name="[headerSeqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>		
+	</receiveMessageRTP>
+	<test parameter="[headerSsrc]" condition="number.equals" value="[ssrc]"/>      
+	<test parameter="[headerSeqnum]" condition="string.equals" value="2"/>      
+		
+	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header channel="control" ssrc="[ssrc]" payloadType="27" seqnum="1000" timestamp="1000"/>
+	    <payload format="text">Packet #1</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header channel="control" ssrc="[ssrc]" payloadType="27" seqnum="1000" timestamp="1000"/>
+	    <payload format="text">Packet #1</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header channel="control" ssrc="[ssrc]" payloadType="27" seqnum="1000" timestamp="1000"/>
+	    <payload format="text">Packet #1</payload>		
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="invitee" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP]">
+	    <header channel="control" ssrc="[ssrc]" payloadType="27" seqnum="1000" timestamp="1000"/>
+	    <payload format="text">Packet #1</payload>		
+	</sendMessageRTP>
+		
+	<finally>		
+		<removeListenpointRTP name="invitee" />
+	</finally>
+	
+</scenario>

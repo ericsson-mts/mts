@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <!-- envoi requete SUBSCRIBE-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] SUBSCRIBE #news.comp.mail.mime
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse SUBSCRIBE -->
+    <receiveMessageIMAP name="Receive SUBSCRIBE response" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A005" />
+    <!-- envoi requete SUBSCRIBE-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] SUBSCRIBE monDossierTest
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse SUBSCRIBE -->
+    <receiveMessageIMAP name="Receive SUBSCRIBE response" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

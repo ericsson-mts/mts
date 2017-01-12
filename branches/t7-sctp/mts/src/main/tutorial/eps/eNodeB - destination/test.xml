@@ -1,0 +1,32 @@
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<test name="echo client GTPv2-C">
+
+<!-- ##################################################################### -->
+<!-- ## parameter to set up GTP tunnel between localhost and EPS core #### -->
+<!-- ##################################################################### -->
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter name="[systemIp]"  operation="system.ipaddress" value2="[IPVersion]"/>
+	<parameter name="[test]" operation="binary.toNumber" value="1b69b4bacd05f15" />
+	<parameter name="[sgwS11IP]" operation="set" value="192.168.90.123"/>
+	<parameter name="[gtpcPort]" operation="set" value="2123"/>
+	<parameter name="[gtpcTransportProto]" operation="set" value="udp"/>
+	<parameter name="[gtpuTransportProto]" operation="set" value="udp"/>
+	<parameter name="[gtpuPort]" operation="set" value="2152" />
+	<parameter name="[sgwS1UIP]" operation="set" value="192.168.90.122" />
+	<parameter name="[eNodeBIP]" operation="set" value="172.16.21.106" />
+	<parameter name="[localHost]"	operation="system.ipaddress" value2="4" />
+	<parameter name="[MMEIP]" operation="set" value="[localHost(0)]" />
+	<parameter name="[targeteNodeB]" operation="set" value="[localHost(0)]" />
+	<parameter name="[UE]" operation="set" value="172.16.21.106" />
+	<parameter name="[PDN-Server]"	operation="set"	value="192.168.90.218" />
+	<parameter name="[PDN-Server2]"	operation="set"	value="192.168.90.225" />
+	<parameter name="[UE-MAC]"	operation="set"	value="08:00:27:8B:BB:0A" />
+<!-- ##################################################################### -->
+		<testcase name="handover" description="prepare handover" state="true">
+			<scenario name="UDP">handover.xml</scenario>
+		</testcase>
+		<testcase name="eNodeB" description="eNodeB encapse/decapse" state="true">
+			<scenario name="GTP.V1">decapse.xml</scenario>
+			<scenario name="ETHERNET">encapse.xml</scenario>
+		</testcase>
+</test>

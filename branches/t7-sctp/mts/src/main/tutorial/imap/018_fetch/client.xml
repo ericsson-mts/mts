@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <!-- envoi requete FETCH -->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] FETCH 2:4 (FLAGS BODY[HEADER.FIELDS (DATE FROM)])
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse FETCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="content" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <parameter name="[fetch]" operation="protocol.setFromMessage" value="response.data.FETCH" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A005" />
+    <!-- envoi requete FETCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] FETCH 12 body[header]
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse FETCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="content" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+        <test parameter="[content]" condition="string.contains" value="From:" />
+        <test parameter="[content]" condition="string.contains" value="OK FETCH completed" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A006" />
+    <!-- envoi requete FETCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] FETCH 12 full
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse FETCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+</scenario>

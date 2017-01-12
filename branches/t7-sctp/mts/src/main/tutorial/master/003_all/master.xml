@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<master name="master_testas" description="description du master">
+
+    <parameter name="[Host-Slave]" operation="system.ipaddress" description="Addresse de l'AS" editable="true"/>
+    <parameter name="[Port-Slave]" operation="set" value="2099" description="Port de l'AS" editable="true"/>
+    <parameter name="[Adresse-Slave]" operation="set" value="[Host-Slave(0)]:[Port-Slave]"/>
+
+    <test name="test_core"     runner="sequential" slave="[Adresse-Slave]" path="../../core/test.xml"  />
+    <test name="test_diameter" runner="sequential" slave="[Adresse-Slave]" path="../../diameter/test.xml" />
+    <test name="test_sip"      runner="sequential" slave="[Adresse-Slave]" path="../../sip/test.xml" />
+    <test name="test_rtp"      runner="sequential" slave="[Adresse-Slave]" path="../../rtp/test.xml" />
+    <test name="test_rtpflow"  runner="sequential" slave="[Adresse-Slave]" path="../../rtpflow/test.xml" />
+    <test name="test_http"     runner="sequential" slave="[Adresse-Slave]" path="../../http/test.xml" />
+    <test name="test_tcp"      runner="sequential" slave="[Adresse-Slave]" path="../../tcp/test.xml" />
+    <test name="test_udp"      runner="sequential" slave="[Adresse-Slave]" path="../../udp/test.xml" />
+    <test name="test_radius"   runner="sequential" slave="[Adresse-Slave]" path="../../radius/test.xml" />
+    <test name="test_smtp"     runner="sequential" slave="[Adresse-Slave]" path="../../smtp/test.xml" />
+    <test name="test_rtsp"     runner="sequential" slave="[Adresse-Slave]" path="../../rtsp/test.xml" />
+    <test name="test_imap"     runner="sequential" slave="[Adresse-Slave]" path="../../imap/test.xml" />
+    <test name="test_pop"      runner="sequential" slave="[Adresse-Slave]" path="../../pop/test.xml" />
+    <test name="test_smpp"     runner="sequential" slave="[Adresse-Slave]" path="../../smpp/test.xml" />
+    <test name="test_ucp"      runner="sequential" slave="[Adresse-Slave]" path="../../ucp/test.xml" />
+    <test name="test_sigtran_m3ua" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/m3ua/test.xml" />
+    <test name="test_sigtran_sccp" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/m3ua/SCCP/test.xml" />
+    <test name="test_sigtran_bicc" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/m3ua/BICC/test.xml" />
+    <test name="test_sigtran_iua"  runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/iua/test.xml" />
+    <test name="test_sigtran_v5ua" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/v5ua/test.xml" />
+    <test name="test_sigtran_tcap" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/m3ua/TCAP/test.xml" />
+    <test name="test_sigtran_map" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/m3ua/MAP/test.xml" />
+    <test name="test_sigtran_cap" runner="sequential" slave="[Adresse-Slave]" path="../../sigtran/m3ua/CAP/test.xml" />
+    <test name="test_h225cs"   runner="sequential" slave="[Adresse-Slave]" path="../../h323/h225CS/test.xml" />
+    <test name="test_tls"      runner="sequential" slave="[Adresse-Slave]" path="../../tls/test.xml" />
+    <test name="test_h248"     runner="sequential" slave="[Adresse-Slave]" path="../../h248/test.xml" />
+    <test name="test_msrp"     runner="sequential" slave="[Adresse-Slave]" path="../../msrp/test.xml" />
+    <test name="test_snmp"     runner="sequential" slave="[Adresse-Slave]" path="../../snmp/test.xml" />
+    <!--test name="test_pstn"       runner="sequential" slave="[Adresse-Slave]" path="../../pstn/test.xml" /-->
+    <test name="test_mgcp"     runner="sequential" slave="[Adresse-Slave]" path="../../mgcp/test.xml" />
+    <test name="test_stun"     runner="sequential" slave="[Adresse-Slave]" path="../../stun/test.xml" />
+    <test name="test_gtp"      runner="sequential" slave="[Adresse-Slave]" path="../../gtp/test.xml" />
+    <test name="test_ethernet" runner="sequential" slave="[Adresse-Slave]" path="../../ethernet/test.xml" />
+</master>

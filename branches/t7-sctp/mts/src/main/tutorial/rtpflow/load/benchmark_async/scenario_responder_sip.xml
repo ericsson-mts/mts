@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    <createListenpointSIP name="provider" localHost="[Host-Tester]" localPort="[Port-Tester]" transport="UDP"/>
+
+    <parameter name="[TempDuration]" operation="set" value="[TryingDuration]"/>
+    <parameter name="[TempDuration]" operation="number.add" value="[TempDuration]" value2="[RingingDuration]"/>
+    <parameter name="[TempDuration]" operation="number.add" value="[TempDuration]" value2="[CallDuration]"/>
+    <parameter name="[TempDuration]" operation="number.add" value="[TempDuration]" value2="30"/>
+	
+	<!-- start main loop -->	
+    <label name="begin"/>
+
+    <parameter name="[received]" operation="set" value="false"/>
+    <receiveMessageSIP name="wait_SIP_request" timeout="[TempDuration]" failedOnTimeout="false">
+        <parameter name="[received]" operation="set" value="true"/>
+        <parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message.type"/>
+        <parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
+        <parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
+        <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/>
+        <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
+        <parameter name="[lastToTag]" operation="protocol.setFromMessage" value="header.To.parameter.tag"/>
+        <parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.address.URI.User"/>
+        <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+        <parameter name="[lastContactAddress]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+        <parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+        <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[lastRouteUser]" operation="protocol.setFromMessage" value="header.Route.Address.URI.User"/>
+        <parameter name="[lastPAssertedIdentity]" operation="protocol.setFromMessage" value="header.P-Asserted-Identity"/>
+        <parameter name="[lastMessage]" operation="protocol.setFromMessage" value="message"/>
+        <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+        <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+    </receiveMessageSIP>
+
+    <if>
+        <condition>
+            <test parameter="[received]" condition="string.equals" value="false"/>
+        </condition>
+        <then>
+            <exit failed="false"/>
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[lastContactAddress]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <parameter name="[lastContactAddress]" operation="set" value="sip:[Host-Server]:[Port-Server]"/>
+        </then>
+    </if>
+
+	<!-- receive initial INVITE request message -->
+    <if>
+        <condition>
+            <test parameter="[lastIsRequest]" condition="string.equals" value="true"/>
+            <test parameter="[lastMethod]" condition="string.equals" value="INVITE"/>
+            <test parameter="[lastToTag]" condition="list.isEmpty"/>
+        </condition>
+        <then>
+            <goto  name="goto_recINVITE" label="recINVITE" state="true"/>
+        </then>
+    </if>
+	
+	<!-- receive initial ACK request message -->
+    <if>
+        <condition>
+            <test parameter="[lastIsRequest]" condition="string.equals" value="true"/>
+            <test parameter="[lastMethod]" condition="string.equals" value="ACK"/>
+        </condition>
+        <then>
+            <goto  name="goto_recACK" label="recACK" state="true"/>
+        </then>
+    </if>
+
+    <!-- receive final [2-6]XX (exclude provisional one) response message for the INVITE request message -->
+    <if>
+        <condition>
+            <test parameter="[lastIsRequest]" condition="string.equals" value="false"/>
+            <test parameter="[lastMethod]" condition="string.equals" value="INVITE"/>
+            <test parameter="[lastResult]" condition="number.greaterEqualThan" value="200"/>
+        </condition>
+        <then>
+            <goto  name="goto_Request" label="recINVITE23456xx" state="true"/>
+        </then>
+    </if>
+
+    <!-- receive OTHER request message (BYE, CANCEL, ...) -->
+    <if>
+        <condition>
+            <test parameter="[lastIsRequest]" condition="string.equals" value="true"/>
+        </condition>
+        <then>
+            <goto  name="goto_recOTHERS" label="recOTHERS" state="true"/>
+        </then>
+    </if>
+
+	<!-- receive response message for the OTHER request message (BYE, CANCEL, ...) -->
+    <if>
+        <condition>
+            <test parameter="[lastIsRequest]" condition="string.equals" value="false"/>
+        </condition>
+        <then>
+            <goto  name="goto_recOTHERSxxx" label="recOTHERSxxx" state="true"/>
+        </then>
+    </if>
+
+    <goto  name="goto_begin" label="begin" state="true"/>
+	<!-- end main loop -->	
+		
+    <!-- jump for receive initial INVITE request message -->
+    <label name="recINVITE"/>
+	
+    <parameter name="[newToTag]" operation="string.random" value="10"/>
+  	
+    <sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 100 Trying
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Content-Length: 0
+]]>			
+    </sendMessageSIP>
+    <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 180 Ringing
+Via: [lastVia]
+To: [lastTo];tag=[newToTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+P-Charging-Vector:  icid-value="05d79fa705d79f9-0002-0001-0000-0000@172.20.204.38";icid-generated-at=172.20.73.230;term-ioi=italtel.com
+Accept: application/sdp, application/isup, application/xml
+Allow:  INVITE, ACK, PRACK, CANCEL, BYE, OPTIONS, MESSAGE, NOTIFY, UPDATE, REGISTER, INFO, REFER, SUBSCRIBE
+Contact: <sip:[lastToUser]@[Adresse-Tester]>
+Content-Length: 0
+]]>			
+    </sendMessageSIP>
+
+    <parameter name="[ctx_uid]" value="[test:ctx_by_user_[lastFromUser]]" />
+
+    <sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 200 OK
+Via: [lastVia]
+To: [lastTo];tag=[newToTag]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+P-Charging-Vector:  icid-value="05d79fa705d79f9-0002-0001-0000-0000@172.20.204.38";icid-generated-at=172.20.73.230;term-ioi=italtel.com
+Accept: application/sdp, application/isup, application/xml
+Allow:  INVITE, ACK, PRACK, CANCEL, BYE, OPTIONS, MESSAGE, NOTIFY, UPDATE, REGISTER, INFO, REFER, SUBSCRIBE
+Contact: <sip:[lastToUser]@[Adresse-Tester]>
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=- 488164 0 IN IP4 [Host-Tester]
+s=IMSS
+c=IN IP4 [Host-Tester]
+t=0 0
+m=audio [test:ctx_[ctx_uid]_invitee_rtp_port] RTP/AVP 18
+a=fmtp:18 annexb=yes
+a=sendrecv
+a=ptime:20
+]]>			
+    </sendMessageSIP>
+
+    <sendMessageRTPFLOW listenpoint="[test:ctx_[ctx_uid]_invitee_rtp_listenpoint]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]" delay="[RingingDuration]">
+        <flow duration="[CallDuration]" deltaTime="20" deltaTimestamp="160" synchronous="false">
+            <header ssrc="456" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">[rtp_payload]</payload>
+        </flow>
+    </sendMessageRTPFLOW>
+					
+    <goto  name="goto_begin" label="begin" state="true"/>
+	<!-- end main loop -->
+
+
+    
+    <!-- jump for receive final [2-6]XX (exclude provisional one) response message for the INVITE request message -->
+    <label name="recINVITE23456xx"/>
+
+    <if>
+        <condition>
+            <test parameter="[lastResult]" condition="number.equals" value="200"/>
+        </condition>
+        <then>
+            <!-- get context, send rtpflow -->
+            <parameter name="[ctx_uid]" value="[test:ctx_by_user_[lastFromUser]]" />
+            <sendMessageRTPFLOW listenpoint="[test:ctx_[ctx_uid]_inviter_rtp_listenpoint]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]" >
+                <flow duration="[CallDuration]" deltaTime="20" deltaTimestamp="160"  synchronous="false">
+                    <header ssrc="456" payloadType="8" seqnum="123" timestamp="456"/>
+                    <payload format="text">[rtp_payload]</payload>
+                </flow>
+            </sendMessageRTPFLOW>
+        </then>
+    </if>
+	
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+      	
+    <sendMessageSIP name="Send ACK" delay="0" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+ACK [lastContactAddress] SIP/2.0
+Call-ID: [lastCallId]
+Contact: <sip:[lastToUser]@[Adresse-Tester]>
+CSeq: [lastCSeqNumber] ACK
+To: [lastTo]
+From: [lastFrom]
+Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: 8
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+    <if>
+        <condition>
+            <test parameter="[lastResult]" condition="string.matches" value="[3-9][0-9][0-9]"/>
+        </condition>
+        <then>
+            <goto  name="goto_begin" label="begin" state="true"/>
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[SendByeUAC]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+            <parameter name="[newBranchId]" operation="string.random" value="10"/>
+            <parameter name="[newCseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
+        
+            <sendMessageSIP name="Send BYE" delay="[CallDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+BYE [lastContactAddress] SIP/2.0
+Call-ID: [lastCallId]
+CSeq: [newCseqNumber] BYE
+To: [lastTo]
+From: [lastFrom]
+Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: 8
+Content-Length: 0
+]]>
+            </sendMessageSIP>
+
+        </then>
+    </if>
+                        
+    <goto  name="goto_begin" label="begin" state="true"/>
+	<!-- end main loop -->
+
+    <!-- jump for receive initial ACK request message -->
+    <label name="recACK"/>
+
+    <if>
+        <condition>
+            <test parameter="[SendByeUAS]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+            <parameter name="[newBranchId]" operation="string.random" value="10"/>
+            <parameter name="[newCseqNumber]" operation="number.add" value="[lastCSeqNumber]" value2="1"/>
+            
+            <sendMessageSIP name="Send BYE" delay="[CallDuration]" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+            <![CDATA[
+BYE sip:[Host-Server] SIP/2.0
+To: [lastFrom]
+From: [lastTo]
+Call-ID: [lastCallId]
+CSeq: [newCseqNumber] BYE
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Contact: <sip:[lastFromUser(0)]@[Adresse-Tester];transport=udp>
+Content-Length: 0
+]]>
+            </sendMessageSIP>
+
+        </then>
+    </if>
+
+    <goto  name="goto_begin" label="begin" state="true"/>
+	<!-- end main loop -->
+	
+	<!-- jump for receive OTHER request message (BYE, CANCEL, ...) -->
+    <label name="recOTHERS"/>
+
+    <parameter name="[newToTag]" operation="string.random" value="10"/>
+    	
+    <sendMessageSIP name="Send 200 OK" delay="0" listenpoint="provider" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[
+SIP/2.0 200 OK
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+P-Charging-Vector:  icid-value="05d79fa705d79f9-0002-0001-0000-0000@172.20.204.38";icid-generated-at=172.20.73.230;term-ioi=italtel.com
+Allow:  INVITE, ACK, PRACK, CANCEL, BYE, OPTIONS, MESSAGE, NOTIFY, UPDATE, REGISTER, INFO, REFER, SUBSCRIBE
+Contact: <sip:[lastFromUser(0)]@[Adresse-Tester];transport=udp>
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+		
+    <goto  name="goto_begin" label="begin" state="true"/>
+
+	<!-- receive response message for the OTHER request message (BYE, CANCEL, ...) -->
+    <label name="recOTHERSxxx"/>
+
+    <if>
+        <condition>
+            <test parameter="[lastMethod]" condition="string.equals" value="BYE"/>
+        </condition>
+        <then>
+            <parameter name="[test:users_list_mutex]" operation="system.semaphorewait" value2="0" />
+            
+                <parameter name="[ctx_uid]" value="[test:ctx_by_user_[lastFromUser]]" />
+                <parameter name="[test:ctx_[ctx_uid]_sip_done]" value="true" />
+
+                <if>
+                    <condition>
+                        <test parameter="[test:ctx_[ctx_uid]_sip_done]" condition="boolean.equals" value="true" />
+                        <test parameter="[test:ctx_[ctx_uid]_rtp_done_count]" condition="number.equals" value="2" />
+                    </condition>
+                    <then>
+                        <try>
+                          <do>
+                            <removeListenpointRTPFLOW name="[test:ctx_[ctx_uid]_invitee_rtp_listenpoint]" />
+                            <removeListenpointRTPFLOW name="[test:ctx_[ctx_uid]_inviter_rtp_listenpoint]" />
+                          </do>
+                        </try>
+                        <parameter name="[test:users_list]" operation="list.addlast" value="[test:users_list]" value2="[test:ctx_[ctx_uid]_invitee]"/>
+                        <parameter name="[test:users_list]" operation="list.addlast" value="[test:users_list]" value2="[test:ctx_[ctx_uid]_invitee]"/>
+                        <parameter name="[test:users_concurrent_calls_sem]" operation="system.semaphorenotify" />
+                    </then>
+                </if>
+
+            <parameter name="[test:users_list_mutex]" operation="system.semaphorenotify" />
+        </then>
+    </if>
+	
+    <goto  name="goto_begin" label="begin" state="true"/>
+	<!-- end main loop -->
+</scenario>

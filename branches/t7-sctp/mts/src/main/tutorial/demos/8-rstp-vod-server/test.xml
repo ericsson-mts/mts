@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="RTSP regression tests" name="RTSP">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="4"/>
+    
+    <parameter name="[localHostRTSP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostRTSP]" operation="set" value="[localHostRTSP(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortRTSP]" operation="set" value="8554" description="local port of the MTS host" editable="true"/>
+    
+    <parameter name="[remoteHostRTSP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--<parameter name="[remoteHostRTSP]" operation="set" value="172.16.21.32"/>-->
+    <parameter name="[remoteHostRTSP]" operation="set" value="[remoteHostRTSP(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[remotePortRTSP]" operation="file.readProperty" value="rtsp.properties" value2="listenpoint.LOCAL_PORT"/-->
+    <parameter name="[remotePortRTSP]" operation="set" value="9554" description="remote port of the SUT host" editable="true"/>
+    
+    <!-- timers for the retransmissions-->
+    <parameter name="[retransmitNumber]" operation="set" value="4"/>
+    <parameter name="[RetransTimeout]" operation="set" value="0.5"/>
+    <parameter name="[retransmitTimers(0)]" operation="set" value="500"/>
+    <parameter name="[retransmitTimers(1)]" operation="set" value="1000"/>
+    <parameter name="[retransmitTimers(2)]" operation="set" value="2000"/>
+    <parameter name="[retransmitTimers(3)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(4)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(5)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(6)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(7)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(8)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(9)]" operation="set" value="4000"/>
+    <parameter name="[retransmitTimers(10)]" operation="set" value="4000"/>
+    
+    <parameter editable="true" name="[rtpVideoFile]" operation="set" value="../../rtsp/bigbuckvideo.pdml"/>
+    <parameter editable="true" name="[rtpAudioFile]" operation="set" value="../../rtsp/bigbuckaudio.pdml"/>
+	
+    <testcase description="simple" name="rtsp/000_classicSequence" state="true">
+        <scenario file="../../rtsp/000_classicSequence/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="../../rtsp/000_classicSequence/UAS.xml" name="sessionServer" routingName="sessionServer"/>
+    </testcase>
+    <testcase description="simple" name="rtsp/001_testAllMessages" state="true">
+        <scenario file="../../rtsp/001_testAllMessages/UAC.xml" name="sessionClient" routingName="sessionClient"/>
+        <scenario file="../../rtsp/001_testAllMessages/UAS.xml" name="session2" routingName="session2"/>
+    </testcase>
+    <testcase description="simple" name="rtsp/002_classicSequenceUdp" state="true">
+        <scenario file="../../rtsp/002_classicSequenceUdp/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="../../rtsp/002_classicSequenceUdp/UAS.xml" name="sessionServer" routingName="sessionServer"/>
+    </testcase>
+	<testcase description="2sessions" name="rtsp/002_multipleSession" state="true">
+        <scenario file="../../rtsp/002_multipleSession/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="../../rtsp/002_multipleSession/UAS.xml" name="session5_0" routingName="session5_0"/>
+    </testcase>
+    <testcase description="Test all parameters" name="rtsp/003_parameters" state="true">
+        <scenario file="../../rtsp/003_parameters/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="../../rtsp/003_parameters/UAS.xml" name="session6" routingName="session6"/>
+    </testcase>
+    <testcase description="Test retransmission messages" name="rtsp/004_retransmission" state="true">
+        <scenario file="../../rtsp/004_retransmission/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="../../rtsp/004_retransmission/UAS.xml" name="listenpoint2" routingName="listenpoint2"/>
+    </testcase>
+    <testcase description="Test sequence with multiple connections" name="rtsp/005_multipleConnection" state="true">
+        <scenario file="../../rtsp/005_multipleConnection/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="../../rtsp/005_multipleConnection/UAS.xml" name="listenpointServer" routingName="listenpointServer"/>
+    </testcase>
+
+    <testcase description="one client" name="rtsp/800_bunny_vod_server" state="false">
+        <scenario file="../../rtsp/800_bunny_vod_server/UAS.xml" name="sessionVOD" routingName="sessionVOD"/>
+    </testcase>
+
+    <testcase description="Server fot test with VLC" name="rtsp/998_server_vlc" state="false">
+        <scenario file="../../rtsp/998_server_vlc/UAS.xml" name="sessionVLC" routingName="sessionVLC"/>
+    </testcase>
+    <testcase description="one client" name="rtsp/999_client_vlc" state="false">
+        <scenario file="../../rtsp/999_client_vlc/UAC.xml" name="socketRTP" routingName="socketRTP"/>
+    </testcase>
+
+</test>
