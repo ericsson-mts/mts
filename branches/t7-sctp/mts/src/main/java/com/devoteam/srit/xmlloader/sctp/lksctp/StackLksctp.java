@@ -32,12 +32,12 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 
 import dk.i1.sctp.SCTPData;
 
-public class StackSctp extends Stack
+public class StackLksctp extends Stack
 {
 	//a change
 	
 	/** Creates a new instance */
-	public StackSctp() throws Exception
+	public StackLksctp() throws Exception
 	{
 		super();
 	}
@@ -48,7 +48,7 @@ public class StackSctp extends Stack
      */
     public Msg readFromSCTPData(SCTPData chunk) throws Exception    
     {
-    	return new MsgSctp(this, chunk);
+    	return new MsgLksctp(this, chunk);
     }
 
 	/** 
@@ -64,7 +64,7 @@ public class StackSctp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgSctp msg = new MsgSctp(this);
+				MsgLksctp msg = new MsgLksctp(this);
 				msg.decode(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);

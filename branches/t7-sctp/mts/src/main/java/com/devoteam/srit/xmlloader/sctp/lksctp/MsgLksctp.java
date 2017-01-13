@@ -48,7 +48,7 @@ import dk.i1.sctp.SCTPData;
 import dk.i1.sctp.SCTPSocket;
 
 
-public class MsgSctp extends Msg{
+public class MsgLksctp extends Msg{
 	
 	private enum DataType
 	{
@@ -63,13 +63,13 @@ public class MsgSctp extends Msg{
 	}
 
 	/** Creates a new instance */
-    public MsgSctp(Stack stack) throws Exception
+    public MsgLksctp(Stack stack) throws Exception
     {
         super(stack);
     }
     
     /** Creates a new instance */
-	public MsgSctp(Stack stack, SCTPData chunk) throws Exception{
+	public MsgLksctp(Stack stack, SCTPData chunk) throws Exception{
 		this(stack);
 		
 		this.setType("DATA");
@@ -120,7 +120,7 @@ public class MsgSctp extends Msg{
 	/// a utiliser
 	public void setAidFromMsg()
 	{
-		((ChannelSctp) getChannel()).setAssociationId(sctpData.sndrcvinfo.sinfo_assoc_id);
+		((ChannelLksctp) getChannel()).setAssociationId(sctpData.sndrcvinfo.sinfo_assoc_id);
 	}
 
 	
@@ -199,10 +199,10 @@ public class MsgSctp extends Msg{
 			long aid = ((long) this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode()) & 0xffffffffl;			
 			xml += "aid=\"" + aid + "\"/>\n";
 			
-			ChannelSctp channelSctp = (ChannelSctp) getChannel();
+			ChannelLksctp channelSctp = (ChannelLksctp) getChannel();
 			if (channelSctp != null)
 			{
-				SocketSctp socketSctp = channelSctp.getSocketSctp();
+				SocketLksctp socketSctp = channelSctp.getSocketSctp();
 				if (socketSctp != null)
 				{
 					SCTPSocket sctpSocket = socketSctp.getSctpSocket();
@@ -455,7 +455,7 @@ public class MsgSctp extends Msg{
 	            }
 	            else if(params[1].equalsIgnoreCase("peerHosts")) 
 		        {
-					SocketSctp socketSctp = ((ChannelSctp) getChannel()).getSocketSctp();
+					SocketLksctp socketSctp = ((ChannelLksctp) getChannel()).getSocketSctp();
 					if (socketSctp != null)
 					{						
 						Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
@@ -467,7 +467,7 @@ public class MsgSctp extends Msg{
 		        }
 		        else if(params[1].equalsIgnoreCase("peerPort")) 
 		        {
-					ChannelSctp connSctp =((ChannelSctp) getChannel());
+					ChannelLksctp connSctp =((ChannelLksctp) getChannel());
 					int port=connSctp.getSocketSctp().getSctpSocket().getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);
 					var.add(Integer.toString(port));
 		        }

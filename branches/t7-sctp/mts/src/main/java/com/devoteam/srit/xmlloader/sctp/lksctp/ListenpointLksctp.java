@@ -31,15 +31,15 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
-public class ListenpointSctp extends Listenpoint {
+public class ListenpointLksctp extends Listenpoint {
 	
 	// --- attributs --- //
-	private SocketServerSctpListener  socketListenerSctp;
+	private SocketServerLksctpListener  socketListenerSctp;
 
     private long startTimestamp = 0;
 	
     /** Creates a new instance of Listenpoint */
-    public ListenpointSctp(Stack stack) throws Exception
+    public ListenpointLksctp(Stack stack) throws Exception
     {
     	super(stack);
     }
@@ -60,7 +60,7 @@ public class ListenpointSctp extends Listenpoint {
 		
     	try
     	{
-    		socketListenerSctp = new SocketServerSctpListener(this);
+    		socketListenerSctp = new SocketServerLksctpListener(this);
     		socketListenerSctp.setDaemon(true);
     		socketListenerSctp.start();
     	}
@@ -85,18 +85,18 @@ public class ListenpointSctp extends Listenpoint {
 	
 	public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
 	{			
-		ChannelSctp channel;
+		ChannelLksctp channel;
 		
 		String keySocket = remoteHost + ":" + remotePort;
 		
 		if(!this.existsChannel(keySocket))
 		{
-			channel = new ChannelSctp(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
+			channel = new ChannelLksctp(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
 			this.openChannel(channel);
 		}
 		else
 		{
-			channel = (ChannelSctp) this.getChannel(keySocket);
+			channel = (ChannelLksctp) this.getChannel(keySocket);
 		}			
 				
 		channel.sendMessage(msg);

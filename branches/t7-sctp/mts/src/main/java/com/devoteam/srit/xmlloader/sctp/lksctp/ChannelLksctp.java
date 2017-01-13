@@ -63,9 +63,9 @@ import org.dom4j.Element;
  */
 
 //  channel is called association in SCTP 
-public class ChannelSctp extends Channel
+public class ChannelLksctp extends Channel
 {
-    private SocketSctp socket;
+    private SocketLksctp socket;
     
     private Listenpoint listenpoint;
 
@@ -75,12 +75,12 @@ public class ChannelSctp extends Channel
     private long startTimestamp = 0;    
     
     /** Creates a new instance of Channel*/
-    public ChannelSctp(Stack stack)
+    public ChannelLksctp(Stack stack)
     {
     	super(stack);
     }
 
-    public ChannelSctp(ListenpointSctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
+    public ChannelLksctp(ListenpointLksctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         this.socket = null;
@@ -88,7 +88,7 @@ public class ChannelSctp extends Channel
         this.initmsg = new sctp_initmsg();
     }
 
-    public ChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
+    public ChannelLksctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
     {
 		super(
         		name,
@@ -103,12 +103,12 @@ public class ChannelSctp extends Channel
 		this.startTimestamp = System.currentTimeMillis();
 
         this.listenpoint = aListenpoint;
-        this.socket = new SocketSctp((SCTPSocket) aSocket);
+        this.socket = new SocketLksctp((SCTPSocket) aSocket);
         this.socket.setChannelSctp(this);
         this.initmsg = new sctp_initmsg();
     }
     
-    public SocketSctp getSocketSctp()
+    public SocketLksctp getSocketSctp()
     {
         return socket;
     }
@@ -225,7 +225,7 @@ public class ChannelSctp extends Channel
 	            }
             }
 			*/
-            socket = new SocketSctp(sctpSocket);
+            socket = new SocketLksctp(sctpSocket);
         }
         
         socket.setChannelSctp(this);

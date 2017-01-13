@@ -47,13 +47,13 @@ import dk.i1.sctp.sctp_event_subscribe;
  * @author nghezzaz
  */
 
-public class SocketSctp extends Thread {
+public class SocketLksctp extends Thread {
 
 	private SCTPSocket sctpSocket;
-	private ChannelSctp channelSctp;
+	private ChannelLksctp channelSctp;
 	private Semaphore mutex = new Semaphore(1,true);
 
-	public SocketSctp(SCTPSocket aSctpSocket) throws Exception
+	public SocketLksctp(SCTPSocket aSctpSocket) throws Exception
 	{
 		this.sctpSocket = aSctpSocket;
 		sctp_event_subscribe ses = new sctp_event_subscribe();
@@ -111,7 +111,7 @@ public class SocketSctp extends Thread {
                         {
         					// Create an empty message for transport connection actions (open or close) 
         					// and on server side and dispatch it to the generic stack
-        					((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("ABORT-ACK", channelSctp, null);
+        					((StackLksctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("ABORT-ACK", channelSctp, null);
 
                             sctpSocket.close();
                         }
@@ -159,7 +159,7 @@ public class SocketSctp extends Thread {
 		
 	}
 
-	public void setChannelSctp(ChannelSctp aChannelSctp)
+	public void setChannelSctp(ChannelLksctp aChannelSctp)
 	{
 		channelSctp = aChannelSctp;
 	}	
@@ -174,7 +174,7 @@ public class SocketSctp extends Thread {
 		{	
 			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
 			{
-				MsgSctp msgSctp = (MsgSctp) msg;
+				MsgLksctp msgSctp = (MsgLksctp) msg;
 				sctpSocket.send(msgSctp.getSctpData());
 			}
 			else

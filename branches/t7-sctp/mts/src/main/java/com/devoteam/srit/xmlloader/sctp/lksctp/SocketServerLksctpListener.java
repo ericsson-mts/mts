@@ -45,15 +45,15 @@ import java.net.SocketException;
  * @author nghezzaz
  */
 
-public class SocketServerSctpListener extends Thread
+public class SocketServerLksctpListener extends Thread
 {
 	private OneToOneSCTPSocket sctpSocketserver;
-    private ListenpointSctp listenpointSctp;
+    private ListenpointLksctp listenpointSctp;
 
     /**
      * Creates a new instance of SocketServerSctpListener
      */
-    public SocketServerSctpListener(ListenpointSctp listenpointSctp) throws ExecutionException
+    public SocketServerLksctpListener(ListenpointLksctp listenpointSctp) throws ExecutionException
     {
     	int port = 0;
 
@@ -113,7 +113,7 @@ public class SocketServerSctpListener extends Thread
                     
 					// Create an empty message for transport connection actions (open or close) 
 					// and on server side and dispatch it to the generic stack
-					((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("INIT-ACK", channel, null);
+					((StackLksctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("INIT-ACK", channel, null);
                 }
                 catch(SocketException e)
                 {
