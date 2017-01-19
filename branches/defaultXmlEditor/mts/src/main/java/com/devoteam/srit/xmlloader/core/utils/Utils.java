@@ -23,19 +23,6 @@
 
 package com.devoteam.srit.xmlloader.core.utils;
 
-import com.devoteam.srit.xmlloader.core.ThreadPool;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.exception.ParsingInputStreamException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
-import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
-
-import gp.utils.arrays.Array;
-import gp.utils.arrays.DefaultArray;
-import gp.utils.arrays.RandomArray;
-import gp.utils.arrays.SupArray;
-
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.Frame;
@@ -48,6 +35,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URI;
@@ -58,11 +46,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
+
+import com.devoteam.srit.xmlloader.core.ScenarioReference;
+import com.devoteam.srit.xmlloader.core.Testcase;
+import com.devoteam.srit.xmlloader.core.ThreadPool;
+import com.devoteam.srit.xmlloader.core.exception.ParsingInputStreamException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
+import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+import com.devoteam.srit.xmlloader.gui.editor.TextEditor;
+
+import gp.utils.arrays.Array;
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.RandomArray;
 
 /**
  * Utility functions
@@ -1429,7 +1434,10 @@ public class Utils
         return path;
     }
 
-    
+    /**
+     * Open the external editor
+     * @param file
+     */
     public static void openEditor(final URI file)
     {
         ThreadPool.reserve().start(new Runnable()
@@ -1442,14 +1450,14 @@ public class Utils
                 {
                     editor = Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH");
                     editor = Utils.normalizePath(editor);
-                    if (editor != null)
+                    String fileAbsPath = new File(file).getAbsolutePath();
+             
+                    if (editor != null && !editor.equals("\""))
                     {
-	                    String fileAbsPath = new File(file).getAbsolutePath();
-	                    // command = editor + " \"" + fileAbsPath + "\"";
 	                    command = editor + " " + fileAbsPath;
 	                    GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "Opening editor with the command :", command);
-	                    Runtime.getRuntime().exec(command);
-                    }
+	                    Runtime.getRuntime().exec(command,null, new File("../conf/schemas"));
+                    } 
                 }
                 catch (Exception e)
                 {
@@ -1457,6 +1465,47 @@ public class Utils
                 }
             }
         });
+    }
+    
+    /**
+     * Open the default Editor
+     * @author Mickaël MAUDOIGT
+     * @param file
+     * @param _testcase
+     */
+    public static void openDefaultEditor(final URI file, final Testcase _testcase)
+    {
+        TextEditor te = new TextEditor();
+        
+        if (_testcase != null){
+	        for (Entry<String, ScenarioReference> scenario : _testcase.getScenarioPathByNameMap().entrySet()) 
+	        {
+	            te.addFileToEditor(_testcase.getParent().getXMLDocument().getXMLFile().resolve(scenario.getValue().getFilename()));
+	        }
+	        
+	        try 
+	        {
+	        	String url = _testcase.getParent().getXMLDocument().getXMLFile().toURL().toString();
+	        	int lastIndex = url.lastIndexOf("/");
+	        	String newUrl = "Folder : " + url.substring(6, lastIndex) + "/" + _testcase.getName();
+				te.init(newUrl);
+			} 
+	       
+	        catch (MalformedURLException e) 
+	        {
+				JOptionPane.showMessageDialog(null, "Error : " + e.getMessage(), "Bad Url", JOptionPane.ERROR_MESSAGE);
+			} 
+        } else if (_testcase == null && file != null){
+        	te.addFileToEditor(file);
+        	te.init(file.toString());
+        } else  {
+        	try {
+				throw new IOException("Path undefined");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
     }
 
     public static byte[] convertToLittleEndian (byte[] data){

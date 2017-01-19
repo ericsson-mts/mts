@@ -1,97 +1,114 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
 
-<installation version="1.0">
+<izpack:installation version="5.0"
+	xmlns:izpack="http://izpack.org/schema/installation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
-    <info>
-        <appname>${project.name}-${project.version}</appname>
-        <appversion>${project.version}</appversion>
-        <url>https://sites.google.com/site/multiprotocoltestsuite/</url>
-    </info>
-    
-    <variables>
-        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/logs/MTS-install.log"/>
-    </variables>
-    
-    <guiprefs width="760" height="480" resizable="no">
-        <modifier key="useButtonIcons" value="yes"/>
-        <modifier key="useLabelIcons" value="no"/>
-        <modifier key="labelGap" value="2"/>
-        <modifier key="allXGap" value="4"/>
-        <modifier key="allYGap" value="4"/>
-        <modifier key="layoutAnchor" value="NORTHWEST"/>
-        <modifier key="useHeadingPanel" value="yes"/>
-        <modifier key="headingImageOnLeft" value="yes"/>
-        <modifier key="headingLineCount" value="1"/>
-        <modifier key="headingFontSize" value="1.5"/>
-        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
-        <modifier key="headingPanelCounter" value="progressbar"/>
-        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
-    </guiprefs>
-    
-    <locale>
-        <langpack iso3="eng"/>
-    </locale>
-    
-    <resources>
-        <res id="Heading.image" src="heading-complete.png"/>
-        <res id="LicencePanel.licence" src="${basedir}/LICENSE.txt"/>
-        <res id="userInputSpec.xml" src="install_userInput.xml"/>
-        <res id="shortcutSpec.xml" src="shortcut_windows.xml"/>
-        <res id="Unix_shortcutSpec.xml" src="shortcut_linux.xml"/>
-    </resources>
+	<info>
+		<appname>${project.name}-${project.version}</appname>
+		<appversion>${project.version}</appversion>
+		<url>https://sites.google.com/site/multiprotocoltestsuite/</url>
+	</info>
 
-    <panels>
-        <panel classname="LicencePanel"/>
-        <panel classname="TargetPanel"/> 
-        <panel classname="UserInputPanel"/>
-        <panel classname="InstallPanel"/>
-        <panel classname="ShortcutPanel"/>
-        <panel classname="SimpleFinishPanel"/>
-    </panels>
+	<variables>
+		<variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/logs/MTS-install.log" />
+	</variables>
 
-    <native type="izpack" name="ShellLink.dll"/>
-    <native type="izpack" name="ShellLink_x64.dll"/>
-    
-    <packs>
-        <pack name="base" required="yes">
-            <description>${project.name}-${project.version}</description>
-            
-            <!-- copy all .release files, and remove the .release from the name -->
-            <singlefile src="${target.mts.dir}/bin/java_home.release"       target="$INSTALL_PATH/bin/java_home"/>
-            <singlefile src="${target.mts.dir}/bin/java_memory.release"     target="$INSTALL_PATH/bin/java_memory"/>
-            <singlefile src="${target.mts.dir}/bin/java_arguments.release"  target="$INSTALL_PATH/bin/java_arguments"/>
-            
-            <!-- copy everything but files that have a .release version (ignore linux_postinstall.sh that is special) -->
-            <fileset dir="${target.mts.dir}/bin" targetdir="$INSTALL_PATH/bin">
-                <include name="java_arguments.txt"/>
-                <include name="*.bat"/>
-                <include name="*.sh*"/>
-                <include name="icon*"/>
-                <include name="java_arguments.txt"/>
-                <include name="QCparam.xls"/>
-                <include name="QCscript.xls"/>
-                <include name="sipp.dtd"/>
-                <exclude name="linux_postinstall.sh"/>
-            </fileset>
-            
-            <file src="${target.mts.dir}/bin/test"       targetdir="$INSTALL_PATH/bin/" />
-            <file src="${target.mts.dir}/bin/prf.zip"  targetdir="$INSTALL_PATH/bin/" />
-            <file src="${target.mts.dir}/conf"         targetdir="$INSTALL_PATH" />
-            <file src="${target.mts.dir}/doc"          targetdir="$INSTALL_PATH" />
-            <file src="${target.mts.dir}/functions"    targetdir="$INSTALL_PATH" />
-            <file src="${target.mts.dir}/lib"          targetdir="$INSTALL_PATH" />
-            <file src="${target.mts.dir}/logs"         targetdir="$INSTALL_PATH" />
-            <file src="${target.mts.dir}/tutorial"     targetdir="$INSTALL_PATH" />
-            
-            <!-- parse the file that contain variables -->
-            <parsable targetfile="$INSTALL_PATH/bin/java_home"/>
-            <parsable targetfile="$INSTALL_PATH/bin/java_memory"/>
-            <parsable targetfile="$INSTALL_PATH/conf/tester.properties" type="javaprop"/>
+	<guiprefs width="760" height="480" resizable="no">
+		<modifier key="useButtonIcons" value="yes" />
+		<modifier key="useLabelIcons" value="no" />
+		<modifier key="labelGap" value="2" />
+		<modifier key="allXGap" value="4" />
+		<modifier key="allYGap" value="4" />
+		<modifier key="layoutAnchor" value="NORTHWEST" />
+		<modifier key="useHeadingPanel" value="yes" />
+		<modifier key="headingImageOnLeft" value="yes" />
+		<modifier key="headingLineCount" value="1" />
+		<modifier key="headingFontSize" value="1.5" />
+		<modifier key="headingBackgroundColor" value="0x00ffffff" />
+		<modifier key="headingPanelCounter" value="progressbar" />
+		<modifier key="headingPanelCounterPos" value="inNavigationPanel" />
+		<modifier key="showDebugWindow" value="true"/>
+	</guiprefs>
 
-            <!-- linux specific : copy, parse, execute, remove linux_postinstall.sh -->
-            <file os="unix" src="${target.mts.dir}/bin/linux_postinstall.sh" targetdir="$INSTALL_PATH/bin/"/>
-            <parsable os="unix" targetfile="$INSTALL_PATH/bin/linux_postinstall.sh" type="javaprop"/>
-            <executable os="unix" stage="postinstall" targetfile="$INSTALL_PATH/bin/linux_postinstall.sh"/>
-        </pack>
-    </packs>
-</installation>
+	<locale>
+		<langpack iso3="eng" />
+	</locale>
+
+	<resources>
+		<res id="Heading.image" src="heading-complete.png" />
+		<res id="LicencePanel.licence" src="LICENSE.txt" />
+		<res id="userInputSpec.xml" src="install_userInput.xml"/>
+		<res id="shortcutSpec.xml" src="shortcut_windows.xml" />
+		<res id="Unix_shortcutSpec.xml" src="shortcut_linux.xml" />
+		<res id="userInputLang.xml" src="userInputLang.xml" />
+	</resources>
+
+	<panels>
+		<panel classname="LicencePanel"/>
+		<panel classname="TargetPanel" />
+		<panel classname="UserInputPanel" id="UserInputPanelWindows">
+			<os family="windows" />
+		</panel>
+		<panel classname="UserInputPanel" id="UserInputPanelUnix">
+			<os family="unix" />
+		</panel>
+		<panel classname="InstallPanel" />
+		<panel classname="ShortcutPanel" />
+		<panel classname="SimpleFinishPanel" />
+	</panels>
+	<natives>
+		<native type="izpack" name="ShellLink.dll" />
+		<native type="izpack" name="ShellLink_x64.dll" />
+	</natives>
+	<packs>
+		<pack name="base" required="yes">
+			<description>${project.name}-${project.version}</description>
+
+			<!-- copy all .release files, and remove the .release from the name -->
+			<singlefile src="${target.mts.dir}/bin/java_home.release"
+				target="$INSTALL_PATH/bin/java_home" />
+			<singlefile src="${target.mts.dir}/bin/java_memory.release"
+				target="$INSTALL_PATH/bin/java_memory" />
+			<singlefile src="${target.mts.dir}/bin/java_arguments.release"
+				target="$INSTALL_PATH/bin/java_arguments" />
+
+			<!-- copy everything but files that have a .release version (ignore linux_postinstall.sh 
+				that is special) -->
+			<fileset dir="${target.mts.dir}/bin" targetdir="$INSTALL_PATH/bin">
+				<include name="java_arguments.txt" />
+				<include name="*.bat" />
+				<include name="*.sh*" />
+				<include name="icon*" />
+				<include name="java_arguments.txt" />
+				<include name="QCparam.xls" />
+				<include name="QCscript.xls" />
+				<include name="sipp.dtd" />
+				<exclude name="linux_postinstall.sh" />
+			</fileset>
+
+			<file src="${target.mts.dir}/bin/test" targetdir="$INSTALL_PATH/bin/" />
+			<file src="${target.mts.dir}/bin/prf.zip" targetdir="$INSTALL_PATH/bin/" />
+			<file src="${target.mts.dir}/conf" targetdir="$INSTALL_PATH" />
+			<file src="${target.mts.dir}/doc" targetdir="$INSTALL_PATH" />
+			<file src="${target.mts.dir}/functions" targetdir="$INSTALL_PATH" />
+			<file src="${target.mts.dir}/lib" targetdir="$INSTALL_PATH" />
+			<file src="${target.mts.dir}/logs" targetdir="$INSTALL_PATH" />
+			<file src="${target.mts.dir}/tutorial" targetdir="$INSTALL_PATH" />
+
+			<!-- parse the file that contain variables -->
+			<parsable targetfile="$INSTALL_PATH/bin/java_home" />
+			<parsable targetfile="$INSTALL_PATH/bin/java_memory" />
+			<parsable targetfile="$INSTALL_PATH/conf/tester.properties"
+				type="javaprop" />
+
+			<!-- linux specific : copy, parse, execute, remove linux_postinstall.sh -->
+			<file os="unix" src="${target.mts.dir}/bin/linux_postinstall.sh"
+				targetdir="$INSTALL_PATH/bin/" />
+			<parsable os="unix" targetfile="$INSTALL_PATH/bin/linux_postinstall.sh"
+				type="javaprop" />
+			<executable os="unix" stage="postinstall"
+				targetfile="$INSTALL_PATH/bin/linux_postinstall.sh" />
+		</pack>
+	</packs>
+</izpack:installation>

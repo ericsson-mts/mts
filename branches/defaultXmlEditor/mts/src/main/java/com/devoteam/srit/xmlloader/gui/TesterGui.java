@@ -271,13 +271,26 @@ public class TesterGui {
             e.printStackTrace();
         }
 
+        boolean checkSwing = false;
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    checkSwing = true;
+                    break;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        if(!checkSwing){
+	        try {
+	            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }
         }
-
         /*
          * Set the FSInterface to LocalFS.
          */

@@ -304,7 +304,19 @@ class TesterGuiHelper implements ActionListener {
             testerGui.getJFrameEditableParameters().setVisible(!testerGui.getJFrameEditableParameters().isVisible());
         }
         else if (actionCommand.equals(GUIMenuHelper.WINDOWS_OPEN_TEST_FILE)) {
-            Utils.openEditor(testerGui.getTester().getTestXMLDocument().getXMLFile());
+        	try{
+	        	if(Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH") != null &&
+            			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"") &&
+            			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"$EDITOR_PATH\"") &&
+            			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("") &&
+            			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"\\\"")){
+	        		Utils.openEditor(testerGui.getTester().getTestXMLDocument().getXMLFile());
+	        	} else {
+	        		Utils.openDefaultEditor(testerGui.getTester().getTestXMLDocument().getXMLFile(), null);
+	        	}
+        	} catch(Exception e1) {
+        		e1.printStackTrace();
+        	}
         }
         else if (actionCommand.equals(GUIMenuHelper.HELP_ABOUT)) {
             new JFrameAbout().setVisible(true);

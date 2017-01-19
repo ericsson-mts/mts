@@ -23,22 +23,29 @@
 
 package com.devoteam.srit.xmlloader.gui.better;
 
-import com.devoteam.srit.xmlloader.core.*;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
-import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener;
-import com.devoteam.srit.xmlloader.gui.frames.JFrameLogsSession;
-import com.devoteam.srit.xmlloader.gui.frames.JFrameRunProfile;
-import com.devoteam.srit.xmlloader.gui.logs.GUITextListenerProvider;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map.Entry;
+
 import javax.swing.JCheckBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.devoteam.srit.xmlloader.core.RunnerState;
+import com.devoteam.srit.xmlloader.core.ScenarioReference;
+import com.devoteam.srit.xmlloader.core.TestRunnerSingle;
+import com.devoteam.srit.xmlloader.core.Testcase;
+import com.devoteam.srit.xmlloader.core.ThreadPool;
+import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
+import com.devoteam.srit.xmlloader.core.utils.notifications.NotificationListener;
+import com.devoteam.srit.xmlloader.gui.frames.JFrameLogsSession;
+import com.devoteam.srit.xmlloader.gui.frames.JFrameRunProfile;
+import com.devoteam.srit.xmlloader.gui.logs.GUITextListenerProvider;
 
 /**
  *
@@ -126,9 +133,17 @@ public class TestcaseLineCtrl implements NotificationListener<Notification<Strin
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    for (Entry<String, ScenarioReference> scenario : _testcase.getScenarioPathByNameMap().entrySet()) {
-                        Utils.openEditor(_testcase.getParent().getXMLDocument().getXMLFile().resolve(scenario.getValue().getFilename()));
-                    }
+                	if(Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH") != null &&
+                			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"") &&
+                			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"$EDITOR_PATH\"") &&
+                			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("") &&
+                			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"\\\"")){
+	                    for (Entry<String, ScenarioReference> scenario : _testcase.getScenarioPathByNameMap().entrySet()) {
+	                        Utils.openEditor(_testcase.getParent().getXMLDocument().getXMLFile().resolve(scenario.getValue().getFilename()));
+	                    }
+                	} else {
+                		Utils.openDefaultEditor(null, _testcase);
+                	}
                 }
                 catch (Exception ee) {
                     ee.printStackTrace();

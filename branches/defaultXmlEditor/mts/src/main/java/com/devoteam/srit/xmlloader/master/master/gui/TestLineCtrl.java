@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.RunnerState;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
 import com.devoteam.srit.xmlloader.core.report.ReportGenerator;
 import com.devoteam.srit.xmlloader.core.report.ReportStatus;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.exceptionhandler.ExceptionHandlerSingleton;
 import com.devoteam.srit.xmlloader.core.utils.notifications.Notification;
@@ -39,6 +40,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -253,7 +256,14 @@ public class TestLineCtrl {
                     @Override
                     public void run() {
                         try {
-                            Utils.openEditor(_dataTest.getPath());
+                        	if(Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH") != null &&
+                        			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"") &&
+                        			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"$EDITOR_PATH\"") &&
+                        			!Config.getConfigByName("tester.properties").getString("gui.EDITOR_PATH").equals("\"\\\"")){
+                        		Utils.openEditor(_dataTest.getPath());
+                        	} else {
+                        		Utils.openDefaultEditor(_dataTest.getPath(), null);
+                        	}
                         }
                         catch (Exception ex) {
                             ExceptionHandlerSingleton.instance().display(ex, _view);
