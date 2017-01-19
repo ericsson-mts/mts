@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelSMPP" />
+    <openChannelSMPP name="[connection]" remoteHost="[test:remoteHostSMPP]" remotePort="[test:remotePortSMPP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter" sequence_number="[seqNum]" />
+        <attribute name="system_id" value="IMSLoader"/>
+        <attribute name="password" value="coucou"/>
+        <attribute name="system_type" value="windows MC"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="8"/>
+        <attribute name="addr_npi" value="3"/>
+        <attribute name="address_range" value="255.255.255.0"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP>
+        <parameter name="status" operation="protocol.setFromMessage" value="header.status"/>
+        <parameter name="tlv" operation="protocol.setFromMessage" value="tlv.sc_interface_version"/>
+    </receiveMessageSMPP>
+
+	<!-- perform test -->
+    <test parameter="[status]" condition="string.equals" value="3"/>
+    <test parameter="[tlv]" condition="string.equals" value="6"/>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="0"/>
+        <attribute name="source_addr_npi" value="0"/>
+        <attribute name="source_addr" value=""/>
+        <attribute name="dest_addr_ton" value="0"/>
+        <attribute name="dest_addr_npi" value="0"/>
+        <attribute name="destination_addr" value=""/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="0"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="0"/>
+        <attribute name="replace_if_present_flag" value="0"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="0"/>
+        <attribute name="sm_length" value="5"/>
+        <attribute name="short_message" value="hello"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <!-- send message with bad sm_length value-->
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="0"/>
+        <attribute name="source_addr_npi" value="0"/>
+        <attribute name="source_addr" value=""/>
+        <attribute name="dest_addr_ton" value="0"/>
+        <attribute name="dest_addr_npi" value="0"/>
+        <attribute name="destination_addr" value=""/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="0"/>
+        <attribute name="priority_flag" value="0"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="0"/>
+        <attribute name="replace_if_present_flag" value="0"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="0"/>
+        <attribute name="sm_length" value="20"/>
+        <attribute name="short_message" value="hello"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="[seqNum]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <finally>
+        <closeChannelSMPP name="[connection]"/>
+    </finally>
+</scenario>

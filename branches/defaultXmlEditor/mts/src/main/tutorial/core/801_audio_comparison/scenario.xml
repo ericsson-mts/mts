@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	
+	<!-- TEST WITH A FILE -->
+	<parameter name="[os]" operation="system.readproperty" value="os.name"/>
+    <if>
+		<condition>
+			<test parameter="[os]" condition="string.equals" value="Linux"/> 
+		</condition>
+		<then>
+			<parameter name="[cmd]" operation="system.command" value="./audio_comparison/audio_comparison --file_test=[file_test] --file_ref=[file_ref] --bit_error=[bit_error] --offset=[offset]"/>
+		</then>
+		<else>
+			<parameter name="[cmd]" operation="system.command" value="./audio_comparison/audio_comparison.exe --file_test=[file_test] --file_ref=[file_ref] --bit_error=[bit_error] --offset=[offset]"/>
+		</else>
+	</if>	
+	
+	<if>
+		<condition>
+			<test parameter="[cmd.returnCode]" condition="number.equals" value="0" not="true"/>
+		</condition>
+		<then>
+			<log level="error">[cmd.errorOut]</log>  
+			<exit name="error" failed="true"/>
+		</then>
+	</if>
+
+	<parameter name="[length_similarity]" operation="string.length" value="similarity :" />
+	<parameter name="[similarity]" operation="string.substring" value="[cmd.standardOut]" value2="[length_similarity]"/>
+	<log level="info">[similarity]</log>
+	
+	<if>
+		<condition>
+			<test parameter="[similarity]" condition="number.equals" value="98.0952" not="true"/>
+		</condition>
+		<then>	
+			<exit name="error" failed="true"/>
+		</then>
+	</if>
+
+
+	<!-- TEST WITH A REPERTORY -->
+    <if>
+		<condition>
+			<test parameter="[os]" condition="string.equals" value="Linux"/> 
+		</condition>
+		<then>
+			<parameter name="[repertory_ref]" operation="string.regexreplaces" value="[repertory_ref]" value2="\\" value3="/"/>
+			<parameter name="[cmd]" operation="system.command" value="./audio_comparison/audio_comparison --file_test=[file_test] --rep=[repertory_ref] --bit_error=[bit_error] --offset=[offset]"/>
+		</then>
+		<else>
+			<parameter name="[cmd]" operation="system.command" value="./audio_comparison/audio_comparison.exe --file_test=[file_test] --rep=[repertory_ref] --bit_error=[bit_error] --offset=[offset]"/>
+		</else>
+	</if>
+
+
+
+	<if>
+		<condition>
+			<test parameter="[cmd.returnCode]" condition="number.equals" value="0" not="true"/>
+		</condition>
+		<then>
+			<log level="error">[cmd.errorOut]</log>  
+			<exit name="error" failed="true"/>
+		</then>
+	</if>
+     
+  	<parameter name="[lengthFileSimilar]" operation="string.length" value="most similar file :" />
+	<parameter name="[FileSimilarTemp]" operation="string.substring" value="[cmd.standardOut]" value2="[lengthFileSimilar]"/>
+	<parameter name="[indexOfSimilarity]" operation="string.indexof" value="[FileSimilarTemp]" value2="similarity :"/>
+	
+	<!-- to remove the carrier return after the name of the similar file -->	
+	<parameter name="[indexOfSimilarityTemp]" operation="number.substract" value="[indexOfSimilarity]" value2="2"/>
+	
+	<parameter name="[lenghtRepertoryRef]" operation="string.length" value="[repertory_ref]"/>
+	<parameter name="[lenghtRepertoryRef]" operation="number.add" value="[lenghtRepertoryRef]" value2="1"/>
+	
+	<!-- value2 will remove the link of the reference repertory, for keep it, put value2="0" -->
+	<parameter name="[FileSimilar]" operation="string.substring" value="[FileSimilarTemp]" value2="[lenghtRepertoryRef]" value3="[indexOfSimilarityTemp]"/>
+	<log level="info">[FileSimilar]</log>	
+	
+	<parameter name="[FileSimilarity]" operation="string.substring" value="[FileSimilarTemp]" value2="[indexOfSimilarity]"/>
+	
+	<!-- to get only the value -->
+	<parameter name="[lengthSimilarity]" operation="string.length" value="similarity :"/>
+	<parameter name="[lengthSimilarity]" operation="number.add" value="[lengthSimilarity]" value2="1"/>
+	<parameter name="[FileSimilarity]" operation="string.substring" value="[FileSimilarity]" value2="[lengthSimilarity]"/>
+	
+	<!-- to remove the carrier return at the end-->
+	<parameter name="[lengthSimilarity]" operation="string.length" value="[FileSimilarity]"/>
+	<parameter name="[lengthSimilarity]" operation="number.substract" value="[lengthSimilarity]" value2="2"/>
+	<parameter name="[FileSimilarity]" operation="string.substring" value="[FileSimilarity]" value2="0" value3="[lengthSimilarity]"/>
+	<log level="info">[FileSimilarity]</log>
+	
+	<if>
+		<condition>
+			<or>
+				<test parameter="[FileSimilarity]" condition="number.equals" value="63.3333" not="true"/>
+				<test parameter="[FileSimilar]" condition="string.contains" value="rtpflowReceived_test_2.wav" not="true"/>
+				<test parameter="[FileSimilar]" condition="string.equals" value="rtpflowReceived_test_2.wav"/>
+				<test parameter="[FileSimilar]" condition="string.equals" value="repertory_test/rtpflowReceived_test_2.wav" not="true"/>
+			</or>
+		</condition>
+		<then>
+			<exit name="error" failed="true"/>
+		</then>
+	</if>
+  
+
+</scenario>

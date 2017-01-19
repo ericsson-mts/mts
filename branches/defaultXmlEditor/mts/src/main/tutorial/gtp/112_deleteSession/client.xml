@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[tunnelEndpointId]" operation="set" value="2815696998"/>
+    <parameter name="[sequenceNumber]" operation="set" value="200"/>
+    <sendMessageGTP name="send message" 
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Delete Session Request:36" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="EBI:73" description="EPS Bearer ID">
+            <field name="spare" value="0"/>
+        		<field name="EBI" value="5"/>
+        </element>
+        <element tag="Indication:77" >
+            <field name="DAF" value="false:0"/>
+            <field name="DTF" value="false:0"/>
+            <field name="HI" value="false:0"/>
+            <field name="DFI" value="false:0"/>
+            <field name="OI" value="true:1"/>
+            <field name="ISRSI" value="false:0"/>
+            <field name="ISRAI" value="false:0"/>
+            <field name="SGWCI" value="false:0"/>
+    
+            <field name="SQCI" value="false:0"/>  
+            <field name="UIMSI" value="false:0"/>
+            <field name="CFSI" value="false:0"/>
+            <field name="CRSI" value="false:0"/>
+            <field name="P" value="false:0"/>
+            <field name="PT" value="false:0"/>
+            <field name="SI" value="false:0"/>
+            <field name="MSV" value="false:"/>
+    
+            <field name="RetLoc" value="false:"/>
+            <field name="PBIC" value="false:"/>
+            <field name="SRNI" value="false:"/>
+            <field name="S6AF" value="false:"/>
+            <field name="S4AF" value="false:"/>
+            <field name="MBMDT" value="false:"/>
+            <field name="ISRAU" value="false:"/>
+            <field name="CCRSI" value="false:"/>
+            
+            <field name="Spare" value="0"/>
+            <field name="CLII" value="false:"/>
+            <field name="CPSR" value="false:"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive message" request="false" type="Delete Session Request:36" result="Request accepted:16">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="4825000e000045670000c800020002001000"/>
+    
+</scenario>

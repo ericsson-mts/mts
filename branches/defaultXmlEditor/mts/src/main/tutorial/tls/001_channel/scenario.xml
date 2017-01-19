@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[timeout]" operation="set" value="2"/>
+
+    <openChannelTLS name="channelTLS" remoteHost="[remoteHostTLS]" remotePort="[remotePortTLS]"/>
+    
+    <receiveMessageTLS type="SYN-ACK" timeout="[timeout]" >
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageTLS>
+    <test parameter="[text]" condition="string.equals" value="" />
+    
+    <parameter name="[data]" operation="set" value="0123456789" value2="100"/>
+    <sendMessageTLS channel="channelTLS">
+        <data format="text">[data]</data>
+    </sendMessageTLS>
+
+    <receiveMessageTLS channel="[channel]" type="SEQ-ACK" timeout="[timeout]">
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageTLS>
+    
+    <test parameter="[text]" condition="string.equals" value="[data]" />
+
+    <finally>
+
+        <closeChannelTLS name="channelTLS" />
+
+        <receiveMessageTLS channel="channelTLS" type="FIN-ACK" timeout="[timeout]">
+            <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+            <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+        </receiveMessageTLS>
+        <test parameter="[text]" condition="string.equals" value="" />
+
+    </finally>
+
+</scenario>

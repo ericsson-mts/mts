@@ -1,0 +1,23 @@
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="SUBSCRIBE"/>
+	</condition>
+	<then>
+		<!--Ajout du header Record-Route-->
+		<parameter name="[lastRecord-Route]" 	operation="setFromMessage" 	value="header:record-route"	value2="[lastMessage]"/>
+		<if>
+			<condition>
+				<test parameter="[lastRecord-Route]" condition="contains" value="sip"/>
+			</condition>
+			<then>
+				<!--supprime le champ record route-->
+				<parameter name="[index]" 			operation="findMatches" 	value="[lastHeader]" 	value2="Record-Route.*"/>
+				<parameter name="[lastHeader]" 		operation="removeat" 		value="[lastHeader]" 	value2="[index]"/>
+				<parameter name="[lastHeader]" 		operation="addfirst" 	value="[lastHeader]"		value2="[Record-Route],[lastRecord-Route]"/>
+			</then>
+			<else>
+				<parameter name="[lastHeader]" 		operation="addfirst" 	value="[lastHeader]" value2="[Record-Route]"/>
+			</else>
+		</if>
+	</then>
+</if>

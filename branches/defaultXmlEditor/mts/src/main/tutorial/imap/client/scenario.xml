@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <parameter name="[remotePortIMAP]" operation="number.add" value="[remotePortIMAP]" value2="10000"/>
+    <openChannelIMAP name="[connection]" remoteHost="[remoteHostIMAP]" remotePort="[remotePortIMAP]"/>
+
+    <!-- !!TODO!! decommenter quand  on se connectera au server IMSLoader-->
+    <!-- attend message accueil-->
+    <receiveMessageIMAP timeout="1" channel="[connection]" request="false" failedOnTimeout="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A001" />
+    <!-- envoi requete capability-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse intermediaire capability-->
+    <receiveMessageIMAP name="Receive CAPABILITY intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+    
+    <!-- attend reponse CAPABILITY -->
+    <receiveMessageIMAP name="Receive CAPABILITY completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.done.result" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A002" />
+    <!-- envoi requete LOGIN-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGIN [login] [password]
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LOGIN -->
+    <receiveMessageIMAP name="Receive LOGIN completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    
+    <parameter name="[tagReq]" operation="set" value="A003" />
+    <!-- envoi requete LIST-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LIST INBOX ""
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LIST intermediaire -->
+    <receiveMessageIMAP name="Receive LIST intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse LIST -->
+    <receiveMessageIMAP name="Receive LIST completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <!-- envoi requete NOOP-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] NOOP
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse NOOP -->
+    <receiveMessageIMAP name="Receive NOOP response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A006" />
+    <!-- envoi requete SELECT-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] SELECT INBOX
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse SELECT intermediaire -->
+    <receiveMessageIMAP name="Receive SELECT intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse SELECT -->
+    <receiveMessageIMAP name="Receive SELECT completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A007" />
+    <!-- envoi requete CREATE-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CREATE benjamin
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse CREATE intermediaire -->
+    <receiveMessageIMAP name="Receive CREATE intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse CREATE -->
+    <receiveMessageIMAP name="Receive CREATE completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A008" />
+    <!-- envoi requete LIST-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LIST "" *
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LIST intermediaire -->
+    <receiveMessageIMAP name="Receive LIST intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse LIST -->
+    <receiveMessageIMAP name="Receive LIST completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A098" />
+    <!-- envoi requete RENAME-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] RENAME benjamin bouvier
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse RENAME intermediaire -->
+    <receiveMessageIMAP name="Receive RENAME intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse RENAME -->
+    <receiveMessageIMAP name="Receive RENAME completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A097" />
+    <!-- envoi requete CREATE-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CREATE bouvier/benjamin
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse CREATE intermediaire -->
+    <receiveMessageIMAP name="Receive CREATE intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse CREATE -->
+    <receiveMessageIMAP name="Receive CREATE completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A088" />
+    <!-- envoi requete LIST-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LIST bouvier *
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LIST  intermediaire -->
+    <receiveMessageIMAP name="Receive LIST  intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse LIST  -->
+    <receiveMessageIMAP name="Receive LIST  completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="q088" />
+    <!-- envoi requete STATUS-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] STATUS bouvier (MESSAGES UNSEEN)
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse STATUS  intermediaire -->
+    <receiveMessageIMAP name="Receive STATUS  intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse STATUS  -->
+    <receiveMessageIMAP name="Receive STATUS completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A109" />
+    <!-- envoi requete DELETE-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] DELETE bouvier
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse DELETE intermediaire -->
+    <receiveMessageIMAP name="Receive DELETE intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse DELETE -->
+    <receiveMessageIMAP name="Receive DELETE completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A110" />
+    <!-- envoi requete EXAMINE-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] EXAMINE bouvier
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse EXAMINE intermediaire -->
+    <receiveMessageIMAP name="Receive EXAMINE intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse EXAMINE -->
+    <receiveMessageIMAP name="Receive EXAMINE completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    
+    <parameter name="[tagReq]" operation="set" value="A115" />
+    <!-- envoi requete LOGOUT-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGOUT
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LOGOUT intermediaire -->
+    <receiveMessageIMAP name="Receive LOGOUT intermediate response" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+    <!-- attend reponse LOGOUT -->
+    <receiveMessageIMAP name="Receive LOGOUT completed" channel="[connection]" request="false">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <closeChannelIMAP name="[connection]"/>
+    
+</scenario>

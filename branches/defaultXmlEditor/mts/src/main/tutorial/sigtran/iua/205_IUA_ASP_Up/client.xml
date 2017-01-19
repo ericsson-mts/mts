@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+
+    Reference document : rfc4233.txt (obsolete rfc3057.txt)
+    Chapter 3.3.2.1
+    
+    Message : ASP_Up
+    Class : 3 (ASP_State_Maintenance_Messages)
+    Type : 1 (ASP_Up)
+    
+    The following scenarios send the IUA message with the following elements :  
+        
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |         Tag = 0x0011          |           Length = 8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                         ASP Identifier                        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |         Tag = 0x0004          |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /                         INFO String                           /
+   \                                                               \
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   
+-->
+
+<scenario>
+			
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
+        <UA name="IUA" file="iua.xml">       
+            <header messageClass="ASPSM:ASP State Maintenance" messageType="ASP_Up"/>						
+            <parameter tag="ASP_Identifier">
+                <field name="ASP_Identifier" value="100000"/>
+            </parameter>
+            <parameter tag="Info_String">
+                <field name="Info_String" value="abcdefghij"/>
+            </parameter>
+        </UA>	
+    </sendMessageSIGTRAN>
+    
+    <parameter name="[data]" value="01000304000000180004000e6162636465666768696a0000" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+
+</scenario>

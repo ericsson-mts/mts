@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputSupplementaryServicesOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="RAd" value="1"/>
+        <attribute name="OAdC" value="987"/>
+        <attribute name="OAC" value="10412614190438AB4D"/>
+        <attribute name="NPL" value="2"/>
+        <attribute name="GA" value="GA moi"/>
+        <attribute name="GA" value="GA toi"/>
+        <attribute name="RP" value="1"/>
+        <attribute name="LRP" value="11111"/>
+        <attribute name="PR" value="2"/>
+        <attribute name="LPR" value="22222"/>
+        <attribute name="UM" value="3"/>
+        <attribute name="LUM" value="33333"/>
+        <attribute name="RC" value="4"/>
+        <attribute name="LRC" value="44444"/>
+        <attribute name="DD" value="5"/>
+        <attribute name="DDT" value="5555555555"/>
+        <attribute name="MT" value="1"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputSupplementaryServicesOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="good"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+    
+    <receiveMessageGTP name="echo request" request="true" type="Create Session Request:32">
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="482000fb0000000056b602000100080002084124002076f04c0006003396992076f04b000800004420429121811056000d001802f810006602f810000067845300030002f8105200010006570009008695962002ac14462a47001d00096e697336636f657063066d6e63303031066d63633230380467707273800001000063000100014f00050001000000004d000400001400007f00010000480008000000c350000186a04e001a008080211001000010810600000000830600000000000d00000a005d002c004900010005570009028480002002ac14462a50001600040700000000000000000000000000000000000000007200020040005f0002000800"/>
+    
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Create Session Response:33" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Cause:2" >
+            <field name="Cause value" value="Request accepted"/>
+            <field name="spare" value="0"/>
+            <field name="PCE" value="false:0"/>
+            <field name="BCE" value="false:0"/>
+            <field name="CS" value="Originated by the node sending the message"/>
+        </element>
+        <element tag="F-TEID:87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
+            <field name="V4" value="true:1"/> 
+            <field name="V6" value="false:0"/>
+            <field name="Interface Type" value="S5/S8 PGW GTP-C"/>
+            <field name="TEID / GRE Key" value="2815696998" description="GRE?"/>
+            <!-- TODO conditional IP V4 V6 -->
+            <field name="IPv4 address" value="172.20.70.43"/>
+            <!--field name="IPv6 address" value="1234:5678:90ab:cdef:fedc:ba09:8765:4321"/-->
+        </element>
+        <element tag="PAA:79" description="PDN Address Allocation">
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4"/>
+            <field name="IPv4 address" value="20.20.1.2"/>
+        </element>                   
+        <element tag="APN Restriction:127" >
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+        </element>                      
+        <element tag="Bearer Context:93" >
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/> 
+            		<field name="EBI" value="5"/>
+            </element>
+            <element tag="Cause:2" >
+                <field name="Cause value" value="Request accepted"/>
+                <field name="spare" value="0"/>
+                <field name="PCE" value="0"/>
+                <field name="BCE" value="0"/>
+                <field name="CS" value="Originated by the node sending the message"/>
+            </element>            
+            <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="true:1"/> 
+                <field name="V6" value="false:0"/>
+                <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+                <field name="TEID / GRE Key" value="2660712550" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 -->      
+                <field name="IPv4 address" value="172.20.70.43"/>
+                <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+            </element>
+            <element tag="Charging ID:94" >
+                <field name="Charging ID value" value="566056505"/>
+            </element>            
+        </element>              
+        <element tag="Recovery:3" >
+            <field name="Recovery" value="72"/>
+        </element>
+    </sendMessageGTP>
+
+</scenario>

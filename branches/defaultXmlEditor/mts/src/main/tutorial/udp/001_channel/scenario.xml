@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <openChannelUDP name="toto" localHost="[localHostUDP]" localPort="[remotePort]" remoteHost="[remoteHostUDP]" remotePort="[remotePort]" />
+
+    <sendMessageUDP channel="toto">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+        <data format="text">blablabla
+        blablabla
+        blablabla</data>
+    </sendMessageUDP>
+
+    <receiveMessageUDP channel="toto" timeout="5">
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageUDP>
+
+    <finally>
+    	<closeChannelUDP name="toto" />
+    </finally>
+    
+</scenario>

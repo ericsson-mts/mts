@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario manager -->
+<scenario>
+    
+    <parameter name="[listenpoint]" operation="set" value="listenpointSNMP" />
+    <createListenpointSNMP name="[listenpoint]" localPort="162"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait"/>
+
+    <parameter name="[requestId]" operation="number.random" value="10000000" />
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="163">
+        <header version="1" community="public"/>
+        <pdu name="get" requestId="[requestId]">
+            <variableBinding name="IF-MIB.ifName"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="false">
+    </receiveMessageSNMP>
+
+    <parameter name="[requestId]" operation="number.add" value="[requestId]" value2="1"/>
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="163">
+        <header version="1" community="private"/>
+        <pdu name="get" requestId="[requestId]">
+            <variableBinding name="1.3.6.1.2.1.72.1.32.56.98.789"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="false">
+    </receiveMessageSNMP>
+
+    <finally>
+        <removeListenpointSNMP name="[listenpoint]"/>
+    </finally>
+    
+</scenario>

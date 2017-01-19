@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+
+    Reference document : rfc4233.txt (obsolete rfc3057.txt)
+    Chapter 3.3.1.3
+    
+    Message : Data_Request, Data_Indication    
+    Class : 5 (Q.921/Q.931_Boundary_Primitives_Transport_Messages)
+    Type : 1 (Data_Request)
+    Type : 2 (Data_Confirm)
+
+    
+    The following scenarios send the IUA message with the following elements :  
+    
+    Common tags (integer)
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x1)           |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Interface Identifier (integer)                |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x5)           |             Length=8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            DLCI               |              Spare            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    Common tags (string)
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x3)           |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               /
+   /                   Interface Identifier (text)                 \
+   \                                                               /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x5)           |             Length=8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            DLCI               |             Spare             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   
+   Additionnal tags
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0xe)           |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               \
+   /                        Protocol Data                          /
+   \                                                               \
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   
+-->
+
+<scenario>
+			
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <!-- integer interface identifier -->
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="2"/>
+            </parameter>
+            <parameter tag="DLCI">
+              	<field name="SAPI" value="0"/>
+  	            <field name="Spare_Bit" value="0"/>
+  	            <field name="Zero_Bit" value="0"/>
+  	            <field name="TEI" value="1"/>
+  	            <field name="Un_Bit" value="1"/>
+  	            <field name="Spare" value="0"/>
+      	    </parameter>  
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value=""/>
+            </parameter>
+        </UA>	
+    </sendMessageSIGTRAN>
+        
+  	<parameter name="[data]" value="01000502000000240003000d6162636465666768690000000005000800030000000e0004" />	
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    
+</scenario>

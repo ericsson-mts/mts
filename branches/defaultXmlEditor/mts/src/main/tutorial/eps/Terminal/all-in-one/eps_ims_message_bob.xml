@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+        <parameter name="[LocalHost]" operation="system.ipaddress" /> 
+        <parameter name="[LocalPort]" operation="set" value="[Port-User2]" /> 
+        <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort]" /> 
+        <parameter name="[LocalTransport]" operation="set" value="udp" /> 
+        
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
+        <parameter name="[provider]" operation="set" value="[scenarioName]" /> 
+
+  	<parameter name="[newCseq]" operation="number.random" value="10" /> 
+    	<parameter name="[localTag]" operation="number.random" value="10" /> 
+      	<parameter name="[newCallId]" operation="number.random" value="10000000" /> 
+        <parameter name="[newBranchId]" operation="string.random" value="10" /> 
+        <parameter name="[MaxForwards]" operation="set" value="70" /> 
+        <parameter name="[UserName]" operation="set" value="[clientName]@[100_DOMAIN_ADDR]" /> 
+        <parameter name="[AuthResponse]" operation="set" value="" /> 
+        <parameter name="[WWWAuthRealm]" operation="set" value="[100_DOMAIN_ADDR]" /> 
+        <parameter name="[WWWAuthNonce]" operation="set" value="" /> 
+        <parameter name="[Password]" operation="set" value="[clientName]" /> 
+        <parameter name="[Method]" operation="set" value="REGISTER" /> 
+        <parameter name="[URI]" operation="set" value="sip:[100_DOMAIN_ADDR]" /> 
+        <parameter name="[HA2]" operation="string.digest" value="[Method]:[URI]" value2="MD5" /> 
+
+	<receiveMessageSIP name="Wait MESSAGE" type="MESSAGE" request="true">
+	  	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" /> 
+	    	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" /> 
+	      	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+	        <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+	        <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" /> 
+	        <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact" /> 
+	        <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+	        <parameter name="[localTag]" operation="string.random" value="10" /> 
+	        <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route" /> 
+	</receiveMessageSIP>
+                                  
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+                SIP/2.0 200 OK
+                Record-Route:[Record-Route]
+                To: [lastTo];tag=[localTag]
+                From: [lastFrom]
+                Via: [lastVia]
+                Call-ID: [lastCallId]
+                CSeq: [lastCseq]
+                Content-Length: 0
+		]]> 
+    	</sendMessageSIP>
+</scenario>

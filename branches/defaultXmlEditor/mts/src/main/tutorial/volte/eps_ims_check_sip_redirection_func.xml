@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+<function name="check-sip-redirection">
+
+<input>
+	<parameter name="[SIP-RURI]" /> 
+	<parameter name="[SIP-HistoryInfo]" /> 
+	<parameter name="[SIP-Diversion]" /> 
+	<parameter name="[ExpectedCause]" /> 
+	<parameter name="[ExpectedReason]" />
+</input>
+
+<do>
+	<if>
+		<condition>
+			<not>
+				<test parameter="[SIP-RURI]" condition="string.contains" value="cause=[ExpectedCause]" />
+			</not>
+		</condition>
+		<then>
+	  		<exit failed="true" name="check-sip-redirection - Unexpected redirection cause in SIP RURI"/>
+		</then>
+	</if>
+	<if>
+		<condition>
+			<not>
+				<test parameter="[SIP-HistoryInfo]" condition="string.contains" value="cause=[ExpectedCause]" />
+			</not>
+		</condition>
+		<then>
+	  		<exit failed="true" name="check-sip-redirection - Unexpected redirection cause in SIP History-Info"/>
+		</then>
+	</if>
+	<if>
+		<condition>
+			<not>
+				<test parameter="[SIP-Diversion]" condition="string.contains" value="reason=[ExpectedReason]" />
+			</not>
+		</condition>
+		<then>
+	  		<exit failed="true" name="check-sip-redirection - Unexpected redirection reason in SIP Diversion"/>
+		</then>
+	</if>
+
+</do>
+
+<output>
+</output>
+
+</function>
+
+</scenario>

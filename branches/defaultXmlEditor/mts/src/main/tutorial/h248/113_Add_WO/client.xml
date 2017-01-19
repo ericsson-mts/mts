@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send Add request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=${
+  Priority = 1,                 
+  W-Add=ip/1/access/${
+   Media{
+    Stream=1{
+     LocalControl{
+      Mode=IN,
+      tman/sdr=800,
+      ds/dscp=0x00,
+     },
+     Local{
+v=0
+c=IN IP4 $
+m=video $ RTP/AVP 98
+m=audio $ RTP/AVP 96
+},
+     Remote{
+v=0
+c=IN IP4 [localHostH248]/127
+m=video 49232/2 RTP/AVP 98
+m=audio 49230/3 RTP/AVP 96
+}
+    },
+    TerminationState {
+     ServiceStates = {
+      InService
+     },
+     Buffer = ON,
+     Buffer = LockStep
+    }
+   }
+  },
+  W-Add=ip/1/core/${
+   Media{
+    LocalControl{ 
+     Mode=RC,
+     tman/sdr=800,
+     ds/dscp=0x00
+    },
+    Local{
+v=0
+c=IN IP4 $
+m=video $ RTP/AVP 98
+m=audio $ RTP/AVP 96
+}
+   }
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- send Add acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>

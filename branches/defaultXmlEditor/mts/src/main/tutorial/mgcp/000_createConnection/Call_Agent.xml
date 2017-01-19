@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+-->
+
+<scenario>
+<parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+
+    <sendMessageMGCP  name="Create Connection" remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+CRCX [transactionId] aaln/1@rgw-2569.whatever.net MGCP 1.0
+K: 1205, 1305, 1236
+RM: restart
+S: L/adsi("123456 Your friend"), L/rg
+C: A3C47F21456789F0
+P: PS=1245, OS=62345, PR=0, OR=0, PL=0, JI=0, LA=48
+L: a:28, p:10, h:669
+M: inactive
+
+v=0
+o=- 25678 753849 IN IP4 128.96.41.1
+s=-
+c=IN IP4 128.96.41.1
+t=0 0
+m=audio 3456 RTP/AVP 0
+
+v=0
+o=- 4723891 7428910 IN IP4 128.96.63.25
+s=-
+c=IN IP4 128.96.63.25
+t=0 0
+m=audio 3456 RTP/AVP 0
+
+v=0
+o=- 4723891 7428910 IN IP4 128.96.63.24
+s=-
+c=IN IP4 128.96.63.25
+t=0 0
+m=audio 3456 RTP/AVP 0
+]]>
+
+    </sendMessageMGCP>
+
+     <receiveMessageMGCP request="false">
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+	
+</scenario>

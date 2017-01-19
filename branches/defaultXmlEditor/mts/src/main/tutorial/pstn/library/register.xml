@@ -1,0 +1,52 @@
+<!--***********************************************************************************************
+			library for register feature
+
+     input [userName] : the user name to register on the user agent
+     input [listenpoint] : the listenpoint name used for the user agent 
+     input [hostSIP] : the host for the user agent to listen to SIP protocol
+     input [portSIP] : the host for the user agent to listen to SIP protocol
+     input [expires] : the expires duration of the registration (0 means unregister) 
+***********************************************************************************************-->
+
+	<if>
+	   <condition>
+	   	<test parameter="[expires]" condition="number.equals" value="0" not="true"/>
+	   </condition>
+	   <then>
+		<createListenpointSIP name="[listenpoint]" localHost="[hostSIP]" localPort="[portSIP]"/>
+	   </then>
+	</if>
+
+  	<parameter name="[fromTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" 
+			remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+<![CDATA[
+REGISTER sip:[userName]@[domainName] SIP/2.0
+To: "[name_Subscriber]" <sip:[userName]@[domainName]>
+From: "[name_Subscriber]" <sip:[userName]@[domainName]>;tag=[fromTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/UDP [hostSIP]:[portSIP];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Route: <sip:[userName]@[remoteHostSIP]:[remotePortSIP];lr>
+Contact: <sip:[userName]@[hostSIP]:[portSIP]>
+Expires: [expires]
+Content-Length: 0
+]]>
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="200 OK" listenpoint="[listenpoint]" request="false" type="REGISTER" result="200">
+	</receiveMessageSIP>
+
+	<if>
+	   <condition>
+	   	<test parameter="[expires]" condition="number.equals" value="0"/>
+	   </condition>
+	   <then>
+		<removeListenpointSIP name="[listenpoint]"/>
+	   </then>
+	</if>
+

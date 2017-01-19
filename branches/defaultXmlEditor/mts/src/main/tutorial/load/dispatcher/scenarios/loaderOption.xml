@@ -1,0 +1,62 @@
+
+<scenario>
+    <try>
+        <finally>
+            <parameter name="[test:contextMutex]" operation="system.semaphorewait" value2="0" />
+            
+            <parameter name="[caller]" value="[test:userTab([test:userIndexForInvite])]" />
+            <parameter name="[test:userIndexForInvite]" operation="add" value="[test:userIndexForInvite]" value2="1" />
+            <parameter name="[callee]" value="[test:userTab([test:userIndexForInvite])]" />
+            <parameter name="[test:userIndexForInvite]" operation="add" value="[test:userIndexForInvite]" value2="1" />
+            <parameter name="[test:userIndexForInvite]" operation="number.modulo" value="[test:userIndexForInvite]" value2="[test:RangeNumberUser]" />
+            
+            <parameter name="[contextId]" operation="number.uid" />
+            
+            <parameter name="[test:[caller]_invite_contextId]" value="[contextId]" />
+            <parameter name="[test:[callee]_invite_contextId]" value="[contextId]" />
+            <!-- TODO : check caller and callee's register contexts exist -->
+            <!-- get the caller's listenpoint -->
+            <parameter name="[register_contextId]" value="[test:[caller]_register_contextId]" />
+            <parameter name="[listenpoint]" value="[test:context_[register_contextId]_listenpointName]" />
+            <parameter name="[Port-Tester]" value="[test:context_[register_contextId]_listenpointPort]" />
+            <parameter name="[test:contextMutex]" operation="system.semaphorenotify" />
+        </finally>
+    </try>
+    
+    <parameter name="[RandomNumberTag1]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag2]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag3]" operation="number.random" value="9999"/>
+    <parameter name="[RandomNumberTag4]" operation="number.random" value="99999"/>
+    <parameter name="[RandomNumberTag5]" operation="number.random" value="999"/>
+    <parameter name="[RandomNumberTag6]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag7]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag8]" operation="number.random" value="99999999"/>
+    <parameter name="[RandomNumberTag9]" operation="string.random" value="7"/>
+    <parameter name="[RandomNumberTag11]" operation="number.random" value="99999999"/>
+    
+    <parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>    
+
+    <parameter name="[FromTag]" operation="set" value="[RandomNumberTag1]-[RandomNumberTag2]-[RandomNumberTag3]-[RandomNumberTag4]-[RandomNumberTag5]-[RandomNumberTag6]-[RandomNumberTag5]"/>
+    <parameter name="[CallID]" operation="set" value="[RandomNumberTag7]-[RandomNumberTag2]-[RandomNumberTag3]-[RandomNumberTag4]-[RandomNumberTag5]-[RandomNumberTag8]-[RandomNumberTag5]"/>
+    
+    <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[	
+OPTIONS sip:[callee]@[domainName] SIP/2.0
+Call-ID: [CallID]
+CSeq: [newCseqNumber] OPTIONS
+From: <sip:[caller]@[domainName]>;tag=[FromTag]
+To: <sip:[callee]@[domainName]>
+Max-Forwards: 70
+Via: SIP/2.0/UDP [Host-Tester]:[Port-Tester];branch=z9hG4bK-[BranchId]
+Contact: <sip:[caller]@[Host-Tester]:[Port-Tester]>
+Accept: application/sdp 
+Allow: INVITE,UPDATE,ACK,CANCEL,BYE,NOTIFY,OPTIONS,MESSAGE,REFER
+P-Preferred-Identity: <sip:+33[inviterName]@[domainName]>
+User-Agent: IMSLoader
+Content-Length: x
+]]>	
+    </sendMessageSIP>
+    
+</scenario>

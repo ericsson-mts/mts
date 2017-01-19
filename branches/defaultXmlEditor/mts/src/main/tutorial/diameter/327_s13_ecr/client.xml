@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S13 ME Identity Check (ECR/ECA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+
+<!--
+From 3GPP TS 29.272 V9.1.0 :
+ME-Identity-Check-Request ::= < Diameter Header: 324, REQ, PXY, 16777252 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { Terminal-Information }
+                                    Terminal-Information ::= < AVP Header: 1401 10415>
+                                                                 [ IMEI ]
+                                                                 [ TGPP2-MEID ]
+                                                                 [ Software-Version ]
+																*[AVP]
+                                  [ User-Name ]
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+-->
+
+
+    <!-- IMEI : 15 didits - 3GPP ETSI TS 129.272 /-->
+    <parameter name="[IMEI]" operation="set" value="358001045322746"/>
+
+    <!-- SVN of IMEISV : 2 last digits -  3GPP TS 23.003 /-->
+    <parameter name="[Software-Version]" operation="set" value="46"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestECR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+
+        <avp code="Vendor-Specific-Application-Id:260">
+              <avp code="Vendor-Id:266" value="[vendorID]"/>
+              <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+        </avp>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+
+        <avp code="Terminal-Information:1401">
+              <avp code="IMEI:1402" value="[IMEI]"/>
+              <avp code="Software-Version:1403" value="[Software-Version]"/>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerECA" channel="channel_client" request="false" type="3GPP-ME-Identity-Check" result="DIAMETER_SUCCESS:2001">
+    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

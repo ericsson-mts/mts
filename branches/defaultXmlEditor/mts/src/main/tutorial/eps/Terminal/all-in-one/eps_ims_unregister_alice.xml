@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+        <parameter name="[newCseq]"             operation="number.random"       value="10"/>
+        <parameter name="[localTag]"            operation="number.random"       value="10"/>
+        <parameter name="[newCallId]"           operation="number.random"       value="10000000"/>
+        <parameter name="[newBranchId]"         operation="string.random"       value="10"/>
+        <parameter name="[MaxForwards]"         operation="set"                 value="70"/>
+
+        <parameter name="[clientName]"          operation="set"                 value="[User1]" />
+        <parameter name="[provider]"            operation="set"                 value="[scenarioName]" />
+        <parameter name="[Adresse-Server]"      operation="set"                 value="[Host-Server]:[Port-Server]"/>
+        <parameter name="[LocalHost]"           operation="system.ipaddress" />
+        <parameter name="[LocalPort]"           operation="set"                 value="[Port-User1]"/>
+        <parameter name="[LocalAddress]"        operation="set"                 value="[LocalHost(0)]:[LocalPort(0)]"/>
+        <parameter name="[LocalTransport]"      operation="set"                 value="udp"/>
+        <parameter name="[Expires]"             operation="set"                 value="0"/>
+
+        <parameter name="[UserName]"            operation="set"                 value="[clientName]@[100_DOMAIN_ADDR]"/>
+        <parameter name="[AuthResponse]"        operation="set"                 value=""/>
+        <parameter name="[WWWAuthRealm]"        operation="set"                 value="[100_DOMAIN_ADDR]"/>
+        <parameter name="[WWWAuthNonce]"        operation="set"                 value=""/>
+        <parameter name="[Password]"            operation="set"                 value="[clientName]"/>
+        <parameter name="[Method]"              operation="set"                 value="REGISTER"/>
+        <parameter name="[URI]"                 operation="set"                 value="sip:[100_DOMAIN_ADDR]" />
+        <parameter name="[HA2]"                 operation="string.digest"       value="[Method]:[URI]"      value2="MD5" />
+
+        <createListenpointSIP name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPort]" transport="[LocalTransport]"/>
+
+        <sendMessageSIP name="Send REGISTER" listenpoint="[provider]">
+        	<![CDATA[REGISTER sip:[clientName]@[100_DOMAIN_ADDR] SIP/2.0
+                To: sip:[clientName]@[100_DOMAIN_ADDR]
+                From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+                Call-ID:[newCallId]
+                Route: <sip:[clientName]@[Adresse-Server];lr>13
+                CSeq: 1 REGISTER
+                Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId];ttl=3000
+                Max-Forwards: [MaxForwards]
+                Contact: <sip:[clientName]@[LocalAddress]>
+                Supported: path
+                Expires: [Expires]
+                Authorization: Digest response="[AuthResponse]",username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", uri="[URI]"
+                Content-Length: 0]]>
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="receive REGISTER response" type="REGISTER" request="false">
+		<parameter name="[StatusCode]" 		operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+		<parameter name="[WWWAuthRealm]" 	operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>
+		<parameter name="[WWWAuthNonce]" 	operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>
+		<parameter name="[Service-Route]" 	operation="protocol.setFromMessage" value="header.Service-Route"/>
+	</receiveMessageSIP>
+	<if>
+		<condition>
+			<test parameter="[StatusCode]" condition="string.equals" value="401" />
+		</condition>
+	<then>
+		<parameter name="[HA1]" 		operation="string.digest" 	value="[UserName]:[WWWAuthRealm]:[Password]" value2="MD5" />
+		<parameter name="[AuthResponse]" operation="string.digest" 	value="[HA1]:[WWWAuthNonce]:[HA2]" value2="MD5" />
+  		<parameter name="[newBranchId]" operation="string.random" 	value="10"/>
+  		<parameter name="[localTag]" 	operation="number.add" 		value="[localTag]"  value2="1"/>
+  		<sendMessageSIP name="Send REGISTER" listenpoint="[provider]"> 
+  		<![CDATA[REGISTER sip:[clientName]@[100_DOMAIN_ADDR] SIP/2.0
+  		To: "[UserName]" <sip:[clientName]@[100_DOMAIN_ADDR]>
+  		From: "[UserName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+  		Call-ID:[newCallId]
+  		CSeq: 2 REGISTER
+  		Route: <sip:[clientName]@[Adresse-Server];lr>
+  		Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+  		Max-Forwards: [MaxForwards]
+  		Contact: <sip:[clientName]@[LocalAddress]>
+  		Expires: [Expires]
+  		Supported: path
+  		Authorization: Digest response="[AuthResponse]",username="[UserName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]", uri="[URI]",algorithm=MD5
+  		Content-Length: 0]]>
+  		</sendMessageSIP>
+  		<receiveMessageSIP name="200 OK" type="REGISTER" result="200" request="false">
+  			<parameter name="[StatusCode]" 		operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+  			<parameter name="[Service-Route]" 	operation="protocol.setFromMessage" value="header.Service-Route"/>
+  			<parameter name="[SCSCF]" 	operation="protocol.setFromMessage" value="header.Service-Route"/>
+  			<parameter name="[PCSCF]" 	operation="protocol.setFromMessage" value="header.Path"/>
+  		</receiveMessageSIP>
+  	</then>
+  	</if>
+  	<if>
+  		<condition>
+  			<test parameter="[StatusCode]" condition="string.matches" value="2[0-9][0-9]"/>
+  		</condition>
+  	<then></then>
+  	<else>
+  		<exit failed="true"/>
+  	</else>
+  	</if>
+</scenario>

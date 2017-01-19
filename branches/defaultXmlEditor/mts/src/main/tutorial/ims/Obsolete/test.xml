@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Samples">
+
+	<parameter name="[Host-AS]" operation="setFromSystem" value="IPAddress" value2="eth0"/>	
+	<!--parameter name="[Host-AS]" operation="set" value="192.168.150.52" description="Addresse de l'AS"/-->
+  	<parameter name="[Port-AS]" operation="setFromConfig" value="sip.properties" value2="LOCAL_PORT"/>	
+  	<!--parameter name="[Port-AS]" operation="set" value="5060"/-->	  	
+	<parameter description="Addresse de l'AS" name="[Adresse-AS]" operation="set" value="[Host-AS(0)]:[Port-AS]"/>	
+  	
+	<parameter name="[Host-XML-Loader]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+  	<parameter name="[Port-XML-Loader]" operation="setFromConfig" value="sip.properties" value2="LOCAL_PORT"/>
+  	<parameter name="[Adresse-XML-Loader]" operation="set" value="[Host-XML-Loader(0)]:[Port-XML-Loader]"/>	
+
+  	<parameter name="[DomainName]" operation="set" value="ims.net"/>	
+  	<parameter name="[UserName1]" operation="set" value="homer.simpson"/>	
+  	<parameter name="[UserName2]" operation="set" value="barth.simpson"/>	
+  	
+	<testcase description="SIP registration for Bob user" name="REGISTER_Bob" state="true">
+		<scenario file="register_bob/UE_register.xml" name="register_bob/UE_register" routingName="register_bob/UE_register"/>
+	</testcase>
+	<testcase description="SIP registration for Alice user" name="REGISTER_Alice" state="true">
+		<scenario file="register_alice/UE_register.xml" name="register_alice/UE_register" routingName="register_alice/UE_register"/>
+	</testcase>	
+	<testcase description="INVITE callflow" name="INVITE" state="true">
+		<scenario file="invite/UE_inviter.xml" name="invite/UE_inviter.xml" routingName="invite/UE_inviter.xml"/>
+		<scenario file="invite/UE_invitee.xml" name="invite/UE_invitee.xml" routingName="invite/UE_invitee.xml"/>
+	</testcase>
+</test>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+	    <receiveMessageSIP name="Wait" request="true" type="FOO">
+		</receiveMessageSIP>
+
+        <sendMessageSIP name="Send 200 OK" 
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
+<![CDATA[
+SIP/2.0 200
+To: 
+From: 
+Call-ID: 
+CSeq: 
+Contact: 
+Via: 
+User-Agent: 
+Content-Length: 
+]]>
+        </sendMessageSIP>
+
+	    <receiveMessageSIP name="Wait" request="true" type="FOO">
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send 200 OK" 
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
+<![CDATA[SIP/2.0 200 OK]]>
+		</sendMessageSIP>
+
+		<receiveMessageSIP name="Wait" request="true">
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send 200 OK" 
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportResponse]">
+<![CDATA[SIP]]>
+		</sendMessageSIP>
+
+</scenario>

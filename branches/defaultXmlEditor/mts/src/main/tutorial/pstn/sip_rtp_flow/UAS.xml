@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE library [
+<!ENTITY register SYSTEM "../library/register.xml">
+]>
+
+
+<scenario>
+	<!-- parametres des etapes de l'appel -->
+    <parameter name="[INVITE_flag]" value="false" />
+    <parameter name="[RTP_flag]" value="false" />
+    <parameter name="[BYE_flag]" value="false" />
+	<parameter name="[PHASE_Server_flag]" operation="set" value="0" />
+    <parameter name="[ListenPointSIP_flag]" value="true" />
+    <parameter name="[ListenPointRTP_flag]" value="false" />
+ 
+	<log level="info">invitee Reg: [inviteeReg] </log>
+		
+	<parameter name="[userName]" operation="set" value="[inviteeReg]"/>
+	<parameter name="[name_Subscriber]" operation="set" value="[invitee]"/>
+	<parameter name="[listenpoint]" operation="set" value="[scenarioName]"/>	
+	<parameter name="[hostSIP]" operation="set" value="[localHost]"/>	
+	<parameter name="[portSIP]" operation="set" value="[UASlocalPortSIP]"/>	
+  	<parameter name="[expires]" operation="set" value="3600"/>  	  
+  	&register;
+    
+    <parameter name="[testcase:REGISTERED]" operation="system.semaphorenotify"/>
+    
+  	<receiveMessageSIP name="Wait INVITE" listenpoint="[listenpoint]" type="INVITE" request="true">
+	        <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+	        <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+	        <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+	        <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	        <parameter name="[remoteCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+	        <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	        <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+	        <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+	        <parameter name="[localTag]" operation="string.random" value="10"/>
+			<parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+	        <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+	        <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+			<parameter name="[contactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+  	</receiveMessageSIP>
+
+	 <parameter name="[Request-URI]" operation="set" value="[contactURI]"/>
+	
+  	<sendMessageSIP name="Send 100 Trying" listenpoint="[listenpoint]"
+  			remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: IMSLoader
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+
+  	<sendMessageSIP name="Send 180 Ringing" listenpoint="[listenpoint]"
+  			remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: IMSLoader
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+	
+	
+<pause name="pause"     seconds="1"  state="true"/>
+
+  	<sendMessageSIP name="Send 200 OK" listenpoint="[listenpoint]"
+  			remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Server: IMSLoader
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: [lastTo]
+Max-Forwards: [MaxForwards]
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[invitee] 999 999 IN IP4 [localHost]
+s=-
+c=IN IP4 [localHost]
+t=0 0
+m=audio [UASlocalPortRTP] RTP/AVP 18 8
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=sendrecv]]>
+  	</sendMessageSIP>
+
+	<parameter name="[PHASE_Server_flag]" operation="set" value="1" />
+
+	
+  	<receiveMessageSIP name="Wait ack" listenpoint="[listenpoint]" type="ACK" request="true">
+	    <parameter name="[newTo]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[newFrom]" operation="protocol.setFromMessage" value="header.From"/>
+	 </receiveMessageSIP>
+
+	<!-- phase 1 OK -->
+	<parameter name="[INVITE_flag]" value="true" />
+
+	<parameter name="[testcase:SIPEndCall]" operation="system.semaphorewait"/>		
+
+	<!--******************** Fin signalisation SIP et couverture des flux RTP *********************-->
+	
+	<createListenpointRTPFLOW name="[listenpoint]" localPort="[UASlocalPortRTP]">
+		<flow endTimerNoPacket="5" endTimerSilentFlow="5"/>
+	</createListenpointRTPFLOW>
+	
+    <parameter name="[ListenPointRTP_flag]" value="true" />
+	<parameter name="[PHASE_Server_flag]" operation="number.add" value="[PHASE_Server_flag]" value2="10"/>
+
+	
+	<parameter name="[testcase:RTPCreate]" operation="system.semaphorenotify"/>
+
+	<parameter name="[testcase:RTPPacketSend]" operation="system.semaphorewait"/>
+	
+	
+	<receiveMessageRTPFLOW name="ReceivePacketRTPFLOW" listenpoint="[listenpoint]" type="8" timeout="35">
+	        <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>		
+	        <parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+	        <parameter name="[packetNumber]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	        <parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/>
+	        <parameter name="[seqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+	        <parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+    	</receiveMessageRTPFLOW>
+
+	<!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadPLayer, do not change it -->
+	<!-- value4 = bitsPerSample (optional) -->
+	<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
+	<parameter name="file" operation="file.writewave" value="rtpflowReceived.wav" 
+	value2="[payloadType]"	
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	value6="1"
+	/>
+			
+	<parameter name="[RTP_flag]" value="true" />
+
+	<parameter name="[testcase:RTPEnd]" operation="system.semaphorenotify"/>
+			
+    <parameter name="[maxFreq]" operation="binary.statPopular" value="[flowPayloadPlayer]"/>
+    <parameter name="[maxFreq]" operation="binary.statMaxFreq" value="[flowPayloadPlayer]"/>
+   	<parameter name="[minmaxFreq]" operation="list.statMin" value="[maxFreq]"/>
+   	<!--test parameter="[minmaxFreq]" condition="number.lowerThan" value="0.2"/-->
+
+	<parameter name="[averageFlow]" operation="binary.statAverage" value="[flowPayloadPlayer]"/>
+	<parameter name="[deviationFlow]" operation="binary.statDeviation" value="[flowPayloadPlayer]"/>
+	<parameter name="[deviation]" operation="list.statAverage" value="[deviationFlow]"/>
+ 
+<!--******************** Fin test de voix *********************-->
+ 
+	<finally>
+	
+		<!--Fermeture de la session SIP-->
+	  	<receiveMessageSIP name="Wait BYE" listenpoint="[listenpoint]" type="BYE" request="true">
+		        <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+		        <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+		        <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+		        <parameter name="[remoteCseqNumber]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		        <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		        <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		        <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+	  	</receiveMessageSIP>
+	
+	  	<sendMessageSIP name="Send 200 OK" listenpoint="[listenpoint]"
+	  			remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+	<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [remoteCseqNumber]
+Contact: [contact]
+Max-Forwards: MaxForwards  
+User-Agent: IMSLoader
+Max-Forwards: 70
+Content-Length: 0
+	]]>
+	  	</sendMessageSIP>
+		
+		<parameter name="[BYE_flag]" value="true" />
+		<parameter name="[PHASE_Server_flag]" operation="number.add" value="[PHASE_Server_flag]" value2="100"/>
+
+	
+		<try>
+			<do>
+				<if>
+					<condition>
+						<test parameter="[ListenPointRTP_flag]" condition="boolean.equals" value="true" />
+					</condition>
+				<then>
+					<removeListenpointRTPFLOW name="[listenpoint]"/>
+				</then>
+				</if>
+				<if>
+					<condition>
+						<test parameter="[BYE_flag]" condition="boolean.equals" value="false" />
+					</condition>
+					<then>
+            
+					<parameter name="[newCseqNumber]" operation="add" value="[newCseqNumber]"  value2="1"/>
+					<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+					<parameter name="[remoteCseqNumber]" operation="number.add" value="[remoteCseqNumber]" value2="1"/>
+
+					<sendMessageSIP name="Send BYE" listenpoint="[provider_Name]"
+						remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">   	
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [newTo]
+From: [newFrom]
+Call-ID: [lastCallId]
+CSeq: [remoteCseqNumber] BYE
+Via: SIP/2.0/UDP [ipAddressSip]:[provider_Port];branch=[newBranchId]
+Contact:  [contact]
+Max-Forwards: 70
+User-Agent: XMLLoader
+Content-Length: 0
+]]>
+					</sendMessageSIP>
+
+					<receiveMessageSIP name="Wait BYE response" listenpoint="[provider_Name]" type="BYE">
+					</receiveMessageSIP>				
+
+					</then>
+				</if>
+			</do>
+			<finally/>
+		</try>	
+		
+		<pause name="pause"     seconds="0.5"  state="true"/>
+
+		<parameter name="[name_Subscriber]" operation="set" value="[name_invitee]"/>	
+		<parameter name="[userName]" operation="set" value="[inviteeReg]"/>
+		<parameter name="[listenpoint]" operation="set" value="[scenarioName]"/>
+		<parameter name="[hostSIP]" operation="set" value="[localHost]"/>	
+		<parameter name="[portSIP]" operation="set" value="[UASlocalPortSIP]"/>	
+		<parameter name="[expires]" operation="set" value="0"/>  	  
+		&register;
+		
+		<if>
+            <condition>
+                <or>
+                    <test parameter="[INVITE_flag]" condition="boolean.equals" value="false" />
+                    <test parameter="[RTP_flag]" condition="boolean.equals" value="false" />
+                    <test parameter="[BYE_flag]" condition="boolean.equals" value="false" />
+                </or>
+            </condition>
+            <then>
+                <log level="ERROR">INVITE:[INVITE_flag] </log>
+                <log level="ERROR">RTP:[RTP_flag] </log>
+                <log level="ERROR">BYE:[BYE_flag] </log>
+                <log level="ERROR">PHASE:[PHASE_Server_flag] </log>
+                <exit failed="true" />
+            </then>
+        </if>
+
+	</finally>
+				
+</scenario>

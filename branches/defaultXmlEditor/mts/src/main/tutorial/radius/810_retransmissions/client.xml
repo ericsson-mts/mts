@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
+
+    <createListenpointRADIUS name="[listenpoint]" secret="secret"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
+
+    <parameter name="[identifier]" operation="number.random" value="1000000"/>
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="127.0.0.1" remotePort="18120">
+        <header code="4" identifier="[identifier]"/>
+        <avp code="user-name" value="login" />
+        <avp code="user-password" value="password" />
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <parameter name="[testcase:synchro]" operation="system.semaphorewait" />
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="127.0.0.1" remotePort="18120">
+        <header code="4"  identifier="[identifier]"/>
+        <avp code="user-name" value="login" />
+        <avp code="user-password" value="password" />
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+    
+    <parameter name="[testcase:synchro2]" operation="system.semaphorenotify" />
+    
+    <finally>
+        <removeListenpointRADIUS name="[listenpoint]" />
+    </finally>
+</scenario>

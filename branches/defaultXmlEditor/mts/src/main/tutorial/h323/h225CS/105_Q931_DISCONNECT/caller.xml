@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : DISCONNECT(69)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.5 =>Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Cause 4.5 Both M 4-32
+Progress indicator 4.5 (Note 1) O (Note 2) 2-4
+Display 4.5 n u O (Note 3) (Note 4)
+Signal 4.5 n u O (Note 5) 2-3
+
+    Chapter : 3.2.5 => Packet
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Cause 4.5 Both M 4-32
+Display 4.5 n u O (Note 1) (Note 2)
+User-user 4.5 u n O (Note 3) (Note 4)
+
+
+-->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS DISCONNECT" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+    
+    	<ASN1 file="h2250v7.asn"/>    
+    	
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- DISCONNECT = b1000101 = h45 =d69-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="DISCONNECT"/>
+            
+            <!-- Cause = b0001000 = h8 = d8-->
+	    <element identifier="Cause">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
+	        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
+	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>
+	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Cause value" lengthBit="7" type="integer" value="20"/>
+    	    </element>
+
+	    <!-- Progress indicator = b0011110 = h1E = d30-->
+            <!-- ONLY for Circuit message -->	    
+            <element identifier="Progress indicator">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Location" lengthBit="4" type="enumeration" value="User"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Progress description" lengthBit="7" type="enumeration" value="Call has returned to the ISDN"/>
+            </element>
+            
+            <!-- Display identification = b0101000 = h28 = d40-->
+	    <element identifier="Display identification">
+		<field name="Display identification" type="string" value="textZZZ"/>
+   	    </element>
+   	    
+            <!-- Signal = b0110100 =h34 =d52-->
+            <!-- ONLY for Circuit message -->            
+            <element identifier="Signal">
+		<field name="Signal value" lengthBit="8" type="integer" value="125"/>
+	    </element>
+
+            <!-- User-user= b1111110 = h7E = d126-->
+            <!-- ONLY for Packet message -->                        
+    	    <element identifier="User-User">
+        	<field name="Protocol discriminator" lengthBit="8" type="enumeration" value="X.208 and X.209 coded user information"/>
+    		<field name="User information" type="binary" value="20a8060008914a0004014006006d002e006a0065006d0065006322c00900003d1443616c6c67656e33323320706f67616373616d00000a302e39616c706861340000000a01061206b800f8fdf93ecd9ed6119ab2000476222017005d0d8007000a01038f80231100c0fef93ecd9ed6119ab2000476222017010001000100010002800100"/>    
+	    </element>
+	    
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="AllFeaturesResetOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="AC" value="balabalabala"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="AllFeaturesResetOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputAdditionalCharacterSetOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="OAC" value=""/>
+        <attribute name="AMsg" value="encore un test avec un message" encoding="true"/>
+        <attribute name="CS" value="12"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputAdditionalCharacterSetOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="UCPVersionStatusRequest" TRN="[seqNum]" MT="O"/>
+        <attribute name="IVR5-CP" value="9999"/>
+        <attribute name="REQ-OT" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="UCPVersionStatusRequest" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="IVR5-PNC_I" operation="protocol.setFromMessage" value="attribute.IVR5-PNC_I"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="OT" operation="protocol.setFromMessage" value="attribute.OT"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[IVR5-PNC_I]" condition="string.equals" value="test"/>
+        <test parameter="[NPL]" condition="string.equals" value="10"/>
+        <test parameter="[OT(0)]" condition="string.equals" value="01"/>
+        <test parameter="[OT(1)]" condition="string.equals" value="02"/>
+        <test parameter="[OT(2)]" condition="string.equals" value="04"/>
+        <test parameter="[OT(3)]" condition="string.equals" value="06"/>
+        <test parameter="[OT(4)]" condition="string.equals" value="08"/>
+        <test parameter="[OT(5)]" condition="string.equals" value="10"/>
+        <test parameter="[OT(6)]" condition="string.equals" value="12"/>
+        <test parameter="[OT(7)]" condition="string.equals" value="14"/>
+        <test parameter="[OT(8)]" condition="string.equals" value="16"/>
+        <test parameter="[OT(9)]" condition="string.equals" value="18"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="MobileSubscriberFeatureStatusRequest" TRN="[seqNum]" MT="O"/>
+        <attribute name="Adc" value="9999"/>
+        <attribute name="AC" value="8888"/>
+        <attribute name="SSTAT" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="MobileSubscriberFeatureStatusRequest" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="ROCNT" operation="protocol.setFromMessage" value="attribute.ROCNT"/>
+        <parameter name="ROA" operation="protocol.setFromMessage" value="attribute.ROA"/>
+        <parameter name="CBCNT" operation="protocol.setFromMessage" value="attribute.CBCNT"/>
+        <parameter name="BAR" operation="protocol.setFromMessage" value="attribute.BAR"/>
+        <parameter name="DECNT" operation="protocol.setFromMessage" value="attribute.DECNT"/>
+        <parameter name="DEF" operation="protocol.setFromMessage" value="attribute.DEF"/>
+        <parameter name="DICNT" operation="protocol.setFromMessage" value="attribute.DICNT"/>
+        <parameter name="DIV" operation="protocol.setFromMessage" value="attribute.DIV"/>
+        <parameter name="LMN" operation="protocol.setFromMessage" value="attribute.LMN"/>
+        <parameter name="NMESS" operation="protocol.setFromMessage" value="attribute.NMESS"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[ROCNT]" condition="boolean.equals" value="1"/>
+        <test parameter="[ROA(0)]" condition="string.equals" value="coucou"/>
+        <test parameter="[CBCNT]" condition="string.equals" value="1"/>
+        <test parameter="[BAR(0)]" condition="string.equals" value="hello"/>
+        <test parameter="[DECNT]" condition="string.equals" value="2"/>
+        <test parameter="[DEF(0)]" condition="string.equals" value="test1"/>
+        <test parameter="[DEF(1)]" condition="string.equals" value="test2"/>
+        <test parameter="[DICNT]" condition="string.equals" value="1"/>
+        <test parameter="[DIV(0)]" condition="string.equals" value="10"/>
+        <test parameter="[LMN]" condition="string.equals" value="30"/>
+        <test parameter="[NMESS]" condition="string.equals" value="10"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

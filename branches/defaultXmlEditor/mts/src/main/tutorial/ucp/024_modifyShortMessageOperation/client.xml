@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="ModifyShortMessageOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="012345"/>
+        <attribute name="OAdC" value="09876"/>
+        <attribute name="AC" value=""/>
+        <attribute name="NRq" value=""/>
+        <attribute name="NAdC" value=""/>
+        <attribute name="NT" value=""/>
+        <attribute name="NPID" value=""/>
+        <attribute name="LRq" value=""/>
+        <attribute name="LRAd" value=""/>
+        <attribute name="LPID" value="1324"/>
+        <attribute name="DD" value=""/>
+        <attribute name="DDT" value=""/>
+        <attribute name="VP" value=""/>
+        <attribute name="RPID" value=""/>
+        <attribute name="SCTS" value="123456789012"/>
+        <attribute name="Dst" value=""/>
+        <attribute name="Rsn" value=""/>
+        <attribute name="DSCTS" value=""/>
+        <attribute name="MT" value=""/>
+        <attribute name="NB" value=""/>
+        <attribute name="AMsg" value=""/>
+        <attribute name="MMS" value=""/>
+        <attribute name="PR" value=""/>
+        <attribute name="DCs" value=""/>
+        <attribute name="MCLs" value=""/>
+        <attribute name="RPI" value="8"/>
+        <attribute name="CPg" value=""/>
+        <attribute name="RPLy" value=""/>
+        <attribute name="OTOA" value=""/>
+        <attribute name="HPLMN" value="213"/>
+        <attribute name="XSer" value=""/>
+        <attribute name="RES4" value=""/>
+        <attribute name="RES5" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ModifyShortMessageOperation" result="A"/>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="ModifyShortMessageOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="012345"/>
+        <attribute name="OAdC" value="09876"/>
+        <attribute name="AC" value=""/>
+        <attribute name="NRq" value=""/>
+        <attribute name="NAdC" value=""/>
+        <attribute name="NT" value=""/>
+        <attribute name="NPID" value=""/>
+        <attribute name="LRq" value=""/>
+        <attribute name="LRAd" value=""/>
+        <attribute name="LPID" value="1324"/>
+        <attribute name="DD" value=""/>
+        <attribute name="DDT" value=""/>
+        <attribute name="VP" value=""/>
+        <attribute name="RPID" value=""/>
+        <attribute name="SCTS" value="123456789012"/>
+        <attribute name="Dst" value="test"/>
+        <attribute name="Rsn" value=""/>
+        <attribute name="DSCTS" value=""/>
+        <attribute name="MT" value=""/>
+        <attribute name="NB" value=""/>
+        <attribute name="AMsg" value=""/>
+        <attribute name="MMS" value=""/>
+        <attribute name="PR" value=""/>
+        <attribute name="DCs" value=""/>
+        <attribute name="MCLs" value=""/>
+        <attribute name="RPI" value="8"/>
+        <attribute name="CPg" value=""/>
+        <attribute name="RPLy" value=""/>
+        <attribute name="OTOA" value=""/>
+        <attribute name="HPLMN" value="213"/>
+        <attribute name="XSer" value=""/>
+        <attribute name="RES4" value=""/>
+        <attribute name="RES5" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ModifyShortMessageOperation" result="N"/>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

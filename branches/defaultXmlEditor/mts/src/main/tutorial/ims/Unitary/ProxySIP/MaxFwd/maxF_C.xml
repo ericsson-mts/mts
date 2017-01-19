@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" operation="set" value="[PortUAC]"/>
+	<parameter name="[LocalAddressUAC]" operation="set" value="[HardAddressUAC]"/>	
+
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+
+
+
+	<parameter name="[NewCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[NewCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+ <!--MaxForwards Decrement Test-->
+ 
+<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[HardAddressUAS] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Max-Forwards: 10
+Route: <sip:[Adresse-Proxy];lr>
+Contact: "[InviterName]"<sip:[LocalAddressUAC]>
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+	<parameter name="[NewCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[NewCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+<!--MaxForwards Header creation test-->
+
+<sendRequestSIP name="Send Cancel" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[HardAddressUAS] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Route: <sip:[Adresse-Proxy];lr>
+Contact: "[InviterName]"<sip:[LocalAddressUAC]>
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+	<parameter name="[NewCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[NewCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+<parameter name="[testcase:SEM2]" operation="system.semaphorewait"/>
+
+<!-- Too Many Hops Rejection Test-->
+
+<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[HardAddressUAS] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Max-Forwards: 0
+Route: <sip:[Adresse-Proxy];lr>
+Contact: "[InviterName]"<sip:[LocalAddressUAC]>
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+	<parameter name="[Receive]" operation="set" value="false"/>
+	
+	<receiveResponseSIP name="Wait 483 - Too Many Hops"  method="INVITE" result="483" timeout="[timeout]" failedOnTimeout="false" >
+	<parameter name="[Receive]" operation="set" value="true"/>
+	</receiveResponseSIP>
+
+
+
+	<if>
+        <condition>
+            <test parameter="[Receive]" condition="equals" value="true"/>
+        </condition>
+		<then>
+			<log level="0">Proxy rejects requests when Max-Forwards=0 and sends 483</log>
+		</then>
+		<else>
+			<log level="2">Proxy is not able to reject requests when Max-Forwards=0</log>
+		</else>
+	</if>
+	
+	<!--<closeProviderSIP name="close SIP provider" providerName="[scenarioName]"/>-->
+	
+	
+</scenario>
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <createListenpointUDP name="toto" localPort="[remotePort]"/>
+    
+  	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+  	<parameter name="[userName]" operation="set" value="alice"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+
+    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+        <data format="text">
+<![CDATA[
+REGISTER sip:[userName]@[Adresse-Server] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwards]
+Contact: <sip:[userName]@[Adresse-Tester]>
+Content-Length: 0
+]]>
+	    </data>
+    </sendMessageUDP>
+
+    <receiveMessageUDP listenpoint="toto" timeout="5">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageUDP>
+    
+    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+        <data format="text">
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/[transportResponse] [Adresse-Tester];branch=z9hG4bK[newBranchId]
+To: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Contact: <sip:[userName]@[Adresse-Tester]>
+Content-Length: 0
+]]>
+	    </data>
+    </sendMessageUDP>
+
+    <receiveMessageUDP listenpoint="toto" timeout="5">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageUDP>
+
+    <finally>
+    	<removeListenpointUDP name="toto" />
+    </finally>
+    
+</scenario>

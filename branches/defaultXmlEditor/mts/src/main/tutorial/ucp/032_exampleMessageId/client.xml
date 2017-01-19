@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]" destScenario="server">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="OAC" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="EnquiryOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="BAS" operation="protocol.setFromMessage" value="attribute.BAS"/>
+        <parameter name="LAR" operation="protocol.setFromMessage" value="attribute.LAR"/>
+        <parameter name="L1R" operation="protocol.setFromMessage" value="attribute.L1R"/>
+        <parameter name="L3R" operation="protocol.setFromMessage" value="attribute.L3R"/>
+        <parameter name="LCR" operation="protocol.setFromMessage" value="attribute.LCR"/>
+        <parameter name="LUR" operation="protocol.setFromMessage" value="attribute.LUR"/>
+        <parameter name="LRR" operation="protocol.setFromMessage" value="attribute.LRR"/>
+        <parameter name="RT" operation="protocol.setFromMessage" value="attribute.RT"/>
+        <parameter name="NoN" operation="protocol.setFromMessage" value="attribute.NoN"/>
+        <parameter name="NoA" operation="protocol.setFromMessage" value="attribute.NoA"/>
+        <parameter name="NoB" operation="protocol.setFromMessage" value="attribute.NoB"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[BAS]" condition="string.equals" value="F"/>
+        <test parameter="[LAR]" condition="string.equals" value=""/>
+        <test parameter="[L1R]" condition="string.equals" value=""/>
+        <test parameter="[L3R]" condition="string.equals" value=""/>
+        <test parameter="[LCR]" condition="string.equals" value=""/>
+        <test parameter="[LUR]" condition="string.equals" value=""/>
+        <test parameter="[LRR]" condition="string.equals" value=""/>
+        <test parameter="[RT]" condition="string.equals" value="3"/>
+        <test parameter="[NoN]" condition="string.equals" value="22"/>
+        <test parameter="[NoA]" condition="string.equals" value=""/>
+        <test parameter="[NoB]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+    
+</scenario>

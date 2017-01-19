@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <sendMessageGTP name="echo Request"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV1 type="Echo Request:1" tunnelEndpointId="1234567890" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echoResponse" request="false" type="Echo Request:1" result="Echo Response:2" >
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <test parameter="[binary]" condition="binary.equals" value="37020006499602d2000102000e17"/>
+
+    <sendMessageGTP name="echo Request"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV1 type="Echo Request:1" tunnelEndpointId="1234567890" />
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="version not supported" type="Echo Request:1" result="Version Not Supported:3" >
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>    
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="30030000499602d2"/>
+
+</scenario>

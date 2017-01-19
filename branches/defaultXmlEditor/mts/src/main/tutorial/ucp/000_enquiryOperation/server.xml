@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="EnquiryOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="number.equals" value="1"/>
+        <test parameter="[OAdC]" condition="string.equals" value=""/>
+        <test parameter="[OAC]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="BAS" value="F"/>
+        <attribute name="LAR" value=""/>
+        <attribute name="L1R" value=""/>
+        <attribute name="L3R" value=""/>
+        <attribute name="LCR" value=""/>
+        <attribute name="LUR" value=""/>
+        <attribute name="LRR" value=""/>
+        <attribute name="RT" value="3"/>
+        <attribute name="NoN" value="22"/>
+        <attribute name="NoA" value=""/>
+        <attribute name="NoB" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="EnquiryOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="number.equals" value="22"/>
+        <test parameter="[OAdC]" condition="string.equals" value="333"/>
+        <test parameter="[OAC]" condition="string.equals" value="coucou"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="NACK" value="N"/>
+        <attribute name="EC" value="10"/>
+        <attribute name="SM" value="c'est pas bon"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="EnquiryOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="number.equals" value="33"/>
+        <test parameter="[OAdC]" condition="string.equals" value=""/>
+        <test parameter="[OAC]" condition="string.equals" value="test"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="good"/>
+    </sendMessageUCP>
+    
+</scenario>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY register    SYSTEM "../Library/register_provider.xml">
+ ]>
+<scenario>
+
+	<parameter name="[clientName]" 			operation="set" value="[client_UAC]"/>
+	<parameter name="[clientName2]" 		operation="set" value="[client_UAS]"/>
+	<parameter name="[100_DOMAIN_ADDR]" 	operation="set" value="[domaine]"/>
+	<parameter name="[Expires]" 			operation="set" value="3600"/>
+	
+	<parameter name="[LocalPort]" 			operation="set" value="[port_UAC]"/>
+	<parameter name="[LocalAddress]" 		operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>
+	
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	&register;
+
+	
+	<parameter name="[Expires]" 		operation="set" value="0"/>	
+	
+	
+	&register; 
+</scenario>	

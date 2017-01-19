@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Rx Re-Auth (RAR/RAA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.214 V10.3.0 : RAR is sent by the PCRF to the AF in order to indicate an Rx specific action
+<RA-Request> ::= < Diameter Header: 258, REQ, PXY, 16777236 > 
+		< Session-Id > 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		{ Destination-Realm } 
+		{ Destination-Host } 
+		{ Auth-Application-Id } 
+		{ Specific-Action }
+	   *[ Access-Network-Charging-Identifier ] 
+		[ Access-Network-Charging-Address ] 
+	   *[ Flows ] 
+	   *[ Subscription-ID ] 
+		[ Abort-Cause ] 
+		[ IP-CAN-Type ] 
+		[ RAT-Type ] 
+		[ Sponsored-Connectivity-Data ] 
+		[ Origin-State-Id ] 
+	   *[ Class ] 
+	   *[ Proxy-Info ] 
+	   *[ Route-Record ] 
+	   *[ AVP ] 
+ -->
+
+    <!-- IP-CAN-Type change indication: 3GPP-GPRS|DOCSIS|xDSL|WiMAX|3GPP2|3GPP-EPS|Non-3GPP-EPS -->
+    <parameter name="[IP-CAN-Type]" operation="set" value="3GPP-GPRS"/>
+
+    <!-- RAT-Type change indication: WLAN|VIRTUAL|UTRAN|GERAN|GAN|HSPA_EVOLUTION|EUTRAN|CDMA2000_1X|HRPD|UMB|EHRPD -->
+    <parameter name="[RAT-Type]" operation="set" value="UTRAN"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestRAR" channel="channel_client" destScenario="server">
+        <header request="true" command="Re-Auth" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        <avp code="IP-CAN-Type:1027" value="[IP-CAN-Type]" vendorId="[vendorID]"/>
+        <avp code="RAT-Type:1032" value="[RAT-Type]" vendorId="[vendorID]"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerRAA" channel="channel_client" request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

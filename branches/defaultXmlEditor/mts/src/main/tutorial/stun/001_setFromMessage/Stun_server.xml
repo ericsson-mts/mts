@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Gateway.xml
+    Created on : 31 janvier 2011, 14:18
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+-->
+
+<scenario>
+	
+    <receiveMessageSTUN request="true">
+        <parameter name="[trans]" operation="protocol.setFromMessage" value="header.transactionID"/>
+        <test parameter="[trans]" condition="binary.equals" value="[testcase:transID]"/>
+    </receiveMessageSTUN>
+    
+    <parameter name="[soft]" operation="protocol.setFromMessage" value="attribute.SOFTWARE.text"/>
+    <test parameter="[soft]" condition="string.equals" value="pjnath-1.8.5"/>
+    <parameter name="[nonce]" operation="protocol.setFromMessage" value="attribute.NONCE.text"/>
+    <test parameter="[nonce]" condition="string.equals" value="pjnath"/>
+    <parameter name="[realm]" operation="protocol.setFromMessage" value="attribute.REALM.text"/>
+    <test parameter="[realm]" condition="string.equals" value="pjsip.org"/>
+    <parameter name="[changeIP]" operation="protocol.setFromMessage" value="attribute.CHANGE-REQUEST.changeIP"/>
+    <test parameter="[changeIP]" condition="boolean.equals" value="false"/>
+    <parameter name="[changePort]" operation="protocol.setFromMessage" value="attribute.CHANGE-REQUEST.changePort"/>
+    <test parameter="[changePort]" condition="boolean.equals" value="false"/>
+    
+    <!--Binding Success Response-->
+    <sendMessageSTUN remoteHost="[localHostSTUN]" remotePort="[localPortSTUN]">
+        <header type="257" transactionID="[trans]" />
+        <attribute type="MAPPED-ADDRESS">
+            <address family="1" port="[localPortSTUN]" addressIP="[localHostSTUN]"/>
+        </attribute>
+        <attribute type="SOURCE-ADDRESS">
+            <address family="1" port="[localPortSTUN]" addressIP="[localHostSTUN]"/>
+        </attribute>
+        <attribute type="SOFTWARE">
+            <text  value="Volvida.org 0.96"/>
+        </attribute>
+    </sendMessageSTUN>
+
+</scenario>

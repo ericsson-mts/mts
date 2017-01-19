@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+    <parameter name="[codePublicIdentity]" operation="set" value="Public-Identity:601"/>
+    <parameter name="[codeUserName]" operation="set" value="User-Name:1"/>
+    <parameter name="[publicIdentity]" operation="set" value="sip:+330000@sip.pfdev.fr"/>
+    <parameter name="[userName]" operation="set" value="bla1[publicIdentity]1, [unKnown]"/>
+    <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla2[publicIdentity]2, [unKnown(1)]"/>
+    <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla3[publicIdentity]3, [unKnown(2)]"/>
+    <parameter name="[userName]" operation="list.addLast" value="[userName]" value2="bla4[publicIdentity]4, [unKnown(3)]"/>
+    
+    <parameter name="[AuthDataItemCode(0)]" operation="set" value="Auth-Data-Item:1018"/>
+    <parameter name="[AuthDataItemCode(1)]" operation="set" value="Auth-Data-Item:1018"/>
+    <parameter name="[ItemNumber(0)]" operation="set" value="0"/>
+    <parameter name="[ItemNumber(1)]" operation="set" value="1"/>
+
+    <parameter name="[newSessionId]" operation="set" value="999999999888888888"/>
+    <sendMessageDIAMETER name="SendRequestMAR" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216"
+                hopByHop="999999999" endToEnd="888888888"/>
+        <avp code="Session-Id:263" value="[newSessionId]"/>
+      
+        <avp code="Vendor-Specific-Application-Id:260">
+          	<avp code="Vendor-Id:266" value="[vendorID]"/>
+          	<avp code="Auth-Application-Id:258" value="[applicationID]"/>
+        </avp>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+
+        <avp code="Origin-Host:264" value="1.1.1.1"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="2.2.2.2"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+
+        <avp code="[codePublicIdentity]" value="bla[publicIdentity(0)]bla, [unKnown], [unKnown(1000)]" vendorId="[vendorID]"/>
+        <avp code="[codePublicIdentity]" value="[publicIdentity]" vendorId="[vendorID]"/>
+        <avp code="[codePublicIdentity]" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]" vendorId="[vendorID]"/>
+        <avp code="[codePublicIdentity]" value="[unKnown]" vendorId="[vendorID]"/>
+        <!--<avp code="[codeUserName]" value="bla[privateIdentity(0)]bla" vendorId="[vendorID]"/>-->
+        <avp code="[codeUserName(0)]" value="[userName]" mandatory="false" private="false"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="[AuthDataItemCode]">
+            <avp code="Item-Number:1021" value="[ItemNumber]"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST"/>
+            <avp code="Authentication-Scheme:1020" value="666"/>
+            <avp code="Authentication-Scheme:1020" value="999"/>
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+        </avp>
+        <avp code="2" value="bla[param]bla"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" request="false" type="Multimedia-Authentitcation:506" result="DIAMETER_SUCCESS:2001">
+        <parameter name="[lastParam]" operation="protocol.setFromMessage" value="avp.Auth-Data-Item.Authentication-Scheme.value"/>
+        <parameter name="[lastPublicIdentity]" operation="protocol.setFromMessage" value="avp.Public-Identity.value"/>
+        <parameter name="[lastUserName]" operation="protocol.setFromMessage" value="avp.User-Name.value"/>
+    </receiveMessageDIAMETER>
+
+    <!-- check binary message data -->
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
+    <test parameter="[binary]" condition="binary.equals" value="01000520400001fa010000003b9ac9ff34fb5e38000001074000001a393939393939393939383838383838383838000000000259e000001d000028af5b5075626c69634964656e746974795d31000000000001086000000f322e322e322e32000000012840000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c01000000000001156000000c000000010000010c4000000c000007d100000259e0000046000028af626c617369703a2b333330303030407369702e70666465762e6672626c612c205b756e4b6e6f776e5d2c205b756e4b6e6f776e2831303030295d000000000259e0000024000028af7369703a2b333330303030407369702e70666465762e667200000259e0000057000028af626c615b756e4b6e6f776e5d626c612c205b756e4b6e6f776e2830295d2c205b756e6b6e6f776e282d31295d2c205b756e6b6e6f776e28696e646578295d2c205b756e6b6e6f776e28295d0000000259e0000015000028af5b756e4b6e6f776e5d0000000000000160000030626c61317369703a2b333330303030407369702e70666465762e6672312c205b756e4b6e6f776e5d0000000160000033626c61327369703a2b333330303030407369702e70666465762e6672322c205b756e4b6e6f776e2831295d000000000160000033626c61337369703a2b333330303030407369702e70666465762e6672332c205b756e4b6e6f776e2832295d000000000160000033626c61347369703a2b333330303030407369702e70666465762e6672342c205b756e4b6e6f776e2833295d00000004026000000c00000001000003fa60000160000003fd6000000c00000000000003fc6000000c0023cea9000003fc6000000c63526ea9000003fc6000000c772b9be9000003fc6000000c0023cea9000003fc6000000c63526ea9000003fc6000000c772b9be9000003fb600000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000004006000000e494e564954450000000003fa60000160000003fd6000000c00000000000003fc6000000c0023cea9000003fc6000000c63526ea9000003fc6000000c772b9be9000003fc6000000c0023cea9000003fc6000000c63526ea9000003fc6000000c772b9be9000003fb600000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000004006000000e494e564954450000"/>
+
+
+    <test parameter="[lastPublicIdentity]" condition="list.size" value="5"/>
+    <test parameter="[lastPublicIdentity(0)]" condition="string.equals" value="[PublicIdentity]1"/>
+    <test parameter="[lastPublicIdentity(1)]" condition="string.equals" value="blasip:+330000@sip.pfdev.frbla, [unKnown], [unKnown(1000)]"/>
+    <test parameter="[lastPublicIdentity(2)]" condition="string.equals" value="sip:+330000@sip.pfdev.fr"/>
+    <test parameter="[lastPublicIdentity(3)]" condition="string.equals" value="bla[unKnown]bla, [unKnown(0)], [unknown(-1)], [unknown(index)], [unknown()]"/>        		
+    <test parameter="[lastPublicIdentity(4)]" condition="string.equals" value="[unKnown]"/>
+    <test parameter="[lastUserName]" condition="string.equals" value="[userName]"/>
+    <!-- TODO A REVOIR test parameter="[lastParam(0)]" condition="string.equals" value="12346665"/-->
+    <test parameter="[lastParam(0)]" condition="string.equals" value="2346665"/>
+    <test parameter="[lastParam(1)]" condition="string.equals" value="1666346665"/>
+    <test parameter="[lastParam(2)]" condition="string.equals" value="1999346665"/>
+    <!--TODO A REVOIR test parameter="[lastParam(3)]" condition="string.equals" value="12346665"/-->
+    <test parameter="[lastParam(3)]" condition="string.equals" value="2346665"/>
+    <test parameter="[lastParam(4)]" condition="string.equals" value="1666346665"/>
+    <test parameter="[lastParam(5)]" condition="string.equals" value="1999346665"/>
+
+</scenario>

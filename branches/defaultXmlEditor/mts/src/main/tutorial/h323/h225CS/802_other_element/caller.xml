@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+   <sendMessageH225CS name="Send H225CS SETUP" destScenario="bob">
+
+	<ASN1 file="h2250v7.asn"/>    
+   
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	<!-- SETUP = b00000101 -->
+	<header discriminator="b00001000" callReference="99999" callRefFlag="boolYYY" type="b00000101"/>
+	<!-- Sending complete =b0100001 -->
+	<element identifier="b0100001"/>
+	<!-- Repeat indicator = b101 -->
+	<element identifier=" b101"/>
+	<!-- Bearer capability = b0000100 --> 
+	<element identifier=" b0000100">
+		<field name="ext1" lengthBit="1" type="boolean" value="1"/>
+		<field name="Coding standard" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Information transfert capability" lengthBit="5" type="integer" value="0"/>
+		<field name="ext2" lengthBit="1" type="boolean" value="1"/>
+		<field name="Transfert mode" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Information transfert rate" lengthBit="5" type="enumeration" value="0"/>
+		<field name="ext3" lengthBit="1" type="1" />
+		<field name="Layer 1 ident" lengthBit="2" type="integer" value="1111"/>
+		<field name="User information layer 1 protocol" lengthBit="5" type="integer" value="2222"/>
+	</element>
+	<!-- Channel identification = b0011000 --> 
+	<element identifier=" b0011000">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Interface identifier present" lengthBit="1" type="enumeration" value="0"/>
+		<field name="Interface type" lengthBit="1" type="enumeration" value="0"/>
+		<field name="Spare" lengthBit="1" type="integer" value="0"/>
+		<field name="Preferred Exclusive" lengthBit="1" type="enumeration" value="0"/>
+		<field name=" D-channel indicator" lengthBit="1" type="enumeration" value="0"/>
+		<field name="Information channel selection" lengthBit="1" type="enumeration" value="0"/>
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Interface identifier" lengthBit="8" type="enumeration" value="0"/>
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Coding standard" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Number map" lengthBit="1" type="enumeration" value="0"/>
+		<field name="Channel type map element type" lengthBit="4" type="enumeration" value="0"/>
+		<field name="Channel number" lengthBit="32" type="enumeration" value="0"/>
+	</element>
+	<!-- Progress indicator = b0011110 -->
+	<element identifier="b0011110">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Coding standard" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Spare" lengthBit="1" type="integer" value="0"/>
+		<field name="Location" lengthBit="4" type="enumeration" value="0"/>
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name=" Progress description" lengthBit="7" type="enumeration" value="0"/>
+	</element>
+	<!-- Network-specific facilities = b0100000 -->
+	<element identifier="b0100000">
+		<field name="Length of network identification" lengthBit="8" type="integer" value="0"/>
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Type of network identification" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Network identification plan" lengthBit="4" type="enumeration" value="0"/>
+		<field name="Network identification" type="string" value="textZZZ"/>
+		<field name="Network-specific facilities" lengthBit="32" type="integer" value="0"/>
+	</element>
+	<!-- Display = b0101000 -->
+	<element identifier=" b0101000">
+		<field name="Display identification" type="string" value="textZZZ"/>
+	</element>
+	<!-- Date/time = b0101001 -->
+	<element identifier=" b0101001">
+		<field name="Year" lengthBit="8" type="integer" value="0"/>
+		<field name="Month" lengthBit="8" type="integer" value="0"/>
+		<field name="Day" lengthBit="8" type="integer" value="0"/>
+		<field name="Hour" lengthBit="8" type="integer" value="0"/>
+		<field name="Minute" lengthBit="8" type="integer" value="0"/>
+		<field name="Second" lengthBit="8" type="integer" value="0"/>
+	</element>
+	<!-- Keypad facility = b0101100 -->
+	<element identifier=" b0101100">
+		<field name="Display identification" type="string" value="textZZZ"/>
+	</element>
+	<!-- Signal = b0110100 -->
+	<element identifier=" b0110100">
+		<field name="Signal value" lengthBit="8" type="integer" value="0"/>
+	</element>
+	<!-- Calling party number = b1101100 -->
+	<element identifier=" b1101100">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Type of number" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Numbering plan identification" lengthBit="4" type="enumeration" value="0"/>
+		<field name="Presentation indicator" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Spare" lengthBit="3" type="integer" value="0"/>
+		<field name="Screening indicator" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Number digits" type="string" value="textZZZ"/>
+	</element>
+	<!-- Calling party subaddress = b1101101 -->
+	<element identifier=" b1101101">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Type of subaddress" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Odd/even indicator" lengthBit="1" type="enumeration" value="0"/>
+		<field name="Spare" lengthBit="3" type="integer" value="0"/>
+		<field name="Subaddress information" lengthBit="32" type="enumeration" value="0"/>
+	</element>
+	<!-- Called party number = b1110000 -->
+	<element identifier=" b1110000">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Type of number" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Numbering plan identification" lengthBit="4" type="enumeration" value="0"/>
+		<field name="Number digits" type="string" value="textZZZ"/>
+	</element>
+	<!-- Called party subaddress = b1101101 -->
+	<element identifier=" b1101101">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Type of subaddress" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Odd/even indicator" lengthBit="1" type="enumeration" value="0"/>
+		<field name="Spare" lengthBit="3" type="integer" value="0"/>
+		<field name="Subaddress information" lengthBit="32" type="enumeration" value="0"/>
+	</element>
+	<!-- Transit network selection = b1111000 -->
+	<element identifier=" b1111000">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name=" Type of network identification" lengthBit="3" type="enumeration" value="0"/>
+		<field name=" Network identification plan" lengthBit="4" type="enumeration" value="0"/>
+		<field name=" Network identification" type="string" value="textZZZ"/>
+	</element>
+	
+	<!-- Low layer compatibility = b1111100 --> 
+	<element identifier=" b1111100">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Coding standard" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Interpretation" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" />
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="0"/>
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Extended audiovisual characteristics identification" lengthBit="7" type="enumeration" value="0"/>
+	</element>
+        <!-- High layer compatibility = b1111101 -->
+	<element identifier=" b1111101">
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Coding standard" lengthBit="2" type="enumeration" value="0"/>
+		<field name="Interpretation" lengthBit="3" type="enumeration" value="0"/>
+		<field name="Presentation method of protocol profile" lengthBit="2" type=" enumeration" />
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="High layer characteristics identification" lengthBit="7" type="enumeration" value="0"/>
+                <field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Extended high layer characteristics identification" lengthBit="7" type="enumeration" value="0"/>
+		<field name="ext" lengthBit="1" type="boolean" value="1"/>
+		<field name="Extended videotelephony characteristics identification" lengthBit="7" type="enumeration" value="0"/>
+	</element>
+	</ISDN>
+
+   </sendMessageH225CS>
+  
+</scenario>

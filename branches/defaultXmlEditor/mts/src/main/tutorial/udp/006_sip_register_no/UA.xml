@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <createListenpointUDP name="toto" localPort="[remotePort]" />
+    
+  	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+  	<parameter name="[userName]" operation="set" value="alice"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[MaxForwards]" operation="set" value="70"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+
+    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+        <data format="text">
+<![CDATA[
+REGISTER sip:alice@[Adresse-Server] SIP/2.0
+To: "alice" <sip:alice@devoteam.com>
+From: "alice" <sip:alice@devoteam.com>;tag=abcdefghij
+Call-ID: 5000000
+CSeq: 5000000 REGISTER
+Via: SIP/2.0/UDP 172.16.21.32;branch=z9hG4bKabcdefghij
+Max-Forwards: 70
+Contact: <sip:alice@172.16.21.32>
+Content-Length: 0
+]]>
+	    </data>
+    </sendMessageUDP>
+
+    <receiveMessageUDP listenpoint="toto" timeout="5">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageUDP>
+    
+    <sendMessageUDP listenpoint="toto" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+        <data format="text">
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 172.16.21.32;branch=z9hG4bKabcdefghij
+To: "alice" <sip:alice@devoteam.com>;tag=abcdefghij
+From: "alice" <sip:alice@devoteam.com>;tag=abcdefghij
+Call-ID: 5000000
+CSeq: 5000000 REGISTER
+Contact: <sip:alice@172.16.21.32
+Content-Length: 0
+]]>
+	    </data>
+    </sendMessageUDP>
+
+    <receiveMessageUDP listenpoint="toto" timeout="5">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageUDP>
+
+    <finally>
+    	<removeListenpointUDP name="toto" />
+    </finally>
+    
+</scenario>

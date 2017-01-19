@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <sendMessageGTP name="echo Request"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV1 type="1" tunnelEndpointId="4294967295" sequenceNumber="1" nPduNumber="2" nextExtensionType="0"/>
+        <element tag="IMSI" >
+            <field name="IMSI" value="1234567890123456"/>
+        </element>
+        <element tag="IMSI" >
+            <field name="IMSI" value="123456789"/>
+        </element>
+        <element tag="MSISDN" >
+            <field name="MSISDN" value="5432109876543210"/>
+        </element>
+        <element tag="MSISDN" >
+            <field name="MSISDN" value="9876543210"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echoResponse" request="false" type="1" result="2">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/> 
+    </receiveMessageGTP>
+
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.Recovery:14.field.Recovery"/>
+    <test parameter="[Recovery]" condition="string.equals" value="23"/>
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.Recovery.field.Recovery"/>
+    <test parameter="[Recovery]" condition="string.equals" value="23"/>
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.14.field.Recovery"/>
+    <test parameter="[Recovery]" condition="string.equals" value="23"/>
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.Recovery:14"/>
+    <test parameter="[Recovery]" condition="binary.equals" value="0E17"/>
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.Recovery"/>
+    <test parameter="[Recovery]" condition="binary.equals" value="0E17"/>
+    <parameter name="[Recovery]" operation="protocol.setFromMessage" value="element.14"/>
+    <test parameter="[Recovery]" condition="binary.equals" value="0E17"/>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="37020006ffffffff000102000e17"/>
+    
+    <sendMessageGTP name="echo Request"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV1 type="Echo Request" tunnelEndpointId="1234567890" sequenceNumber="2" nPduNumber="2" nextExtensionType="0"/>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="version not supported"  request="false" type="Echo Request" result="Version Not Supported">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>    
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="37030004499602d200020200"/>
+    
+</scenario>

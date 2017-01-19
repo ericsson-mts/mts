@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <!-- envoi requete UID-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] UID FETCH 4827313:4828442 FLAGS
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse UID -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A005" />
+    <!-- envoi requete UID-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] UID STORE 4827313:4828442 +FLAGS.SILENT (\Flagged)
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse UID -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A006" />
+    <!-- envoi requete UID-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] UID COPY 4827313 TESTCOPY
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse UID -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A006" />
+    <!-- envoi requete UID-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] UID SEARCH SEEN
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse UID -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

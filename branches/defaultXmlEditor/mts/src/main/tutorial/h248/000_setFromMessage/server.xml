@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- receive request-->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="!/2" />
+
+    <!-- test header:XXXXXXX -->        
+    <parameter name="[version]" operation="protocol.setFromMessage" value="header.version" />
+    <test parameter="[version]" condition="string.equals" value="2" />
+    <parameter name="[mid]" operation="protocol.setFromMessage" value="header.mid" />
+    <test parameter="[mid]" condition="string.equals" value="[[localHostH248]]:[localPortH248]" />
+    <parameter name="[midDomainAddress]" operation="protocol.setFromMessage" value="header.midDomainAddress" />
+	<log level="INFO">[localHostH248]</log>
+	<log level="INFO">[midDomainAddress]</log>
+    <test parameter="[midDomainAddress]" condition="string.equals" value="[localHostH248]" />
+    <parameter name="[midPortNumber]" operation="protocol.setFromMessage" value="header.midPortNumber" />
+    <test parameter="[midPortNumber]" condition="string.equals" value="[localPortH248]" />
+
+    <!-- test authHeader:XXXXXXX -->        
+    <parameter name="[authHeader]" operation="protocol.setFromMessage" value="authHeader" />
+    <test parameter="[authHeader]" condition="string.contains" value="1234567890"/>
+    <parameter name="[securityParamIndex]" operation="protocol.setFromMessage" value="authHeader.securityParamIndex" />
+    <test parameter="[securityParamIndex]" condition="string.equals" value="0x12345678" />
+    <parameter name="[sequenceNum]" operation="protocol.setFromMessage" value="authHeader.sequenceNum" />
+    <test parameter="[sequenceNum]" condition="string.equals" value="0x12345678" />
+    <parameter name="[authData]" operation="protocol.setFromMessage" value="authHeader.authData" />
+    <test parameter="[authData]" condition="string.equals" value="0x1234567890123456789012345678901234567890123456789012345678901234" />
+        
+    <!-- test X:Y:*:n -->        
+    <parameter name="[tr]" operation="protocol.setFromMessage" value="descr.Transaction.n" />
+    <test parameter="[tr]" condition="list.size" value="2" />
+    <test parameter="[tr]" condition="string.equals" value="T" />
+    <parameter name="[ctx]" operation="protocol.setFromMessage" value="descr.Transaction.*.n" />
+    <test parameter="[ctx]" condition="list.size" value="2" />
+    <test parameter="[ctx]" condition="string.equals" value="C" />
+    <parameter name="[com]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.n" />
+    <test parameter="[com]" condition="list.size" value="4" />
+    <test parameter="[com(0)]" condition="string.equals" value="W-A" />
+    <test parameter="[com(1)]" condition="string.equals" value="A" />
+    <test parameter="[com(2)]" condition="string.equals" value="S" />
+    <test parameter="[com(3)]" condition="string.equals" value="O-S" />
+    <parameter name="[st]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.*.n" />
+    <test parameter="[st]" condition="list.size" value="5" />
+    <test parameter="[st(0)]" condition="string.equals" value="O" />
+    <test parameter="[st(1)]" condition="string.equals" value="L" />
+    <test parameter="[st(2)]" condition="string.equals" value="R" />
+    <test parameter="[st(3)]" condition="string.equals" value="O" />
+    <test parameter="[st(4)]" condition="string.equals" value="L" />
+
+    <!-- test X:Y:*:name -->        
+    <parameter name="[tr]" operation="protocol.setFromMessage" value="descr.Transaction.name" />
+    <test parameter="[tr]" condition="list.size" value="2" />
+    <test parameter="[tr]" condition="string.equals" value="Transaction" />
+    <parameter name="[ctx]" operation="protocol.setFromMessage" value="descr.Transaction.*.name" />
+    <test parameter="[ctx]" condition="list.size" value="2" />
+    <test parameter="[ctx]" condition="string.equals" value="Context" />
+    <parameter name="[com]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.name" />
+    <test parameter="[com]" condition="list.size" value="4" />
+    <test parameter="[com(0)]" condition="string.equals" value="W-Add" />
+    <test parameter="[com(1)]" condition="string.equals" value="Add" />
+    <test parameter="[com(2)]" condition="string.equals" value="Subtract" />
+    <test parameter="[com(3)]" condition="string.equals" value="O-Subtract" />
+    <parameter name="[st]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.*.name" />
+    <test parameter="[st]" condition="list.size" value="5" />
+    <test parameter="[st(0)]" condition="string.equals" value="LocalControl" />
+    <test parameter="[st(1)]" condition="string.equals" value="Local" />
+    <test parameter="[st(2)]" condition="string.equals" value="Remote" />
+    <test parameter="[st(3)]" condition="string.equals" value="LocalControl" />
+    <test parameter="[st(4)]" condition="string.equals" value="Local" />
+    <parameter name="[o]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.*.name" />
+    <test parameter="[o]" condition="list.size" value="12" />
+    <test parameter="[o(0)]" condition="string.equals" value="Mode" />
+    <test parameter="[o(1)]" condition="string.equals" value="tman/sdr" />
+    <test parameter="[o(2)]" condition="string.equals" value="ds/dscp" />
+    <test parameter="[o(3)]" condition="string.equals" value="pkg/param0" />
+    <test parameter="[o(4)]" condition="string.equals" value="pkg/param1" />
+    <test parameter="[o(5)]" condition="string.equals" value="pkg/param2" />
+    <test parameter="[o(6)]" condition="string.equals" value="pkg/param3" />
+    <test parameter="[o(7)]" condition="string.equals" value="pkg/param4" />
+    <test parameter="[o(8)]" condition="string.equals" value="pkg/param7" />
+    <test parameter="[o(9)]" condition="string.equals" value="Mode" />
+    <test parameter="[o(10)]" condition="string.equals" value="tman/sdr" />
+    <test parameter="[o(11)]" condition="string.equals" value="ds/dscp" />
+
+    <!-- test X:Y:Z:value -->        
+    <parameter name="[ctx]" operation="protocol.setFromMessage" value="descr.Transaction.Context.value" />
+    <test parameter="[ctx]" condition="list.size" value="2" />
+    <test parameter="[ctx(0)]" condition="string.equals" value="$" />
+    <test parameter="[ctx(1)]" condition="string.equals" value="12345" />
+    <parameter name="[com]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.value" />
+    <test parameter="[com]" condition="list.size" value="4" />
+    <test parameter="[com(0)]" condition="string.equals" value="[ip/1/access1/$,ip/1/access2/$]" />
+    <test parameter="[com(1)]" condition="string.equals" value="ip/1/core/$" />
+    <test parameter="[com(2)]" condition="string.equals" value="*" />
+    <test parameter="[com(2)]" condition="string.equals" value="*" />
+    <parameter name="[m]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.value" />
+    <test parameter="[m]" condition="list.size" value="0" />
+    <parameter name="[st]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.value" />
+    <test parameter="[st]" condition="list.size" value="2" />
+    <test parameter="[st]" condition="string.equals" value="1" />
+    <parameter name="[o]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.value" />
+    <test parameter="[o]" condition="list.size" value="0" />
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.MO.value" />
+    <test parameter="[mo]" condition="list.size" value="2" />
+    <test parameter="[mo(0)]" condition="string.equals" value="IN" />  
+    <test parameter="[mo(1)]" condition="string.equals" value="RC" />  
+    <parameter name="[sdr]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.tman/sdr.value" />
+    <test parameter="[sdr]" condition="list.size" value="2" />
+    <test parameter="[sdr]" condition="string.equals" value="800" />
+    <parameter name="[dscp]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.ds/dscp.value" />
+    <test parameter="[dscp]" condition="list.size" value="2" />
+    <test parameter="[dscp]" condition="string.equals" value="0x00" />
+    <parameter name="[o]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.*.value" />
+    <test parameter="[o]" condition="list.size" value="12" />
+    <test parameter="[o(0)]" condition="string.equals" value="IN" />
+    <test parameter="[o(1)]" condition="string.equals" value="800" />
+    <test parameter="[o(2)]" condition="string.equals" value="0x00" />
+    <test parameter="[o(3)]" condition="string.equals" value="0" />
+    <test parameter="[o(4)]" condition="string.equals" value="1" />
+    <test parameter="[o(5)]" condition="string.equals" value="2" />
+    <test parameter="[o(6)]" condition="string.equals" value="3" />
+    <test parameter="[o(7)]" condition="string.equals" value="[4,5,6]" />
+    <test parameter="[o(8)]" condition="string.equals" value="{7,8,9}" />
+    <test parameter="[o(9)]" condition="string.equals" value="RC" />
+    <test parameter="[o(10)]" condition="string.equals" value="800" />
+    <test parameter="[o(11)]" condition="string.equals" value="0x00" />
+
+    <!-- test X=x:Y=y:value -->        
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction=[transID].Context=$.*.Media=.Stream=1.LocalControl=.Mode=IN.value" />
+    <test parameter="[mo]" condition="list.size" value="1" />
+    <test parameter="[mo]" condition="string.equals" value="IN" />
+    <parameter name="[sdr]" operation="protocol.setFromMessage" value="descr.Transaction=[transID].Context=$.*.Media=.Stream=1.LocalControl=.tman/sdr=800.value" />
+    <test parameter="[sdr]" condition="list.size" value="2" />
+    <test parameter="[sdr]" condition="string.equals" value="800" />
+    <parameter name="[dscp]" operation="protocol.setFromMessage" value="descr.Transaction=[transID].Context=$.*.Media=.Stream=1.LocalControl=.ds/dscp=0x00.value" />
+    <test parameter="[dscp]" condition="list.size" value="2" />
+    <test parameter="[dscp]" condition="string.equals" value="0x00" />
+
+    <!-- test X=x:Y=bad:value -->        
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction=[transID].Context=$.*.Media=.Stream=1.LocalControl=bad.Mode=IN.value" />
+    <test parameter="[mo]" condition="list.size" value="0" />
+
+    <!-- test X:Y:value -->        
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.MO.value" />
+    <test parameter="[mo]" condition="list.size" value="2" />
+    <test parameter="[mo(0)]" condition="string.equals" value="IN" />
+    <test parameter="[mo(1)]" condition="string.equals" value="RC" />
+    <parameter name="[v]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.Local.v.value" />
+    <test parameter="[v]" condition="list.size" value="2" />
+    <test parameter="[v]" condition="string.equals" value="0" />
+    <parameter name="[c]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.Local.c.value" />
+    <test parameter="[c]" condition="list.size" value="2" />
+    <test parameter="[c]" condition="string.equals" value="IN IP4 $" />
+    <parameter name="[m]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.Local.m.value" />
+    <test parameter="[m]" condition="list.size" value="2" />
+    <test parameter="[m]" condition="string.equals" value="audio $ RTP/AVP -" />
+    <parameter name="[b]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.Local.b.value" />
+    <test parameter="[b]" condition="list.size" value="2" />
+    <test parameter="[b]" condition="string.equals" value="AS:6" />
+
+    <!-- test X=*:Y=*:value -->        
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction=*.Context=*.*.Media=*.Stream=*.LocalControl=*.Mode=*.value" />
+    <test parameter="[mo]" condition="list.size" value="2" />
+    <test parameter="[mo(0)]" condition="string.equals" value="IN" />
+    <test parameter="[mo(1)]" condition="string.equals" value="RC" />
+    <parameter name="[v]" operation="protocol.setFromMessage" value="descr.Transaction=*.Context=*.*.Media=*.Stream=*.Local=*.v=0.value" />
+    <test parameter="[v]" condition="list.size" value="2" />
+    <test parameter="[v]" condition="string.equals" value="0" />
+    <parameter name="[c]" operation="protocol.setFromMessage" value="descr.Transaction=*.Context=*.*.Media=*.Stream=*.Local=*.c=*.value" />
+    <test parameter="[c]" condition="list.size" value="2" />
+    <test parameter="[c]" condition="string.equals" value="IN IP4 $" />
+    <parameter name="[m]" operation="protocol.setFromMessage" value="descr.Transaction=*.Context=*.*.Media=*.Stream=*.Local=*.m=*.value" />
+    <test parameter="[m]" condition="list.size" value="2" />
+    <test parameter="[m]" condition="string.equals" value="audio $ RTP/AVP -" />
+    <parameter name="[b]" operation="protocol.setFromMessage" value="descr.Transaction=*.Context=*.*.Media=*.Stream=*.Local=*.b=*.value" />
+    <test parameter="[b]" condition="list.size" value="2" />
+    <test parameter="[b]" condition="string.equals" value="AS:6" />
+
+    <!-- test X:Y:parameters -->        
+    <parameter name="[o]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.parameters" />
+    <test parameter="[o]" condition="list.size" value="2" />
+    <test parameter="[o(0)]" condition="string.startsWith" value="MO#IN" />
+    <test parameter="[o(0)]" condition="string.contains" value="tman/sdr&lt;800 { } ," />
+    <test parameter="[o(0)]" condition="string.endsWith" value="pkg/param7={7,8,9}" />
+    <test parameter="[o(1)]" condition="string.startsWith" value="MO=RC" />
+    <test parameter="[o(1)]" condition="string.contains" value="tman/sdr=800," />
+    <test parameter="[o(1)]" condition="string.endsWith" value="ds/dscp=0x00" />
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.Mode.parameters" />
+    <test parameter="[mo]" condition="list.size" value="0" />
+    <parameter name="[sdr]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.tman/sdr.parameters" />
+    <test parameter="[sdr]" condition="list.size" value="0" />
+    <parameter name="[dscp]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.ds/dscp.parameters" />
+    <test parameter="[dscp]" condition="list.size" value="0" />
+
+    <!-- test X:Y:comparator -->        
+    <parameter name="[mo]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.Mode.comparator" />
+    <test parameter="[mo]" condition="list.size" value="2" />
+    <test parameter="[mo(0)]" condition="string.equals" value="#" />
+    <test parameter="[mo(1)]" condition="string.equals" value="=" />
+    <parameter name="[sdr]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.tman/sdr.comparator" />
+    <test parameter="[sdr]" condition="list.size" value="2" />
+    <test parameter="[sdr(0)]" condition="string.equals" value="&lt;" />
+    <test parameter="[sdr(1)]" condition="string.equals" value="=" />
+    <parameter name="[dscp]" operation="protocol.setFromMessage" value="descr.Transaction.Context.*.Media.Stream.LocalControl.ds/dscp.comparator" />
+    <test parameter="[dscp]" condition="list.size" value="2" />
+    <test parameter="[dscp(0)]" condition="string.startsWith" value="&gt;" />
+    <test parameter="[dscp(1)]" condition="string.startsWith" value="=" />
+
+    <!-- send response #1-->
+    <sendMessageH248 name="Send response #1" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[ 
+Authentication = 0x12345678 : 0x12345678 : 0x1234567890123456789012345678901234567890123456789012345678901234 
+MEGACO/2 <devoteam.com>:[remotePortH248] Reply=[transID]/1 {Error = 799 {"Error in Reply descriptor"},Context=817{Error = 899 {"Error in Context descriptor"},Add="ip/1/access1/14296"{Error = 999 {"Error in Add descriptor"},Media{Local{
+v=0
+c=IN IP4 172.20.168.100
+b=AS:6
+m=audio 22322 RTP/AVP -
+},Remote{
+v=0
+c=IN IP4 172.20.196.232
+m=audio 10057 RTP/AVP -
+}}},Add="ip/1/core/14297"{Error = 999 {"Error in Add descriptor"},Media{Local{
+v=0
+c=IN IP4 172.20.168.84
+b=AS:6
+m=audio 29378 RTP/AVP -
+}}}}}]]>
+    </sendMessageH248>
+
+    <!-- receive segment #1-->
+    <receiveMessageH248 name="Receive segment #1" request="true" type="Segment">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="!/2" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- test descr:segmentNumber -->        
+    <parameter name="[segNum]" operation="protocol.setFromMessage" value="descr.segmentNumber" />
+    <test parameter="[segNum]" condition="list.size" value="1" />
+    <test parameter="[segNum]" condition="string.equals" value="1" />
+    <!-- test descr:segmentComplete -->        
+    <parameter name="[segComp]" operation="protocol.setFromMessage" value="descr.segmentComplete" />
+    <test parameter="[segComp]" condition="list.size" value="0" />
+
+    <!-- send response #2-->
+    <sendMessageH248 name="Send response #2" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[ 
+Authentication = 0x12345678 : 0x12345678 : 0x1234567890123456789012345678901234567890123456789012345678901234 
+MEGACO/2 [[remoteHostH248]]:[remotePortH248] Reply=[transID]/2/& {Error = 799 {"Error in Reply descriptor"},Context=817{Error = 899 {"Error in Context descriptor"},Add="ip/1/access2/14297"{Error = 999 {"Error in Add descriptor"},Media{Local{
+v=0
+c=IN IP4 172.20.168.100
+b=AS:6
+m=audio 22322 RTP/AVP -
+},Remote{
+v=0
+c=IN IP4 172.20.196.232
+m=audio 10057 RTP/AVP -
+}}}}}]]>
+    </sendMessageH248>
+
+    <!-- receive segment #2-->
+    <receiveMessageH248 name="Receive segment #2" request="true" type="Segment">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="!/2" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- test descr:segmentNumber -->        
+    <parameter name="[segNum]" operation="protocol.setFromMessage" value="descr.segmentNumber" />
+    <test parameter="[segNum]" condition="list.size" value="1" />
+    <test parameter="[segNum]" condition="string.equals" value="2" />
+    <!-- test descr:segmentComplete -->        
+    <parameter name="[segComp]" operation="protocol.setFromMessage" value="descr.segmentComplete" />
+    <test parameter="[segComp]" condition="list.size" value="1" />
+    <test parameter="[segComp]" condition="string.equals" value="END" />
+
+    <!-- receive acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="!/2" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- test header:XXXXXXX -->        
+    <parameter name="[version]" operation="protocol.setFromMessage" value="header.version" />
+    <test parameter="[version]" condition="string.equals" value="2" />
+    <parameter name="[mid]" operation="protocol.setFromMessage" value="header.mid" />
+    <test parameter="[mid]" condition="string.equals" value="MTP{1234ABCD}" />
+    <parameter name="[midMTPAddress]" operation="protocol.setFromMessage" value="header.midMTPAddress" />
+    <test parameter="[midMTPAddress]" condition="string.equals" value="1234ABCD" />
+    <parameter name="[midPortNumber]" operation="protocol.setFromMessage" value="header.midPortNumber" />
+    <test parameter="[midPortNumber]" condition="list.isEmpty"/>
+
+    <!-- test authHeader:XXXXXXX -->        
+    <parameter name="[authHeader]" operation="protocol.setFromMessage" value="authHeader" />
+    <test parameter="[authHeader]" condition="string.contains" value="1234567890"/>
+    <parameter name="[securityParamIndex]" operation="protocol.setFromMessage" value="authHeader.securityParamIndex" />
+    <test parameter="[securityParamIndex]" condition="string.equals" value="0x12345678" />
+    <parameter name="[sequenceNum]" operation="protocol.setFromMessage" value="authHeader.sequenceNum" />
+    <test parameter="[sequenceNum]" condition="string.equals" value="0x12345678" />
+    <parameter name="[authData]" operation="protocol.setFromMessage" value="authHeader.authData" />
+    <test parameter="[authData]" condition="string.equals" value="0x1234567890123456789012345678901234567890123456789012345678901234" />
+
+    <!-- test X:Y:Z:value -->        
+    <parameter name="[trans]" operation="protocol.setFromMessage" value="descr.TransactionResponseAck.parameters" />
+    <test parameter="[trans]" condition="list.size" value="1" />
+    <test parameter="[trans]" condition="string.equals" value="[transID], 0-1000000,2000000-3000000" />
+    
+</scenario>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+	<parameter name="[Remote-Address]" operation="set" value="192.168.90.201:8080" />
+	<parameter name="[Proxy-Address]" operation="set" value="172.16.86.100:8080" />
+	<sendMessageHTTP name="Send GET" remoteURL="http://[Remote-Address]">
+		<![CDATA[ 
+		GET http://[Remote-Address] HTTP/1.1
+		Host: [Remote-Address]
+		Accept-charset: text/html
+		Content-Type: text/html
+		Content-Encoding: utf-8;iso-8859
+		User-Agent: XMLLoader
+		]]> 
+  	</sendMessageHTTP>
+    	<receiveMessageHTTP name="Send 200 OK" result="200" /> 
+</scenario>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[inviteeName1]" operation="set" value="bob"/>
+	<parameter name="[105_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+	<parameter name="[clientName]" operation="set" value="alice"/>
+	<parameter name="[clientAddr]" operation="set" value="192.168.56.32"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+	<sendMessageSIP name="Send OPTIONS" destScenario="bob">
+<![CDATA[OPTIONS sip:[inviteeName1]@[105_DOMAIN_ADDR] SIP/2.0
+To: sip:[inviteeName1]@[105_DOMAIN_ADDR]
+From: "[clientName]"<sip:[clientName]@[105_DOMAIN_ADDR]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] OPTIONS
+Max-Forwards: 70
+Contact: <sip:bob@[localSIP]>;+g.poc.talkburst
+Route: <sip:[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];lr;id=[inviteeName1]>
+Accept: application/sdp 
+Content-Length: x
+]]>	
+
+	</sendMessageSIP>
+
+	<receiveMessageSIP name="Wait 200 OK" request="false" type="OPTIONS" result="200">
+	</receiveMessageSIP>
+
+</scenario>

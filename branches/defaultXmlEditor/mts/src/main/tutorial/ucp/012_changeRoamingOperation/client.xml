@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="ChangeRoamingOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="AC" value="balabalabala"/>
+        <attribute name="NPL" value="1"/>
+        <attribute name="CR" value="bouhou,5555555555,9999999999,A"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ChangeRoamingOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="ChangeRoamingOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="2"/>
+        <attribute name="AC" value="bolobolobolo"/>
+        <attribute name="NPL" value="3"/>
+        <attribute name="CR" value="bouhou,1111111111,2222222222,A"/>
+        <attribute name="CR" value="baha,3333333333,4444444444,D"/>
+        <attribute name="CR" value="bihi,5555555555,6666666666,A"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ChangeRoamingOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="this is really good"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

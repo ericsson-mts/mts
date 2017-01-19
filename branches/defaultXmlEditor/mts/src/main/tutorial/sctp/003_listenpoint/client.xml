@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <pause name="wait listenpoint" seconds="1"/>
+
+    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="[remoteListenPortSCTP]">
+        <sctp num_ostreams="22223" max_instreams="333334"/>
+    </openChannelSCTP>        
+
+    <sendMessageSCTP channel="channelSCTP">
+        <sctp stream="22222" ssn="33333" ppid="4294967295" flags="1"/>
+        <data format="text">test value</data>
+    </sendMessageSCTP>
+
+</scenario>
+

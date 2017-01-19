@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+<while>
+<condition/>
+<do>
+
+<receiveMessageIMAP name="Receive Message IMAP" request="true" timeout="0" >
+	<parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag"/>
+	<parameter name="[cmd]" operation="protocol.setFromMessage" value="request.command"/>
+	<parameter name="[arguments]" operation="protocol.setFromMessage" value="request.arguments"/>
+	<parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name"/>
+</receiveMessageIMAP>
+<parameter name="[inDiction]" operation="set" value="false"/>
+
+
+<!--*************************************CAPABILITY******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="CAPABILITY"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="send CAPABILITY response" channel="[connectionName]">
+<![CDATA[
+* CAPABILITY IMAP4rev1
+[tag] OK CAPABILITY Completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************LOGIN******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="LOGIN"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send LOGIN response" channel="[connectionName]">
+<![CDATA[
+[tag] OK LOGIN Completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************LSUB******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="LSUB"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send LSUB response" channel="[connectionName]">
+<![CDATA[
+* LSUB (\HasNoChildren) . INBOX
+* LSUB (\HasNoChildren) . Trash
+* LSUB (\HasNoChildren) . Drafts
+[tag] OK LSUB Completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************LIST******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="LIST"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send LIST response" channel="[connectionName]">
+<![CDATA[
+* LIST (\HasNoChildren) . INBOX
+[tag] OK LIST Completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+
+<!--*************************************SELECT******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="SELECT"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send SELECT response" channel="[connectionName]">
+<![CDATA[
+* 4 EXISTS
+* 1 RECENT
+* OK [UNSEEN 5] Message 5 is first unseen
+* OK [UIDVALIDITY 3857529045] UIDs valid
+* OK [UIDNEXT 4392] Predicted next UID
+* FLAGS (\Answered \Flagged \Deleted \Seen \Draft)
+* OK [PERMANENTFLAGS (\Deleted \Seen \*)] Limited
+[tag] OK [READ-WRITE] SELECT completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************EXPUNGE******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="EXPUNGE"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send EXPUNGE response" channel="[connectionName]">
+<![CDATA[
+[tag] OK EXPUNGE Completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************FETCH************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="FETCH"/>
+	</condition>
+
+	<then>
+		<if>
+			<condition>
+				<test parameter="[arguments(0)]" condition="string.contains" value="*"/>
+			</condition>
+			<then><!-- when fetch on all message to get flag -->
+				<sendMessageIMAP name="Send FETCH response" channel="[connectionName]">
+<![CDATA[
+* 1 FETCH (FLAGS (\Seen))
+* 2 FETCH (FLAGS (\Seen))
+* 3 FETCH (FLAGS (\Seen))
+* 4 FETCH (FLAGS (\Seen))
+* 5 FETCH (FLAGS ())
+[tag] OK FETCH Completed
+]]>
+				</sendMessageIMAP>
+			</then>
+			<else>
+				<if>
+					<condition>
+						<test parameter="[arguments(0)]" condition="string.contains" value="From To"/>
+					</condition>
+					<then><!-- when fetch on 1 specific message to get information -->
+						<sendMessageIMAP name="Send FETCH response" channel="[connectionName]">
+<![CDATA[
+* 5 FETCH (RFC822.SIZE [messageSize] FLAGS () BODY.PEEK[HEADER.FIELDS(From To Cc Subject Date Message-ID Priority X-Priority References Newsgroup In-Reply-To Content-Type)] {208}
+Date: Fri, 17 Oct 2008 21:52:25
+From: TesterFou <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@orange.fr
+Message-Id: <B27397-0100000@orange.fr>
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+)
+[tag] OK FETCH Completed
+]]>
+						</sendMessageIMAP>
+					</then>
+					<else><!-- when fetch on 1 specific message to get message content -->
+						<sendMessageIMAP name="Send FETCH response" channel="[connectionName]">
+<![CDATA[
+* 5 FETCH (BODY.PEEK[HEADER.FIELDS(Content-Type Content-Transfer-Encoding)] {[44]}
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+BODY[TEXT]<0>{[imap_bigAttach_size]}
+[imap_bigAttach(0)]
+)
+[tag] OK FETCH Completed
+]]>
+						</sendMessageIMAP>
+					</else>
+				</if>	
+			</else>
+		</if>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************LOGOUT******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="LOGOUT"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send LOGOUT response" channel="[connectionName]">
+<![CDATA[
+* Bye connection with IMAP server will soon be closed
+[tag] OK LOGOUT Completed
+]]>
+		</sendMessageIMAP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+
+<!--*************************************UNKNOWN COMMAND******************************************************-->
+<if>
+	<condition>
+		<test parameter="[inDiction]" condition="string.equals" value="false"/>
+	</condition>
+
+	<then>
+		<sendMessageIMAP name="Send unknown command response" channel="[connectionName]">
+<![CDATA[
+[tag] BAD Command Unknown
+]]>
+		</sendMessageIMAP>
+	</then>
+</if>
+
+</do>
+</while>
+</scenario>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Receive a MAP message
+-->
+
+<scenario>
+
+    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
+         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSIGTRAN>
+    
+    
+    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
+    
+        <UA name="m3ua" file="m3ua.xml">
+            <header version="1" reserved="0" messageClass="3" messageType="4"/>
+            
+            <parameter tag="17" >
+                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
+            </parameter>
+            
+            <parameter tag="INFO_String">
+                <field name="INFO_String" format="String" value="ASPUP"/>
+            </parameter>
+        </UA>
+        
+    </sendMessageSIGTRAN>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="45">
+      <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+      <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+      <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+      <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
+    	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+        
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+        
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;invoke.C1.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;opCode.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;localValue.BoxedType&gt;&lt;Long&gt;sendRoutingInfoForSM:45&lt;/Long&gt;&lt;/localValue.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/opCode.Choice&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeparameter&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSMArg.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;msisdn.C0.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;extension:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;nature of address&quot; value=&quot;unknown:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;numbering plan&quot; value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;digits&quot; value=&quot;60a5dba23f3f39&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/msisdn.C0.BoxedType&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;serviceCentreAddress.C2.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;extension&quot; value=&quot;extension:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;nature of address&quot; value=&quot;unknown:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;numbering plan&quot; value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;field name=&quot;digits&quot; value=&quot;406323c256&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/serviceCentreAddress.C2.BoxedType&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;extensionContainer.C6.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;privateExtensionList.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Collection&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;PrivateExtension.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extId&gt;&lt;ObjectIdentifier&gt;0.1.24.110.78.45.5&lt;/ObjectIdentifier&gt;&lt;/extId&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extType&gt;040826fcfe479c03592d&lt;/extType&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;extId&gt;&lt;ObjectIdentifier&gt;0.1.2124.115.11.112.47.62&lt;/ObjectIdentifier&gt;&lt;/extId&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extType&gt;040cf68db308732eda2a0dc27178&lt;/extType&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;extId&gt;&lt;ObjectIdentifier&gt;0.1.278.123&lt;/ObjectIdentifier&gt;&lt;/extId&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extType&gt;040396670f&lt;/extType&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;/PrivateExtension.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Collection&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/privateExtensionList.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/extensionContainer.C6.Sequence&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;gprsSupportIndicator.C7&gt;&lt;/gprsSupportIndicator.C7&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_MTI.C8&gt;823102423&lt;/sm_RP_MTI.C8&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;sm_RP_SMEA.C9&gt;08040ea11e27"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/sm_RP_SMEA.C9&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;/RoutingInfoForSMArg.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/invokeparameter&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/invoke.C1.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+        
+    <!-- AP LAYER -->
+    <ASN dictionary="map/dictionary_MAP.xml">
+      <Component.Choice>
+        <returnResultLast.C2.Sequence>
+           <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+           <resultretres>
+            <opCode.Choice>
+               <localValue.BoxedType><Long>45</Long></localValue.BoxedType>
+               <!--globalValue><ObjectIdentifier>0.1.233.30.41.26.113</ObjectIdentifier></globalValue-->
+            </opCode.Choice>
+            <returnparameter>
+              <RoutingInfoForSM_Res.Sequence>
+                <imsi.BoxedType><Bytes>
+                  <field name="digits" value="40011d45ce360bd29c87d7b75a773ca828b5" type="Number_BCD" />
+                </Bytes></imsi.BoxedType>
+                <locationInfoWithLMSI.C0.Sequence>
+                   <networkNode_Number.C1.BoxedType><Bytes>
+                      <field name="extension" value="0" type="EnumLong" lengthBit="1" />
+                      <field name="nature of address" value="0" type="EnumLong" lengthBit="3" />
+                      <field name="numbering plan" value="4" type="EnumLong" lengthBit="4" />
+                      <field name="digits" value="31879f867b359b92e6a048c5627680572eef6bf8" type="Number_BCD" />
+                   </Bytes></networkNode_Number.C1.BoxedType>
+                   <lmsi.BoxedType><Bytes>
+                      <field name="digits" value="040b2ab408b649334315639b9d" type="Binary" />
+                   </Bytes></lmsi.BoxedType>
+                   <extensionContainer.Sequence>
+                      <privateExtensionList.C0.BoxedType>
+                         <Collection>
+                            <PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.210.106.85.29.125.78</ObjectIdentifier></extId>
+                               <extType>0405880fdddd95</extType>
+                            </PrivateExtension.Sequence>
+                            <!--PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.2121.106.32.6.27.39.101.84.24.31</ObjectIdentifier></extId>
+                               <extType>041176f378ea014b57a1dd110dd5a50e77d73f</extType>
+                            </PrivateExtension.Sequence>
+                            <PrivateExtension.Sequence>
+                               <extId><ObjectIdentifier>0.1.223.28.122.64</ObjectIdentifier></extId>
+                               <extType>041204978bde0ae9c50a58b575bdd0cbfb8d21a9</extType>
+                            </PrivateExtension.Sequence-->
+                         </Collection>
+                      </privateExtensionList.C0.BoxedType>
+                      <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                   </extensionContainer.Sequence>
+                   <gprsNodeIndicator.C5></gprsNodeIndicator.C5>
+                   <additional_Number.C6.Choice>
+                      <msc_Number.C0.BoxedType><Bytes>
+                         <field name="extension" value="0" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="0" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="4" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="501c7ead3fd5" type="Number_BCD" />
+                      </Bytes></msc_Number.C0.BoxedType>
+                      <!--sgsn_Number.C1.BoxedType><Bytes>
+                            <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                            <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                            <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
+                            <field name="digits" value="3127474b71e9a21d41423c69cd7d2ba25ce373b1" type="Number_BCD" />
+                      </Bytes></sgsn_Number.C1.BoxedType-->
+                   </additional_Number.C6.Choice>
+                </locationInfoWithLMSI.C0.Sequence>
+                <extensionContainer.C4.Sequence>
+                   <privateExtensionList.C0.BoxedType>
+                      <Collection>
+                         <!--PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.246.83.5.64</ObjectIdentifier></extId>
+                            <extType>0402a16c</extType>
+                         </PrivateExtension.Sequence-->
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.275.62.73.23.5.113.31</ObjectIdentifier></extId>
+                            <extType>040989c238c8fe58f13f63</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.238.55.38</ObjectIdentifier></extId>
+                            <extType>040fac72829ef52cfb0490905a49a43bbd</extType>
+                         </PrivateExtension.Sequence>
+                      </Collection>
+                   </privateExtensionList.C0.BoxedType>
+                   <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                </extensionContainer.C4.Sequence>
+              </RoutingInfoForSM_Res.Sequence>
+            </returnparameter>
+         </resultretres>
+        </returnResultLast.C2.Sequence>
+      </Component.Choice>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage>
+        <end>
+          <dtid><Bytes>00000001</Bytes></dtid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <direct_reference><ObjectIdentifier>0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                  <!--indirect_reference>856649051904125184</indirect_reference-->
+                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
+                  <encoding>
+                    <single_ASN1_type>
+                      <DialoguePDU>
+                        <dialogueResponse>
+                          <AARE_apduSequenceType>
+                            <protocol_version><BitString value="80" trailing="7"/></protocol_version>
+                            <application_context_name>
+                              <ObjectIdentifier><ObjectIdentifier>0.4.0.0.1.0.21.2</ObjectIdentifier></ObjectIdentifier>
+                            </application_context_name>
+                            <result><Associate_result><Long>0</Long></Associate_result></result>
+                            <result_source_diagnostic>
+                              <Associate_source_diagnostic>
+                                <dialogue_service_user>
+                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
+                                </dialogue_service_user>
+                              </Associate_source_diagnostic>
+                            </result_source_diagnostic>
+                            <!--Collection>
+                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
+                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
+                              <user_information>0403d079a4</user_information>
+                            </Collection-->
+                          </AARE_apduSequenceType>
+                        </dialogueResponse>
+                      </DialoguePDU>
+                    </single_ASN1_type>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+        </end>
+      </TCMessage>
+    </ASN>
+    
+    <!-- SCCP LAYER  -->
+    <SS7 name="sccp" file="sccp.xml">
+        <header>
+            <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+        </header>
+        <parameter name="Protocol_Class" type="F" littleEndian="false">
+            <field value="0" lengthBit="4" />
+            <field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+        </parameter>
+        <parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+            <field name="Address_Indicator" value="67" length="1" />
+            <field name="Signalling_Point_Code" value="1" length="2" />
+            <field name="Subsystem_Number" value="8" length="1" />	
+        </parameter>
+        <parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+            <field name="Address_Indicator" value="67" length="1" />
+            <field name="Signalling_Point_Code" value="2" length="2" />
+            <field name="Subsystem_Number" value="8" length="1" />
+        </parameter>
+        <parameter id="15" name="Data" type="V" littleEndian="false">
+            <field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+            <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        </parameter>
+    </SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+        
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+        <parameter tag="Protocol_Data">
+            <field value="2" name="Originating_Point_Code"/>
+            <field value="1" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+        
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+  
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="message.xml"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;ASN layer=&quot;MAP&quot;&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Component.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;returnResultLast.C2.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;invokeID.BoxedType&gt;&lt;Integer&gt;1&lt;/Integer&gt;&lt;/invokeID.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;resultretres.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;opCode.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;localValue.BoxedType&gt;&lt;Long&gt;sendRoutingInfoForSM:45&lt;/Long&gt;&lt;/localValue.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/opCode.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/resultretres.Sequence&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;returnparameter&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;RoutingInfoForSM_Res.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;imsi.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;40011d45ce360bd29c87d7b75a773ca828b5&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/imsi.BoxedType&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;locationInfoWithLMSI.C0.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;networkNode_Number.C1.BoxedType&gt;&lt;Bytes&gt;"/>    
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;extension:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;unknown:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;31879f867b359b92e6a048c5627680572eef6bf8&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/networkNode_Number.C1.BoxedType&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;lmsi.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;040b2ab408b649334315639b9d&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/lmsi.BoxedType&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;extensionContainer.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;privateExtensionList.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Collection&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;PrivateExtension.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extId&gt;&lt;ObjectIdentifier&gt;0.1.210.106.85.29.125.78&lt;/ObjectIdentifier&gt;&lt;/extId&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extType&gt;0405880fdddd95&lt;/extType&gt;"/>
+ 
+    <test parameter="[xml]" condition="string.contains" value="&lt;/PrivateExtension.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Collection&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/privateExtensionList.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/extensionContainer.Sequence&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;gprsNodeIndicator.C5&gt;&lt;/gprsNodeIndicator.C5&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;additional_Number.C6.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;msc_Number.C0.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;extension:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;unknown:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;501c7ead3fd5&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/msc_Number.C0.BoxedType&gt;"/>
+    
+    <!--test parameter="[xml]" condition="string.contains" value="&lt;sgsn_Number.C1.BoxedType&gt;&lt;Bytes&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;extension:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;unknown:0&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;telex numbering plan (ITU-T Rec F.69):4&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value=" value=&quot;313eb8973440724491710f105d2ed236f9995091&quot; "/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Bytes&gt;&lt;/sgsn_Number.C1.BoxedType.BoxedType&gt;"/-->
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;/additional_Number.C6.Choice&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;extensionContainer.C4.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;privateExtensionList.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;Collection&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;PrivateExtension.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extId&gt;&lt;ObjectIdentifier&gt;0.1.275.62.73.23.5.113.31&lt;/ObjectIdentifier&gt;&lt;/extId&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extType&gt;040989c238c8fe58f13f63&lt;/extType&gt;"/>
+
+    <test parameter="[xml]" condition="string.contains" value="&lt;extId&gt;&lt;ObjectIdentifier&gt;0.1.238.55.38&lt;/ObjectIdentifier&gt;&lt;/extId&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;extType&gt;040fac72829ef52cfb0490905a49a43bbd&lt;/extType&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;/PrivateExtension.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Collection&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/privateExtensionList.C0.BoxedType&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/extensionContainer.C4.Sequence&gt;"/>
+    
+    <test parameter="[xml]" condition="string.contains" value="&lt;/RoutingInfoForSM_Res.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/returnparameter&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/returnResultLast.C2.Sequence&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/Component.Choice&gt;"/>
+    <test parameter="[xml]" condition="string.contains" value="&lt;/ASN&gt;"/> 
+
+</scenario>

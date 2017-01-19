@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+	<parameter name="[RecRoute]" operation="setFromMessage" value="header:Record-Route"/>
+	</receiveRequestSIP>
+
+	<parameter name="[SizeOfRecRoute]" operation="size" value="[RecRoute]"/>
+	
+
+	<if>
+		<condition>
+			<test parameter="[SizeOfRecRoute]" condition="equals" value="0"/>
+       </condition>
+	<then>
+		<log level="1">Proxy doesn't add a Record-Route header in the request he forwards (Your proxy is NOT a Dialog Stateful Proxy)</log>
+	</then>
+	<else>
+		<parameter name="[LrPresence]" operation="contains" value="[RecRoute]" value2=";lr"/>
+		<if>
+			<condition>
+				<test parameter="[SizeOfRecRoute]" condition="greaterThan" value="0"/>
+				<test parameter="[LrPresence]" condition="equals" value="true"/>
+			</condition>
+			<then>
+				<log level="1">Proxy adds a Record-Route header in the request he forwards (Dialog Stateful Proxy property)</log>
+				<log level="1">Your Proxy IS a loose routing proxy (presence of the "lr" parameter)</log>
+				<log level="1">This added header contains the value : [RecRoute]</log>
+				<log level="1">Please check this address is the one of the proxy you're testing</log>
+			</then>
+			<else>
+				<log level="1">Proxy adds a Record-Route header in the request he forwards (Dialog Stateful Proxy property)</log>
+				<log level="1">Your Proxy is NOT a loose routing proxy (abscence of the "lr" parameter)</log>
+				<log level="1">This added header contains the value : [RecRoute]</log>
+				<log level="1">Please check this address is the one of the proxy you're testing</log>
+			</else>
+		</if>
+	</else>
+	</if>
+
+
+</scenario>

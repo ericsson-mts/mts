@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpoint_[port]" />
+
+    <createListenpointSMPP name="[listenpoint]" localHost="[listenIp]" localPort="[port]"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <receiveMessageSMPP request="true" listenpoint="[listenpoint]">
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter_resp" sequence_number="[seqNum]"/>
+        <attribute name="system_id" value="test"/>
+        <tlv name="sc_interface_version" length="1" value="6"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" listenpoint="[listenpoint]">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm_resp" sequence_number="[seqNum]"/>
+        <attribute name="message_id" value="1"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" listenpoint="[listenpoint]">
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind_resp" sequence_number="[seqNum]"/>
+    </sendMessageSMPP>
+
+</scenario>

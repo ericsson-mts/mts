@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+
+<scenario>
+
+  	<!-- create the listenpoint -->
+  	<parameter name="[test:simu_3GPP_AAA_Server]" operation="set" value="3GPP_AAA_Server" />
+  	<createListenpointDIAMETER name="[test:simu_3GPP_AAA_Server]" localHost="[host3GGP_AAA]" localPort="[port3GGP_AAA]"/>
+         
+    <call name="diameter.RecCER_SendCEA"/>                  
+         
+  	<!-- init paramètre de la fonction attach pour 3GPP_AAA -->
+  	<parameter name="[UserA]" operation="set" value="[test:userIndexPourDER]"/>	<!-- index dans table des User -->	
+    <parameter name="[applicationID]" operation="set" value="[applicationID_SWm]"/>
+  	   
+  	<!-- initiate context -->
+  	<parameter name="[test:context3GPPSessions]" operation="list.create"/>
+
+    <function file="350_swm_attach/fonc_attach_simu_3GPP_AAA.xml"/>    
+    <call name="fonc_attach_simu_3GPP_AAA">
+      <input> 
+        <parameter name="[function:Index_UserA]" value="0" />
+      </input>
+      <output> 
+    			<parameter name="[UserName]" value="[function:UserName]" />
+      </output>                      
+    </call>    
+
+</scenario>

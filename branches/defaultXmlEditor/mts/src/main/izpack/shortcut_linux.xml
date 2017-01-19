@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+    <skipIfNotSupported/>
+    <programGroup defaultName="${project.name}-${project.version}" location="applications"/>
+
+    <shortcut
+        iconFile="$INSTALL_PATH/bin/icon.png"
+        name="${project.name}-${project.version}"
+        programGroup="yes"
+        desktop="yes"
+        applications="no"
+        startMenu="yes"
+        startup="no"
+        target="$INSTALL_PATH/bin/startGui.sh"
+        commandLine=""
+        workingDirectory="$INSTALL_PATH/bin"
+        description="Launch ${project.name}-${project.version} GUI"
+        iconIndex="0"
+        type="Application"
+        encoding="UTF-8"
+        terminal="true"
+        KdeSubstUID="false"
+        initialState="normal">
+        <createForPack name="base"/>
+    </shortcut>
+
+    <shortcut
+        name="Documentation"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="no"
+        startup="no"
+        target="$INSTALL_PATH\doc\"
+        workingDirectory=""
+        commandLine=""
+        initialState="normal"
+        iconFile="help"
+        iconIndex="0"
+        description="${project.name}-${project.version} Documentation">
+
+        <createForPack name="base"/>
+    </shortcut>
+
+    <shortcut
+        name="uninstall"
+        programGroup="yes"
+        desktop="no"
+        applications="no"
+        startMenu="no"
+        startup="no"
+        target="$INSTALL_PATH/bin/uninstall.sh"
+        commandLine=""
+        initialState="normal"
+        iconFile="trashcan_full"
+        iconIndex="0"
+        workingDirectory="$INSTALL_PATH/bin/"
+        type="Application"
+        encoding="UTF-8"
+        description="Uninstall ${project.name}-${project.version}">
+        <createForPack name="base" />
+    </shortcut>
+</shortcuts>

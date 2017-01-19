@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+         In this example, the Call Agent wants to learn what endpoints
+are present on the gateway specified, hence the use of the "all of"
+wild-card for the local portion of the endpoint-name
+-->
+
+<scenario>
+    <parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+    <sendMessageMGCP  remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+AUEP [transactionId] *@rgw-2567.whatever.net MGCP 1.0
+]]>
+
+    </sendMessageMGCP>
+	
+
+     <receiveMessageMGCP request="false">
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+   
+    
+</scenario>

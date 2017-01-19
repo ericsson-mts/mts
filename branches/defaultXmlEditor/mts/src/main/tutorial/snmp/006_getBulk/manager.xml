@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario manager -->
+<scenario>
+    
+    <parameter name="[listenpoint]" operation="set" value="listenpointSNMP" />
+    <createListenpointSNMP name="[listenpoint]" localPort="162"/>
+
+    <parameter name="[requestId]" operation="set" value="20000000" />
+    <sendMessageSNMP listenpoint="[listenpoint]" remoteHost="[remoteHostSNMP]" remotePort="163">
+        <header version="2" community="public"/>
+        <pdu name="getBulk" requestId="[requestId]" nonRepeaters="2" maxRepetitions="3">
+            <variableBinding name="system"/>
+            <variableBinding name="sysDescr"/>
+            <variableBinding name="ifIndex"/>
+            <variableBinding name="ifDescr"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="false" type="RESPONSE">
+    </receiveMessageSNMP>
+
+    <finally>
+        <removeListenpointSNMP name="[listenpoint]"/>
+    </finally>
+</scenario>

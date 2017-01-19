@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<createListenpointTCP name="listenpoint" localHost="[remoteHostTCP]" localPort="2003"/>
+	
+    <openChannelTCP name="channel" remoteHost="[remoteHostTCP]" remotePort="2003" />
+
+    <receiveMessageTCP type="SYN-ACK" timeout="1">
+        <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />    
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+        <test parameter="[contents]" condition="string.equals" value="" />
+    </receiveMessageTCP>
+
+    <sendMessageTCP channel="[connectionName]">
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageTCP>
+
+    <receiveMessageTCP channel="channel" type="SEQ-ACK" timeout="1">
+        <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+        <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+    </receiveMessageTCP>
+
+    <finally>
+	<closeChannelTCP name="channel" />
+    	
+ 	<receiveMessageTCP channel="[connectionName]" type="FIN-ACK" timeout="1">
+            <parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+            <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+            <test parameter="[contents]" condition="string.equals" value="" />
+    	</receiveMessageTCP>
+
+    	<removeListenpointTCP name="listenpoint"/>
+    	
+    </finally>
+        
+</scenario>

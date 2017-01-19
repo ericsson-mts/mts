@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[connection]" operation="set" value="scenario_[port]" />
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+    
+    <openChannelSMPP name="[connection]" remoteHost="[remoteHostSMPP]" remotePort="[port]"/>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter" sequence_number="1" />
+        <attribute name="system_id" value="IMSLoader"/>
+        <attribute name="password" value="coucou"/>
+        <attribute name="system_type" value="windows MC"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="8"/>
+        <attribute name="addr_npi" value="3"/>
+        <attribute name="address_range" value="255.255.255.0"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="2" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="0"/>
+        <attribute name="source_addr_npi" value="0"/>
+        <attribute name="source_addr" value=""/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="172.016.021.207"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="0"/>
+        <attribute name="priority_flag" value="2"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="0"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="128"/>
+        <attribute name="sm_length" value="26"/>
+        <attribute name="short_message" value="test de sms à transmettre."/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="2" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+</scenario> 

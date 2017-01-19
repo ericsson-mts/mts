@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+-->
+
+<scenario>
+
+    <parameter name="[transID]" operation="binary.random" value="12"/>
+    <sendMessageSTUN  name="Create Connection" remoteHost="[remoteHostSTUN]" remotePort="[remotePortSTUN]">
+        <header type="1" transactionID="[transID]"/>
+        <attribute type="SOFTWARE">
+            <text value="pjnath-1.8.5"/>
+        </attribute>
+        <attribute type="CHANGE-REQUEST">
+            <changeRequest  changeIP="0" changePort="0"/>
+        </attribute>
+    </sendMessageSTUN>
+
+    <receiveMessageSTUN request="false">
+    </receiveMessageSTUN>
+
+</scenario>

@@ -1,0 +1,111 @@
+<!--Verifie la presence d un 200 Cancel-->
+<if>
+	<condition>
+		<test parameter="[lastCSeq]" 	condition="contains" value="CANCEL"/>
+		<test parameter="[lastResult]" 	condition="equals" value="200"/>
+	</condition>
+	<then>
+		<goto  name="loop" label="Begin" state="true"/>
+	</then>
+</if>
+<!--recupere la publique identite-->
+<parameter name="[impu]" 		operation="setFromMessage" 	value="header:To:Address:URI"		value2="[lastMessage]"/>
+	
+	
+	
+<parameter name="[condition]" 		operation="contains" 	value="[lastVia(0)]" value2="[branch[impu]]"/> 
+	
+<!--Verifie que c est une reponse d une requete INVITE d un fork-->
+&forking_scscf;
+			
+<!--Verifie que c est une reponse d une requete 487  CANCEL d un fork-->
+<if>
+	<condition>
+		<test parameter="[lastCSeq]" 			condition="contains" 	value="INVITE"/>
+		<test parameter="[lastResult]" 			condition="equals" 		value="487"/>
+		<test parameter="[Viafc[lastCall-ID]]" 	condition="exists" 		/>
+	</condition>
+	<then>
+	
+		<parameter name="[lVia]" 		operation="set" 	value="[lVia(0)]"/>
+		<parameter name="[index]" 		operation="findmatches" 	value="[Viafc[lastCall-ID]]" value2=".*[lVia].*"/> 
+		<parameter name="[sizeindex]" 		operation="size" 	value="[index]"/> 
+		<if>
+			<condition>
+				<test parameter="[sizeindex]" 	condition="equals" 	value="1"/>
+			</condition>
+			<then>
+				<parameter name="[Viafc[lastCall-ID]]" 	operation="removeat" 		value="[Viafc[lastCall-ID]]" 	value2="[index]"/>
+			</then>	
+		</if>	
+		<parameter name="[size]" operation="size" 	value="[Viafc[lastCall-ID]]"/>
+		<if>
+			<condition>
+				<test parameter="[size]" condition="equals" value="0"/>
+			</condition>
+			<then>
+				<parameter name="[Viafc[lastCall-ID]]" 	operation="unset"/>
+			</then>
+		</if>
+		<goto  name="loop" label="Begin" state="true"/>	
+	</then>
+</if>
+<!--retourne en reception de message si reponse 403 ou 100-->
+<if>
+	<condition>
+		<test parameter="[lastResult]" condition="equals" value="403"/>
+	</condition>
+	<then>
+		<goto  name="loop" label="Begin" state="true"/>
+	</then>
+</if> 
+<if>
+	<condition>
+		<test parameter="[lastResult]" condition="equals" value="100"/>
+	</condition>
+	<then>
+		<goto  name="loop" label="Begin" state="true"/>
+	</then>
+	<else>
+		<!--supprime le dernier via-->
+		<parameter name="[index]" 			operation="findMatches" 	value="[lastHeader]" 	value2="Via.*"/>
+		<parameter name="[lastHeader]" 		operation="removeat" 		value="[lastHeader]"	value2="[index]"/>
+		<!--nombre de VIA-->
+		<parameter name="[sizelastVia]" 		operation="size" 		value="[lastVia]"/>
+		<if>
+			<condition>
+				<test parameter="[sizelastVia]" condition="greaterthan" value="1"/>
+			</condition>
+		    <then>
+				<!--supprime le premier via-->
+				<parameter name="[nextVia]" 		operation="removeAt" 		value="[lastVia]"		value2="0"/>
+				<!--ajoute le header via-->
+				<parameter name="[lastHeader]" 		operation="addfirst" 		value="[lastHeader]" value2="Via: [nextVia]"/>
+			</then>
+			<else>
+				<goto  name="loop" label="Begin" state="true"/>
+			</else>
+		</if>
+	</else>
+</if> 
+<!--Verifie si INVITE erreur-->
+<if>
+	<condition>
+		<test parameter="[lastCSeq]" condition="contains" value="INVITE"/>
+		<test parameter="[lastResult]" condition="matches" value=" [4,5,6][0-9][0-9]"/>
+	</condition>
+	<then>
+		&rep_error_scscf;
+	</then>
+</if>
+<!--Verifie si Cancel erreur-->
+<if>
+	<condition>
+		<test parameter="[lastCSeq]" condition="contains" value="CANCEL"/>
+		<test parameter="[lastResult]" condition="matches" value=" [4,5,6][0-9][0-9]"/>
+	</condition>
+	<then>
+		&rep_error_scscf;
+	</then>
+</if>
+	

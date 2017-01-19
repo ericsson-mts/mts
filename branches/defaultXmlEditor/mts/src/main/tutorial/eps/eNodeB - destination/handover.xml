@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<openSocketUDP socketName="socket" localPort="42000" remoteHost="[eNodeBIP]" remotePort="42000" />
+    	<receiveDataUDP socketName="socket" timeout="0">
+        	<parameter name="[temp]" operation="protocol.setFromMessage" value="data.binary" />
+        </receiveDataUDP>
+        <parameter name="[test:teidsgw]" operation="binary.toNumber" value="[temp]" />
+        <sendDataUDP socketName="socket">
+                <data format="text">ACK</data>
+        </sendDataUDP>
+        <closeSocketUDP socketName="socket" />
+        
+	<openSocketUDP socketName="socket" localPort="41000" remoteHost="[UE]" remotePort="42000" />
+        <receiveDataUDP socketName="socket" timeout="0">
+        	<parameter name="[temp]" operation="protocol.setFromMessage" value="data.text" />
+        </receiveDataUDP>
+        <closeSocketUDP socketName="socket" />
+        <test parameter="[temp]" condition="string.equals" value="handover OK" />
+</scenario>

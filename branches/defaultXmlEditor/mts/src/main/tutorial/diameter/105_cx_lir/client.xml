@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Cx/Dx Location-Info request (LIR)" -->
+
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.229 V7.5.0 :
+Location-Info-Request ::= < Diameter Header: 302, REQ, PXY, 16777216 >
+                             < Session-Id >
+                             { Vendor-Specific-Application-Id }
+                               Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                    1* [ Vendor-Id ]
+                                                                    0*1{ Auth-Application-Id }
+                                                                    0*1{ Acct-Application-Id }
+                             { Auth-Session-State }
+                             { Origin-Host }
+                             { Origin-Realm }
+                             [ Destination-Host ]
+                             { Destination-Realm }
+                             [ Originating-Request ]
+                            *[ Supported-Features ]
+                               Supported-Features ::=  < AVP header: 628 [vendorID] >
+                                                          { Vendor-Id }
+                                                          { Feature-List-ID }
+                                                          { Feature-List }
+                                                         *[AVP]
+                             { Public-Identity }
+                            *[ AVP ]
+                            *[ Proxy-Info ]
+                               Proxy-Info ::= < AVP Header: 284 >
+                                                  { Proxy-Host }
+                                                  { Proxy-State }
+                                                * [ AVP ]
+                            *[ Route-Record ]
+-->
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="Send Request 3GPP/CX-DX/LIR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
+          
+          <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+            <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777216"/-->
+          </avp>
+
+          <!-- The Auth-Session-State AVP specifies whether state is maintained for a particular session. -->
+          <!-- Possible enumerated values : STATE_MAINTAINED(0) / NO_STATE_MAINTAINED(1). NO_STATE_MAINTAINED must be used (TS 29.229.750). -->
+          <avp code="Auth-Session-State:277" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED:1"/>
+
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+          <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+
+          <!-- The Originating-Request AVP indicates to the HSS that the request is related to an AS originating SIP request in the Location-Information-Request operation. -->
+          <!-- Possible enumerated values : ORIGINATING (0). -->
+          <avp code="Originating-Request:633" mandatory="true" type="Enumerated" value="ORIGINATING:0" vendorId="[vendorID]"/>
+
+          <!-- The Supported-Features AVP may inform the destination host about the features that the origin host supports (3GPP TS29.229.750). -->
+          <avp code="Supported-Features:628" vendorId="[vendorID]">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <!-- The Feature-List-ID AVP contains the identity of a feature list (3GPP TS29.229.750). -->
+            <avp code="Feature-List-ID:629" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/>
+            <!-- The Feature-List AVP contains a bit mask indicating the supported features of an application (3GPP TS29.229.750). -->
+            <avp code="Feature-List:630" mandatory="false" type="Unsigned32" value="1" vendorId="[vendorID]"/> 
+          </avp>
+          <avp code="Supported-Features:628" vendorId="[vendorID]">
+            <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+            <avp code="Feature-List-ID:629" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/>
+            <avp code="Feature-List:630" mandatory="false" type="Unsigned32" value="2" vendorId="[vendorID]"/> 
+          </avp>
+
+          <!-- The Public-Identity AVP contains a Public User Identity. -->
+          <avp code="Public-Identity:601" mandatory="true" type="UTF8String" value="ToBeCompleted" vendorId="[vendorID]"/>                   
+
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info:284">
+             <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+             <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer 3GPP/CX-DX/LIA" channel="channel_client" request="false" type="Location-Info:302" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

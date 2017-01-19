@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+	<parameter name="[MacAddress]" operation="system.macaddress" />
+	<parameter name="[MacAddressHex]" operation="string.regexreplaces" value="[MacAddress]" value2=":" value3="" />
+
+	<createProbeETHERNET name="capture" networkInterface="[localHostETH]" captureFilter="(ether dst [MacAddress] and arp) or (ether src [MacAddress] and arp)" />
+	<parameter name="[TargetIP]" operation="binary.fromIp" value="[remoteHostETH]" />
+	
+	<sendMessageETHERNET name="send packet" probe="capture">
+		<ethernet remoteMac="ff:ff:ff:ff:ff:ff" type="0806" /> <!-- type="0806" is for ARP payload; Send to broadcast mac address ff:ff:ff:ff:ff:ff -->
+		<data format="binary">h0001</data> <!-- Hardware Type 0001 for ETH -->
+		<data format="binary">h0800</data> 		<!-- Protocol type 0800 for IP -->
+		<data format="binary">h06</data> 	<!-- Hardware Size 06 for ETHERNET (6 bytes) -->
+		<data format="binary">h04</data> 	<!-- Protocol Size 04 for IPv4 (4 byte); it would be 10 for IPv6 (10 hex equals to 16 (dec) bytes) -->
+  		<data format="binary">h0001</data> <!-- OP code 0001 for request; 0002 for reply -->
+		<data format="binary">h[MacAddressHex]</data> <!-- @MAC src without ":" -->
+		<data format="binary">h[localBinaryIP]</data> <!-- @IP src; actually your local IP -->
+		<data format="binary">h000000000000</data> <!-- @MAC dest (the one we want to find) set to 0 -->
+		<data format="binary">h[TargetIP]</data> <!-- @IP dest that holds the mac address we are looking for -->
+  	</sendMessageETHERNET>
+	
+	<receiveMessageETHERNET>
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageETHERNET>
+	
+	<parameter name="[req_hw_type]" operation="binary.subbinary" value="[data1]" value2="0" value3="2" />
+	<parameter name="[req_proto_type]" operation="binary.subbinary" value="[data1]" value2="2" value3="2" />
+	<parameter name="[req_hw_size]" operation="binary.subbinary" value="[data1]" value2="4" value3="1" />
+	<parameter name="[req_proto_size]" operation="binary.subbinary" value="[data1]" value2="5" value3="1" />
+	<parameter name="[req_opcode]" operation="binary.subbinary" value="[data1]" value2="6" value3="2" />
+	<parameter name="[req_sender_mac]" operation="binary.subbinary" value="[data1]" value2="8" value3="6" />
+	<parameter name="[req_sender_ip]" operation="binary.subbinary" value="[data1]" value2="14" value3="4" />
+	<parameter name="[req_target_mac]" operation="binary.subbinary" value="[data1]" value2="18" value3="6" />
+	<parameter name="[req_target_ip]" operation="binary.subbinary" value="[data1]" value2="24" value3="4" />
+	
+	<sendMessageETHERNET name="send packet" probe="capture">
+		<ethernet remoteMac="[req_sender_mac]" type="0806" /> <!-- type="0806" is for ARP payload; Send to broadcast mac address ff:ff:ff:ff:ff:ff -->
+		<data format="binary">h0001</data> <!-- Hardware Type 0001 for ETH -->
+		<data format="binary">h0800</data> 		<!-- Protocol type 0800 for IP -->
+		<data format="binary">h06</data> 	<!-- Hardware Size 06 for ETHERNET (6 bytes) -->
+		<data format="binary">h04</data> 	<!-- Protocol Size 04 for IPv4 (4 byte); it would be 10 for IPv6 (10 hex equals to 16 (dec) bytes) -->
+  		<data format="binary">h0002</data> <!-- OP code 0001 for request; 0002 for reply -->
+		<data format="binary">h[MacAddressHex]</data> <!-- @MAC src without ":" -->
+		<data format="binary">h[localBinaryIP]</data> <!-- @IP src; actually your local IP -->
+		<data format="binary">h[req_sender_mac]</data> <!-- @MAC dest (the one we want to find) set to 0 -->
+		<data format="binary">h[req_sender_ip]</data> <!-- @IP dest that holds the mac address we are looking for -->
+  	</sendMessageETHERNET>
+	
+	<receiveMessageETHERNET>
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageETHERNET>
+	
+	<parameter name="[res_hw_type]" operation="binary.subbinary" value="[data1]" value2="0" value3="2" />
+	<parameter name="[res_proto_type]" operation="binary.subbinary" value="[data1]" value2="2" value3="2" />
+	<parameter name="[res_hw_size]" operation="binary.subbinary" value="[data1]" value2="4" value3="1" />
+	<parameter name="[res_proto_size]" operation="binary.subbinary" value="[data1]" value2="5" value3="1" />
+	<parameter name="[res_opcode]" operation="binary.subbinary" value="[data1]" value2="6" value3="2" />
+	<parameter name="[res_sender_mac]" operation="binary.subbinary" value="[data1]" value2="8" value3="6" />
+	<parameter name="[res_sender_ip]" operation="binary.subbinary" value="[data1]" value2="14" value3="4" />
+	<parameter name="[res_target_mac]" operation="binary.subbinary" value="[data1]" value2="18" value3="6" />
+	<parameter name="[res_target_ip]" operation="binary.subbinary" value="[data1]" value2="24" value3="4" />
+	
+	<test parameter="[res_target_mac]" condition="binary.equals" value="[MacAddressHex]" />
+	
+	<finally>
+		<removeProbeETHERNET name="capture" />
+	</finally>
+</scenario>

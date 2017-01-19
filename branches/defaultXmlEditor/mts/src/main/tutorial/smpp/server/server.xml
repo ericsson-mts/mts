@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+<while>
+<condition/>
+<do>
+
+<receiveMessageSMPP request="true" timeout="0">
+    <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+    <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="name" operation="protocol.setFromMessage" value="header.name"/>
+</receiveMessageSMPP>
+<parameter name="[inDiction]" operation="set" value="false"/>
+
+
+<!--*************************************bind_transmitter******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="bind_transmitter"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="bind_transmitter_resp" sequence_number="[seqNum]"/>
+            <attribute name="system_id" value="test"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************bind_receiver******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="bind_receiver"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="bind_receiver_resp" sequence_number="[seqNum]"/>
+            <attribute name="system_id" value="test"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************bind_transceiver******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="bind_transceiver"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="bind_transceiver_resp" sequence_number="[seqNum]"/>
+            <attribute name="system_id" value="test"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************submit_sm******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="submit_sm"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="submit_sm_resp" sequence_number="[seqNum]"/>
+            <attribute name="message_id" value="1"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************cancel_sm******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="cancel_sm"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="cancel_sm_resp" sequence_number="[seqNum]"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************broadcast_sm******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="broadcast_sm"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="broadcast_sm_resp" sequence_number="[seqNum]"/>
+            <attribute name="message_id" value="5"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************unbind******************************************************-->
+<if>
+	<condition>
+		<test parameter="[name]" condition="string.equals" value="unbind"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="unbind_resp" sequence_number="[seqNum]"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************Unknown message******************************************************-->
+<if>
+	<condition>
+		<test parameter="[inDiction]" condition="string.equals" value="false"/>
+	</condition>
+
+	<then>
+		<sendMessageSMPP channel="[connection]">
+            <header name="generic_nack" sequence_number="[seqNum]"/>
+        </sendMessageSMPP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+</do>
+</while>
+
+</scenario>

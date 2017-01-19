@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<scenario>
+
+  	<parameter name="[data]" value="0100000200000010000a000800000000" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		                
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="MGMT:Management" messageType="TEI_Status_Confirm"/>						
+            <parameter tag="Status">
+	              <field name="Status" value="UNASSIGNED:TEI is considered unassigned by Q.921"/>
+	          </parameter>
+        </UA>	
+    </sendMessageSIGTRAN>
+
+    <parameter name="[data]" value="0100000200000010000a000800000000" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="MGMT:Management" messageType="TEI_Status_Indication"/>						
+            <parameter tag="Status">
+	              <field name="Status" value="ASSIGNED:TEI is considered assigned by Q.921"/>
+	          </parameter>
+        </UA>	
+    </sendMessageSIGTRAN>
+
+</scenario>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+    <receiveMessageGTP name="receive message" request="true" type="Modify Bearer Request:34">
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <!--test parameter="[binary]" condition="binary.equals" value="48200262a7d420660000c8000100080002084124002076f04c0006003396992076f04b0008000044204291218110560028003f62f210014d014d62f270014d00de02f810014dfa0002f802022b02f8700002083402f801029aff5300030002f81052000100064d00040000140000570009008695962002ac14462a570009018695962002ac14462b47001d00096e697336636f657063066d6e63303031066d63633230380467707273800001000063000100014f000500010a141e287f00010000480008000000c350000186a0490001000f4e001a008080211001000010810600000000830600000000000d00000a005d00560049000100055400260022107e11100a57b341ffffffff3011400457500483217f0e100a57b341ffffffff3011500483570009028480002002ac14462c50001600040700000186a00000030d4000000493e00000061a80030001007b84000700017b2d4359008084001501121234567890abcdeffedcba0987654321007f008084000b0223f1206d8000fd00fe00ff84000f0305624c361f000100020003000400057200020040009100080002f8010000000a425f000200080097000800616263646566676897001a01787878787878787878787878787878787878787878787878787897001a024142434445464748494a4b4c4d4e4f505152535455565758595a97001a0346464646464646464646464646464646464646464646464646469d000100004a0004007b2d43597e0002003039a3001000000102030405060708090a0b0c0d0e0f4a00040159432d207e000201d4314a0004026fde212ca9000c00cb000000000009a1a2a3a4a5ff0002000010"/-->
+    
+	
+	<sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Modify Bearer Response:35" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Cause:2" >
+            <field name="Cause value" value="Request accepted"/>
+            <field name="spare" value="0"/>
+            <field name="PCE" value="false:0"/>
+            <field name="BCE" value="false:0"/>
+            <field name="CS" value="Originated by the node sending the message"/>
+        </element>
+		<element tag="MSISDN:76" description="Mobile Subscriber ISDN Number">
+            <field name="MSISDN" value="33699902670" description="Mobile Subscriber ISDN Number"/>
+        </element>
+		 <element tag="EBI:73" coding="TLIV" description="Linked EPS Bearer ID">
+            <field name="spare" value="0"/>
+            <field name="EBI" value="15" description="EPS Bearer ID"/>
+        </element>      
+		<element tag="AMBR:72" description="Aggregate Maximum Bit Rate (APN-AMBR)">
+            <field name="APN-AMBR for uplink" value="50000"/>
+            <field name="APN-AMBR for downlink" value="100000"/>
+        </element>
+		<element tag="APN Restriction:127" >
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+        </element>   
+		<element tag="PCO:78" description="Protocol Configuration Options (PCO)">
+            <field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+        </element>
+		<element tag="Bearer Context:93" instances="0" description="Bearer Contexts to be created">
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="5"/>
+            </element>			
+            <element tag="F-TEID:87" instances="0" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="true:1"/>
+                <field name="V6" value="false:0"/>
+                <field name="Interface Type" value="S5/S8 SGW GTP-U:4"/>
+                <field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 --> 
+                <field name="IPv4 address" value="172.20.70.44"/>
+                <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+            </element>
+        </element>
+		
+		<element tag="Bearer Context:93" instances="1" description="Bearer Contexts to be created">
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="2"/>
+            </element>			
+        </element>
+		
+		<element tag="Change Reporting Action:131" coding="TLIV" description="Action">
+			<field name="Action" lengthBit="8" type="integer" value="0" description="Action: stop reporting"/>
+		</element>		
+		
+		<element tag="CSG IRA:146" coding="TLIV" description="CSG Information Reporting Action">
+			<field name="spare1" lengthBit="5" type="integer" value="0" />
+			<field name="UCIUHC" lengthBit="1" type="boolean" value="false:0" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through the CSG Cell."/>
+			<field name="UCISHC" lengthBit="1" type="boolean" value="true:1" description="shall indicate to start reporting User CSG Info when the UE enters/leaves/access through Subscribed Hybrid Cell."/>
+			<field name="UCICSG" lengthBit="1" type="boolean" value="false:0" description="shall indicate to start Reporting User CSG Info when the UE enters/leaves/access through Unsubscribed Hybrid Cell."/>
+		</element>
+	
+		<element tag="H(e)NB:165" coding="TLIV" description="H(e)NB Information Reporting">
+			<field name="spare1" lengthBit="7" type="integer" value="0" />
+			<field name="FTI" lengthBit="1" type="boolean" value="true:1" description="shall indicate to start reporting H(e)NB local IP address and UDP port number information change"/>
+		</element>
+		
+		<!-- TODO FQDN -->
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="0" description="Charging Gateway Address">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="123.45.67.89"/>   <!-- if length == 8 -->
+		</element>
+		 <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="0" description="PGW-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv4:0"/>
+            <field name="Number of CSIDs" value="1"/>
+            <field name="Node-ID ipv4" value="123.45.67.89"/>     <!-- if Node-ID == 0 -->
+            <field name="ICSID02" value="128" description="PDN Connection Set Identifier "/>
+        </element>
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="1" description="SGW-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv6:1"/>
+            <field name="Number of CSIDs" value="2"/>
+            <field name="Node-ID ipv6" value="1234:5678:90AB:CDEF:FEDC:BA09:8765:4321"/>     <!-- if Node-ID == 1 -->
+            <field name="ICSID01" value="127" description="PDN Connection Set Identifier "/>
+            <field name="ICSID02" value="128" description="PDN Connection Set Identifier "/>
+        </element>
+		<element tag="Recovery:3" >
+            <field name="Recovery" value="123"/>
+        </element>
+		
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="LDN:151" instances="0" description="SGW LDN">
+            <field name="LDN" value="xxxxxxxxxxxxxxxxxxxxxxxxxx" description="Local Distinguished Name"/>
+        </element>
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+        <element tag="LDN:151" instances="1" description="PGW LDN">
+            <field name="LDN" value="abcdefgh" description="Local Distinguished Name"/>
+        </element>
+        <element tag="Indication:77" description="Indication Flags">
+            <field name="DAF" value="false:0"/>
+            <field name="DTF" value="false:0"/>
+            <field name="HI" value="false:0"/>
+            <field name="DFI" value="false:0"/>
+            <field name="OI" value="false:0"/>
+            <field name="ISRSI" value="false:0"/>
+            <field name="ISRAI" value="false:0"/>
+            <field name="SGWCI" value="false:0"/>
+    
+            <field name="SQCI" value="false:0"/>  
+            <field name="UIMSI" value="false:0"/>
+            <field name="CFSI" value="false:0"/>
+            <field name="CRSI" value="true:1"/>
+            <field name="P" value="false:0"/>
+            <field name="PT" value="true:1"/>
+            <field name="SI" value="false:0"/>
+            <field name="MSV" value="false:0"/>
+    
+            <field name="RetLoc" value="false:0"/>
+            <field name="PBIC" value="false:0"/>
+            <field name="SRNI" value="false:0"/>
+            <field name="S6AF" value="false:0"/>
+            <field name="S4AF" value="false:0"/>
+            <field name="MBMDT" value="false:0"/>
+            <field name="ISRAU" value="false:0"/>
+            <field name="CCRSI" value="false:0"/>
+            
+            <field name="Spare" value="0"/>
+            <field name="CLII" value="false:0"/>
+            <field name="CPSR" value="false:0"/>
+        </element>
+		<element tag="Private Extension:255" >
+			<field name="Enterprise ID" value="16"/>
+			<field name="Proprietary value" value="properties"/>
+		</element>
+
+		</sendMessageGTP>
+
+</scenario>

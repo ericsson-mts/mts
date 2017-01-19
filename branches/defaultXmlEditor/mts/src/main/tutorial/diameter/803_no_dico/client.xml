@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+                                
+    <parameter name="[newSessionId]" operation="set" value="11112222333344445555"/>
+    <sendMessageDIAMETER name="SendRequest" remoteURL="diameter://[remoteDIAM]" destScenario="server">
+        <header request="true" command="9999999" applicationId="2999999999"
+                hopByHop="123456789" endToEnd="987654321"/>		
+        <avp code="263" value="[newSessionId]" type="OctetString" mandatory="true"/>
+        <avp code="264" value="1.1.1.1" type="OctetString" mandatory="true"/>
+        <avp code="296" value="[localRealmDIAM]" type="OctetString" mandatory="true"/>
+        <avp code="293" value="2.2.2.2" type="OctetString" mandatory="true"/>
+        <avp code="283" value="[remoteRealmDIAM]" type="OctetString" mandatory="true"/>
+        
+        <avp code="260" type="Grouped" mandatory="true">
+            <avp code="266" value="999999999" type="Integer32" mandatory="true"/>
+            <avp code="258" value="1999999999" type="Integer32" mandatory="true"/>
+        </avp>
+        <avp code="2999999990" value="2999999999" type="Integer32" mandatory="true"/>
+        <avp code="2999999991" value="sip:+33875610603@sip.france.fr" vendorId="[vendorID]" type="OctetString" mandatory="true"/>
+        <avp code="2999999992" value="3.14e0" type="Float32" mandatory="true"/>
+        <avp code="2999999993" vendorId="[vendorID]" type="Grouped" mandatory="true">
+            <avp code="2999999994" value="0" vendorId="[vendorID]" type="Integer32" mandatory="true"/>
+            <avp code="2999999995" value="2" type="Integer32" mandatory="true"/>
+            <avp code="2999999996" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5' vendorId="[vendorID]" type="OctetString"/>
+            <avp code="2999999977" value="INVITE" type="OctetString"/>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer" request="false" type="Unknown:9999999" result="1999999999">
+    </receiveMessageDIAMETER>
+    
+    <!-- check message data -->
+    <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+    <test parameter="[commandCode]" condition="string.equals" value="Unknown:9999999"/>
+    <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+    <test parameter="[applicationId]" condition="string.equals" value="Unknown:2999999999"/>
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>    
+    <test parameter="[binary]" condition="binary.equals" value="010001e84098967fb2d05dff075bcd153ade68b1000001074000001c3131313132323232333333333434343435353535000001086000000f322e322e322e32000000012840000011636c69656e742e667200000000000104400000200000010a6000000c000028af000001024000000c010000000000010c4000000c773593ff000f42366000000c00000001000f4237e000002a3b9ac9ff7369703a2b3333383735363130363033407369702e6672616e63652e66720000000f42386000000c00000001000f423960000124000f423a6000000c00000000000f423b6000000c00000002000f423c600000f444696765737420757365726e616d653d5c223333383735363331393735407369702e70666465762e66725c222c7265616c6d3d5c227369702e70666465762e66725c222c636e6f6e63653d5c2234306231386363665c222c6e633d30303030303030312c716f703d617574682c7572693d5c227369703a7369702e70666465762e66725c222c6e6f6e63653d5c2232316263323736373964646163386664366330303838383137633861653338355c222c726573706f6e73653d5c2233383137396439396363333463653061643030326163346437306533376330615c222c616c676f726974686d3d4d4435000f42296000000e494e564954450000"/>
+
+
+</scenario>

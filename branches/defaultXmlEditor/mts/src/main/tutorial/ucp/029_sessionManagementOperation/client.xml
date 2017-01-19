@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="SessionManagementOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="OAdC" value="012345"/>
+        <attribute name="OTON" value="2"/>
+        <attribute name="ONPI" value="3"/>
+        <attribute name="STYP" value="6"/>
+        <attribute name="PWD" value="456123846" encoding="true"/><!-- IRA -->
+        <attribute name="NWD" value="password" encoding="true"/><!-- IRA -->
+        <attribute name="VERS" value="0010"/>
+        <attribute name="LAdC" value=""/>
+        <attribute name="LTON" value=""/>
+        <attribute name="LNPI" value=""/>
+        <attribute name="OPID" value="00"/>
+        <attribute name="RES1" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="SessionManagementOperation" result="A"/>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

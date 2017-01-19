@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpointIMAP" />
+    <parameter name="[localPortIMAP]" operation="number.add" value="[localPortIMAP]" value2="10000"/>
+    <createListenpointIMAP name="[listenpoint]" localHost="[localHostIMAP]" localPortTLS="[localPortIMAP]" listenTCP="false" listenTLS="true" transport="tls"/>
+    <parameter name="[testcase:sem1]" operation="system.semaphoreNotify"/>
+    
+    <!-- attend message capability-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[command]" operation="protocol.setFromMessage" value="request.command" />
+        <parameter name="[arg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- perform test -->
+    <test parameter="[command]" condition="string.equals" value="LOGIN"/>
+    <test parameter="[arg(0)]" condition="string.equals" value="login"/>
+    <test parameter="[arg(1)]" condition="string.equals" value="password"/>
+    
+    <!-- envoi reponse capability-->
+    <sendMessageIMAP name="Send CAPABILITY" channel="[connection]">
+<![CDATA[
+[tag] OK LOGIN completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message APPEND-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[commandArg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+    <!-- envoi reponse intermediaire APPEND-->
+    <sendMessageIMAP name="Send intermediate APPEND" channel="[connection]">
+<![CDATA[
++ ready to receive data
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend data APPEND-->
+    <receiveMessageIMAP channel="[connection]" request="true" >
+        <parameter name="[commandArg]" operation="protocol.setFromMessage" value="request.arguments" />
+        <parameter name="data" operation="protocol.setFromMessage" value="data" />
+        <parameter name="tag2" operation="protocol.setFromMessage" value="request.tag" />
+    </receiveMessageIMAP>
+
+    <!-- perform test -->
+    <test parameter="[tag2]" condition="string.equals" value="[tag]"/>
+
+    <!-- envoi reponse final APPEND-->
+    <sendMessageIMAP name="Send APPEND"  channel="[connection]">
+<![CDATA[
+[tag] OK APPEND completed
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend message FETCH-->
+    <receiveMessageIMAP request="true">
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="request.tag" />
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name" />
+    </receiveMessageIMAP>
+
+	<!-- envoi reponse FETCH-->
+	<sendMessageIMAP name="Send FETCH" channel="[connection]">
+<![CDATA[
+* 2 FETCH coucou
+* 3 FETCH c'est moi
+* STORE ERREUR
+* 4 FETCH ca marche
+[tag] OK FETCH completed
+]]>
+	</sendMessageIMAP>
+	
+    	<parameter name="[testcase:sem2]" operation="system.semaphoreNotify"/>
+    
+	<finally>
+		<removeListenpointIMAP name="[listenpoint]"/>
+		<pause name="pause"     seconds="0.001"       state="true"/> <!-- pause for be sure listenpoint closes well, without this multiples tests can fail  -->
+	</finally>
+	
+
+ 
+ </scenario>

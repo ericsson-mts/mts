@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 17/06/2009
+    Author     : jbrisseau
+    Description: Send a M3UA message using the m3uaDictionnary
+-->
+
+<!--
+    INFOS : 
+    
+    The following scenarios send the same message &quot;SCON&quot; (class = 2, type = 4) as
+    descibed in the RFC 4666 paragraph 3.4.4 with different ways to describe it.
+    
+    
+           0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Tag=0x0200 (Network_Appearence)|           Length = 8          |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                       Network Appearance = 2                  |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Tag = 0x0006 (Routing_Context) |             Length = 12       |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                       Routing Context = 7864455               |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                       Routing Context = 75788                 |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Tag = 0x0012 (Point_Code)      |             Length = 12       |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |     Mask = 0  |0 0 0 0 0 0 0 0 0 0|Zone1|  Region = 17  | SP=0|
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	  |     Mask = 0  |0 0 0 0 0 0 0 0 0 0|Zone2|  Region = 4   | SP=3|
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Tag=0x0206Concerned_Destination|             Length = 8        |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |     Mask = 0  |0 0 0 0 0 0 0 0 0 0|Zone5|  Region = 21  | SP=3|
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Tag=0x0205Congested_Indications|             Length = 8        |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                   Reserved =0                 | Cong. Level=2 |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |Tag = 0x0004 (INFO_String)     |             Length = 8        |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      \                                                               \
+      /                         INFO String = &quot;SCON&quot;                  /
+      \                                                               \
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    
+-->
+
+
+<scenario>
+	
+<!--
+    MESSAGE1 : Message using the dictionnary
+    
+-->
+
+    <sendMessageSIGTRAN name="Send SCON1" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+						
+        <UA name="m3ua" file="m3ua.xml">
+            <header messageClass="SS7_Signaling_Network_Management_Messages" messageType="Signalling_Congestion"/>
+        				
+            <parameter tag="Network_Appearence">
+                <field value="2" format="Integer" name="Network_Appearence"/>
+            </parameter>
+    			
+            <parameter tag="Routing_Context">
+                <field value="7864455" format="Integer" name="Routing_Context"/>
+                <field value="75788" format="Integer" name="Routing_Context"/>
+            </parameter>
+    			
+            <parameter tag="Point_Code">
+                <field value="0" format="Integer" name="Mask"/>
+                <field name="spare"/>
+                <field value="1" format="Integer" name="Zone"/>
+                <field value="17" format="Integer" name="Region"/>
+                <field value="0" format="Integer" name="SP"/>
+                <field value="0" format="Integer" name="Mask"/>
+                <field name="spare"/>
+                <field value="2" format="Integer" name="Zone"/>
+                <field value="4" format="Integer" name="Region"/>
+                <field value="3" format="Integer" name="SP"/>
+            </parameter>
+    			
+            <parameter tag="Concerned_Destination">
+                <field value="0" format="Integer" name="Mask"/>
+                <field name="spare"/>
+                <field value="5" format="Integer" name="Zone"/>
+                <field value="21" format="Integer" name="Region"/>
+                <field value="3" format="Integer" name="SP"/>
+            </parameter>
+    			
+            <parameter tag="Congested_Indications">
+                <field value="0" format="Integer" name="Reserved"/>
+                <field value="2" format="Integer" name="Congested_Indications"/>
+            </parameter>
+    			
+            <parameter tag="INFO_String">
+                <field value="SCON" name="INFO_String"/>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+
+
+	
+<!--
+    MESSAGE2 : Message without using the dictionnary
+    
+-->
+
+    <sendMessageSIGTRAN name="Send SCON2" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+						
+        <UA name="m3ua" file="m3ua.xml">
+            <header messageClass="2" messageType="4"/>
+        				
+            <parameter tag="512">
+                <field value="2" length="4"/>
+            </parameter>
+    			
+            <parameter tag="6">
+                <field value="7864455" format="Integer" length="4"/>
+                <field value="75788" format="Integer" length="4"/>
+            </parameter>
+    			
+            <parameter tag="18">
+                <field value="0" format="Integer" lengthBit="8"/>
+                <field value="0" format="Integer" lengthBit="10"/>
+                <field value="1" format="Integer" lengthBit="3"/>
+                <field value="17" format="Integer" lengthBit="8"/>
+                <field value="0" format="Integer" lengthBit="3"/>
+                <field value="0" format="Integer" lengthBit="8"/>
+                <field value="0" format="Integer" lengthBit="10"/>
+                <field value="2" format="Integer" lengthBit="3"/>
+                <field value="4" format="Integer" lengthBit="8"/>
+                <field value="3" format="Integer" lengthBit="3"/>
+            </parameter>
+    			
+            <parameter tag="518">
+                <field value="0" format="Integer" lengthBit="8"/>
+                <field value="0" format="Integer" lengthBit="10"/>
+                <field value="5" format="Integer" lengthBit="3"/>
+                <field value="21" format="Integer" lengthBit="8"/>
+                <field value="3" format="Integer" lengthBit="3"/>
+            </parameter>
+    			
+            <parameter tag="517">
+                <field value="0" format="Integer" length="3"/>
+                <field value="2" format="Integer" length="1"/>
+            </parameter>
+    			
+            <parameter tag="4">
+                <field value="SCON" format="string"/>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+ 
+</scenario>

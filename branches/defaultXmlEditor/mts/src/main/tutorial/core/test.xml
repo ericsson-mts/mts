@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="CORE : bad character /\\:*?\|&lt;&gt;" description="CORE regression tests" >
+
+    <parameter name="[param_1]" operation="set" value="KO1" description="Parameter 1" editable="true" />
+    <parameter name="[param_2]" operation="set" value="KO2" description="Parameter 2" editable="true" />
+    <parameter name="[param_3]" operation="set" value="KO3" description="Parameter 3" editable="true" />
+    <parameter name="[param_3_ref]" operation="set" value="BAD Berk" description="Parameter 3" editable="true" />
+    <parameter name="[param_3_ref]" operation="set" value="[param_3]" description="Parameter 3" editable="true" />
+    
+    <parameter name="[rep]" operation="set" value="../tutorial/core/801_audio_comparison" description="bin repertory to sound file repertory" />
+    <parameter name="[file_test]" operation="set" value="[rep]/rtpflow.wav" description="file to test" />
+    <parameter name="[file_ref]" operation="set" value="[rep]/rtpflowReceived_test_1.wav" description="file reference" />
+    
+	   <parameter name="[repertory_ref]" operation="set" value="[rep]\test_rep" description="repertory reference" />
+    <parameter name="[bit_error]" operation="set" value="4" description="bit error (default=4)" />
+    <parameter name="[offset]" operation="set" value="500" description="offset (default=500)" />
+		
+    <parameter name="[int_1]" operation="set" value="8"/>
+    <parameter name="[int_1]" operation="list.addlast" value="[int_1]" value2="6"/>
+    <parameter name="[int_2]" operation="set" value="4"/>
+    <parameter name="[int_2]" operation="list.addlast" value="[int_2]" value2="6"/>
+	  <parameter name="[test_var_1]" operation="set" value="toto"/>
+    <parameter name="[test_var_2]" operation="set" value="titi"/>
+    <parameter name="[test_var_1]" operation="list.addlast" value="[test_var_1]" value2="titi"/>
+    <parameter name="[test_var_2]" operation="list.addlast" value="[test_var_2]" value2="toto"/>
+
+    <parameter name="[leveltest]" operation="set" value="toto test"/>
+
+    <parameter name="[for_scenario_name]" operation="set" value="scenario_for_"/>
+    <parameter name="[for_testcase_name]" operation="set" value="coretestcase_for_"/>
+    
+    <parameter name="[testcase_state]" operation="set" value="true"/>
+
+    <!-- parameter for monitoring testacse 902_system_monitor -->
+    <parameter description="interval in sec between each vmstat result" editable="true" name="[interval]" operation="set" value="1"/>
+    <parameter description="interval in sec between each vmstat run" editable="true" name="[vmstatInterval]" operation="set" value="1"/>
+
+    <parameter name="[nameServer]" operation="file.readCsv" value="./vmstat_servers.csv" value2="nameServer"/>
+    <parameter name="[IPServer]" operation="file.readCsv" value="./vmstat_servers.csv" value2="IPServer"/>
+    <parameter name="[login]" operation="file.readCsv" value="./vmstat_servers.csv" value2="login"/>
+    <parameter name="[passwd]" operation="file.readCsv" value="./vmstat_servers.csv" value2="passwd"/>
+
+    <parameter name="[nbServer]" operation="list.size" value="[nameServer]"/>   
+    <parameter name="[nbServer]" operation="number.substract" value="[nbServer]" value2="1"/>
+    
+    <parameter name="[date]" operation="system.timestamp" value="1970"/>
+    <parameter name="[date]" operation="number.toDate" value="[date]" value2="dd-MM-yy_HH-mm"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+
+
+    <!-- run profile at test level : applicable if not specifiy at testcase level -->
+    <runProfile>
+        <step period="0" time="0"/>
+        <end delay="600000"/>
+    </runProfile>
+
+    <testcase name="000_pause" number="[iterations]" state="[testcase_state]" description="tescase pause operation" >
+        <runProfile>
+            <step period="0" time="0"/>
+            <end delay="10"/>
+        </runProfile>
+
+        <scenario name="[for_scenario_name] : bad character /\\:*?\|&lt;&gt;" file="000_pause/scenario.xml" routingName="[for_scenario_name]" description="scenario pause operation" />
+    </testcase>
+
+    <testcase name="010_goto" number="[iterations]" state="[testcase_state]" description="test goto instruction" >
+        <scenario name="goto" file="010_goto/scenario.xml" routingName="goto"/>
+    </testcase>
+    
+    <testcase name="011_advanced_goto" number="[iterations]" state="[testcase_state]" description="test goto instruction" >
+        <parameter name="[testcaseParameter]" operation="set" value="5"/>
+        <runProfile>
+            <start delay="[testcaseParameter]"/>
+            <step period="1" time="00"/>
+            <step period="1" time="10"/>
+            <step period="0.1" time="10"/>
+            <step period="0.1" time="30"/>
+            <step period="1" time="30"/>
+            <end delay="90"/>
+        </runProfile>
+        <scenario name="adv_goto" file="011_advanced_goto/scenario.xml" routingName="adv_goto"/>
+    </testcase>
+
+    <testcase name="020_if_then" number="[iterations]" state="[testcase_state]" description="test if then instruction" >
+        <scenario name="if_then" file="020_if_then/scenario.xml" routingName="if_then"/>
+    </testcase>
+
+    <testcase name="021_if_else" number="[iterations]" state="[testcase_state]" description="test if else instruction" >
+        <scenario name="if_else" file="021_if_else/scenario.xml" routingName="if_else"/>
+    </testcase>
+
+    <testcase name="022_conditions" number="[iterations]" state="[testcase_state]" description="test complex conditions" >
+        <scenario name="conditions" file="022_conditions/scenario.xml" routingName="conditions"/>
+    </testcase>
+
+    <testcase name="023_function" number="[iterations]" state="[testcase_state]" description="test function and call" >
+        <scenario name="function" file="023_function/scenario.xml" routingName="function"/>
+    </testcase>
+
+    <testcase name="024_function" number="[iterations]" state="[testcase_state]" description="test function and call" >
+        <scenario name="function" file="024_function/scenario.xml" routingName="function"/>
+    </testcase>
+    <testcase name="024_function" number="[iterations]" state="[testcase_state]" description="test function and call" >
+        <scenario name="function" file="024_function/scenario.xml" routingName="function"/>
+    </testcase>
+    <testcase name="024_function" number="[iterations]" state="[testcase_state]" description="test function and call" >
+        <scenario name="function" file="024_function/scenario.xml" routingName="function"/>
+    </testcase>
+    <testcase name="024_function" number="[iterations]" state="[testcase_state]" description="test function and call" >
+        <scenario name="function" file="024_function/scenario.xml" routingName="function"/>
+    </testcase>
+
+    <testcase name="030_semaphore" number="[iterations]" state="[testcase_state]" description="test semphores" >
+        <scenario name="semaphore1" file="030_semaphore/scenario_user_1.xml" routingName="semaphore1"/>
+        <scenario name="semaphore2" file="030_semaphore/scenario_user_2.xml" routingName="semaphore2"/>
+    </testcase>
+
+    <testcase name="031_semaphore_param" number="[iterations]" state="[testcase_state]" description="test semphores" >
+        <parameter name="[testcase:delay]" operation="set" value="10"/>
+        <scenario name="semaphore1" file="031_semaphore_param/scenario_user_1.xml" routingName="semaphore1"/>
+        <scenario name="semaphore2" file="031_semaphore_param/scenario_user_2.xml" routingName="semaphore2"/>
+        <scenario name="semaphore3" file="031_semaphore_param/scenario_user_3.xml" routingName="semaphore3"/>
+    </testcase>
+
+    <testcase name="050_system" number="[iterations]" state="[testcase_state]" description="Test system command " >
+        <scenario name="system" file="050_system/system.xml" routingName="system"/>
+    </testcase>
+
+    <!-- not implemented but you can run SQL command with the "system.command"  operation on the parameter operation -->
+    <!--testcase name="060_sql_jdbc" number="[iterations]" state="[testcase_state]" description="Test sql interface to database " >
+        <scenario name="sql" file="060_sql_jdbc/query.xml" routingName="sql"/>
+    </testcase-->
+           
+    <testcase name="070_parameters : bad character /\\:*?\|&lt;&gt;" number="[iterations]" state="[testcase_state]" description="test variables" >
+        <parameter name="[number]" operation="set" value="100"/>
+        <parameter name="[number]" operation="number.add" value="[number]" value2="20"/>
+        <parameter name="[param]" operation="set" value="nameAndId [number]"/>
+        <scenario name="[param] : _;,bad character /\\:*?\|&lt;&gt;" file="070_parameters/nameAndId.xml" routingName="[param] : bad character _;, /\\:*?\|&lt;&gt;"/>
+        <scenario name="xpath" file="070_parameters/xpath.xml" routingName="xpath"/>
+    </testcase>
+    
+    <testcase name="071_parameters_level" number="[iterations]" state="[testcase_state]" description="test variables" >
+        <parameter name="[leveltestcase]" operation="set" value="toto testcase"/>
+        <parameter name="[tabTcTc(0)]" operation="set" value="value 0"/>
+        <parameter name="[tabTcTc(1)]" operation="set" value="value 1"/>
+        <parameter name="[tabTcTc(2)]" operation="set" value="value 2"/>
+
+        <scenario name="init" file="071_parameters_level/scenario.xml" routingName="init"/>
+        <scenario name="scenario_1" file="071_parameters_level/scenario_1.xml" routingName="scenario_1"/>
+        <scenario name="scenario_2" file="071_parameters_level/scenario_2.xml" routingName="scenario_2"/>
+        <scenario name="scenario_3" file="071_parameters_level/scenario_3.xml" routingName="scenario_3"/>
+    </testcase>
+    
+    <testcase name="parameters_index" number="[iterations]" state="[testcase_state]" description="test variables" >
+        <scenario name="scenario" file="072_parameters_index/scenario.xml" routingName="scenario"/>
+    </testcase>
+
+    <testcase name="075_parameters_name" number="[iterations]" state="[testcase_state]" description="test variables" >
+        <scenario name="scenario" file="075_parameters_name/scenario.xml" routingName="scenario"/>
+    </testcase>
+
+    <testcase name="076_parameters_pluggable" number="[iterations]" state="[testcase_state]" description="test pluggable components" >
+        <scenario name="scenario" file="076_parameters_pluggable/scenario.xml" routingName="scenario"/>
+    </testcase>
+
+    <testcase name="080_exit_default" number="[iterations]" state="[testcase_state]" description="" >
+        <parameter name="[testcase:index]" operation="set" value="1"/>
+        <scenario name="exit_default" file="080_exit_default/exit.xml" routingName="exit_default"/>
+    </testcase>
+
+    <testcase name="081_exit_failed" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="exit_failed" file="081_exit_failed/exit.xml" routingName="exit_failed"/>
+        <scenario name="parameter" file="081_exit_failed/parameter.xml" routingName="parameter"/>
+    </testcase>
+
+    <testcase name="082_exit_success" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="exit_success" file="082_exit_success/exit.xml" routingName="exit_success"/>
+    </testcase>
+
+    <testcase name="100_log" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="log" file="100_log/scenario.xml" routingName="log"/>
+    </testcase>
+
+    <testcase name="110_stats" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="counter" file="110_stats/counter.xml" routingName="counter"/>
+        <scenario name="flow" file="110_stats/flow.xml" routingName="flow"/>
+        <scenario name="flow_list" file="110_stats/flow_list.xml" routingName="flow_list"/>
+        <scenario name="value" file="110_stats/value.xml" routingName="value"/>
+        <scenario name="percent" file="110_stats/percent.xml" routingName="percent"/>
+        <scenario name="text" file="110_stats/text.xml" routingName="text"/>
+    </testcase>
+
+    <testcase name="120_try" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="try" file="120_try/scenario.xml" routingName="try"/>
+    </testcase>
+
+    <testcase name="130_switch" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="switch" file="130_switch/scenario.xml" routingName="switch"/>
+    </testcase>
+
+    <testcase name="140_finally" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="finally" file="140_finally/scenario.xml" routingName="finally"/>
+    </testcase>
+
+    <testcase name="150_for" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="for" file="150_for/scenario.xml" routingName="for"/>
+    </testcase>
+
+    <testcase name="200_all" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="all_core" file="200_all_core/scenario.xml" routingName="all_core"/>
+    </testcase>
+    
+    <testcase name="300_scenario_syntax" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="old" file="300_scenario_syntax/scenario_old.xml" routingName="old"/>
+        <scenario name="new" file="300_scenario_syntax/scenario_new.xml" routingName="new">
+            <parameter name="[passed_parameter]" value="Value of passed parameter"/>
+        </scenario>
+    </testcase>
+
+    <testcase name="701_operator_file" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="701_operator_file" file="701_operator_file/scenario.xml" routingName="701_operator_file"/>
+    </testcase>
+
+    <testcase name="701_index_table" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="701_index_table_1" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_2" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_3" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_4" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_5" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_6" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_7" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_8" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_9" file="701_operator_file/index_table.xml" routingName="701_index_table"/>
+        <scenario name="701_index_table_10" file="701_operator_file/index_table.xml" routingName="701_index_table"/>                                                                        
+    </testcase>
+
+    <testcase name="702_operator_binary" number="[iterations]" state="[testcase_state]" description="message EAP" >
+        <scenario name="702_operator_binary" file="702_operator_binary/scenario.xml" routingName="702_operator_binary"/>
+        <scenario name="702_messageEAP-Attach" file="702_operator_binary/messageEAP-Attach.xml" routingName="702_operator_binary"/>
+        <scenario name="702_messageEAP" file="702_operator_binary/messageEAP.xml" routingName="702_operator_binary"/>
+        <scenario name="702_messageEAP-AKA" file="702_operator_binary/messageEAP-AKA.xml" routingName="702_operator_binary"/>
+    </testcase>
+
+    <testcase name="703_operator_string" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="703_operator_string" file="703_operator_string/scenario.xml" routingName="703_operator_string"/>
+        <scenario name="703_operator_utf-8" file="703_operator_string/scenario-UTF-8.xml" routingName="703_operator_string"/>
+        <scenario name="703_operator_iso-8859-2" file="703_operator_string/scenario-ISO-8859-2.xml" routingName="703_operator_string"/>                
+        <scenario name="703_operator_utf-16BE" file="703_operator_string/scenario-UTF-16BE.xml" routingName="703_operator_string"/>        
+        <!--scenario name="703_operator_utf-16LE" file="703_operator_string/scenario-UTF-16LE.xml" routingName="703_operator_string"/-->
+    </testcase>
+
+    <testcase name="704_operator_number" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="704_operator_number" file="704_operator_number/scenario.xml" routingName="704_operator_number"/>
+    </testcase>
+
+    <testcase name="705_operator_list" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="705_operator_list" file="705_operator_list/scenario.xml" routingName="705_operator_list"/>
+    </testcase>
+
+    <testcase name="706_operator_boolean" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="706_operator_boolean" file="706_operator_boolean/scenario.xml" routingName="706_operator_boolean"/>
+    </testcase>
+
+    <testcase name="707_operator_protocol" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="707_operator_protocol_uri" file="707_operator_protocol/setFromURI.xml" routingName="707_operator_protocol_uri"/>
+        <scenario name="707_operator_protocol_address" file="707_operator_protocol/setFromAddress.xml" routingName="707_operator_protocol_address"/>
+        <scenario name="707_operator_protocol_sdp" file="707_operator_protocol/setFromSDP.xml" routingName="707_operator_protocol_sdp"/>
+    </testcase>
+
+    <testcase name="708_operator_system" number="[iterations]" state="[testcase_state]" description="" >
+        <scenario name="708_operator_system" file="708_operator_system/scenario.xml" routingName="708_operator_system"/>
+    </testcase>
+    
+    <testcase name="801_audio_comparison" number="[iterations]" state="false" description="" >
+        <scenario name="801_audio_comparison" file="801_audio_comparison/scenario.xml" routingName="801_audio_comparison"/>
+    </testcase>
+
+    <for from="008" index="[i]" step="-1" to="14">
+        <testcase name="[for_testcase_name]_NOTHING[i]" number="[iterations]" state="[testcase_state]" description="core" >
+            <parameter name="[index]" operation="set" value="[i]"/>
+            <scenario name="[for_scenario_name][i]" file="090_for_test/scenario.xml" routingName="[for_scenario_name][i]"/>
+        </testcase>
+    </for>
+
+    <for from="008" index="[i]" step="-2" to="4">
+        <testcase name="[for_testcase_name][i]" number="[iterations]" state="[testcase_state]" description="core" >
+            <parameter name="[index]" operation="set" value="[i]"/>
+            <scenario name="[for_scenario_name][i]" file="090_for_test/scenario.xml" routingName="[for_scenario_name][i]"/>
+        </testcase>
+    </for>
+
+    <for from="1" index="[i]" step="3" to="-010">
+        <testcase name="[for_testcase_name]_NOTHING[i]" number="[iterations]" state="[testcase_state]" description="core" >
+            <parameter name="[index]" operation="set" value="[i]"/>
+            <scenario name="[for_scenario_name][i]" file="090_for_test/scenario.xml" routingName="[for_scenario_name][i]"/>
+        </testcase>
+    </for>
+
+    <for from="1" index="[i]" to="005">
+        <testcase name="[for_testcase_name][i]" number="[iterations]" state="[testcase_state]" description="core" >
+            <parameter name="[index]" operation="set" value="[i]"/>
+            <scenario name="[for_scenario_name][i]" file="090_for_test/scenario.xml" routingName="[for_scenario_name][i]"/>
+        </testcase>
+    </for>
+
+    <testcase name="runprofile.period" number="[iterations]" state="[testcase_state]" description="Run profile with period steps" >
+        <runProfile>
+            <step period="1" time="00"/>
+            <step period="0.1" time="10"/>
+            <step period="0.1" time="30"/>
+            <step period="1" time="55"/>
+            <step period="1" time="60"/>
+            <end delay="300"/>
+        </runProfile>
+
+        <scenario name="runprofile.period" file="091_runprofile/scenario.xml" routingName="runprofile.period"/>
+    </testcase>
+
+    <testcase name="runprofile.frequency" number="[iterations]" state="[testcase_state]" description="Run profile with frequency steps" >
+        <runProfile>
+            <start delay="5"/>
+            <step frequency="100" time="0"/>
+            <step frequency="500" time="30"/>
+            <step frequency="500" time="45"/>
+            <step frequency="300" time="60"/>
+            <end delay="120"/>
+        </runProfile>
+        <scenario name="runprofile.frequency" file="091_runprofile/scenario.xml" routingName="runprofile.frequency"/>
+    </testcase>
+
+    <testcase name="runprofile.delay" number="[iterations]" state="[testcase_state]" description="Run profile with delay start end conditions" >
+        <runProfile>
+            <start delay="1.5"/>
+            <step frequency="1000" time="0"/>
+            <end delay="50"/>
+        </runProfile>
+
+        <scenario name="runprofile.delay" file="091_runprofile/scenario.xml" routingName="runprofile.delay"/>
+    </testcase>
+
+    <testcase name="runprofile.time" number="[iterations]" state="[testcase_state]" description="Run profile with time start end conditions" >
+        <runProfile>
+            <start time=":::001"/>
+            <step period="0" time="0"/>
+            <end time=":::999"/>
+        </runProfile>
+
+        <scenario name="runprofile.time" file="091_runprofile/scenario.xml" routingName="runprofile.time"/>
+    </testcase>
+
+    <testcase name="runprofile.iteration" number="[iterations]" state="[testcase_state]" description="Run profile with iteration end conditions" >
+        <runProfile>
+            <step frequency="10000" time="0"/>
+            <end iteration="600000"/>
+        </runProfile>
+
+        <scenario name="runprofile.iteration" file="091_runprofile/scenario.xml" routingName="runprofile.iteration"/>
+    </testcase>
+
+    <testcase interruptible="false" name="testcase.interruptible" number="[iterations]" state="[testcase_state]" description="Run none-interruptible testcase" >
+        <scenario name="testcase.interruptible" file="091_runprofile/scenario.xml" routingName="testcase.interruptible"/>
+    </testcase>
+
+    <testcase name="901_system_monitor" number="[iterations]" state="false" description="Test system monitoring " >
+        <scenario name="system" file="901_system_monitor/scenario.xml" routingName="system"/>
+    </testcase>
+
+    <for from="0" index="[numServer]" step="1" to="[nbServer]">
+        <testcase name="902_system_monitoring [nameServer([numServer])]" number="[iterations]" state="false">
+            <parameter name="[csvFilename]" operation="set" value="vmstat_[interval]_[nameServer([numServer])]_[date].csv"/>
+            <parameter name="[server]" operation="set" value="[IPServer([numServer])]"/>
+            <parameter name="[login]" operation="set" value="[login([numServer])]"/>
+            <parameter name="[passwd]" operation="set" value="[passwd([numServer])]"/>
+            <runProfile>                
+                <step period="[vmstatInterval]" time="0"/>
+            </runProfile>
+            <scenario name="902_system_monitor" file="902_system_monitor/monitor.xml" routingName="902_system_monitor"/>
+        </testcase>
+    </for>
+
+    <testcase name="951_system_capture" number="[iterations]" state="false" description="Test system command " >
+        <scenario name="system" file="951_system_capture/scenario.xml" routingName="system"/>
+        <scenario name="system_kill" file="951_system_capture/scenario_kill.xml" routingName="system_kill"/>
+    </testcase>
+
+</test>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="UDP regression tests" name="UDP">
+  
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <!-- Parameters for proxy testcases -->
+    <parameter name="[localHostUDP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostUDP]" operation="set" value="[localHostUDP(0)]"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortUDP]" operation="set" value="10000"/>
+
+    <parameter name="[remoteHostUDP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostUDP]" operation="set" value="172.16.21.32"/-->
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostUDP]" operation="set" value="[remoteHostUDP(0)]"/>
+    <!--parameter name="[remoteHostUDP]" operation="set" value="1234"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePort]" operation="set" value="12000"/>
+    	
+    <parameter name="[localHostUDP_proxy]" operation="set" value="[localHostUDP(0)]"/>
+    <parameter name="[localPortUDP_proxy]" operation="set" value="11000"/>
+    <parameter name="[remoteHostUDP_proxy]" operation="set" value="[remoteHostUDP(0)]"/>
+    <parameter name="[remotePortUDP_proxy]" operation="set" value="10000"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+
+     
+    <testcase name="udp/001_channel" number="[iterations]" state="true">
+        <scenario file="001_channel/scenario.xml" name="toto" routingName="toto"/>
+    </testcase>
+
+    <testcase name="udp/001_not_connected" number="[iterations]" state="true">
+        <scenario file="001_not_connected/scenario.xml" name="socket2" routingName="socket2"/>
+    </testcase>
+
+    <testcase name="udp/002_connected" number="[iterations]" state="true">
+        <scenario file="002_connected/scenario.xml" name="socket2" routingName="socket2"/>
+    </testcase>
+
+    <testcase name="udp/003_test_connected_with_wrong_param" number="[iterations]" state="true">
+        <scenario file="003_connected_with_wrong_param/scenario1.xml" name="socket2" routingName="socket2"/>
+    </testcase>
+
+   <testcase name="udp/003_test_connected_with_wrong_param" number="[iterations]" state="true">
+        <scenario file="003_connected_with_wrong_param/scenario2.xml" name="socket2" routingName="socket2"/>
+    </testcase>
+
+    <testcase name="udp/004_param1" number="[iterations]" state="true">
+        <scenario file="004_param/scenario1.xml" name="socket2" routingName="socket2"/>
+    </testcase>
+    
+    <testcase name="udp/004_param2" number="[iterations]" state="true">
+        <scenario file="004_param/scenario2.xml" name="socket2" routingName="socket2"/>
+    </testcase>
+    
+    <testcase name="udp/005_sip_register" number="[iterations]" state="true">
+        <scenario file="005_sip_register/UA.xml" name="toto" routingName="toto"/>
+    </testcase>
+
+    <testcase name="udp/007_listenpoint" number="[iterations]" state="true">
+        <scenario file="007_listenpoint/scenario.xml" name="UDP" routingName="UDP"/>
+    </testcase>
+
+    <testcase name="udp/sip_register_no" number="[iterations]" state="true">
+        <scenario file="006_sip_register_no/UA.xml" name="toto" routingName="toto"/>
+    </testcase>
+    
+    <testcase name="udp/901_echo_server" number="[iterations]" state="false">
+        <scenario file="901_echo_server/scenario.xml" name="proxy_receiver" routingName="proxy_receiver"/>
+    </testcase>
+   
+    <testcase name="udp/902_echo_client" number="[iterations]" state="false">
+        <scenario file="902_echo_client/scenario.xml" name="proxy_client" routingName="proxy_client"/>
+    </testcase>
+	
+</test>

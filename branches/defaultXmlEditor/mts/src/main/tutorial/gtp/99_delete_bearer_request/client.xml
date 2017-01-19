@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    <parameter name="[tunnelEndpointId]" operation="set" value="875561310"/>
+    <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
+
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Delete Bearer Request:99" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+			<element tag="EBI:73" instances="0" description="EPS Bearer ID">
+					<field name="spare" value="0"/>
+					<field name="EBI" value="5"/>
+			</element>
+			<element tag="EBI:73" instances="1" description="EPS Bearer ID">
+					<field name="spare" value="0"/>
+					<field name="EBI" value="6"/>
+			</element>
+		
+			<element tag="Bearer Context:93" >
+				<element tag="EBI:73" description="EPS Bearer ID">
+					<field name="spare" value="0"/>
+					<field name="EBI" value="0"/>
+				</element>
+				<element tag="Cause:2" coding="TLIV">
+					<field name="Cause value" type="enumeration" value="16" description="Cause value: Request accepted"/>
+					<field name="spare" lengthBit="5" type="integer" value="0"/>
+					<field name="PCE" lengthBit="1" type="boolean" value="0" description="PDN Connection IE Error"/>
+					<field name="BCE" lengthBit="1" type="boolean" value="0" description="Bearer Context IE Error"/> 
+					<field name="CS" lengthBit="1" type="enumeration" value="0" description="Cause Source:Originated by the node sending the message"/>
+				</element>
+			</element>
+			
+			<element tag="PTI:100" coding="TLIV" description="Procedure Transaction Id">
+				<field name="Procedure Transaction ID" lengthBit="8" type="integer" value="1"/>
+				<!-- 	Bits							-->
+				<!-- 	8	7	6	5	4	3	2	1		-->
+				<!-- 	0	0	0	0	0	0	0	0		No procedure transaction identity assigned	-->
+				<!-- 	0	0	0	0	0	0	0	1		\		-->
+				<!-- 	to		} Procedure transaction identity value		-->
+				<!-- 	1	1	1	1	1	1	1	0		/		-->
+				<!-- 	1	1	1	1	1	1	1	1		Reserved		-->
+			</element>		
+			<element tag="PCO:78" description="Protocol Configuration Options">
+					<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+			</element>
+			<element tag="FQ-CSID:132" instances="0" coding="TLIV" description="Fully qualified PDN Connection Set Identifier ">
+				<field name="Node-ID Type" type="enumeration" value="0" description="Global unicast IPv4"/>
+				<field name="Number of CSIDs" lengthBit="4" value="2"/>
+				<field name="Node-ID ipv4" type="ipv4_address" value="172.20.70.42"/>     <!-- if Node-ID == 0 -->
+				<field name="ICSID01" lengthBit="16" type="integer" value="1" description="PDN Connection Set Identifier "/>
+				<field name="ICSID02" lengthBit="16" type="integer" value="2" description="PDN Connection Set Identifier "/>	
+			</element>
+			<element tag="FQ-CSID:132" instances="1" coding="TLIV" description="Fully qualified PDN Connection Set Identifier ">
+				<field name="Node-ID Type" type="enumeration" value="2" description="MCC/MNC operator"/>
+				<field name="Number of CSIDs" lengthBit="4" value="1"/>
+				<field name="Node-ID MCC/MNC"  lengthBit="20" type="integer" value="20810"/>  <!-- if Node-ID == 2 -->
+				<field name="Node-ID operator" lengthBit="12" type="integer" value="17"/>  <!-- if Node-ID == 2 -->				
+				<field name="ICSID01" lengthBit="16" type="integer" value="3" description="reserved "/>
+					
+			</element>
+			<element tag="Cause:2" coding="TLIV">
+					<field name="Cause value" type="enumeration" value="16" description="Cause value: Request accepted"/>
+					<field name="spare" lengthBit="5" type="integer" value="0"/>
+					<field name="PCE" lengthBit="1" type="boolean" value="0" description="PDN Connection IE Error"/>
+					<field name="BCE" lengthBit="1" type="boolean" value="0" description="Bearer Context IE Error"/> 
+					<field name="CS" lengthBit="1" type="enumeration" value="0" description="Cause Source:Originated by the node sending the message"/>
+			</element>
+			<element tag="Private Extension:255" coding="TLIV">
+				<field name="Enterprise ID" lengthBit="16" type="integer" value="1234"/>
+				<field name="Proprietary value" type="string" value="entreprise Dupont"/>
+			</element>
+			
+	</sendMessageGTP>
+	
+	<receiveMessageGTP name="receive message" request="false" type="Delete Bearer Request:99" result="Request accepted:16">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="4864009f3430015e56b6020002000200100049000100055d00290049000100060200020010004e001a008080211001000010810600000000830600000000000d00000a0003000100f28400090002ac14462a0001000284000701210514a0110003560027003f62f210014d014d62f270014d00de02f810014dfaff02f802022b02f8700002083402f801029aff00130004d2656e7472657072697365204475706f6e74"/>
+    
+	
+	
+</scenario>

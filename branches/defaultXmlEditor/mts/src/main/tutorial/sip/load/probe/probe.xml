@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <!--parameter name="[test:localPortSIP]" operation="number.add" value="[test:localPortSIP]" value2="2"/-->
+    <parameter name="[network]" operation="set" value="[localHostSIP]"/>  
+    <parameter name="[filter]" operation="set" value="(src port [localPortSIP]) and (dst port [localPortSIP])"/>
+    <createProbeSIP name="pb[test:localPortSIP]" networkInterface="[network]" captureFilter="[filter]"/>
+    <createProbeSIP name="pb[test:localPortSIP]" networkInterface="[network]" captureFilter="[filter]"/>
+    
+    <finally>
+  
+    <removeProbeSIP name="pb[test:localPortSIP]"/>
+    <removeProbeSIP name="pb[test:localPortSIP]"/>
+    <pause name="between createProbe" seconds="0.000"/>
+    
+  </finally>
+</scenario>

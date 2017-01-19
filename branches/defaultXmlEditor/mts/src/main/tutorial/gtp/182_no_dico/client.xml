@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+    <parameter name="[tunnelEndpointId]" operation="set" value="111"/>
+    <parameter name="[sequenceNumber]" operation="set" value="1"/>
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="250" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="250" instances="0" coding="TLIV" description="Element250">
+            <field name="Boolean" value="true:0" type="boolean" description="field Boolean"/>
+            <field name="Integer" value="127" type="integer" lengthBit="7" description="field Integer"/>
+            <field name="Number MMC" value="123,987" type="number_mmc" description="field Number MMC"/>
+        </element>
+        <element tag="251" instances="0" coding="TLIV" description="Element251">
+            <field name="Number BCD" value="123456789012345" type="number_bcd" description="field Number BCD"/>
+        </element>
+        <element tag="252" instances="0" coding="TLIV" description="Element252">
+            <field name="IPV4 Address" value="123.45.67.89" type="ipv4_address" description="field IPV4 Address"/>
+            <field name="IPV6 Address" value="1234:5678:90ab:cdef:1234:5678:90ab:cdef" type="ipv6_address" description="field IPV4 Address"/>
+        </element>
+        <element tag="253" instances="1" coding="TLIV" description="element253,1">
+            <field name="String" value="01234567890ABCDEF" type="string" description="field String"/>
+        </element>
+        <element tag="253" instances="2" coding="TLIV" description="element253,2">
+            <field name="Lengh String" value="01234567890ABCDEF" type="length_string" description="field Length String"/>
+        </element>
+        <element tag="253" instances="3" coding="TLIV" description="element253,2">
+            <field name="Length2 String" value="01234567890ABCDEF" type="length2_string" description="field Length2 String"/>
+        </element>
+        <element tag="254" instances="0" coding="TLIV" description="element254">
+            <field name="Binary" value="0123456789ABCDEF" type="binary" description="field Binary"/>
+        </element>
+    </sendMessageGTP>
+    
+</scenario>

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Send a MAP message
+-->
+
+<scenario>
+
+    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
+                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
+                                       transport="[transport]"/>
+                                       
+                                       
+    <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
+        <UA name="m3ua" file="m3ua.xml">
+            <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
+            <parameter tag="17" >
+                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
+            </parameter>
+            <parameter tag="INFO_String">
+                <field name="INFO_String" format="String" value="ASPUP"/>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+        
+    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
+        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <pause seconds="[pause]"/>
+                                       
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+  
+    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
+    
+    <!-- AP LAYER -->
+    <ASN dictionary="map/dictionary_MAP.xml">
+      <Component.Choice>
+        <invoke.C1.Sequence>
+           <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+           <opCode.Choice>
+              <localValue.BoxedType><Long>mt-forwardSM:44</Long></localValue.BoxedType>
+              <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+           </opCode.Choice>
+           <invokeparameter>
+             <Mt_forwardSM_Arg.Sequence>
+                <sm_RP_DA.Choice>
+                   <imsi.C0.BoxedType><Bytes>8167906320
+                         <field name="digits" value="1876093602" type="Number_BCD" length="5" />
+                      </Bytes></imsi.C0.BoxedType>
+                   <lmsi.C1.BoxedType><Bytes>fcce
+                         <field name="digits" value="fcce" type="Binary" length="2" />
+                      </Bytes></lmsi.C1.BoxedType>
+                   <serviceCentreAddressDA.C4.BoxedType><Bytes>159164574913
+                         <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="spare:5" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="1946759431" type="Number_BCD" length="5" />
+                      </Bytes></serviceCentreAddressDA.C4.BoxedType>
+                   <noSM_RP_DA.C5></noSM_RP_DA.C5>
+                </sm_RP_DA.Choice>
+                <sm_RP_OA.Choice>
+                   <msisdn.C2.BoxedType><Bytes>385160264528
+                         <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="network specific number:3" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="national numbering plan:8" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="1506625482" type="Number_BCD" length="5" />
+                      </Bytes></msisdn.C2.BoxedType>
+                   <serviceCentreAddressOA.C4.BoxedType><Bytes>4d41081009f8
+                         <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="subscriber number:4" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="13" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="148001908" type="Number_BCD" lengthBit="36" />
+                      </Bytes></serviceCentreAddressOA.C4.BoxedType>
+                   <noSM_RP_OA.C5></noSM_RP_OA.C5>
+                </sm_RP_OA.Choice>
+                <sm_RP_UI.BoxedType><Bytes>b80a54028523458287e7000078176522f83bc57ad466
+                      <element label="SMS-DELIVER" coding="V" value="b8">
+                         <field name="TP-RP" value="TP Reply Path parameter is set in this SMS SUBMIT/DELIVER:1" type="EnumLong" lengthBit="1" />
+                         <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1" />
+                         <field name="TP-SRI" value="A status report is requested:1" type="EnumLong" lengthBit="1" />
+                         <field name="NA" value="1" type="Integer" lengthBit="1" />
+                         <field name="TP-LP" value="The message has either been forwarded or is a spawned message:1" type="EnumLong" lengthBit="1" />
+                         <field name="TP-MMS" value="More messages are waiting for the MS in this SC:0" type="EnumLong" lengthBit="1" />
+                         <field name="TP-MTI" value="SMS-DELIVER / SMS-DELIVER-REPORT:0" type="EnumLong" lengthBit="2" />
+                      </element>
+                      <element label="TP-OA" coding="V">
+                         <element label="Address" coding="DV" value="540285234582">
+                            <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                            <field name="nature of address" value="reserved:5" type="EnumLong" lengthBit="3" />
+                            <field name="numbering plan" value="telex numbering plan (ITU-T Rec F.69):4" type="EnumLong" lengthBit="4" />
+                            <field name="digits" value="2058325428" type="Number_BCD" length="5" />
+                         </element>
+                      </element>
+                      <element label="TP-PID" coding="V" value="87">
+                         <field name="assignment" value="reserved:2" type="EnumLong" lengthBit="2" />
+                         <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1" />
+                         <field name="telematic devices" value="Videotex (T.100/T.101):7" type="EnumLong" lengthBit="5" />
+                      </element>
+                      <element label="TP-DCS" coding="V" value="e7">
+                         <field name="Coding Group Bits" value="Message Waiting Indication Group:3" type="EnumLong" lengthBit="2" />
+                         <field name="Compression" value="the text is compressed using the GSM standard:1" type="EnumLong" lengthBit="1" />
+                         <field name="Bit 1-0 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1" />
+                         <field name="Alphabet" value="8 bit data {UTF-8}:1" type="EnumLong" lengthBit="2" />
+                         <field name="Message Class" value="Class 3 Default meaning TE specific:3" type="EnumLong" lengthBit="2" />
+                      </element>
+                      <element label="TP-SCTS" coding="V" value="000078176522f8">
+                         <field name="TP-SCTS" value="0000877156228" type="Number_BCD" length="7" />
+                      </element>
+                      <element label="TP-UD" coding="V" value="3bc57ad466">
+                         <field name="TP-UDL" value="59" type="Integer" length="1" />
+                         <field name="TP-UD" value="c57ad466" type="Binary" length="4" />
+                      </element>
+                   </Bytes></sm_RP_UI.BoxedType>
+                <moreMessagesToSend></moreMessagesToSend>
+                <extensionContainer.Sequence>
+                   <privateExtensionList.C0.BoxedType>
+                      <Collection>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.2119.54.47.39.53.67.45.44</ObjectIdentifier></extId>
+                            <extType>212e82b3e62bec6b</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.23.95.52.88.15.5.44</ObjectIdentifier></extId>
+                            <extType>b32262c7e47d0566</extType>
+                         </PrivateExtension.Sequence>
+                         <PrivateExtension.Sequence>
+                            <extId><ObjectIdentifier>0.1.295.88.47.78.67.62.79</ObjectIdentifier></extId>
+                            <extType>f89afc55842a46</extType>
+                         </PrivateExtension.Sequence>
+                      </Collection>
+                   </privateExtensionList.C0.BoxedType>
+                   <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                </extensionContainer.Sequence>
+             </Mt_forwardSM_Arg.Sequence>           
+          </invokeparameter>
+        </invoke.C1.Sequence>
+      </Component.Choice>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage.Choice>
+        <begin.A2.Sequence>
+           <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
+           <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
+                 <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
+                       <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <!--indirect_reference>135135546236608288</indirect_reference-->
+                       <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
+                       <encoding.Choice>
+                          <single_ASN1_type.C0.BoxedType>
+                           <DialoguePDU.Choice>
+                              <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
+                                    <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                                    <application_context_name.BoxedType>
+                                       <ObjectIdentifier><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></ObjectIdentifier>
+                                    </application_context_name.BoxedType>
+                                    <!--Collection>
+                                       <user_information>040b0ee80b24cfc24d5cf44182</user_information>
+                                       <user_information>0404e60be5ae</user_information>
+                                       <user_information>0409db4fba980c312c21d8</user_information>
+                                    </Collection-->
+                              </AARQ_apduSequenceType.A0></dialogueRequest.A0.BoxedType>
+                           </DialoguePDU.Choice>
+                          </single_ASN1_type.C0.BoxedType>
+                       </encoding.Choice>
+                  </ExternalPDUSequenceType.U8></ExternalPDU.A11.BoxedType>
+            </DialogueOC.A11.BoxedType></dialoguePortion.BoxedType>
+        </begin.A2.Sequence>
+      </TCMessage.Choice>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+  		<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  			<field value="0" lengthBit="4" />
+  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+  		</parameter>
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+  			<field name="Address_Indicator" value="67" length="1" />
+  			<field name="Signalling_Point_Code" value="2" length="2" />
+  			<field name="Subsystem_Number" value="8" length="1" />	
+  		</parameter>
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+  			<field name="Address_Indicator" value="67" length="1" />
+  			<field name="Signalling_Point_Code" value="1" length="2" />
+  			<field name="Subsystem_Number" value="8" length="1" />
+  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+  		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+
+
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+
+        <parameter tag="Protocol_Data">
+            <field value="1" name="Originating_Point_Code"/>
+            <field value="2" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+    
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="44" result="RESULT">
+        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+	
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+
+    <!-- remove pb of TIME_WAIT state -->
+    <!--closeChannelSIGTRAN name="channel"/-->
+    
+</scenario>

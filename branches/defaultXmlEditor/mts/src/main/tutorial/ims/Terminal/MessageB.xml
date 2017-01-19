@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+  <!ENTITY register    SYSTEM "../Library/register_provider.xml">
+ ]>
+
+
+
+<scenario>
+		<parameter name="[clientName]" operation="set" value="[client_UAS]"/>
+	<parameter name="[clientName2]" operation="set" value="[client_UAC]"/>
+	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
+	
+	<parameter name="[LocalPort]" operation="set" value="[port_UAS]"/>
+	<parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>
+	
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
+	
+		<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+	
+	<parameter name="[Expires]" 		operation="set" value="3600"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	&register;
+		
+		
+	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>
+	
+	<receiveMessageSIP name="Wait MESSAGE"  type="MESSAGE" request="true">
+	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>   
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+    </receiveMessageSIP>
+
+	
+ 
+    <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Record-Route:[Record-Route]
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Content-Length: 0]]>
+
+  </sendMessageSIP>
+
+    <parameter name="[testcase:SEM5]" operation="system.semaphorewait"/>
+ 
+<finally>  
+
+<parameter name="[Expires]" 		operation="set" value="0"/>
+	
+	
+	&register;
+   <parameter name="[testcase:SEM6]" operation="system.semaphorenotify"/>
+ </finally> 
+ 
+</scenario>	
