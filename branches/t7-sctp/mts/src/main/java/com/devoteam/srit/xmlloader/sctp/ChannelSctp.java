@@ -39,19 +39,11 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
 import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 
-import dk.i1.sctp.OneToManySCTPSocket;
-import dk.i1.sctp.OneToOneSCTPSocket;
-import dk.i1.sctp.SCTPSocket;
-import dk.i1.sctp.sctp_initmsg;
-import dk.i1.sctp.sctp_paddrparams;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.List;
-
-import dk.i1.sctp.AssociationId;
 
 import java.net.Socket;
 
@@ -63,16 +55,9 @@ import org.dom4j.Element;
  */
 
 //  channel is called association in SCTP 
-public class ChannelSctp extends Channel
+public abstract class ChannelSctp extends Channel
 {
-    private SocketSctp socket;
-    
-    private Listenpoint listenpoint;
-
-    private AssociationId aid;
-    private sctp_initmsg initmsg;
-
-    private long startTimestamp = 0;    
+    protected ListenpointSctp listenpointSctp;
     
     /** Creates a new instance of Channel*/
     public ChannelSctp(Stack stack)
@@ -80,187 +65,77 @@ public class ChannelSctp extends Channel
     	super(stack);
     }
 
-    public ChannelSctp(ListenpointSctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
+    /** Creates a new instance of Channel*/
+    public ChannelSctp(String name)
+    {
+    	super(name);
+    	assert(false):"this code path is not tested";
+    }
+
+    /** Creates a new instance of Channel */
+    public ChannelSctp(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
+    {
+    	super(localHost, localPort, remoteHost, remotePort, aProtocol);
+    	assert(false):"this code path is not tested";
+    }
+
+    /** Creates a new instance of Channel */
+    public ChannelSctp(String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol) throws Exception
+    {
+    	super(name, localHost, localPort, remoteHost, remotePort, aProtocol);
+    }
+
+    public ChannelSctp(Listenpoint aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        this.socket = null;
-        this.listenpoint = aListenpoint;
-        this.initmsg = new sctp_initmsg();
+        this.listenpointSctp = (ListenpointSctp)aListenpoint;
     }
 
-    public ChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
+    public ChannelSctp(Listenpoint aListenpoint, String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol) throws Exception
     {
-		super(
-        		name,
-        		((SCTPSocket)aSocket).getLocalAddress().getHostAddress(),
-        		Integer.toString(((SCTPSocket)aSocket).getLocalInetPort()),
-        		null,
-        		null,
-        		aListenpoint.getProtocol()
-        );
-
-		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
-		this.startTimestamp = System.currentTimeMillis();
-
-        this.listenpoint = aListenpoint;
-        this.socket = new SocketSctp((SCTPSocket) aSocket);
-        this.socket.setChannelSctp(this);
-        this.initmsg = new sctp_initmsg();
-    }
-    
-    public SocketSctp getSocketSctp()
-    {
-        return socket;
+        super(name, localHost, localPort, remoteHost, remotePort, aProtocol);
+        this.listenpointSctp = (ListenpointSctp)aListenpoint;
     }
 
-    public AssociationId getAssociationId()
-    {
-        return aid;
-    }
-
-    public void setAssociationId(AssociationId aid)
-    {
-        this.aid = aid;
-    }
-
-    /** Open a Channel */
+    /**
+     * Open a Channel
+     * should be overriden
+     */
     @Override
     public boolean open() throws Exception
-    {    
-        if (socket == null)
-        {
-    		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
-    		this.startTimestamp = System.currentTimeMillis();
-            
-			//InetAddress localAddr = InetAddress.getByName(getLocalHost());
-			// TODO Take localAddr into account
-            SCTPSocket sctpSocket = new OneToOneSCTPSocket();
-            int intLocalPort = getLocalPort(); 
-            sctpSocket.bind(intLocalPort);
-            if (this.initmsg != null)
-            {
-            	sctpSocket.setInitMsg(this.initmsg);
-            }
-                        
-            String strRemoteHost = getRemoteHost();
-            if (strRemoteHost == null || "0.0.0.0".equals(strRemoteHost))
-            {
-            	strRemoteHost = InetAddress.getByName(strRemoteHost).getCanonicalHostName();
-            }
-            int intRemotePort = getRemotePort();            
-            InetSocketAddress remoteSocketAddress = new InetSocketAddress(strRemoteHost, intRemotePort);
-            sctpSocket.connect(remoteSocketAddress);
-        
-            this.localPort = sctpSocket.getLocalInetPort();
-            // TODO Take socket LocalAddress into account
-            // this.setLocalHost(socket.getLocalAddress().getHostAddress());
-            
-            /* for multihoming but not used : we keep it nethertheless
-            if (localHost != null)
-            {
-	            for (int i = 0; i < this.localHost.length; i++)
-	            {
-	            	try
-	            	{
-	            		System.out.println("Bind to " + this.localHost[i] +  ":" + localPort);	        
-		                sctp_paddrparams spp = new sctp_paddrparams();
-		                spp.spp_assoc_id = new AssociationId(101);
-		                System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
-		                InetSocketAddress localSocketAddress = new InetSocketAddress(this.localHost[i], localPort);
-		                spp.spp_address = localSocketAddress;
-		                System.out.println("spp.spp_address:" + spp.spp_address);
-		                spp.spp_hbinterval = 0;
-		    			spp.spp_flags = sctp_paddrparams.SPP_HB_DISABLE | sctp_paddrparams.SPP_PMTUD_DISABLE | sctp_paddrparams.SPP_SACKDELAY_DISABLE;
-		    			spp.spp_pathmaxrxt = 0;
-		    			spp.spp_pathmtu = 0;
-		    			spp.spp_sackdelay = 0;
-		    			spp.spp_ipv6_flowlabel = 0;
-		    			spp.spp_ipv4_tos = 0;
-		    			//sctpSocket.setPeerParameters(spp);
-		    			
-		    			InetAddress inet = InetAddress.getByName(this.localHost[i]);
-		            	sctpSocket.bind(inet, localPort);
-		            	//sctpSocket.listen();
-		            	break;
-	            	}
-	            	catch (Exception e)
-	            	{
-	            		System.out.println(e);
-		            	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "Exception : so we try the next peer :", e);
-	            	}
-	            }
-            }
-            else
-            {
-            	sctpSocket.bind(getLocalPort());
-            	//sctpSocket.listen();
-            }   
-            */       
+    {
+    	//does not call super.open intentionally
 
-            /* for multihoming but not used : we keep it nethertheless
-            int remotePort = getRemotePort();
-            if (remoteHost != null)
-            {
-            	boolean connected = false;
-            	Exception lastException;
-	            for (int i = 0; i < 1; i++)
-	            {
-	            	GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "Connect to ", this.remoteHost, ":", remotePort);
-	            	try
-	            	{		            
-		                InetSocketAddress remoteSocketAddress = new InetSocketAddress(this.remoteHost, remotePort);            
-		                sctpSocket.connect(remoteSocketAddress);
-		                connected = true;
-		            	break;
-	            	}
-	            	catch (Exception e)
-	            	{
-	            		lastException = e;
-		            	GlobalLogger.instance().getApplicationLogger().warn(Topic.PROTOCOL, "Exception : so we try the next peer :", e); 	            			            
-	            	}
-	            	if (!connected)
-	            	{
-	            		throw new ExecutionException("Can not connect to all remote destinations : last exception " + lastException);
-	            	}
-	            }
-            }
-			*/
-            socket = new SocketSctp(sctpSocket);
-        }
-        
-        socket.setChannelSctp(this);
-        socket.setDaemon(true);
-        socket.start();        
+    	//common sctp code here...
 
-        return true;
+    	return true;
     }
-
-    /** Close a Channel */
+    
+    /**
+     * Close a Channel
+     * should be overriden
+     */
     @Override
     public boolean close()
     {	
-    	if (socket != null)
-    	{
-    		StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol(), startTimestamp);
-    		
-    		socket.shutdown();
-	        socket = null;
-    	}
-        return true;
-    }
+    	//does not call super.close intentionally
+    	
+    	//common sctp code here...
 
+    	return true;
+    }
     
-    /** Send a Msg to Channel */
+    /**
+     * Send a Msg to Channel
+     * should be overriden
+     */
     @Override
-    public synchronized boolean sendMessage(Msg msg) throws Exception
-    {
-        if (socket == null)
-        {
-            throw new ExecutionException("SocketSctp is null, has the connection been opened ?");
-        }
-        msg.setChannel(this);
-        socket.send(msg);
-        return true;
+    public boolean sendMessage(Msg msg) throws Exception {
+    	//does not call super.sendMessage intentionally
+
+    	//common sctp code here...
+
+    	return true;
     }
     
     /** Get the transport protocol */
@@ -269,68 +144,21 @@ public class ChannelSctp extends Channel
     {
     	return StackFactory.PROTOCOL_SCTP;
     }
-    
-	public Listenpoint getListenpointSctp() {
-		return listenpoint;
-	}
-
-	
-    //---------------------------------------------------------------------
-    // methods for the XML display / parsing
-    //---------------------------------------------------------------------
+   
+    public Listenpoint getListenpointSctp() {
+      return this.listenpointSctp;
+    }
 	
     /** 
      * Parse the message from XML element 
+     * should be overriden
      */
     @Override
     public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
     {
     	super.parseFromXml(root, runner, protocol);
-    	
-    	this.initmsg = new sctp_initmsg();
-    	
-		// initialize from the configuration file
-    	this.initmsg.sinit_num_ostreams = (short) this.stack.getConfig().getInteger("connect.NUM_OSTREAMS");
-    	this.initmsg.sinit_max_instreams = (short) this.stack.getConfig().getInteger("connect.MAX_INSTREAMS");
-    	this.initmsg.sinit_max_attempts = (short)  this.stack.getConfig().getInteger("connect.MAX_ATTEMPTS");
-    	this.initmsg.sinit_max_init_timeo= (short) this.stack.getConfig().getInteger("connect.MAX_INIT_TIMEO");
-		
-		// Parse the XML file
-		List<Element> sctpElements = root.elements("sctp");
-		if (sctpElements != null && sctpElements.size() > 0)
-		{
-			Element sctpElement = sctpElements.get(0);
-	        
-			String num_ostreams = sctpElement.attributeValue("num_ostreams");
-			if (num_ostreams != null)
-			{
-				this.initmsg.sinit_num_ostreams = (short) Integer.parseInt(num_ostreams);	    	
-			}
-	
-			String max_instreams = sctpElement.attributeValue("max_instreams");
-	    	if (max_instreams != null)
-	    	{
-	    		this.initmsg.sinit_max_instreams = (short) Integer.parseInt(max_instreams);
-	    	}
-			
-	    	String max_attempts = sctpElement.attributeValue("max_attempts");
-			if (max_attempts != null)
-			{
-				this.initmsg.sinit_max_attempts = (short) Integer.parseInt(max_attempts);    			
-			}
-			
-			String max_init_timeo = sctpElement.attributeValue("max_initTimeo");
-			if (max_init_timeo != null)
-			{
-				this.initmsg.sinit_max_init_timeo= (short) Integer.parseInt(max_init_timeo);    			
-			}
-			
-			// log datas
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_num_ostreams=", this.initmsg.sinit_num_ostreams);			
-    		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_instreams=", this.initmsg.sinit_max_instreams);
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_attempts=", initmsg.sinit_max_attempts);
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_init_timeo=", initmsg.sinit_max_init_timeo);
-		}
+
+    	//common sctp code here...
     }
     
     //---------------------------------------------------------------------
@@ -344,84 +172,10 @@ public class ChannelSctp extends Channel
     public String toString()
     {
         String ret = super.toString();
-        /*
-        if (this.socket != null && this.socket.getSctpSocket() != null)
-        {
-        	InetAddress inet = this.socket.getSctpSocket().getInetAddress();
-        	if (inet != null)
-        	{
-		        ret += " inetAddress=\"" + inet.getHostAddress() + "\"";
-        	}
-    		InetAddress local = this.socket.getSctpSocket().getLocalAddress();
-        	if (local != null)
-        	{
-	        	ret += " localAddress=\"" + local.getHostAddress() + "\"";
-        	}
-	        try 
-	        {
-	        	// crash de la jvm
-	        	//String localAddresses = Utils.TableInetToString(this.socket.getSctpSocket().getLocalInetAddresses());
-	        	//ret += " localAddresses=\"" + localAddresses + "\"";
-	        }
-	        catch (Exception e)
-	        {
-	        	// nothing to do
-	        }
-	        try 
-	        {
-	        	//int localInetPort = this.socket.getSctpSocket().getLocalInetPort();
-		        //if (localInetPort > 0)
-		        //{
-		        	//ret += " localInetPort=\"" + localInetPort + "\"";
-		        //}
-	        }
-	        catch (Exception e)
-	        {
-	        	// nothing to do
-	        }
-	        localPort = this.socket.getSctpSocket().getLocalPort();
-	        if (localPort > 0)
-	        {
-	        	ret += " localPort=\"" + localPort + "\"";
-	        }
-	        int port = this.socket.getSctpSocket().getPort();
-	        if (port > 0)
-	        {
-	        	ret += " port=\"" + port + "\"";
-	        }
-	        SocketAddress localSocket= this.socket.getSctpSocket().getLocalSocketAddress();
-	        if (localSocket != null)
-	        {
-	        	ret += " localSocketAddress=\"" + localSocket + "\"";
-	        }
-	        SocketAddress remoteSocket = this.socket.getSctpSocket().getRemoteSocketAddress();
-	        if (remoteSocket != null)
-	        {
-	        	ret += " remoteSocketAddress=\"" + remoteSocket + "\"";
-	        }
-	     }
-	     */
-        ret += ">\n";
-        
-		if (this.initmsg != null && (
-			this.initmsg.sinit_num_ostreams != 0 ||
-			this.initmsg.sinit_max_instreams != 0 ||
-			this.initmsg.sinit_max_attempts != 0 ||
-			this.initmsg.sinit_max_init_timeo != 0)
-			)
-		{
-			ret += "<sctp";
-			int numOutstreams = this.initmsg.sinit_num_ostreams & 0xffff;
-			ret += " num_ostreams=\"" + numOutstreams + "\"";
-			int maxInstreams = this.initmsg.sinit_max_instreams & 0xffff;
-			ret += " max_instreams=\"" + maxInstreams + "\"";
-			int maxAttempts = this.initmsg.sinit_max_attempts & 0xffff;
-			ret += " max_attempts=\"" + maxAttempts+ "\"";
-			int maxInitTimeo = this.initmsg.sinit_max_init_timeo & 0xffff;
-			ret += " max_initTimeo=\"" + maxInitTimeo+ "\"";
-			ret += "/>\n";
-		}	
-	    return ret;
+
+    	//common sctp code here...
+
+        return ret;
     }
         
     //------------------------------------------------------
@@ -439,37 +193,9 @@ public class ChannelSctp extends Channel
 		{
 			return var;
 		}
+       //common sctp code here...
 
-		var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if(params[1].equalsIgnoreCase("peerHosts")) 
-        {
-        	SCTPSocket sctpSocket = this.getSocketSctp().getSctpSocket();
-			if (sctpSocket != null)
-			{						
-				Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(this.aid);
-				for (InetAddress ia : col)
-				{	
-					var.add(ia.getHostAddress());						
-				}
-			}
-        }
-        else if(params[1].equalsIgnoreCase("peerPort")) 
-        {
-			SCTPSocket sctpSocket = this.getSocketSctp().getSctpSocket();
-			if (sctpSocket != null)
-			{	
-				int port = sctpSocket.getPeerInetPort(this.aid);
-				var.add(Integer.toString(port));
-			}
-        }    
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-        return var; 
+       return null;
     }
 
 }

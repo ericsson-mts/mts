@@ -35,6 +35,8 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import com.devoteam.srit.xmlloader.sctp.DataSctp;
+
 import dk.i1.sctp.SCTPChunk;
 import dk.i1.sctp.SCTPData;
 import dk.i1.sctp.SCTPNotificationAssociationChangeCommLost;
@@ -117,11 +119,10 @@ public class SocketLksctp extends Thread {
                         }
                         break;
                     }
-                    /* SETTER L'AID
-                    (SCTPData)chunk).sndrcvinfo.sinfo_assoc_id.hashCode()));
-                    setAidFromMsg();
-                    */
-                    Msg msg = stack.readFromSCTPData(((SCTPData)chunk));
+
+                    DataSctp dataSctp = new DataLksctp( (SCTPData)chunk );
+
+                    Msg msg = stack.readFromSCTPData(dataSctp);
     		    	if (msg != null) 
     		    	{
                         msg.setChannel(channelSctp);
@@ -164,7 +165,7 @@ public class SocketLksctp extends Thread {
 		channelSctp = aChannelSctp;
 	}	
 
-	public SCTPSocket getSctpSocket(){
+	public SCTPSocket getSCTPSocket(){
 		return sctpSocket;	
 	}
 
@@ -175,7 +176,7 @@ public class SocketLksctp extends Thread {
 			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
 			{
 				MsgLksctp msgSctp = (MsgLksctp) msg;
-				sctpSocket.send(msgSctp.getSctpData());
+				sctpSocket.send(msgSctp.getSCTPData());
 			}
 			else
 			{

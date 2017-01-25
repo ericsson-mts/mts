@@ -31,12 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
-public class ListenpointSctp extends Listenpoint {
-	
-	// --- attributs --- //
-	private SocketServerSctpListener  socketListenerSctp;
-
-    private long startTimestamp = 0;
+public abstract class ListenpointSctp extends Listenpoint {
 	
     /** Creates a new instance of Listenpoint */
     public ListenpointSctp(Stack stack) throws Exception
@@ -49,7 +44,11 @@ public class ListenpointSctp extends Listenpoint {
     // methods for the transport
     //---------------------------------------------------------------------
 
-    /** Create a listenpoint to each Stack */
+    
+    /**
+     * Create a listenpoint to each Stack
+     * should be overriden
+     */
     @Override
 	public boolean create(String protocol) throws Exception
     {
@@ -57,41 +56,19 @@ public class ListenpointSctp extends Listenpoint {
 		{
 			return false;
 		}
-		
-    	try
-    	{
-    		socketListenerSctp = new SocketServerSctpListener(this);
-    		socketListenerSctp.setDaemon(true);
-    		socketListenerSctp.start();
-    	}
-    	catch (NoClassDefFoundError e)
-    	{
-    		// nothing to do
-    		// we are on Windows and have not any SCTP library
-    		return false;
-    	}
-    	catch (UnsatisfiedLinkError e)
-    	{
-    		// nothing to do
-    		// we are on Windows and have not any SCTP library
-    		return false;
-    	}
-
-		StatPool.beginStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, protocol);
-		this.startTimestamp = System.currentTimeMillis();
-
+		//put additional code here...
 		return true;
-	}
+    }
 	
-	public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-	{			
+    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
+    {			
 		ChannelSctp channel;
 		
 		String keySocket = remoteHost + ":" + remotePort;
 		
 		if(!this.existsChannel(keySocket))
 		{
-			channel = new ChannelSctp(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
+			channel = this.createChannelSctp( getHost(), 0, remoteHost, remotePort, this.getProtocol());
 			this.openChannel(channel);
 		}
 		else
@@ -102,22 +79,24 @@ public class ListenpointSctp extends Listenpoint {
 		channel.sendMessage(msg);
 		
 		return true;
-	}
+    }
 		
     @Override
-	public boolean remove()
-    {    	
-		super.remove();
-	
-    	if(this.socketListenerSctp != null)
-    	{
-    		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol(), startTimestamp);
-    		
-    		this.socketListenerSctp.close();
-    		this.socketListenerSctp = null;
-    	}
-    	
+    public boolean remove()
+    { 
+        if (!super.remove()) {
+            return false;
+        }
+         
+        //put additional code here...	
         return true;
     }
 	
+    /**
+     * create a channel instance
+     * @see sendMessage
+     * @return a new ChannelSctp instance
+     */
+    protected abstract ChannelSctp createChannelSctp(String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception;
+
 }

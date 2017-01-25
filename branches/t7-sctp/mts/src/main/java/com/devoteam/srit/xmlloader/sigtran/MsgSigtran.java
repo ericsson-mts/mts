@@ -54,8 +54,6 @@ import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
 
-import dk.i1.sctp.SCTPData;
-
 public class MsgSigtran extends Msg 
 {
 

@@ -39,6 +39,9 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
 import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
+
 import dk.i1.sctp.OneToManySCTPSocket;
 import dk.i1.sctp.OneToOneSCTPSocket;
 import dk.i1.sctp.SCTPSocket;
@@ -63,12 +66,10 @@ import org.dom4j.Element;
  */
 
 //  channel is called association in SCTP 
-public class ChannelLksctp extends Channel
+public class ChannelLksctp extends ChannelSctp
 {
     private SocketLksctp socket;
     
-    private Listenpoint listenpoint;
-
     private AssociationId aid;
     private sctp_initmsg initmsg;
 
@@ -80,17 +81,16 @@ public class ChannelLksctp extends Channel
     	super(stack);
     }
 
-    public ChannelLksctp(ListenpointLksctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
+    public ChannelLksctp(Listenpoint aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
-        super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        super(aListenpoint, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         this.socket = null;
-        this.listenpoint = aListenpoint;
         this.initmsg = new sctp_initmsg();
     }
 
     public ChannelLksctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
     {
-		super(
+		super(  aListenpoint,
         		name,
         		((SCTPSocket)aSocket).getLocalAddress().getHostAddress(),
         		Integer.toString(((SCTPSocket)aSocket).getLocalInetPort()),
@@ -102,13 +102,12 @@ public class ChannelLksctp extends Channel
 		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
 		this.startTimestamp = System.currentTimeMillis();
 
-        this.listenpoint = aListenpoint;
         this.socket = new SocketLksctp((SCTPSocket) aSocket);
         this.socket.setChannelSctp(this);
         this.initmsg = new sctp_initmsg();
     }
     
-    public SocketLksctp getSocketSctp()
+    public SocketLksctp getSocketLksctp()
     {
         return socket;
     }
@@ -126,7 +125,11 @@ public class ChannelLksctp extends Channel
     /** Open a Channel */
     @Override
     public boolean open() throws Exception
-    {    
+    {
+    	if( !super.open() ){
+    		return false;
+    	}
+    	
         if (socket == null)
         {
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
@@ -164,7 +167,7 @@ public class ChannelLksctp extends Channel
 	            	{
 	            		System.out.println("Bind to " + this.localHost[i] +  ":" + localPort);	        
 		                sctp_paddrparams spp = new sctp_paddrparams();
-		                spp.spp_assoc_id = new AssociationId(101);
+		                spp.spp_assoc_id = new AssociationIdSctp(101);
 		                System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
 		                InetSocketAddress localSocketAddress = new InetSocketAddress(this.localHost[i], localPort);
 		                spp.spp_address = localSocketAddress;
@@ -239,6 +242,10 @@ public class ChannelLksctp extends Channel
     @Override
     public boolean close()
     {	
+    	if( !super.close() ){
+    		return false;
+    	}
+
     	if (socket != null)
     	{
     		StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol(), startTimestamp);
@@ -254,6 +261,10 @@ public class ChannelLksctp extends Channel
     @Override
     public synchronized boolean sendMessage(Msg msg) throws Exception
     {
+    	if( !super.sendMessage(msg) ){
+    		return false;
+    	}
+    	
         if (socket == null)
         {
             throw new ExecutionException("SocketSctp is null, has the connection been opened ?");
@@ -263,18 +274,6 @@ public class ChannelLksctp extends Channel
         return true;
     }
     
-    /** Get the transport protocol */
-    @Override
-    public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_SCTP;
-    }
-    
-	public Listenpoint getListenpointSctp() {
-		return listenpoint;
-	}
-
-	
     //---------------------------------------------------------------------
     // methods for the XML display / parsing
     //---------------------------------------------------------------------
@@ -446,7 +445,7 @@ public class ChannelLksctp extends Channel
 
         if(params[1].equalsIgnoreCase("peerHosts")) 
         {
-        	SCTPSocket sctpSocket = this.getSocketSctp().getSctpSocket();
+        	SCTPSocket sctpSocket = this.getSocketLksctp().getSCTPSocket();
 			if (sctpSocket != null)
 			{						
 				Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(this.aid);
@@ -458,7 +457,7 @@ public class ChannelLksctp extends Channel
         }
         else if(params[1].equalsIgnoreCase("peerPort")) 
         {
-			SCTPSocket sctpSocket = this.getSocketSctp().getSctpSocket();
+        	SCTPSocket sctpSocket = this.getSocketLksctp().getSCTPSocket();
 			if (sctpSocket != null)
 			{	
 				int port = sctpSocket.getPeerInetPort(this.aid);

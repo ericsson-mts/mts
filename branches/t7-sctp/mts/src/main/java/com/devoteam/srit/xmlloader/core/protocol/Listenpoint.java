@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
+import com.devoteam.srit.xmlloader.sctp.StackSctp;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.udp.ListenpointUdp;
@@ -248,7 +249,8 @@ public class Listenpoint
 
         if (this.listenSCTP)
         {
-            listenpointSctp = new ListenpointSctp(this.stack);
+        	StackSctp stackSctp = (StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+        	listenpointSctp = stackSctp.createListenpointSctp(this.stack);
             listenpointSctp.clone(this);
             try
             {

@@ -44,7 +44,7 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvDictionary;
 
-import dk.i1.sctp.SCTPData;
+import com.devoteam.srit.xmlloader.sctp.DataSctp;
 
 public class StackSigtran extends Stack 
 {
@@ -167,15 +167,16 @@ public class StackSigtran extends Stack
      * Use for SCTP like protocol : to build incoming message
      */
     @Override
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception {
-        DefaultArray array = new DefaultArray(chunk.getData());
-        int ppidInt = Utils.convertLittleBigIndian(chunk.sndrcvinfo.sinfo_ppid);
+    public Msg readFromSCTPData(DataSctp chunk) throws Exception {
+        DefaultArray array = new DefaultArray(chunk.getData());        
+        int ppidIntLe = chunk.getSndrcvinfo().getPpid();
+        int ppidIntBe = Utils.convertLittleBigIndian( ppidIntLe );
         // when the PPID is not present into the sctp layer
-        if (ppidInt == 0)
+        if (ppidIntBe == 0)
         {
-        	ppidInt = this.defaultPayloadProtocolID;
+        	ppidIntBe = this.defaultPayloadProtocolID;
         }
-        MsgSigtran msg = new MsgSigtran(this, ppidInt);
+        MsgSigtran msg = new MsgSigtran(this, ppidIntBe);
         msg.decode(array.getBytes());
         return msg;
     }

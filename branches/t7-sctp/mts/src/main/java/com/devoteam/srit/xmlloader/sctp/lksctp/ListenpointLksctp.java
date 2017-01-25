@@ -31,7 +31,10 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
-public class ListenpointLksctp extends Listenpoint {
+import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+
+public class ListenpointLksctp extends ListenpointSctp {
 	
 	// --- attributs --- //
 	private SocketServerLksctpListener  socketListenerSctp;
@@ -84,31 +87,17 @@ public class ListenpointLksctp extends Listenpoint {
 	}
 	
 	public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-	{			
-		ChannelLksctp channel;
-		
-		String keySocket = remoteHost + ":" + remotePort;
-		
-		if(!this.existsChannel(keySocket))
-		{
-			channel = new ChannelLksctp(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
-			this.openChannel(channel);
-		}
-		else
-		{
-			channel = (ChannelLksctp) this.getChannel(keySocket);
-		}			
-				
-		channel.sendMessage(msg);
-		
-		return true;
+	{
+		return super.sendMessage(msg, remoteHost, remotePort, transport);
 	}
 		
     @Override
 	public boolean remove()
     {    	
-		super.remove();
-	
+		if( !super.remove() ){
+			return false;
+		}
+
     	if(this.socketListenerSctp != null)
     	{
     		StatPool.endStatisticProtocol(StatPool.LISTENPOINT_KEY, StatPool.BIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol(), startTimestamp);
@@ -119,5 +108,11 @@ public class ListenpointLksctp extends Listenpoint {
     	
         return true;
     }
-	
+
+    @Override
+    protected ChannelSctp createChannelSctp(String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
+    {
+    	return new ChannelLksctp(this,aLocalHost,aLocalPort,aRemoteHost,aRemotePort,aProtocol);
+    }
+   
 }

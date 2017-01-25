@@ -41,7 +41,9 @@ import com.devoteam.srit.xmlloader.diameter.ListenpointDiamCommon;
 import com.devoteam.srit.xmlloader.sip.light.MsgSip;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 
-import dk.i1.sctp.SCTPData;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.sctp.DataSctp;
+import com.devoteam.srit.xmlloader.sctp.StackSctp;
 
 import org.dom4j.Element;
 
@@ -580,7 +582,7 @@ public abstract class Stack
      * Creates a Msg specific to each Stack
      * Used for SCTP like protocol : to build incoming message
      */
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception    
+    public Msg readFromSCTPData(DataSctp chunk) throws Exception    
     {
     	byte[] bytes = chunk.getData();
     	return readFromDatas(bytes, bytes.length);
@@ -601,7 +603,8 @@ public abstract class Stack
 	        return channelTls;
     	}
     	else {
-    		com.devoteam.srit.xmlloader.sctp.ChannelSctp channelSctp = new com.devoteam.srit.xmlloader.sctp.ChannelSctp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
+        	StackSctp stackSctp = (StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+        	ChannelSctp channelSctp = stackSctp.createChannelSctp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
 	        return channelSctp;
     	} 
     }

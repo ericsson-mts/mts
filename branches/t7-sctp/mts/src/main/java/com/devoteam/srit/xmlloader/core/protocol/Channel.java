@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sctp.StackSctp;
 import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import com.devoteam.srit.xmlloader.tls.ChannelTls;
@@ -194,7 +195,8 @@ public class Channel
 	        }
 	        else if (StackFactory.PROTOCOL_SCTP.equalsIgnoreCase(this.transport))
 	        {
-	        	channel = new ChannelSctp(stack);
+	        	StackSctp stackSctp = (StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+	        	channel = stackSctp.createChannelSctp(stack);
 	        	channel.clone(this);
 	        }
 	        else if (StackFactory.PROTOCOL_UDP.equalsIgnoreCase(this.transport))

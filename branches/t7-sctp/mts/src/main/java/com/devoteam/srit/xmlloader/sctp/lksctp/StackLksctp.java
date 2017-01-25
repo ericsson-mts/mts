@@ -30,9 +30,17 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.sctp.DataSctp;
+import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
+import com.devoteam.srit.xmlloader.sctp.MsgSctp;
+import com.devoteam.srit.xmlloader.sctp.StackSctp;
+
 import dk.i1.sctp.SCTPData;
 
-public class StackLksctp extends Stack
+import java.net.Socket;
+
+public class StackLksctp extends StackSctp
 {
 	//a change
 	
@@ -50,34 +58,56 @@ public class StackLksctp extends Stack
     {
     	return new MsgLksctp(this, chunk);
     }
-
-	/** 
-     * Create an empty message for transport connection actions (open or close) 
-     * and on server side and dispatch it to the generic stack 
-     **/
-    public void receiveTransportMessage(String type, Channel channel, Listenpoint listenpoint)
-    {
-    	try 
-    	{
-    		boolean generateTransportMessage = getConfig().getBoolean("GENERATE_TRANSPORT_MESSAGE", false);
-    		if (generateTransportMessage)
-    		{
-				// create an empty message
-				byte[] bytes = new byte[0];
-				MsgLksctp msg = new MsgLksctp(this);
-				msg.decode(bytes);
-				msg.setType(type);
-				msg.setChannel(channel);
-				msg.setListenpoint(listenpoint);
-				// dispatch it to the generic stack			
-				receiveMessage(msg);
-    		}
-        }
-        catch (Exception e)
-        {
-			GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Exception : Empty message creation for transport action on channel : ", channel);
-        }
-	
+    
+    /**
+     * 
+     * @return a new ListenpointSctp instance
+     */
+    @Override
+    public ListenpointSctp createListenpointSctp() throws Exception {
+    	return new ListenpointLksctp(this);	
     }
     
+    /**
+     * 
+     * @return a new ListenpointSctp instance
+     */
+    @Override
+    public ListenpointSctp createListenpointSctp( Stack stack ) throws Exception {
+    	return new ListenpointLksctp(stack);	
+    }
+	
+    /**
+     * @return a new ChannelSctp instance
+     */
+    @Override
+    public ChannelSctp createChannelSctp( Stack stack ) throws Exception {
+    	return new ChannelLksctp(stack);
+    }
+    
+    /**
+     * 
+     * @return a new ChannelSctp instance
+     */
+    @Override
+    public ChannelSctp createChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception {
+    	return new ChannelLksctp(name,aListenpoint,aSocket);
+    }
+
+    /**
+     * @return a new MsgSctp instance
+     */
+    @Override
+    public MsgSctp createMsgSctp() throws Exception {
+    	return new MsgLksctp(this);
+    }
+
+    /**
+     * @return a new MsgSctp instance
+     */
+    @Override
+    public MsgSctp createMsgSctp(DataSctp chunk) throws Exception {
+    	return new MsgLksctp(this,chunk);
+    }
+   
 }

@@ -23,16 +23,22 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 
-import dk.i1.sctp.SCTPData;
+import java.net.Socket;
 
-public class StackSctp extends Stack
+import org.dom4j.Element;
+
+public abstract class StackSctp extends Stack
 {
 	
 	/** Creates a new instance */
@@ -40,14 +46,42 @@ public class StackSctp extends Stack
 	{
 		super();
 	}
+
+    /** Get the protocol of this message */
+    @Override
+	public String getProtocol() {
+		return StackFactory.PROTOCOL_SCTP;  
+	}
+
+    /** 
+     * Returns the Config object to access the protocol config file 
+     */
+    @Override
+    public Config getConfig() throws Exception
+    {
+        return Config.getConfigByName("sctp.properties");
+    }
 	
+	/**
+	 * Creates a Msg specific to each Stack
+	 * 
+	 * useful to set breakpoints
+	 */
+	@Override
+    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    {
+		Msg msg = super.parseMsgFromXml(request, root, runner);
+		assert( msg instanceof MsgSctp );
+    	return msg;
+    }
+
     /**
      * Creates a Msg specific to each Stack
      * Used for SCTP like protocol : to build incoming message
      */
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception    
+    public Msg readFromSCTPData(DataSctp chunk) throws Exception    
     {
-    	return new MsgSctp(this, chunk);
+	  return this.createMsgSctp(chunk);
     }
 
 	/** 
@@ -63,7 +97,7 @@ public class StackSctp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgSctp msg = new MsgSctp(this);
+				MsgSctp msg = this.createMsgSctp();
 				msg.decode(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);
@@ -79,4 +113,39 @@ public class StackSctp extends Stack
 	
     }
     
+    /**
+     * 
+     * @return a new ListenpointSctp instance
+     */
+    public abstract ListenpointSctp createListenpointSctp() throws Exception;
+    /**
+     * 
+     * @return a new ListenpointSctp instance
+     */
+    public abstract ListenpointSctp createListenpointSctp(Stack stack) throws Exception;
+    
+    /**
+     * 
+     * @return a new ChannelSctp instance
+     */
+    public abstract ChannelSctp createChannelSctp(Stack stack) throws Exception;
+    
+    /**
+     * 
+     * @return a new ChannelSctp instance
+     */
+    public abstract ChannelSctp createChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception;
+    
+    /**
+     * 
+     * @return a new MsgSctp instance
+     */
+    public abstract MsgSctp createMsgSctp() throws Exception;
+
+    /**
+     * 
+     * @return a new MsgSctp instance
+     */
+    public abstract MsgSctp createMsgSctp(DataSctp chunk) throws Exception;
+
 }

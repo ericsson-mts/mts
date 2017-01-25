@@ -28,6 +28,8 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
+
 import com.devoteam.srit.xmlloader.tcp.StackTcp;
 
 import dk.i1.sctp.OneToManySCTPSocket;
@@ -62,11 +64,14 @@ public class SocketServerLksctpListener extends Thread
         {
         	port = listenpointSctp.getPort();
             sctpSocketserver = new OneToOneSCTPSocket(port);
+            
+            /*
 			sctp_event_subscribe ses = new sctp_event_subscribe();
 			ses.sctp_data_io_event = true;
 			ses.sctp_association_event = true;
 			ses.sctp_shutdown_event=true;
-			//sctpSocketserver.subscribeEvents(ses);
+			sctpSocketserver.subscribeEvents(ses);
+			*/
 			
 			/*
 			String host = listenpointSctp.getHost();
@@ -108,7 +113,9 @@ public class SocketServerLksctpListener extends Thread
                     
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerSctpListener got a connection");
 
-                    Channel channel = StackFactory.getStack(listenpointSctp.getProtocol()).buildChannelFromSocket(listenpointSctp, sctpSocket);
+                    String listenpointProtocol = listenpointSctp.getProtocol();
+                    Stack stack = StackFactory.getStack(listenpointProtocol);
+                    Channel channel = stack.buildChannelFromSocket(listenpointSctp, sctpSocket);
                     listenpointSctp.openChannel(channel);
                     
 					// Create an empty message for transport connection actions (open or close) 
