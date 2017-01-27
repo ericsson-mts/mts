@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,36 +21,30 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp.lksctp;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
-import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.*;
 
 import com.devoteam.srit.xmlloader.sctp.*;
 
-import dk.i1.sctp.*;
-
 import java.net.Socket;
 
-public class StackLksctp extends StackSctp
+/**
+ * @author emicpou
+ *
+ * @see <a href="http://www.oracle.com/technetwork/articles/javase/index-139946.html">Stream Control Transport Protocol (SCTP) in Java</a>
+ * @see <a href="http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/package-summary.html">Package com.sun.nio.sctp</a>
+ * 
+ */
+public class StackSunNioSctp extends StackSctp
 {
 	//a change
 	
 	/** Creates a new instance */
-	public StackLksctp() throws Exception
+	public StackSunNioSctp() throws Exception
 	{
 		super();
 	}
-	
-    /**
-     * Creates a Msg specific to each Stack
-     * Used for SCTP like protocol : to build incoming message
-     */
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception    
-    {
-    	return new MsgLksctp(this, chunk);
-    }
     
     /**
      * 
@@ -58,7 +52,7 @@ public class StackLksctp extends StackSctp
      */
     @Override
     public ListenpointSctp createListenpointSctp() throws Exception {
-    	return new ListenpointLksctp(this);	
+    	return new ListenpointSunNioSctp(this);	
     }
     
     /**
@@ -67,7 +61,7 @@ public class StackLksctp extends StackSctp
      */
     @Override
     public ListenpointSctp createListenpointSctp( Stack stack ) throws Exception {
-    	return new ListenpointLksctp(stack);	
+    	return new ListenpointSunNioSctp(stack);	
     }
 	
     /**
@@ -75,7 +69,7 @@ public class StackLksctp extends StackSctp
      */
     @Override
     public ChannelSctp createChannelSctp( Stack stack ) throws Exception {
-    	return new ChannelLksctp(stack);
+    	return new ChannelSunNioSctp(stack);
     }
     
     /**
@@ -84,7 +78,7 @@ public class StackLksctp extends StackSctp
      */
     @Override
     public ChannelSctp createChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception {
-    	return new ChannelLksctp(name,aListenpoint,aSocket);
+    	return new ChannelSunNioSctp(name,aListenpoint,aSocket);
     }
 
     /**
@@ -92,7 +86,7 @@ public class StackLksctp extends StackSctp
      */
     @Override
     public MsgSctp createMsgSctp() throws Exception {
-    	return new MsgLksctp(this);
+    	return new MsgSunNioSctp(this);
     }
 
     /**
@@ -100,7 +94,7 @@ public class StackLksctp extends StackSctp
      */
     @Override
     public MsgSctp createMsgSctp(DataSctp chunk) throws Exception {
-    	return new MsgLksctp(this,chunk);
+    	return new MsgSunNioSctp(this,chunk);
     }
    
 }

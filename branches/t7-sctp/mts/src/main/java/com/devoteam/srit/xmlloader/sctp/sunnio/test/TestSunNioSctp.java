@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,31 +21,34 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.test;
+package com.devoteam.srit.xmlloader.sctp.sunnio.test;
 
 /**
+ * @author emicpou
  *
- * @author gpasquiers
  */
-public class TcpTest
+public class TestSunNioSctp
 {
-    public static long   SERVER_PORT = 12345;
     public static String SERVER_HOST = "127.0.0.1";
+    public static int SERVER_PORT = 12345;
 
-    public static long   MSG_SIZE   = 10000;
-    public static long   MSG_NUMBER = 100000;
+    public static int   MSG_SIZE   = 10000;
+    public static int   MSG_NUMBER = 100000;
     
     public static void main(String[] args)
     {
-        TcpServer tcpServer;
-        tcpServer = new TcpServer();
-        tcpServer.setDaemon(true);
-        tcpServer.start();
-        System.out.println("TcpTest: server started");
+    	ServerSunNioSctp.Config serverConfig = new ServerSunNioSctp.Config();
+    	serverConfig.port = SERVER_PORT;
+    	serverConfig.msgSize = MSG_SIZE;
+    	
+        ServerSunNioSctp server = new ServerSunNioSctp( serverConfig );
+        server.setDaemon(true);
+        server.start();
+        System.out.println("TestSunNioSctp: server started");
         
         try
         {
-            System.out.println("TcpTest: wait 1s");
+            System.out.println("TestSunNioSctp: wait 1s");
             Thread.sleep(1000);
         }
         catch(Exception e)
@@ -53,11 +56,15 @@ public class TcpTest
             e.printStackTrace();
         }
         
-        TcpClient tcpClient;
-        tcpClient = new TcpClient();
-        tcpClient.start();
+        ClientSunNioSctp.Config clientConfig = new ClientSunNioSctp.Config();
+        clientConfig.serverHost = SERVER_HOST;
+        clientConfig.serverPort = SERVER_PORT;
+        clientConfig.msgSize = MSG_SIZE;
+        clientConfig.msgNumber = MSG_NUMBER;
         
+    	ClientSunNioSctp client = new ClientSunNioSctp( clientConfig );
+        client.start();
         
-        System.out.println("TcpTest: client started");
+        System.out.println("TestSunNioSctp: client started");
     }
 }

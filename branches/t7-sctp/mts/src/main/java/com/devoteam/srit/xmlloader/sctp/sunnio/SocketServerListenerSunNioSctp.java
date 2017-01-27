@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.nio;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import java.net.InetAddress;
 
@@ -42,20 +42,20 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
 /**
+ * @author emicpou
  *
- * @author sngom
  */
-public class SocketServerTcpListenerNIO implements IOHandler
+public class SocketServerListenerSunNioSctp implements IOHandler
 {
 
     private ServerSocketChannel serverChannel;
-    private ListenpointTcpNIO listenpoint;
+    private ListenpointSunNioSctp listenpoint;
     private Stack stack;
     
     /**
-     * Creates a new instance of SocketServerTcpListener
+     * Creates a new instance of SocketServerListenerSunNioSctp
      */
-    public SocketServerTcpListenerNIO(ListenpointTcpNIO listenpoint) throws ExecutionException
+    public SocketServerListenerSunNioSctp(ListenpointSunNioSctp listenpoint) throws ExecutionException
     {
         int port = 0;
         InetAddress localInetAddr = null;

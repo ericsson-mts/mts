@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.test;
+package com.devoteam.srit.xmlloader.sctp.sunnio.test;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,19 +30,31 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
+ * @author emicpou
  *
- * @author gpasquiers
  */
-public class TcpServer extends Thread
+public class ServerSunNioSctp extends Thread
 {
+	public static class Config{
+		protected int port = 4242;
+		protected int msgSize = 42;
+	}
+	
+	protected Config config;
+	
+	public ServerSunNioSctp(Config config)
+	{
+		this.config = config;
+	}
+	
     public void run()
     {
+    	ServerSocket serverSocket = null;
         try
         {
-            InetSocketAddress inetSocketAddress = new InetSocketAddress((int)TcpTest.SERVER_PORT);
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(this.config.port);
             
             
-            ServerSocket serverSocket;
             serverSocket = new ServerSocket();
             serverSocket.bind(inetSocketAddress);
         
@@ -50,36 +62,45 @@ public class TcpServer extends Thread
             while(true)
             {
                 Socket socket = serverSocket.accept();
-                TcpServerThread tcpServerThread = new TcpServerThread(socket);
-                tcpServerThread.start();
+                SocketThread socketThread = new SocketThread(socket);
+                socketThread.start();
             }
-        
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
+        if( serverSocket!=null )
+        {
+        	try
+            {
+        		serverSocket.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
     
-    // <editor-fold desc=" TcpServerThread inner Class ">
-    private class TcpServerThread extends Thread
+    private class SocketThread extends Thread
     {
         private Socket socket;
         
-        private TcpServerThread(Socket aSocket)
+        public SocketThread(Socket socket)
         {
             super();
-            socket = aSocket;
+            this.socket = socket;
         }
         
         public void run()
         {
             try
             {
-                InputStream inputStream = socket.getInputStream();
-                OutputStream outputStream = socket.getOutputStream();
+                InputStream inputStream = this.socket.getInputStream();
+                OutputStream outputStream = this.socket.getOutputStream();
 
-                byte[] data = new byte[(int)TcpTest.MSG_SIZE];
+                byte[] data = new byte[ServerSunNioSctp.this.config.msgSize];
                 
                 while(true)
                 {

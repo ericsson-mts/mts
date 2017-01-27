@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,30 +21,44 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.test;
+package com.devoteam.srit.xmlloader.sctp.sunnio.test;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
 /**
+ * @author emicpou
  *
- * @author gpasquiers
  */
-public class TcpClient extends Thread
+public class ClientSunNioSctp extends Thread
 {
-    
+	public static class Config{
+		protected String serverHost = "locahost";
+		protected int serverPort = 4242;
+		protected int msgSize = 42;		
+		protected int msgNumber = 4;		
+	}
+	
+	protected Config config;
+	
+	ClientSunNioSctp(Config config)
+	{
+		this.config = config;
+	}
+   
     public void run()
     {
+    	Socket socket = null;
         try
         {
-            Socket socket = new Socket(TcpTest.SERVER_HOST,(int) TcpTest.SERVER_PORT);
-            System.out.println("TcpClient: client connected");
+            socket = new Socket(this.config.serverHost,this.config.serverPort);
+            System.out.println("ClientSunNioSctp: client connected");
             
             OutputStream outputStream = socket.getOutputStream();
             InputStream inputStream = socket.getInputStream();
             
-            byte[] data = new byte[(int)TcpTest.MSG_SIZE];
+            byte[] data = new byte[this.config.msgSize];
             
             for(int i=0; i<data.length; i++)
             {
@@ -55,26 +69,26 @@ public class TcpClient extends Thread
 
             long start = System.currentTimeMillis();
             
-            for(int i=0; i<TcpTest.MSG_NUMBER; i++)
+            for(int i=0; i<this.config.msgNumber; i++)
             {
                 outputStream.write(data);
                 outputStream.flush();
                 
                 int len = inputStream.read(data);
                 
-                if(len != TcpTest.MSG_SIZE)
+                if(len != this.config.msgSize)
                 {
-                    System.out.println(len + "!=" + TcpTest.MSG_SIZE);
+                    System.out.println(len + "!=" + this.config.msgSize);
                 }
                 
             }
-            
+             
             long end = System.currentTimeMillis();
             
             System.out.println("TcpClient: duration=" + (end-start) +"ms");
-            System.out.println("TcpClient: requests=" + TcpTest.MSG_NUMBER);
-            System.out.println("TcpClient: " + ((TcpTest.MSG_NUMBER*1000)/(end-start)) + " requests per second");
-            System.out.println("TcpClient: " + ((TcpTest.MSG_NUMBER * TcpTest.MSG_SIZE)*1000/1024/1024/(end-start)) + " mo per second");
+            System.out.println("TcpClient: requests=" + this.config.msgNumber);
+            System.out.println("TcpClient: " + ((this.config.msgNumber*1000)/(end-start)) + " requests per second");
+            System.out.println("TcpClient: " + ((this.config.msgNumber * this.config.msgSize)*1000/1024/1024/(end-start)) + " mo per second");
             
         }
         catch(Exception e)
@@ -82,6 +96,17 @@ public class TcpClient extends Thread
             e.printStackTrace();
         }
         
+        if( socket!=null )
+        {
+        	try
+            {
+        		socket.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }        
         
     }
 }

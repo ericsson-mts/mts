@@ -26,8 +26,6 @@ package com.devoteam.srit.xmlloader.sctp;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
-import java.net.InetAddress;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,13 +35,9 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-
-import com.devoteam.srit.xmlloader.sctp.AssociationIdSctp;
 
 public abstract class MsgSctp extends Msg{
 	
@@ -166,7 +160,7 @@ public abstract class MsgSctp extends Msg{
 		xml += "\n"; 
 
     	DataSctp dataSctp = this.getDataSctp();
-    	SndrcvinfoSctp sndrcvinfo = dataSctp.getSndrcvinfo();
+    	InfoSctp sndrcvinfo = dataSctp.getInfo();
     	if (sndrcvinfo!=null)
 		{
 			xml += "<sctp ";
@@ -185,7 +179,7 @@ public abstract class MsgSctp extends Msg{
 			xml += "tsn=\"" + tsn + "\", ";
 			long cumtsn = ((long) Utils.convertLittleBigIndian(sndrcvinfo.getCumtsn())) & 0xffffffffl;
 			xml += "cumtsn=\"" + cumtsn + "\", ";
-			long aid = ((long) sndrcvinfo.getAssociationId().getValue()) & 0xffffffffl;			
+			long aid = ((long) sndrcvinfo.getAssociation().getId()) & 0xffffffffl;			
 			xml += "aid=\"" + aid + "\"/>\n";
 			
 			xml += toXml_SubElements();
@@ -248,6 +242,7 @@ public abstract class MsgSctp extends Msg{
 		dataSctp.clear();
     	this.setType("DATA");
     	 
+		@SuppressWarnings("unchecked")
 		List<Element> xmlData = root.elements("data");
 		List<byte[]> datas = new LinkedList<byte[]>();
 		for(Element element:xmlData)
@@ -295,96 +290,28 @@ public abstract class MsgSctp extends Msg{
 
 		dataSctp.setData(data);
 
-		SndrcvinfoSctp sndrcvinfo = dataSctp.getSndrcvinfo();
-		assert(sndrcvinfo!=null);
-
 		// initialize from the configuration file		
-        Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-        sndrcvinfo.setStreamId( (short) config.getInteger("client.DEFAULT_STREAM", 1) );
-		sndrcvinfo.setSsn( (short) config.getInteger("client.DEFAULT_SSN", 0) );
-		sndrcvinfo.setPpid( Utils.convertLittleBigIndian(config.getInteger("client.DEFAULT_PPID", 0)) );
-		sndrcvinfo.setFlags( (short) config.getInteger("client.DEFAULT_FLAGS", 0) );		
-		sndrcvinfo.setContext( config.getInteger("client.DEFAULT_CONTEXT", 0) );
-		sndrcvinfo.setTtl( config.getInteger("client.DEFAULT_TTL", 0) );
-		sndrcvinfo.setTsn( config.getInteger("client.DEFAULT_TSN", 0) );
-		sndrcvinfo.setCumtsn( config.getInteger("client.DEFAULT_CUMTSN", 0) );
-		sndrcvinfo.setAssociationId( (long) config.getInteger("client.DEFAULT_AID", 0) );
+        Config stackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
 
 		// Parse the XML file
+		@SuppressWarnings("unchecked")
 		List<Element> sctpElements = root.elements("sctp");
-		if (sctpElements != null && sctpElements.size() > 0)
-		{
-			Element sctpElement = sctpElements.get(0);
-	        
-			String stream = sctpElement.attributeValue("stream");
-			if (stream != null)
-			{
-				sndrcvinfo.setStreamId( (short) Integer.parseInt(stream) );
-			}
-			
-			String ssn = sctpElement.attributeValue("ssn");
-			if (ssn != null)
-			{
-				sndrcvinfo.setSsn( (short) Integer.parseInt(ssn) );
-			}
-			
-			String ppidString = sctpElement.attributeValue("ppid");
-			if (ppidString != null)
-			{
-				int ppidIntLe = (int) Long.parseLong(ppidString);
-				int ppidIntBe = Utils.convertLittleBigIndian(ppidIntLe);
-				sndrcvinfo.setPpid( ppidIntBe );
-			}
-			
-			String flags = sctpElement.attributeValue("flags");
-			if (flags != null)
-			{
-				sndrcvinfo.setFlags( (short) Integer.parseInt(flags) );
-			}
-			
-			String context = sctpElement.attributeValue("context");
-			if (context != null)
-			{
-				sndrcvinfo.setContext( (int) Long.parseLong(context) );
-			}
-			
-			String ttl = sctpElement.attributeValue("ttl");
-			if (ttl != null)
-			{
-				sndrcvinfo.setTtl( (int) Long.parseLong(ttl) );
-			}
-			
-			String tsnString = sctpElement.attributeValue("tsn");
-			if (tsnString != null)
-			{
-				sndrcvinfo.setTsn( (int) Long.parseLong(tsnString) );
-			}
-			
-			String cumtsnString = sctpElement.attributeValue("cumtsn");
-			if (cumtsnString != null)
-			{
-				sndrcvinfo.setCumtsn( (int) Long.parseLong(cumtsnString) );
-			}
 
-			String aidString = sctpElement.attributeValue("aid");
-			if (aidString != null)
-			{
-				sndrcvinfo.setAssociationId( (long) Long.parseLong(aidString) );
-			}
+        InMemoryInfoSctp sndrcvinfo = new InMemoryInfoSctp();
+        sndrcvinfo.setFromStackConfig( stackConfig );
+        sndrcvinfo.setFromXml(sctpElements);
+		dataSctp.setInfo(sndrcvinfo);
 
-			dataSctp.setSndrcvinfo(sndrcvinfo);
-
-			// log datas
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + sndrcvinfo.getStreamId());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + sndrcvinfo.getSsn());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + sndrcvinfo.getPpid());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + sndrcvinfo.getFlags());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + sndrcvinfo.getContext());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + sndrcvinfo.getTtl());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + sndrcvinfo.getTsn());
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + sndrcvinfo.getCumtsn());			
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + sndrcvinfo.getAssociationId().getValue() );
-		}
+		// log datas
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + sndrcvinfo.getStreamId());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + sndrcvinfo.getSsn());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + sndrcvinfo.getPpid());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + sndrcvinfo.getFlags());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + sndrcvinfo.getContext());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + sndrcvinfo.getTtl());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + sndrcvinfo.getTsn());
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + sndrcvinfo.getCumtsn());			
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + sndrcvinfo.getAssociation().getId() );		
     }
 
     
@@ -413,9 +340,9 @@ public abstract class MsgSctp extends Msg{
         {
         	DataSctp dataSctp = this.getDataSctp();
         	
-        	if (dataSctp != null && dataSctp.getSndrcvinfo() != null)
+        	if (dataSctp != null && dataSctp.getInfo() != null)
         	{
-        		SndrcvinfoSctp sndrcvinfo = dataSctp.getSndrcvinfo();
+        		InfoSctp sndrcvinfo = dataSctp.getInfo();
         		
 	            if(params[1].equalsIgnoreCase("stream")) 
 	            {
@@ -461,7 +388,7 @@ public abstract class MsgSctp extends Msg{
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 
 	            {
-	            	long aid = ((long)sndrcvinfo.getAssociationId().getValue())  & 0xffffffff;;
+	            	long aid = ((long)sndrcvinfo.getAssociation().getId())  & 0xffffffff;;
 	            	var.add(Long.toString(aid));
 	            }
 	            else if(params[1].equalsIgnoreCase("peerHosts")) 

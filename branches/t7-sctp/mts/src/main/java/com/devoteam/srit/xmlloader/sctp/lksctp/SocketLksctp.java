@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sctp.lksctp;
 
-import java.net.SocketException;
 import java.util.concurrent.Semaphore;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -35,15 +34,10 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import com.devoteam.srit.xmlloader.sctp.DataSctp;
+import com.devoteam.srit.xmlloader.sctp.*;
 
-import dk.i1.sctp.SCTPChunk;
-import dk.i1.sctp.SCTPData;
-import dk.i1.sctp.SCTPNotificationAssociationChangeCommLost;
-import dk.i1.sctp.SCTPNotificationShutdownEvent;
-import dk.i1.sctp.SCTPSocket;
-import dk.i1.sctp.WouldBlockException;
-import dk.i1.sctp.sctp_event_subscribe;
+import dk.i1.sctp.*;
+
 /**
  *
  * @author nghezzaz

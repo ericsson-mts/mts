@@ -40,10 +40,10 @@ public interface DataSctp {
 	public int getLength();
 
 	/**
-	 * @return copy of the SndrcvinfoSctp value
+	 * @return copy of the InfoSctp value
 	 */
 	//@Nullable
-	public SndrcvinfoSctp getSndrcvinfo();
+	public InfoSctp getInfo();
 
 	/**
 	 * 
@@ -51,9 +51,10 @@ public interface DataSctp {
 	public void setData(byte[] data);
 	
 	/**
-	 * param the SndrcvinfoSctp value 
+	 * @param sndrcvinfo the InfoSctp value 
+	 * @throws Exception TODO
 	 */
-	public void setSndrcvinfo( SndrcvinfoSctp sndrcvinfo );
+	public void setInfo( InfoSctp sndrcvinfo ) throws Exception;
 
 	/**
 	 * 

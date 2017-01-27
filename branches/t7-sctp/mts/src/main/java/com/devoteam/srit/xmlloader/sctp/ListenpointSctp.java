@@ -23,13 +23,9 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 public abstract class ListenpointSctp extends Listenpoint {
 	

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,24 +21,26 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.nio;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
-import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
+import com.devoteam.srit.xmlloader.core.protocol.*;
 
-public class ListenpointTcpNIO extends Listenpoint
+import com.devoteam.srit.xmlloader.sctp.*;
+
+/**
+ * @author emicpou
+ *
+ */
+public class ListenpointSunNioSctp extends ListenpointSctp
 {
 
     // --- attributs --- //
-    private SocketServerTcpListenerNIO socketListenerTcp;
+    private SocketServerListenerSunNioSctp socketServerListener;
 
-    private long startTimestamp = 0;
+    //private long startTimestamp = 0;
     
     /** Creates a new instance of Listenpoint */
-    public ListenpointTcpNIO(Stack stack) throws Exception
+    public ListenpointSunNioSctp(Stack stack) throws Exception
     {
         super(stack);
     }
@@ -52,14 +54,14 @@ public class ListenpointTcpNIO extends Listenpoint
     @Override
     public boolean create(String protocol) throws Exception
     {
-		this.startTimestamp = System.currentTimeMillis();
+		//this.startTimestamp = System.currentTimeMillis();
     	
         if (!super.create(protocol))
         {
             return false;
         }
 
-        socketListenerTcp = new SocketServerTcpListenerNIO(this);
+        socketServerListener = new SocketServerListenerSunNioSctp(this);
 
         return true;
     }
@@ -73,7 +75,7 @@ public class ListenpointTcpNIO extends Listenpoint
 
         if (!this.existsChannel(keySocket))
         {
-            channel = new ChannelTcpNIO(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
+            channel = new ChannelSunNioSctp(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
             this.openChannel(channel);
         }
         else
@@ -94,12 +96,20 @@ public class ListenpointTcpNIO extends Listenpoint
     {    		
         super.remove();
 
-        if (this.socketListenerTcp != null)
+        if (this.socketServerListener != null)
         {	
-            this.socketListenerTcp.close();
-            this.socketListenerTcp = null;
+            this.socketServerListener.close();
+            this.socketServerListener = null;
         }
 
         return true;
     }
+
+    @Override
+    protected ChannelSctp createChannelSctp(String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
+    {
+    	return new ChannelSunNioSctp(this,aLocalHost,aLocalPort,aRemoteHost,aRemotePort,aProtocol);
+    }
+    
+    
 }

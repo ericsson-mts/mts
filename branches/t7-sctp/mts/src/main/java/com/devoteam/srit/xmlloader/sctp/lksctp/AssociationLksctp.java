@@ -21,11 +21,46 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp;
+package com.devoteam.srit.xmlloader.sctp.lksctp;
+
+import com.devoteam.srit.xmlloader.sctp.AssociationSctp;
+
+import dk.i1.sctp.*;
 
 /**
  * @author emicpou
- *
+ * sctp_sndrcvinfo implementation object adapter 
  */
-public interface NotificationSctp {
+public class AssociationLksctp implements AssociationSctp{
+	
+	/**
+	 * reference on the implementation object
+	 */
+	protected AssociationId sinfo_assoc_id;
+	
+	/**
+	 * @param sinfo_assoc_id reference on the implementation object
+	 */
+	public AssociationLksctp( AssociationId sinfo_assoc_id ){
+		this.sinfo_assoc_id = sinfo_assoc_id;
+	}
+		
+	/**
+	 * 
+	 */
+	@Override
+	public String toString(){
+		return this.sinfo_assoc_id.toString();
+	}
+
+	/**
+	 * @return the local handle to the SCTP association
+	 */
+	@Override
+	public long getId(){
+		// hashCode implemented as a return value
+		//return this.sinfo_assoc_id.id;
+		return this.sinfo_assoc_id.hashCode();
+	}
+	
 }

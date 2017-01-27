@@ -23,21 +23,17 @@
 
 package com.devoteam.srit.xmlloader.sctp.lksctp;
 
-import org.dom4j.Element;
-
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
-import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
-import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.sctp.*;
 
 public class ListenpointLksctp extends ListenpointSctp {
 	
 	// --- attributs --- //
-	private SocketServerLksctpListener  socketListenerSctp;
+	private SocketServerListenerLksctp  socketListenerSctp;
 
     private long startTimestamp = 0;
 	
@@ -63,7 +59,7 @@ public class ListenpointLksctp extends ListenpointSctp {
 		
     	try
     	{
-    		socketListenerSctp = new SocketServerLksctpListener(this);
+    		socketListenerSctp = new SocketServerListenerLksctp(this);
     		socketListenerSctp.setDaemon(true);
     		socketListenerSctp.start();
     	}

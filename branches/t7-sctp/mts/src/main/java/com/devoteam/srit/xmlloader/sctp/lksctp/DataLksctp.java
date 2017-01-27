@@ -23,11 +23,9 @@
 
 package com.devoteam.srit.xmlloader.sctp.lksctp;
 
-import com.devoteam.srit.xmlloader.sctp.DataSctp;
-import com.devoteam.srit.xmlloader.sctp.SndrcvinfoSctp;
+import com.devoteam.srit.xmlloader.sctp.*;
 
-import dk.i1.sctp.SCTPData;
-import dk.i1.sctp.sctp_sndrcvinfo;
+import dk.i1.sctp.*;
 
 /**
  * @author emicpou
@@ -101,21 +99,21 @@ public class DataLksctp implements DataSctp {
 	* 
 	*/
 	@Override
-	public SndrcvinfoSctp getSndrcvinfo(){
-		assert(this.sctpData.sndrcvinfo!=null);
-		return new SndrcvinfoLksctp(this.sctpData.sndrcvinfo);
+	public InfoSctp getInfo(){
+		if(this.sctpData.sndrcvinfo==null){
+			return null;
+		}
+		return new InfoLksctp(this.sctpData.sndrcvinfo);
 	}
 	
 	/**
 	* 
 	*/
 	@Override
-	public void setSndrcvinfo( SndrcvinfoSctp sndrcvinfo ){
-		//there should be only one stack activated : many implementations doesn't coexists at runtime
-		assert(sndrcvinfo instanceof SndrcvinfoLksctp);
-		//maybe we should clone instead of sharing instance?
-		this.sctpData.sndrcvinfo = ((SndrcvinfoLksctp)sndrcvinfo).sndrcvinfo;
-		assert(this.sctpData.sndrcvinfo!=null);
+	public void setInfo( InfoSctp sndrcvinfo ) throws Exception{
+		this.sctpData.sndrcvinfo = new sctp_sndrcvinfo();
+		InfoLksctp dst = new InfoLksctp(this.sctpData.sndrcvinfo);
+		dst.set(sndrcvinfo);
 	}
 	
 	/**

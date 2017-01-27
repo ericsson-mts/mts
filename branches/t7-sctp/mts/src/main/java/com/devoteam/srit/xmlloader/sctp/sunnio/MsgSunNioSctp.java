@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,42 +21,42 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp.lksctp;
-
-import java.net.InetAddress;
-import java.util.Collection;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-
+import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.sctp.*;
 
-import dk.i1.sctp.*;
+import java.nio.*;
 
+/**
+ * @author emicpou
+ *
+ */
+public class MsgSunNioSctp extends MsgSctp{
+	
 
-public class MsgLksctp extends MsgSctp{
-
-	protected DataLksctp dataLksctp;
+	protected DataSunNioSctp dataSunNioSctp;
 
 	/** Creates a new instance */
-    public MsgLksctp(Stack stack) throws Exception
+    public MsgSunNioSctp(Stack stack) throws Exception
     {
         super(stack);
-		this.dataLksctp = new DataLksctp();
+		this.dataSunNioSctp = new DataSunNioSctp();
     }
     
     /** Creates a new instance */
-	public MsgLksctp(Stack stack, SCTPData chunk) throws Exception{
+	public MsgSunNioSctp(Stack stack, ByteBuffer chunk) throws Exception{
 		super(stack);
 		this.setType("DATA");
-		this.dataLksctp = new DataLksctp(chunk);		
+		this.dataSunNioSctp = new DataSunNioSctp(chunk);		
 	}
     
     /** Creates a new instance */
-	public MsgLksctp(Stack stack, DataSctp chunk) throws Exception{
+	public MsgSunNioSctp(Stack stack, DataSctp chunk) throws Exception{
 		super(stack);		
 		this.setType("DATA");
-		this.dataLksctp = new DataLksctp(chunk);		
+		this.dataSunNioSctp = new DataSunNioSctp(chunk);		
 	}
 	
 	/**
@@ -65,23 +65,8 @@ public class MsgLksctp extends MsgSctp{
 	 */
 	@Override
 	public DataSctp getDataSctp(){
-		assert(this.dataLksctp!=null);
-		return this.dataLksctp;		
-	}
-
-	/**
-	 * 
-	 * @return the associated DataSctp implementation object
-	 */
-	public SCTPData getSCTPData() {
-		return this.dataLksctp.getSCTPData();
-	}
-
-	/// a utiliser
-	public void setAidFromMsg()
-	{
-		SCTPData sctpData = this.dataLksctp.getSCTPData();
-		((ChannelLksctp) getChannel()).setAssociationId(sctpData.sndrcvinfo.sinfo_assoc_id);
+		assert(this.dataSunNioSctp!=null);
+		return this.dataSunNioSctp;		
 	}
 
 	/** 
@@ -92,16 +77,17 @@ public class MsgLksctp extends MsgSctp{
     protected String toXml_SubElements() throws Exception 
     {
     	String xml = "";
-    	ChannelLksctp channelLksctp = (ChannelLksctp) getChannel();
-		if (channelLksctp != null)
+    	/*
+    	ChannelSunIoSctp channelSunIoSctp = (ChannelSunIoSctp) getChannel();
+		if (channelSunIoSctp != null)
 		{
-			SocketLksctp socketLksctp = channelLksctp.getSocketLksctp();
-			if (socketLksctp != null)
+			SocketSunIoSctp socketSunIoSctp = channelSunIoSctp.getSocketSunIoSctp();
+			if (socketSunIoSctp != null)
 			{
-				SCTPSocket sctpSocket = socketLksctp.getSCTPSocket();
+				SCTPSocket sctpSocket = socketSunIoSctp.getSCTPSocket();
 				if (sctpSocket != null)
 				{
-					SCTPData sctpData = this.dataLksctp.getSCTPData();
+					SCTPData sctpData = this.dataSunNioSctp.getSCTPData();
 					AssociationId assoId = sctpData.sndrcvinfo.sinfo_assoc_id;
 					if (assoId != null && assoId.hashCode() != 0)
 					{
@@ -123,6 +109,7 @@ public class MsgLksctp extends MsgSctp{
 				}
 			}	
 		}
+		*/
     	return xml;
     }
 
@@ -137,17 +124,19 @@ public class MsgLksctp extends MsgSctp{
     @Override
     protected Parameter getParameterPeerHosts() throws Exception {
     	Parameter var = new Parameter();
-    	ChannelLksctp connSctp =((ChannelLksctp) getChannel());
-		SocketLksctp socketLksctp = connSctp.getSocketLksctp();
-		if (socketLksctp != null){
-			SCTPSocket sctpSocket = socketLksctp.getSCTPSocket();
-			SCTPData sctpData = this.dataLksctp.getSCTPData();
+    	/*
+    	ChannelSunIoSctp connSctp =((ChannelSunIoSctp) getChannel());
+		SocketSunIoSctp socketSunIoSctp = connSctp.getSocketSunIoSctp();
+		if (socketSunIoSctp != null){
+			SCTPSocket sctpSocket = socketSunIoSctp.getSCTPSocket();
+			SCTPData sctpData = this.dataSunNioSctp.getSCTPData();
 			Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
 			for (InetAddress ia : col)
 			{	
 				var.add(ia.getHostAddress());						
 			}
 		}
+		*/
 		return var;
     }
     
@@ -157,14 +146,16 @@ public class MsgLksctp extends MsgSctp{
     @Override
     protected Parameter getParameterPeerPort() throws Exception {
     	Parameter var = new Parameter();
-    	ChannelLksctp connSctp =((ChannelLksctp) getChannel());
-		SocketLksctp socketLksctp = connSctp.getSocketLksctp();
-		if (socketLksctp != null){
-			SCTPSocket sctpSocket = socketLksctp.getSCTPSocket();
-			SCTPData sctpData = this.dataLksctp.getSCTPData();
+    	/*
+    	ChannelSunIoSctp connSctp =((ChannelSunIoSctp) getChannel());
+		SocketSunIoSctp socketSunIoSctp = connSctp.getSocketSunIoSctp();
+		if (socketSunIoSctp != null){
+			SCTPSocket sctpSocket = socketSunIoSctp.getSCTPSocket();
+			SCTPData sctpData = this.dataSunNioSctp.getSCTPData();
       	  	int port = sctpSocket.getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);
     	    var.add(Integer.toString(port));
 		}
+		*/
 		return var;
     }
 

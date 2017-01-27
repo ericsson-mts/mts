@@ -24,41 +24,22 @@
 package com.devoteam.srit.xmlloader.sctp.lksctp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
-import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.tcp.bio.ChannelTcpBIO;
-import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 
-import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
-import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
+import com.devoteam.srit.xmlloader.sctp.*;
 
-import dk.i1.sctp.OneToManySCTPSocket;
-import dk.i1.sctp.OneToOneSCTPSocket;
-import dk.i1.sctp.SCTPSocket;
-import dk.i1.sctp.sctp_initmsg;
-import dk.i1.sctp.sctp_paddrparams;
+import dk.i1.sctp.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.util.Collection;
-import java.util.List;
-
-import dk.i1.sctp.AssociationId;
-
 import java.net.Socket;
-
-import org.dom4j.Element;
+import java.util.Collection;
 
 /**
  *
@@ -71,7 +52,6 @@ public class ChannelLksctp extends ChannelSctp
     private SocketLksctp socket;
     
     private AssociationId aid;
-    private sctp_initmsg initmsg;
 
     private long startTimestamp = 0;    
     
@@ -85,7 +65,6 @@ public class ChannelLksctp extends ChannelSctp
     {
         super(aListenpoint, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         this.socket = null;
-        this.initmsg = new sctp_initmsg();
     }
 
     public ChannelLksctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
@@ -104,7 +83,6 @@ public class ChannelLksctp extends ChannelSctp
 
         this.socket = new SocketLksctp((SCTPSocket) aSocket);
         this.socket.setChannelSctp(this);
-        this.initmsg = new sctp_initmsg();
     }
     
     public SocketLksctp getSocketLksctp()
@@ -140,9 +118,14 @@ public class ChannelLksctp extends ChannelSctp
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
             int intLocalPort = getLocalPort(); 
             sctpSocket.bind(intLocalPort);
-            if (this.initmsg != null)
+            if (this.configSctp != null)
             {
-            	sctpSocket.setInitMsg(this.initmsg);
+            	sctp_initmsg initmsg = new sctp_initmsg();
+            	initmsg.sinit_num_ostreams = this.configSctp.num_ostreams;
+            	initmsg.sinit_max_instreams = this.configSctp.max_instreams;
+            	initmsg.sinit_max_attempts = this.configSctp.max_attempts;
+            	initmsg.sinit_max_init_timeo= this.configSctp.max_init_timeo;
+            	sctpSocket.setInitMsg(initmsg);
             }
                         
             String strRemoteHost = getRemoteHost();
@@ -167,7 +150,7 @@ public class ChannelLksctp extends ChannelSctp
 	            	{
 	            		System.out.println("Bind to " + this.localHost[i] +  ":" + localPort);	        
 		                sctp_paddrparams spp = new sctp_paddrparams();
-		                spp.spp_assoc_id = new AssociationIdSctp(101);
+		                spp.spp_assoc_id = new AssociationSctp(101);
 		                System.out.println("spp.spp_assoc_id.hashCode()" + spp.spp_assoc_id.hashCode());
 		                InetSocketAddress localSocketAddress = new InetSocketAddress(this.localHost[i], localPort);
 		                spp.spp_address = localSocketAddress;
@@ -277,72 +260,14 @@ public class ChannelLksctp extends ChannelSctp
     //---------------------------------------------------------------------
     // methods for the XML display / parsing
     //---------------------------------------------------------------------
-	
-    /** 
-     * Parse the message from XML element 
-     */
-    @Override
-    public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
-    {
-    	super.parseFromXml(root, runner, protocol);
-    	
-    	this.initmsg = new sctp_initmsg();
-    	
-		// initialize from the configuration file
-    	this.initmsg.sinit_num_ostreams = (short) this.stack.getConfig().getInteger("connect.NUM_OSTREAMS");
-    	this.initmsg.sinit_max_instreams = (short) this.stack.getConfig().getInteger("connect.MAX_INSTREAMS");
-    	this.initmsg.sinit_max_attempts = (short)  this.stack.getConfig().getInteger("connect.MAX_ATTEMPTS");
-    	this.initmsg.sinit_max_init_timeo= (short) this.stack.getConfig().getInteger("connect.MAX_INIT_TIMEO");
-		
-		// Parse the XML file
-		List<Element> sctpElements = root.elements("sctp");
-		if (sctpElements != null && sctpElements.size() > 0)
-		{
-			Element sctpElement = sctpElements.get(0);
-	        
-			String num_ostreams = sctpElement.attributeValue("num_ostreams");
-			if (num_ostreams != null)
-			{
-				this.initmsg.sinit_num_ostreams = (short) Integer.parseInt(num_ostreams);	    	
-			}
-	
-			String max_instreams = sctpElement.attributeValue("max_instreams");
-	    	if (max_instreams != null)
-	    	{
-	    		this.initmsg.sinit_max_instreams = (short) Integer.parseInt(max_instreams);
-	    	}
-			
-	    	String max_attempts = sctpElement.attributeValue("max_attempts");
-			if (max_attempts != null)
-			{
-				this.initmsg.sinit_max_attempts = (short) Integer.parseInt(max_attempts);    			
-			}
-			
-			String max_init_timeo = sctpElement.attributeValue("max_initTimeo");
-			if (max_init_timeo != null)
-			{
-				this.initmsg.sinit_max_init_timeo= (short) Integer.parseInt(max_init_timeo);    			
-			}
-			
-			// log datas
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_num_ostreams=", this.initmsg.sinit_num_ostreams);			
-    		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_instreams=", this.initmsg.sinit_max_instreams);
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_attempts=", initmsg.sinit_max_attempts);
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "initmsg.sinit_max_init_timeo=", initmsg.sinit_max_init_timeo);
-		}
-    }
-    
-    //---------------------------------------------------------------------
-    // methods for the XML display / parsing
-    //---------------------------------------------------------------------
 
     /** 
      * Returns the string description of the message. Used for logging as DEBUG level 
      */
     @Override
-    public String toString()
+    public String toString_attributes()
     {
-        String ret = super.toString();
+        String ret = "";
         /*
         if (this.socket != null && this.socket.getSctpSocket() != null)
         {
@@ -400,27 +325,7 @@ public class ChannelLksctp extends ChannelSctp
 	        }
 	     }
 	     */
-        ret += ">\n";
-        
-		if (this.initmsg != null && (
-			this.initmsg.sinit_num_ostreams != 0 ||
-			this.initmsg.sinit_max_instreams != 0 ||
-			this.initmsg.sinit_max_attempts != 0 ||
-			this.initmsg.sinit_max_init_timeo != 0)
-			)
-		{
-			ret += "<sctp";
-			int numOutstreams = this.initmsg.sinit_num_ostreams & 0xffff;
-			ret += " num_ostreams=\"" + numOutstreams + "\"";
-			int maxInstreams = this.initmsg.sinit_max_instreams & 0xffff;
-			ret += " max_instreams=\"" + maxInstreams + "\"";
-			int maxAttempts = this.initmsg.sinit_max_attempts & 0xffff;
-			ret += " max_attempts=\"" + maxAttempts+ "\"";
-			int maxInitTimeo = this.initmsg.sinit_max_init_timeo & 0xffff;
-			ret += " max_initTimeo=\"" + maxInitTimeo+ "\"";
-			ret += "/>\n";
-		}	
-	    return ret;
+ 	    return ret;
     }
         
     //------------------------------------------------------

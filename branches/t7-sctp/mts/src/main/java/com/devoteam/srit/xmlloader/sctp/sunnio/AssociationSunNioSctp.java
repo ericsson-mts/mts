@@ -21,70 +21,48 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp.lksctp;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
-import com.devoteam.srit.xmlloader.sctp.AssociationIdSctp;
+import com.devoteam.srit.xmlloader.sctp.AssociationSctp;
 
-import dk.i1.sctp.AssociationId;
+import com.sun.nio.sctp.*;
 
 /**
  * @author emicpou
- * sctp_sndrcvinfo implementation object adapter 
+ * 
+ * Association implementation object adapter 
+ *  
+ * @see <a href="http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/Association.html">Class MessageInfo</a>
+ * 
  */
-public class AssociationIdLksctp implements AssociationIdSctp{
+public class AssociationSunNioSctp implements AssociationSctp{
 	
 	/**
 	 * reference on the implementation object
 	 */
-	AssociationId sinfo_assoc_id;
+	protected Association association;
 	
 	/**
 	 * @param sinfo_assoc_id reference on the implementation object
 	 */
-	AssociationIdLksctp( AssociationId sinfo_assoc_id ){
-		this.sinfo_assoc_id = sinfo_assoc_id;
+	public AssociationSunNioSctp( Association association ){
+		this.association = association;
 	}
-	
-	/**
-	 * @param sinfo_assoc_id reference on the implementation object
-	 */
-	AssociationIdLksctp( long value ){
-		this.sinfo_assoc_id = new AssociationId( value );
-	}
-	
-	/**
-	 * @return a deep cloned instance
-	 */
-	@Override
-	public Object clone() throws CloneNotSupportedException{
-		long cloned_value = this.getValue();
-		return new AssociationIdLksctp( cloned_value );
-	}
-	
+		
 	/**
 	 * 
 	 */
 	@Override
 	public String toString(){
-		return this.sinfo_assoc_id.toString();
+		return Integer.toString( this.association.associationID() );
 	}
 
 	/**
 	 * @return the local handle to the SCTP association
 	 */
 	@Override
-	public long getValue(){
-		// hashCode implemented as a return value
-		//return this.sinfo_assoc_id.id;
-		return this.sinfo_assoc_id.hashCode();
-	}
-	
-	/**
-	 * @param value the local handle to the SCTP association
-	 */
-	@Override
-	public void setValue( long value ){
-		this.sinfo_assoc_id = new AssociationId(value);
+	public long getId(){
+		return (int)this.association.associationID();
 	}
 	
 }

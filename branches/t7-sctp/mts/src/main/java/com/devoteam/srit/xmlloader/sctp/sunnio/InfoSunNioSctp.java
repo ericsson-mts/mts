@@ -21,30 +21,36 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp.lksctp;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
-import com.devoteam.srit.xmlloader.sctp.SndrcvinfoSctp;
-import com.devoteam.srit.xmlloader.sctp.AssociationIdSctp;
+import com.devoteam.srit.xmlloader.sctp.InfoSctp;
+import com.devoteam.srit.xmlloader.sctp.AssociationSctp;
 
-import dk.i1.sctp.AssociationId;
-import dk.i1.sctp.sctp_sndrcvinfo;
+import java.lang.UnsupportedOperationException; 
+
+import com.sun.nio.sctp.*;
+
 
 /**
  * @author emicpou
- * sctp_sndrcvinfo implementation object adapter 
+ * 
+ * MessageInfo implementation object adapter
+ *  
+ * @see <a href="http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/MessageInfo.html">Class MessageInfo</a>
+ * 
  */
-public class SndrcvinfoLksctp implements SndrcvinfoSctp {
+public class InfoSunNioSctp extends InfoSctp {
 	
 	/**
 	 * reference on the implementation object
 	 */
-	sctp_sndrcvinfo sndrcvinfo;
+    protected MessageInfo messageInfo;
 	
 	/**
-	 * @param sndrcvinfo reference on the implementation object
+	 * @param messageInfo reference on the implementation object
 	 */
-	SndrcvinfoLksctp( sctp_sndrcvinfo sndrcvinfo ){
-		this.sndrcvinfo = sndrcvinfo;
+	InfoSunNioSctp( MessageInfo messageInfo ){
+		this.messageInfo = messageInfo;
 	}
 	
 	/**
@@ -52,14 +58,14 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public short getStreamId(){
-		return this.sndrcvinfo.sinfo_stream;
+		return -1;
 	}
 	
 	/**
 	 * @param the stream id value
 	 */
-	public void setStreamId( short streamId ){
-		this.sndrcvinfo.sinfo_stream = streamId;
+	@Override
+	public void setStreamId( short streamId ) throws Exception{
 	}
 	
 	/**
@@ -67,15 +73,14 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public short getSsn(){
-		return this.sndrcvinfo.sinfo_ssn;
+		return -1;
 	}
 	
 	/**
 	 * @param the ssn value
 	 */
 	@Override
-	public void setSsn( short ssn ){
-		this.sndrcvinfo.sinfo_ssn = ssn;
+	public void setSsn( short ssn ) throws Exception{
 	}
 	
 	/**
@@ -83,15 +88,20 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public short getFlags(){
-		return this.sndrcvinfo.sinfo_flags;
+		short flags = 0;
+		if( this.messageInfo.isUnordered() ){
+		  flags |= FLAG_UNORDERED;
+		}
+		return flags;
 	}
 	
 	/**
 	 * @param the flags value
 	 */
 	@Override
-	public void setFlags( short flags ){
-		this.sndrcvinfo.sinfo_flags = flags;
+	public void setFlags( short flags ) throws Exception{
+		boolean unordered = ((flags&FLAG_UNORDERED)!=0);
+		this.messageInfo.unordered( unordered );
 	}
 	
 	/**
@@ -99,15 +109,15 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public int getPpid(){
-		return this.sndrcvinfo.sinfo_ppid;
+		return this.messageInfo.payloadProtocolID();
 	}
 	
 	/**
 	 * @param the ppid value
 	 */
 	@Override
-	public void setPpid( int ppid ){
-		this.sndrcvinfo.sinfo_ppid = ppid;
+	public void setPpid( int ppid ) throws Exception{
+		this.messageInfo.payloadProtocolID( ppid );
 	}
 	
 	/**
@@ -115,14 +125,14 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public int getContext(){
-		return this.sndrcvinfo.sinfo_context;
+		return -1;
 	}
 	
 	/**
 	 * @param the context value
 	 */
-	public void setContext( int context ){
-		this.sndrcvinfo.sinfo_context = context;
+	@Override
+	public void setContext( int context ) throws Exception{
 	}
 	
 	/**
@@ -130,15 +140,15 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public int getTtl(){
-		return this.sndrcvinfo.sinfo_timetolive;
+		return (int)this.messageInfo.timeToLive();
 	}
 		
 	/**
 	 * @param the ttl value
 	 */
 	@Override
-	public void setTtl( int ttl ){
-		this.sndrcvinfo.sinfo_timetolive = ttl;
+	public void setTtl( int ttl ) throws Exception{
+		this.messageInfo.timeToLive( (long)ttl );
 	}
 
 	/**
@@ -146,7 +156,7 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 */
 	@Override
 	public int getTsn(){
-		return this.sndrcvinfo.sinfo_tsn;
+		return this.messageInfo.streamNumber();
 	}
 	
 	
@@ -154,48 +164,40 @@ public class SndrcvinfoLksctp implements SndrcvinfoSctp {
 	 * @param the tsn value
 	 */
 	@Override
-	public void setTsn( int tsn ){
-		this.sndrcvinfo.sinfo_tsn = tsn;
+	public void setTsn( int tsn ) throws Exception{
+		this.messageInfo.streamNumber( tsn );
 	}
 
 	/**
-	 * @return the tsn value
+	 * @return the cumtsn value
 	 */
 	@Override
 	public int getCumtsn(){
-		return this.sndrcvinfo.sinfo_cumtsn;
+		return -1;
 	}
 
 	/**
 	 * @param the cumtsn value
 	 */
 	@Override
-	public void setCumtsn( int cumtsn ){
-		this.sndrcvinfo.sinfo_cumtsn = cumtsn;
+	public void setCumtsn( int cumtsn ) throws Exception{
 	}	
 	
 	/**
-	 * @return the AssociationIdSctp value
+	 * @return the AssociationSctp value
 	 */
 	@Override
-	public AssociationIdSctp getAssociationId(){
-		return new AssociationIdLksctp(this.sndrcvinfo.sinfo_assoc_id);
+	public AssociationSctp getAssociation(){
+		return new AssociationSunNioSctp(this.messageInfo.association());
 	}
 	
 	
 	/**
-	 * @param associationId the AssociationIdSctp value
+	 * @param associationId the AssociationSctp value
 	 */
 	@Override
-	public void setAssociationId( long associationId ){
-		this.sndrcvinfo.sinfo_assoc_id = new AssociationId(associationId);
-	}
-	
-	/**
-	 * @param associationId the AssociationIdSctp value
-	 */
-	@Override
-	public void setAssociationId( AssociationIdSctp associationId ){
+	public void setAssociationId( long associationId ) throws Exception{
+		throw new UnsupportedOperationException ("this method is not implemented");
 	}
 	
 }

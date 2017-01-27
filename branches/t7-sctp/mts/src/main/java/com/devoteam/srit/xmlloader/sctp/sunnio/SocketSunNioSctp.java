@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.nio;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
@@ -41,19 +41,19 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 
 /**
+ * @author emicpou
  *
- * @author sngom
  */
-public class SocketTcpNIO implements HybridSocketInputHandler
+public class SocketSunNioSctp implements HybridSocketInputHandler
 {
 
     private Socket socket;
     private InputStream inputStream;
     private OutputStream outputStream;
-    private ChannelTcpNIO channel;
+    private ChannelSunNioSctp channel;
     private Stack stack;
     
-    public void setChannelTcp(ChannelTcpNIO channel) throws Exception
+    public void setChannelTcp(ChannelSunNioSctp channel) throws Exception
     {
         this.channel = channel;
         this.stack = StackFactory.getStack(this.channel.getProtocol());

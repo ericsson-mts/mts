@@ -231,7 +231,7 @@ public class StackSigtranHybrid extends Stack
     @Override
     public Msg readFromSCTPData(DataSctp chunk) throws Exception {
         DefaultArray array = new DefaultArray(chunk.getData());
-        int ppidIntLe = chunk.getSndrcvinfo().getPpid();
+        int ppidIntLe = chunk.getInfo().getPpid();
         int ppidIntBe = Utils.convertLittleBigIndian(ppidIntLe);
         // when the PPID is not present into the sctp layer
         if (ppidIntBe == 0)

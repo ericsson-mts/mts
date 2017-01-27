@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,18 +21,16 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.tcp.nio;
+package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
-import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+
+import com.devoteam.srit.xmlloader.sctp.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -40,26 +38,26 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 
 /**
+ * @author emicpou
  *
- * @author gpasquiers
  */
-public class ChannelTcpNIO extends Channel
+public class ChannelSunNioSctp extends ChannelSctp
 {
 
-    private SocketTcpNIO socketTcp;
+    private SocketSunNioSctp socketTcp;
     
     private Listenpoint listenpoint;
 
     private long startTimestamp = 0;
     
     /** Creates a new instance of Channel*/
-    public ChannelTcpNIO(Stack stack)
+    public ChannelSunNioSctp(Stack stack)
     {
     	super(stack);
     }
     
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcpNIO(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
+    public ChannelSunNioSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         socketTcp = null;
@@ -67,7 +65,7 @@ public class ChannelTcpNIO extends Channel
     }
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcpNIO(String name, Listenpoint listenpoint, Socket socket) throws Exception
+    public ChannelSunNioSctp(String name, Listenpoint listenpoint, Socket socket) throws Exception
     {
         super(  name,
                 ((InetSocketAddress) socket.getLocalSocketAddress()).getAddress().getHostAddress(),
@@ -81,7 +79,7 @@ public class ChannelTcpNIO extends Channel
 		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol());
 		this.startTimestamp = System.currentTimeMillis();
         
-        this.socketTcp = new SocketTcpNIO();
+        this.socketTcp = new SocketSunNioSctp();
         this.socketTcp.setChannelTcp(this);
 
         HybridSocket hybridSocket = new HybridSocket(this.socketTcp);
@@ -92,7 +90,7 @@ public class ChannelTcpNIO extends Channel
     }
 
     /** Creates a new instance of ChannelTcp */
-    public ChannelTcpNIO(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
+    public ChannelSunNioSctp(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
     {
         super(localHost, localPort, remoteHost, remotePort, aProtocol);
         this.socketTcp = null;
@@ -112,7 +110,7 @@ public class ChannelTcpNIO extends Channel
         {
     		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol());
     		this.startTimestamp = System.currentTimeMillis();
-            socketTcp = new SocketTcpNIO();
+            socketTcp = new SocketSunNioSctp();
             HybridSocket hybridSocket = new HybridSocket(socketTcp);
             socketTcp.init(hybridSocket);
             socketTcp.setChannelTcp(this);

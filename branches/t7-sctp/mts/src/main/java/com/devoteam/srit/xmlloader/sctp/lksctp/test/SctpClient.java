@@ -26,8 +26,6 @@ package com.devoteam.srit.xmlloader.sctp.lksctp.test;
 import dk.i1.sctp.*;
 
 import java.net.*;
-import java.util.*;
-
 
 class SctpClient extends Thread{
 
