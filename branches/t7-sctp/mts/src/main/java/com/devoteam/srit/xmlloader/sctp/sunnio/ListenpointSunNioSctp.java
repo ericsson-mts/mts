@@ -23,23 +23,42 @@
 
 package com.devoteam.srit.xmlloader.sctp.sunnio;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+
+import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.hybridnio.IOHandler;
+import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 
 import com.devoteam.srit.xmlloader.sctp.*;
+import com.sun.nio.sctp.SctpChannel;
+import com.sun.nio.sctp.SctpServerChannel;
 
 /**
  * @author emicpou
  *
  */
-public class ListenpointSunNioSctp extends ListenpointSctp
+public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
 {
-
-    // --- attributs --- //
-    private SocketServerListenerSunNioSctp socketServerListener;
-
-    //private long startTimestamp = 0;
     
-    /** Creates a new instance of Listenpoint */
+	/**
+	 * implementation listen point
+	 */
+    private SctpServerChannel sctpServerChannel;
+	
+	/**
+	 * 
+	 */
+	private SelectionKey selectionKey;
+
+    /**
+     * default constructor
+     */
     public ListenpointSunNioSctp(Stack stack) throws Exception
     {
         super(stack);
@@ -50,7 +69,10 @@ public class ListenpointSunNioSctp extends ListenpointSctp
     // methods for the transport
     //---------------------------------------------------------------------
 
-    /** Create a listenpoint to each Stack */
+    /**
+     * Create a listenpoint to each Stack
+     * open listen point
+     */
     @Override
     public boolean create(String protocol) throws Exception
     {
@@ -61,9 +83,132 @@ public class ListenpointSunNioSctp extends ListenpointSctp
             return false;
         }
 
-        socketServerListener = new SocketServerListenerSunNioSctp(this);
+        // Set up sctp server channel
+        try
+        {
+            int port = this.getPort();
+
+            InetAddress localInetAddr = null;
+            if (null != this.getHost())
+            {
+                localInetAddr = InetAddress.getByName(this.getHost());
+            }
+            else
+            {
+                localInetAddr = InetAddress.getByName("0.0.0.0");
+            }
+            InetSocketAddress local = new InetSocketAddress(localInetAddr, port);
+            
+            this.sctpServerChannel = SctpServerChannel.open();
+            this.sctpServerChannel.bind(local);
+            
+            /// @todo set options
+            // http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/SctpSocketOption.html
+            // this.sctpServerChannel.setOption( ... );
+            
+	        //register our sctpServerChannel to the IOReactor
+	        //we want to be notified when a new association is available on the listen point
+            this.selectionKey = IOReactor.instance().registerChannel(this.sctpServerChannel, SelectionKey.OP_ACCEPT, this);
+        }
+        catch (Exception exception)
+        {
+        	this.cleanup();
+            throw exception;
+        }
 
         return true;
+    }
+
+    /**
+     * internal ressources cleanup
+     */
+    private void cleanup(){
+    	if( this.sctpServerChannel!=null ){
+	    	try{
+				if( this.sctpServerChannel.isOpen() ){
+					this.sctpServerChannel.close();
+				}
+	    	}catch(Exception exception){
+	            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, "Error while cleaning sctpServerChannel");
+	    	}
+	    	finally{
+	    		this.sctpServerChannel = null;
+	    	}
+		}
+    	if( this.selectionKey!=null ){
+	    	try{
+				this.selectionKey.cancel();
+	    	}catch(Exception exception){
+	            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, "Error while cleaning selectionKey");
+	    	}
+	    	finally{
+	    		this.selectionKey = null;
+	    	}
+    	}
+    }
+
+    @Override
+    public boolean remove()
+    {    		
+        if (!super.remove())
+        {
+            return false;
+        }
+        
+        try
+        {
+        	synchronized (this)
+            {
+        		this.cleanup();
+            }
+        }
+        catch (Exception e)
+        {
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while closing Sctp listener's socket");
+        }
+
+
+        return true;
+    }
+    
+    /**
+     * 
+     */
+    private void pollNewAssociation(){
+        try
+        {
+	   		//normalement cette methode est appellee dans le handler acceptReady
+	   		//il devrait donc y avoir une nouvelle association disponible
+	   		if( !this.selectionKey.isAcceptable() ){
+	   			return;
+	   		}
+
+	   		SctpChannel sctpChannel = this.sctpServerChannel.accept();
+            if( sctpChannel==null ){
+            	return;
+            }
+
+            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ListenpointSunNioSctp#pollNewAssociation");
+
+            //the Stack.buildChannelFromSocket API does not match the sun.nio.sctp.SctpChannel abstraction who has no socket accessor
+            //
+            //String listenpointProtocol = this.getProtocol();
+            //Stack listenpointStack = StackFactory.getStack(listenpointProtocol);
+            //Channel channelSctp = listenpointStack.buildChannelFromSocket(this.listenpoint, sctpChannel.socket());
+        	ChannelSunNioSctp channelSctp = new ChannelSunNioSctp("Channel #" + Stack.nextTransactionId(),this,sctpChannel );
+
+            this.openChannel(channelSctp);
+            
+			// Create an empty message for transport connection actions (open or close) 
+			// and on server side and dispatch it to the generic stack
+            StackSctp stackSctp = (StackSctp)StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+
+            stackSctp.receiveTransportMessage("INIT-ACK", channelSctp, null);
+        }
+        catch (Exception e)
+        {
+            GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Exception in SocketServerSctpListener");
+        }    
     }
 
     @Override
@@ -89,27 +234,56 @@ public class ListenpointSunNioSctp extends ListenpointSctp
     @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
+        assert(false):"this code path is not tested";
 		return prepareChannel(msg, remoteHost, remotePort, transport).sendMessage(msg);
-    }
-
-    public boolean remove()
-    {    		
-        super.remove();
-
-        if (this.socketServerListener != null)
-        {	
-            this.socketServerListener.close();
-            this.socketServerListener = null;
-        }
-
-        return true;
     }
 
     @Override
     protected ChannelSctp createChannelSctp(String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
+        assert(false):"this code path is not tested";
     	return new ChannelSunNioSctp(this,aLocalHost,aLocalPort,aRemoteHost,aRemotePort,aProtocol);
     }
-    
+ 
+    /**
+	 * @param selectionKey
+	 * @param selectableChannel (should be same as selectionKey.channel() ?)
+	 */
+    @Override
+    public void onIorInit(SelectionKey selectionKey, SelectableChannel selectableChannel){
+    	assert( this.selectionKey==null );
+    	assert( this.sctpServerChannel==selectableChannel );
+    }
+
+	/**
+     * triggered when readable (there is data to read)
+	 */
+    @Override
+    public void onIorInputReady(){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+	/**
+     * triggered when writable (it is possible to write data)
+	 */
+    @Override
+    public void onIorOutputReady(){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+	/**
+     * triggered on connect event (channel has either finished, or failed to finish, its socket-connection operation)
+	 */
+    @Override
+    public void onIorConnectReady(){
+     }
+
+	/**
+	 * triggered on accept event (channel is ready to accept a new socket connection)
+	 */
+    public void onIorAcceptReady(){
+        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ListenpointSunNioSctp acceptReady");
+    	this.pollNewAssociation();
+    }
     
 }

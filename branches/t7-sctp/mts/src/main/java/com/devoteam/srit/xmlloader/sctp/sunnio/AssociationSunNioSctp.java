@@ -30,7 +30,8 @@ import com.sun.nio.sctp.*;
 /**
  * @author emicpou
  * 
- * Association implementation object adapter 
+ * Association implementation object adapter
+ * adapter/wrapper design pattern 
  *  
  * @see <a href="http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/Association.html">Class MessageInfo</a>
  * 
@@ -38,7 +39,7 @@ import com.sun.nio.sctp.*;
 public class AssociationSunNioSctp implements AssociationSctp{
 	
 	/**
-	 * reference on the implementation object
+	 * adaptee reference
 	 */
 	protected Association association;
 	
@@ -54,7 +55,11 @@ public class AssociationSunNioSctp implements AssociationSctp{
 	 */
 	@Override
 	public String toString(){
-		return Integer.toString( this.association.associationID() );
+		if(this.association!=null){
+			return Integer.toString( this.association.associationID() );
+		}else{
+			return "null";
+		}
 	}
 
 	/**
@@ -62,7 +67,11 @@ public class AssociationSunNioSctp implements AssociationSctp{
 	 */
 	@Override
 	public long getId(){
-		return (int)this.association.associationID();
+		if(this.association!=null){
+			return (int)this.association.associationID();
+		}else{
+			return 0;
+		}
 	}
 	
 }

@@ -78,7 +78,7 @@ public class StackSunNioSctp extends StackSctp
      */
     @Override
     public ChannelSctp createChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception {
-    	return new ChannelSunNioSctp(name,aListenpoint,aSocket);
+    	throw new UnsupportedOperationException("StackSunNioSctp.createChannelSctp not implemented");
     }
 
     /**

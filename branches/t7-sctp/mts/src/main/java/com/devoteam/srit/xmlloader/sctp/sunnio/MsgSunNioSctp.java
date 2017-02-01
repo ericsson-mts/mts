@@ -35,7 +35,9 @@ import java.nio.*;
  */
 public class MsgSunNioSctp extends MsgSctp{
 	
-
+	/*
+	 * 
+	 */
 	protected DataSunNioSctp dataSunNioSctp;
 
 	/** Creates a new instance */
@@ -44,19 +46,18 @@ public class MsgSunNioSctp extends MsgSctp{
         super(stack);
 		this.dataSunNioSctp = new DataSunNioSctp();
     }
-    
-    /** Creates a new instance */
-	public MsgSunNioSctp(Stack stack, ByteBuffer chunk) throws Exception{
-		super(stack);
-		this.setType("DATA");
-		this.dataSunNioSctp = new DataSunNioSctp(chunk);		
-	}
-    
+     
     /** Creates a new instance */
 	public MsgSunNioSctp(Stack stack, DataSctp chunk) throws Exception{
 		super(stack);		
 		this.setType("DATA");
-		this.dataSunNioSctp = new DataSunNioSctp(chunk);		
+		//would be safer to deep clone
+		if( chunk instanceof DataSunNioSctp) {
+			this.dataSunNioSctp = (DataSunNioSctp)chunk;
+		}
+		else{
+			this.dataSunNioSctp = new DataSunNioSctp(chunk);
+		}
 	}
 	
 	/**
@@ -65,6 +66,15 @@ public class MsgSunNioSctp extends MsgSctp{
 	 */
 	@Override
 	public DataSctp getDataSctp(){
+		assert(this.dataSunNioSctp!=null);
+		return this.dataSunNioSctp;		
+	}
+	
+	/**
+	 * 
+	 * @return the associated DataSctp abstraction
+	 */
+	public DataSunNioSctp getDataSunNioSctp(){
 		assert(this.dataSunNioSctp!=null);
 		return this.dataSunNioSctp;		
 	}

@@ -25,76 +25,124 @@ package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
+import com.devoteam.srit.xmlloader.core.hybridnio.IOHandler;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sctp.*;
+import com.devoteam.srit.xmlloader.sctp.lksctp.DataLksctp;
+import com.devoteam.srit.xmlloader.sctp.lksctp.MsgLksctp;
+import com.devoteam.srit.xmlloader.sctp.lksctp.StackLksctp;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.channels.SocketChannel;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.*;
+import java.util.Set;
+import java.util.concurrent.locks.*;
+
+import com.sun.nio.sctp.*;
+
 
 /**
  * @author emicpou
  *
  */
-public class ChannelSunNioSctp extends ChannelSctp
+public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 {
+    /**
+     * sctp msg receive max size
+     */
+    public static final int MTU = Config.getConfigByName("sctp.properties").getInteger("DEFAULT_BUFFER_LENGHT", 1500);
 
-    private SocketSunNioSctp socketTcp;
-    
-    private Listenpoint listenpoint;
+    /**
+	 * 
+	 */
+	private SctpChannel sctpChannel;
+	
+	/**
+	 * 
+	 */
+	private SelectionKey selectionKey;
+	
+	/**
+	 * 
+	 */
+    private long startTimestamp = 0;    
 
-    private long startTimestamp = 0;
-    
-    /** Creates a new instance of Channel*/
+	/**
+	 * non-blocking send synchronisation
+	 */
+    private final Lock outputReadyLock = new ReentrantLock();
+
+	/**
+	 * non-blocking send synchronisation
+	 * the condition is signaled by the IOReactor thread when it is possible to write to the sctpChannel
+	 * the send blocking method thread should wait on the condition until writes to the sctpChannel succeed
+	 */
+    private final Condition outputReadyCondition = outputReadyLock.newCondition();
+     
+	/**
+	 * Creates a new instance
+	 */
     public ChannelSunNioSctp(Stack stack)
     {
     	super(stack);
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
     }
     
-    /** Creates a new instance of ChannelTcp */
+	/**
+	 * Creates a new instance
+	 */
     public ChannelSunNioSctp(String name, String aLocalHost, String aLocalPort, String aRemoteHost, String aRemotePort, String aProtocol) throws Exception
     {
         super(name, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        socketTcp = null;
-        listenpoint = null;
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
+        assert(false):"this code path is not tested";
     }
 
-    /** Creates a new instance of ChannelTcp */
-    public ChannelSunNioSctp(String name, Listenpoint listenpoint, Socket socket) throws Exception
+    /**
+	 * Creates a new instance
+	 * 
+     * @param name
+     * @param sctpListenpoint
+     * @param sctpChannel returned by the SctpServerChannel.accept() method (server side)
+     * @throws Exception
+     */
+    public ChannelSunNioSctp(String name, ListenpointSctp listenpointSctp,SctpChannel sctpChannel) throws Exception
     {
-        super(  name,
-                ((InetSocketAddress) socket.getLocalSocketAddress()).getAddress().getHostAddress(),
-                Integer.toString(((InetSocketAddress) socket.getLocalSocketAddress()).getPort()),
-                ((InetSocketAddress) socket.getRemoteSocketAddress()).getAddress().getHostAddress(),
-                Integer.toString(((InetSocketAddress) socket.getRemoteSocketAddress()).getPort()),
-                listenpoint.getProtocol());
+		super( name,listenpointSctp );
 
-        SocketChannel socketChannel = socket.getChannel();
+		//initialize remote infos attributes
+		{
+			Set<SocketAddress> remoteAddresses = sctpChannel.getRemoteAddresses();
+			assert(!remoteAddresses.isEmpty());
+			SocketAddress firstSocketAddress = remoteAddresses.iterator().next();
+			assert(firstSocketAddress instanceof InetSocketAddress);
+			InetSocketAddress firstInetSocketAddress = (InetSocketAddress)firstSocketAddress;
+			
+			this.setRemoteHost(firstInetSocketAddress.getAddress().getHostAddress());
+			this.setRemotePort(firstInetSocketAddress.getPort());
+		}
+		
+		this.sctpChannel = sctpChannel;
+		//some inits here
 
-		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol());
-		this.startTimestamp = System.currentTimeMillis();
-        
-        this.socketTcp = new SocketSunNioSctp();
-        this.socketTcp.setChannelTcp(this);
-
-        HybridSocket hybridSocket = new HybridSocket(this.socketTcp);
-
-        IOReactor.instance().openTCP(socketChannel, hybridSocket);
-
-        this.listenpoint = listenpoint;
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
     }
 
-    /** Creates a new instance of ChannelTcp */
+    /**
+	 * Creates a new instance
+     */
     public ChannelSunNioSctp(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
     {
         super(localHost, localPort, remoteHost, remotePort, aProtocol);
-        this.socketTcp = null;
-        this.listenpoint = listenpointTcp;
+        this.listenpointSctp = (ListenpointSctp)listenpointTcp;
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
+    	assert(false):"this code path is not tested";
     }
 
     
@@ -106,33 +154,86 @@ public class ChannelSunNioSctp extends ChannelSctp
     @Override
     public boolean open() throws Exception
     {
-        if (socketTcp == null)
-        {
-    		StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol());
-    		this.startTimestamp = System.currentTimeMillis();
-            socketTcp = new SocketSunNioSctp();
-            HybridSocket hybridSocket = new HybridSocket(socketTcp);
-            socketTcp.init(hybridSocket);
-            socketTcp.setChannelTcp(this);
-            
-            InetSocketAddress local = null;
-    		if (getLocalHost() != null)
-    		{
-	            InetAddress localAddr = InetAddress.getByName(getLocalHost());
-	            local  = new InetSocketAddress(localAddr, getLocalPort());
-    		}
-            InetSocketAddress remote = new InetSocketAddress(getRemoteHost(), getRemotePort());
-    		
-            IOReactor.instance().openTCP(local, remote, hybridSocket);
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#open");
 
-            // read all properties for the TCP socket 
-    		Config.getConfigForTCPSocket(hybridSocket, false);
+		if( !super.open() ){
+    		return false;
+    	}
+        
+    	assert(this.selectionKey==null):"channel should be closed";
+    	
+    	try{
+        	//client side : we need to connect to the remote server
+        	if(this.sctpChannel==null){
+		
+		    	//ensure a channel config is available
+				if (this.configSctp == null){
+					this.configSctp = new ChannelConfigSctp();
+					Config stackConfig = this.stack.getConfig();
+					this.configSctp.setFromStackConfig(stackConfig);
+				}
+				assert(this.configSctp!=null);
+		    			
+		        assert(this.sctpChannel==null);	            
+		   		this.sctpChannel = SctpChannel.open();
+		        assert(this.sctpChannel!=null);	            
+	    	        
+		        /// @todo set options
+		      	//this.sctpChannel.setOption( new SctpSocketOption<SctpStandardSocketOptions.InitMaxStreams>(this.configSctp.max_instreams) );
+		 
+		        //int intLocalPort = getLocalPort(); 
+		        //this.sctpChannel.bind(intLocalPort);
+		        
+		        /// @todo multi-homing
+		                     
+		        String strRemoteHost = this.getRemoteHost();
+		        if (strRemoteHost == null || "0.0.0.0".equals(strRemoteHost))
+		        {
+		        	strRemoteHost = InetAddress.getByName(strRemoteHost).getCanonicalHostName();
+		        }
+		        int intRemotePort = getRemotePort();            
+		        InetSocketAddress remoteSocketAddress = new InetSocketAddress(strRemoteHost, intRemotePort);
+		        
+		        boolean connected = this.sctpChannel.connect(remoteSocketAddress);
+		            
+		        if(!connected){
+		        	this.sctpChannel.configureBlocking(true);
+		        	connected = this.sctpChannel.finishConnect();
+		        	this.sctpChannel.configureBlocking(false);
+		        }
+		        assert(connected);
+        	}
+	        assert(this.sctpChannel!=null);	            
 
-            this.localPort = hybridSocket.getLocalPort();
-            this.localHost = hybridSocket.getLocalAddress().getHostAddress();
-        }
-
-
+	        //register our sctpChannel to the IOReactor
+	        //differs the IOReactor notifications settings
+	        assert(this.selectionKey==null);
+			this.selectionKey = IOReactor.instance().registerChannel(this.sctpChannel,0,this);
+			assert(this.selectionKey!=null);
+	
+	        // read all properties for the TCP socket 
+			//Config.getConfigForSTCPSocket(hybridSocket, false);
+	
+	        //this.localPort = hybridSocket.getLocalPort();
+	        //this.localHost = hybridSocket.getLocalAddress().getHostAddress();
+	
+			this.startTimestamp = System.currentTimeMillis();
+			StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
+			
+			//we are ready to be notified by the IOReactor thread when a read operation is possible
+			{
+				int interestOps = this.selectionKey.interestOps();
+				interestOps |= SelectionKey.OP_READ;
+				this.selectionKey.interestOps( interestOps );
+			}			
+	    }
+	    catch(Exception exception){
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+" : error while opening sctp channel");
+            this.cleanup();
+            super.close();
+			throw exception;
+			//return false;
+		}
         return true;
     }
 
@@ -140,40 +241,298 @@ public class ChannelSunNioSctp extends ChannelSctp
     @Override
     public boolean close()
     {
-        if (socketTcp != null)
-        {
-    		StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_TCP, getProtocol(), startTimestamp);
-    		
-            socketTcp.close();
-            socketTcp = null;
-        }
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#close");
 
-        return true;
+		if( !super.close() ){
+    		return false;
+    	}
+
+    	assert(this.selectionKey!=null):"channel should be opened";
+
+    	StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, this.getProtocol(),this.startTimestamp);
+    	this.cleanup();
+    	return true;
+    }
+
+    private void cleanup(){
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#cleanup");
+
+		if( this.sctpChannel!=null ){
+	    	try{
+				if( this.sctpChannel.isOpen() ){
+					this.sctpChannel.close();
+				}
+	    	}catch(Exception exception){
+	            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+" : error while cleaning sctpChannel");
+	    	}
+	    	finally{
+	    		this.sctpChannel = null;
+	    	}
+		}
+    	if( this.selectionKey!=null ){
+	    	try{
+				this.selectionKey.cancel();
+	    	}catch(Exception exception){
+	            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+" : error while cleaning selectionKey");
+	    	}
+	    	finally{
+	    		this.selectionKey = null;
+	    	}
+    	}
     }
     
+    /**
+     * poll the sctpChannel
+     * if a datagram is available, unserialize and dispatch a message
+     */
+   	private void pollReceivedData(){
+    	try{
+        	assert(this.selectionKey!=null):"the channel must be opened";
+
+        	//normalement cette methode est appellee dans le handler inputReady
+	   		//il devrait donc y avoir des données a lire
+	   		if( !this.selectionKey.isReadable() ){
+	   			return;
+	   		}
+	   		
+	    	/*
+	    	 * allocation d'un ByteBuffer a chaque lecture
+	    	 *   un buffer est theoriquement reutilisable apres consommation en faisant un buffer.clear()
+	    	 *   
+	    	 * taille du buffer basée sur le MTU
+	    	 *   https://www.ietf.org/mail-archive/web/sigtran/current/msg08100.html
+	    	 */
+	    	ByteBuffer payloadByteBuffer = ByteBuffer.allocate(ChannelSunNioSctp.MTU);
+	    	
+	    	MessageInfo messageInfo = this.sctpChannel.receive(payloadByteBuffer,null,null);
+	    	if( messageInfo==null ){
+	    		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" readable, but receive failed");
+	    		return;
+	    	}
+	    	
+	    	if( messageInfo.bytes()==-1 ){
+	    		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" end of stream");
+
+	    		//attempt to free ressources?
+	    		try{
+					this.sctpChannel.close();
+					this.selectionKey.cancel();
+		    	}catch(Exception exception){
+		            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+" : error while cleaning sctpChannel");
+		    	}
+
+	    		// Create an empty message for transport connection actions (open or close) 
+				// and on server side and dispatch it to the generic stack
+	    		StackSctp stackSctp = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP));
+				stackSctp.receiveTransportMessage("ABORT-ACK", this, null);
+	    	}
+	    	else{
+		    		
+		    	assert( messageInfo.bytes()>=0 );
+		    	assert( messageInfo.isComplete() );
+		    	payloadByteBuffer.flip();
+		    	int payloadLength = payloadByteBuffer.limit()-payloadByteBuffer.position();
+		        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" RECEIVE "+payloadLength+" bytes");                       
+		    	assert(payloadLength<=ChannelSunNioSctp.MTU);
+	
+		
+		        DataSunNioSctp dataSctp = new DataSunNioSctp( payloadByteBuffer,messageInfo );
+		        
+		        //unserialize
+		        Stack channelStack = StackFactory.getStack(this.getProtocol());
+		        assert(channelStack!=null);
+		        
+		        Msg msg = channelStack.readFromSCTPData(dataSctp);
+		    	if (msg==null){
+		    		return;
+		    	}
+		
+		    	msg.setChannel(this);
+		        msg.setListenpoint(this.getListenpointSctp());
+		
+		        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" RECEIVE the SCTP message :\n", msg);                       
+		        
+		        //dispatch
+		        this.receiveMessage(msg);
+	    	}
+	
+	    }
+	    catch(Exception exception){
+	        GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+": error when processing data input");
+	    }
+   	}
+   	
     /** Send a Msg to Channel */
     @Override
     public synchronized boolean sendMessage(Msg msg) throws Exception
     {
-        if (null == socketTcp)
-        {
-            throw new ExecutionException("SocketTcp is null, has the channel been opened ?");
-        }
-
+    	assert(this.selectionKey!=null):"the channel must be opened";
+        
         msg.setChannel(this);
-        socketTcp.send(msg);
-        return true;
+        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#sendMessage"+" SEND the SCTP message :\n", msg);                       
+        
+        DataSunNioSctp dataSctp = null;
+        if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP)){
+            assert( msg instanceof MsgSunNioSctp );
+            MsgSunNioSctp msgSctp = (MsgSunNioSctp)msg;
+            dataSctp = msgSctp.getDataSunNioSctp();
+        }
+        else{
+            // get the bytes from the msg
+            byte[] bytes = msg.encode();
+            ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
+        	
+            //create a MessageInfo with default settings
+        	InMemoryInfoSctp defaultInfoSctp = new InMemoryInfoSctp();
+			Config sctpStackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+			defaultInfoSctp.setFromStackConfig(sctpStackConfig);
+			MessageInfo messageInfo = MessageInfo.createOutgoing(null,0);
+			InfoSunNioSctp infoSctp = new InfoSunNioSctp(messageInfo);
+			infoSctp.trySet(defaultInfoSctp);
+	
+        	dataSctp = new DataSunNioSctp( byteBuffer,messageInfo );    	
+        }
+        boolean status = this.send( dataSctp );
+        
+        return status;
     }
 
-    /** Get the transport protocol */
+    /**
+     * 
+     * @param dataSctp
+     * @return status
+     * @throws Exception
+     * @see outputReady
+     */
+    private boolean send( DataSunNioSctp dataSctp ) throws Exception {
+        boolean status = false;
+        try{
+            if( this.selectionKey.isWritable() ){
+            	if( !sendNonBlocking( dataSctp ) ){
+            		status = this.sendBlocking( dataSctp );
+            	}
+            }else{
+        		status = this.sendBlocking( dataSctp );
+            }
+        }catch (Exception exception) {
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+": error while sending data on sctp channel");
+			throw exception;
+		}
+        return status;
+    }
+
+	private boolean sendNonBlocking( DataSunNioSctp dataSctp ) throws Exception {
+		boolean status = false;
+		byte[] payloadByteArray = dataSctp.getData();
+		assert(payloadByteArray.length<=ChannelSunNioSctp.MTU);
+    	ByteBuffer payloadByteBuffer = ByteBuffer.wrap( payloadByteArray );
+        MessageInfo messageInfo = dataSctp.getMessageInfo();
+		int sentCount = this.sctpChannel.send(payloadByteBuffer, messageInfo);
+        if(sentCount<0) {
+        	throw new Exception("sctpChannel.send failed with status code "+sentCount);
+        }
+        else if(sentCount==payloadByteArray.length){
+          GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#sendNonBlocking"+" SEND "+payloadByteArray.length+" bytes");                       
+         	status = true;
+        }
+        else{
+        	throw new Exception("sctpChannel#send should be atomic");
+        }
+        return status;
+	}
+
+	private boolean sendBlocking( DataSunNioSctp dataSctp ) throws Exception {
+		boolean status = false;
+		
+		this.outputReadyLock.lock();
+		try{
+			//we want to be notified when a write operation is possible
+			{
+				int interestOps = this.selectionKey.interestOps();
+				interestOps |= SelectionKey.OP_WRITE;
+				this.selectionKey.interestOps( interestOps );
+				this.selectionKey.selector().wakeup();
+			}
+			
+
+			//wait for output ready condition and try to send the data
+			do{
+			  this.outputReadyCondition.await();
+			  status = this.sendNonBlocking(dataSctp);
+			}while(!status);
+
+			//we do not want to be notified anymore when a write operation is possible
+			{
+				int interestOps = this.selectionKey.interestOps();
+				interestOps &= ~SelectionKey.OP_WRITE;
+				this.selectionKey.interestOps( interestOps );
+				this.selectionKey.selector().wakeup();
+			}
+			
+        }
+		catch (Exception exception) {
+            GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, exception, ""+this.getName()+": error while sending data on sctp channel");
+			throw exception;
+		}finally {
+		  this.outputReadyLock.unlock();
+		}
+		    	
+    	return status;
+    }
+    
+	/**
+	 * @param selectionKey
+	 * @param selectableChannel
+	 */
     @Override
-    public String getTransport()
-    {
-        return StackFactory.PROTOCOL_TCP;
+    public void onIorInit(SelectionKey selectionKey, SelectableChannel selectableChannel){
+    	assert( this.selectionKey==null );
+    	assert( this.sctpChannel==selectableChannel );
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#onIorInit");
     }
 
-    public Listenpoint getListenpointTcp()
-    {
-        return listenpoint;
+	/**
+     * triggered when readable (there is data to read)
+	 */
+    @Override
+    public void onIorInputReady() {
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#onIorInputReady");
+		
+		//will occur if the channel has been closed and until the IOReactor has unbuffered internal queues
+		if(this.selectionKey==null){
+			return;
+		}
+		
+        this.pollReceivedData();
     }
+
+	/**
+     * triggered when writable (it is possible to write data)
+	 */
+    @Override
+    public void onIorOutputReady(){
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#onIorOutputReady");
+				
+    	this.outputReadyLock.lock();
+		try{
+			this.outputReadyCondition.signalAll();
+		}finally {
+			this.outputReadyLock.unlock();
+		}
+    }
+
+    /**
+     * triggered on connect event (channel has either finished, or failed to finish, its socket-connection operation)
+	 */
+    @Override
+    public void onIorConnectReady(){    	
+    }
+
+	/**
+	 * triggered on accept event (channel is ready to accept a new socket connection)
+	 */
+    @Override
+    public void onIorAcceptReady(){
+    }
+
 }

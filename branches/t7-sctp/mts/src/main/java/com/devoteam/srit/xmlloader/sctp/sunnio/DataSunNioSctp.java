@@ -25,82 +25,115 @@ package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.*;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.sctp.*;
 
 import java.nio.*;
-import java.nio.channels.*;
 import com.sun.nio.sctp.*;
 
 /**
  * @author emicpou
- * 
- * wraps a direect ByteBuffer without duplication
- *
+ *  *
  */
 public class DataSunNioSctp implements DataSctp {
 	
 	/**
-	 * reference on the implementation object
+	 * own buffer
 	 */
-    protected ByteBuffer byteBuffer;
-    protected MessageInfo messageInfo;
+    private byte[] payload;
+    
+	/**
+	 * adaptee
+	 */
+    private MessageInfo info;
 	
+	/**
+	 * constructor for outgoing datagrams
+	 * 
+	 * @param byteBuffer
+	 */
 	public DataSunNioSctp(){
-		this.byteBuffer = ByteBuffer.allocate(0);
+		this.payload = new byte[0];
+		this.info = MessageInfo.createOutgoing(null,0);
 	}
 	
-	public DataSunNioSctp( byte[] data ){
-		assert(data!=null);
-		this.byteBuffer = ByteBuffer.wrap(data);
+	/**
+	 * constructor for outgoing datagrams
+	 * 
+	 * @param byteBuffer
+	 */
+	public DataSunNioSctp( DataSunNioSctp dataSunNioSctp ){
+		//a deep clone would be safer!
+		this.payload = dataSunNioSctp.payload;
+		this.info = dataSunNioSctp.info;
 	}
-
+		
+	/**
+	 * constructor for outgoing datagrams
+	 * 
+	 * @param byteBuffer
+	 */
     public DataSunNioSctp( DataSctp chunk ){
 		assert(chunk!=null);
-		assert( chunk instanceof DataSunNioSctp );
-		DataSunNioSctp dataSunNioSctp = (DataSunNioSctp)chunk;
-		//a deep clone would be safer!
-		this.byteBuffer = dataSunNioSctp.byteBuffer;
-		this.messageInfo = dataSunNioSctp.messageInfo;
+		if( chunk instanceof DataSunNioSctp ){
+			DataSunNioSctp dataSunNioSctp = (DataSunNioSctp)chunk;
+			//a deep clone would be safer!
+			this.payload = dataSunNioSctp.payload;
+			this.info = dataSunNioSctp.info;
+		}
+		else{
+			//a deep clone would be safer!
+			this.payload = chunk.getData();
+			
+			//apply the copy operator on the wrapped messageInfo member
+			this.info = MessageInfo.createOutgoing(null,0);
+			InfoSunNioSctp infoSunNioSctp = new InfoSunNioSctp(this.info);
+			infoSunNioSctp.trySet(chunk.getInfo());
+		}
 	}
 	
-	public DataSunNioSctp( ByteBuffer byteBuffer ){
-		//a deep clone would be safer!
-		this.byteBuffer = byteBuffer;
-	}
-	
+	/**
+	 * constructor for incoming or outgoing datagrams
+	 * 
+	 * @param byteBuffer a ByteBuffer in read mode. Its remaining data will be copied
+	 * @param messageInfo
+	 */
 	public DataSunNioSctp( ByteBuffer byteBuffer,MessageInfo messageInfo ){
+		//how to ensure the byteBuffer is in read mode?
+
+		//copy the payload
+		int length = byteBuffer.limit()-byteBuffer.position();
+		assert(length>=0);
+		this.payload = new byte[length];
+		byteBuffer.get(this.payload);
+
 		//a deep clone would be safer!
-		this.byteBuffer = byteBuffer;
-		this.messageInfo = messageInfo;
-	}	
-	
+		this.info = messageInfo;
+		assert(this.info!=null);
+	}
+
+	/**
+	 * 
+	 */
+	public MessageInfo getMessageInfo(){
+		assert(this.info!=null);
+		return this.info;
+	}
+	    
 	/**
 	 * 
 	 */
 	@Override
 	public byte[] getData(){
-		byte[] data = null;
-		try{
-			data = this.byteBuffer.array();
-		}catch(Exception e){
-			GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL,"byteBuffer backing array can't be accessed");
-			data = new byte[0];
-		}
-		return data;
+		return this.payload;
 	}
 	
 	/**
-	 * 
+	 * assumes the wrapped byteBuffer is in read mode
 	 */
 	@Override
 	public int getLength(){
-		//assumes the byteBuffer data are not consumed or inflated with the put/get API !
-		int position = this.byteBuffer.position();
-		int limit = this.byteBuffer.limit();//???
-		int length = limit-position;
-		assert(length>=0);
-		return length;
+		return this.payload.length;
 	}
 	
 	/**
@@ -109,7 +142,8 @@ public class DataSunNioSctp implements DataSctp {
 	@Override
 	public void setData(byte[] data){
 		assert(data!=null);
-		this.byteBuffer = ByteBuffer.wrap(data);
+		//a copy would be safer!
+		this.payload = data;
 	}
 	
 	/**
@@ -117,22 +151,26 @@ public class DataSunNioSctp implements DataSctp {
 	*/
 	@Override
 	public InfoSctp getInfo(){
-		if( this.messageInfo==null ){
-			return null;
-		}
-		//todo 
-		return new InfoSunNioSctp(this.messageInfo);
+		assert(this.info!=null);
+		return new InfoSunNioSctp(this.info);
 	}
 	
 	/**
 	* 
 	*/
 	@Override
-	public void setInfo( InfoSctp sndrcvinfo ) throws Exception{
-		//there should be only one stack activated : many implementations doesn't coexists at runtime
-		assert(sndrcvinfo instanceof InfoSunNioSctp);
-		//maybe we should clone instead of sharing instance?
-		this.messageInfo = ((InfoSunNioSctp)sndrcvinfo).messageInfo;
+	public void setInfo( InfoSctp infoSctp ) throws Exception{
+		if(infoSctp instanceof InfoSunNioSctp){
+			//maybe we should clone instead of sharing instance?
+			InfoSunNioSctp infoSunNioSctp = (InfoSunNioSctp)infoSctp;
+			this.info = infoSunNioSctp.messageInfo;
+			assert(this.info!=null);
+		}
+		else{
+			//apply the copy operator on the wrapped messageInfo member
+			InfoSunNioSctp infoSunNioSctp = new InfoSunNioSctp(this.info);
+			infoSunNioSctp.trySet(infoSctp);
+		}
 	}
 	
 	/**
@@ -140,8 +178,8 @@ public class DataSunNioSctp implements DataSctp {
 	 */
 	@Override
 	public void clear(){
-		this.byteBuffer = ByteBuffer.allocate(0);
-		this.messageInfo = null;
+		this.payload = new byte[0];
+		this.info = MessageInfo.createOutgoing(null,0);
 	}
 
 }

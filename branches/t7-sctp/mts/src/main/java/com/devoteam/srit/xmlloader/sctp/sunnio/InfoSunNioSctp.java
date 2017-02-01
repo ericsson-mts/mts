@@ -35,14 +35,15 @@ import com.sun.nio.sctp.*;
  * @author emicpou
  * 
  * MessageInfo implementation object adapter
- *  
+ * wrapper/adapter design pattern
+ *
  * @see <a href="http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/MessageInfo.html">Class MessageInfo</a>
  * 
  */
 public class InfoSunNioSctp extends InfoSctp {
 	
 	/**
-	 * reference on the implementation object
+	 * adaptee reference
 	 */
     protected MessageInfo messageInfo;
 	
@@ -51,6 +52,7 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	InfoSunNioSctp( MessageInfo messageInfo ){
 		this.messageInfo = messageInfo;
+		assert(this.messageInfo!=null);
 	}
 	
 	/**

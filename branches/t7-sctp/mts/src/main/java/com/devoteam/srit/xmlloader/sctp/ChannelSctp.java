@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import java.util.List;
 
@@ -89,6 +90,25 @@ public abstract class ChannelSctp extends Channel
     {
         super(name, localHost, localPort, remoteHost, remotePort, aProtocol);
         this.listenpointSctp = (ListenpointSctp)aListenpoint;
+    }
+
+    /**
+     * @author emicpou
+     * @param name
+     * @param listenpointSctp
+     * @throws Exception
+     */
+    protected ChannelSctp(String name,ListenpointSctp listenpointSctp) throws Exception
+    {
+        super(name);
+
+        this.localHost = listenpointSctp.getHost();
+        this.localPort = listenpointSctp.getPort();
+
+        this.protocol = listenpointSctp.getProtocol();
+        this.stack = listenpointSctp.getStack();
+
+        this.listenpointSctp = listenpointSctp;
     }
 
     /**
