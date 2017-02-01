@@ -115,7 +115,8 @@ public class HybridSocket extends Socket implements IOHandler {
     private SocketChannel socketChannel;
     private ByteBuffer buffer;
 
-    public void init(SelectionKey selectionKey, SelectableChannel channel)
+    @Override
+    public void onIorInit(SelectionKey selectionKey, SelectableChannel channel)
     {
         this.selectionKey = selectionKey;
         this.socketChannel = (SocketChannel) channel;
@@ -146,7 +147,8 @@ public class HybridSocket extends Socket implements IOHandler {
      * since that exception should be thrown by the parsing thread (that reads from the
      * HybridInputStream) for it to be correctly handled by the app.
      */
-    public void inputReady()
+    @Override
+    public void onIorInputReady()
     {
         try
         {
@@ -201,7 +203,8 @@ public class HybridSocket extends Socket implements IOHandler {
      * In the same way has the inputReader method, any exception will be fed to both the
      * HybridOutputStream and the HybridInputStream.
      */
-    public void outputReady()
+    @Override
+    public void onIorOutputReady()
     {
         try
         {
@@ -213,7 +216,7 @@ public class HybridSocket extends Socket implements IOHandler {
                 if(len > 0)
                 {
                     this.hybridOutputStream.bufferedData().down(len);
-                    this.outputReady();
+                    this.onIorOutputReady();
                 }
             }
             else if(socketChannel instanceof SSLSocketChannel)
@@ -253,7 +256,8 @@ public class HybridSocket extends Socket implements IOHandler {
         }
     }
 
-    public void connectReady()
+    @Override
+    public void onIorConnectReady()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -466,7 +470,8 @@ public class HybridSocket extends Socket implements IOHandler {
         socket.bind(bindpoint);
     }
 
-    public void acceptReady()
+    @Override
+    public void onIorAcceptReady()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
