@@ -60,7 +60,11 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public short getStreamId(){
-		return -1;
+		int streamNumber = this.messageInfo.streamNumber();
+		// TODO check and throw InvalidVAlueException
+		//assert( (Short.MIN_VALUE<=streamNumber)&&(streamNumber<=Short.MAX_VALUE) );
+		short result = (short)streamNumber;
+		return result;
 	}
 	
 	/**
@@ -68,6 +72,8 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public void setStreamId( short streamId ) throws Exception{
+		int streamNumber = Short.toUnsignedInt(streamId);
+		this.messageInfo.streamNumber(streamNumber);
 	}
 	
 	/**
@@ -75,7 +81,8 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public short getSsn(){
-		return -1;
+		//not available!
+		return 0;
 	}
 	
 	/**
@@ -127,7 +134,8 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public int getContext(){
-		return -1;
+		//not available!
+		return 0;
 	}
 	
 	/**
@@ -142,7 +150,11 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public int getTtl(){
-		return (int)this.messageInfo.timeToLive();
+		long timeToLive = this.messageInfo.timeToLive();
+		// TODO check and throw InvalidVAlueException
+		//assert( (Integer.MIN_VALUE<=timeToLive)&&(timeToLive<=Integer.MAX_VALUE) );
+		int result = (int)timeToLive;
+		return result;
 	}
 		
 	/**
@@ -150,7 +162,8 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public void setTtl( int ttl ) throws Exception{
-		this.messageInfo.timeToLive( (long)ttl );
+		long timeToLive = Integer.toUnsignedLong(ttl);
+		this.messageInfo.timeToLive( timeToLive );
 	}
 
 	/**
@@ -175,7 +188,8 @@ public class InfoSunNioSctp extends InfoSctp {
 	 */
 	@Override
 	public int getCumtsn(){
-		return -1;
+		//not available!
+		return 0;
 	}
 
 	/**
@@ -193,13 +207,14 @@ public class InfoSunNioSctp extends InfoSctp {
 		return new AssociationSunNioSctp(this.messageInfo.association());
 	}
 	
-	
 	/**
 	 * @param associationId the AssociationSctp value
 	 */
 	@Override
 	public void setAssociationId( int associationId ) throws Exception{
-		throw new UnsupportedOperationException ("this method is not implemented");
+		//the association id is immutable!
+		//it is a parameter of the static factory MessageInfo.createOutgoing(Association association, SocketAddress address, int streamNumber)
+		assert( this.messageInfo.association().associationID() == associationId );
 	}
 	
 }

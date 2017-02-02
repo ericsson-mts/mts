@@ -40,32 +40,42 @@ public class DataSunNioSctp implements DataSctp {
 	/**
 	 * own buffer
 	 */
-    private byte[] payload;
+    private byte[] data;
     
 	/**
 	 * adaptee
+	 * a MessageInfo is linked to a address or an Association that is unmutable
+	 * this API doesn't allow to change it once instanciated
+	 * the adpatee is provided for incoming messages from the Sctp*Chanels
+	 * or 
 	 */
-    private MessageInfo info;
+    private MessageInfo messageInfo;
 	
 	/**
+	 * alternative to MessageInfo adaptee
+	 * required to store infos for outgoing messages
+	 */
+    private BasicInfoSctp alternativeInfo;
+
+    /**
 	 * constructor for outgoing datagrams
-	 * 
-	 * @param byteBuffer
 	 */
 	public DataSunNioSctp(){
-		this.payload = new byte[0];
-		this.info = MessageInfo.createOutgoing(null,0);
+		this.data = new byte[0];
+		this.messageInfo = null;
+		this.alternativeInfo = new BasicInfoSctp();
 	}
 	
 	/**
-	 * constructor for outgoing datagrams
+	 * copy constructor
 	 * 
 	 * @param byteBuffer
 	 */
 	public DataSunNioSctp( DataSunNioSctp dataSunNioSctp ){
 		//a deep clone would be safer!
-		this.payload = dataSunNioSctp.payload;
-		this.info = dataSunNioSctp.info;
+		this.data = dataSunNioSctp.data;
+		this.messageInfo = dataSunNioSctp.messageInfo;
+		this.alternativeInfo = dataSunNioSctp.alternativeInfo;
 	}
 		
 	/**
@@ -78,17 +88,16 @@ public class DataSunNioSctp implements DataSctp {
 		if( chunk instanceof DataSunNioSctp ){
 			DataSunNioSctp dataSunNioSctp = (DataSunNioSctp)chunk;
 			//a deep clone would be safer!
-			this.payload = dataSunNioSctp.payload;
-			this.info = dataSunNioSctp.info;
+			this.data = dataSunNioSctp.data;
+			this.messageInfo = dataSunNioSctp.messageInfo;
+			this.alternativeInfo = dataSunNioSctp.alternativeInfo;
 		}
 		else{
 			//a deep clone would be safer!
-			this.payload = chunk.getData();
-			
-			//apply the copy operator on the wrapped messageInfo member
-			this.info = MessageInfo.createOutgoing(null,0);
-			InfoSunNioSctp infoSunNioSctp = new InfoSunNioSctp(this.info);
-			infoSunNioSctp.trySet(chunk.getInfo());
+			this.data = chunk.getData();
+			this.messageInfo = null;
+			this.alternativeInfo = new BasicInfoSctp();
+			this.alternativeInfo.trySet(chunk.getInfo());
 		}
 	}
 	
@@ -101,23 +110,24 @@ public class DataSunNioSctp implements DataSctp {
 	public DataSunNioSctp( ByteBuffer byteBuffer,MessageInfo messageInfo ){
 		//how to ensure the byteBuffer is in read mode?
 
-		//copy the payload
+		//copy the data
 		int length = byteBuffer.limit()-byteBuffer.position();
 		assert(length>=0);
-		this.payload = new byte[length];
-		byteBuffer.get(this.payload);
+		this.data = new byte[length];
+		byteBuffer.get(this.data);
 
 		//a deep clone would be safer!
-		this.info = messageInfo;
-		assert(this.info!=null);
+		this.messageInfo = messageInfo;
+		assert(this.messageInfo!=null);
+		
+		this.alternativeInfo = null;
 	}
 
 	/**
 	 * 
 	 */
 	public MessageInfo getMessageInfo(){
-		assert(this.info!=null);
-		return this.info;
+		return this.messageInfo;
 	}
 	    
 	/**
@@ -125,7 +135,7 @@ public class DataSunNioSctp implements DataSctp {
 	 */
 	@Override
 	public byte[] getData(){
-		return this.payload;
+		return this.data;
 	}
 	
 	/**
@@ -133,7 +143,7 @@ public class DataSunNioSctp implements DataSctp {
 	 */
 	@Override
 	public int getLength(){
-		return this.payload.length;
+		return this.data.length;
 	}
 	
 	/**
@@ -143,7 +153,7 @@ public class DataSunNioSctp implements DataSctp {
 	public void setData(byte[] data) throws Exception{
 		assert(data!=null);
 		//a copy would be safer!
-		this.payload = data;
+		this.data = data;
 	}
 	
 	/**
@@ -151,8 +161,13 @@ public class DataSunNioSctp implements DataSctp {
 	*/
 	@Override
 	public InfoSctp getInfo(){
-		assert(this.info!=null);
-		return new InfoSunNioSctp(this.info);
+		if( this.messageInfo!=null ){
+			return new InfoSunNioSctp(this.messageInfo);
+		}
+		else {
+			assert(this.alternativeInfo!=null);
+			return this.alternativeInfo;
+		}
 	}
 	
 	/**
@@ -163,13 +178,22 @@ public class DataSunNioSctp implements DataSctp {
 		if(infoSctp instanceof InfoSunNioSctp){
 			//maybe we should clone instead of sharing instance?
 			InfoSunNioSctp infoSunNioSctp = (InfoSunNioSctp)infoSctp;
-			this.info = infoSunNioSctp.messageInfo;
-			assert(this.info!=null);
+			this.messageInfo = infoSunNioSctp.messageInfo;
+			this.alternativeInfo = null;
+		}
+		else if(infoSctp instanceof BasicInfoSctp){
+			//maybe we should clone instead of sharing instance?
+			BasicInfoSctp basicInfoSctp = (BasicInfoSctp)infoSctp;
+			this.messageInfo = null;
+			this.alternativeInfo = basicInfoSctp;
 		}
 		else{
 			//apply the copy operator on the wrapped messageInfo member
-			InfoSunNioSctp infoSunNioSctp = new InfoSunNioSctp(this.info);
-			infoSunNioSctp.trySet(infoSctp);
+			this.messageInfo = null;
+			if( this.alternativeInfo==null ){
+				this.alternativeInfo = new BasicInfoSctp();
+			}
+			this.alternativeInfo.trySet(infoSctp);
 		}
 	}
 	
@@ -178,8 +202,9 @@ public class DataSunNioSctp implements DataSctp {
 	 */
 	@Override
 	public void clear() throws Exception{
-		this.payload = new byte[0];
-		this.info = MessageInfo.createOutgoing(null,0);
+		this.data = new byte[0];
+		this.messageInfo = null;
+		this.alternativeInfo = new BasicInfoSctp();
 	}
 
 }

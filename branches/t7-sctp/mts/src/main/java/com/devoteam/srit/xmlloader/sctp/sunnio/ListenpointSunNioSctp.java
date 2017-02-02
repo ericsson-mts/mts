@@ -25,8 +25,10 @@ package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
+import java.util.Set;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOHandler;
@@ -38,6 +40,7 @@ import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.sctp.*;
 import com.sun.nio.sctp.SctpChannel;
 import com.sun.nio.sctp.SctpServerChannel;
+import com.sun.nio.sctp.SctpStandardSocketOptions;
 
 /**
  * @author emicpou
@@ -100,11 +103,27 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
             InetSocketAddress local = new InetSocketAddress(localInetAddr, port);
             
             this.sctpServerChannel = SctpServerChannel.open();
+            
+            //binds the channel's socket to a local address and configures the socket to listen for associations
             this.sctpServerChannel.bind(local);
+            
+            // @todo multihoming
+            // Adds the given address to the bound addresses for the channel's socket. 
+            // this.sctpServerChannel.bindAddress(otherLocalAddress);
+            // Set<SocketAddress> allLocalAddresses = this.sctpServerChannel.getAllLocalAddresses();
             
             /// @todo set options
             // http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/SctpSocketOption.html
             // this.sctpServerChannel.setOption( ... );
+	        
+            //max streams count allowed
+            {
+		        int maxInStreams = Short.toUnsignedInt( (short)-1 );
+		        int maxOutStreams = Short.toUnsignedInt( (short)-1 );
+		        SctpStandardSocketOptions.InitMaxStreams initMaxStreamsSctpSocketOption =  SctpStandardSocketOptions.InitMaxStreams.create(maxInStreams, maxOutStreams);
+		        assert(initMaxStreamsSctpSocketOption!=null);	            
+		      	this.sctpServerChannel.setOption(SctpStandardSocketOptions.SCTP_INIT_MAXSTREAMS,initMaxStreamsSctpSocketOption );
+	        }
             
 	        //register our sctpServerChannel to the IOReactor
 	        //we want to be notified when a new association is available on the listen point

@@ -175,22 +175,25 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
         	if(this.sctpChannel==null){
 		
 		    	//ensure a channel config is available
-				if (this.configSctp == null){
-					this.configSctp = new ChannelConfigSctp();
+        		ChannelConfigSctp configSctp = this.configSctp;
+				if (configSctp == null){
+					configSctp = new ChannelConfigSctp();
 					Config stackConfig = this.stack.getConfig();
-					this.configSctp.setFromStackConfig(stackConfig);
+					configSctp.setFromStackConfig(stackConfig);
 				}
 				assert(this.configSctp!=null);
 		    			
 		        assert(this.sctpChannel==null);	            
 		   		this.sctpChannel = SctpChannel.open();
 		        assert(this.sctpChannel!=null);	            
-	    	        
-		        /// @todo set options
-		      	//this.sctpChannel.setOption( new SctpSocketOption<SctpStandardSocketOptions.InitMaxStreams>(this.configSctp.max_instreams) );
-		 
-		        //int intLocalPort = getLocalPort(); 
-		        //this.sctpChannel.bind(intLocalPort);
+	    	    
+		        if(configSctp!=null){
+			        int maxInStreams = Short.toUnsignedInt(this.configSctp.max_instreams);
+			        int maxOutStreams = Short.toUnsignedInt(this.configSctp.num_ostreams);
+			        SctpStandardSocketOptions.InitMaxStreams initMaxStreamsSctpSocketOption =  SctpStandardSocketOptions.InitMaxStreams.create(maxInStreams, maxOutStreams);
+			        assert(initMaxStreamsSctpSocketOption!=null);	            
+			      	this.sctpChannel.setOption(SctpStandardSocketOptions.SCTP_INIT_MAXSTREAMS,initMaxStreamsSctpSocketOption );
+		        }
 		        
 		        /// @todo multi-homing
 		                     
@@ -379,11 +382,27 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
         msg.setChannel(this);
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#sendMessage"+" SEND the SCTP message :\n", msg);                       
         
-        DataSunNioSctp dataSctp = null;
+        Association association = this.sctpChannel.association();
+		assert(association!=null);
+
+		DataSunNioSctp dataSunNioSctp = null;
         if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP)){
             assert( msg instanceof MsgSunNioSctp );
             MsgSunNioSctp msgSctp = (MsgSunNioSctp)msg;
-            dataSctp = msgSctp.getDataSunNioSctp();
+            dataSunNioSctp = msgSctp.getDataSunNioSctp();
+            
+             if( dataSunNioSctp.getMessageInfo()==null ){
+                //convert alternativeInfo to messageInfo
+                InfoSctp infoSctp = dataSunNioSctp.getInfo();
+                int streamNumber = Short.toUnsignedInt( infoSctp.getStreamId() );
+  
+    			MessageInfo messageInfo = MessageInfo.createOutgoing(association,null,streamNumber);			
+    			InfoSunNioSctp infoSunNioSctp = new InfoSunNioSctp(messageInfo);
+    			infoSunNioSctp.trySet(infoSctp);
+    			
+    			dataSunNioSctp.setInfo(infoSunNioSctp);
+            }
+
         }
         else{
             // get the bytes from the msg
@@ -394,13 +413,13 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
         	BasicInfoSctp defaultInfoSctp = new BasicInfoSctp();
 			Config sctpStackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
 			defaultInfoSctp.setFromStackConfig(sctpStackConfig);
-			MessageInfo messageInfo = MessageInfo.createOutgoing(null,0);
+			MessageInfo messageInfo = MessageInfo.createOutgoing(association,null,defaultInfoSctp.getStreamId());			
 			InfoSunNioSctp infoSctp = new InfoSunNioSctp(messageInfo);
 			infoSctp.trySet(defaultInfoSctp);
 	
-        	dataSctp = new DataSunNioSctp( byteBuffer,messageInfo );    	
+			dataSunNioSctp = new DataSunNioSctp( byteBuffer,messageInfo );    	
         }
-        boolean status = this.send( dataSctp );
+        boolean status = this.send( dataSunNioSctp );
         
         return status;
     }
