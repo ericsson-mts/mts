@@ -383,7 +383,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         	
             //create a MessageInfo with default settings
-        	InMemoryInfoSctp defaultInfoSctp = new InMemoryInfoSctp();
+        	BasicInfoSctp defaultInfoSctp = new BasicInfoSctp();
 			Config sctpStackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
 			defaultInfoSctp.setFromStackConfig(sctpStackConfig);
 			MessageInfo messageInfo = MessageInfo.createOutgoing(null,0);

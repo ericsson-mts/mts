@@ -31,10 +31,11 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 /**
+ * An implementation of InfoSctp which stores informations in memory
+ *
  * @author emicpou
- * sctp_sndrcvinfo implementation object adapter 
  */
-public class InMemoryInfoSctp extends InfoSctp {
+public class BasicInfoSctp extends InfoSctp {
 	
 	protected short streamId = -1;
 	protected short ssn = -1;
@@ -44,11 +45,11 @@ public class InMemoryInfoSctp extends InfoSctp {
 	protected int timetolive = -1;
 	protected int tsn = -1;
 	protected int cumtsn = -1;
-	protected InMemoryAssociationSctp association = new InMemoryAssociationSctp(-1);
+	protected BasicAssociationSctp association = new BasicAssociationSctp(-1);
 	
 	/**
 	 */
-	public InMemoryInfoSctp(){
+	public BasicInfoSctp(){
 	}
 	
 	/**

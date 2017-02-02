@@ -297,7 +297,7 @@ public abstract class MsgSctp extends Msg{
 		@SuppressWarnings("unchecked")
 		List<Element> sctpElements = root.elements("sctp");
 
-        InMemoryInfoSctp sndrcvinfo = new InMemoryInfoSctp();
+        BasicInfoSctp sndrcvinfo = new BasicInfoSctp();
         sndrcvinfo.setFromStackConfig( stackConfig );
         sndrcvinfo.setFromXml(sctpElements);
 		dataSctp.setInfo(sndrcvinfo);

@@ -4,14 +4,15 @@
 package com.devoteam.srit.xmlloader.sctp;
 
 /**
- * @author emicpou
+ * An implementation of AssociationSctp which stores informations in memory
  *
+ * @author emicpou
  */
-public class InMemoryAssociationSctp implements AssociationSctp{
+public class BasicAssociationSctp implements AssociationSctp{
 	
 	protected long id;
 	
-	public InMemoryAssociationSctp( long id ){
+	public BasicAssociationSctp( long id ){
 		this.id = id;
 	}
 	
