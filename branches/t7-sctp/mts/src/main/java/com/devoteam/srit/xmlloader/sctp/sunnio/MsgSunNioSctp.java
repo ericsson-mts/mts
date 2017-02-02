@@ -78,51 +78,6 @@ public class MsgSunNioSctp extends MsgSctp{
 		assert(this.dataSunNioSctp!=null);
 		return this.dataSunNioSctp;		
 	}
-
-	/** 
-     * Convert the message sub elements to XML document
-     * @see toXml
-     */
-	@Override
-    protected String toXml_SubElements() throws Exception 
-    {
-    	String xml = "";
-    	/*
-    	ChannelSunIoSctp channelSunIoSctp = (ChannelSunIoSctp) getChannel();
-		if (channelSunIoSctp != null)
-		{
-			SocketSunIoSctp socketSunIoSctp = channelSunIoSctp.getSocketSunIoSctp();
-			if (socketSunIoSctp != null)
-			{
-				SCTPSocket sctpSocket = socketSunIoSctp.getSCTPSocket();
-				if (sctpSocket != null)
-				{
-					SCTPData sctpData = this.dataSunNioSctp.getSCTPData();
-					AssociationId assoId = sctpData.sndrcvinfo.sinfo_assoc_id;
-					if (assoId != null && assoId.hashCode() != 0)
-					{
-						//System.out.println("assoId" + assoId);
-						int port= sctpSocket.getPeerInetPort(assoId);
-						//int port=  0;
-						Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(assoId);
-						if (col != null)
-						{
-							for (InetAddress ia : col)
-							{	
-								xml += "    <peer ";
-								xml += "address=\"" + ia.getHostAddress() + "\" ";
-								xml += "port=\"" + port + "\" ";
-								xml += "/>\n";
-							}
-						}
-					}
-				}
-			}	
-		}
-		*/
-    	return xml;
-    }
-
     
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation

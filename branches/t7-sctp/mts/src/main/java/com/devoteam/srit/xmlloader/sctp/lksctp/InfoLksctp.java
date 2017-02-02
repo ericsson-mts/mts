@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sctp.lksctp;
 
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sctp.*;
 
 import dk.i1.sctp.*;
@@ -98,7 +99,8 @@ public class InfoLksctp extends InfoSctp {
 	 */
 	@Override
 	public int getPpid(){
-		return this.sndrcvinfo.sinfo_ppid;
+		int ppid = Utils.convertLittleBigIndian(this.sndrcvinfo.sinfo_ppid);
+		return ppid;
 	}
 	
 	/**
@@ -106,7 +108,7 @@ public class InfoLksctp extends InfoSctp {
 	 */
 	@Override
 	public void setPpid( int ppid ) throws Exception{
-		this.sndrcvinfo.sinfo_ppid = ppid;
+		this.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppid);
 	}
 	
 	/**
@@ -145,7 +147,8 @@ public class InfoLksctp extends InfoSctp {
 	 */
 	@Override
 	public int getTsn(){
-		return this.sndrcvinfo.sinfo_tsn;
+		int tsn = Utils.convertLittleBigIndian(this.sndrcvinfo.sinfo_tsn);
+		return tsn;
 	}
 	
 	
@@ -154,7 +157,7 @@ public class InfoLksctp extends InfoSctp {
 	 */
 	@Override
 	public void setTsn( int tsn ) throws Exception{
-		this.sndrcvinfo.sinfo_tsn = tsn;
+		this.sndrcvinfo.sinfo_tsn = Utils.convertLittleBigIndian(tsn);
 	}
 
 	/**
@@ -162,7 +165,8 @@ public class InfoLksctp extends InfoSctp {
 	 */
 	@Override
 	public int getCumtsn(){
-		return this.sndrcvinfo.sinfo_cumtsn;
+		int cumtsn = Utils.convertLittleBigIndian(this.sndrcvinfo.sinfo_cumtsn);
+		return cumtsn;
 	}
 
 	/**
@@ -170,7 +174,7 @@ public class InfoLksctp extends InfoSctp {
 	 */
 	@Override
 	public void setCumtsn( int cumtsn ){
-		this.sndrcvinfo.sinfo_cumtsn = cumtsn;
+		this.sndrcvinfo.sinfo_cumtsn = Utils.convertLittleBigIndian(cumtsn);
 	}	
 	
 	/**
@@ -186,7 +190,8 @@ public class InfoLksctp extends InfoSctp {
 	 * @param associationId the AssociationSctp value
 	 */
 	@Override
-	public void setAssociationId( long associationId ){
+	public void setAssociationId( int associationId ){
+		// TODO check conversion
 		this.sndrcvinfo.sinfo_assoc_id = new AssociationId(associationId);
 	}
 	

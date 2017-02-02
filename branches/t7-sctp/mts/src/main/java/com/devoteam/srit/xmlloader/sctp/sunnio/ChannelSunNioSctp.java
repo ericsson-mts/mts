@@ -144,7 +144,15 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
     	assert(false):"this code path is not tested";
     }
-
+    
+    /**
+     *  
+     */
+    @Override
+    public String toXml_PeerAddresses(AssociationSctp associationSctp) throws Exception{
+    	// TODO implementer
+    	return "<PeerAddresses />";
+    }
     
     //---------------------------------------------------------------------
     // methods for the transport

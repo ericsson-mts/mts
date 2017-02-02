@@ -56,7 +56,8 @@ public class AssociationSunNioSctp implements AssociationSctp{
 	@Override
 	public String toString(){
 		if(this.association!=null){
-			return Integer.toString( this.association.associationID() );
+			int associationId = this.association.associationID();
+			return Integer.toUnsignedString( associationId );
 		}else{
 			return "null";
 		}
@@ -66,11 +67,11 @@ public class AssociationSunNioSctp implements AssociationSctp{
 	 * @return the local handle to the SCTP association
 	 */
 	@Override
-	public long getId(){
+	public int getId(){
 		if(this.association!=null){
-			return (int)this.association.associationID();
+			return this.association.associationID();
 		}else{
-			return 0;
+			return -1;
 		}
 	}
 	

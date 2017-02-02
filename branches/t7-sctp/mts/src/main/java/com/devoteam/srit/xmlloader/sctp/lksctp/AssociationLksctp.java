@@ -57,7 +57,7 @@ public class AssociationLksctp implements AssociationSctp{
 	 * @return the local handle to the SCTP association
 	 */
 	@Override
-	public long getId(){
+	public int getId(){
 		// hashCode implemented as a return value
 		//return this.sinfo_assoc_id.id;
 		return this.sinfo_assoc_id.hashCode();

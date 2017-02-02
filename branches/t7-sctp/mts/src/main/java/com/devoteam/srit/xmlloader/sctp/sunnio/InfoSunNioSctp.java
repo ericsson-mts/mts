@@ -198,7 +198,7 @@ public class InfoSunNioSctp extends InfoSctp {
 	 * @param associationId the AssociationSctp value
 	 */
 	@Override
-	public void setAssociationId( long associationId ) throws Exception{
+	public void setAssociationId( int associationId ) throws Exception{
 		throw new UnsupportedOperationException ("this method is not implemented");
 	}
 	

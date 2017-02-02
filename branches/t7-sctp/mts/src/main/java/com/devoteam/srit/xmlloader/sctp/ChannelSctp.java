@@ -219,14 +219,10 @@ public abstract class ChannelSctp extends Channel
     	return "";
     }
    
-    /** 
-     * Convert the message sub elements to XML document
-     * @see toString
+    /**
+     *  @param associationSctp optional association id (required by lksctp)
      */
-    protected String toXml_SubElements() throws Exception 
-    {
-    	return "";
-    }
+    public abstract String toXml_PeerAddresses(AssociationSctp associationSctp) throws Exception;
         
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation

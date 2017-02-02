@@ -145,92 +145,61 @@ public abstract class MsgSctp extends Msg{
 		catch(Exception e)
 		{
             GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the SCTP message : ", ret);
-        	e.printStackTrace();
 		}
 		return ret;
 	}
 
     /** 
-     * Convert the message to XML document 
+     * Convert the message to XML document
      */
     @Override
-    public String toXml() throws Exception 
-    {
-		String xml = getTypeComplete();
-		xml += "\n"; 
+    public String toXml() throws Exception {
+    	
+        // TODO change implementation (jackson-dataformat-xml ?)
+    	
+		String xml = "";
 
-    	DataSctp dataSctp = this.getDataSctp();
-    	InfoSctp sndrcvinfo = dataSctp.getInfo();
-    	if (sndrcvinfo!=null)
-		{
-			xml += "<sctp ";
-			int stream = sndrcvinfo.getStreamId() & 0xffff;
-			xml += "stream=\"" + stream + "\", ";
-			int ssn = sndrcvinfo.getSsn() & 0xffff;
-			xml += "ssn=\"" + ssn + "\", ";	
-			long ppid = ((long) Utils.convertLittleBigIndian(sndrcvinfo.getPpid())) & 0xffffffffl;
-			xml += "ppid=\"" + ppid + "\", ";
-			xml += "flags=\"" + sndrcvinfo.getFlags() + "\", ";
-			long context = ((long) sndrcvinfo.getContext()) & 0xffffffffl;
-			xml += "context=\"" + context + "\", ";
-			long timetolive = ((long) sndrcvinfo.getTtl()) & 0xffffffffl;
-			xml += "ttl=\"" + timetolive + "\", ";
-			long tsn = ((long) Utils.convertLittleBigIndian(sndrcvinfo.getTsn())) & 0xffffffffl;
-			xml += "tsn=\"" + tsn + "\", ";
-			long cumtsn = ((long) Utils.convertLittleBigIndian(sndrcvinfo.getCumtsn())) & 0xffffffffl;
-			xml += "cumtsn=\"" + cumtsn + "\", ";
-			long aid = ((long) sndrcvinfo.getAssociation().getId()) & 0xffffffffl;			
-			xml += "aid=\"" + aid + "\"/>\n";
-			
-			xml += toXml_SubElements();
-			
-			/*
-			ChannelSctp channelSctp = (ChannelSctp) getChannel();
-			if (channelSctp != null)
-			{
-				SocketSctp socketSctp = channelSctp.getSocketSctp();
-				if (socketSctp != null)
-				{
-					SCTPSocket sctpSocket = socketSctp.getSctpSocket();
-					if (sctpSocket != null)
-					{
-						AssociationId assoId = sctpData.sndrcvinfo.sinfo_assoc_id;
-						if (assoId != null && assoId.hashCode() != 0)
-						{
-							//System.out.println("assoId" + assoId);
-							int port= sctpSocket.getPeerInetPort(assoId);
-							//int port=  0;
-							Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(assoId);
-							if (col != null)
-							{
-								for (InetAddress ia : col)
-								{	
-									xml += "    <peer ";
-									xml += "address=\"" + ia.getHostAddress() + "\" ";
-									xml += "port=\"" + port + "\" ";
-									xml += "/>\n";
-								}
-							}
-						}
-					}
-				}	
-			}
-			*/
-			xml += "</sctp>\n";
+		DataSctp dataSctp = this.getDataSctp();
+
+		String completeType = this.getTypeComplete();
+		xml += "<"+completeType+">"; 
+		xml += System.lineSeparator();
+
+    	//<infoSctp>
+    	InfoSctp infoSctp = dataSctp.getInfo();
+    	if (infoSctp!=null){
+    		
+        	xml += infoSctp.toXml();
+    		xml += System.lineSeparator();
 		}
-		xml += Utils.byteTabToString(dataSctp.getData());
-        return xml;
+    	
+    	//<peerAdresses>
+		ChannelSctp channelSctp = (ChannelSctp) this.getChannel();
+		if (channelSctp != null){
+	    	AssociationSctp associationSctp = null;
+	    	if (infoSctp!=null) {
+	    		associationSctp = infoSctp.getAssociation();
+	    	}
 
+			xml += channelSctp.toXml_PeerAddresses( associationSctp );
+    		xml += System.lineSeparator();
+		}
+
+		//<sctpData>
+    	{
+			xml += "<sctpData>";
+    		xml += System.lineSeparator();
+    		byte[] data = dataSctp.getData();
+    		xml += Utils.byteTabToString(data);
+    		xml += System.lineSeparator();
+			xml += "</sctpData>";
+			xml += System.lineSeparator();
+    	}
+    	
+		xml += "<"+completeType+"/>"; 
+        return xml;
     }
     
-    /** 
-     * Convert the message sub elements to XML document
-     * @see toXml
-     */
-    protected String toXml_SubElements() throws Exception 
-    {
-    	return "";
-    }
 
     /** 
      * Parse the message from XML element 
@@ -287,7 +256,6 @@ public abstract class MsgSctp extends Msg{
 				i++;
 			}
 		}	
-
 		dataSctp.setData(data);
 
 		// initialize from the configuration file		
@@ -297,21 +265,12 @@ public abstract class MsgSctp extends Msg{
 		@SuppressWarnings("unchecked")
 		List<Element> sctpElements = root.elements("sctp");
 
-        BasicInfoSctp sndrcvinfo = new BasicInfoSctp();
-        sndrcvinfo.setFromStackConfig( stackConfig );
-        sndrcvinfo.setFromXml(sctpElements);
-		dataSctp.setInfo(sndrcvinfo);
-
-		// log datas
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + sndrcvinfo.getStreamId());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + sndrcvinfo.getSsn());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + sndrcvinfo.getPpid());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + sndrcvinfo.getFlags());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + sndrcvinfo.getContext());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + sndrcvinfo.getTtl());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + sndrcvinfo.getTsn());
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + sndrcvinfo.getCumtsn());			
-		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + sndrcvinfo.getAssociation().getId() );		
+        BasicInfoSctp infoSctp = new BasicInfoSctp();
+        infoSctp.setFromStackConfig( stackConfig );
+        infoSctp.setFromXml(sctpElements);             
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "MsgSctp#parseFromXml infoSctp=",infoSctp);
+		dataSctp.setInfo(infoSctp);
+		
     }
 
     
@@ -342,54 +301,43 @@ public abstract class MsgSctp extends Msg{
         	
         	if (dataSctp != null && dataSctp.getInfo() != null)
         	{
-        		InfoSctp sndrcvinfo = dataSctp.getInfo();
+        		InfoSctp infoSctp = dataSctp.getInfo();
         		
 	            if(params[1].equalsIgnoreCase("stream")) 
 	            {
-	            	int stream = sndrcvinfo.getStreamId() & 0xffff;
-	            	var.add(Integer.toString(stream));
+	            	var.add( InfoSctp.StringPrinter.getStreamId(infoSctp) );
 	            }
 	            else if(params[1].equalsIgnoreCase("ssn")) 
 	            {
-	            	int ssn = sndrcvinfo.getSsn() & 0xffff;
-	            	var.add(Integer.toString(ssn));
+	            	var.add(InfoSctp.StringPrinter.getSsn(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("ppid")) 
 	            {
-	            	int ppidLe = (int)sndrcvinfo.getPpid();
-	            	int ppidBe = Utils.convertLittleBigIndian(ppidLe);
-	            	long ppid = ((long)ppidBe) & 0xffffffffl;
-	            	var.add(Long.toString(ppid));
+	            	var.add(InfoSctp.StringPrinter.getPpid(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("flags")) 
 	            {
-	            	int ppid = sndrcvinfo.getFlags() & 0xffff;
-	            	var.add(Integer.toString(ppid));
+	            	var.add(InfoSctp.StringPrinter.getFlags(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("context")) 
 	            {
-	            	long context = ((long) sndrcvinfo.getContext()) & 0xffffffff;
-	            	var.add(Long.toString(context));
+	            	var.add(InfoSctp.StringPrinter.getContext(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("ttl")) 
 	            {
-	            	long ttl = ((long) sndrcvinfo.getTtl()) & 0xffffffff;
-	            	var.add(Long.toString(ttl));
+	            	var.add(InfoSctp.StringPrinter.getTtl(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("tsn"))
 	            {
-	            	long tsn = ((long) Utils.convertLittleBigIndian(sndrcvinfo.getTsn())) & 0xffffffff;
-	            	var.add(Long.toString(tsn));
+	            	var.add(InfoSctp.StringPrinter.getTsn(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("cumtsn")) 
 	            {
-	            	long cumtsn = ((long) Utils.convertLittleBigIndian(sndrcvinfo.getCumtsn() )) & 0xffffffff;
-	            	var.add(Long.toString(cumtsn));
+	            	var.add(InfoSctp.StringPrinter.getCumtsn(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 
 	            {
-	            	long aid = ((long)sndrcvinfo.getAssociation().getId())  & 0xffffffff;;
-	            	var.add(Long.toString(aid));
+	            	var.add(InfoSctp.StringPrinter.getAssociationId(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("peerHosts")) 
 		        {

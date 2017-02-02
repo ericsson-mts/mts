@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+
 /**
  * @author emicpou
  *
@@ -126,7 +128,7 @@ public abstract class InfoSctp {
 	/**
 	 * @param associationId the AssociationSctp value
 	 */
-	public abstract void setAssociationId( long associationId ) throws Exception;
+	public abstract void setAssociationId( int associationId ) throws Exception;
 	
 	/**
 	 * @param src the source object
@@ -187,5 +189,117 @@ public abstract class InfoSctp {
 		dst.setCumtsn( src.getCumtsn() );
 		dst.setAssociationId( src.getAssociation().getId() );
 	}
+	
+	/**
+	 * 
+	 */
+	public String toString(){
+		return this.toXml();
+	}
 
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	public String toXml(){
+		String xml = "";
+
+		xml += "<InfoSctp>";
+		xml += System.lineSeparator();
+		
+		xml += "<stream>" + StringPrinter.getStreamId( this ) + "</stream>";
+		xml += System.lineSeparator();
+		
+		xml += "<ssn>" + StringPrinter.getSsn( this ) + "</ssn>";
+		xml += System.lineSeparator();
+
+		xml += "<ppid>" + StringPrinter.getPpid( this ) + "</ppid>";
+		xml += System.lineSeparator();
+
+		xml += "<flags>" + StringPrinter.getFlags( this ) + "</flags>";
+		xml += System.lineSeparator();
+
+		xml += "<context>" + StringPrinter.getContext( this ) + "</context>";
+		xml += System.lineSeparator();
+
+		xml += "<ttl>" + StringPrinter.getTtl( this ) + "</ttl>";
+		xml += System.lineSeparator();
+
+		xml += "<tsn>" + StringPrinter.getTsn( this ) + "</tsn>";
+		xml += System.lineSeparator();
+
+		xml += "<cumtsn>" + StringPrinter.getCumtsn( this ) + "</cumtsn>";
+		xml += System.lineSeparator();
+
+		xml += "<aid>" + StringPrinter.getAssociationId( this ) + "</aid>";
+		xml += System.lineSeparator();
+		
+		xml += "</InfoSctp>";
+
+		return xml;
+	}
+	
+	/**
+	 * helper class to convert unsigned values to strings
+	 * @author emicpou
+	 * TODO implementation based on generic
+	 */
+	public static class StringPrinter{
+		
+		static String getStreamId( InfoSctp infoSctp ){
+			short usValue = infoSctp.getStreamId();
+			long ulValue = Short.toUnsignedLong( usValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getSsn( InfoSctp infoSctp ){
+			short usValue = infoSctp.getSsn();
+			long ulValue = Short.toUnsignedLong( usValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getFlags( InfoSctp infoSctp ){
+			short usValue = infoSctp.getFlags();
+			long ulValue = Short.toUnsignedLong( usValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getPpid( InfoSctp infoSctp ){
+			int uiValue = infoSctp.getPpid();
+			long ulValue = Integer.toUnsignedLong( uiValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getContext( InfoSctp infoSctp ){
+			int uiValue = infoSctp.getContext();
+			long ulValue = Integer.toUnsignedLong( uiValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getTtl( InfoSctp infoSctp ){
+			int uiValue = infoSctp.getTtl();
+			long ulValue = Integer.toUnsignedLong( uiValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getTsn( InfoSctp infoSctp ){
+			int uiValue = infoSctp.getTsn();
+			long ulValue = Integer.toUnsignedLong( uiValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getCumtsn( InfoSctp infoSctp ){
+			int uiValue = infoSctp.getCumtsn();
+			long ulValue = Integer.toUnsignedLong( uiValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+		static String getAssociationId( InfoSctp infoSctp ){
+			int uiValue = infoSctp.getAssociation().getId();
+			long ulValue = Integer.toUnsignedLong( uiValue );
+			String strValue = Long.toUnsignedString( ulValue );
+			return strValue;
+		}
+
+	}
 }

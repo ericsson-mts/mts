@@ -231,14 +231,13 @@ public class StackSigtranHybrid extends Stack
     @Override
     public Msg readFromSCTPData(DataSctp chunk) throws Exception {
         DefaultArray array = new DefaultArray(chunk.getData());
-        int ppidIntLe = chunk.getInfo().getPpid();
-        int ppidIntBe = Utils.convertLittleBigIndian(ppidIntLe);
+        int ppid = chunk.getInfo().getPpid();
         // when the PPID is not present into the sctp layer
-        if (ppidIntBe == 0)
+        if (ppid == 0)
         {
-        	ppidIntBe = defaultPayloadProtocolID;
+        	ppid = defaultPayloadProtocolID;
         }
-        MsgSigtranHybrid msgSigtran = new MsgSigtranHybrid(array, ppidIntBe);
+        MsgSigtranHybrid msgSigtran = new MsgSigtranHybrid(array, ppid);
         return msgSigtran;
     }
 

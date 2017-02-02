@@ -327,7 +327,44 @@ public class ChannelLksctp extends ChannelSctp
 	     */
  	    return ret;
     }
-        
+
+    
+    /**
+     *  
+     */
+    @Override
+    public String toXml_PeerAddresses(AssociationSctp associationSctp) throws Exception{
+		if (this.socket != null) {
+			SCTPSocket theSCTPSocket = this.socket.getSCTPSocket();
+			if (theSCTPSocket != null) {
+				AssociationId associationId = null;
+				if( associationSctp!=null && associationSctp instanceof AssociationLksctp ){
+					AssociationLksctp associationLksctp = (AssociationLksctp)associationSctp;
+					associationId = associationLksctp.sinfo_assoc_id;
+				}
+				if (associationId != null && associationId.hashCode() != 0) {
+					int port= theSCTPSocket.getPeerInetPort(associationId);
+					Collection<InetAddress> col = theSCTPSocket.getPeerInetAddresses(associationId);
+					if (col != null) {
+						String xml = "";
+						xml += "<PeerAddresses>";
+						xml += System.lineSeparator();
+						for (InetAddress ia : col){
+							xml += "<PeerAddress ";
+							xml += "address=\"" + ia.getHostAddress() + "\" ";
+							xml += "port=\"" + port + "\" ";
+							xml += "/>";
+							xml += System.lineSeparator();
+						}
+						xml += "</PeerAddresses>";
+						return xml;
+					}
+				}
+			}
+		}
+		return "<PeerAddresses />";
+	}
+
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------

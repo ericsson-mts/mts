@@ -1484,7 +1484,7 @@ public class Utils
         
     }
 
-    public static int convertLittleBigIndian(int little) throws Exception
+    public static int convertLittleBigIndian(int little) /*throws Exception*/
     {
     	return((little&0xff)<<24)+((little&0xff00)<<8)+((little&0xff0000)>>8)+((little>>24)&0xff);
     }

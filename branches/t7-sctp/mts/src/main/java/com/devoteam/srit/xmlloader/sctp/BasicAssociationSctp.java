@@ -10,9 +10,9 @@ package com.devoteam.srit.xmlloader.sctp;
  */
 public class BasicAssociationSctp implements AssociationSctp{
 	
-	protected long id;
+	protected int id;
 	
-	public BasicAssociationSctp( long id ){
+	public BasicAssociationSctp( int id ){
 		this.id = id;
 	}
 	
@@ -21,21 +21,21 @@ public class BasicAssociationSctp implements AssociationSctp{
 	 */
 	@Override
 	public String toString(){
-		return Long.toString(this.id);
+		return Integer.toUnsignedString(this.id);
 	}
 	
 	/**
 	 * @return the local handle to the SCTP association
 	 */
 	@Override
-	public long getId(){
+	public int getId(){
 		return this.id;
 	}
 	
 	/**
 	 * @param id the local handle to the SCTP association
 	 */
-	public void setId( long id ){
+	public void setId( int id ){
 		this.id = id;
 	}
 

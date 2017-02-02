@@ -17,6 +17,6 @@ public interface AssociationSctp{
 	/**
 	 * @return the local handle to the SCTP association
 	 */
-	public long getId();
+	public int getId();
 	
 }
