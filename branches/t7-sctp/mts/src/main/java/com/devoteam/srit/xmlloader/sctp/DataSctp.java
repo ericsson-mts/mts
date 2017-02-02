@@ -40,25 +40,25 @@ public interface DataSctp {
 	public int getLength();
 
 	/**
-	 * @return copy of the InfoSctp value
+	 * @return the InfoSctp
 	 */
 	//@Nullable
 	public InfoSctp getInfo();
 
 	/**
-	 * 
+	 * @throws Exception (not implemented, read-only, ... )
 	 */
-	public void setData(byte[] data);
+	public void setData(byte[] data) throws Exception;
 	
 	/**
 	 * @param sndrcvinfo the InfoSctp value 
-	 * @throws Exception TODO
+	 * @throws Exception (not implemented, read-only, ... )
 	 */
-	public void setInfo( InfoSctp sndrcvinfo ) throws Exception;
+	public void setInfo( InfoSctp infoSctp ) throws Exception;
 
 	/**
-	 * 
+	 * @throws Exception (not implemented, read-only, ... )
 	 */
-	public void clear();
+	public void clear() throws Exception;
 
 }

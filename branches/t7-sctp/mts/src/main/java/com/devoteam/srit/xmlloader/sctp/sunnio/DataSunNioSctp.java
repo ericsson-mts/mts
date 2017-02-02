@@ -140,7 +140,7 @@ public class DataSunNioSctp implements DataSctp {
 	 * 
 	 */
 	@Override
-	public void setData(byte[] data){
+	public void setData(byte[] data) throws Exception{
 		assert(data!=null);
 		//a copy would be safer!
 		this.payload = data;
@@ -177,7 +177,7 @@ public class DataSunNioSctp implements DataSctp {
 	 * 
 	 */
 	@Override
-	public void clear(){
+	public void clear() throws Exception{
 		this.payload = new byte[0];
 		this.info = MessageInfo.createOutgoing(null,0);
 	}

@@ -91,7 +91,7 @@ public class DataLksctp implements DataSctp {
 	 * 
 	 */
 	@Override
-	public void setData(byte[] data){
+	public void setData(byte[] data) throws Exception{
 		this.sctpData.setData(data);
 	}
 	
@@ -120,7 +120,7 @@ public class DataLksctp implements DataSctp {
 	 * 
 	 */
 	@Override
-	public void clear(){
+	public void clear() throws Exception{
 		this.sctpData = new SCTPData( new byte[0] );
 	}
 
