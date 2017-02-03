@@ -46,7 +46,6 @@ import java.util.concurrent.locks.*;
 
 import com.sun.nio.sctp.*;
 
-
 /**
  * @author emicpou
  *
@@ -146,6 +145,15 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
     }
     
     /**
+     * 
+     * @return the SctpChannel implementation member
+     */
+    //@Nullable
+    public SctpChannel getSctpChannel(){
+    	return this.sctpChannel;
+    }
+
+    /**
      *  
      */
     @Override
@@ -182,11 +190,33 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 					configSctp.setFromStackConfig(stackConfig);
 				}
 				assert(this.configSctp!=null);
-		    			
+		    	
+				//create
 		        assert(this.sctpChannel==null);	            
 		   		this.sctpChannel = SctpChannel.open();
 		        assert(this.sctpChannel!=null);	            
-	    	    
+
+		        //bind
+		        {
+			        String localHost = this.getLocalHost();
+			        int localPort = this.getLocalPort();			        
+		        	SocketAddress localSocketAddress = null;
+		        	if( localHost==null || localHost.isEmpty() ){
+		        		localSocketAddress = new InetSocketAddress(localPort);
+		        	}else{
+		        		localSocketAddress = new InetSocketAddress(localHost,localPort);
+		        	}
+		            this.sctpChannel.bind(localSocketAddress);
+		        }
+
+		        //multi-homing settings
+		        {
+		        	for( InetAddress multihomingAddress:this.multihoming.getAddresses()){
+		        		this.sctpChannel.bindAddress(multihomingAddress); 
+		        	}
+		        }
+		        
+		        //options
 		        if(configSctp!=null){
 			        int maxInStreams = Short.toUnsignedInt(this.configSctp.max_instreams);
 			        int maxOutStreams = Short.toUnsignedInt(this.configSctp.num_ostreams);
@@ -195,24 +225,25 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 			      	this.sctpChannel.setOption(SctpStandardSocketOptions.SCTP_INIT_MAXSTREAMS,initMaxStreamsSctpSocketOption );
 		        }
 		        
-		        /// @todo multi-homing
-		                     
-		        String strRemoteHost = this.getRemoteHost();
-		        if (strRemoteHost == null || "0.0.0.0".equals(strRemoteHost))
+		        //connect
 		        {
-		        	strRemoteHost = InetAddress.getByName(strRemoteHost).getCanonicalHostName();
+			        String strRemoteHost = this.getRemoteHost();
+			        if (strRemoteHost == null || "0.0.0.0".equals(strRemoteHost))
+			        {
+			        	strRemoteHost = InetAddress.getByName(strRemoteHost).getCanonicalHostName();
+			        }
+			        int intRemotePort = getRemotePort();            
+			        InetSocketAddress remoteSocketAddress = new InetSocketAddress(strRemoteHost, intRemotePort);
+			        
+			        boolean connected = this.sctpChannel.connect(remoteSocketAddress);
+			            
+			        if(!connected){
+			        	this.sctpChannel.configureBlocking(true);
+			        	connected = this.sctpChannel.finishConnect();
+			        	this.sctpChannel.configureBlocking(false);
+			        }
+			        assert(connected);
 		        }
-		        int intRemotePort = getRemotePort();            
-		        InetSocketAddress remoteSocketAddress = new InetSocketAddress(strRemoteHost, intRemotePort);
-		        
-		        boolean connected = this.sctpChannel.connect(remoteSocketAddress);
-		            
-		        if(!connected){
-		        	this.sctpChannel.configureBlocking(true);
-		        	connected = this.sctpChannel.finishConnect();
-		        	this.sctpChannel.configureBlocking(false);
-		        }
-		        assert(connected);
         	}
 	        assert(this.sctpChannel!=null);	            
 
@@ -391,7 +422,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
             MsgSunNioSctp msgSctp = (MsgSunNioSctp)msg;
             dataSunNioSctp = msgSctp.getDataSunNioSctp();
             
-             if( dataSunNioSctp.getMessageInfo()==null ){
+             if( !dataSunNioSctp.hasMessageInfo() ){
                 //convert alternativeInfo to messageInfo
                 InfoSctp infoSctp = dataSunNioSctp.getInfo();
                 int streamNumber = Short.toUnsignedInt( infoSctp.getStreamId() );
@@ -433,6 +464,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
      */
     private boolean send( DataSunNioSctp dataSctp ) throws Exception {
         boolean status = false;
+		assert(dataSctp.hasMessageInfo());
         try{
             if( this.selectionKey.isWritable() ){
             	if( !sendNonBlocking( dataSctp ) ){

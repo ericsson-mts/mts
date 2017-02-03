@@ -26,8 +26,13 @@ package com.devoteam.srit.xmlloader.sctp.sunnio;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.sctp.*;
+import com.sun.nio.sctp.MessageInfo;
 
+import java.net.*;
 import java.nio.*;
+import java.util.Set;
+
+import com.sun.nio.sctp.*;
 
 /**
  * @author emicpou
@@ -86,22 +91,58 @@ public class MsgSunNioSctp extends MsgSctp{
     /** 
      * Get a parameter from the message
      */
+    //@Override
+    protected Parameter getParameterMsgPeerHost() throws Exception {
+    	Parameter var = new Parameter();
+    	if( this.dataSunNioSctp.hasMessageInfo() ){
+    		MessageInfo messageInfo = this.dataSunNioSctp.getMessageInfo();
+    		SocketAddress socketAddress = messageInfo.address();
+    		if( (socketAddress!=null) && (socketAddress instanceof InetSocketAddress) ){
+    			InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+    			var.add( inetSocketAddress.getHostName() );
+    		}
+    	}
+    	return var;
+    }
+    
+    /** 
+     * Get a parameter from the message
+     */
+    //@Override
+    protected Parameter getParameterMsgPeerPort() throws Exception {
+    	Parameter var = new Parameter();
+    	if( this.dataSunNioSctp.hasMessageInfo() ){
+    		MessageInfo messageInfo = this.dataSunNioSctp.getMessageInfo();
+    		SocketAddress socketAddress = messageInfo.address();
+    		if( (socketAddress!=null) && (socketAddress instanceof InetSocketAddress) ){
+    			InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+    			var.add( inetSocketAddress.getPort() );
+    		}
+    	}
+    	return var;
+    }
+    
+    /** 
+     * Get a parameter from the message
+     */
     @Override
     protected Parameter getParameterPeerHosts() throws Exception {
+    	// TODO stocker l'information a la reception du message
+    	// car l'etat du channel peut evoluer entre reception et cette interrogation asynchrone
     	Parameter var = new Parameter();
-    	/*
-    	ChannelSunIoSctp connSctp =((ChannelSunIoSctp) getChannel());
-		SocketSunIoSctp socketSunIoSctp = connSctp.getSocketSunIoSctp();
-		if (socketSunIoSctp != null){
-			SCTPSocket sctpSocket = socketSunIoSctp.getSCTPSocket();
-			SCTPData sctpData = this.dataSunNioSctp.getSCTPData();
-			Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
-			for (InetAddress ia : col)
-			{	
-				var.add(ia.getHostAddress());						
-			}
-		}
-		*/
+    	if( (this.channel!=null) && (this.channel instanceof ChannelSunNioSctp) ){
+    		ChannelSunNioSctp channelSunNioSctp = (ChannelSunNioSctp)this.channel;
+    		SctpChannel sctpChannel = channelSunNioSctp.getSctpChannel();
+    		Set<SocketAddress> remoteAddresses = sctpChannel.getRemoteAddresses();
+    		if(remoteAddresses!=null){
+	    		for (SocketAddress remoteAddress : remoteAddresses){
+	    			if( remoteAddress instanceof InetSocketAddress ){
+	    				String remoteHostAddress = ((InetSocketAddress)remoteAddress).getAddress().getHostAddress();
+	    				var.add( remoteHostAddress );		
+	    			}
+	    		}
+	    	}
+    	}
 		return var;
     }
     
@@ -110,17 +151,24 @@ public class MsgSunNioSctp extends MsgSctp{
      */
     @Override
     protected Parameter getParameterPeerPort() throws Exception {
+    	// TODO stocker l'information a la reception du message
+    	// car l'etat du channel peut evoluer entre reception et cette interrogation asynchrone
     	Parameter var = new Parameter();
-    	/*
-    	ChannelSunIoSctp connSctp =((ChannelSunIoSctp) getChannel());
-		SocketSunIoSctp socketSunIoSctp = connSctp.getSocketSunIoSctp();
-		if (socketSunIoSctp != null){
-			SCTPSocket sctpSocket = socketSunIoSctp.getSCTPSocket();
-			SCTPData sctpData = this.dataSunNioSctp.getSCTPData();
-      	  	int port = sctpSocket.getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);
-    	    var.add(Integer.toString(port));
-		}
-		*/
+    	if( (this.channel!=null) && (this.channel instanceof ChannelSunNioSctp) ){
+    		ChannelSunNioSctp channelSunNioSctp = (ChannelSunNioSctp)this.channel;
+    		SctpChannel sctpChannel = channelSunNioSctp.getSctpChannel();
+    		Set<SocketAddress> remoteAddresses = sctpChannel.getRemoteAddresses();
+    		if(remoteAddresses!=null){
+	    		if( !remoteAddresses.isEmpty() ){
+	    			//prends le 1er peer...
+	    			SocketAddress remoteAddress = remoteAddresses.iterator().next();
+	    			if( remoteAddress instanceof InetSocketAddress ){
+	    				int remoteHostPort = ((InetSocketAddress)remoteAddress).getPort();
+	    				var.add( remoteHostPort );		
+	    			}
+	    		}
+    		}
+    	}
 		return var;
     }
 

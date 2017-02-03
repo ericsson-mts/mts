@@ -89,23 +89,29 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
         // Set up sctp server channel
         try
         {
-            int port = this.getPort();
-
-            InetAddress localInetAddr = null;
-            if (null != this.getHost())
-            {
-                localInetAddr = InetAddress.getByName(this.getHost());
-            }
-            else
-            {
-                localInetAddr = InetAddress.getByName("0.0.0.0");
-            }
-            InetSocketAddress local = new InetSocketAddress(localInetAddr, port);
-            
+        	//create
+        	assert(this.sctpServerChannel==null);
             this.sctpServerChannel = SctpServerChannel.open();
-            
-            //binds the channel's socket to a local address and configures the socket to listen for associations
-            this.sctpServerChannel.bind(local);
+
+	        //bind
+	        {
+		        String localHost = this.getHost();
+		        int localPort = this.getPort();			        
+	        	SocketAddress localSocketAddress = null;
+	        	if( localHost==null || localHost.isEmpty() ){
+	        		localSocketAddress = new InetSocketAddress(localPort);
+	        	}else{
+	        		localSocketAddress = new InetSocketAddress(localHost,localPort);
+	        	}
+	            this.sctpServerChannel.bind(localSocketAddress);
+	        }
+
+	        //multi-homing settings
+	        {
+	        	for( InetAddress multihomingAddress:this.multihoming.getAddresses()){
+	        		this.sctpServerChannel.bindAddress(multihomingAddress); 
+	        	}
+	        }
             
             // @todo multihoming
             // Adds the given address to the bound addresses for the channel's socket. 

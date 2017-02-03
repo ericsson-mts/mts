@@ -23,8 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-
 /**
  * @author emicpou
  *
@@ -234,9 +232,31 @@ public abstract class InfoSctp {
 		xml += "<aid>" + StringPrinter.getAssociationId( this ) + "</aid>";
 		xml += System.lineSeparator();
 		
+		if( this.hasExtensions() ){
+			xml += "<extensions>";
+			xml += System.lineSeparator();
+			xml += this.toXml_ExtensionsElements();
+			xml += "</extensions>";
+			xml += System.lineSeparator();
+		}
+		
 		xml += "</InfoSctp>";
 
 		return xml;
+	}
+	
+	/**
+	 * 
+	 */
+	protected boolean hasExtensions(){
+		return false;
+	}
+
+	/**
+	 * 
+	 */
+	protected String toXml_ExtensionsElements(){
+		return "";
 	}
 	
 	/**

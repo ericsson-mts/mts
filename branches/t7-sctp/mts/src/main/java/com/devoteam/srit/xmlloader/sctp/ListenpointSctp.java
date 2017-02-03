@@ -28,8 +28,15 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 
 public abstract class ListenpointSctp extends Listenpoint {
+    
+    /**
+     * multi-homing addresses
+     */
+    protected final MultihomingSctp multihoming = new MultihomingSctp();
 	
-    /** Creates a new instance of Listenpoint */
+    /**
+     * Creates a new instance of Listenpoint
+     */
     public ListenpointSctp(Stack stack) throws Exception
     {
     	super(stack);

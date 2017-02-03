@@ -126,7 +126,15 @@ public class DataSunNioSctp implements DataSctp {
 	/**
 	 * 
 	 */
+	public boolean hasMessageInfo(){
+		return (this.messageInfo!=null);
+	}
+
+	/**
+	 * 
+	 */
 	public MessageInfo getMessageInfo(){
+		assert (this.messageInfo!=null);
 		return this.messageInfo;
 	}
 	    

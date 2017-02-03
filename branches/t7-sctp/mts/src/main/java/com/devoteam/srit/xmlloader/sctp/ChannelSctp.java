@@ -29,7 +29,6 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import java.util.List;
 
@@ -47,13 +46,18 @@ public abstract class ChannelSctp extends Channel
 	 * 
 	 */
     protected ListenpointSctp listenpointSctp;
+
+    /**
+     * multi-homing addresses
+     */
+    protected final MultihomingSctp multihoming = new MultihomingSctp();
     
     /**
      * the channel initialization parameters
      * to use when opening transport layer
      */
     protected ChannelConfigSctp configSctp;
-    
+
     /** Creates a new instance of Channel*/
     public ChannelSctp(Stack stack)
     {
@@ -110,7 +114,14 @@ public abstract class ChannelSctp extends Channel
 
         this.listenpointSctp = listenpointSctp;
     }
-
+    
+    /**
+     * 
+     */
+    public MultihomingSctp getMultihoming(){
+    	return this.multihoming;
+    }
+    
     /**
      * Open a Channel
      * should be overriden

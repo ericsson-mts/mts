@@ -24,9 +24,12 @@
 package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.sctp.InfoSctp;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.sctp.AssociationSctp;
 
-import java.lang.UnsupportedOperationException; 
+import java.lang.UnsupportedOperationException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 import com.sun.nio.sctp.*;
 
@@ -217,4 +220,30 @@ public class InfoSunNioSctp extends InfoSctp {
 		assert( this.messageInfo.association().associationID() == associationId );
 	}
 	
+	/**
+	 * 
+	 */
+	protected boolean hasExtensions(){
+		return true;
+	}
+
+	/**
+	 * 
+	 */
+	protected String toXml_ExtensionsElements(){
+		String xml = "";
+		if( this.messageInfo.address()!=null ){
+    		SocketAddress socketAddress = this.messageInfo.address();
+    		if( (socketAddress!=null) && (socketAddress instanceof InetSocketAddress) ){
+    			InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+    			xml += "<address ";
+    			xml += "host=\""+inetSocketAddress.getAddress().getHostAddress()+"\" ";
+    			xml += "port=\""+inetSocketAddress.getPort()+"\" ";
+    			xml += "/>";
+    			xml += System.lineSeparator();
+    		}
+		}
+		return xml;
+	}
+
 }

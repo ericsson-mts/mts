@@ -28,7 +28,6 @@ import java.util.List;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 /**
  * An implementation of InfoSctp which stores informations in memory
