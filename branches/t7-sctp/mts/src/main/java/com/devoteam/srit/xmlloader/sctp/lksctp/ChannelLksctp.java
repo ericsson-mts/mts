@@ -64,7 +64,6 @@ public class ChannelLksctp extends ChannelSctp
     public ChannelLksctp(Listenpoint aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
         super(aListenpoint, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
-        this.socket = null;
     }
 
     public ChannelLksctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception

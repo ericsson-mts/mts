@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
@@ -62,21 +63,38 @@ public abstract class ListenpointSctp extends Listenpoint {
 		//put additional code here...
 		return true;
     }
+    
+    /**
+     * Prepare the channel
+     */
+    @Override
+    public Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
+    {
+    	return super.prepareChannel(msg, remoteHost, remotePort, transport);
+    }
 	
+    /**
+     * Send a Msg to a given destination with a given transport protocol
+     */
+    @Override
     public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-    {			
-		ChannelSctp channel;
-		
+    {	
+    	//sctp won't rely on another transport layer 
+    	
+		ChannelSctp channel = null;
 		String keySocket = remoteHost + ":" + remotePort;
-		
-		if(!this.existsChannel(keySocket))
-		{
-			channel = this.createChannelSctp( getHost(), 0, remoteHost, remotePort, this.getProtocol());
+		if(!this.existsChannel(keySocket)){
+			String localHost = this.getHost();
+			int localPort = 0;
+			String protocol = this.getProtocol();
+			channel = this.createChannelSctp( localHost, localPort, remoteHost, remotePort, protocol);
+			assert(channel!=null);
 			this.openChannel(channel);
 		}
-		else
-		{
-			channel = (ChannelSctp) this.getChannel(keySocket);
+		else{
+			Channel existingChannel = this.getChannel(keySocket);
+			assert((existingChannel!=null) && (existingChannel instanceof ChannelSctp));
+			channel = (ChannelSctp)existingChannel;
 		}			
 				
 		channel.sendMessage(msg);

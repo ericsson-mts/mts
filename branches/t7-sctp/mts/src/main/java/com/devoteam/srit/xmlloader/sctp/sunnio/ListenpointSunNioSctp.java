@@ -237,36 +237,8 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
     }
 
     @Override
-    public synchronized Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-    {
-        Channel channel;
-
-        String keySocket = remoteHost + ":" + remotePort;
-
-        if (!this.existsChannel(keySocket))
-        {
-            channel = new ChannelSunNioSctp(this, getHost(), 0, remoteHost, remotePort, this.getProtocol());
-            this.openChannel(channel);
-        }
-        else
-        {
-            channel = this.getChannel(keySocket);
-        }
-
-        return channel;
-    }
-
-    @Override
-    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-    {
-        assert(false):"this code path is not tested";
-		return prepareChannel(msg, remoteHost, remotePort, transport).sendMessage(msg);
-    }
-
-    @Override
     protected ChannelSctp createChannelSctp(String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
-        assert(false):"this code path is not tested";
     	return new ChannelSunNioSctp(this,aLocalHost,aLocalPort,aRemoteHost,aRemotePort,aProtocol);
     }
  

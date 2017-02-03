@@ -136,12 +136,10 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
     /**
 	 * Creates a new instance
      */
-    public ChannelSunNioSctp(Listenpoint listenpointTcp, String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
+    public ChannelSunNioSctp(Listenpoint aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
     {
-        super(localHost, localPort, remoteHost, remotePort, aProtocol);
-        this.listenpointSctp = (ListenpointSctp)listenpointTcp;
-		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
-    	assert(false):"this code path is not tested";
+        super(aListenpoint, aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
+        this.listenpointSctp = (ListenpointSctp)aListenpoint;
     }
     
     /**
@@ -185,11 +183,11 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		    	//ensure a channel config is available
         		ChannelConfigSctp configSctp = this.configSctp;
 				if (configSctp == null){
+					Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+			        Config stackConfig = sctpStack.getConfig();
 					configSctp = new ChannelConfigSctp();
-					Config stackConfig = this.stack.getConfig();
 					configSctp.setFromStackConfig(stackConfig);
 				}
-				assert(this.configSctp!=null);
 		    	
 				//create
 		        assert(this.sctpChannel==null);	            
@@ -218,8 +216,8 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		        
 		        //options
 		        if(configSctp!=null){
-			        int maxInStreams = Short.toUnsignedInt(this.configSctp.max_instreams);
-			        int maxOutStreams = Short.toUnsignedInt(this.configSctp.num_ostreams);
+			        int maxInStreams = Short.toUnsignedInt(configSctp.max_instreams);
+			        int maxOutStreams = Short.toUnsignedInt(configSctp.num_ostreams);
 			        SctpStandardSocketOptions.InitMaxStreams initMaxStreamsSctpSocketOption =  SctpStandardSocketOptions.InitMaxStreams.create(maxInStreams, maxOutStreams);
 			        assert(initMaxStreamsSctpSocketOption!=null);	            
 			      	this.sctpChannel.setOption(SctpStandardSocketOptions.SCTP_INIT_MAXSTREAMS,initMaxStreamsSctpSocketOption );

@@ -395,7 +395,9 @@ public class Listenpoint
         }
     }
     
-    /** Prepare the channel */
+    /**
+     * Prepare the channel
+     */
     public Channel prepareChannel(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
         Channel res;
@@ -434,7 +436,9 @@ public class Listenpoint
         return res;
     }
 
-    /** Send a Msg to a given destination with a given transport protocol */
+    /**
+     * Send a Msg to a given destination with a given transport protocol
+     */
     public boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
     {
         boolean res = false;

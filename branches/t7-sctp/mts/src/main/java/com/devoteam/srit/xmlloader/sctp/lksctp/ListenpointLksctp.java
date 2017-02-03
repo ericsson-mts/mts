@@ -81,11 +81,6 @@ public class ListenpointLksctp extends ListenpointSctp {
 
 		return true;
 	}
-	
-	public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-	{
-		return super.sendMessage(msg, remoteHost, remotePort, transport);
-	}
 		
     @Override
 	public boolean remove()

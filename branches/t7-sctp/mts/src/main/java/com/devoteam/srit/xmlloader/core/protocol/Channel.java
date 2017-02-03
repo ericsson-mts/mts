@@ -48,8 +48,10 @@ public class Channel
     private String UID;
     
     protected String name;
+    
     protected String localHost;
     protected int localPort = 0;
+    
     protected String remoteHost;
     protected int remotePort = 0;
 
@@ -63,7 +65,9 @@ public class Channel
     /** Creates a new instance of Channel*/
     public Channel(Stack stack)
     {
-        this.stack = stack;
+    	this.name = "Channel #" + Stack.nextTransactionId();
+
+    	this.stack = stack;
     }
 
     /** Creates a new instance of Channel*/
@@ -75,7 +79,8 @@ public class Channel
     /** Creates a new instance of Channel */
     public Channel(String localHost, int localPort, String remoteHost, int remotePort, String aProtocol) throws Exception
     {
-        this("Channel #" + Stack.nextTransactionId());
+    	this.name = "Channel #" + Stack.nextTransactionId();
+    	
         this.localHost = Utils.formatIPAddress(localHost);
         this.localPort = localPort;
 
@@ -88,7 +93,8 @@ public class Channel
     /** Creates a new instance of Channel */
     public Channel(String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol) throws Exception
     {
-        this(name);
+        this.name = name;
+        
         if (localHost != null)
         {
         	this.localHost = Utils.formatIPAddress(localHost);
