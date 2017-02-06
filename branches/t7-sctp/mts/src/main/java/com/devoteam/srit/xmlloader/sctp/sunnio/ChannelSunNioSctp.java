@@ -56,6 +56,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
      * sctp msg receive max size
      */
     public static final int MTU = Config.getConfigByName("sctp.properties").getInteger("DEFAULT_BUFFER_LENGHT", 1500);
+    public static final int MAX_RECEIVE_BUFFER_LENGTH = Config.getConfigByName("sctp.properties").getInteger("MAX_RECEIVE_BUFFER_LENGTH", 64*1024);
 
     /**
 	 * 
@@ -342,7 +343,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 	    	 * taille du buffer basée sur le MTU
 	    	 *   https://www.ietf.org/mail-archive/web/sigtran/current/msg08100.html
 	    	 */
-	    	ByteBuffer payloadByteBuffer = ByteBuffer.allocate(ChannelSunNioSctp.MTU);
+	    	ByteBuffer payloadByteBuffer = ByteBuffer.allocate(ChannelSunNioSctp.MAX_RECEIVE_BUFFER_LENGTH);
 	    	
 	    	MessageInfo messageInfo = this.sctpChannel.receive(payloadByteBuffer,null,null);
 	    	if( messageInfo==null ){
@@ -373,8 +374,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		    	payloadByteBuffer.flip();
 		    	int payloadLength = payloadByteBuffer.limit()-payloadByteBuffer.position();
 		        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" RECEIVE "+payloadLength+" bytes");                       
-		    	assert(payloadLength<=ChannelSunNioSctp.MTU);
-	
+		    	//assert(payloadLength<=ChannelSunNioSctp.MTU);
 		
 		        DataSunNioSctp dataSctp = new DataSunNioSctp( payloadByteBuffer,messageInfo );
 		        
@@ -481,7 +481,10 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 	private boolean sendNonBlocking( DataSunNioSctp dataSctp ) throws Exception {
 		boolean status = false;
 		byte[] payloadByteArray = dataSctp.getData();
-		assert(payloadByteArray.length<=ChannelSunNioSctp.MTU);
+		//assert(payloadByteArray.length<=ChannelSunNioSctp.MTU);
+		if( payloadByteArray.length>ChannelSunNioSctp.MTU){
+          GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#sendNonBlocking"+" SEND "+payloadByteArray.length+" bytes"+" exceeds MTU size (datagrm will be fragmented)");                       
+		}
     	ByteBuffer payloadByteBuffer = ByteBuffer.wrap( payloadByteArray );
         MessageInfo messageInfo = dataSctp.getMessageInfo();
 		int sentCount = this.sctpChannel.send(payloadByteBuffer, messageInfo);
