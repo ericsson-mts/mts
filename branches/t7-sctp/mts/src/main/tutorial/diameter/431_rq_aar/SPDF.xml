@@ -59,7 +59,7 @@ AA-Request ::= < Diameter Header: 265, REQ, PXY >
 -->
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/> 
-    <sendMessageDIAMETER name="Send Request ETSI/Rq/AAR" channel="channel_client" destScenario="A-RACF">
+    <sendMessageDIAMETER name="Send Request ETSI/Rq/AAR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
 
