@@ -29,7 +29,11 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import dk.i1.sctp.AssociationId;
 import dk.i1.sctp.SCTPData;
 
 public class StackSctp extends Stack
@@ -40,7 +44,31 @@ public class StackSctp extends Stack
 	{
 		super();
 	}
-	
+
+    /**
+     * Creates a Msg specific to each Stack
+     * Used for SCTP like protocol : to build incoming message
+     */
+    public SCTPData getConfigSCTPData() throws Exception    
+    {
+    	SCTPData sctpData = new SCTPData();
+    	
+        Config config = getConfig();
+        sctpData.sndrcvinfo.sinfo_stream = (short) config.getInteger("client.DEFAULT_STREAM", 1);
+		sctpData.sndrcvinfo.sinfo_ssn = (short) config.getInteger("client.DEFAULT_SSN", 0);
+		int ppid = config.getInteger("client.DEFAULT_PPID", 0);
+		sctpData.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppid);
+		sctpData.sndrcvinfo.sinfo_flags = (short) config.getInteger("client.DEFAULT_FLAGS", 0);		
+		sctpData.sndrcvinfo.sinfo_context = config.getInteger("client.DEFAULT_CONTEXT", 0);
+		sctpData.sndrcvinfo.sinfo_timetolive = config.getInteger("client.DEFAULT_TTL", 0);
+		sctpData.sndrcvinfo.sinfo_tsn = config.getInteger("client.DEFAULT_TSN", 0);
+		sctpData.sndrcvinfo.sinfo_cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
+		long assocId = (long) config.getInteger("client.DEFAULT_AID", 0);
+		sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocId);
+
+    	return sctpData;
+    }
+
     /**
      * Creates a Msg specific to each Stack
      * Used for SCTP like protocol : to build incoming message

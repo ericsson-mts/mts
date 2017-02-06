@@ -289,22 +289,10 @@ public class MsgSctp extends Msg{
 			}
 		}	
 
-		this.sctpData=new SCTPData(data);
-
-		// initialize from the configuration file
-        Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-        this.sctpData.sndrcvinfo.sinfo_stream = (short) config.getInteger("client.DEFAULT_STREAM", 1);
-		this.sctpData.sndrcvinfo.sinfo_ssn = (short) config.getInteger("client.DEFAULT_SSN", 0);
-		int ppid = config.getInteger("client.DEFAULT_PPID", 0);
-		this.sctpData.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppid);
-		this.sctpData.sndrcvinfo.sinfo_flags = (short) config.getInteger("client.DEFAULT_FLAGS", 0);		
-		this.sctpData.sndrcvinfo.sinfo_context = config.getInteger("client.DEFAULT_CONTEXT", 0);
-		this.sctpData.sndrcvinfo.sinfo_timetolive = config.getInteger("client.DEFAULT_TTL", 0);
-		this.sctpData.sndrcvinfo.sinfo_tsn = config.getInteger("client.DEFAULT_TSN", 0);
-		this.sctpData.sndrcvinfo.sinfo_cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
-		long assocId = (long) config.getInteger("client.DEFAULT_AID", 0);
-		this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocId);
-
+		//get the default SCTP config parameters
+		this.sctpData = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTPData();
+        this.sctpData.setData(data);
+		
 		// Parse the XML file
 		List<Element> sctpElements = root.elements("sctp");
 		if (sctpElements != null && sctpElements.size() > 0)
@@ -367,7 +355,7 @@ public class MsgSctp extends Msg{
 				assocIdLong = Long.parseLong(aid);
 				this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocIdLong);
 			}
-
+			
 			// log datas
 			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + this.sctpData.sndrcvinfo.sinfo_stream);
 			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + this.sctpData.sndrcvinfo.sinfo_ssn);
@@ -377,7 +365,8 @@ public class MsgSctp extends Msg{
 			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + this.sctpData.sndrcvinfo.sinfo_timetolive);
 			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + this.sctpData.sndrcvinfo.sinfo_tsn);
 			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + this.sctpData.sndrcvinfo.sinfo_cumtsn);			
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + assocId);
+			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + this.sctpData.sndrcvinfo.sinfo_assoc_id.toString());
+
 		}
     }
 
