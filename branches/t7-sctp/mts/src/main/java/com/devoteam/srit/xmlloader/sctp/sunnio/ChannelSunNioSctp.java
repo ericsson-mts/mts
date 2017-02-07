@@ -258,6 +258,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 	        //this.localPort = hybridSocket.getLocalPort();
 	        //this.localHost = hybridSocket.getLocalAddress().getHostAddress();
 	
+			//begin statistics only when the channel has been sucessfully opened
 			this.startTimestamp = System.currentTimeMillis();
 			StatPool.beginStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, getProtocol());
 			
@@ -287,10 +288,12 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		if( !super.close() ){
     		return false;
     	}
-
-    	assert(this.selectionKey!=null):"channel should be opened";
-
-    	StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, this.getProtocol(),this.startTimestamp);
+		
+		//ends statistics only if the channel has been opened successfully previously
+		if( this.selectionKey!=null ){
+			StatPool.endStatisticProtocol(StatPool.CHANNEL_KEY, StatPool.NIO_KEY, StackFactory.PROTOCOL_SCTP, this.getProtocol(),this.startTimestamp);
+		}
+		
     	this.cleanup();
     	return true;
     }
