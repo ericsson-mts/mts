@@ -856,7 +856,7 @@ public class Utils
      * Format the IP address : resolve domain name into IP adress and for IPV6 only 
      * add brackets characters
      */
-    public static String formatIPAddress(String addr) throws Exception
+    public static String formatIPAddress(String addr)
     {
     	if (addr == null)
     	{
@@ -882,7 +882,7 @@ public class Utils
     /*
      * Format the IP addresses
      */
-    public static String[] formatIPAddresses(String[] addresses) throws Exception
+    public static String[] formatIPAddresses(String[] addresses)
     {
     	for (int i = 0; i < addresses.length; i++)
     	{

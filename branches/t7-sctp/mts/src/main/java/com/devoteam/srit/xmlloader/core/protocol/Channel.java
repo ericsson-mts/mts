@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.net.AddressesList;
 import com.devoteam.srit.xmlloader.sctp.StackSctp;
 import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
@@ -35,6 +36,7 @@ import com.devoteam.srit.xmlloader.udp.ChannelUdp;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.List;
 
 import org.dom4j.Element;
 
@@ -49,7 +51,17 @@ public class Channel
     
     protected String name;
     
-    protected String localHost;
+    /**
+     * the local host(s)
+     * in most cases, there is only one local address,
+     * the one on which the communication object () is bound
+     * in case of sctp transport, the communication object can be bound to many adresses (multihoming)
+     */
+    private AddressesList localAddresses = new AddressesList();
+
+    /**
+     * the local port
+     */
     protected int localPort = 0;
     
     protected String remoteHost;
@@ -81,7 +93,7 @@ public class Channel
     {
     	this.name = "Channel #" + Stack.nextTransactionId();
     	
-        this.localHost = Utils.formatIPAddress(localHost);
+        this.localAddresses.setFromAddressesStringWithSeparator(localHost);
         this.localPort = localPort;
 
         this.remoteHost = Utils.formatIPAddress(remoteHost);
@@ -97,7 +109,7 @@ public class Channel
         
         if (localHost != null)
         {
-        	this.localHost = Utils.formatIPAddress(localHost);
+            this.localAddresses.setFromAddressesStringWithSeparator(localHost);
         }
         
         if (localPort != null)
@@ -125,11 +137,66 @@ public class Channel
         return this.UID;
     }
 
+    /**
+     * get the default local address in the legacy mts ip address string format
+     * @return the first local address
+     */
+    //@Nullable
     public String getLocalHost()
     {
+        InetAddress localAddress = this.localAddresses.getHeadImmutable();
+        if( localAddress==null){
+        	return null;
+        }
+        String hostAddress = localAddress.getHostAddress();
+        String localHost = Utils.formatIPAddress(hostAddress);
         return localHost;
     }
+    
+    /**
+     * @return the first local addresses
+     */
+    //@Immutable
+    //@Nullable
+    public InetAddress getLocalAddress()
+    {
+    	InetAddress localAddress = this.localAddresses.getHeadImmutable();
+    	return localAddress;
+    }
 
+    /**
+     * @return the local addresses
+     */
+    //@Immutable
+    public List<InetAddress> getLocalAddresses()
+    {
+    	return this.localAddresses.getAllImmutable();
+    }
+    
+    /**
+     * 
+     */
+    public String getLocalAddressesString()
+    {
+    	return this.localAddresses.toStringWithSeparator();
+    }
+
+    /**
+     * @param localAdresses
+     * @return
+     */
+    public boolean setLocalAddresses( List<InetAddress> addresses ){
+    	return this.localAddresses.set( addresses );
+    }
+    
+    /**
+     * @param addressesStringWithSeparator
+     * @return status
+     */
+    public boolean setLocalHost( String addressesStringWithSeparator ){
+    	return this.localAddresses.setFromAddressesStringWithSeparator(addressesStringWithSeparator);
+    }
+    
     public int getLocalPort()
     {
         return localPort;
@@ -273,7 +340,7 @@ public class Channel
     {
         String ret = "";
         ret += "name=\"" + this.name + "\"";
-        ret += " localHost=\"" + this.localHost + "\"";
+        ret += " localAdresses=\"" + this.getLocalAddressesString() + "\"";
         ret += " localPort=\"" + this.localPort + "\"";
         ret += " remoteHost=\"" + this.remoteHost + "\"";
         ret += " remotePort=\"" + this.remotePort + "\""; 
@@ -300,7 +367,7 @@ public class Channel
         String localHost  = root.attributeValue("localHost");
         if (localHost !=  null)
         {
-        	this.localHost = Utils.formatIPAddress(localHost);
+            this.localAddresses.setFromAddressesStringWithSeparator(localHost);
         }
         String localPort  = root.attributeValue("localPort");
         if (localPort != null)
@@ -311,7 +378,8 @@ public class Channel
         if (localURL != null)
         {
         	URI uri = new URI(localURL).normalize();
-        	this.localHost = uri.getHost();
+        	String uriLocalHost = uri.getHost();
+            this.localAddresses.setFromAddressString(localHost);
         	this.localPort = uri.getPort();
         }
         
@@ -367,7 +435,8 @@ public class Channel
         }
         else if(params[1].equalsIgnoreCase("localHost"))
         {
-        	parameter.add(this.localHost);
+        	String localHost = this.getLocalHost();
+        	parameter.add(localHost);
         }
         else if(params[1].equalsIgnoreCase("localPort"))
         {
@@ -413,7 +482,7 @@ public class Channel
         }
     	this.name = channel.getName();
     	
-    	this.localHost = channel.getLocalHost();
+    	this.localAddresses.set( channel.localAddresses );
     	this.localPort = channel.getLocalPort();
     	
     	this.remoteHost = channel.getRemoteHost();
@@ -445,20 +514,10 @@ public class Channel
                 return false;
             }
         }
-        if (this.localHost != null)
+        
+        if( !this.localAddresses.equals(channel.localAddresses) )
         {
-            if (channel != null)
-            {
-                String localHost = channel.getLocalHost();
-                if (!this.localHost.equals(localHost))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         
         if (this.localPort != channel.getLocalPort())

@@ -46,11 +46,6 @@ public abstract class ChannelSctp extends Channel
 	 * 
 	 */
     protected ListenpointSctp listenpointSctp;
-
-    /**
-     * multi-homing addresses
-     */
-    protected final MultihomingSctp multihoming = new MultihomingSctp();
     
     /**
      * the channel initialization parameters
@@ -106,20 +101,13 @@ public abstract class ChannelSctp extends Channel
     {
         super(name);
 
-        this.localHost = listenpointSctp.getHost();
+        this.setLocalAddresses( listenpointSctp.getAddresses() );
         this.localPort = listenpointSctp.getPort();
 
         this.protocol = listenpointSctp.getProtocol();
         this.stack = listenpointSctp.getStack();
 
         this.listenpointSctp = listenpointSctp;
-    }
-    
-    /**
-     * 
-     */
-    public MultihomingSctp getMultihoming(){
-    	return this.multihoming;
     }
     
     /**

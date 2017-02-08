@@ -41,6 +41,8 @@ import com.devoteam.srit.xmlloader.sctp.lksctp.StackLksctp;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.*;
 
@@ -197,21 +199,23 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 
 		        //bind
 		        {
-			        String localHost = this.getLocalHost();
+		        	List<InetAddress> localAddresses = this.getLocalAddresses();
+		        	Iterator<InetAddress> localAddressesIterator = localAddresses.iterator();
+		        	
 			        int localPort = this.getLocalPort();			        
 		        	SocketAddress localSocketAddress = null;
-		        	if( localHost==null || localHost.isEmpty() ){
-		        		localSocketAddress = new InetSocketAddress(localPort);
+		        	if( localAddressesIterator.hasNext() ){
+		        		InetAddress localAddress = localAddressesIterator.next();
+		        		localSocketAddress = new InetSocketAddress(localAddress,localPort);
 		        	}else{
-		        		localSocketAddress = new InetSocketAddress(localHost,localPort);
+		        		localSocketAddress = new InetSocketAddress(localPort);		        		
 		        	}
 		            this.sctpChannel.bind(localSocketAddress);
-		        }
-
-		        //multi-homing settings
-		        {
-		        	for( InetAddress multihomingAddress:this.multihoming.getAddresses()){
-		        		this.sctpChannel.bindAddress(multihomingAddress); 
+		            
+		            //multi-homing
+		            while( localAddressesIterator.hasNext() ){
+		            	InetAddress localAddress = localAddressesIterator.next();
+		        		this.sctpChannel.bindAddress(localAddress); 
 		        	}
 		        }
 		        

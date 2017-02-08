@@ -28,6 +28,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -95,21 +97,23 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
 
 	        //bind
 	        {
-		        String localHost = this.getHost();
+	        	List<InetAddress> localAddresses = this.getAddresses();
+	        	Iterator<InetAddress> localAddressesIterator = localAddresses.iterator();
+	        	
 		        int localPort = this.getPort();			        
 	        	SocketAddress localSocketAddress = null;
-	        	if( localHost==null || localHost.isEmpty() ){
-	        		localSocketAddress = new InetSocketAddress(localPort);
+	        	if( localAddressesIterator.hasNext() ){
+	        		InetAddress localAddress = localAddressesIterator.next();
+	        		localSocketAddress = new InetSocketAddress(localAddress,localPort);
 	        	}else{
-	        		localSocketAddress = new InetSocketAddress(localHost,localPort);
+	        		localSocketAddress = new InetSocketAddress(localPort);		        		
 	        	}
 	            this.sctpServerChannel.bind(localSocketAddress);
-	        }
-
-	        //multi-homing settings
-	        {
-	        	for( InetAddress multihomingAddress:this.multihoming.getAddresses()){
-	        		this.sctpServerChannel.bindAddress(multihomingAddress); 
+	            
+	            //multi-homing
+	            while( localAddressesIterator.hasNext() ){
+	            	InetAddress localAddress = localAddressesIterator.next();
+	        		this.sctpServerChannel.bindAddress(localAddress); 
 	        	}
 	        }
             

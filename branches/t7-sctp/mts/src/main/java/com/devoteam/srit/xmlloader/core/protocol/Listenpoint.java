@@ -30,14 +30,17 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.net.AddressesList;
 import com.devoteam.srit.xmlloader.sctp.ListenpointSctp;
 import com.devoteam.srit.xmlloader.sctp.StackSctp;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 import com.devoteam.srit.xmlloader.udp.ListenpointUdp;
 
+import java.net.InetAddress;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 
 import org.dom4j.Element;
 
@@ -50,7 +53,15 @@ public class Listenpoint
 
     private String UID;
     protected String name;
-    private String host;
+    
+    /**
+     * the local host(s)
+     * in most cases, there is only one local address,
+     * the one on which the communication object () is bound
+     * in case of sctp transport, the communication object can be bound to many adresses (multihoming)
+     */
+    private AddressesList addresses = new AddressesList();
+    
     private int port = 0;
     private int portTLS = 0;
     
@@ -81,11 +92,13 @@ public class Listenpoint
         this.stack = stack;
         // Get the config parameters
         this.UID = Utils.newUID();
-        this.host = stack.getConfig().getString("listenpoint.LOCAL_HOST", "");
-        if (this.host.length() <= 0)
+        
+        String host = stack.getConfig().getString("listenpoint.LOCAL_HOST", "");
+        if (host==null || host.isEmpty())
         {
-            this.host = "0.0.0.0";
+            host = "0.0.0.0";
         }
+        this.addresses.setFromAddressesStringWithSeparator(host);
 
         this.port = stack.getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
         this.portTLS = this.stack.getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
@@ -104,11 +117,12 @@ public class Listenpoint
     {
         this(stack);
         this.name = name;
-        this.host = Utils.formatIPAddress(host);
-        if (null == this.host || this.host.length() <= 0)
+        
+        if (host==null || host.isEmpty())
         {
-            this.host = "0.0.0.0";
+            host = "0.0.0.0";
         }
+        this.addresses.setFromAddressesStringWithSeparator(host);
 
         this.listenUDP = false;
         this.listenTCP = false;
@@ -128,21 +142,69 @@ public class Listenpoint
         return UID;
     }
 
+    /**
+     * get the default address in the legacy mts ip address string format
+     * @return the first address
+     */
+    //@Nullable
     public String getHost()
     {
-        return host;
+        InetAddress localAddress = this.addresses.getHeadImmutable();
+        if( localAddress==null){
+        	return null;
+        }
+        String hostAddress = localAddress.getHostAddress();
+        String localHost = Utils.formatIPAddress(hostAddress);
+        return localHost;
+    }
+        
+    /**
+     * @return the addresses
+     */
+    //@Immutable
+    //@Nullable
+    public InetAddress getAddress()
+    {
+    	InetAddress localAddress = this.addresses.getHeadImmutable();
+    	return localAddress;
     }
 
+    /**
+     * @return the local addresses
+     */
+    //@Immutable
+    public List<InetAddress> getAddresses()
+    {
+    	return this.addresses.getAllImmutable();
+    }
+    
+    /**
+     * 
+     */
+    public String getAddressesString()
+    {
+    	return this.addresses.toStringWithSeparator();
+    }
+
+    /**
+     * @param localAdresses
+     * @return
+     */
+    public boolean setAddresses( List<InetAddress> addresses ){
+    	return this.addresses.set( addresses );
+    }
+    
     /**
      * This method has been added for protocol specific channels when we know
      * the local host only after a call to the open() method.
      * 
      * It should only be called in the open() method of the Channel sub-types.
-     * @param port
+     * 
+     * @param addressesStringWithSeparator
+     * @return status
      */
-    public void setHost(String host) throws Exception
-    {
-        this.host = Utils.formatIPAddress(host);
+    public boolean setHost( String addressesStringWithSeparator ){
+    	return this.addresses.setFromAddressesStringWithSeparator(addressesStringWithSeparator);
     }
 
     public int getPort()
@@ -497,7 +559,7 @@ public class Listenpoint
         {
         	str += "name=\"\"";
         }
-        str += " localHost=\"" + host + "\"";
+        str += " localHost=\"" + this.getAddressesString() + "\"";
         str += " localPort=\"" + port + "\"";
         if (listenUDP)
         {
@@ -538,12 +600,13 @@ public class Listenpoint
     {
         this.name = root.attributeValue("name");
 
-        String strLocalHost = root.attributeValue("localHost");       
-        this.host = Utils.formatIPAddress(strLocalHost);
-        if (this.host == null || this.host.length() <= 0)
+        String host = root.attributeValue("localHost");
+        if (host == null || host.isEmpty())
         {
-            this.host = "0.0.0.0";
-        }                
+        	host = "0.0.0.0";
+        }
+        this.addresses.setFromAddressesStringWithSeparator(host);
+
         String portAttr = root.attributeValue("localPort");
         if (portAttr != null)
         {
@@ -553,11 +616,15 @@ public class Listenpoint
         {
             this.port = 0;
         }
+        
         String localURL = root.attributeValue("localURL");
         if (localURL != null)
         {
         	URI uri = new URI(localURL).normalize();
-        	this.host = uri.getHost();
+        	
+        	String uriHost = uri.getHost();
+        	this.addresses.setFromAddressString(uriHost);
+        	
         	this.port = uri.getPort();
         }
 
@@ -651,11 +718,13 @@ public class Listenpoint
         else if (params[1].equalsIgnoreCase("host"))
         {
             GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:host\"", "setFromMessage value=\"listenpoint:localHost\"");
-            parameter.add(this.host);
+            String host = this.getHost();
+            parameter.add(host);
         }
         else if (params[1].equalsIgnoreCase("localHost"))
         {
-            parameter.add(this.host);
+            String host = this.getHost();
+            parameter.add(host);
         } else if (params[1].equalsIgnoreCase("port"))
         {
             GlobalLogger.instance().logDeprecatedMessage("setFromMessage value=\"listenpoint:port\"", "setFromMessage value=\"listenpoint:localPort\"");
@@ -694,7 +763,7 @@ public class Listenpoint
         }
     	this.name = listenpoint.getName();
     	
-    	this.host = listenpoint.getHost();
+    	this.addresses.set(listenpoint.addresses);
     	this.port = listenpoint.getPort();
     	this.portTLS = listenpoint.getPortTLS();
     	
@@ -723,13 +792,9 @@ public class Listenpoint
             }
         }
 
-        String listenHost = listenpoint.getHost();
-        if (null != this.host)
+        if (!this.addresses.equals(listenpoint.addresses))
         {
-            if (!this.host.equals(listenHost))
-            {
-                return false;
-            }
+            return false;
         }
 
         if (this.port != listenpoint.getPort())
