@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send ETSI Gq' AA request (AAR)"-->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From ETSI ES 183 017 V1.1.1 (2006-03) :
+AA-Request ::= < Diameter Header: 265, REQ, PXY >
+                 < Session-Id >
+                 { Auth-Application-Id }
+                 { Origin-Host }
+                 { Origin-Realm }
+                 { Destination-Realm }
+
+                *[ Media-Component-Description ]
+                   Media-Component-Description ::= < AVP Header: 517 >                                                                      
+                                                     { Media-Component-Number }
+                                                    *[ Media-Sub-Component ]
+                                                       Media-Sub-Component ::= < AVP Header: 519 >
+                                                                                 { Flow-Number }
+                                                                              0*2[ Flow-Description ]
+                                                                                 [ Flow-Status ]
+                                                                                 [ Flow-Usage ]
+                                                                                 [ Max-Requested-Bandwidth-UL ]
+                                                                                 [ Max-Requested-Bandwidth-DL ]
+                                                     [ AF-Application-Identifier ]                                                             
+                                                     [ Media-Type ]                                                                            
+                                                     [ Max-Requested-Bandwidth-UL ]                                        
+                                                     [ Max-Requested-Bandwidth-DL ]                                    
+                                                     [ Flow-Status ]                                               
+                                                     [ RS-Bandwidth ]                                                  
+                                                     [ RR-Bandwidth ]                                                      
+                *[ Flow-Grouping ]
+                   Flow-Grouping ::= < AVP Header: 508 >
+                                      *[ Flows ]
+                                         Flows ::= < AVP Header: 510 >
+                                                     { Media-Component-Number }
+                                                    *[ Flow-Number ]
+                 [ AF-Charging-Identifier ]
+                 [ SIP-Forking-Indication ]
+                *[ Specific-Action ]
+                 [ User-Name ]
+                 [ Binding-Information ]
+                   Binding-Information ::= < AVP Header: 450 13019>
+                                             { Binding-Input-List }
+                                               Binding-Input-List ::= < AVP Header: 451 13019>
+                                                                       *[ V6-Transport-Address ] ;
+                                                                          V6-Transport-Address ::= < AVP Header: 453 13019>
+                                                                                                     { Framed-IPv6-Prefix }
+                                                                                                     { Port-Number }
+                                                                       *[ V4-Transport-Address ]
+                                                                          V4-Transport-Address ::= < AVP Header: 454 13019>
+                                                                                                     { Framed-IP-Address } ;
+                                                                                                     { Port-Number }
+                                             [ Binding-Output-List ]
+                                                                       *[ V6-Transport-Address ] ;
+                                                                          V6-Transport-Address ::= < AVP Header: 453 13019>
+                                                                                                     { Framed-IPv6-Prefix }
+                                                                                                     { Port-Number }
+                                                                       *[ V4-Transport-Address ]
+                                                                          V4-Transport-Address ::= < AVP Header: 454 13019>
+                                                                                                     { Framed-IP-Address } ;
+                                                                                                     { Port-Number }
+                 [ Latching-Indication ]
+                 [ Reservation-Priority ]
+                 [ Globally-Unique-Address ]
+                   Globally-Unique-Address ::= < AVP Header: 300 13019 >
+                                                 [ Framed-IP-Address ]
+                                                 [ Framed-IPv6-Prefix ]
+                                                 [ Address-Realm ]
+
+                 [ Authorization-Lifetime ]
+                *[ Proxy-Info ]
+                   Proxy-Info ::= < AVP Header: 284 >
+                                      { Proxy-Host }
+                                      { Proxy-State }
+                                    * [ AVP ]
+                *[ Route-Record ]
+                *[ AVP ]
+-->
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="Send Request ETSI/Gq'/AAR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
+          <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
+
+          <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+
+          <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+          <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+          <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+          <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>            
+          
+          <avp code="Media-Component-Description" mandatory="true">
+            <avp code="Media-Component-Number:518" mandatory="true" type="Unsigned32" value="0"/>
+            <avp code="Media-Sub-Component:519" mandatory="true">
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+              <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+              <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+              <avp code="Flow-Status:511" type="Enumerated" value="ENABLED:2"/>
+
+              <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
+              <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
+              <avp code="Flow-Usage:512" type="Enumerated" value="NO_INFORMATION:0"/>
+
+              <avp code="Max-Requested-Bandwidth-UL:516" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Max-Requested-Bandwidth-DL:515" mandatory="true" type="Unsigned32" value="0"/>
+            </avp>
+            <avp code="Media-Sub-Component:519" mandatory="true">
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="1"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+              <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+              <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+              <avp code="Flow-Status:511" type="Enumerated" value="ENABLED:2"/>
+
+              <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
+              <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
+              <avp code="Flow-Usage:512" type="Enumerated" value="NO_INFORMATION:0"/>
+
+              <avp code="Max-Requested-Bandwidth-UL:516" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Max-Requested-Bandwidth-DL:515" mandatory="true" type="Unsigned32" value="0"/>
+            </avp>
+
+            <avp code="AF-Application-Identifier:504" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+            <!-- The Media-Type AVP determines the media type of a session component.  -->
+            <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
+            <avp code="Media-Type:520" type="Enumerated" value="AUDIO:0"/>
+
+            <avp code="Max-Requested-Bandwidth-UL:516" mandatory="true" type="Unsigned32" value="0"/>
+            <avp code="Max-Requested-Bandwidth-DL:515" mandatory="true" type="Unsigned32" value="0"/>
+
+            <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+            <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+            <avp code="Flow-Status:511" type="Enumerated" value="ENABLED:2"/>
+
+            <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
+            <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
+            <avp code="Flow-Usage:512" type="Enumerated" value="NO_INFORMATION:0"/>
+
+            <avp code="RS-Bandwidth:522" mandatory="true" type="Unsigned32" value="0"/>
+            <avp code="RR-Bandwidth:521" mandatory="true" type="Unsigned32" value="0"/>
+          </avp>
+          <avp code="Media-Component-Description:517" mandatory="true">
+            <avp code="Media-Component-Number:518" mandatory="true" type="Unsigned32" value="1"/>
+            <avp code="Media-Sub-Component:519" mandatory="true">
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+              <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+              <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+              <avp code="Flow-Status:511" type="Enumerated" value="ENABLED:2"/>
+
+              <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
+              <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
+              <avp code="Flow-Usage:512" type="Enumerated" value="NO_INFORMATION:0"/>
+
+              <avp code="Max-Requested-Bandwidth-UL:516" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Max-Requested-Bandwidth-DL:515" mandatory="true" type="Unsigned32" value="0"/>
+            </avp>
+            <avp code="Media-Sub-Component:519" mandatory="true">
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="1"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+              <avp code="Flow-Description:507" mandatory="true" type="IPFilterRule" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+              <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+              <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+              <avp code="Flow-Status:511" type="Enumerated" value="ENABLED:2"/>
+
+              <!-- The Flow-Usage AVP provides information about the usage of IP Flows.  -->
+              <!-- Possible enumerated values : NO_INFORMATION (0) / RTCP (1). -->
+              <avp code="Flow-Usage:512" type="Enumerated" value="RTCP:1"/>
+
+              <avp code="Max-Requested-Bandwidth-UL:516" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Max-Requested-Bandwidth-DL:515" mandatory="true" type="Unsigned32" value="0"/>
+            </avp>
+
+            <avp code="AF-Application-Identifier:504" mandatory="true" type="OctetString" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+            <!-- The Media-Type AVP determines the media type of a session component.  -->
+            <!-- Possible enumerated values : AUDIO (0) / VIDEO (1) / DATA (2) / APPLICATION (3) / CONTROL (4) / TEXT (5) / MESSAGE (6) / OTHER (0xFFFFFFFF). -->
+            <avp code="Media-Type:520" type="Enumerated" value="AUDIO:0"/>
+
+            <avp code="Max-Requested-Bandwidth-UL:516" mandatory="true" type="Unsigned32" value="0"/>
+            <avp code="Max-Requested-Bandwidth-DL:515" mandatory="true" type="Unsigned32" value="0"/>
+
+            <!-- The Flow-Status AVP describes whether the IP flow(s) are enabled or disabled. -->
+            <!-- Possible enumerated values : ENABLED-UPLINK (0) / ENABLED-DOWNLINK (1) / ENABLED (2) / DISABLED (3) / REMOVED (4). -->
+            <avp code="Flow-Status:511" type="Enumerated" value="ENABLED:2"/>
+
+            <avp code="RS-Bandwidth:522" mandatory="true" type="Unsigned32" value="0"/>
+            <avp code="RR-Bandwidth:521" mandatory="true" type="Unsigned32" value="0"/>
+          </avp>
+
+          <avp code="Flow-Grouping:508" mandatory="true">
+            <avp code="Flows:510" mandatory="true">
+              <avp code="Media-Component-Number:518" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="1"/>  
+            </avp>
+            <avp code="Flows:510" mandatory="true">
+              <avp code="Media-Component-Number:518" mandatory="true" type="Unsigned32" value="1"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="1"/>  
+            </avp>
+          </avp>
+          <avp code="Flow-Grouping:508" mandatory="true">
+            <avp code="Flows:510" mandatory="true">
+              <avp code="Media-Component-Number:518" mandatory="true" type="Unsigned32" value="2"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="1"/>  
+            </avp>
+            <avp code="Flows:510" mandatory="true">
+              <avp code="Media-Component-Number:518" mandatory="true" type="Unsigned32" value="3"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="0"/>
+              <avp code="Flow-Number:509" mandatory="true" type="Unsigned32" value="1"/>  
+            </avp>
+          </avp>
+
+          <avp code="AF-Charging-Identifier:505" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="3GPP:10415"/>
+
+          <!-- The SIP-Forking-Indication AVP describes if several SIP dialogues are related to one Diameter session. -->
+          <!-- Possible enumerated values : SINGLE_DIALOGUE (0) / SEVERAL_DIALOGUES (1). -->
+          <avp code="SIP-Forking-Indication:523" mandatory="true" type="Enumerated" value="SINGLE_DIALOGUE:0"/>
+
+          <!-- The Specific-Action AVP is of type Enumerated. -->
+          <!-- Possible enumerated values : SERVICE_INFORMATION_REQUEST (0) / CHARGING_CORRELATION_EXCHANGE (1) / INDICATION_OF_LOSS_OF_BEARER (2) / INDICATION_OF_RECOVERY_OF_BEARER (3) / INDICATION_OF_RELEASE_OF_BEARER (4) / INDICATION_OF_ESTABLISHMENT_OF_BEARER (5). -->
+          <avp code="Specific-Action:513" mandatory="true" type="Enumerated" value="SERVICE_INFORMATION_REQUEST:0"/>
+          <avp code="Specific-Action:513" mandatory="true" type="Enumerated" value="CHARGING_CORRELATION_EXCHANGE:1"/>
+
+          <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+          <avp code="User-Name:1" mandatory="true" type="UTF8String" value="ToBeCompleted"/>
+
+          <avp code="Binding-Information:450" mandatory="false" vendorId="[vendorID]">
+            <avp code="Binding-Input-List:451" mandatory="false" vendorId="[vendorID]">
+              <avp code="V6-Transport-Address:453" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IPv6-Prefix:97" mandatory="false" type="Address" value="1:2:3:4:5:6:7:8"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+              <avp code="V6-Transport-Address:453" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IPv6-Prefix:97" mandatory="false" type="IPAddress" value="F:E:D:C:B:A:9:8"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+              <avp code="V4-Transport-Address:454" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IP-Address:8" mandatory="false" type="Address" value="123.45.78.9"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+              <avp code="V4-Transport-Address:454" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IP-Address:8" mandatory="false" type="IPAddress" value="98.76.54.32"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+            </avp>
+
+            <avp code="Binding-Output-List:452" mandatory="false" vendorId="[vendorID]">
+              <avp code="V6-Transport-Address:453" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IPv6-Prefix:97" mandatory="false" type="Address" value="[1234:2345:3456:4567:5678:6789:789A:89AB]"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+              <avp code="V6-Transport-Address:453" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IPv6-Prefix:97" mandatory="false" type="IPAddress" value="[4321:5432:6543:7654:8765:9876:A987:BA98]"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+              <avp code="V4-Transport-Address:454" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IP-Address:8" mandatory="false" type="Address" value="111.222.33.44"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+              <avp code="V4-Transport-Address:454" mandatory="false" vendorId="[vendorID]">
+                <avp code="Framed-IP-Address:8" mandatory="false" type="IPAddress" value="44.33.222.111"/>
+                <avp code="Port-Number:455" mandatory="false" type="Unsigned32" value="0" vendorId="[vendorID]"/>
+              </avp>
+            </avp>
+          </avp>
+
+          <!-- The Latching-Indication AVP is of type Enumerated. -->
+          <!-- Possible enumerated values : LATCH (0) / RELATCH (1). -->
+          <avp code="Latching-Indication:457" mandatory="false" type="Enumerated" value="LATCH:0" vendorId="[vendorID]"/>
+
+          <!-- The Reservation-Priority AVP is of type Enumerated. -->
+          <!-- Possible enumerated values : PRIORITY-ONE (1) / PRIORITY-TWO (2) / PRIORITY-THREE (3) / PRIORITY-FOUR (4) / PRIORITY-FIVE (5) / PRIORITY-SIX (6) / PRIORITY-SEVEN (7). -->
+          <avp code="Reservation-Priority:458" mandatory="false"  type="Enumerated" value="PRIORITY-ONE:1" vendorId="[vendorID]"/>
+
+          <avp code="Globally-Unique-Address:300" mandatory="true" vendorId="[vendorID]">
+            <avp code="Framed-IP-Address:8" type="Address" value="55.55.55.55"/>
+            <avp code="Framed-IPv6-Prefix:97" type="Address" value="0011:2233:4455:6677:8899:AABB:CCDD:EEFF"/>
+            <avp code="Address-Realm:301" mandatory="true"  type="OctetString" value="ToBeCompleted" vendorId="[vendorID]"/>
+          </avp>
+
+          <avp code="Authorization-Lifetime:291" mandatory="true" type="Unsigned32" value="0"/>
+
+          <avp code="Proxy-Info:284">
+            <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Proxy-Info:284">
+            <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+            <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+          </avp>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Route-Record:282" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer ETSI/Gq'/AAA" channel="channel_client" request="false" type="AA:265" result="DIAMETER_SUCCESS:2001">
+    </receiveMessageDIAMETER>
+    
+</scenario>

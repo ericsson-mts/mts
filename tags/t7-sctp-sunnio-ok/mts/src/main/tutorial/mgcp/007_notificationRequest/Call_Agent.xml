@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+        The first example illustrates a NotificationRequest that will ring a
+phone and look for an off-hook event
+-->
+
+<scenario>
+    
+<parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+    <sendMessageMGCP   name="Notify request"  remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+RQNT [transactionId] aaln/1@rgw-2567.whatever.net MGCP 1.0
+N: ca@ca1.whatever.net:5678
+X: 0123456789AC
+R: l/hd(N)
+S: l/rg
+]]>
+
+    </sendMessageMGCP>
+
+      <receiveMessageMGCP request="false">
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+    
+   
+</scenario>

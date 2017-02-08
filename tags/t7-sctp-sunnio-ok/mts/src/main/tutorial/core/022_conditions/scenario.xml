@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+	
+	<parameter name="[true]" operation="set" value="true"/>
+	<parameter name="[false]" operation="set" value="false"/>
+	
+	<if>
+        <condition>
+            <and>
+                <or>
+                    <and>
+                        <test parameter="[true]" condition="boolean.equals" value="true"/>
+                        <test parameter="[false]" condition="boolean.equals" value="true"/>
+                    </and>
+                    <test parameter="[true]" condition="boolean.equals" value="true"/>
+                </or>
+                <not>
+                    <test parameter="[false]" condition="boolean.equals" value="true"/>
+                </not>
+            </and>
+        </condition>
+		<then>
+            <exit name="successful exit"/>
+		</then>
+		<else>
+			<exit name="failed exit" failed="true"/>
+		</else>
+	</if>
+</scenario>

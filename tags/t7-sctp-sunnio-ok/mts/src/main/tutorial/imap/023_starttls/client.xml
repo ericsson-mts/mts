@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A001" />
+    <!-- envoi requete capability-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse CAPABILITY -->
+    <receiveMessageIMAP name="Receive CAPABILITY completed" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A002" />
+    <!-- envoi requete STARTTLS-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] STARTTLS
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse STARTTLS -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <closeChannelIMAP name="[connection]"/>
+
+    <openChannelIMAP name="[connectionTLS]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:serverPortTLS]" transport="tls"/>
+
+    <parameter name="[tagReq]" operation="set" value="A003" />
+    <sendMessageIMAP channel="[connectionTLS]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse CAPABILITY -->
+    <receiveMessageIMAP name="Receive CAPABILITY completed" channel="[connectionTLS]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <finally>
+        <closeChannelIMAP name="[connectionTLS]"/>
+    </finally>
+    
+</scenario>

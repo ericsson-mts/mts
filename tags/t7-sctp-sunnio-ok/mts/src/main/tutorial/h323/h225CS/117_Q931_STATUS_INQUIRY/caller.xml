@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : STATUS ENQUIRY (117)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.17 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+    Chapter : 3.2.11 => Packet
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+    Chapter : 3.3.12 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+-->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS STATUS ENQUIRY" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+    
+        <ASN1 file="h2250v7.asn"/>    
+    
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- STATUS ENQUIRY= b01110101 =h75 =d117-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="STATUS ENQUIRY"/>
+
+            <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification" type="string" value="textZZZ"/>
+            </element>
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

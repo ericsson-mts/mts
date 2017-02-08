@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : RELEASE COMPLETE(8)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.10 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Cause 4.5 Both O (Note 2) 2-32
+Display 4.5 n u O (Note 3) (Note 4)
+Signal 4.5 n u O (Note 5) 2-3
+
+    Chapter : 3.2.8 => Packet
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Cause 4.5 Both O (Note 2) 2-32
+Display 4.5 n u O (Note 3) (Note 4)
+User-user 4.5 u n O (Note 5) (Note 6)
+
+    Chapter : 3.3.8 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Cause 4.5 Both O (Note 2) 2-32
+Display 4.5 n u O (Note 3) (Note 4)
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN RELEASE COMPLETE" remoteHost="[remoteHostIUA]" remotePort="[remotePortIUA]">
+   
+        <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+		<!-- RELEASE COMPLETE= b1011010 = h5A =d90-->
+	       	<header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="RELEASE COMPLETE"/>
+	        	
+	        <!-- Cause = b0001000 = h8 = d8-->
+	 	<element identifier="Cause">
+		        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+		        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+		        <field name="Spare" lengthBit="1" type="integer" value="0"/>
+		        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
+		        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+		        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>
+		        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+		        <field name="Cause value" lengthBit="7" type="integer" value="20"/>
+	    	</element>
+	    	
+	        <!-- Display identification = b0101000 = h28 = d40-->
+		<element identifier="Display identification">
+			<field name="Display identification" type="string" value="textZZZ"/>
+		</element>
+		
+	        <!-- Signal = b0110100 =h34 =d52-->
+            	<!-- ONLY for Circuit message -->            	        
+	        <element identifier="Signal">
+			<field name="Signal value" lengthBit="8" type="integer" value="125"/>
+		</element>  
+	     
+                <!-- User-user= b1111110 = h7E = d126-->
+            	<!-- ONLY for Packet message -->                        
+    	    	<element identifier="User-User">
+        		<field name="Protocol discriminator" lengthBit="8" type="enumeration" value="X.208 and X.209 coded user information"/>
+    			<field name="User information" type="binary" value="20a8060008914a0004014006006d002e006a0065006d0065006322c00900003d1443616c6c67656e33323320706f67616373616d00000a302e39616c706861340000000a01061206b800f8fdf93ecd9ed6119ab2000476222017005d0d8007000a01038f80231100c0fef93ecd9ed6119ab2000476222017010001000100010002800100"/>    
+	    	</element>
+	   
+        </ISDN>
+        
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="2"/>
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="Spare" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value=""/>
+            </parameter>
+        </UA>	
+     
+    </sendMessageSIGTRAN>
+
+</scenario>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="OAC" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ProvisioningActionsOperation" result="A"/>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

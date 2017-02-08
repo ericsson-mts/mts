@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S6 Delete Subscriber Data (DSR/DSA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.272 V9.1.0 : DSR from HSS to MME/SGSN to remove some or all data of the HSS user profile stored in the MME/SGSN
+Delete-Subscriber-Data-Request ::= < Diameter Header: 320, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+                                  { DSR-Flags } 
+                                 *[ Context-Identifier ] 
+                                  [ Trace-Reference ] 
+                                 *[ TS-Code ] 
+                                 *[ SS-Code ] 
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+-->
+
+    <parameter name="[Imsi]" operation="set" value="208011045322746"/>
+
+<!-- DSR-Flags : bitmask used by HSS to request deletion of items of the subscriber's profile from MME/SGSN - TS 29.272
+    	e.g. bit 13 for SMS Withdrawal removal. TS-Code (Tele Services) and SS-Code (Supplementary Services) AVPs 
+    	identify the targeted SMS service:
+    		- TS-Code '00100000'B for allShortMessageServices - TS 29.002
+    -->
+    <parameter name="[DSR-Flags]" operation="set" value="8192"/>
+    <parameter name="[TS-Code]" operation="set" value="20"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestDSR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+        </avp>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+
+        <avp code="User-Name:1" value="[Imsi]"/>
+        <avp code="DSR-Flags:1421" value="[DSR-Flags]"/>
+        <avp code="TS-Code:1487" value="[TS-Code]"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerDSA" channel="channel_client" request="false" type="3GPP-Delete-Subscriber-Data" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

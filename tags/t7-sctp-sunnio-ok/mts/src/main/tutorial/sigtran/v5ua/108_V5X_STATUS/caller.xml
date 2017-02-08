@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : 
+        V5.2 => en_30034701v020202p.pdf : ETSIEN300347-1 V2.2.2(1999-12)
+    	V5.1 => en_30032401v020101p.pdf : ETSIEN300324-1 V2.1.1(2000-04)    
+    	
+    Message : STATUS(13) => V5.1 chapter 13.3.5
+
+    The following scenarios send the V5.2 message with the following elements :
+
+Protocol discriminator 13.4.2 AN to LE M 1
+L3addr 13.4.3 AN to LE M 2
+Message type 13.4.4 AN to LE M 1
+State 13.4.6.3 AN to LE M 1
+Cause 13.4.7.9 AN to LE M 3 to 5
+    
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN" remoteHost="[remoteHostV5UA]" remotePort="[remotePortV5UA]">
+       	
+        <ISDN name="V5.X" syntax="../conf/sigtran/v5x.xml">
+        
+	    <!-- SIGNALACKNOWLEDGE = b0001101 = hD = d13-->
+            <header discriminator="Recommendation ETSI300347-1/V5.2" layer3Address="h77f4"  type="STATUS"/>
+
+	    <!-- PSTN State 14 (13.4.6.3) -->
+	    <element identifier="PSTN State" />
+
+	    <!-- Control Rejection cause 15.4 (14.4.2.5.1) -->
+	    <element identifier="CTRL Rejection cause" />
+	    
+        </ISDN>
+        
+        <UA name="V5UA" file="v5ua.xml">
+            <header messageClass="V5PTM:V5 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+		<field name="Link_Identifier" value="134217727"/>
+            	<field name="Channel_Identifier" value="31"/>            
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="EFA" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value="DEFINED IN UPPER LAYER"/>
+            </parameter>
+        </UA>	
+        
+    </sendMessageSIGTRAN>
+
+</scenario>

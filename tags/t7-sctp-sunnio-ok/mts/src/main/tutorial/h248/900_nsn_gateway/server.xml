@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- call flow for Alcatel-Lucent equipment -->
+<!-- provide from HNTrelatching capture file -->
+
+<scenario>
+
+	<label name="Begin"/>
+
+	<!-- "H248" message -->
+	<receiveMessageH248 name="Receive request" request="true" timeout="0">
+		<parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+		<parameter name="[type]" operation="protocol.setFromMessage" value="message.type" />
+		<parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+		<parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.T.C.value" />
+		<parameter name="[package]" operation="protocol.setFromMessage" value="descr.Transaction.Context.AuditValue.Audit.Packages.name" />
+		<parameter name="[modifyValue]" operation="protocol.setFromMessage" value="descr.Transaction.Context.Modify.value" />
+        <parameter name="[addTermValue]" operation="protocol.setFromMessage" value="descr.Transaction.Context.Add.value" />
+	</receiveMessageH248>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="ServiceChange"/>
+	    </condition>
+	    <then>
+		<goto  name="goto_ServiceChange" label="ServiceChange" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="AuditValue"/>		  		  	
+	    </condition>
+	    <then>
+		<goto  name="goto_AuditValue" label="AuditValue" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="Modify"/>
+	    	<test parameter="[modifyValue]" condition="string.equals" value="ROOT"/>		  		  			  		  	
+	    </condition>
+	    <then>
+		<goto  name="goto_ModifyROOT" label="ModifyROOT" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="Modify"/>
+	    	<test parameter="[modifyValue]" condition="string.equals" not="true" value="ROOT"/>		  		  			  		  	
+	    </condition>
+	    <then>
+		<goto  name="goto_Modify" label="Modify" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="Add"/>		  		  	
+	    </condition>
+	    <then>
+		<goto  name="goto_Add" label="Add" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="Subtract"/>		  		  	
+	    </condition>
+	    <then>
+		<goto  name="goto_Substract" label="Substract" state="true"/>	    	
+	    </then>
+	</if>
+
+	<if>
+	    <condition>
+	    	<test parameter="[type]" condition="string.equals" value="TransactionResponseAck"/>		  		  	
+	    </condition>
+	    <then>
+		 	<goto  name="loop" label="Begin" state="true"/>
+	    </then>
+	</if>
+
+ 	<exit  name="failure" failed="true" state="true"/>
+
+	<!-- "AuditValue" message -->
+	<label name="AuditValue"/>
+
+	<if>
+	    <condition>
+	    	<test parameter="[package]" condition="string.equals" value="Packages"/>		  		  	
+	    </condition>
+	    <then>
+		<parameter name="[packageList]" operation="set" value="root-1, nt-1, rtp-1, ocp-1, it-1, gm-1, ds-1, tman-1, xnq-1, hangterm-1"/>
+	    </then>
+	    <else>
+		<parameter name="[packageList]" operation="set" value=""/>
+	    </else>
+	</if>
+
+    	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=-{
+AuditValue=ROOT{
+Packages{[packageList]}
+}
+}
+}
+]]>
+	</sendMessageH248>
+    
+ 	<goto  name="loop" label="Begin" state="true"/>
+
+	<!-- "ModifyROOT" message -->
+	<label name="ModifyROOT"/>        
+
+	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=-{
+Modify=ROOT
+}
+}
+
+]]>
+	</sendMessageH248>
+    
+ 	<goto  name="loop" label="Begin" state="true"/>
+
+	<!-- "Add" message -->
+	<label name="Add"/>        
+
+	<parameter name="[newContextID]" operation="number.random" value="10000000"/>
+	<parameter name="[newTermID1]" operation="number.random" value="10000000"/>
+	<parameter name="[newTermID2]" operation="number.random" value="10000000"/>
+	<parameter name="[addTermValue(0)]" operation="string.regexreplaces" value="[addTermValue(0)]" value2="[$]" value3="[newTermID1]"/>
+	<parameter name="[addTermValue(1)]" operation="string.regexreplaces" value="[addTermValue(1)]" value2="[$]" value3="[newTermID2]"/>
+	<parameter name="[termID_[newContextID]]" operation="set" value="[addTermValue]"/>
+
+	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+ Context=[newContextID]{
+  Add=[termID_[newContextID](0)]{
+   Media{
+Stream=1{Local{
+v=0
+c=IN IP4 [localHostH248]
+m=audio 57662 RTP/AVP 0
+}}
+   }
+  }, 
+  Add=[termID_[newContextID](1)]{
+   Media{
+Stream=1{Local{
+v=0
+c=IN IP4 [localHostH248]
+m=audio 57662 RTP/AVP 0
+}}
+   }
+  }
+ }
+}
+]]>
+	</sendMessageH248>
+    
+ 	<goto  name="loop" label="Begin" state="true"/>
+
+	<!-- "Modify" message -->
+	<label name="Modify"/>        
+
+	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=[contextID]{
+Modify=[termID_[contextID](0)]{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 [localHostH248]
+m=audio 57662 RTP/AVP 18 8 101
+a=fmtp:101 0-15
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+}}
+}
+}, 
+Modify=[termID_[contextID](1)]{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 [localHostH248]
+m=audio 57662 RTP/AVP 18 8 101
+a=fmtp:101 0-15
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+}}
+}
+}
+}
+}
+]]>
+	</sendMessageH248>
+    
+ 	<goto  name="loop" label="Begin" state="true"/>
+
+	<!-- "Substract" message -->
+	<label name="Substract"/>
+
+    	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+ Context=[contextID]{
+  Subtract=[termID_[contextID](0)]{
+   Statistics{nt/dur= 231, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0}
+  }, 
+  Subtract=[termID_[contextID](1)]{
+   Statistics{nt/dur= 231, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0}
+  }
+ }
+}
+]]>
+	</sendMessageH248>
+    
+ 	<goto  name="loop" label="Begin" state="true"/>
+
+	<!-- "ServiceChange" message -->
+	<label name="ServiceChange"/>
+
+    	<sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/1 [[localHostH248]]:[localPortH248] 
+ Reply=1
+ {
+  Context=[contextID]
+  {
+   ServiceChange=ROOT{}
+  }
+ }
+]]>
+	</sendMessageH248>
+    
+ 	<goto  name="loop" label="Begin" state="true"/>
+
+</scenario>

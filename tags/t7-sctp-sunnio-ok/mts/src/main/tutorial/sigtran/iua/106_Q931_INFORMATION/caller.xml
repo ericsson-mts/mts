@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : INFORMATION(123)
+
+    The following scenarios send the Q931 message with the following elements :
+    
+    Chapter : 3.1.6 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M (Note 2) 2-*
+Message type 4.4 Both M 1
+Sending complete 4.5 Both O (Note 3) 1
+Display 4.5 n u O (Note 4) (Note 5)
+Keypad facility 4.5 u n O (Note 6) 2-34
+Signal 4.5 n u O (Note 7) 2-3
+Called party number 4.5 both O (Note 8) 2-*
+
+    Chapter : 3.3.6 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Sending complete 4.5 Both O (Note 2) 1
+Cause 4.5 n u O (Note 3) 2-32
+Display 4.5 n u O (Note 4) (Note 5)
+Keypad facility 4.5 u n O (Note 6) 2-34
+Called party number 4.5 Both O (Note 7) 2-*
+
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN INFORMATION" remoteHost="[remoteHostIUA]" remotePort="[remotePortIUA]">    
+    
+        <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- INFORMATION = b1111011 =h7B =d123 -->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="INFORMATION"/>
+
+            <!-- Sending complete= b10100001 =hA1 =d161-->
+            <element identifier="Sending complete"/>
+	 
+            <!-- Cause = b0001000 = h8 = d8-->
+	    <!-- ONLY for Bearer message -->    	            
+	    <element identifier="Cause">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
+	        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
+	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>
+	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Cause value" lengthBit="7" type="integer" value="20"/>
+    	    </element>
+
+            <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification" type="string" value="textZZZ"/>
+            </element>
+
+    	    <!-- Keypad facility= b0101100 =h2C =d44-->
+ 	    <element identifier="Keypad facility">
+        	<field name="Display identification" type="string" value="textletrz"/>
+    	    </element>
+
+            <!-- Signal = b0110100 =h34 =d52-->
+	    <!-- ONLY for Circuit message -->    	            
+            <element identifier="Signal">
+		<field name="Signal value" lengthBit="8" type="integer" value="125"/>
+    	    </element>       
+            
+ 	    <!-- Called party number = b1110000 =h70 = d112-->
+            <element identifier="Called party number" >
+                <field name="ext" lengthBit="1" type="boolean" value="1" />
+                <field name="Type of number" lengthBit="3" type="enumeration" value="International number"/>
+                <field name="Numbering plan identification" lengthBit="4" type="enumeration" value="Unknown"/>
+                <field name="Number digits" type="string"  value="textutyt"/>
+            </element>      
+        </ISDN>
+
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="2"/>
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="Spare" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value=""/>
+            </parameter>
+        </UA>	
+     
+    </sendMessageSIGTRAN>
+
+</scenario>

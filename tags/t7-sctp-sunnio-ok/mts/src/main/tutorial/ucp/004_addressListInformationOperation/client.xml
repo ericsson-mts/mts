@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="AddressListInformationOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="GAdC" value="1234"/>
+        <attribute name="AC" value="abcd"/>
+        <attribute name="OAdC" value="5678"/>
+        <attribute name="OAC" value="efgh"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="AddressListInformationOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="RAd" operation="protocol.setFromMessage" value="attribute.RAd"/>
+        <parameter name="GAdC" operation="protocol.setFromMessage" value="attribute.GAdC"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="string.equals" value="1"/>
+        <test parameter="[RAd]" condition="string.equals" value="coucou"/>
+        <test parameter="[GAdC]" condition="string.equals" value="999"/>
+        <test parameter="[SM]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

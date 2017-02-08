@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : 
+        V5.2 => en_30034701v020202p.pdf : ETSIEN300347-1 V2.2.2(1999-12)
+    	V5.1 => en_30032401v020101p.pdf : ETSIEN300324-1 V2.1.1(2000-04)    
+    	
+    Message : SWITCH-OVERREQ(24) => V5.2 chapter 18.4.1
+    
+    The following scenarios send the V5.X message with the following elements :
+
+Protocol Discriminator 13.2.1 AN to LE M 1
+Logical C-channel identification 18.5.1 AN to LE M 2
+Message Type 13.2.3 AN to LE M 1
+Sequence Number 18.5.2 AN to LE M 3
+Physical C-channel identification 18.5.3 AN to LE M 4
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN" remoteHost="[remoteHostV5UA]" remotePort="[remotePortV5UA]">
+       	
+        <ISDN name="V5.X" syntax="../conf/sigtran/v5x.xml">
+        
+	    <!-- SWITCH-OVERREQ = b0011000 = h18 = d24-->
+            <header discriminator="Recommendation ETSI300347-1/V5.2" layer3Address="h77f4"  type="SWITCH-OVERREQ"/>
+	
+	    <!-- Protection Sequence number 18.5.2 -->
+	    <element identifier="PROTECT Sequence number">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+		<field name="Sequence number" value="127" lengthBit="7" type="integer" />                                                
+	    </element>
+
+	    <!-- Protection Physical C-channel identification 18.5.3 -->
+	    <element identifier="PROTECT Physical C-channel identification">
+		<field name="V5 2 048 kbit/s link Identifier" value="255" lengthBit="8" type="integer" />  
+		<field name="spare" value="3" lengthBit="3" type="integer" />                                                      
+		<field name="V5 Time Slot Number" value="31" lengthBit="5" type="integer" />  
+	    </element>
+	
+        </ISDN>
+        
+        <UA name="V5UA" file="v5ua.xml">
+            <header messageClass="V5PTM:V5 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+		<field name="Link_Identifier" value="134217727"/>
+            	<field name="Channel_Identifier" value="31"/>            
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="EFA" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value="DEFINED IN UPPER LAYER"/>
+            </parameter>
+        </UA>	
+        
+    </sendMessageSIGTRAN>
+
+</scenario>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="file" operation="file.readcsv" value="005_sendFlowCSV/flow.csv" value2="0"/>
+
+	<createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="1" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="741" payloadType="8" seqnum="122" timestamp="296"/>
+            <payload format="text">first packet RTP</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="10" deltaTime="20" deltaTimestamp="160" packetLost="10">
+            <header ssrc="741" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">simple test</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="1" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="741" payloadType="8" seqnum="133" timestamp="2056"/>
+            <payload format="text">test packet RTP</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="1" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="753" payloadType="8" seqnum="986" timestamp="296"/>
+            <payload format="text">first packet RTP</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow duration="0.666" bitRate="64" packetLost="50">
+            <header ssrc="753" payloadType="8" seqnum="987" timestamp="456"/>
+            <payload format="text">testPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPackettestPacket</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="1" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="753" payloadType="8" seqnum="1021" timestamp="5896"/>
+            <payload format="text">first packet RTP</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+	<finally>
+		<removeListenpointRTPFLOW name="inviter" />
+	</finally>
+		
+</scenario>

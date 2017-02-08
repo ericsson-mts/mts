@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN SCCP tests" name="SIGTRAN SCCP">
+    
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
+    <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortM3UA]" operation="number.random" value="10000" value2="65535" />    
+    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA(0)]" description="local port of the MTS host" editable="true" />
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
+    
+    <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="172.16.21.32"/-->
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
+    <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortM3UA]" operation="set" value="1234"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
+    
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    
+    
+    <testcase name="01_Unidirectional" description="test sigtran TCAP" number="[iterations]" state="true">
+        <scenario name="client" file="01_Unidirectional/client.xml" routingName="client"/>
+        <scenario name="server" file="01_Unidirectional/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.TCAP"/>
+    </testcase>
+    
+    <testcase name="02_Begin" description="test sigtran TCAP" number="[iterations]" state="true">
+        <scenario name="client" file="02_Begin/client.xml" routingName="client"/>
+        <scenario name="server" file="02_Begin/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.TCAP"/>
+    </testcase>
+    
+    <testcase name="801_dico" description="test sigtran TCAP" number="[iterations]" state="true">
+        <scenario name="client" file="801_dico/client.xml" routingName="client"/>
+        <scenario name="server" file="801_dico/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.TCAP"/>
+    </testcase>
+
+</test>

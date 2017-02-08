@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
+    <openChannelSCTP name="[channelName]" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]">
+        <sctp num_ostreams="65535" max_instreams="65535" max_attempts="65535" max_initTimeo="65535"/>
+    </openChannelSCTP>
+    
+    <sendMessageSCTP channel="[channelName]">
+        <sctp stream="65534" ssn="65535" ppid="2222222222" flags="0"/>
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+
+    <receiveMessageSCTP channel="[channelName]" request="true" type="DATA" timeout="[timeout]">
+    </receiveMessageSCTP>
+
+    <closeChannelSCTP name="[channelName]"/> 
+    <pause seconds="1"/>
+
+    <openChannelSCTP name="[channelName]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
+   
+    <sendMessageSCTP channel="[channelName]"> 
+        <sctp stream="0" ssn="0" ppid="2222222222" flags="0"/>
+        <data format="binary">h4242424242</data>
+    </sendMessageSCTP>
+
+    <finally>
+
+    <receiveMessageSCTP request="true" type="ABORT-ACK" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
+
+    <closeChannelSCTP name="[channelName]"/> 
+                  
+    </finally>
+
+    
+</scenario>

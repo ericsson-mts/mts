@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[inviteeName1]" operation="set" value="bob"/>
+    <parameter name="[100_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+    <parameter name="[clientName]" operation="set" value="alice"/>
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+		<receiveMessageSIP name="Wait SUBSCRIBE" request="true" type="SUBSCRIBE">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+	  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Expires: 3600
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+	<parameter name="[newCseqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
+	<sendMessageSIP name="Send Notify">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[NOTIFY sip:[clientName]@[100_DOMAIN_ADDR] SIP/2.0
+To: [From]
+From: [To];tag=[localTag]
+Call-ID: [CallId]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=[newBranchId];id=bob
+CSeq: [newCseqNumber] NOTIFY
+Max-Forwards: 70
+Subscription-State: TRUE
+Contact: <sip:[inviteeName1]@[localSIP]>;+g.poc.talkburst
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];transport=[transportRequest];lr>
+Expires: 3600
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="NOTIFY" result="200">
+		</receiveMessageSIP>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+		<receiveMessageSIP name="Wait SUBSCRIBE with (expire = 0)" request="true" type="SUBSCRIBE">
+			<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+			<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+			<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+			<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>	
+			<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Expires: 0
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+
+</scenario>

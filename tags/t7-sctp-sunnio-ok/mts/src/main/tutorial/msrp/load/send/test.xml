@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="MSRP regression tests">
+
+    <parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+    <parameter description="size of the HTTP message" editable="true" name="[ContentSize]" operation="set" value="1000"/>
+    
+    <!--
+       - URL of the HTTP server.
+     -->
+    <parameter name="[remoteHost]" operation="system.ipaddress"/>
+    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]"/>
+    <parameter name="[remotePort]" operation="file.readProperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remoteURL]" operation="set" value="http://[remoteHost]:[remotePort]"/>
+    <parameter name="[transport]" operation="set" value="TCP"/>
+    
+    <parameter name="[speedTestcase]" operation="number.divide" value="[speedTrans]" value2="[NumberTestcase]"/>	    
+
+    <parameter name="[iter]" operation="number.divide" value="[ContentSize]" value2="10"/>
+    <parameter name="[content]" operation="set" value="0123465789" value2="[iter]"/>
+
+    <!--
+       - Scenario of the server.
+       - This server will always answer 200 OK.
+       - It never ends since it is in a <while> operation.
+       -->
+    <testcase description="test post" name="server" state="false">
+
+        <!--                       -->
+        <!-- RUNPROFILE PARAMETERS -->
+        <!--                       -->    
+        <runProfile>
+            <step period="0" time="0"/>
+            <end delay="[TestDurationSec]"/>
+        </runProfile>
+
+        <scenario file="server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <for from="0" index="[i]" to="[NumberTestcase]">
+        <testcase description="test post" name="client_[i]" state="true">
+            <parameter name="[destScenario]" operation="set" value="server_[i]"/>
+
+            <!--                       -->
+            <!-- RUNPROFILE PARAMETERS -->
+            <!--                       -->    
+            <runProfile>
+                <step frequency="[speedTestcase]" time="0"/>
+                <end delay="[TestDurationSec]"/>
+            </runProfile>
+
+            <scenario file="server.xml" name="server_[i]" routingName="server_[i]"/>
+            <scenario file="client.xml" name="client_[i]" routingName="client_[i]"/>
+        </testcase>
+    </for>
+
+</test>

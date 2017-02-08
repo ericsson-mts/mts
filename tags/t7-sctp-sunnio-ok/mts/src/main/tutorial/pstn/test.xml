@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="PSTN regression tests with Asterisk" name="PSTN">
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>	
+    <!--parameter name="[domainName]" operation="set" value="172.16.21.32" /-->
+
+    <!--local info SIP/RTP -->
+    <parameter editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <parameter name="[localHost]" operation="system.ipaddress" value2="[IPVersion]"/>	
+    <parameter editable="true" name="[localHost]" operation="set" value="[localHost(0)]"/>
+
+    <parameter editable="true" name="[UAClocalPortSIP]" operation="set" value="1005"/>
+    <parameter editable="true" name="[UASlocalPortSIP]" operation="set" value="1007"/>
+
+    <parameter editable="true" name="[UAClocalPortRTP]" operation="set" value="10000"/>
+    <parameter editable="true" name="[UASlocalPortRTP]" operation="set" value="11000"/>
+
+    <!-- remote info SIP Asterisk -->
+    <parameter editable="true" name="[remoteHostSIP]" operation="set" value="192.168.90.233"/>
+    <!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.32"/-->
+    <parameter editable="true" name="[remotePortSIP]" operation="set" value="5060"/>
+    	
+    <!-- value2 = deltaTime (millisecondes)-->
+    <parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
+
+    <testcase description="Call setup for analog to analog users without any flow sending" name="call_noflow" state="false">
+        <parameter name="[inviter]" operation="set" value="101"/>
+        <parameter name="[invitee]" operation="set" value="0296482263"/>
+        <parameter name="[inviteeReg]" operation="set" value="102"/>
+        <scenario file="call_noflow/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="call_noflow/UAS.xml" name="UAS" routingName="UAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to analog users with a constant flow" name="call_constant" state="false">
+        <parameter name="[inviter]" operation="set" value="101"/>
+        <parameter name="[invitee]" operation="set" value="0296482263"/>
+        <parameter name="[inviteeReg]" operation="set" value="102"/>
+        <scenario file="call_constant/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="call_constant/UAS.xml" name="UAS" routingName="UAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to analog users with a square flow" name="call_square" state="false">
+        <parameter name="[inviter]" operation="set" value="101"/>
+        <parameter name="[invitee]" operation="set" value="0296482263"/>
+        <parameter name="[inviteeReg]" operation="set" value="102"/>
+        <scenario file="call_square/UAC.xml" name="UAC" routingName="UAC"/>
+        <scenario file="call_square/UAS.xml" name="UAS" routingName="UAS"/>
+    </testcase>
+
+    <testcase description="Call setup for sip to sip users" name="sip-sip-asterisk" state="false">
+        <parameter name="[inviter]" operation="set" value="2300"/>
+        <parameter name="[invitee]" operation="set" value="2301"/>
+        <parameter name="[inviteeReg]" operation="set" value="2301"/>
+        <scenario file="sip_rtp_flow/UAC.xml" name="listenpointUAC" routingName="listenpointUAC"/>
+        <scenario file="sip_rtp_flow/UAS.xml" name="listenpointUAS" routingName="listenpointUAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to analog users" name="analog-analog-fritzbox" state="false">
+        <parameter name="[inviter]" operation="set" value="103"/>
+        <parameter name="[invitee]" operation="set" value="**2"/>
+        <parameter name="[inviteeReg]" operation="set" value="104"/>
+        <scenario file="sip_rtp_flow/UAC.xml" name="listenpointUAC" routingName="listenpointUAC"/>
+        <scenario file="sip_rtp_flow/UAS.xml" name="listenpointUAS" routingName="listenpointUAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to analog users" name="analog-analog-orange" state="false">
+        <parameter name="[inviter]" operation="set" value="101"/>
+        <parameter name="[invitee]" operation="set" value="0296482263"/>
+        <parameter name="[inviteeReg]" operation="set" value="102"/>
+        <scenario file="sip_rtp_flow/UAC.xml" name="listenpointUAC" routingName="listenpointUAC"/>
+        <scenario file="sip_rtp_flow/UAS.xml" name="listenpointUAS" routingName="listenpointUAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to isdn users" name="analog-isdn-fritzbox" state="false">
+        <parameter name="[inviter]" operation="set" value="104"/>
+        <parameter name="[invitee]" operation="set" value="**52"/>
+        <parameter name="[inviteeReg]" operation="set" value="201"/>
+        <scenario file="sip_rtp_flow/UAC.xml" name="listenpointUAC" routingName="listenpointUAC"/>
+        <scenario file="sip_rtp_flow/UAS.xml" name="listenpointUAS" routingName="listenpointUAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to isdn users" name="isdn-analog-fritzbox" state="false">
+        <parameter name="[inviter]" operation="set" value="201"/>
+        <parameter name="[invitee]" operation="set" value="**1"/>
+        <parameter name="[inviteeReg]" operation="set" value="104"/>
+        <scenario file="sip_rtp_flow/UAC.xml" name="listenpointUAC" routingName="listenpointUAC"/>
+        <scenario file="sip_rtp_flow/UAS.xml" name="listenpointUAS" routingName="listenpointUAS"/>
+    </testcase>
+
+    <testcase description="Call setup for analog to isdn users" name="isdn-isdn-fritzbox" state="false">
+        <parameter name="[inviter]" operation="set" value="202"/>
+        <parameter name="[invitee]" operation="set" value="**52"/>
+        <parameter name="[inviteeReg]" operation="set" value="201"/>
+        <scenario file="sip_rtp_flow/UAC.xml" name="listenpointUAC" routingName="listenpointUAC"/>
+        <scenario file="sip_rtp_flow/UAS.xml" name="listenpointUAS" routingName="listenpointUAS"/>
+    </testcase>
+
+</test>

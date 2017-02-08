@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 23/06/2009
+    Author     : jbrisseau
+    Description: Send the M3UA message "Registration Request".
+-->
+
+<!--
+    INFOS : 
+    
+    The following scenarios send the same message "Registration Request" (class = 9,
+    type = 1) as descibed in the RFC 4666 paragraph 3.6.1 with different ways to
+    describe it.
+    
+     0                   1                   2                   3
+     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          Tag = 0x0207         |            Length             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    \                                                               \
+    /                         Routing Key 1                         /
+    \                                                               \
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |          Tag = 0x0207         |            Length             |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    \                                                               \
+    /                         Routing Key 2                         /
+    \                                                               \
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    
+    Routing Key 1 :
+    
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x020a Local_RK_Identifier |         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                  Local_RK_Identifier = 641473                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag = 0x0006 (Routing_Context) |          Length = 12          |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                       Routing Context = 7864455               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                       Routing Context = 75788                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag = 0x000b(Traffic_Mode_Type)|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                       Traffic_Mode_Type = 3                   |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=020b Destination_Point_Code|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    Mask = 0   |       Destination_Point_Code = 568            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x0200 (Network_Appearence)|          Length = 8           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                   Network Appearance = 785578                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x020c (Service_Indicators)|          Length = 9           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |      SI=12    |     SI=3      |    SI=3       |    SI=7       |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |      SI=13    |             0 Padding                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=020e Origination_Point_Code|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    Mask = 0   |       Origination_Point_Code = 2478           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=020b Destination_Point_Code|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    Mask = 0   |       Destination_Point_Code = 175            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x020c (Service_Indicators)|         Length = 5            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |      SI= 3    |             0 Padding                         |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=020e Origination_Point_Code|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    Mask = 0   |       Origination_Point_Code = 7891           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    
+	Routing Key 2 :
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x020a Local_RK_Identifier |         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                  Local_RK_Identifier = 297135                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag = 0x0006 (Routing_Context) |          Length = 8           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                       Routing Context = 3558420               |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag = 0x000b(Traffic_Mode_Type)|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                       Traffic_Mode_Type = 3                   |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=020b Destination_Point_Code|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    Mask = 0   |       Destination_Point_Code = 897            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x0200 (Network_Appearence)|          Length = 8           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |                   Network Appearance = 246473                 |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=0x020c (Service_Indicators)|          Length = 8           |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |      SI=13    |     SI=4      |    SI=2       |    SI=7       |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |Tag=020e Origination_Point_Code|         Length = 8            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    |    Mask = 0   |       Origination_Point_Code = 745            |
+    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    
+-->
+
+<scenario>
+	
+    <sendMessageSIGTRAN	name="Send REG_REQ1" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+        <UA name="m3ua" file="m3ua.xml">
+            <header		messageClass="Routing_Key_Management_Messages"
+						messageType="Registration_Request"/>
+			
+            <parameter tag="519">
+                <parameter tag="Local_RK_Identifier">
+                    <field name="Local_RK_Identifier" value="641473"/>
+                </parameter>
+                <parameter tag="Routing_Context">
+                    <field name="Routing_Context"		value="7864455"/>
+                    <field name="Routing_Context"		value="75788"/>
+                </parameter>
+                <parameter tag="Traffic_Mode_Type">
+                    <field name="Traffic_Mode_Type"		value="3"/>
+                </parameter>
+                <parameter tag="Destination_Point_Code">
+                    <field name="Mask" value="0"/>
+                    <field name="Destination_Point_Code" value="568"/>
+                </parameter>
+                <parameter tag="Network_Appearence">
+                    <field name="Network_Appearence"		value="785578"/>
+                </parameter>
+                <parameter tag="Service_Indicators">
+                    <field name="SI"					value="12"/>
+                    <field name="SI"					value="3"/>
+                    <field name="SI"					value="3"/>
+                    <field name="SI"					value="7"/>
+                    <field name="SI"					value="13"/>
+                </parameter>
+                <parameter tag="Origination_Point_Code">
+                    <field name="Mask" value="0"/>
+                    <field name="Origination_Point_Code" value="2478"/>
+                </parameter>
+                <parameter tag="Destination_Point_Code">
+                    <field name="Mask" value="0"/>
+                    <field name="Destination_Point_Code" value="175"/>
+                </parameter>
+                <parameter tag="Service_Indicators">
+                    <field name="SI"					value="3"/>
+                </parameter>
+                <parameter tag="Origination_Point_Code">
+                    <field name="Mask" value="0"/>
+                    <field name="Origination_Point_Code" value="7891"/>
+                </parameter>
+            </parameter>
+			
+            <parameter tag="519">
+                <parameter tag="Local_RK_Identifier">
+                    <field name="Local_RK_Identifier" value="297135"/>
+                </parameter>
+                <parameter tag="Routing_Context">
+                    <field name="Routing_Context" value="3558420"/>
+                </parameter>
+                <parameter tag="Traffic_Mode_Type">
+                    <field name="Traffic_Mode_Type"		value="3"/>
+                </parameter>
+                <parameter tag="Destination_Point_Code">
+                    <field name="Mask" value="0"/>
+                    <field name="Destination_Point_Code" value="897"/>
+                </parameter>
+                <parameter tag="Network_Appearence">
+                    <field name="Network_Appearence"		value="246473"/>
+                </parameter>
+                <parameter tag="Service_Indicators">
+                    <field name="SI"					value="13"/>
+                    <field name="SI"					value="4"/>
+                    <field name="SI"					value="2"/>
+                    <field name="SI"					value="7"/>
+                </parameter>
+                <parameter tag="Origination_Point_Code">
+                    <field name="Mask" value="0"/>
+                    <field name="Origination_Point_Code" value="745"/>
+                </parameter>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+	
+</scenario>

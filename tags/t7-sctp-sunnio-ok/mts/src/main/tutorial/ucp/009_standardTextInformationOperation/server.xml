@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="StandardTextInformationOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="LNo" operation="protocol.setFromMessage" value="attribute.LNo"/>
+        <parameter name="LST" operation="protocol.setFromMessage" value="attribute.LST"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[LNo]" condition="string.equals" value="5678"/>
+        <test parameter="[LST]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="StandardTextInformationOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="NPL" value="2"/>
+        <attribute name="ST" value="non empty"/>
+        <attribute name="ST" value="non empty again"/>
+        <attribute name="SM" value="ca roule:une fois de plus"/>
+    </sendMessageUCP>
+
+</scenario>

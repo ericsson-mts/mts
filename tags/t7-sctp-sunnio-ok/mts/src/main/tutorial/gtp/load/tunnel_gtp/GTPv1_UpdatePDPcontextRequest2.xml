@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <parameter name="[tunnelEndpointId]" operation="set" value="[test:localTEID]"/>
+
+  <parameter name="[sequenceNumber]" operation="add" value="[test:v1SequenceNumber]" value2="1"/>
+  <if>
+    <condition>
+      <test parameter="[sequenceNumber]" condition="number.greaterThan" value="65535"/>
+    </condition>
+    <then>
+      <parameter name="[sequenceNumber]" operation="set" value="0"/>
+    </then>
+  </if>
+
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV1 extensionHeaderFlag="0" nPduNumberFlag="0"
+              type="Update PDP Context Request:18"
+              tunnelEndpointId="[tunnelEndpointId]"
+              sequenceNumber="[sequenceNumber]"/>
+
+    <!-- 3GPP TS 29.060 : The information elements shall be sorted, with the Type fields in ascending order, in the signalling messages. -->
+
+    <!-- Information Elements in an SGSN-Initiated Update PDP Context Request. -->
+
+    <!-- IMSI - Optional -->
+    <element tag="IMSI:2" description="International Mobile Subscriber Identity">
+      <field name="IMSI" value="[v1IMSI]"/>
+    </element>
+
+    <!-- Routeing Area Identity (RAI) - Optional -->
+
+    <!-- Recovery - Optional -->
+    <!-- The Recovery information element indicates if the peer GSN has restarted. -->
+    <element tag="Recovery:14">
+      <field name="Recovery" value="[Recovery]"/>
+    </element>
+
+    <!-- Tunnel Endpoint Identifier Data I - Mandatory -->
+    <!-- The Tunnel Endpoint Identifier for data transmission requested by the receiver of the flow. -->
+    <element tag="Tunnel Endpoint Identifier Data I:16" description="Tunnel Endpoint Identifier Data I">
+      <field name="Tunnel Endpoint Identifier Data I" value="[TEIDdataI]"/>
+    </element>
+
+    <!-- Tunnel Endpoint Identifier Control Plane - Conditional -->
+    <element tag="Tunnel Endpoint Identifier Control Plane:17" description="The Tunnel Endpoint Identifier for the control plane.">
+      <field name="Tunnel Endpoint Identifier Control Plane" value="[TEIDcontrolPlane]"/>
+    </element>
+
+    <!-- NSAPI - Mandatory -->
+    <!-- The NSAPI information element contains an NSAPI identifying a PDP Context in a mobility management context specified by the Tunnel Endpoint Identifier Control Plane. -->
+    <element tag="NSAPI:20" description="Network Service Access Point Identifier">
+      <field name="spare" value="0"/>
+      <field name="NSAPI" value="[NSAPI]"/>
+    </element>
+
+    <!-- Trace Reference - Optional -->
+    <!-- Trace Type - Optional -->
+
+    <!-- Protocol Configuration Options - Optional -->
+    <!-- The Protocol Configuration Options contains external network protocol options that may be necessary to transfer between the GGSN and the MS. -->
+    <element tag="PCO:132" description="Protocol Configuration Options">
+      <field name="ext" value="1"/>
+      <field name="spare" value="0"/>
+      <field name="Configuration protocol" value="0"/>
+      <field name="Protocol ID1" value="49187"/>
+      <field name="Length of protocol ID1 contents" value="17"/>
+      <field name="Protocol ID1 contents" value="01010011036d69670868656d6d656c6967"/> 
+    </element>
+
+    <!-- SGSN Address for signalling - Mandatory -->
+    <element tag="GSN Address:133">
+      <field name="IPv4 address" value="[SGSNaddressControlPlane]"/>
+    </element>
+
+    <!-- SGSN Address for user traffic - Mandatory -->
+    <element tag="GSN Address:133">
+      <field name="IPv4 address" value="[SGSNaddressUserTraffic]"/>
+    </element>
+
+    <!-- Alternative SGSN Address for Control Plane - Conditional -->
+    <!-- Alternative SGSN Address for User Traffic - Conditional -->
+
+   <!-- Quality of Service Profile - Mandatory -->
+   <!-- The Quality of Service (QoS) Profile shall include the values of the defined QoS parameters. -->
+    <element tag="QoS Profile:135" description="Quality of Service (QoS) Profile">
+      <field name="Allocation/Retention Priority" value="[UpdatePDPcontextRequestAllocationRetentionPriority]"/>
+      <field name="QoS Profile Data" value="[UpdatePDPcontextRequestQoSprofileData2]"/>
+    </element>
+
+    <!-- TFT - Optional -->
+    <!-- Trigger Id - Optional -->
+    <!-- OMC Identity - Optional -->
+    <!-- Common Flags - Optional -->
+
+    <!-- RAT Type - Optional -->
+    <element tag="RAT Type:151">
+      <field name="RAT Type value" value="[v1RATtype]"/>
+    </element>
+
+    <!-- User Location Information - Optional -->
+    <!-- The User Location Information IE is used to indicate CGI/SAI/RAI of where the MS is currently located. -->
+    <element tag="ULI:152" description="User Location Information">
+    	<field name="Geographic Location Type" value="CGI"/>
+      <field name="PLMN" value="[ULI_MCC],[ULI_MNC]"/>
+      <field name="LAC" value="[ULI_LAC]" description="Location Area Code"/>
+      <field name="CI" value="[ULI_CI]" description="Cell Identity"/>
+    </element>
+
+    <!-- MS Time Zone - Optional -->
+    <element tag="MS Time Zone:153">
+    	<field name="Time Zone" value="4"/>
+      <field name="spare" value="0"/>
+      <field name="Daylight Saving Time" value="1"/>
+    </element>
+
+    <!-- Additonal Trace Info - Optional -->
+    <!-- Direct Tunnel Flags - Optional -->
+    <!-- Evolved Allocation/Retention Priority I - Optional -->
+    <!-- Extended Common Flags - Optional -->
+    <!-- User CSG Information - Optional -->
+    <!-- APN-AMBR - Optional -->
+    <!-- Signalling Priority Indication - Optional -->
+    <!-- Private Extension - Optional -->
+
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Update PDP Context Response" request="false" type="Update PDP Context Request:18" result="Request accepted:128">
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+  </receiveMessageGTP>
+
+</scenario>

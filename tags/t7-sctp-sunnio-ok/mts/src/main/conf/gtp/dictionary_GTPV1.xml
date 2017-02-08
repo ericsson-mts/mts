@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary.xml
+    Created on : 4 février 2010, 08:58
+    Author     : bbouvier
+    Description: GTPv1 header and information elements decoding
+                 according to 3GPP TS 29.060 V12.1.0.
+
+    Warning 0  : after modifications, please think to modify tutorial
+                 GTP scripts in the same way.
+
+    Warning 1  : When an IE contains a variable number of fields (e.g. PCO:132),
+                 there is a difference depending on MTS send or receive.
+                 MTS can send how many fields as needed (you just have to
+                 precise "lengthBit" and "type" attributes).
+                 When MTS receive a GTP message, dictionary is used to decode
+                 the fields. Number of fields in the dictionary is static.
+                 So if needed, dictionary will have to be updated to add missing
+                 fields.
+
+    Warning 2  : When an IE could be defined in a several ways (e.g. GSN Address:133),
+                 all these definitions are merged.
+
+-->
+
+<dictionary>
+
+    <header>
+
+        <field name="Version" lengthBit="3" type="enumeration">
+            <enum value="1" name="3GPP TS 29.060 : GTP" />
+        </field>
+        <field name="Protocol Type" lengthBit="1" type="boolean"> </field>
+        <field name="spare1" lengthBit="1" type="integer"> </field>
+        <field name="Extension Header Flag" lengthBit="1" type="boolean"> </field>
+        <field name="Sequence Number Flag" lengthBit="1" type="boolean"> </field>
+        <field name="NPDU Number Flag" lengthBit="1" type="boolean"> </field>
+        <field name="Message Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="For future use." />
+            <enum value="1" name="Echo Request" />
+            <enum value="2" name="Echo Response" />
+            <enum value="3" name="Version Not Supported" />
+            <enum value="4" name="Node Alive Request" />
+            <enum value="5" name="Node Alive Response" />
+            <enum value="6" name="Redirection Request" />
+            <enum value="7" name="Redirection Response" />
+            <enum value="8 - 15" name="For future use." />
+            <enum value="16" name="Create PDP Context Request" />
+            <enum value="17" name="Create PDP Context Response" />
+            <enum value="18" name="Update PDP Context Request" />
+            <enum value="19" name="Update PDP Context Response" />
+            <enum value="20" name="Delete PDP Context Request" />
+            <enum value="21" name="Delete PDP Context Response" />
+            <enum value="22" name="Initiate PDP Context Activation Request" />
+            <enum value="23" name="Initiate PDP Context Activation Response" />
+            <enum value="24 - 25" name="For future use." />
+            <enum value="26" name="Error Indication" />
+            <enum value="27" name="PDU Notification Request" />
+            <enum value="28" name="PDU Notification Response" />
+            <enum value="29" name="PDU Notification Reject Request" />
+            <enum value="30" name="PDU Notification Reject Response" />
+            <enum value="31" name="Supported Extension Headers Notification" />
+            <enum value="32" name="Send Routeing Information for GPRS Request" />
+            <enum value="33" name="Send Routeing Information for GPRS Response" />
+            <enum value="34" name="Failure Report Request" />
+            <enum value="35" name="Failure Report Response" />
+            <enum value="36" name="Note MS GPRS Present Request" />
+            <enum value="37" name="Note MS GPRS Present Response" />
+            <enum value="38 - 47" name="For future use." />
+            <enum value="48" name="Identification Request" />
+            <enum value="49" name="Identification Response" />
+            <enum value="50" name="SGSN Context Request" />
+            <enum value="51" name="SGSN Context Response" />
+            <enum value="52" name="SGSN Context Acknowledge" />
+            <enum value="53" name="Forward Relocation Request" />
+            <enum value="54" name="Forward Relocation Response" />
+            <enum value="55" name="Forward Relocation Complete" />
+            <enum value="56" name="Relocation Cancel Request" />
+            <enum value="57" name="Relocation Cancel Response" />
+            <enum value="58" name="Forward SRNS Context" />
+            <enum value="59" name="Forward Relocation Complete Acknowledge" />
+            <enum value="60" name="Forward SRNS Context Acknowledge" />
+            <enum value="61 - 69" name="For future use." />
+            <enum value="70" name="RAN Information Relay" />
+            <enum value="71 - 95" name="For future use." />
+            <enum value="96" name="MBMS Notification Request" />
+            <enum value="97" name="MBMS Notification Response" />
+            <enum value="98" name="MBMS Notification Reject Request" />
+            <enum value="99" name="MBMS Notification Reject Response" />
+            <enum value="100" name="Create MBMS Context Request" />
+            <enum value="101" name="Create MBMS Context Response" />
+            <enum value="102" name="Update MBMS Context Request" />
+            <enum value="103" name="Update MBMS Context Response" />
+            <enum value="104" name="Delete MBMS Context Request" />
+            <enum value="105" name="Delete MBMS Context Response" />
+            <enum value="106 - 111" name="For future use." />
+            <enum value="112" name="MBMS Registration Request" />
+            <enum value="113" name="MBMS Registration Response" />
+            <enum value="114" name="MBMS De-Registration Request" />
+            <enum value="115" name="MBMS De-Registration Response" />
+            <enum value="116" name="MBMS Session Start Request" />
+            <enum value="117" name="MBMS Session Start Response" />
+            <enum value="118" name="MBMS Session Stop Request" />
+            <enum value="119" name="MBMS Session Stop Response" />
+            <enum value="120" name="MBMS Session Update Request" />
+            <enum value="121" name="MBMS Session Update Response" />
+            <enum value="122 - 127" name="For future use." />
+            <enum value="128" name="MS Info Change Notification Request" />
+            <enum value="129" name="MS Info Change Notification Response" />
+            <enum value="130 - 239" name="For future use." />
+            <enum value="240" name="Data Record Transfer Request" />
+            <enum value="241" name="Data Record Transfer Response" />
+            <enum value="242 - 253" name="For future use." />
+            <enum value="254" name="End Marker" />
+            <enum value="255" name="G-PDU" />
+        </field>
+        <field name="Message Length" lengthBit="16" type="integer"> </field>
+        <field name="Tunnel Endpoint Identifier" lengthBit="32" type="integer"> </field>
+        <field name="Sequence Number" lengthBit="16" type="integer"> </field>
+        <field name="NPDU Number" lengthBit="8" type="integer"> </field>
+        <field name="Next Extension Header Type" lengthBit="8" type="integer"> </field>
+        
+    </header>
+
+    <!-- 0 : Reserved.. -->
+
+    <!-- 1 : Cause. -->
+    <element tag="Cause:1" coding="TV">
+        <field name="Cause value" lengthBit="8" type="enumeration">
+            <enum value="0" name="Request IMSI" />
+            <enum value="1" name="Request IMEI" />
+            <enum value="2" name="Request IMSI and IMEI" />
+            <enum value="3" name="No identity needed" />
+            <enum value="4" name="MS Refuses" />
+            <enum value="5" name="MS is not GPRS Responding" />
+            <enum value="6" name="Reactivation Requested" />
+            <enum value="7" name="PDP address inactivity timer expires" />
+            <enum value="8 - 48" name="For future use" />
+            <enum value="49 - 63" name="Cause values reserved for GPRS charging protocol use" />
+            <enum value="64 - 127" name="For future use" />
+            <enum value="128" name="Request accepted" />
+            <enum value="129" name="New PDP type due to network preference" />
+            <enum value="130" name="New PDP type due to single address bearer only" />
+            <enum value="131 - 176" name="For future use" />
+            <enum value="177 - 191" name="Cause values reserved for GPRS charging protocol use " />
+            <enum value="192" name="Non-existent" />
+            <enum value="193" name="Invalid message format" />
+            <enum value="194" name="IMSI/IMEI not known" />
+            <enum value="195" name="MS is GPRS Detached" />
+            <enum value="196" name="MS is not GPRS Responding" />
+            <enum value="197" name="MS Refuses" />
+            <enum value="198" name="Version not supported" />
+            <enum value="199" name="No resources available" />
+            <enum value="200" name="Service not supported" />
+            <enum value="201" name="Mandatory IE incorrect" />
+            <enum value="202" name="Mandatory IE missing" />
+            <enum value="203" name="Optional IE incorrect" />
+            <enum value="204" name="System failure" />
+            <enum value="205" name="Roaming restriction" />
+            <enum value="206" name="P-TMSI Signature mismatch" />
+            <enum value="207" name="GPRS connection suspended" />
+            <enum value="208" name="Authentication failure" />
+            <enum value="209" name="User authentication failed" />
+            <enum value="210" name="Context not found" />
+            <enum value="211" name="All dynamic PDP addresses are occupied" />
+            <enum value="212" name="No memory is available" />
+            <enum value="213" name="Relocation failure" />
+            <enum value="214" name="Unknown mandatory extension header" />
+            <enum value="215" name="Semantic error in the TFT operation" />
+            <enum value="216" name="Syntactic error in the TFT operation" />
+            <enum value="217" name="Semantic errors in packet filter(s)" />
+            <enum value="218" name="Syntactic errors in packet filter(s)" />
+            <enum value="219" name="Missing or unknown APN" />
+            <enum value="220" name="Unknown PDP address or PDP type" />
+            <enum value="221" name="PDP context without TFT already activated" />
+            <enum value="222" name="APN access denied – no subscription" />
+            <enum value="223" name="APN Restriction type incompatibility with currently active PDP Contexts" />
+            <enum value="224" name="MS MBMS Capabilities Insufficient" />
+            <enum value="225" name="Invalid Correlation-ID" />
+            <enum value="226" name="MBMS Bearer Context Superseded" />
+            <enum value="227" name="Bearer Control Mode violation" />
+            <enum value="228" name="Collision with network initiated request" />
+            <enum value="229" name="APN Congestion" />
+            <enum value="230" name="Bearer handling not supported" />
+            <enum value="231 - 240" name="For future use" />
+            <enum value="241 - 255" name="Cause values reserved for GPRS charging protocol use " />
+        </field>
+    </element>
+
+    <!-- 2 : International Mobile Subscriber Identity (IMSI). -->
+    <element tag="IMSI:2" coding="TV" description="International Mobile Subscriber Identity">
+    		<field name="IMSI" lengthBit="64" type="number_bcd"/>
+    </element>
+
+    <!-- 3 : Routeing Area Identity (RAI). -->
+    <!-- 4 : Temporary Logical Link Identity (TLLI). -->
+    <!-- 5 : Packet TMSI (P-TMSI). -->
+    <!-- 6-7 : Spare. -->
+
+    <!-- 8 : Reordering Required. -->
+    <element tag="Reordering Required:8" coding="TV" description="Reordering Required">
+        <field name="spare" lengthBit="7" type="integer"/>
+        <field name="Reordering Required" lengthBit="1" type="enumeration">
+            <enum value="0" name="No"/>
+            <enum value="1" name="Yes"/>
+       </field>
+    </element>
+
+    <!-- 9 : Authentication Triplet. -->
+    <!-- 10 : Spare. -->
+    <!-- 11 : MAP Cause. -->
+    <!-- 12 : P-TMSI Signature. -->
+    <!-- 13 : MS Validated. -->
+
+    <!-- 14 : Recovery. -->
+    <element tag="Recovery:14" coding="TV">
+		    <field name="Recovery" lengthBit="8" type="integer"/>
+    </element>
+    
+    <!-- 15 : Selection Mode. -->
+    <element tag="Selection Mode:15" coding="TV" description="Selection Mode">
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Selection Mode" lengthBit="2" type="enumeration">
+            <enum value="0" name="MS or network provided APN, subscribed verified" />
+            <enum value="1" name="MS provided APN, subscription not verified" />
+            <enum value="2" name="Network provided APN, subscription not verified" />
+            <enum value="3" name="For future use." description="Shall not be sent. If received, shall be interpreted as the value &quot;2&quot;.\" />
+        </field>
+    </element>
+    
+    <!-- 16 : Tunnel Endpoint Identifier Data I. -->
+    <element tag="Tunnel Endpoint Identifier Data I:16" coding="TV" description="Tunnel Endpoint Identifier Data I">
+		    <field name="Tunnel Endpoint Identifier Data I" lengthBit="32" type="integer"/>
+    </element>
+        
+    <!-- 17 : Tunnel Endpoint Identifier Control Plane. -->
+    <element tag="Tunnel Endpoint Identifier Control Plane:17" coding="TV" description="Tunnel Endpoint Identifier Control Plane">
+		    <field name="Tunnel Endpoint Identifier Control Plane" lengthBit="32" type="integer"/>
+    </element>
+        
+    <!-- 18 : Tunnel Endpoint Identifier Data II. -->
+    <element tag="Tunnel Endpoint Identifier Data II:18" coding="TV" description="Tunnel Endpoint Identifier Data II">
+		    <field name="Tunnel Endpoint Identifier Data II" lengthBit="32" type="integer"/>
+    </element>
+        
+    <!-- 19 : Teardown Ind. -->
+    <element tag="Teardown Ind:19" coding="TV">
+        <field name="spare" lengthBit="7" type="integer"/>
+		    <field name="Teardown Ind" lengthBit="1" type="enumeration">
+            <enum value="0" name="No" />
+            <enum value="1" name="Yes" />
+        </field>
+    </element>
+    
+    <!-- 20 : NSAPI. -->
+    <element tag="NSAPI:20" coding="TV" description="Network Service Access Point Identifier">
+        <field name="spare" lengthBit="4" type="integer"/>
+		    <field name="NSAPI" lengthBit="4" type="integer"/>
+    </element>
+    
+    <!-- 21 : RANAP Cause. -->
+    <!-- 22 : RAB Context. -->
+    <!-- 23 : Radio Priority SMS. -->
+    <!-- 24 : Radio Priority. -->
+    <!-- 25 : Packet Flow Id. -->
+
+    <!-- 26 : Charging Characteristics. -->
+    <element tag="Charging Characteristics:26" coding="TV" description="Charging Characteristics">
+		    <field name="Charging Characteristics" lengthBit="16" type="integer"/>
+    </element>
+    
+    <!-- 27 : Trace Reference. -->
+    <!-- 28 : Trace Type. -->
+    <!-- 29 : MS Not Reachable Reason. -->
+    <!-- 30-116 : Reserved. (No TV types can now be allocated). -->
+    <!-- 117-126 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+
+    <!-- 127 : Charging ID. -->
+    <element tag="Charging ID:127" coding="TV">
+		    <field name="Charging ID" lengthBit="32" type="integer"/>
+    </element>
+
+    <!-- 128 : End User Address. -->
+    <element tag="End User Address:128" coding="TLV" description="End User Address">
+        <field name="spare" lengthBit="4" type="integer"/>
+        <field name="PDP Type Organization" lengthBit="4" type="enumeration">
+            <enum value="0" name="ETSI" />
+            <enum value="1" name="IETF" />
+        </field>
+        <field name="PDP Type Number" lengthBit="8" type="enumeration">
+            <enum value="1" name="PPP" /><!-- ETSI PDP type number 1. -->
+            <enum value="33" name="IPv4" /><!-- IETF PDP type number Ox21. -->
+            <enum value="87" name="IPv6" /><!-- IETF PDP type number Ox57. -->
+            <enum value="141" name="IPv4v6" /><!-- IETF PDP type number Ox8D. -->
+        </field>
+        <field name="PDP address" lengthBit="32" type="integer"/>
+    </element>
+	
+    <!-- 129 : MM Context. -->
+    <!-- 130 : PDP Context. -->
+
+    <!-- 131 : Access Point Name. -->
+    <element tag="APN:131" coding="TLV" description="Access Point Name">
+        <field name="APN01" type="length_string"/>
+        <field name="APN02" type="length_string"/>
+        <field name="APN03" type="length_string"/>
+        <field name="APN04" type="length_string"/>
+    </element>
+
+    <!-- 132 : Protocol Configuration Options. -->
+    <!-- TODO complex element see TS 24008 -->
+    <element tag="PCO:132" coding="TLV" description="Protocol Configuration Options">
+        <field name="ext" lengthBit="1" type="integer"/>
+        <field name="spare" lengthBit="4" type="integer"/>
+        <field name="Configuration protocol" lengthBit="3" type="integer"/>
+        <field name="Protocol ID1" lengthBit="16" type="integer"/>
+        <field name="Length of protocol ID1 contents" lengthBit="8" type="integer"/>
+        <field name="Protocol ID1 contents" type="binary"/>
+        <field name="Protocol ID2" lengthBit="16" type="integer"/>
+        <field name="Length of protocol ID2 contents" lengthBit="8" type="integer"/>
+        <field name="Protocol ID2 contents" type="binary"/>
+        <field name="Container ID1" lengthBit="16" type="integer"/>
+        <field name="Length of container ID1 contents" lengthBit="8" type="integer"/>
+        <field name="Container ID1 contents" type="binary"/>
+        <field name="Container ID2" lengthBit="16" type="integer"/>
+        <field name="Length of container ID1 contents" lengthBit="8" type="integer"/>
+        <field name="Container ID2  contents" type="binary"/>
+    </element>
+     
+    <!-- 133 : GSN Address. -->
+    <element tag="GSN Address:133" coding="TLV">
+        <field name="IPv6 address" lengthBit="128" type="ipv6_address"/>  <!-- if length == 16 -->
+        <field name="IPv4 address" lengthBit="32" type="ipv4_address"/>   <!-- if length == 4 -->
+    </element>
+	
+    <!-- 134 : MS International PSTN/ISDN Number (MSISDN). -->
+    <element tag="MSISDN:134" coding="TLV" description="Mobile Subscriber ISDN Number">
+    		<field name="MSISDN" type="number_bcd"/>
+    </element>
+
+    <!-- 135 : Quality of Service Profile. -->
+    <element tag="QoS Profile:135" coding="TLV" description="Quality of Service (QoS) Profile">
+    		<field name="Allocation/Retention Priority" lengthBit="8" type="integer"/>
+    		<field name="QoS Profile Data" type="binary"/>
+    </element>
+
+    <!-- 136 : Authentication Quintuplet. -->
+    <!-- 137 : Traffic Flow Template. -->
+    <!-- 138 : Target Identification. -->
+    <!-- 139 : UTRAN Transparent Container. -->
+    <!-- 140 : RAB Setup Information. -->
+
+    <!-- 141 : Extension Header Type List. -->
+	  <element tag="Extension Header Type List:141" coding="TLV">
+		    <field name="Extension types list" type="binary"/>
+    </element>
+    
+    <!-- 142 : Trigger Id. -->
+    <!-- 143 : OMC Identity. -->
+    <!-- 144 : RAN Transparent Container. -->
+    <!-- 145 : PDP Context Prioritization. -->
+    <!-- 146 : Additional RAB Setup Information. -->
+    <!-- 147 : SGSN Number. -->
+    <!-- 148 : Common Flags. -->
+    <!-- 149 : APN Restriction. -->
+    <!-- 150 : Radio Priority LCS. -->
+
+    <!-- 151 : RAT Type. -->
+    <element tag="RAT Type:151" coding="TLV">
+        <field name="RAT Type value" lengthBit="8" type="enumeration">
+            <enum value="0" name="reserved" />
+            <enum value="1" name="UTRAN" />
+            <enum value="2" name="GERAN" />
+            <enum value="3" name="WLAN" />
+            <enum value="4" name="GAN" />
+            <enum value="5" name="HSPA Evolution" />
+            <enum value="6-255" name="spare" />
+        </field>
+    </element>
+	
+    <!-- 152 : User Location Information. -->
+    <element tag="ULI:152" coding="TLV" description="User Location Information">
+    		<field name="Geographic Location Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="CGI" />
+            <enum value="1" name="SAI" />
+            <enum value="2" name="RAI" />
+        </field>
+        <field name="PLMN" type="number_mmc" description="MCC,MNC"/>
+    		<field name="LAC" lengthBit="16" type="integer" description="Location Area Code"/>
+    		<field name="CI" lengthBit="16" type="integer" description="Cell Identity"/>
+    		<field name="SAC" lengthBit="16" type="integer" description="Service Area Code"/>
+    		<field name="RAC" lengthBit="16" type="integer" description="Routing Area Code"/>
+    </element>
+
+    <!-- 153 : MS Time Zone. -->
+   <element tag="MS Time Zone:153" coding="TLV">   
+        <field name="Time Zone" lengthBit="8" type="integer"/>
+        <field name="spare" lengthBit="6" type="integer"/>
+        <field name="Daylight Saving Time" lengthBit="2" type="enumeration">
+            <enum value="0" name="No adjustment for Daylight Saving Time"/>
+            <enum value="1" name="+1 hour adjustment for Daylight Saving Time"/>
+            <enum value="2" name="+2 hours adjustment for Daylight Saving Time"/>
+            <enum value="3" name="Spare"/>
+        </field>
+    </element>
+    
+    <!-- 154 : IMEI(SV). -->
+    <element tag="IMEI(SV):154" coding="TLV" description="International Mobile Equipment Identity (and Software Version)">
+        <field name="IMEI(SV)" lengthBit="64" type="number_bcd"/>
+    </element>
+    
+    <!-- 155 : CAMEL Charging Information Container. -->
+    <!-- 156 : MBMS UE Context. -->
+    <!-- 157 : Temporary Mobile Group Identity (TMGI). -->
+    <!-- 158 : RIM Routing Address. -->
+    <!-- 159 : MBMS Protocol Configuration Options. -->
+    <!-- 160 : MBMS Service Area. -->
+    <!-- 161 : Source RNC PDCP context info. -->
+    <!-- 162 : Additional Trace Info. -->
+    <!-- 163 : Hop Counter. -->
+    <!-- 164 : Selected PLMN ID. -->
+    <!-- 165 : MBMS Session Identifier. -->
+    <!-- 166 : MBMS 2G/3G Indicator. -->
+    <!-- 167 : Enhanced NSAPI. -->
+    <!-- 168 : MBMS Session Duration. -->
+    <!-- 169 : Additional MBMS Trace Info. -->
+    <!-- 170 : MBMS Session Repetition Number. -->
+    <!-- 171 : MBMS Time To Data Transfer. -->
+    <!-- 172 : Reserved (NOTE 1). -->
+    <!-- 173 : BSS Container. -->
+    <!-- 174 : Cell Identification. -->
+    <!-- 175 : PDU Numbers. -->
+    <!-- 176 : BSSGP Cause. -->
+    <!-- 177 : Required MBMS bearer capabilities. -->
+    <!-- 178 : RIM Routing Address Discriminator. -->
+    <!-- 179 : List of set-up PFCs. -->
+    <!-- 180 : PS Handover XID Parameters. -->
+    <!-- 181 : MS Info Change Reporting Action. -->
+    <!-- 182 : Direct Tunnel Flags. -->
+    <!-- 183 : Correlation-ID. -->
+
+    <!-- 184 : Bearer Control Mode. -->
+    <element tag="Bearer Control Mode:184" coding="TV" description="Bearer Control Mode">
+        <field name="Bearer Control Mode" lengthBit="8" type="enumeration">
+            <enum value="0" name="MS_only"/>
+            <enum value="1" name="MS/NW"/>
+       </field>
+    </element>
+
+    <!-- 185 : MBMS Flow Identifier. -->
+    <!-- 186 : MBMS IP Multicast Distribution. -->
+    <!-- 187 : MBMS Distribution Acknowledgement. -->
+    <!-- 188 : Reliable INTER RAT HANDOVER INFO . -->
+    <!-- 189 : RFSP Index. -->
+    <!-- 190 : Fully Qualified Domain Name (FQDN). -->
+    <!-- 191 : Evolved Allocation/Retention Priority I. -->
+    <!-- 192 : Evolved Allocation/Retention Priority II. -->
+    <!-- 193 : Extended Common Flags. -->
+    <!-- 194 : User CSG Information (UCI). -->
+    <!-- 195 : CSG Information Reporting Action. -->
+    <!-- 196 : CSG ID. -->
+    <!-- 197 : CSG Membership Indication (CMI). -->
+    <!-- 198 : Aggregate Maximum Bit Rate (AMBR). -->
+    <!-- 199 : UE Network Capability. -->
+    <!-- 200 : UE-AMBR. -->
+    <!-- 201 : APN-AMBR with NSAPI. -->
+    <!-- 202 : GGSN Back-Off Time. -->
+    <!-- 203 : Signalling Priority Indication. -->
+    <!-- 204 : Signalling Priority Indication with NSAPI. -->
+    <!-- 205 : Higher bitrates than 16 Mbps flag. -->
+    <!-- 206 : Reserved (NOTE1). -->
+    <!-- 207 : Additional MM context for SRVCC. -->
+    <!-- 208 : Additional flags for SRVCC. -->
+    <!-- 209 : STN-SR. -->
+    <!-- 210 : C-MSISDN. -->
+    <!-- 211 : Extended RANAP Cause. -->
+    <!-- 212 : eNodeB ID. -->
+    <!-- 213 : Selection Mode with NSAPI. -->
+    <!-- 214 : ULI Timestamp. -->
+    <!-- 215-238 : Spare. For future use.. -->
+    <!-- 239-250 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+    <!-- 251 : Charging Gateway Address. -->
+    <!-- 252-254 : Reserved for the GPRS charging protocol (see GTP' in 3GPP TS 32.295 [33]). -->
+
+    <!-- 255 : Private Extension. -->
+	  <element tag="privateExtension:255" coding="TLV">
+		    <field name="extensionIdentifier" length="16" type="integer"/>
+        <field name="extensionValue" type="string"/>
+	  </element>
+</dictionary>

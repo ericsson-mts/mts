@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A101" />
+    <!-- envoi requete capability-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse CAPABILITY -->
+    <receiveMessageIMAP name="Receive CAPABILITY completed" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.done.result" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A102" />
+    <!-- envoi requete LOGIN-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGIN [login] [password]
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LOGIN -->
+    <receiveMessageIMAP name="Receive LOGIN completed" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A159" />
+    <!-- envoi requete NOOP-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] NOOP
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse NOOP -->
+    <receiveMessageIMAP name="Receive NOOP response" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <parameter name="[tagReq]" operation="set" value="A160" />
+    <!-- envoi requete LOGOUT-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGOUT
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LOGOUT -->
+    <receiveMessageIMAP name="Receive LOGOUT completed" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+	
+	<parameter name="[ServiceTrigger]" operation="set" value="Originating : Prepaid service : your credit will be decrease by 0.1 Euros per minuts !"/>   			
+	
+	<label name="Begin"/>
+		
+	<receiveMessage name="wait_SIP_request" timeout="0" failedOnTimeout="false">
+		<parameter name="[lastSIPMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>	
+		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>  		
+		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>  				
+		<parameter name="[lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>  	
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>  	
+	  	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
+	  	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>		  		  	
+	  	<parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	  	<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  	<parameter name="[lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>		  		  	
+	  	<parameter name="[lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>		  	
+	  	<parameter name="[lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>		  		  	
+	  	<parameter name="[lastMax-Forwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>		  		  	
+		<parameter name="[lastHeaderOthers]" operation="protocol.setFromMessage" value="header.Others"/>		  		  		  	
+	  	<parameter name="[lastContent]" operation="protocol.setFromMessage" value="content"/>		  		  	
+	  	<parameter name="[lastServiceTrigger]" operation="protocol.setFromMessage" value="header.ServiceTrigger"/>		  		  		  	
+	</receiveMessage>
+
+	<!-- Remove the "max-forwards" line in lastHeaderOthers -->			
+	<parameter name="[indexes]" operation="list.findmatches" value="[lastHeaderOthers]" value2="Max-Forwards:.*"/>
+	<parameter name="[lastHeaderOthers]" operation="list.removeat" value="[lastHeaderOthers]" value2="[indexes]"/>	
+	
+	<if>
+	    <condition>
+	    	<test parameter="[lastIsRequest]" condition="string.equals" value="true"/>		  		  	
+	    </condition>
+	    <then>
+    		<goto  name="goto_Request" label="Request" state="true"/>	    	
+	    </then>
+	    <else>
+    		<goto  name="goto_Response" label="Response" state="true"/>	    		    
+	    </else>
+	</if>
+	
+	<label name="Request"/>	
+
+
+		<parameter name="[newBranchId]" operation="string.random" value="10"/>   
+	
+
+			
+		<!-- Max-Forwards -->
+	<if><condition><test parameter="[lastMax-Forwards]" condition="list.isEmpty" value="0"/></condition>
+	    <then>
+		</then>
+		<else>
+			<if><condition><test parameter="[lastMax-Forwards]" condition="string.equals" value="0"/></condition>
+			<then>
+			<sendMessageSIP name="Answer 483 Too Many Hop">
+<![CDATA[SIP/2.0 483 Too Many Hop
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+			</sendMessageSIP>
+			
+			
+			
+			<goto  name="goto_Begin" label="Begin" state="true"/></then>
+			<else>				
+				<parameter name="[lastMax-Forwards]" operation="number.substract" value="[lastMax-Forwards]" value2="1"/>
+			</else>
+			</if>
+		</else>
+	</if>
+		
+		<!-- remove the first Route if existing -->		
+		<parameter name="[lastRoute]" operation="removeFirst" value="[lastRoute]"/>   		
+<if><condition><test parameter="[lastSIPMethod]" condition="string.equals" value="INVITE"/></condition>
+	<then>
+		<sendMessageSIP name="Answer 100 Trying ">
+<![CDATA[SIP/2.0 100 Trying
+Via: [lastVia]
+From: [lastFrom]
+To: [lastTo]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+		</sendMessageSIP>
+	</then>
+</if>
+		<sendMessageSIP name="proxy_SIP_request">		
+<![CDATA[
+[lastFirstline]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
+Via: [lastVia]
+Route: [lastRoute]
+Record-Route: <sip:[localSIP];lr>
+Record-Route: [lastRecord-Route]
+Contact: [lastContact]
+Max-Forwards: [lastMax-Forwards]
+ServiceTrigger: [ServiceTrigger]
+ServiceTrigger: [lastServiceTrigger]
+[lastHeaderOthers]
+
+[lastContent]
+]]>
+		</sendMessageSIP>	
+		
+
+	
+	
+	<goto  name="loop" label="Begin" state="true"/>
+ 	
+	<label name="Response"/>	
+
+
+	<if><condition><test parameter="[lastResult]" condition="string.equals" value="100"/></condition>
+	    <then><goto  name="loop" label="Begin" state="true"/></then>
+		<else>
+	<parameter name="[lastVia]" operation="removeFirst" value="[lastVia]"/>   		
+	<sendMessageSIP name="proxy_SIP_response">		
+<![CDATA[
+[lastFirstline]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [lastCSeq]
+Via: [lastVia]
+Record-Route: [lastRecord-Route]
+Contact: [lastContact]
+ServiceTrigger: [ServiceTrigger]
+ServiceTrigger: [lastServiceTrigger]
+[lastHeaderOthers]
+
+[lastContent]
+]]>
+	</sendMessageSIP>	
+ 	<goto  name="loop" label="Begin" state="true"/>
+	</else>
+ 	 </if>  	
+</scenario>

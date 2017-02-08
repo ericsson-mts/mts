@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary.xml
+    Created on : 4 février 2010, 08:58
+    Author     : bbouvier
+    Description:
+-->
+
+<dictionary>
+
+    <header>
+        <field name="Version" lengthBit="3" type="enumeration">
+            <enum value="3" name="3GPP TS 32.295 : GTP prime" />
+        </field>
+        <field name="Protocol Type" lengthBit="1" type="boolean"> </field>
+        <field name="Spare1" lengthBit="3" type="integer"> </field>
+        <field name="Spare2" lengthBit="1" type="integer"> </field>
+        <field name="Message Type" lengthBit="8" type="enumeration">
+            <enum value="0" name="Reserved" />
+            <enum value="1" name="Echo Request" />
+            <enum value="2" name="Echo Response" />
+            <enum value="3" name="Version Not Supported" />
+            <enum value="4" name="Node Alive Request" />
+            <enum value="5" name="Node Alive Response" />
+            <enum value="6" name="Redirection Request" />
+            <enum value="7" name="Redirection Response" />
+            <enum value="8-239" name="reserved for future use" />
+            <enum value="240" name="Data Record Transfer Request" />
+            <enum value="241" name="Data Record Transfer Response" />
+            <enum value="242-255" name="reserved for future use" />
+        </field>
+        <field name="Message Length" lengthBit="16" type="integer"> </field>
+        <field name="Sequence Number" lengthBit="24" type="integer"> </field>
+    </header>
+    
+    <element tag="cause:1" coding="TV">
+ 		    <field name="cause" lengthBit="8" type="enumeration"/>
+    </element>
+
+    <element tag="recovery:14" coding="TV">
+		    <field name="recovery" lengthBit="8" type="integer"/>
+    </element>
+        
+    <element tag="tunnelEndpointIdentifierData:16" coding="TV">
+		    <field name="tunnelEndpointIdentifierData" lengthBit="32" type="integer"/>
+    </element>
+
+    <element tag="packetTransferCommand:126" coding="TV">
+		    <field name="packetTransferCommand" lengthBit="8" type="enumeration">
+            <enum value="1" name="Send Data Record Packet" />
+            <enum value="2" name="Send possibly duplicated Data Record Packet" />
+            <enum value="3" name="Cancel Data Record Packet" />
+            <enum value="4" name="Release Data Record Packet" />
+        </field>
+    </element>
+
+	  <element tag="ggsnAddress:133" name="ggsnAddress"  coding="TLV">
+		    <field name="ggsnAddress" type="string"/>
+    </element>      
+    
+    <element tag="sequenceNumberOfReleasedPackets:249" coding="TLV">
+        <field name="sequenceNumber01" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber02" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber03" lengthBit="16" type="integer"/>
+        <!--field name="sequenceNumber04" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber05" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber06" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber07" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber08" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber09" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber10" lengthBit="16" type="integer"/-->        
+    </element>
+    
+    <element tag="sequenceNumberOfCancelledDataRecords:250" coding="TLV">
+        <field name="sequenceNumber01" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber02" lengthBit="16" type="integer"/>
+    </element>
+
+    <element tag="chargingGatewayAddress:251" coding="TLV">
+        <field name="IPV v4 Address" type="binary"/>
+    </element>
+    
+    <element tag="dataRecordPacket:252" coding="TLV">
+        <field name="numberOfDataRecords" lengthBit="8" type="integer"/>
+        <field name="dataRecordFormat" lengthBit="8" type="integer"/>
+        <field name="dataRecordFormatVersion" lengthBit="16" type="integer"/>
+        <field name="lengthOfDataRecord" lengthBit="16" type="integer"/>
+        <field name="dataRecord01" type="length2_string"/>
+        <field name="dataRecord02" type="length2_string"/>
+    </element>
+    
+    <element tag="requestsResponded:253" coding="TLV">  
+        <field name="sequenceNumber01" lengthBit="16" type="integer"/>
+        <field name="sequenceNumber02" lengthBit="16" type="integer"/>        
+    </element>
+
+    <element tag="addressOfRecommandedNode:254" coding="TLV">
+        <field name="IP v4 Address" type="binary"/>
+    </element>
+        
+	  <element tag="privateExtension:255" coding="TLV">
+		    <field name="extensionIdentifier" lengthBit="16" type="integer"/>
+        <field name="extensionValue" type="string"/>
+	  </element>
+	
+</dictionary>

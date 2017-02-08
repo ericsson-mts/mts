@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+   	<if>
+    <condition>
+	    <test parameter="[test:first]" condition="list.exists" not="true"/>       	     
+	</condition>
+	    <then>    
+	        <parameter name="[test:indexUser]" operation="set" value="-1"/>
+        	<parameter name="[test:first]" operation="set" value="false"/>
+	    </then>    
+   	</if>    		
+  				               	  		       	       	        
+	<parameter name="[test:indexUser]" operation="number.add" value="[test:indexUser]" value2="1"/>   
+	<parameter name="[test:indexUser]" operation="number.modulo" value="[test:indexUser]" value2="[test:countUser]"/>   
+	 			 			
+	<parameter name="[IPRTP]" operation="set" value="[Host-Tester]"/>
+	<parameter name="[tempPortRTP]" operation="number.round" value="[test:indexUser]"/>
+	<parameter name="[tempPortRTP]" operation="number.multiply" value="[tempPortRTP]" value2="2"/>
+	<parameter name="[portRTP]" operation="number.add" value="[RangeInviterRTPPort]" value2="[tempPortRTP]"/>
+  
+  <createListenpointRTPFLOW name="listenpointUAC_[portRTP]" localHost="[Host-Tester]" localPort="[portRTP]" transport="UDP"/>
+            
+  <parameter name="[newSsrc]" operation="number.random" value="1000000" description="random Ssrc for the RTP flow"/>
+	<parameter name="[seqnum]" operation="set" value="0"/>
+	<parameter name="[timestamp]" operation="set" value="0"/>
+	<parameter name="[deltaTimestamp]" operation="set" value="160"/>
+	<parameter name="[temp]" operation="number.divide" value="[deltaTimestamp]" value2="[byteRateRTP]"/>
+
+	<parameter name="[payloadList]" operation="set" value="[[fileWave(0)]]"/>
+	<parameter name="[payloadListTaille]" operation="list.size" value="[payloadList(0)]"/>
+	<parameter name="[payloadType]" operation="set" value="[[fileWave(1)]]"/>
+	<parameter name="[bitRate]" operation="set" value="[[fileWave(2)]]"/>
+	<parameter name="[nbPacket]" operation="list.size" value="[payloadList]"/>
+	<parameter name="[nbPacketCall]" operation="number.multiply" value="[CallDuration]" value2="50"/>
+	
+	<log level="info"> payloadList : [payloadList(0)] </log>
+	<log level="info"> payloadListTaille : [payloadListTaille] </log>
+	<log level="info"> payloadType : [payloadType] </log>
+	<log level="info"> bitRate : [bitRate] </log>
+	<log level="info"> nbPacket : [nbPacket] </log>
+	<log level="info"> nbPacketCall : [nbPacketCall] </log>
+	
+	<sendMessageRTPFLOW listenpoint="listenpointUAC_[portRTP]" remoteHost="[Host-Server]" remotePort="50000">
+		<flow  packetNumber="[nbPacketCall]" deltaTimestamp="[deltaTimestamp]" synchronous="false" bitRate="[bitRate]" packetLost="0">
+			<header ssrc="[newSsrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]"/>
+			<payload format="binary">[payloadList]</payload>
+		</flow>
+	</sendMessageRTPFLOW>
+
+</scenario>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+       The command is sent
+to the current "notified entity", which typically will be the actual
+value supplied in the NotifiedEntity parameter, i.e.,
+"ca@ca1.whatever.net:5678" - a failover situation could have changed
+this
+-->
+
+<scenario>
+     <parameter name="[transactionId]" operation="number.uid" value="[transactionId]" />
+
+    <sendMessageMGCP  name="Create Connection"  remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+NTFY [transactionId] aaln/1@rgw-2567.whatever.net MGCP 1.0
+N: ca@ca1.whatever.net:5678
+X: 0123456789AC
+O: L/hd,D/9,D/1,D/2,D/0,D/1,D/8,D/2,D/9,D/4,D/2,D/6,D/6
+]]>
+
+    </sendMessageMGCP>
+
+     <receiveMessageMGCP>
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+    
+    
+</scenario>

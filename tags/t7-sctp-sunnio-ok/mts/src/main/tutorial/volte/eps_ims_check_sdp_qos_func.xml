@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+<function name="check-sdp-qos">
+
+<input>
+	<parameter name="[SDP-MediaType]" /> 
+	<parameter name="[SDP-MediaTypes]" /> 
+	<parameter name="[SDP-Attributes]" /> 
+	<parameter name="[expected-curr-qos-local]" default="none" />
+	<parameter name="[expected-curr-qos-remote]" default="none"/>
+	<parameter name="[expected-des-qos-local]" default="sendrecv" />
+	<parameter name="[expected-des-qos-remote]" default="sendrecv" />
+</input>
+
+<do>
+        <parameter name="[f-curr-qos-local]" operation="set" value="false" />
+        <parameter name="[f-curr-qos-remote]" operation="set" value="false" />
+        <parameter name="[f-des-qos-local]" operation="set" value="false" />
+        <parameter name="[f-des-qos-remote]" operation="set" value="false" />
+        <parameter name="[i-curr-qos-local]" operation="set" value="0" />
+        <parameter name="[i-curr-qos-remote]" operation="set" value="0" />
+        <parameter name="[i-des-qos-local]" operation="set" value="0" />
+        <parameter name="[i-des-qos-remote]" operation="set" value="0" />
+        <parameter name="[qos-count]" operation="set" value="0" />
+
+	<parameter name="[SDP-MediaTypes-Size]" operation="list.size" value="[SDP-MediaTypes]" /> 
+	<parameter name="[SDP-MediaType-Found]" operation="set" value="false" /> 
+	<parameter name="[index]" operation="set" value="0" /> 
+
+	<while>
+        	<condition>
+                	<test parameter="[SDP-MediaTypes-Size]" condition="number.greaterThan" value="0" /> 
+                </condition>
+                <do>
+                	<parameter name="[temp]" operation="list.getFirst" value="[SDP-MediaTypes]" /> 
+			<if>
+				<condition>
+					<test parameter="[temp]" condition="string.equals" value="[SDP-MediaType]" /> 
+				</condition>
+				<then>
+					<parameter name="[SDP-MediaType-Found]" operation="set" value="true" />
+					<parameter name="[SDP-MediaType-Index]" operation="set" value="[index]" />
+				</then>
+			</if>
+				
+                        <parameter name="[SDP-MediaTypes]" operation="list.removeFirst" value="[SDP-MediaTypes]" /> 
+                        <parameter name="[SDP-MediaTypes-Size]" operation="list.size" value="[SDP-MediaTypes]" /> 
+			<parameter name="[index]" operation="number.add" value="[index]"  value2="1"/>
+             	</do>
+   	</while>
+
+	<if>
+		<condition>
+			<test parameter="[SDP-MediaType-Found]" condition="boolean.equals" value="false" />
+                </condition>
+		<then>
+	  		<exit failed="true" name="check-sdp-qos - SDP Media Type not found"/>
+		</then>
+	</if>
+
+	<parameter name="[SDP-Attributes-Size]" operation="list.size" value="[SDP-Attributes]" /> 
+	<while>
+        	<condition>
+                	<test parameter="[SDP-Attributes-Size]" condition="number.greaterThan" value="0" /> 
+                </condition>
+                <do>
+                	<parameter name="[temp]" operation="list.getFirst" value="[SDP-Attributes]" /> 
+                        <parameter name="[SDP-Attributes]" operation="list.removeFirst" value="[SDP-Attributes]" /> 
+                        <parameter name="[SDP-Attributes-Size]" operation="list.size" value="[SDP-Attributes]" /> 
+			<if>
+				<condition>
+					<and>
+						<test parameter="[f-curr-qos-local]" condition="boolean.equals" value="false" /> 
+						<test parameter="[temp]" condition="string.contains" value="a=curr:qos local [expected-curr-qos-local]" /> 
+					</and>
+				</condition>
+				<then>
+					<if>
+						<condition>
+							<test parameter="[i-curr-qos-local]" condition="number.equals" value="[SDP-MediaType-Index]" />
+						</condition>
+						<then>
+						        <parameter name="[f-curr-qos-local]" operation="set" value="true" />
+							<parameter name="[qos-count]" operation="number.add" 	value="[qos-count]"  value2="1"/>
+						</then>
+					</if>
+					<parameter name="[i-curr-qos-local]" operation="number.add" 	value="[i-curr-qos-local]"  value2="1"/>
+				</then>
+			</if>
+			<if>
+				<condition>
+					<and>
+						<test parameter="[f-curr-qos-remote]" condition="boolean.equals" value="false" /> 
+						<test parameter="[temp]" condition="string.contains" value="a=curr:qos remote [expected-curr-qos-remote]" /> 
+					</and>
+				</condition>
+				<then>
+					<if>
+						<condition>
+							<test parameter="[i-curr-qos-remote]" condition="number.equals" value="[SDP-MediaType-Index]" />
+						</condition>
+						<then>
+						        <parameter name="[f-curr-qos-remote]" operation="set" value="true" />
+							<parameter name="[qos-count]" operation="number.add" 	value="[qos-count]"  value2="1"/>
+						</then>
+					</if>
+					<parameter name="[i-curr-qos-remote]" operation="number.add" 	value="[i-curr-qos-remote]"  value2="1"/>
+				</then>
+			</if>
+			<if>
+				<condition>
+					<and>
+						<test parameter="[f-des-qos-local]" condition="boolean.equals" value="false" /> 
+						<test parameter="[temp]" condition="string.contains" value="a=des:qos mandatory local [expected-des-qos-local]" /> 
+					</and>
+				</condition>
+				<then>
+					<if>
+						<condition>
+							<test parameter="[i-des-qos-local]" condition="number.equals" value="[SDP-MediaType-Index]" />
+						</condition>
+						<then>
+						        <parameter name="[f-des-qos-local]" operation="set" value="true" />
+							<parameter name="[qos-count]" operation="number.add" 	value="[qos-count]"  value2="1"/>
+						</then>
+					</if>
+					<parameter name="[i-des-qos-local]" operation="number.add" 	value="[i-des-qos-local]"  value2="1"/>
+				</then>
+			</if>
+			<if>
+				<condition>
+					<and>
+						<test parameter="[f-des-qos-remote]" condition="boolean.equals" value="false" /> 
+						<test parameter="[temp]" condition="string.contains" value="a=des:qos mandatory remote [expected-des-qos-remote]" /> 
+					</and>
+				</condition>
+				<then>
+					<if>
+						<condition>
+							<test parameter="[i-des-qos-remote]" condition="number.equals" value="[SDP-MediaType-Index]" />
+						</condition>
+						<then>
+						        <parameter name="[f-des-qos-remote]" operation="set" value="true" />
+							<parameter name="[qos-count]" operation="number.add" 	value="[qos-count]"  value2="1"/>
+						</then>
+					</if>
+					<parameter name="[i-des-qos-remote]" operation="number.add" 	value="[i-des-qos-remote]"  value2="1"/>
+				</then>
+			</if>
+             	</do>
+   	</while>
+	<if>
+		<condition>
+			<and>
+				<test parameter="[qos-count]" condition="number.equals" value="4" />
+				<and>
+					<test parameter="[f-curr-qos-local]" condition="boolean.equals" value="true" />
+					<test parameter="[f-curr-qos-remote]" condition="boolean.equals" value="true" />
+					<test parameter="[f-des-qos-local]" condition="boolean.equals" value="true" />
+					<test parameter="[f-des-qos-remote]" condition="boolean.equals" value="true" />
+				</and>
+			</and>
+		</condition>
+		<then>
+		</then>
+		<else>
+	  		<exit failed="true" name="check-sdp-qos - Invalid SDP qos"/>
+		</else>
+	</if>
+
+</do>
+
+<output>
+</output>
+
+</function>
+
+</scenario>

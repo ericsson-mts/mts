@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<application id="1234" name="Ericsson IMT 30 - Charging" uri="">
+
+	
+		<!-- Accounting -->
+		<command name="Accounting-Request" code="271" vendor-id="Ericsson"/>
+		<command name="Accounting-Response" code="272" vendor-id="Ericsson"/>
+
+		<!-- ************************** Accounting AVPS ********************* -->
+		
+		<avp name="Event-Type" code="823" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="SIP-Method"/>
+				<gavp name="Event"/>
+				<gavp name="Content-Type"/>
+				<gavp name="Content-Length"/>
+				<gavp name="Content-Disposition"/>
+			</grouped>
+		</avp>
+		<avp name="SIP-Method" code="824" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Event" code="825" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Content-Type" code="826" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Content-Length" code="827" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="Unsigned32"/>
+		</avp>
+		<avp name="Content-Disposition" code="828" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Role-of-node" code="829" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="Enumerated"/>
+                     		<enum name="ORIGINATING_ROLE" code="0"/>
+                     		<enum name="TERMINATING_ROLE" code="1"/>
+				<enum name="PROXY_ROLE" code="2"/>
+                     		<enum name="B2BUA_ROLE" code="3"/>
+		</avp>
+		<avp name="User-Session-ID" code="830" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Calling-Party-Address" code="831" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Called-Party-Address" code="832" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Time-stamps" code="833" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="SIP-Request-Timestamp"/>
+				<gavp name="SIP-Response-Timestamp"/>
+			</grouped>
+		</avp>
+		<avp name="SIP-Request-Timestamp" code="834" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="SIP-Response-Timestamp" code="835" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Inter-Operator-Identifier" code="838" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Originating IOI"/>
+				<gavp name="Terminating IOI"/>
+			</grouped>
+		</avp>
+		<avp name="Originating IOI" code="839" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Terminating IOI" code="840" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="IMS-Charging-Identifier" code="841" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="SDP-Session-Description" code="842" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="SDP-Media-Component" code="843" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="SDP-Media-Name"/>
+				<gavp name="SDP-Media-Description"/>
+			</grouped>
+		</avp>
+		<avp name="SDP-Media-Name" code="844" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="SDP-Media-Description" code="845" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Cause" code="860" mandatory="may" vendor-bit="may" may-encrypt="yes">
+			<grouped>
+				<gavp name="Cause-Code"/>
+				<gavp name="Node-Functionality"/>
+			</grouped>
+		</avp>
+		<avp name="Cause-Code" code="861" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="Integer32"/>
+		</avp>
+		<avp name="Node-Functionality" code="862" mandatory="may" vendor-bit="may" may-encrypt="yes">
+				<type type-name="Enumerated"/>
+                     		<enum name="S-CSCF" code="0"/>
+                     		<enum name="P-CSCF" code="1"/>
+				<enum name="I-CSCF" code="2"/>
+                     		<enum name="MRFC" code="3"/>
+                     		<enum name="MGCF" code="4"/>
+                     		<enum name="BGCF" code="5"/>
+                     		<enum name="AS" code="6"/>
+                     		<enum name="UE" code="7"/>
+		</avp>
+
+		<!-- ************************ END Accounting AVPS ******************* -->
+		
+
+	</application>

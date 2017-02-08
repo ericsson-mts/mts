@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+	<if>
+		<condition>
+			<test parameter="[OsProperty]" condition="string.contains" value="Windows" />
+		</condition>
+		<then>
+			<log level="INFO">[OsProperty] -- Windows</log>
+			<parameter name="[addRoute]" operation="system.command" value="route add [Host-Server] mask 255.255.255.255 [eNodeBIPsortie] metric 1" />
+			<parameter name="[addRoute]" operation="system.command" value="route add [RTP-Server] mask 255.255.255.255  [eNodeBIPsortie] metric 1" />
+		</then>
+		<else>
+			<log level="INFO">[OsProperty] -- Linux</log>
+			<parameter name="[addRoute]" operation="system.command" value="route add -host [Host-Server] gw [eNodeBIPsortie]" />
+			<parameter name="[addRoute]" operation="system.command" value="route add -host [RTP-Server] gw [eNodeBIPsortie]" />
+		</else>
+	</if>
+</scenario>

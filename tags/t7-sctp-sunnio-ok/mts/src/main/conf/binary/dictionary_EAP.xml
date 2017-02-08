@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionary_EAP.xml
+    Created on : 24 novembre 2015, 08:58
+    Author     : fhenry
+    Description: EAP header and information elements according to RFC 3748 (not tagged)
+                 EAP-AKA header and information element (attribute) from RFC 4781 (tagged)
+                 
+    Warning    : after changes, please quit MTS aaplication and start again
+                 to take modifications into account
+
+-->
+
+<dictionary>
+
+    <element label="MessageEAP" coding="Message" description="">
+        <!-- Header => IETF RFC 3748 chapter 4.1 page 21 -->
+        <element label="HeaderEAP" coding="V" description="">
+          <field name="Code" type="EnumLong" length="1" description="">
+            <enum name="Not applicable" value="0"/>          
+            <enum name="Request" value="1"/>
+            <enum name="Response" value="2"/>
+            <enum name="Success" value="3"/>
+            <enum name="Failure" value="4"/>
+            <enum name="Undefined" value="5-255"/>                        
+          </field>                    
+          <field name="Id" length="1" type="Integer" description=""/>            
+          <field name="Length" length="2" type="Integer" description="[LENGTH]"/>          
+          <!-- Attribute Identity => IETF RFC 3748 chapter 5 page 26 -->               
+          <field name="Type" length="1" type="EnumLong" description="[TYPE]">
+            <enum name="Not applicable" value="0"/>          
+            <enum name="Identity" value="1"/>
+            <enum name="Notification" value="2"/>
+            <enum name="Legacy Nak" value="3" description="(response only)"/>
+            <enum name="MD5-Challenge" value="4"/>
+            <enum name="One Time Password" value="5" description="(OTP)"/>
+            <enum name="Generic Token Card" value="6" description="(GTC)"/>
+            <enum name="Undefined" value="7-22"/>
+            <enum name="EAP-AKA" value="23" description="UMTS Authentication and Key Agreement EAP (EAP-AKA)"/>
+            <enum name="Undefined" value="24-253"/>            
+            <enum name="Expanded Types" value="254"/>
+            <enum name="Experimental use" value="255"/>                                    
+          </field>                              
+        </element>                    
+    </element>
+
+    <element label="ElementsEAP" coding="Message" description="">
+    </element>
+
+    <!-- ******************************** EAP messages ******************************** -->
+
+
+    <!-- Message "Identity_1" => IETF RFC 3748 chapter 5.1 page 28 -->               
+    <element label="Message_Identity_1" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element>
+
+    <!-- Message "Notification_2" => IETF RFC 3748 chapter 5.2 page 29 -->               
+    <element label="Message_Notification_2" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element>
+
+    <!-- Message "Legacy Nak_3" (response only) => IETF RFC 3748 chapter 5.3.1 page 30 -->               
+    <element label="Message_Legacy Nak_3" coding="V" description="">
+        <field name="Type-Data" type="String" description=""/>
+    </element>
+
+    <!-- Message "MD5-Challenge_4" => IETF RFC 3748 chapter 5.4 page 34 -->               
+    <element label="Message_MD5-Challenge_4" coding="V" description="">
+        <element label="value" coding="LV" description="">
+            <field name="value" type="Binary" description=""/>
+        </element>    
+        <element label="name" coding="V" description="">
+            <field name="name" type="String" description=""/>
+        </element>    
+    </element>
+
+    <!-- Message "One-Time Password_5" => IETF RFC 3748 chapter 5.5 page 35 -->               
+    <element label="Message_One-Time Password_5" coding="V" description="">
+        <field name="Type-Data" type="Binary" description=""/>
+    </element>
+
+    <!-- Message "Generic Token Card_6" => IETF RFC 3748 chapter 5.6 page 36 -->               
+    <element label="Message_Generic Token Card_6" coding="V" description="">
+        <field name="Type-Data" type="Binary" description=""/>
+    </element>
+
+    <!-- Message "UMTS Authentication and Key Agreement EAP_23 (EAP-AKA) => IETF RFC 4187 chapter 8.1 page 45 -->               
+    <element label="Message_EAP-AKA_23" coding="V" description="UMTS Authentication and Key Agreement EAP (EAP-AKA)">
+          <field name="EAP AKA Subtype" length="1" type="EnumLong" description="">
+            <enum name="Not applicable" value="0"/>
+            <enum name="AKA-Challenge" value="1"/>
+            <enum name="AKA-Authentication-Reject" value="2"/>
+            <enum name="Undefined" value="3"/>            
+            <enum name="AKA-Synchronization-Failure" value="4"/>
+            <enum name="AKA-Identity" value="5"/>
+            <enum name="Undefined" value="6-9"/>
+            <enum name="SIM-Start" value="10"/>
+            <enum name="SIM-Challenge" value="11"/>
+            <enum name="AKA-Notification and SIM-Notification" value="12"/>
+            <enum name="AKA-Reauthentication and SIM-Reauthentication" value="13"/>            
+            <enum name="AKA-Client-Error and SIM-Client-Error" value="14"/>                                    
+            <enum name="Undefined" value="15-255"/>
+          </field>                                
+          <field name="EAP AKA Reserved" length="2" type="Integer" description=""/>
+    </element>
+
+    <!-- Message Expanded Types_254 => IETF RFC 3748 chapter 5.7 page 38 -->               
+    <element label="Message_Expanded Types_254" coding="V" description="">
+        <field name="Vendor-Id" type="Integer" length="3" description=""/>
+        <field name="Vendor-Type" type="Integer" length="4" description=""/>
+        <field name="Vendor-Data" type="Binary" description=""/>                
+    </element>
+    
+    <!-- Message Experimental use_255 => IETF RFC 3748 chapter 5.8 page 39 -->               
+    <element label="Message_Experimental use_255" coding="V" description="">
+        <field name="Type-Data" type="Binary" description=""/>
+    </element>
+
+    <!-- ******************************** EAP-AKA messages ******************************** -->
+
+        <!-- Attribute AT_RAND:1 => IETF RFC 4187 chapter 10.6 page 55 -->               
+    <element tag="AT_RAND:1" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Value" type="Binary" description=""/>
+    </element>
+    
+    <!-- Attribute AT_AUTN:2 => IETF RFC 4187 chapter 10.7 page 56 -->
+    <element tag="AT_AUTN:2" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Value" type="Binary" description=""/>
+    </element>
+    
+    <!-- AT_RAND attribute : EAP-RES => IETF RFC 4187 chapter 10.8 page 56 -->
+    <element tag="AT_RES:3" coding="EAPLengthBit" description="">
+        <field name="Value" type="Binary" description=""/>        
+    </element>
+    
+    <!-- Attribute AT_AUTS:4 => IETF RFC 4187 chapter 10.9 page 56 -->
+    <element tag="AT_AUTS:4" coding="EAP" description="">
+        <field name="Value" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_PADDING:6 => IETF RFC 4187 chapter 10.12 page 59 -->
+    <element tag="AT_PADDING:6" coding="EAP" description="">
+        <field name="Value" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_NONCE_MT:7 => IETF RFC 4187 chapter 11 page 66 -->
+    <!-- not defined : so we assume that the format is the same as AT_NONCE_S -->
+    <element tag="AT_NONCE_MT:7" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>    
+        <field name="Value" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_PERMANENT_ID_REQ:10 => IETF RFC 4187 chapter 10.2 page 53 -->
+    <element tag="AT_PERMANENT_ID_REQ:10" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>       
+    </element>
+        
+    <!-- Attribute AT_MAC:11 => IETF RFC 4187 chapter 10.15 page 63 -->
+    <element tag="AT_MAC:11" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Value" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_NOTIFICATION:12 => IETF RFC 4187 chapter 10.19 page 64 -->
+    <element tag="AT_NOTIFICATION:12" coding="EAP" description="">
+        <field name="Success bit (S bit)" type="Boolean" lengthbit="1" description=""/>
+        <field name="Phase P (P bit)" type="Boolean" lengthbit="1" description=""/>        
+        <field name="Notification Code" type="Integer" lengthbit="15" description="">
+            <enum name="General failure after authentication." value="0"/>
+            <enum name="Undefined" value="1-1025"/>            
+            <enum name="User has been temporarily denied access to the requested service." value="1026"/>
+            <enum name="Undefined" value="1027-1030"/>            
+            <enum name="User has not subscribed to the requested service." value="1031"/>            
+            <enum name="Undefined" value="1032-16383"/>            
+            <enum name="General failure." value="16384"/>                                                
+        </field>                    
+    </element>
+
+    <!-- Attribute AT_ANY_ID_REQ:13 => IETF RFC 4187 chapter 10.3 page 53 -->
+    <element tag="AT_ANY_ID_REQ:13" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>           
+    </element>
+
+    <!-- Attribute AT_IDENTITY:14 => IETF RFC 4187 chapter 10.5 page 55 -->
+    <element tag="AT_IDENTITY:14" coding="EAPLength" description="">   
+        <field name="Value" type="String" description=""/>
+    </element>
+
+    <!-- Attribute AT_VERSION_LIST:15 => IETF RFC 4187 chapter 11 page 66 -->
+    <!-- not defined : so we assume that the format is binary -->    
+    <element tag="AT_VERSION_LIST:15" coding="EAP" description="">    
+        <field name="Value" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_SELECTED_VERSION:16 => IETF RFC 4187 chapter 11 page 66 -->
+    <!-- not defined : so we assume that the format is binary -->    
+    <element tag="AT_SELECTED_VERSION:16" coding="EAP" description="">    
+        <field name="Value" type="Binary" description=""/>      
+    </element>
+
+    <!-- Attribute AT_FULLAUTH_ID_REQ:17 => IETF RFC 4187 chapter 10.4 page 54 -->
+    <element tag="AT_FULLAUTH_ID_REQ:17" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>           
+    </element>
+
+    <!-- Attribute AT_COUNTER:19 => IETF RFC 4187 chapter 10.16 page 64 -->
+    <element tag="AT_COUNTER:19" coding="EAP" description="">
+        <field name="Counter" type="Integer" length="2" description=""/>    
+    </element>
+
+    <!-- Attribute AT_COUNTER_TOO_SMALL:20 => IETF RFC 4187 chapter 10.17 page 64 -->
+    <element tag="AT_COUNTER_TOO_SMALL:20" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>    
+    </element>
+   
+    <!-- Attribute AT_NONCE_S:21 => IETF RFC 4187 chapter 10.18 page 65 -->
+    <element tag="AT_NONCE_S:21" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>    
+        <field name="Value" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_CLIENT_ERROR_CODE:22 => IETF RFC 4187 chapter 10.20 page 66 -->
+    <element tag="AT_CLIENT_ERROR_CODE:22" coding="EAP" description="">
+        <field name="Client Error Code" type="Integer" length="2" description="">
+            <enum name="General : Unable to process packet" value="0"/>
+            <enum name="Undefined" value="1-65535"/>            
+        </field>            
+    </element>
+    
+    <!-- Attribute AT_IV:129 => IETF RFC 4187 chapter 10.12 page 58 -->
+    <element tag="AT_IV:129" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Value" type="Binary" description=""/>
+    </element>
+    
+    <!-- AT_ENCR_DATA:130 => IETF RFC 4187 chapter 10.12 page 58 -->
+    <element tag="AT_ENCR_DATA:130" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Value" type="Binary" description=""/>
+    </element>
+
+    <!-- Attribute AT_NEXT_PSEUDONYM:132 => IETF RFC 4187 chapter 10.10 page 57 -->
+    <element tag="AT_NEXT_PSEUDONYM:132" coding="EAPLength" description="">
+        <field name="Value" type="String" description=""/>
+    </element>
+
+        <!-- Attribute AT_NEXT_REAUTH_ID:133 => IETF RFC 4187 chapter 10.11 page 58 -->
+    <element tag="AT_NEXT_REAUTH_ID:133" coding="EAPLength" description="">
+        <field name="Value" type="String" description=""/>
+    </element>
+
+    <!-- Attribute AT_CHECKCODE:134 => IETF RFC 4187 chapter 10.13 page 60 -->
+    <element tag="AT_CHECKCODE:134" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+        <field name="Value" type="Binary" description=""/>        
+    </element>
+
+    <!-- Attribute AT_RESULT_IND:135 => IETF RFC 4187 chapter 10.14 page 62 -->
+    <element tag="AT_RESULT_IND:135" coding="EAP" description="">
+        <field name="Reserved" type="Integer" length="2" description=""/>
+    </element>
+
+</dictionary>

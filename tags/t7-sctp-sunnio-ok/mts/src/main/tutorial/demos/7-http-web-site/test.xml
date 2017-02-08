@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="HTTP regression tests">
+
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+	<parameter name="[localHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[localHostHTTP]" operation="set" value="127.0.0.1"/-->
+	<parameter editable="true" name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]"/>	
+	<!--parameter name="[localPortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+	<parameter name="[localPortHTTP]" operation="set" value="8080"/>	
+	<parameter editable="true" name="[localPortHTTP]" operation="set" value="[localPortHTTP(0)]"/>
+	<parameter name="[localHTTP]" operation="set" value="[localHostHTTP]:[localPortHTTP]"/>	
+
+	<parameter name="[remoteHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHostHTTP]" operation="set" value="www.imsloader.com"/-->
+	<parameter editable="true" name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]"/>
+	<!--parameter name="[remotePortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+	<parameter name="[remotePortHTTP]" operation="set" value="8080"/>		
+	<!--parameter name="[remotePortHTTP]" operation="set" value="80"/-->		
+	<parameter editable="true" name="[remotePortHTTP]" operation="set" value="[remotePortHTTP(0)]"/>
+	<parameter name="[remoteHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortHTTP]"/>
+	
+	<!--parameter name="[remotePortSecHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT_TLS"/-->
+	<parameter name="[remotePortSecHTTP]" operation="set" value="4430"/>			
+	<parameter editable="true" name="[remotePortSecHTTP]" operation="set" value="[remotePortSecHTTP(0)]"/>
+	<parameter name="[remoteSecHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortSecHTTP]"/>
+
+	<parameter name="[proxyHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[proxyHostHTTP]" operation="set" value="172.16.86.100"/-->	
+	<parameter editable="true" name="[proxyHostHTTP]" operation="set" value="[proxyHostHTTP(0)]"/>
+	<!--parameter name="[proxyPortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+	<parameter name="[proxyPortHTTP]" operation="set" value="8080"/>			
+	<parameter editable="true" name="[proxyPortHTTP]" operation="set" value="[proxyPortHTTP(0)]"/>
+	<parameter name="[proxyHTTP]" operation="set" value="[proxyHostHTTP]:[proxyPortHTTP]"/>
+		
+	<parameter name="[clientTarHostHTTP]" value="127.0.0.1"/>
+	<parameter name="[clientTarPortHTTP]" value="8081"/>
+
+	<parameter name="[proxyTarHostHTTP]" value="192.168.90.50"/>
+	<parameter name="[proxyTarPortHTTP]" value="80"/>
+
+	<!--parameter name="[data]" operation="file.readbinary" value="250.txt"/-->
+    
+    <testcase description="test post" name="200_https_post" state="true">
+        <scenario file="../../http/200_https_post_client_server/client.xml" name="client" routingName="client"/>
+        <scenario file="../../http/200_https_post_client_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+
+    <testcase description="test post" name="201_https_get" state="true">
+        <scenario file="../../http/201_https_get_client_server/client.xml" name="client" routingName="client"/>
+        <scenario file="../../http/201_https_get_client_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+
+    <testcase description="test post" name="202_http_post" state="true">
+        <scenario file="../../http/202_http_post_client_server/client.xml" name="client" routingName="client"/>
+        <scenario file="../../http/202_http_post_client_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+    
+    <testcase description="test post" name="203_http_get" state="true">
+        <scenario file="../../http/203_http_get_client_server/client.xml" name="client" routingName="client"/>
+        <scenario file="../../http/203_http_get_client_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+  
+    <testcase name="210_big_file" state="true">
+        <scenario file="../../http/210_http_big_file/client.xml" name="client" routingName="client"/>
+        <scenario file="../../http/210_http_big_file/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+
+    <testcase description="imsloader web site" name="800_imsloader_web_site" state="false">
+            <scenario file="../../http/800_imsloader_web_site/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+  
+    <testcase description="test post" name="994_http_web_client" state="false">
+        <scenario file="../../http/994_http_web_client/client.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="test post" name="995_http_web_server" state="false">
+        <scenario file="../../http/995_http_web_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+  
+    <testcase description="test post" name="996_https_client" state="false">
+        <scenario file="../../http/996_https_client/client.xml" name="client" routingName="client"/>
+    </testcase>
+
+    <testcase description="test post" name="997_https_server" state="false">
+        <scenario file="../../http/997_https_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+
+    <testcase description="test post" name="998_http_client" state="false">
+        <scenario file="../../http/998_http_client/client.xml" name="client" routingName="client"/>
+    </testcase>
+
+    <testcase description="test post" name="999_http_server" state="false">
+        <scenario file="../../http/999_http_server/server.xml" name="HTTP" routingName="HTTP"/>
+    </testcase>
+
+</test>

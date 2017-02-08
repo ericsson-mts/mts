@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+				
+	<sendMessageSIGTRAN name="Send INVITE11" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="2905">
+        <SS7 name="sccp" file="sccp.xml">
+            <header>
+                <field name="Message_Type" length="1" value="9" />
+            </header>
+            <parameter type="F">
+				<field value="0" lengthBit="4"/>
+			</parameter>
+			<parameter type="V">
+				<field lengthBit="2" value="1"/>
+				<field lengthBit="4" length="0" value="0"/>
+				<field lengthBit="1" value="1"/>
+				<field lengthBit="1" value="0"/>
+				<field name="Subsystem-Number" value="142"/>
+			</parameter>
+			<parameter>
+				<field lengthBit="2" value="1"/>
+				<field lengthBit="4" value="0"/>
+				<field lengthBit="1" value="1"/>
+				<field lengthBit="1" value="1"/>
+				<field lengthBit="14" value="3450"/>
+				<field lengthBit="2" value="0"/>
+				<field value="142"/>
+			</parameter>
+			<parameter type="v" id="15" lengthIndicatorLength="1"/>
+		</SS7>
+        <UA name="m3ua" file="m3ua.xml">
+			<header messageClass="1" messageType="1"/>
+			<parameter tag="512">
+				<field name="Network-Appearance" value="2" format="integer" length="8"/>
+			</parameter>
+			<parameter tag="528">
+				<field length="3" lengthBit="8" value="3450"/>
+				<field name="DPC" value="4098"/>
+				<field lengthBit="8" value="3"/>
+				<field name="NI" length="1" value="3"/>
+				<field value="0" length="1"/>
+				<field name="SLS" value="4" length="1"/>
+			</parameter>
+		</UA>
+	</sendMessageSIGTRAN>								
+			
+	<parameter name="[message11]" operation="protocol.setFromMessage" value="message.binary"/> 
+	<test parameter="[message11]" condition="binary.contains" value="010001010000003002000008000000020210001e00000d7a0000100203030004090003050902428e04437a0d8e000000"/>
+
+	<sendMessageSIGTRAN name="Send INVITE12" destScenario="SIGTRAN" remoteHost="[remoteHostM3UA]" remotePort="2905">
+        <SS7 name="sccp" file="sccp.xml">
+            <header>
+                <field name="Message_Type" length="1" value="9" />
+            </header>
+            <parameter type="F">
+				<field value="0" lengthBit="8"/>
+			</parameter>
+			<parameter type="V">
+				<field lengthBit="2" value="1"/>
+				<field lengthBit="4" length="0" value="0"/>
+				<field lengthBit="1" value="1"/>
+				<field lengthBit="1" value="0"/>
+				<field name="Subsystem-Number" value="142"/>
+			</parameter>
+			<parameter>
+				<field lengthBit="2" value="1"/>
+				<field lengthBit="4" value="0"/>
+				<field lengthBit="1" value="1"/>
+				<field lengthBit="1" value="1"/>
+				<field lengthBit="14" value="3450"/>
+				<field value="142"/>
+			</parameter>
+			<parameter type="v" id="15" lengthIndicatorLength="1"/>
+		</SS7>
+        <UA name="m3ua" file="m3ua.xml">
+			<header messageClass="1" messageType="1"/>
+			<parameter tag="512" length="8" format="GROuPED">
+				<field name="Network-Appearance" value="2" format="integer"/>
+			</parameter>
+			<parameter tag="528">
+				<field length="3" lengthBit="8" value="3450"/>
+				<field name="DPC" value="4098"/>
+				<field lengthBit="8" value="3"/>
+				<field name="NI" length="1" value="3"/>
+				<field value="0" length="1"/>
+				<field name="SLS" value="4" length="1"/>
+			</parameter>
+		</UA>
+	</sendMessageSIGTRAN>
+	
+	<parameter name="[message12]" operation="protocol.setFromMessage" value="message.binary"/> 
+	<test parameter="[message12]" condition="binary.contains" value="010001010000003002000008000000020210001e00000d7a0000100203030004090003050902428e04437a0d8e000000"/>		
+	
+	
+</scenario>

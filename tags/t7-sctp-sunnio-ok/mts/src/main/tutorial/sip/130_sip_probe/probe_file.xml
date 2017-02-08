@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+  <parameter name="[filename]" operation="set" value="../tutorial/sip/130_sip_probe/traces_Sniff.pcap"/>
+
+  <createProbeSIP name="probe" filename="[filename]"/>
+
+  <receiveMessageSIP name="Wait PUBLISH" probe="probe" request="true" type="PUBLISH"/>
+
+  <receiveMessageSIP name="Wait 200 PUBLISH" probe="probe" request="false" type="PUBLISH" result="200"/>
+ 
+  <receiveMessageSIP name="Wait SUBSCRIBE" probe="probe" request="true" type="SUBSCRIBE"/>
+
+  <receiveMessageSIP name="Wait 200 SUBSCRIBE" probe="probe" request="false" type="SUBSCRIBE" result="200"/>
+
+  <receiveMessageSIP name="Wait SUBSCRIBE" probe="probe" request="true" type="SUBSCRIBE"/>
+
+  <receiveMessageSIP name="Wait 200 SUBSCRIBE" probe="probe" request="false" type="SUBSCRIBE" result="200"/>
+
+  <receiveMessageSIP name="Wait NOTIFY" probe="probe" request="true" type="NOTIFY"/>
+
+  <finally>
+      <removeProbeSIP name="probe"/>
+  </finally>
+  
+</scenario>

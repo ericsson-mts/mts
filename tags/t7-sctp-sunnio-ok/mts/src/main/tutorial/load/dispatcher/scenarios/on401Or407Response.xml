@@ -1,0 +1,167 @@
+
+<scenario>
+    <parameter name="[item]" operation="list.dequeue" value="[testcaseName]" value2="[queueTimeout]" />
+    
+    <if>
+        <condition>
+            <test parameter="[item]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <exit failed="false" />
+        </then>
+    </if>
+
+<!-- (specific) : do your job with [item]  -->
+    <!-- extract informations for resending the request, need the original request -->
+    <parameter name="[user]" operation="setFromMessage" value="Header.From.Address.URI.User" value2="[item]" />
+    <parameter name="[type]" operation="setFromMessage" value="message.type" value2="[item]" />
+    <parameter name="[contextId]" value="[test:[user]_register_contextId]" />
+
+    <parameter name="[requestMessage]" operation="setFromMessage" value="transaction.request" value2="[item]" />
+    
+    <!-- extract informations for computing the answers to challenges -->
+    <parameter name="[WWW-Authenticate]" operation="setFromMessage" value="header.WWW-Authenticate" value2="[item]" />
+    <parameter name="[Proxy-Authenticate]" operation="setFromMessage" value="header.Proxy-Authenticate" value2="[item]" />
+    <parameter name="[Method]" operation="setFromMessage" value="firstline.method" value2="[requestMessage]" />
+    <parameter name="[RequestUri]" operation="setFromMessage" value="firstline.uri" value2="[requestMessage]" />
+    
+    
+    
+    
+    
+    <parameter name="[password]" value="imt30imt30"/>
+    
+    <parameter name="[username]" operation="setFromMessage" value="Header.From.Address.URI" value2="[item]" />
+    <parameter name="[username]" operation="string.subString" value="[username]" value2="4" />
+
+    <parameter name="[username]" operation="setFromMessage" value="Header.From.Address.URI.User" value2="[item]" />
+    
+    <!-- compute response to WWW-Authenticate -->
+    <if>
+        <condition>
+            <test parameter="[WWW-Authenticate]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <parameter name="[Authorization]" operation="list.create" />
+        </then>
+        <else>
+            <call name="digest" >
+                <input>
+                    <parameter name="[function:challenge]" value="[WWW-Authenticate]"/>
+                    <parameter name="[function:username]" value="[username]"/>
+                    <parameter name="[function:password]" value="[password]"/>
+                    <parameter name="[function:method]" value="[Method]"/>
+                    <parameter name="[function:request-uri]" value="[RequestUri]"/>
+                </input>
+
+                <output>
+                    <parameter name="[Authorization]" value="[function:response]"/>
+                </output>
+            </call>
+            
+            <!-- TOOD : save into context as [test:context_[contextId]_lastResponse407] -->
+        </else>
+    </if>
+    
+    <!-- compute response to Proxy-Authenticate -->
+    <if>
+        <condition>
+            <test parameter="[Proxy-Authenticate]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <parameter name="[Proxy-Authorization]" operation="list.create" />
+        </then>
+        <else>
+            <call name="digest" >
+                <input>
+                    <parameter name="[function:challenge]" value="[Proxy-Authenticate]"/>
+                    <parameter name="[function:username]" value="[username]"/>
+                    <parameter name="[function:password]" value="[password]"/>
+                    <parameter name="[function:method]" value="[Method]"/>
+                    <parameter name="[function:request-uri]" value="[RequestUri]"/>
+                </input>
+
+                <output>
+                    <parameter name="[Proxy-Authorization]" value="[function:response]"/>
+                </output>
+            </call>
+                
+            <!-- TODO : save into context as [test:context_[contextId]_lastResponse401] -->
+        </else>
+    </if>
+    
+    <!-- re-send -->
+          
+    <!-- now automatically re-send the request, refreshing the necessary ids, and inserting the authorization headers -->
+    <parameter name="[listenpoint]" operation="setFromMessage" value="listenpoint.name" value2="[requestMessage]" />
+    <parameter name="[remotehost]" operation="setFromMessage" value="channel.remotehost" value2="[requestMessage]" />
+    <parameter name="[remoteport]" operation="setFromMessage" value="channel.remoteport" value2="[requestMessage]" />
+
+    <parameter name="[firstline]" operation="setFromMessage" value="firstline" value2="[requestMessage]" />
+    <parameter name="[otherHeaders]" operation="setFromMessage" value="header.others" value2="[requestMessage]" />
+    <parameter name="[content]" operation="setFromMessage" value="content" value2="[requestMessage]" />
+
+    <parameter name="[From]" operation="setFromMessage" value="header.From" value2="[requestMessage]" />
+    <parameter name="[To]" operation="setFromMessage" value="header.To" value2="[requestMessage]" />
+    <parameter name="[Via]" operation="setFromMessage" value="header.Via" value2="[requestMessage]" />
+    <parameter name="[Contact]" operation="setFromMessage" value="header.Contact" value2="[requestMessage]" />
+    <parameter name="[CSeqNumber]" operation="setFromMessage" value="header.CSeq.Number" value2="[requestMessage]" />
+    <parameter name="[CSeqMethod]" operation="setFromMessage" value="header.CSeq.Method" value2="[requestMessage]" />
+    <parameter name="[Call-Id]" operation="setFromMessage" value="header.Call-Id" value2="[requestMessage]" />
+    <parameter name="[Route]" operation="setFromMessage" value="header.Route" value2="[requestMessage]" />
+    <parameter name="[Record-Route]" operation="setFromMessage" value="header.Record-Route" value2="[requestMessage]" />
+
+    <!-- Update the Via BranchId -->
+    <parameter name="[uid]" operation="number.uid" />
+    <parameter name="[Via]" operation="string.regexreplaces" value="[Via]" value2="branch=[^;$]*" value3="branch=z9hG4bK[uid]" />
+
+    <!-- Update the CSeqNumber (increment) -->
+    <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1" />
+
+    <!-- remove Authorization and Proxy-Authorization from [otherHeaders] -->
+    <parameter name="[index]" value="0" />
+    <parameter name="[max]" operation="list.size" value="[otherHeaders]" />
+    <while>
+        <condition>
+            <test parameter="[index]" condition="number.lowerThan" value="[max]" />
+        </condition>
+        <do>
+            <if>
+                <condition>
+                    <or>
+                        <test parameter="[otherHeaders([index])]" condition="string.startsWith" value="Authorization" />
+                        <test parameter="[otherHeaders([index])]" condition="string.startsWith" value="Proxy-Authorization" />
+                    </or>
+                </condition>
+                <then>
+                    <parameter name="[otherHeaders]" operation="list.removeat" value="[otherHeaders]" value2="[index]"/>
+                </then>
+                <else>
+                    <parameter name="[index]" operation="number.add" value="[index]" value2="1" />
+                </else>
+            </if>
+            <parameter name="[max]" operation="list.size" value="[otherHeaders]" />
+        </do>
+    </while>
+    
+    <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[remotehost]" remotePort="[remoteport]">
+<![CDATA[
+[firstline]
+To: [To]
+From: [From]
+Call-ID: [Call-Id]
+CSeq: [CSeqNumber] [CSeqMethod]
+Via: [Via]
+Route: [Route]
+Record-Route: [Record-Route]
+Contact: [Contact]
+Authorization: [Authorization]
+Proxy-Authorization: [Proxy-Authorization]
+[otherHeaders]
+
+[content]
+]]>
+    </sendMessageSIP>
+            
+<!-- (specific) : end  -->
+</scenario>

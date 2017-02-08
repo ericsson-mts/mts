@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Functional tests AAA">
+
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+	<parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[localDIA]" operation="set" value="[localHostDIA(0)]:[localPortDIA]"/>	
+	<parameter name="[localRealmDIA]" operation="set" value="sip.pfdev.fr"/>
+
+	<parameter name="[remoteHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHostDIA]" operation="set" value="192.168.0.1"/-->
+	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<!--parameter name="[remotePortDIA]" operation="set" value="3869"/-->
+	<parameter name="[remoteDIA]" operation="set" value="[remoteHostDIA(0)]:[remotePortDIA]"/>
+	<parameter name="[remoteRealmDIA]" operation="set" value="sip.pfdev.fr"/>
+
+  <parameter name="[vendorID]" operation="set" value="10415"/>
+  <!--parameter name="[vendorID]" operation="set" value="TGPP"/-->
+
+    <testcase description="diameter" name="101_cx_uar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/101_cx_uar/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/101_cx_uar/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="103_cx_sar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/103_cx_sar/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/103_cx_sar/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="105_cx_lir" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/105_cx_lir/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/105_cx_lir/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="107_cx_mar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/107_cx_mar/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/107_cx_mar/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="109_cx_rtr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/109_cx_rtr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/109_cx_rtr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="111_cx_ppr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/111_cx_ppr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/111_cx_ppr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="201_sh_udr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777217"/>
+        <scenario file="../../diameter/201_sh_udr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/201_sh_udr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="203_sh_pur" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777217"/>
+        <scenario file="../../diameter/203_sh_pur/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/203_sh_pur/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="205_sh_snr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777217"/>
+        <scenario file="../../diameter/205_sh_snr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/205_sh_snr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="207_sh_pnr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777217"/>
+        <scenario file="../../diameter/207_sh_pnr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/207_sh_pnr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="301_rf_acr" state="true">
+        <parameter name="[applicationID]" operation="set" value="0"/>
+        <scenario file="../../diameter/301_rf_acr/CDF.xml" name="CDF" routingName="CDF"/>
+        <scenario file="../../diameter/301_rf_acr/CTF.xml" name="CTF" routingName="CTF"/>
+    </testcase>
+
+    <testcase description="diameter" name="302_ro_ccr" state="true">
+        <parameter name="[applicationID]" operation="set" value="4"/>
+        <scenario file="../../diameter/302_ro_ccr/CTF.xml" name="CTF" routingName="CTF"/>
+        <scenario file="../../diameter/302_ro_ccr/OCF.xml" name="OCF" routingName="OCF"/>
+    </testcase>
+
+    <testcase description="diameter" name="411_e4_udr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/411_e4_udr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/411_e4_udr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="412_e4_pnr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/412_e4_pnr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/412_e4_pnr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="421_e2_udr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777216"/>
+        <scenario file="../../diameter/421_e2_udr/client.xml" name="client" routingName="client"/>
+        <scenario file="../../diameter/421_e2_udr/server.xml" name="server" routingName="server"/>
+    </testcase>
+
+    <testcase description="diameter" name="431_rq_aar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/431_rq_aar/A-RACF.xml" name="A-RACF" routingName="A-RACF"/>
+        <scenario file="../../diameter/431_rq_aar/SPDF.xml" name="SPDF" routingName="SPDF"/>
+    </testcase>
+
+    <testcase description="diameter" name="432_rq_rar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/432_rq_rar/A-RACF.xml" name="A-RACF" routingName="A-RACF"/>
+        <scenario file="../../diameter/432_rq_rar/SPDF.xml" name="SPDF" routingName="SPDF"/>
+    </testcase>
+
+    <testcase description="diameter" name="433_rq_str" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/433_rq_str/A-RACF.xml" name="A-RACF" routingName="A-RACF"/>
+        <scenario file="../../diameter/433_rq_str/SPDF.xml" name="SPDF" routingName="SPDF"/>
+    </testcase>
+
+    <testcase description="diameter" name="434_rq_asr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/434_rq_asr/A-RACF.xml" name="A-RACF" routingName="A-RACF"/>
+        <scenario file="../../diameter/434_rq_asr/SPDF.xml" name="SPDF" routingName="SPDF"/>
+    </testcase>
+
+    <testcase description="diameter" name="441_gqp_aar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/441_gqp_aar/AF.xml" name="AF" routingName="AF"/>
+        <scenario file="../../diameter/441_gqp_aar/SPDF.xml" name="SPDF" routingName="SPDF"/>
+    </testcase>
+
+    <testcase description="diameter" name="442_gqp_rar" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/442_gqp_rar/SPDF.xml" name="SPDF" routingName="SPDF"/>
+        <scenario file="../../diameter/442_gqp_rar/AF.xml" name="AF" routingName="AF"/>
+    </testcase>
+
+    <testcase description="diameter" name="443_gqp_str" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/443_gqp_str/AF.xml" name="AF" routingName="AF"/>
+        <scenario file="../../diameter/443_gqp_str/SPDF.xml" name="SPDF" routingName="SPDF"/>
+    </testcase>
+
+    <testcase description="diameter" name="444_gqp_asr" state="true">
+        <parameter name="[applicationID]" operation="set" value="16777222"/>
+        <scenario file="../../diameter/444_gqp_asr/SPDF.xml" name="SPDF" routingName="SPDF"/>
+        <scenario file="../../diameter/444_gqp_asr/AF.xml" name="AF" routingName="AF"/>
+    </testcase>
+
+    <testcase description="diameter" name="998_client" state="false">
+        <scenario file="../../diameter/998_client/client-sh-udr.xml" name="client-sh-udr" routingName="client-sh-udr"/>
+        <scenario file="../../diameter/998_client/client-cx-mar.xml" name="client-cx-mar" routingName="client-cx-mar"/>
+    </testcase>
+
+    <testcase description="diameter" name="999_server" state="false">
+        <scenario file="../../diameter/999_server/server-cx-maa.xml" name="506" routingName="506"/>
+        <scenario file="../../diameter/999_server/server-sh-uda.xml" name="306" routingName="306"/>
+    </testcase>
+
+</test>

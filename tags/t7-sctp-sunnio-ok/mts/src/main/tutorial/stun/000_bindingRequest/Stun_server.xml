@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Gateway.xml
+    Created on : 31 janvier 2011, 14:18
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+-->
+
+<scenario>
+    
+   
+	
+    <receiveMessageSTUN request="true">
+	<parameter name="[trans]" operation="protocol.setFromMessage" value="header.transactionID"/>
+    </receiveMessageSTUN>
+	
+	<!--Binding Success Response-->
+    	
+    <sendMessageSTUN remoteHost="[localHostSTUN]" remotePort="[localPortSTUN]">
+		 <header type="257" transactionID="[trans]" />
+
+        <attribute type="MAPPED-ADDRESS">
+            <address family="1" port="[localPortSTUN]" addressIP="[localHostSTUN]"/>
+        </attribute>
+		
+		<attribute type="SOURCE-ADDRESS">
+            <address family="1" port="[localPortSTUN]" addressIP="[localHostSTUN]"/>
+        </attribute>
+    
+		<attribute type="SOFTWARE">
+            <text  value="Volvida.org 0.96"/>
+        </attribute>
+    </sendMessageSTUN>
+	
+</scenario>

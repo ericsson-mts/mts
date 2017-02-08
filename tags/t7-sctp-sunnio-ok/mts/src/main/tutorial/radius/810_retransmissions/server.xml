@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
+
+    <createListenpointRADIUS name="[listenpoint]" localPort="18120" secret="secret"/>
+    
+    <parameter name="[testcase:sem2]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]"/>
+    <receiveMessageRADIUS listenpoint="[listenpoint]"/>
+    <receiveMessageRADIUS listenpoint="[listenpoint]"/>
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remotePort="[remotePortRAD]" remoteHost="[remoteHostRAD]">
+        <header code="2" identifier="[identifier]" />
+    </sendMessageRADIUS>
+    
+    <receiveMessageRADIUS listenpoint="[listenpoint]" timeout="10" failedOnTimeout="false" failedOnReceive="true" />
+    
+    <parameter name="[testcase:synchro]" operation="system.semaphorenotify" />
+
+    <parameter name="[testcase:synchro2]" operation="system.semaphorewait" />
+
+    <finally>
+        <removeListenpointRADIUS name="[listenpoint]" />
+    </finally>
+</scenario>

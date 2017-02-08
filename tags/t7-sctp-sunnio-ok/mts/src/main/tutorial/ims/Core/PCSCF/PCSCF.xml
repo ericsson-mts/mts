@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY reponse_pcscf    SYSTEM "../../Library/reponse_pcscf.xml">
+  <!ENTITY requete_pcscf    SYSTEM "../../Library/requete_pcscf.xml">
+  <!ENTITY invite_pcscf 	SYSTEM "../../Library/invite_pcscf.xml">
+  <!ENTITY register_pcscf 	SYSTEM "../../Library/register_pcscf.xml">
+  <!ENTITY prox_pcscf  		SYSTEM "../../Library/prox_pcscf.xml">
+  <!ENTITY subscribe_pcscf	SYSTEM "../../Library/subscribe_pcscf.xml">
+  <!ENTITY cancel_pcscf 	SYSTEM "../../Library/cancel_pcscf.xml">
+  <!ENTITY rep_error_pcscf  SYSTEM "../../Library/rep_error_pcscf.xml">
+  <!ENTITY ack_pcscf   		SYSTEM "../../Library/ack_pcscf.xml">
+]>
+
+<scenario>
+
+	<!--adresse du pcscf-->
+	<parameter 			name="[Host-Tester]" 		operation="setFromSystem" 		value="IPAddress" value2="eth0"/>
+    <parameter 			name="[Port-Tester]" 		operation="set" 				value="4060"/>
+    <parameter 			name="[Adresse-Tester]" 	operation="set" 				value="[Host-Tester]:[Port-Tester]"/>
+	<openProviderSIP 	name="open SIP provider" 	providerName="[scenarioName]" 	localPort="[Port-Tester]" transport="udp"/>
+
+<label name="Begin"/>
+	<!--parametre du pcscf-->
+	<parameter name="[newTag]" 					operation="identifier" 	value="newInteger" value2="100"/>
+	<parameter name="[newBranchId]" 			operation="identifier" 	value="newString" value2="10"/>
+	<parameter name="[Security-Server]" 		operation="set"			value="Security-Server: Security-Server"/>
+	<parameter name="[P-Visited-Network-ID]" 	operation="set"			value="P-Visited-Network-ID: ims.net"/>
+	<parameter name="[P-Charging-Vector]" 		operation="set" 		value='P-Charging-Vector:  icid-value= &quot; AyretyU0dm+6O2IrT5tAFrbHLso=023551024 &quot; '/>
+	<parameter name="[P-Asserted-Identity]" 	operation="set" 		value='P-Asserted-Identity: sip:alice@ims.net'/>
+	<parameter name="[Service-Server-Verify]" 	operation="set" 		value="Service-Server-Verify"/>
+	<parameter name="[Path]" 					operation="set" 		value="Path: sip:[Adresse-Tester];lr"/>
+	<parameter name="[Record-Route]" 			operation="set" 		value="Record-Route: sip:[Adresse-Tester];lr"/>
+	<parameter name="[Via]" 					operation="set" 		value="Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]"/>
+	<parameter name="[P-Media-Authorization]" 	operation="set" 		value="P-Media-Authorization: P-Media-Authorization"/>
+	<parameter name="[Max-Forwards]" 			operation="set" 		value="70"/>	
+
+	
+	<parameter name="[newBranchId]" 			operation="identifier" 	value="newString" value2="10"/>
+	<!--attente de la reception d'un message et recuperation des donnees-->
+	<receiveMessage name="wait_SIP_request" 	timeout="0">
+		<parameter name="[lastMessage]" 		operation="setFromMessage" 	value="message"/> 
+		<parameter name="[lastSIPMethod]" 		operation="setFromMessage" 	value="firstline:Method"/>
+		<parameter name="[lastIsRequest]" 		operation="setFromMessage" 	value="message:request"/>
+		<parameter name="[lastResult]" 			operation="setFromMessage" 	value="message:result"/>
+		<parameter name="[lastFirstline]" 		operation="setFromMessage" 	value="firstline"/> 
+		<parameter name="[lastHeader]" 			operation="setFromMessage" 	value="header"/>
+	
+		<parameter name="[lastContent]" 		operation="setFromMessage" 	value="content"/>
+	</receiveMessage>
+	
+	<!-- parametres necessaire aux reponses cree par le Proxy-->
+	<parameter name="[lastCall-ID]" 			operation="setFromMessage" 	value="header:Call-ID" 	value2="[lastMessage]"/>	
+	<parameter name="[lastTo]" 					operation="setFromMessage" 	value="header:To" 		value2="[lastMessage]"/>
+	<parameter name="[lastFrom]" 				operation="setFromMessage" 	value="header:From" 	value2="[lastMessage]"/>
+	<parameter name="[lastCSeq]" 				operation="setFromMessage" 	value="header:CSeq"		value2="[lastMessage]"/>	
+	<parameter name="[lastVia]" 				operation="setFromMessage" 	value="header:Via"		value2="[lastMessage]"/>	
+		
+	<!-- Traite les messages selon leur role requete ou reponse et envoi les message-->
+	<if>
+	    <condition>
+	    	<test parameter="[lastIsRequest]" condition="equals" value="true"/>
+	    </condition>
+	    <then>
+      		&requete_pcscf;
+<sendRequestSIP name="PCSCF_SIP_request" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendRequestSIP>
+		</then>
+		<else>  
+			&reponse_pcscf;
+<sendResponseSIP name="PCSCF_SIP_response" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendResponseSIP>
+		</else> 
+	</if> 
+	<goto  name="loop" label="Begin" state="true"/>
+</scenario> 

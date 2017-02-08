@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests SIP">
+
+	<parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" operation="set" value="0.1"/>
+	<parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" operation="set" value="3"/>
+	<parameter description="Duration (in sec.) of the call" editable="true" name="[CallDurationSec]" operation="set" value="30"/>
+	<!--parameter name="[CallDurationSec]" operation="set" value="10" description="Duration (in sec.) of the call"           	   editable="true"/-->
+	<!--parameter name="[RegisterExpires]" operation="set" value="10" description="Expiration time (in sec) for the register"      editable="true"/-->
+	<parameter description="Expiration time (in sec) for the register" editable="true" name="[RegisterExpires]" operation="set" value="3600"/>
+	<parameter description="Number of erlang to define the phone traffic" editable="true" name="[ErlangTraffic]" operation="set" value="1.0"/>
+	<parameter description="Number of subscribers" editable="true" name="[RangeNumberUser]" operation="set" value="20"/>
+	<parameter description="Duration (in day) of the test " editable="true" name="[TestDurationDay]" operation="set" value="0"/>
+	<parameter description="Duration (in hour) of the test " editable="true" name="[TestDurationHour]" operation="set" value="0"/>
+	<parameter description="Duration (in min.) of the test " editable="true" name="[TestDurationMin]" operation="set" value="0"/>
+	<parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="60"/>
+	<parameter description="Index of the range of the user phone number" editable="true" name="[RangeIndexUser]" operation="set" value="0"/>
+	<parameter description="Index of the range of the user phone number" editable="true" name="[NumberScenario]" operation="set" value="2"/>
+<!--  	<parameter name="[domainName]" operation="set" value="sip.pfdev.fr" description="the domain for user"  	                    editable="true"/>-->
+	<parameter description="the domain for user" editable="true" name="[domainName]" operation="set" value="orange.tn"/>
+	<parameter description="Pourcentage to control RTP flow receive" editable="true" name="[ReceiveRTPControl]" operation="set" value="10"/>
+	<parameter name="fileWave" operation="file.readwave" value="rtpflow.wav" value2="20"/>
+	
+	
+	<!--                     -->
+	<!-- INTERNAL PARAMETERS -->
+	<!--                     -->
+	<parameter description="Host du IMSloader" name="[Host-Tester]" operation="system.ipaddress"/>
+	<parameter name="[Host-Tester]" operation="set" value="[Host-Tester(1)]"/>
+	<parameter description="Port du IMSloader" editable="true" name="[Port-Tester]" operation="set" value="7070"/>
+	<parameter description="Addresse du IMSloader" name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>
+
+	<parameter description="Addresse de l'AS" name="[Host-Server]" operation="system.ipaddress"/>
+	<parameter description="Addresse de l'AS" editable="true" name="[Host-Server]" operation="set" value="172.16.21.82"/>
+	<parameter description="Port de l'AS" editable="true" name="[Port-Server]" operation="set" value="7080"/>
+	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>
+
+	<parameter name="[RangePortRTP-UAC]" operation="set" value="29000"/>
+	<parameter name="[RangePortRTP-UAS]" operation="set" value="39000"/>
+	<parameter name="[transport]" operation="set" value="UDP"/>
+
+	
+	
+	<!-- calculate the test duration -->
+	<parameter name="[TestDurationDay]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+	<parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[TestDurationDay]"/>
+	<parameter name="[TestDurationHour]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+	<parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[TestDurationHour]"/>
+	<parameter name="[TestDurationMin]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+	<parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[TestDurationMin]"/>
+
+	<!-- calculate the CAPS and RAPS -->
+	<parameter name="[CAPS]" operation="number.multiply" value="[RangeNumberUser]" value2="[ErlangTraffic]"/>
+	<parameter name="[CAPS]" operation="number.divide" value="[CAPS]" value2="[CallDurationSec]"/>
+	<parameter name="[CAPS]" operation="number.divide" value="[CAPS]" value2="2"/>
+	<!--<parameter name="[CAPS]" operation="number.round" value="[CAPS]"/>
+	<parameter name="[CAPS]" operation="number.add" value="[CAPS]" value2="1"/>-->
+
+	<parameter name="[RAPS]" operation="number.divide" value="[RangeNumberUser]" value2="[RegisterExpires]"/>
+	<parameter name="[RAPS]" operation="number.multiply" value="[RAPS]" value2="2"/>
+	<parameter name="[RAPS]" operation="number.round" value="[RAPS]"/>
+	<parameter name="[RAPS]" operation="number.add" value="[RAPS]" value2="1"/>
+	<!--RPT Parameter-->
+	<parameter description="Payload type for the media flow" editable="true" name="[payloadTypeRTP]" operation="set" value="17"/>    	       	       
+	<parameter description="Bytes rate (in byte/sec) for the media flow" editable="true" name="[byteRateRTP]" operation="set" value="8000"/>    	       	           
+
+	<!--                   -->
+	<!-- CSV PARAMETERS    -->
+	<!--                   -->
+	<parameter name="[userTab]" operation="file.readCsv" value="./user.csv" value2="inviter"/>
+	<parameter name="[userTabNP]" operation="file.readCsv" value="./user.csv" value2="NumberPhone"/>
+	
+	<testcase description="Registrar SIP agent [index]" name="Registrar[index]" number="1" state="false">
+		<scenario file="Registrar/SIP.xml" name="true|REGISTER" routingName="true|REGISTER"/>
+	</testcase>
+	
+	<testcase description="Register agent" name="Register" number="1" state="true">
+		<runProfile>
+			<step frequency="[RAPS]" time="0"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario file="scenario/register.xml" name="false|REGISTER" routingName="false|REGISTER"/>
+	</testcase>
+	
+	<for from="1" index="[index]" step="1" to="[NumberScenario]">
+		<testcase description="passive testcase for reponse and subsequent management" interruptible="true" name="responder[index]" state="true">
+
+			<!--                       -->
+			<!-- RUNPROFILE PARAMETERS -->
+			<!--                       -->
+			<runProfile>
+				<step period="0" time="0"/>
+				<end delay="[TestDurationSec]"/>
+			</runProfile>
+			<scenario file="scenario/responder.xml" name="default" routingName="default"/>
+		</testcase>
+	</for>
+
+	<testcase description="passive testcase for invite sending" name="loader" state="true">
+
+		<!--                       -->
+		<!-- RUNPROFILE PARAMETERS -->
+		<!--                       -->
+		<parameter name="[CAPSlow]" operation="number.divide" value="[CAPS]" value2="2"/>
+		<runProfile>
+			<start delay="0"/>
+			<step frequency="[CAPS]" time="0"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+
+		<scenario file="scenario/loader.xml" name="inviter" routingName="inviter"/>
+
+	</testcase>
+
+	<testcase description="UnRegister agent " name="UnRegister" number="1" state="false">
+		<runProfile>
+			<step frequency="[RAPS]" time="0"/>
+			<end iteration="[RangeNumberUser]"/>
+		</runProfile>
+		<scenario file="scenario/unregister.xml" name="false|REGISTER" routingName="false|REGISTER"/>
+	</testcase>
+
+	<testcase description="Receive RTP flow " name="ReceiveRTPflow" number="1" state="true">
+		<runProfile>
+			<step period="0" time="0"/>
+			<end delay="[TestDurationSec]"/>
+		</runProfile>
+		<scenario file="scenario/receiveRTPflow.xml" name="RTPFLOW" routingName="RTPFLOW"/>
+	</testcase>
+
+
+</test>

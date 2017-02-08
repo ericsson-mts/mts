@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Receive a MAP message
+-->
+
+<scenario>
+
+    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
+	     <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSIGTRAN>
+
+
+    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
+    
+        <UA name="m3ua" file="m3ua.xml">
+            <header version="1" reserved="0" messageClass="3" messageType="4"/>
+    				
+            <parameter tag="17" >
+                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
+            </parameter>
+    	
+            <parameter tag="INFO_String">
+                <field name="INFO_String" format="String" value="ASPUP"/>
+            </parameter>
+        </UA>
+        
+    </sendMessageSIGTRAN>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="010001010000007c021000740000375800003715030200040900030e180b12060012046895112233580a129100120468951114864762454804f78203016b1e281c060700118605010101a011600f80020780a1090607040000010025036c1da11b02010002015530138006916895111486a109810791689511223358" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="85">
+        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    
+    <if>
+    <condition>
+    	<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    </condition>
+    <else>
+    	<log level="ERROR">	Message received :	</log>
+    	<log level="ERROR">	"[data1]"			</log>
+    	<log level="ERROR">	Message expected :	</log>
+    	<log level="ERROR">	"[data]"			</log>
+    </else>
+    </if>
+    
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="0100010100000090021000880000371500003758030200010980030d170a529100120468951114860a120600120468950100205c645a4904f78203016b2a2828060700118605010101a01d611b80020780a109060704000001002503a203020100a305a1030201006c26a224020100301f020155301aa00a800842904900003023f3a10c0406916895010030840204f0" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+	
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+    
+    <!-- AP LAYER -->
+    <ASN dictionary="map/dictionary_MAP.xml">
+      <Component>
+        <returnResultLast>
+          <invokeID><Integer>0</Integer></invokeID>
+          <resultretres>
+            <opCode>
+              <localValue><Long>sendRoutingInfoForLCS:85</Long></localValue>
+            </opCode>
+            <returnparameter>
+              <RoutingInfoForLCS_Res>
+                <targetMS>
+                  <imsi><Bytes>42904900003023f3
+                    <field name="digits" value="240994000003323" type="Number_BCD" />
+                  </Bytes></imsi>
+                </targetMS>
+                <lcsLocationInfo>
+                  <networkNode_Number><Bytes>
+                    <field name="extension" value="no extension:1" type="Enumeration" lengthBit="1"/>
+                    <field name="nature of address" value="international number:1" type="Enumeration" lengthBit="3"/>
+                    <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="Enumeration" lengthBit="4"/>
+                    <field name="digits" value="8659100003" type="Number_BCD" />
+                  <!--916895010030-->
+                  </Bytes></networkNode_Number>
+                  <supportedLCS_CapabilitySets>
+                    <BitString><BitString value="f0" trailing="4"/></BitString>
+                  </supportedLCS_CapabilitySets>
+                </lcsLocationInfo>
+              </RoutingInfoForLCS_Res>
+            </returnparameter>
+          </resultretres>
+        </returnResultLast>
+      </Component>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage>
+        <end>
+          <dtid><Bytes>f7820301</Bytes></dtid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <ObjectIdentifier><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></ObjectIdentifier>
+                  <encoding>
+                    <single_ASN1_type>
+                      <DialoguePDU>
+                        <dialogueResponse>
+                          <AARE_apduSequenceType>
+                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                            <application_context_name>
+                              <direct_reference><ObjectIdentifier>locationSvcGatewayContext-v3:0.4.0.0.1.0.37.3</ObjectIdentifier></direct_reference>
+                            </application_context_name>
+                            <result><Associate_result><Long>0</Long></Associate_result></result>
+                            <result_source_diagnostic>
+                              <Associate_source_diagnostic>
+                                <dialogue_service_user>
+                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
+                                </dialogue_service_user>
+                              </Associate_source_diagnostic>
+                            </result_source_diagnostic>
+                          </AARE_apduSequenceType>
+                        </dialogueResponse>
+                      </DialoguePDU>
+                    </single_ASN1_type>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+        </end>
+      </TCMessage>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+  		<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  			<field value="8" lengthBit="4" />
+  			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+  		</parameter>
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+  			<field name="Address_Indicator" value="82" length="1" />
+  			<!--field name="Signalling_Point_Code" value="1" length="2" /-->
+  			<field name="Subsystem_Number" value="145" length="1" />
+        <field name="Global_Title" value="00482016a9882861" format="binary" length="8" />	
+  		</parameter>
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+  			<field name="Address_Indicator" value="18" length="1" />
+  			<!--field name="Signalling_Point_Code" value="2" length="2" /-->
+  			<field name="Subsystem_Number" value="6" length="1" />
+        <field name="Global_Title" value="00482016a9800004" format="binary" length="8" />
+  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+  		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <!--parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter-->
+        <!--parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter-->
+        <parameter tag="Protocol_Data">
+            <field value="14101" name="Originating_Point_Code"/>
+            <field value="14168" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+  
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000101000000a8021000a00000375800003715030200050900030d170a120800120468950100300a129100120468951114867462724804f88203016b1e281c060700118605010101a011600f80020780a1090607040000010026036c4aa148020100020153304030038001010406916895111486a016800101a1058003910810a40a80010f8205431cac1503820842904900003023f3860101a70880010da3030a0101890201fe" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="83">
+        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+        
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="010001010000008c021000840000371500003758030200020980030d170a529100120468951114860a120800120468950100305864564904f88203016b2a2828060700118605010101a01d611b80020780a109060704000001002603a203020100a305a1030201006c22a220020100301b0201533016040da02c6758564b290037314b3b5080010084020003" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+	
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+    
+    <!-- AP LAYER -->
+    <ASN dictionary="map/dictionary_MAP.xml">
+      <Component>
+        <returnResultLast>
+          <invokeID><Integer>0</Integer></invokeID>
+          <resultretres>
+            <opCode>
+              <localValue><Long>provideSubscriberLocation:83</Long></localValue>
+            </opCode>
+            <returnparameter>
+              <ProvideSubscriberLocation_Res>
+                <locationEstimate.BoxedType><Bytes>a02c6758564b290037314b3b50
+                    <field name="TypeOfShape" value="Ellipsoid Arc:10" type="EnumLong" lengthBit="4" />
+                    <field name="spare" value="0" type="Integer" lengthBit="4" />
+                    <field name="DegreesOfLatitude" value="2910040" type="Integer" length="3" />
+                    <field name="DegreesOfLongitude" value="5655337" type="Integer" length="3" />
+                    <field name="Altitude" value="55" type="Integer" length="2" description="Altitude"/>      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+                    <field name="UncertaintySemi-MajorAxis" value="49" type="Integer" length="1" description="Uncertainty semi-major axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+                    <field name="UncertaintySemi-MinorAxis" value="75" type="Integer" length="1" description="Uncertainty semi-minor axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+                    <field name="AngleOfMajorAxis" value="59" type="Integer" length="1" description="Angle of major axis"/>         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1001'-->
+                    <field name="UncertaintyAltitude" value="80" type="Integer" length="1" description="Uncertainty altitude"/>      <!-- conditional field if "TypeOfShape" == 'b1001'-->
+                    <!--field name="Confidence" value="0" type="Integer" length="1" description="Confidence" /-->         <!-- conditional field if "TypeOfShape" == 'b0011' OR "TypeOfShape" == 'b1010' -->
+                 </Bytes></locationEstimate.BoxedType>
+                <ageOfLocationEstimate><Integer>0 minut = currently in contact:0</Integer></ageOfLocationEstimate>
+                <geranPositioningData.C4.BoxedType><Bytes>0003
+                      <field name="spare" value="0" type="Integer" lengthBit="4" />
+                      <field name="Discriminator" value="one method and usage:0" type="EnumLong" lengthBit="4" />
+                      <field name="Method1" value="Timing Advance:0" type="EnumLong" lengthBit="5" />
+                      <field name="Usage1" value="Attempted successfully: results used to generate location:3" type="EnumLong" lengthBit="3" />
+                </Bytes></geranPositioningData.C4.BoxedType>
+
+                <!--geranPositioningData>
+                  <Bytes>0003</Bytes></geranPositioningData-->
+              </ProvideSubscriberLocation_Res>            
+            </returnparameter>
+          </resultretres>
+        </returnResultLast>
+      </Component>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage>
+        <end>
+          <dtid><Bytes>f8820301</Bytes></dtid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <ObjectIdentifier><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></ObjectIdentifier>
+                  <encoding>
+                    <single_ASN1_type>
+                      <DialoguePDU>
+                        <dialogueResponse>
+                          <AARE_apduSequenceType>
+                            <protocol_version>
+                              <BitString value="Version1:80" trailing="7"/>
+                            </protocol_version>
+                            <application_context_name>
+                              <ObjectIdentifier><ObjectIdentifier>locationSvcEnquiryContext-v3:0.4.0.0.1.0.38.3</ObjectIdentifier></ObjectIdentifier>
+                            </application_context_name>
+                            <result><Associate_result><Long>0</Long></Associate_result></result>
+                            <result_source_diagnostic>
+                              <Associate_source_diagnostic>
+                                <dialogue_service_user>
+                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
+                                </dialogue_service_user>
+                              </Associate_source_diagnostic>
+                            </result_source_diagnostic>
+                          </AARE_apduSequenceType>
+                        </dialogueResponse>
+                      </DialoguePDU>
+                    </single_ASN1_type>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+        </end>
+      </TCMessage>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+  	<SS7 name="sccp" file="sccp.xml">
+  		<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  			<field value="8" lengthBit="4" />
+  			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+  		</parameter>
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
+  			<!--field name="Address_Indicator" value="82" length="1" /-->
+  			<!--field name="Signalling_Point_Code" value="1" length="2" /-->
+  			<!--field name="Subsystem_Number" value="145" length="1" /-->
+        <field name="Global_Title" value="52910012046895111486" format="binary" length="10" />	
+  		</parameter>
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">
+  			<!--field name="Address_Indicator" value="18" length="1" /-->
+  			<!--field name="Signalling_Point_Code" value="2" length="2" /-->
+  			<!--field name="Subsystem_Number" value="6" length="1" /-->
+        <field name="Global_Title" value="12080012046895010030" format="binary" length="10" />
+  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+  		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <!--parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter-->
+        <!--parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter-->
+        <parameter tag="Protocol_Data">
+            <field value="14101" name="Originating_Point_Code"/>
+            <field value="14168" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="2"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+  
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    
+</scenario>

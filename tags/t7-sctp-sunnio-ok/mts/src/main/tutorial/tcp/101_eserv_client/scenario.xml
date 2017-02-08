@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <openChannelTCP name="socket" localHost="[localHostTCP]" remoteHost="[remoteHostTCP]" remotePort="[remotePortTCP]" />
+
+    <parameter name="request" operation="set" value="CMD:ID='7',ACTION='Recharge',MSISDN='0932228888',IN_ID='1',BALANCE='3000',EXPIRY='21092007',VOUCHERformat='7'" />
+    <parameter name="requestLength" operation="string.length" value="[request]" />
+    
+    <sendMessageTCP channel="socket">
+        <data format="binary">[requestLength]:4</data>        
+        <data format="text">[request]</data>
+    </sendMessageTCP>
+
+    <!--CMD:ID='3',ACTION='GetProfile',MSISDN='0932228888',IN_ID='1'-->
+    <!--CMD:ID='7',ACTION='Recharge',MSISDN='0932228888',IN_ID='1',BALANCE='3000',EXPIRY='21092007',VOUCHERformat='7'-->
+    <!--CMD:ID='7',ACTION='Debit',MSISDN='0932228888',IN_ID='1',BALANCE='3000'-->
+
+    <receiveMessageTCP type="SYN-ACK" timeout="1">
+        <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageTCP>
+
+    <receiveMessageTCP channel="[connectionName]" type="SEQ-ACK" timeout="1">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageTCP>
+
+    <parameter name="[id]" operation="string.regexmatches" value="[contents]" value2="ID='[\w]*'"/>
+    <parameter name="[id]" operation="set" value="[id(0)]" />
+    <parameter name="[action]" operation="string.regexmatches" value="[contents]" value2="ACTION='[\w]*'"/>
+
+    <parameter name="[result]"    operation="set" value="RESULT='0'" />
+    <parameter name="[comment]"   operation="set" value="COMMENT='successful'" />
+
+    <parameter name="[language]" operation="set" value="LANGUAGE='ar-SY'"/>
+    <parameter name="[balance]"  operation="set" value="BALANCE='5000'"/>
+
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='2'"/>
+        </condition>
+        <then>
+            <parameter name="[result]"  operation="set" value="RESULT='1'" />
+            <parameter name="[comment]" operation="set" value="COMMENT='Failed'" />
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='9'"/>
+        </condition>
+        <then>
+            <parameter name="[result]"  operation="set" value="RESULT='3'" />
+            <parameter name="[comment]" operation="set" value="COMMENT='Not_Found'" />
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='4'"/>
+        </condition>
+        <then>
+            <parameter name="[language]"  operation="set" value="" />
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='5'"/>
+        </condition>
+        <then>
+            <parameter name="[id]" operation="set"    value="ID='66'" />
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='6'"/>
+        </condition>
+        <then>
+
+            <parameter name="[balance]"   operation="set" value="BALANCE='false'"/>
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='8'"/>
+        </condition>
+        <then>
+            <pause seconds="3" />
+        </then>
+    </if>
+
+    <if>
+        <condition>
+            <test parameter="[id]" condition="string.equals" value="ID='3'"/>
+        </condition>
+        <else>
+            <if>
+                <condition>
+                    <test parameter="[id]" condition="string.equals" value="ID='7'"/>
+                </condition>
+                <then>
+                    <parameter name="[answer]" operation="set" value="ceci:est='',PACKAGEID=''une valeur,LANGUAGE=,,tout a fait bidon" />
+                </then>
+                <else>
+                    <parameter name="[answer]" operation="set"    value="ACK:[id(0)]," />
+                    <if>
+                        <condition>
+                            <test parameter="[action]"  condition="string.equals" value="ACTION='GetProfile'"/>
+                        </condition>
+                        <then>
+                            <parameter name="[answer]" operation="set" value="[answer][result],[comment],[balance],,EXPIRY='21072007',LOCKSTATE='0',MAXCREDIT='500000',[language],PROVIDERID='2',PACKAGEID='3'" />
+                        </then>
+                        <else>
+                            <parameter name="[answer]" operation="set" value="[answer][result],[comment]" />
+                        </else>
+                    </if>
+                </else>
+            </if>
+
+            <parameter name="[answerLength]" operation="string.length" value="[answer]" />
+
+            <sendMessageTCP channel="[connectionName]">
+                <data format="binary">d[answerLength]:4</data>
+                <data format="text">[answer]</data>
+            </sendMessageTCP>
+
+        </else>
+    </if>
+
+
+    <receiveMessageTCP channel="socket" type="SEQ-ACK"  timeout="1">
+    </receiveMessageTCP>
+
+    <finally>
+    
+        <closeChannelTCP name="socket" />
+        
+        <receiveMessageTCP channel="[connectionName]" type="FIN-ACK"  timeout="1">
+	        <parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name" />
+        	<test parameter="[connectionName]" condition="string.equals" value="[connectionName]" />
+    	</receiveMessageTCP>
+        
+    </finally>
+
+</scenario>

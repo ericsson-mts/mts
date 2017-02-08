@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <parameter name="[tunnelEndpointId]" operation="set" value="[test:localTEID]"/>
+
+  <parameter name="[sequenceNumber]" operation="add" value="[test:v2SequenceNumber]" value2="1"/>
+  <if>
+    <condition>
+      <test parameter="[sequenceNumber]" condition="number.greaterThan" value="16777215"/>
+    </condition>
+    <then>
+      <parameter name="[sequenceNumber]" operation="set" value="0"/>
+    </then>
+  </if>
+
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Delete Session Request:36" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+
+    <!-- Cause                                Conditional / Conditional-Optional -->
+
+    <!-- Linked EPS Bearer ID (LBI) - Conditional -->
+    <element tag="EBI:73" description="EPS Bearer ID">
+      <field name="spare" value="0"/>
+    	<field name="EBI" value="[EBI]"/>
+    </element>
+
+    <!-- User Location Information (ULI)      Conditional / Conditional-Optional -->
+
+    <!-- Indication Flags - Conditional -->
+    <element tag="Indication:77" >
+      <field name="DAF" value="false:0"/>
+      <field name="DTF" value="false:0"/>
+      <field name="HI" value="false:0"/>
+      <field name="DFI" value="false:0"/>
+      <field name="OI" value="true:1"/>
+      <field name="ISRSI" value="false:0"/>
+      <field name="ISRAI" value="false:0"/>
+      <field name="SGWCI" value="false:0"/>
+
+      <field name="SQCI" value="false:0"/>  
+      <field name="UIMSI" value="false:0"/>
+      <field name="CFSI" value="false:0"/>
+      <field name="CRSI" value="false:0"/>
+      <field name="P" value="false:0"/>
+      <field name="PT" value="false:0"/>
+      <field name="SI" value="false:0"/>
+      <field name="MSV" value="false:"/>
+
+      <field name="RetLoc" value="false:"/>
+      <field name="PBIC" value="false:"/>
+      <field name="SRNI" value="false:"/>
+      <field name="S6AF" value="false:"/>
+      <field name="S4AF" value="false:"/>
+      <field name="MBMDT" value="false:"/>
+      <field name="ISRAU" value="false:"/>
+      <field name="CCRSI" value="false:"/>
+
+      <field name="Spare" value="0"/>
+      <field name="CLII" value="false:0"/>
+      <field name="CPSR" value="false:0"/>
+    </element>
+
+    <!-- Protocol Configuration Options (PCO) Conditional -->
+    <!-- Originating Node                     Conditional -->
+    <!-- Sender F-TEID for Control Plane      Optional -->
+    <!-- UE Time Zone                         Conditional-Optional / Conditional-Optional -->
+    <!-- Private Extension                    Optional -->
+
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Delete Session Response" request="false" type="Delete Session Request:36" result="Request accepted:16">
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+  </receiveMessageGTP>
+
+</scenario>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Rx Session Termination (STR/STA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.214 V10.3.0 : STR is sent by the AF to inform the PCRF that an established session shall be terminated
+<ST-Request> ::= < Diameter Header: 275, REQ, PXY, 16777236 > 
+		< Session-Id > 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		{ Destination-Realm } 
+		{ Auth-Application-Id } 
+		{ Termination-Cause } 
+		[ Destination-Host ] 
+	   *[ Class ] 
+		[ Origin-State-Id ] 
+	   *[ Proxy-Info ] 
+	   *[ Route-Record ] 
+	   *[ AVP ] 
+-->
+
+    <!-- Termination-Cause - enum - cf RFC 3588 for list of values -->
+    <parameter name="[Termination-Cause]" operation="set" value="DIAMETER_SESSION_TIMEOUT"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestSTR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        <avp code="Termination-Cause:295" value="[Termination-Cause]"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerSTA" channel="channel_client" request="false" type="Session-Termination" result="DIAMETER_SUCCESS">
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

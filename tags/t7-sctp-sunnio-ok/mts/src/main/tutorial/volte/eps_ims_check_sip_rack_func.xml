@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+<function name="check-sip-rack">
+
+<input>
+	<parameter name="[receivedRAck]" /> 
+	<parameter name="[expectedRAck]" /> 
+</input>
+
+<do>
+	<if>
+		<condition>
+			<test parameter="[expectedRAck]" condition="string.equals" value="[receivedRAck]" /> 
+		</condition>
+		<then>
+		</then>
+		<else>
+			<!-- Unexpected RAck in SIP PRACK -->
+	  		<exit failed="true" name="Invalid RAck"/>
+
+		</else>
+	</if>
+</do>
+
+<output>
+</output>
+
+</function>
+
+</scenario>

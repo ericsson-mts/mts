@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[NONCE]" operation="set" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
+    <parameter name="[clear]" operation="binary.frombase64" value="[NONCE]" />        
+    <parameter name="[RAND]" operation="binary.subbinary" value="[clear]" value2="0" value3="32"/>
+    <test parameter="[RAND]" condition="binary.equals" value="4024de44f03f477f9c39d559a3aa26912d51c03142f900001bea21607e3c6ac2" />
+    <parameter name="[AUTH]" operation="binary.subbinary" value="[clear]" value2="32" /> 
+    <parameter name="[AUTH]" operation="binary.tostring" value="[AUTH]" />    
+    <test parameter="[AUTH]" condition="binary.equals" value="cdd06e00" />
+    <parameter name="[AUTH]" operation="binary.tonumber" value="[AUTH]" />     
+    <test parameter="[AUTH]" condition="number.equals" value="3452988928" />        
+    <parameter name="[XNONCE]" operation="binary.tobase64" value="[clear]" />
+    <test parameter="[XNONCE]" condition="string.equals" value="[NONCE]" />
+
+    <!-- test exists / create / delete -->
+    <parameter name="[result1]" operation="string.tobinary"   value="123" />
+    <parameter name="[result2]" operation="binary.parse"      value="h31 h32 h33" />
+    <test parameter="[result2]" condition="binary.equals"     value="[result1]"/>
+    
+    <parameter name= "[result3]" operation = "binary.parse" value="10:4"/>
+    <test parameter="[result3]" condition="binary.equals"     value="0000000a"/>
+    
+    <parameter name="[result2]" operation="binary.tostring"   value="313233" />
+    <test parameter="[result2]" condition="string.equals"     value="123"/>
+    
+      <!-- Default charset option -Dfile.encoding=ISO-8859-15 on the java command -->
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+  
+    <!-- see <install_dir>/doc/charset/jcharser-Standart_README.txt -->
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="ISO-8859-1" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-8" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="8 bit data {UTF-8}:1" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="005b007300730073007300730073005d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-16BE" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="005b007300730073007300730073005d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UCS2 (16bit) {UTF-16BE}:2" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b007300730073007300730073005d00" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-16LE" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="feff005b007300730073007300730073005d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-16" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    
+    <!-- see <install_dir>/doc/charset/jcharser-SMS_README.txt -->
+    <parameter name="[binary]" operation="list.set" value="2b4146732d7373737373732b4146302d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-7" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[convertBinary]" operation="string.toBinary" value="[string]" value2="UTF-7" />
+    <test parameter="[convertBinary]" condition="string.equals" value="[binary]" />
+    
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="UTF-7-OPTIONAL" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="1b3c7373737373731b3e" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="SCGSM" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="1bde7c3e9fcfe71b1f" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="Default alphabet {SCGSM}:0" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="C8F71D14969741F977FD07" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="Default alphabet {SCGSM}:0" />
+    <test parameter="[string]" condition="string.equals" value="How are you?" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="hp-roman8" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="ISO-8859-8-BIDI" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="ISO-8859-6-BIDI" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="KOI8-U" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+    <parameter name="[binary]" operation="list.set" value="5b7373737373735d" />
+    <parameter name="[string]" operation="binary.toString" value="[binary]" value2="MIK" />
+    <test parameter="[string]" condition="string.equals" value="[ssssss]" />
+          
+    <parameter name="[result2]" operation="binary.parse"      value="h32" />
+    <test parameter="[result1]" condition="binary.contains"   value="[result2]"/>
+    
+    <parameter name="[length1]" operation="binary.length"      value="[result1]" />
+    <test parameter="[length1]" condition="number.equals"   value="3"/>
+    <parameter name="[length2]" operation="binary.length"      value="[result2]" />
+    <test parameter="[length1]" condition="number.equals"   value="3"/>
+    
+    <parameter name="[result3]" operation="binary.indexof"    value="[result1]" value2="[result2]"/>
+    <test parameter="[result3]" condition="string.equals"            value="1"/>
+    
+    <parameter name="[result4]" operation="binary.tobase64"   value="31323334" />
+    <parameter name="[result5]" operation="binary.frombase64" value="[result4]" />
+    
+    <test parameter="[result5]" condition="binary.equals"     value="31323334"/>
+
+    <parameter name="[result5]" operation="binary.indexof"    value="3132333431323334" value2="3233" value3="3"/>
+    <test parameter="[result5]" condition="string.equals"    value="5"/>
+
+    <parameter name="[result5]" operation="binary.subbinary"  value="3132333431323334" value2="5" value3="2"/>
+    <test parameter="[result5]" condition="binary.equals"     value="3233"/>
+
+    <parameter name="[result6]" operation="binary.subbinary"  value="3132333431323334" value2="3"/>
+    <test parameter="[result6]" condition="binary.equals"     value="3431323334"/>
+    
+    <parameter name="[result7]"  operation="binary.random" value="8"/>
+    <parameter name="[result7Length]" operation="binary.length"    value="[result7]"/>
+    <test parameter="[result7Length]" condition="number.equals"     value="8"/>
+    
+    <parameter name="[secret]" operation="string.tobinary" value="0123456789012345"/>
+    <parameter name="[data]"   operation="string.tobinary" value="myDatas"/>
+    <!-- do some padding to datas; need a multiple of 16 bytes -->
+    <parameter name="[data.length]"   operation="string.length" value="[data]"/>
+    <parameter name="[data.length]"   operation="number.divide" value="[data.length]" value2="2" />
+    <parameter name="[data.overhead]"   operation="number.modulo" value="[data.length]" value2="16" />
+    <if>
+        <condition><test parameter="[data.overhead]" condition="number.greaterthan" value="0" /></condition>
+        <then>
+            <parameter name="[data.padding]" operation="number.substract" value="16" value2="[data.overhead]" />
+            <parameter name="[data.padding]" operation="number.multiply" value="[data.padding]" value2="2" />
+            <parameter name="[data.padding]" operation="list.set" value="0" value2="[data.padding]" />
+            <parameter name="[data]" operation="set" value="[data][data.padding(0)]" />
+        </then>
+    </if>
+
+    <parameter name="[binary]" operation="set" value="00000000000000000000000000000000"/>
+    <parameter name="[encrypted]"  operation="binary.encrypt" value="[data]" value2="AES/CBC/NoPadding" value3="[secret]" value4="[binary]"/>
+    <parameter name="[decrypted]"  operation="binary.decrypt" value="[encrypted]" value2="AES/CBC/NoPadding" value3="[secret]" value4="[binary]"/>
+    <test parameter="[data]" condition="binary.equals"     value="[decrypted]"/>
+
+    <parameter name="[binary]" operation="set" value="f0f1f2f3f4f5f6f7f8f9f9f9f9f8f7f6f5f4f3f2f2f0"/>
+    <parameter name="[statMax]" operation="binary.statMax" value="[binary]"/>
+    <test parameter="[statMax]" condition="binary.equals"     value="f9"/>
+    <parameter name="[statMin]" operation="binary.statMin" value="[binary]"/>
+    <test parameter="[statMin]" condition="binary.equals"     value="f0"/>
+    <parameter name="[statAverage]" operation="binary.statAverage" value="[binary]"/>
+    <test parameter="[statAverage]" condition="binary.equals"     value="f5"/>
+    <parameter name="[statVariance]" operation="binary.statVariance" value="[binary]"/>
+    <test parameter="[statVariance]" condition="number.equals"     value="9"/>
+    <parameter name="[statDeviation]" operation="binary.statDeviation" value="[binary]"/>
+    <test parameter="[statDeviation]" condition="number.equals"     value="3"/>
+    <parameter name="[statPopular]" operation="binary.statPopular" value="[binary]"/>
+    <test parameter="[statPopular]" condition="binary.equals"     value="f9"/>
+    <parameter name="[statPopular]" operation="binary.statMaxFreq" value="[binary]"/>
+    <test parameter="[statPopular]" condition="number.equals" value="0.181818"/>
+    
+    <parameter name="[binary]" operation="set" value="09d81fa8" />
+    <test parameter="[binary]" condition="binary.equals" value="09d81fa8" />
+    <parameter name="[binarytonumber]" operation="binary.toNumber" value="[binary]" />
+    <test parameter="[binarytonumber]" condition="number.equals" value="165158824" />
+    
+    
+    <parameter name="[binaryfromip]" operation="binary.fromIp" value="172.6.21.112" />
+    <test parameter="[binaryfromip]" condition="string.equals" value="ac061570" />
+    <parameter name="[binarytoip]" operation="binary.toIp" value="ac061570" />
+    <test parameter="[binarytoip]" condition="string.equals" value="172.6.21.112" />
+    
+    <parameter name="[binaryfromip]" operation="binary.fromIp" value="[2a01:cf00:33:5::6e01]" />
+    <test parameter="[binaryfromip]" condition="string.equals" value="2a01cf00003300050000000000006e01" />
+    <parameter name="[binarytoip]" operation="binary.toIp" value="2a01cf00003300050000000000006e01" />
+    <test parameter="[binarytoip]" condition="string.equals" value="[2a01:cf00:33:5::6e01]" />
+
+    <parameter name="[diff01]" operation="set" value="0100010100000098020000080000006600060008000000650210007e000000010000000203020001090103070b044302000804430100085e625c4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c34a13202010102012e302a9f810407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[diff02]" operation="set" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e302884    07913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[result]" operation="set" value="              04                                      02                                                      02  02                                                                              02  02              021BXXXX                                                                              " />
+    <!--parameter name="[result1]" operation="binary.difference" value="[diff01]" value2="[diff02]" />
+    <test parameter="[result1]" condition="string.equals" value="[result]" /-->
+    <!--parameter name="[result2]" operation="binary.difference" value="[diff02]" value2="[diff01]" />
+    <test parameter="[result2]" condition="string.equals" value="[result]" /-->
+    
+    <parameter name="[diff01(0)]" operation="set" value="f0123456781200780090001155" />
+    <parameter name="[diff01(1)]" operation="set" value="f0123456781200780090001155" />
+    <parameter name="[diff02(0)]" operation="set" value="fedcba123456120078345678900011" />
+    <parameter name="[diff02(1)]" operation="set" value="fedcba123456120078345678900011" />
+    <parameter name="[result]" operation="set" value="0EXXXX      XX      34XXXX      XX" />
+    <parameter name="[result1]" operation="binary.difference" value="[diff01]" value2="[diff02]" />
+    <test parameter="[result1]" condition="string.equals" value="[result]" />
+    <test parameter="[diff01]" condition="string.equals" value="f0    1234567812007800    90001155" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba123456  120078345678900011  " />
+    <parameter name="[result2]" operation="binary.difference" value="[diff02]" value2="[diff01]" />
+    <test parameter="[result2]" condition="string.equals" value="[result]" />
+    <test parameter="[diff01]" condition="string.equals" value="f0    1234567812007800    90001155" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba123456  120078345678900011  " />
+
+    <parameter name="[diff01]" operation="set" value="f0123456781200780090001155" />
+    <parameter name="[diff02]" operation="set" value="fedcba123456120078345678900011" />
+    <parameter name="[result1]" operation="binary.difference" value="[diff01]" value2="[diff02]" />
+    <test parameter="[result1]" condition="string.equals" value="[result]" />
+    <!--test parameter="[diff01]" condition="string.equals" value="f0    12    3450780090dc" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba1200ff345678  9000" /-->
+    <parameter name="[result2]" operation="binary.difference" value="[diff02]" value2="[diff01]" />
+    <test parameter="[result2]" condition="string.equals" value="[result]" />
+    <!--test parameter="[diff01]" condition="string.equals" value="f0    12    3450780090dc" />
+    <test parameter="[diff02]" condition="string.equals" value="fedcba1200ff345678  9000" /-->
+    
+    <parameter name="[res]" operation="set" value="0EXXXX      XX      34XXXX      XX" />
+    <parameter name="[res1]" operation="binary.difference" value="f0123456781200780090001155" value2="fedcba123456120078345678900011" />
+    <test parameter="[res1]" condition="string.equals" value="[res]" />
+    <parameter name="[res2]" operation="binary.difference" value="fedcba123456120078345678900011" value2="f0123456781200780090001155" />
+    <test parameter="[res2]" condition="string.equals" value="[res]" />
+    
+    <parameter name="[smsText]" operation="set" value="ssssss"/>
+    <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+    <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+    <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+    <parameter name="[xml]" operation="set">
+<![CDATA[<Mo_forwardSM_Arg.Sequence>
+   <sm_RP_DA.Choice>
+      <serviceCentreAddressDA.C4.BoxedType><Bytes>913366600567f9
+            <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+            <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+            <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+            <field name="digits" value="33660650769" type="Number_BCD" length="11"/>      
+      </Bytes></serviceCentreAddressDA.C4.BoxedType>
+   </sm_RP_DA.Choice>
+   <sm_RP_OA.Choice>
+      <msisdn.C2.BoxedType><Bytes>913366317071f3
+            <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+            <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+            <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+            <field name="digits" value="33661307173" type="Number_BCD" length="11"/>
+      </Bytes></msisdn.C2.BoxedType>
+   </sm_RP_OA.Choice>
+   <sm_RP_UI.BoxedType><Bytes>11080b913366600567f70000a906f3f97c3e9f03
+      <element label="SMS-SUBMIT" coding="V" binary="11">
+        <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-UDHI" value="The TP UD field contains only the short message:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-SRR" value="A status report is not requested:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-VPF" value="TP VP field present - relative format:2" type="EnumLong" lengthBit="2"/>
+        <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="EnumLong" lengthBit="1"/>
+        <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="EnumLong" lengthBit="2"/>
+      </element>
+      <element label="TP-MR" coding="V" binary="08">
+        <field name="TP-MR" value="8" type="Integer" length="1"/>
+      </element>
+      <element label="TP-DA" coding="V">
+        <element label="Address" coding="DV" binary="913366600567f7">
+          <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+          <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+          <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+          <field name="digits" value="33660650767" type="Number_BCD" length="11"/>
+        </element>
+      </element>
+      <element label="TP-PID" coding="V" binary="00">
+        <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
+        <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1"/>
+        <field name="telematic devices" value="implicit device type is specific to this SC,:0" type="EnumLong" lengthBit="5"/>
+      </element>
+      <element label="TP-DCS" coding="V" binary="00">
+        <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
+        <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
+        <field name="Bit 1-0 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
+        <field name="Alphabet" value="[smsAlphabet]" type="EnumLong" lengthBit="2"/>
+        <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
+      </element>
+      <element label="TP-VP" coding="V" binary="a9">
+        <field name="TP-VP" value="3 d(ays):169" type="EnumLong" length="1"/>
+      </element>
+      <element label="TP-UD" coding="V" binary="06f3f97c3e9f03">
+        <field name="TP-UDL" value="[smsTextLength]" type="Integer" length="1"/>
+        <field name="TP-UD" value="[smsBinary]" type="Binary" length="6"/>
+      </element>
+   </Bytes></sm_RP_UI.BoxedType>
+</Mo_forwardSM_Arg.Sequence>]]></parameter>
+    <parameter name="[asn]" operation="set" value="30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03"/>
+    
+    <parameter name="[asnresult]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/>
+    <test parameter="[asnresult]" condition="binary.equals" value="[asn]" />
+    <parameter name="[xmlresult]" operation="binary.asnToXml" value="[asn]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP.xml"/>
+    <parameter name="[xml]" operation="string.regexReplaces" value="[xml]" value2=" " value3=""/>
+    <parameter name="[xml]" operation="string.trim" value="[xml]"/>
+    <parameter name="[xmlresult]" operation="string.regexReplaces" value="[xmlresult]" value2=" " value3=""/>
+    <parameter name="[xmlresult]" operation="string.trim" value="[xmlresult]"/>
+    <test parameter="[xmlresult]" condition="string.equals" value="[xml]" />
+
+    <parameter name="[binary]" operation="set" value="70717273747576777879"/>
+    <parameter name="[endian]" operation="binary.endian" value="[binary]" />
+    <test parameter="[endian]" condition="binary.equals" value="0E8E4ECE2eae6eee1e9e" />
+    <parameter name="[binResult]" operation="binary.endian" value="[endian]" />
+    <test parameter="[binResult]" condition="binary.equals" value="[binary]" />
+    
+    <parameter name="[binary]" operation="set" value="737373737373"/>
+    <parameter name="[endian]" operation="binary.encode" value="[binary]" value2="7"/>
+    <test parameter="[endian]" condition="binary.equals" value="F3F97C3e9f03" />
+
+    <parameter name="[binary]" operation="set" value="737373737373"/>
+    <parameter name="[endian]" operation="binary.encode" value="[binary]" value2="9" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="73e6cc9933670e" />
+    
+    <parameter name="[binary]" operation="set" value="F3F97C3e9f03"/>
+    <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="7" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
+
+    <parameter name="[binary]" operation="set" value="73e6cc9933670e"/>
+    <parameter name="[endian]" operation="binary.decode" value="[binary]" value2="9" value3="true"/>
+    <test parameter="[endian]" condition="binary.equals" value="73737373737300" />
+
+    <!-- Test GZIP compress / uncompress with one pre-determined string -->
+    <!--parameter name="[string]" operation="set" value="test_zip_string"/-->
+    <parameter name="[string]" operation="string.random" value="10000"/>
+    <parameter name="[binary]" operation="string.tobinary" value="[string]"/>
+    <parameter name="[compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
+    <parameter name="[uncompressed]" operation="binary.uncompress" value="[compressed]" value2="gzip"/>    
+    <test parameter="[uncompressed]" condition="binary.equals" value="[binary]"/>
+
+    <parameter name="[binary]" operation="set" value="1f8b08000000000000002b492d2e89afca2c882f2e29cacc4b070025e7a3df0f000000"/>
+    <parameter name="[uncompressed]" operation="binary.uncompress" value="[binary]" value2="gzip"/>
+    <parameter name="[string]" operation="binary.toString" value="[uncompressed]"/>
+    <test parameter="[string]" condition="string.equals" value="test_zip_string"/>
+    
+    <!-- Test GZIP compress / uncompress with this current XML file content -->
+    <parameter name="[binary]" operation="file.readbinary" value="./702_operator_binary/scenario.xml"/>
+    <parameter name="[compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
+    <parameter name="[uncompressed]" operation="binary.uncompress" value="[compressed]" value2="gzip"/>
+    <test parameter="[binary]" condition="binary.equals" value="[uncompressed]" />
+               
+</scenario>

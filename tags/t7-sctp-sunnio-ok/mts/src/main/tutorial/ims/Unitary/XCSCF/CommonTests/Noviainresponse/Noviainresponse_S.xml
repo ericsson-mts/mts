@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+		<parameter name="[To]" operation="setFromMessage" value="header:To"/>
+		<parameter name="[From]" operation="setFromMessage" value="header:From"/>
+		<parameter name="[CallId]" operation="setFromMessage" value="header:Call-ID"/>
+		<parameter name="[CSeq]" operation="setFromMessage" value="header:CSeq"/>
+		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+		<parameter name="[Contact]" operation="setFromMessage" value="header:Contact"/>
+		<parameter name="[TopmostVia]" operation="setFromMessage" value="header:TopmostVia"/>
+	</receiveRequestSIP>
+
+<!-- This 180 only contains ONE via : The proxy's via. If this one is properly built, it won't either forward the request or crash.-->
+	
+<sendResponseSIP name="Send 180 Ringing">
+<![CDATA[SIP/2.0 180 Ringing
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Max-Forwards: 10
+Contact: <sip:[HardAddressUAC]>
+User-Agent: [UserAgent]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Via: [TopmostVia]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+</scenario>
+	

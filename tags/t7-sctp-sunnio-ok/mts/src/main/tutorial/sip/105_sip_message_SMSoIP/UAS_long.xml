@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- useful link to check message encoding http://www.smartposition.nl/resources/sms_pdu.html -->
+<!-- wireshark is able to decode the message and to show in a readable way -->
+
+<scenario>
+
+    <function file="105_sip_message_SMSoIP/library_UAS.xml"/>
+    
+    <parameter name="[receivedSmsText]" operation="set" value=""/>
+            
+    <parameter name="[index]" operation="set" value="0"/>
+    <while>
+      <condition>
+        <test parameter="[index]" condition="number.lowerThan" value="[testcase:smsTextLength]"/>
+      </condition>
+      <do>
+        
+      	<call name="receive_message" >
+          <output>
+              <parameter name="[receivedSmsBinary]" value="[function:receivedSmsBinary]"/>
+          </output>
+        </call>
+                                                                                                                   
+        <test parameter="[receivedSmsBinary]" condition="binary.equals" value="[testcase:smsBinary]"/>         
+        <parameter name="[receivedSmsBinary]" operation="binary.subbinary" value="[receivedSmsBinary]" value2="7"/>  
+        <parameter name="[receivedSmsTextPartial]" operation="binary.toString" value="[receivedSmsBinary]" value2="[smsAlphabet]"/>
+        <parameter name="[receivedSmsTextPartialLength]" operation="string.length" value="[receivedSmsTextPartial]"/>
+        <parameter name="[receivedSmsTextPartialLength]" operation="number.add" value="[receivedSmsTextPartialLength]" value2="8"/>
+        
+        <parameter name="[receivedSmsText]" operation="set" value="[receivedSmsText][receivedSmsTextPartial]"/>
+        
+        <parameter name="[index]" operation="number.add" value="[index]" value2="[smsTextLengthMax]"/>
+
+      </do>
+    </while>
+    
+    <test parameter="[receivedSmsText]" condition="string.equals" value="[testcase:smsText]"/>
+    
+</scenario>

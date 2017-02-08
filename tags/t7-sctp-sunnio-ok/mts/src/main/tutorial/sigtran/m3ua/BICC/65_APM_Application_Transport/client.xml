@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 10/07/2009
+    Author     : jbrisseau
+    Description: Send a BICC-IAM message.
+-->
+
+
+<scenario>
+
+    <parameter name="[result_int]" operation="bat.convertlen" value="156"/>
+    <parameter name="[result_int]" operation="bat.convertlen" value="157"/>
+    <parameter name="[result_int]" operation="bat.convertlen" value="158"/>
+    <parameter name="[result_int]" operation="bat.convertlen" value="159"/>    
+    <parameter name="[result_int]" operation="bat.convertlen" value="160"/>
+    <test parameter="[result_int]" condition="number.equals" value="8321"/>
+    <parameter name="[result_int]" operation="bat.convertlen" value="161"/>
+    <parameter name="[result_int]" operation="bat.convertlen" value="162"/>
+    <parameter name="[result_int]" operation="bat.convertlen" value="163"/>            
+    <parameter name="[result_int]" operation="bat.convertlen" value="164"/>
+
+    <parameter name="[bat_ase_1_value]" value="0"/>
+    
+    <parameter name="[bat_ase_1_value_len]" operation="string.length" value="[bat_ase_1_value]" />
+    <parameter name="[bat_ase_1_value_len_time_8]" operation="number.multiply" value="[bat_ase_1_value_len]" value2="8" />
+    
+    <parameter name="[bat_ase_1_value_len_plus_1]" operation="number.add" value="[bat_ase_1_value_len]" value2="1" />
+    <parameter name="[bat_ase_1_value_len_plus_1_encoded]" operation="bat.convertlen" value="[bat_ase_1_value_len_plus_1]" />
+    <if>
+        <condition>
+            <test parameter="[bat_ase_1_value_len_plus_1]" condition="number.greaterthan" value="15" />
+        </condition>
+        <then>
+            <parameter name="[bat_ase_1_value_len_plus_1_encoded_len]" value="16" />
+        </then>
+        <else>
+            <parameter name="[bat_ase_1_value_len_plus_1_encoded_len]" value="8" />
+        </else>
+    </if>
+
+    <parameter name="[bat_ase_2_value]">v=0&#x0d;
+o=- 0 0 IN IP4 10.124.3.5&#x0d;
+s=-&#x0d;
+c=IN IP4 10.124.3.5&#x0d;
+t=0 0&#x0d;
+a=ipbcp:1 Request&#x0d;
+m=audio 60616 RTP/AVP 100&#x0d;
+a=ptime:20&#x0d;
+a=rtpmap:100 VND.3GPP.IUFP/16000&#x0d;
+</parameter>
+
+    <!--parameter name="[bat_ase_2_value]">v=0
+o=- 0 0 IN IP4 10.124.3.5
+s=-
+c=IN IP4 10.124.3.5
+t=0 0
+a=ipbcp:1 Request
+m=audio 60616 RTP/AVP 100
+a=ptime:20
+a=rtpmap:100 VND.3GPP.IUFP/16000
+</parameter-->
+    <!--parameter name="[bat_ase_2_value]" operation="string.regexReplaces" value="[bat_ase_2_value]" value2="0d0a" value3="200a"/-->	
+    
+    <parameter name="[bat_ase_2_value_len]" operation="string.length" value="[bat_ase_2_value]" />
+    <parameter name="[bat_ase_2_value_len_time_8]" operation="number.multiply" value="[bat_ase_2_value_len]" value2="8" />
+    
+    <parameter name="[bat_ase_2_value_len_plus_2]" operation="number.add" value="[bat_ase_2_value_len]" value2="3" />
+    <parameter name="[bat_ase_2_value_len_plus_2_encoded]" operation="bat.convertlen" value="[bat_ase_2_value_len_plus_2]" />
+    <parameter name="[bat_ase_2_value_len_plus_2_mod]" operation="number.modulo" value="[bat_ase_2_value_len_plus_2_encoded]" value2="256" />
+    <parameter name="[bat_ase_2_value_len_plus_2_div]" operation="number.divide" value="[bat_ase_2_value_len_plus_2_encoded]" value2="256" />
+    <parameter name="[bat_ase_2_value_len_plus_2_div]" operation="number.floor" value="[bat_ase_2_value_len_plus_2_div]" />
+    <parameter name="[bat_ase_2_value_len_plus_2_encoded]" operation="number.multiply" value="[bat_ase_2_value_len_plus_2_mod]" value2="256" />
+    <parameter name="[bat_ase_2_value_len_plus_2_encoded]" operation="number.add" value="[bat_ase_2_value_len_plus_2_encoded]" value2="[bat_ase_2_value_len_plus_2_div]" />
+    <!--test parameter="[bat_ase_2_value_len_plus_2_encoded]" condition="number.equals" value="33046"/-->   
+    <if>
+        <condition>
+            <test parameter="[bat_ase_2_value_len_plus_2]" condition="number.greaterthan" value="15" />
+        </condition>
+        <then>
+            <parameter name="[bat_ase_2_value_len_plus_2_encoded_len]" value="16" />
+        </then>
+        <else>
+            <parameter name="[bat_ase_2_value_len_plus_2_encoded_len]" value="8" />
+        </else>
+    </if>
+<!--
+    MESSAGE : IAM (message 19, mss-1.pcap)
+    
+-->
+
+
+	<sendMessageSIGTRAN	name="Send Notify1" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+        <SS7 name="bicc" file="bicc.xml">
+			<header>
+				<field name="CIC" length="4" value="3101"/>
+                <field name="Message_Type" length="1" value="65" />
+			</header>
+
+			<parameter name="Application_transport" id="120" type="O">
+				<field name="extension_indicator" lengthBit="1" value="1"/>
+				<field name="application_context_identifier" lengthBit="7" value="5"/>
+
+				<field name="extension_indicator" lengthBit="1" value="1"/>
+				<field name="spare" lengthBit="5" value="0"/>
+				<field name="send_notification_indicator (SNI)" lengthBit="1" value="0"/>
+				<field name="release_call_indicator (RCI)" lengthBit="1" value="1"/>
+
+				<field name="extension_indicator" lengthBit="1" value="1"/>
+				<field name="Sequence_indicator" lengthBit="1" value="1"/>
+				<field name="apm_segmentation_indicator" lengthBit="6" value="0"/>
+
+				<field name="originating_address_length" lengthBit="8" value="0"/>
+
+				<field name="destination_address_length" lengthBit="8" value="0"/>
+
+				<!-- BAT ASE 1 : Action Indicator -->
+				<!-- BAT ASE 1 --> <field name="identifier" lengthBit="8" value="1"/>
+				<!-- BAT ASE 1 --> <field name="length_indicator" lengthBit="[bat_ase_1_value_len_plus_1_encoded_len]" value="[bat_ase_1_value_len_plus_1_encoded]"/>
+				<!-- BAT ASE 1 --> <field name="compatibility_information" lengthBit="8" value="131"/>
+				<!-- BAT ASE 1 --> <field name="action_indicator" lengthBit="[bat_ase_1_value_len_time_8]" value="[bat_ase_1_value]"/>
+
+				<!-- BAT ASE 2 : Action Bearer Control Information -->
+				<!-- BAT ASE 2 --> <field name="identifier" lengthBit="8" value="8"/>
+				<!-- BAT ASE 2 --> <field name="length_indicator" lengthBit="[bat_ase_2_value_len_plus_2_encoded_len]" value="[bat_ase_2_value_len_plus_2_encoded]"/>
+				<!-- BAT ASE 2 --> <field name="compatibility_information" lengthBit="8" value="131"/>
+				<!-- BAT ASE 2 --> <field name="bctp_version_indicator" lengthBit="8" value="32"/> <!-- no indication -->
+				<!-- BAT ASE 2 --> <field name="tunnelled_protocol_indicator" lengthBit="8" value="32"/> <!-- text encoded -->
+				<!-- BAT ASE 2 --> <!--field name="action_indicator" format="string" lengthBit="[bat_ase_2_value_len_time_8]" value="[bat_ase_2_value]"/-->
+				<!-- BAT ASE 2 --> <field name="action_indicator" format="string" lengthBit="[bat_ase_2_value_len_time_8]" value="[bat_ase_2_value]"/>
+				<!-- BAT ASE 2 --> <!--field name="action_indicator" format="string" lengthBit="96" value="abcdefghijkl"/-->
+            </parameter>
+		</SS7>
+<!--010001010000005402000008000000010210004100000d7a00000d7e0d020006
+0d0000000110 2000 0a 00 020d 0b831047073063304103500f 0a0783130613340000 31020000 700182 390631c070c07882 00 000000	-->
+
+        <UA name="m3ua" file="m3ua.xml">
+			<header version="1" reserved="0" messageClass="1" messageType="1"/>
+						
+			<!--parameter tag="Network_Appearence" value="1"/-->
+			
+			<parameter tag="Protocol_Data">
+				<field name="Originating_Point_Code" value="9024"/>
+				<field name="Destination_Point_Code" value="9029"/>
+				<field name="SI" value="BICC"/>
+				<field name="NI" value="2"/>
+				<field name="MP" value="0"/>
+				<field name="SLS" value="14"/>
+				<field name="fvo" format="fvo"/>
+			</parameter>
+		</UA>
+	</sendMessageSIGTRAN>
+</scenario>

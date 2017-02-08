@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="echo client GTPv2-C">
+
+<!-- ##################################################################### -->
+<!-- ## parameter to set up GTP tunnel between localhost and EPS core #### -->
+<!-- ##################################################################### -->
+	<parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
+	<parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+	<parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>
+	<parameter editable="true" name="[ethernetProbeFilter]" operation="set" value="port 12000"/>
+	<parameter editable="true" name="[NIC]" operation="set" value="eth0"/>
+	<parameter editable="true" name="[remoteHost]" operation="set" value="192.168.90.123"/>
+	<parameter editable="true" name="[remotePort]" operation="set" value="2123"/>
+	<parameter editable="true" name="[transport]" operation="set" value="UDP"/>
+	<parameter editable="true" name="[TEID]" operation="set" value="0123456"/>
+  
+<!-- ##################################################################### -->
+
+    	<runProfile>
+        	<step frequency="[speedTestcase]" time="0"/>
+        	<end delay="[TestDurationSec]"/>
+    	</runProfile>
+
+
+
+	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
+
+		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
+			<scenario file="encapse.xml" name="ETHERNET" routingName="ETHERNET"/>
+		</testcase>
+
+	</for>
+</test>

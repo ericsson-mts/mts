@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="OAC" value="10412614190438AB4D"/>
+        <attribute name="MT" value="1"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="good"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="22"/>
+        <attribute name="OAdC" value="333"/>
+        <attribute name="OAC" value="coucou"/>
+        <attribute name="MT" value="2"/>
+        <attribute name="NMsg" value="123456789"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="c'est bon"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="22"/>
+        <attribute name="OAdC" value="333"/>
+        <attribute name="OAC" value="coucou"/>
+        <attribute name="MT" value="3"/>
+        <attribute name="AMsg" value="test message non numeric" encoding="true"/>
+        <!--<attribute name="AMsg" value="MBOXUPDATE" encoding="true"/>-->
+        <!--<attribute name="AMsg" value="12345" encoding="true"/>-->
+        <!--<attribute name="AMsg" value="ALPHA@NUM" encoding="true"/>-->
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="N">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <parameter name="EC" operation="protocol.setFromMessage" value="attribute.EC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="toto"/>
+        <test parameter="[EC]" condition="string.equals" value="01"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="22"/>
+        <attribute name="OAdC" value="333"/>
+        <attribute name="OAC" value="coucou"/>
+        <attribute name="MT" value="4"/>
+        <attribute name="NB" value="1"/>
+        <attribute name="TMsg" value="msg T"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="22"/>
+        <attribute name="OAdC" value="333"/>
+        <attribute name="OAC" value="coucou"/>
+        <attribute name="MT" value="6"/>
+        <attribute name="AMsg" value="test AMsg" encoding="true"/>
+        <attribute name="CS" value="03"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="ca marche"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="22"/>
+        <attribute name="OAdC" value="333"/>
+        <attribute name="OAC" value="coucou"/>
+        <attribute name="MT" value="2"/>
+        <attribute name="AMsg" value="test AMsg bad" encoding="true"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="N">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <parameter name="EC" operation="protocol.setFromMessage" value="attribute.EC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="ca ne doit pas avoir marche"/>
+        <test parameter="[EC]" condition="string.equals" value="10"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

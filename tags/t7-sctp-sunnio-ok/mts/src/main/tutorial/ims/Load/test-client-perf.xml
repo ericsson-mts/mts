@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    	<parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" operation="set" value="0.100"/>
+    	<parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" operation="set" value="3"/>
+    	<parameter description="Duration (in sec.) of the call" editable="true" name="[CallDurationSec]" operation="set" value="300"/>    	
+    	<parameter description="Call Attempting per Second" editable="true" name="[CAPS]" operation="set" value="50"/>
+    	<parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="3600"/>
+    	<parameter description="Number of users provisionned in the database" editable="true" name="[NumberUserDatabase]" operation="set" value="1000"/>
+
+	<!--                     -->
+    	<!-- INTERNAL PARAMETERS -->
+    	<!--                     -->
+	<parameter description="Delay (in sec.) between two INVITE" name="[delayINVITE]" operation="set" value="1000"/>
+	<parameter name="[temp]" operation="multiply" value="[CAPS]" value2="[delayINVITE]"/>	
+	<parameter description="Number of UAC testcases in the test" name="[NumberScenario]" operation="divide" value="[temp]" value2="1000"/>	
+	
+	<parameter name="[NumberUserDatabase]" operation="substract" value="[NumberUserDatabase]" value2="1"/>
+		
+    	<parameter description="Addresse du XMLloader" name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    	<parameter description="Port du XMLloader" name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>
+
+   	<!--parameter name="[Host-Server]" operation="setFromSystem" value="IPAddress" value2="eth0" description="Addresse de l'AS" /-->
+   	<parameter description="Addresse de l'AS" name="[Host-Server]" operation="set" value="172.16.21.26"/>
+    	<parameter description="Port du XMLloader" name="[Port-Server]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    	<!--parameter name="[Port-Server]" operation="set" value="5060"/-->    	
+    	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+
+	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    	<parameter name="[inviteeName]" operation="set" value="bob"/>
+    	<parameter name="[inviterName]" operation="set" value="alice"/>
+	
+	<parameter name="[index]" operation="set" value="0"/>	
+	
+	<!-- Temporary due to bug with 2 <for> tag in the test file -->
+	<parameter name="[index1]" operation="set" value="000"/>	  	  	
+	
+	<!--                   -->
+    	<!-- RUNNER PARAMETERS -->
+    	<!--                   -->
+	
+    	<runner>
+        	<property name="runner.TEST_DURATION" value="1"/>
+        	<property name="runner.STARTUP_DURATION" value="1"/>        
+        	<property name="runner.PERIOD" value="2"/>               
+        	<property name="runner.STRICT_PERIOD" value="true"/>               
+    	</runner>
+
+  	<for from="001" index="[number]" step="1" to="[NumberScenario]">   
+  		<testcase description="load [number]" name="[inviterName][number]" number="1" state="true">    			
+			<scenario file="UAC.xml" name="UAC" routingName="UAC"/>
+		</testcase>
+	</for>
+		
+</test>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Gateway.xml
+    Created on : 31 janvier 2011, 14:18
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+        In this example, the gateway sends a DeleteConnection command to the
+Call Agent to instruct it that a connection on the specified endpoint
+has been deleted. The ReasonCode specifies the reason for the
+deletion, and Connection Parameters for the connection are provided
+as well
+       
+-->
+
+<scenario>
+
+    <sendMessageMGCP remoteHost="[remoteHostMGCP]" remotePort="[remotePortMGCP]">
+<![CDATA[
+DLCX [transactionId] aaln/1@rgw-2567.whatever.net MGCP 1.0
+C: A3C47F21456789F0
+I: FDE234C8
+E: 900 - Hardware error
+P: PS=1245, OS=62345, PR=780, OR=45123, PL=10, JI=27, LA=48
+]]>
+    </sendMessageMGCP>
+<receiveMessageMGCP request="false">
+        <parameter name="[responseCode]" operation="protocol.setFromMessage" value="MGCPCommandLine.responseCode"/>
+
+    </receiveMessageMGCP>
+	
+	
+    
+</scenario>

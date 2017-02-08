@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+            <label name="ReceiveMessageHTTP"/>
+
+  	<receiveMessageHTTP name="Wait POST" timeout="0" request="true">
+		<parameter name="entity" operation="protocol.setFromMessage" value="content"/>
+		<parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+	</receiveMessageHTTP>
+    
+    <if>
+        <condition>
+            <test parameter="[entity]" condition="string.contains" value="toto200"/>
+        </condition>
+        <then>
+            <parameter name="[code]" operation="set" value="200"/>
+        </then>
+        <else/>
+    </if>
+    <if>
+        <condition>
+            <test parameter="[entity]" condition="string.contains" value="toto300"/>
+        </condition>
+        <then>
+            <parameter name="[code]" operation="set" value="300"/>
+        </then>
+        <else/>
+    </if>
+    <if>
+        <condition>
+            <test parameter="[entity]" condition="string.contains" value="toto400"/>
+        </condition>
+        <then>
+            <parameter name="[code]" operation="set" value="400"/>
+        </then>
+        <else/>
+    </if>
+    <if>
+        <condition>
+            <test parameter="[entity]" condition="string.contains" value="toto401"/>
+        </condition>
+        <then>
+            <parameter name="[code]" operation="set" value="401"/>
+        </then>
+        <else/>
+    </if>
+    <if>
+        <condition>
+            <test parameter="[entity]" condition="string.contains" value="toto402"/>
+        </condition>
+        <then>
+            <parameter name="[code]" operation="set" value="402"/>
+        </then>
+        <else/>
+    </if>
+    <if>
+        <condition>
+            <test parameter="[entity]" condition="string.contains" value="toto-2"/>
+        </condition>
+        <then>
+            <parameter name="[code]" operation="set" value="-2"/>
+        </then>
+        <else/>
+    </if>
+
+
+
+    <sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+HTTP/1.1 200 OK
+Accept-charset:text/xml
+Content-Type:text/xml;charset=utf-8
+User-Agent:XMLLoader
+SOAPAction: ""
+Content-Length:595
+
+<SOAP-ENV:Envelope
+ xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+ xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+ xmlns:ns2="http://postpaid.MPay.its.com"
+ xmlns:ns1="urn:MTC_IN">
+ <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+  <ns1:getSubscriberTypeResponse>
+   <getSubscriberTypeReturn>
+    <subType>privilege</subType>
+    <status>[code]</status>
+   </getSubscriberTypeReturn>
+  </ns1:getSubscriberTypeResponse>
+ </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+]]>
+<!--******************** END MESSAGE *********************-->
+	</sendMessageHTTP>
+	
+	<goto name="goto_ReceiveMessageHTTP" label="ReceiveMessageHTTP" state="true"/>
+</scenario>

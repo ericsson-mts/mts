@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario agent -->
+<scenario>
+    
+    <parameter name="[listenAgent]" operation="set" value="listenAgent" />
+    <createListenpointSNMP name="[listenAgent]" localPort="163"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify"/>
+
+    <receiveMessageSNMP request="true">
+        <parameter name="listenpointName" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="requestId" operation="protocol.setFromMessage" value="header.requestId"/>
+        <parameter name="version" operation="protocol.setFromMessage" value="header.version"/>
+        <parameter name="community" operation="protocol.setFromMessage" value="header.community"/>
+        <parameter name="variables" operation="protocol.setFromMessage" value="variables.name"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+        <parameter name="mibs" operation="protocol.setFromMessage" value="variables.mib"/>
+        <parameter name="res" operation="protocol.setFromMessage" value="message.result"/>
+    </receiveMessageSNMP>
+
+    <sendMessageSNMP listenpoint="[listenpointName]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header version="[version]" community="[community]"/>
+        <pdu name="response" requestId="[requestId]" errorStatus="0" errorIndex="0">
+            <variableBinding name="[oids]" type="integer32" value="2"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="true">
+        <parameter name="listenpointName" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="requestId" operation="protocol.setFromMessage" value="header.requestId"/>
+        <parameter name="version" operation="protocol.setFromMessage" value="header.version"/>
+        <parameter name="community" operation="protocol.setFromMessage" value="header.community"/>
+        <parameter name="variables" operation="protocol.setFromMessage" value="variables.name"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+        <parameter name="mibs" operation="protocol.setFromMessage" value="variables.mib"/>
+    </receiveMessageSNMP>
+
+    <sendMessageSNMP listenpoint="[listenpointName]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+        <header version="[version]" community="[community]"/>
+        <pdu name="response" requestId="[requestId]" errorStatus="0" errorIndex="0">
+            <variableBinding name="[oids]" type="gauge32" value="123456789"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <finally>
+        <removeListenpointSNMP name="[listenAgent]"/>
+    </finally>
+    
+</scenario>

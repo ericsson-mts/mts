@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+    	<parameter name="[clientName]" operation="set" value="[User1]" /> 
+      	<parameter name="[clientName2]" operation="set" value="[User2]" /> 
+        <parameter name="[LocalHost]" operation="system.ipaddress" /> 
+        <parameter name="[LocalPort]" operation="set" value="[Port-User1]" /> 
+        <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort]" /> 
+        <parameter name="[LocalTransport]" operation="set" value="udp" /> 
+        
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
+	<parameter name="[provider]" operation="set" value="[scenarioName]" /> 
+    
+	<parameter name="[newCseq]" operation="number.random" value="10" /> 
+	<parameter name="[localTag]" operation="number.random" value="10" /> 
+      	<parameter name="[newCallId]" operation="number.random" value="10000000" /> 
+        <parameter name="[newBranchId]" operation="string.random" value="10" /> 
+        <parameter name="[MaxForwards]" operation="set" value="70" /> 
+        <parameter name="[UserName]" operation="set" value="[clientName]@[100_DOMAIN_ADDR]" /> 
+        <parameter name="[AuthResponse]" operation="set" value="" /> 
+        <parameter name="[WWWAuthRealm]" operation="set" value="[100_DOMAIN_ADDR]" /> 
+        <parameter name="[WWWAuthNonce]" operation="set" value="" /> 
+        <parameter name="[Password]" operation="set" value="[clientName]" /> 
+        <parameter name="[Method]" operation="set" value="REGISTER" /> 
+        <parameter name="[URI]" operation="set" value="sip:[100_DOMAIN_ADDR]" /> 
+        <parameter name="[HA2]" operation="string.digest" value="[Method]:[URI]" value2="MD5" /> 
+                                
+        <parameter name="[newCallID]" operation="number.random" value="10000000" /> 
+        <parameter name="[localTag]" operation="string.random" value="10" /> 
+        <parameter name="[newCseq" operation="number.add" value="[newCseq]" value2="1" /> 
+        <parameter name="[newBranchId]" operation="string.random" value="10" /> 
+
+        <sendMessageSIP name="Send Message" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+        	<![CDATA[ 
+                MESSAGE sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
+                Call-ID: [newCallID]
+                CSeq: [newCseq] MESSAGE
+                From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+                To: sip:[clientName2]@[100_DOMAIN_ADDR]
+                Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+                Max-Forwards: 70
+                Route: [SCSCF]
+                Contact: "[clientName]"<sip:[LocalAddress]>
+                Content-Type: test/plain
+                P-Preferred-Identity: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>
+                P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+                Privacy: none
+                User-Agent: [UserAgent]
+                Content-Length: x
+		Tatayoyo
+		]]> 
+    </sendMessageSIP>
+    <receiveMessageSIP name="Wait 200 OK" type="MESSAGE" result="200" request="false" /> 
+</scenario>

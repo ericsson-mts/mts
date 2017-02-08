@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Gateway.xml
+    Created on : 31 janvier 2011, 14:18
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+       The gateway indicates success and includes a list of endpoint names
+       
+-->
+
+<scenario>
+    
+    
+    <receiveMessageMGCP request="true">
+    </receiveMessageMGCP>
+	
+    <parameter name="[mgcpverb]" operation="protocol.setFromMessage" value="MGCPCommandLine.MGCPVerb"/>
+    <test parameter="[mgcpverb]" condition="string.equals" value="AUEP"/>
+    <parameter name="[version]" operation="protocol.setFromMessage" value="MGCPCommandLine.Version"/>
+    <test parameter="[version]" condition="string.equals" value="MGCP 1.0"/>
+	<parameter name="[transactionId]" operation="protocol.setFromMessage" value="MGCPCommandLine.transactionId" />
+    <sendMessageMGCP remoteHost="[localHostMGCP]" remotePort="[localPortMGCP]">
+<![CDATA[
+200 [transactionId] OK
+Z: aaln/1@rgw-2567.whatever.net
+Z: aaln/2@rgw-2567.whatever.net
+]]>
+    </sendMessageMGCP>
+
+   
+   
+</scenario>

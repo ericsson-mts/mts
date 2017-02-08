@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A001" />
+    <!-- envoi requete AUTHENTICATE-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] AUTHENTICATE GSSAPI
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse intermediaire AUTHENTICATE -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.continue.text" />
+        <!--<test parameter="[tagRep]" condition="string.equals" value="+" />-->
+    </receiveMessageIMAP>
+    
+    <!-- envoi data requete AUTHENTICATE-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+YIIB+wYJKoZIhvcSAQICAQBuggHqMIIB5qADAgEFoQMCAQ6iBwMFACAAAvCyLWLlWnbaUkZdEYbKHBPjd8t/1x5Yg==
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse intermediaire AUTHENTICATE -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.continue.text" />
+        <!--<test parameter="[tagRep]" condition="string.equals" value="+" />-->
+    </receiveMessageIMAP>
+    
+    <!-- attend reponse intermediaire AUTHENTICATE -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.continue.text" />
+        <!--<test parameter="[tagRep]" condition="string.equals" value="+" />-->
+    </receiveMessageIMAP>
+    
+    <!-- envoi data requete AUTHENTICATE-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+YDMGCSqGSIb3EgECAgIBAAD/////3LQBHXTpFfZgrejpLlLImPwkhbfa2QteAQAgAG1yYwE
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse final AUTHENTICATE -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

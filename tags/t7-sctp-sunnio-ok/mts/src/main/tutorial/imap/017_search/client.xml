@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <!-- envoi requete SEARCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] SEARCH FLAGGED SINCE 1-Feb-1994 NOT FROM "Smith"
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse SEARCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A005" />
+    <!-- envoi requete SEARCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] SEARCH TEXT "string not in mailbox"
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse SEARCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+
+    <parameter name="[tagReq]" operation="set" value="A006" />
+    <!-- envoi requete SEARCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] SEARCH CHARSET UTF-8 TEXT {6}
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse de continuation de requete SEARCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.continue.text" />
+        <!--<test parameter="[tagRep]" condition="string.equals" value="+" />-->
+    </receiveMessageIMAP>
+
+    <!-- envoi data SEARCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+abcdef
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse SEARCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

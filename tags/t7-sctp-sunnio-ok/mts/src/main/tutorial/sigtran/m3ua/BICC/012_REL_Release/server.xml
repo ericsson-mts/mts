@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: 	conf/schemas/scenario.xsd 
+							 	conf/schemas/type_operations_sigtran
+							 	
+	 Related dictionary file:	conf/sigtran/dictionary_m3ua.xml
+	 							conf/sigtran/dictionary_bicc.xml
+	 							
+	 References:				IETF RFC_4666 (M3UA)
+	 							IUT-T Q_1902.3 (BICC)
+-->
+
+
+<!--
+    Document   : bob.xml
+    Created on : 12/08/2009
+    Author     : jbrisseau
+    Description: Receive a BICC-REL message.
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[REL]" value="010001010000002c02000008000000010210001a00000d7a00000d7e0d0200060d0000000c02000282900000" />
+
+	<receiveMessageSIGTRAN name="Wait BICC_REL">
+		<parameter name="[REL1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[REL1]" condition="binary.equals" value="[REL]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[REL1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[REL]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+	
+</scenario>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+<createProbeETHERNET name="capture" networkInterface="[systemIp(0)]" captureFilter="src host [UE] and (dst host [PDN-Server] or dst host [PDN-Server2])" />
+	<while>
+		<condition>
+			<test parameter="[test:stopeNodeB1]" condition="string.equals" value="false" />
+		</condition>
+		<do>
+			<receiveMessageGTP name="inc message">
+				<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+			</receiveMessageGTP>
+			<sendMessageETHERNET name="send packet" probe="capture"> 
+				<ethernet remoteMac="[UE-MAC]" type="0800" /> <!-- type="0800" is for IP payload -->
+				<data format="binary">h[rawData]</data> <!-- IP packet -->
+			</sendMessageETHERNET>
+		</do>
+	</while>
+</scenario>

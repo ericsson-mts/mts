@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+		<sendMessageSIP name="Send" destScenario="bob"
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
+<![CDATA[
+FOO 
+To: 
+From: 
+Call-ID:
+CSeq:
+Max-Forwards:
+Route: 
+Route: 
+Contact: 
+Via: 
+User-Agent: 
+Content-Type: 
+Content-Length:
+]]>
+		</sendMessageSIP>
+
+		<receiveMessageSIP name="Wait 200 OK" result="200">
+		</receiveMessageSIP>
+
+
+		<sendMessageSIP name="Send" destScenario="bob"
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
+<![CDATA[FOO sip:bob@devoteam.com SIP/2.0]]>
+		</sendMessageSIP>
+
+		<receiveMessageSIP name="Wait 200 OK" result="200">
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send" destScenario="bob"
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
+<![CDATA[
+FOO sip:bob@devoteam.com SIP/2.0
+Cseq: 
+]]>
+		</sendMessageSIP>
+
+		<receiveMessageSIP name="Wait 200 OK" result="200">
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="Send" destScenario="bob"
+         remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transportRequest]">
+<![CDATA[]]>
+		</sendMessageSIP>
+
+		<receiveMessageSIP name="Wait">
+		</receiveMessageSIP>
+
+</scenario>

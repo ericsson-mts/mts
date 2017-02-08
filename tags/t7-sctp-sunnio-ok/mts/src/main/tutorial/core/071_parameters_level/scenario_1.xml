@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[test:init]" operation="system.semaphorewait" />
+
+    <parameter name="[test:mutex]" operation="system.semaphorewait" />
+
+    <parameter name="[testcase:leveltestcase]" operation="set" value="[testcase:leveltestcase] 1" />
+	<parameter name="[test:leveltest]" operation="set" value="[test:leveltest] 1" />
+
+    <parameter name="[test:mutex]" operation="system.semaphorenotify" />
+
+    <parameter name="[test:end]" operation="system.semaphorenotify" />
+
+
+	<parameter name="[test:sip:name@provider.com]" operation="set" value="valeur" />
+
+	<test parameter="[test:sip:name@provider.com]" condition="string.equals" value="valeur" />
+
+</scenario>

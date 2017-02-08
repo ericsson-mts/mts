@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+    <parameter name="[connection]" operation="set" value="connectionPOP" />
+
+    <openChannelPOP name="[connection]" remoteHost="[test:serverRemoteIp]" remotePort="[test:serverPort]"/>
+
+    <!-- envoi requete USER-->
+    <sendMessagePOP name="Send USER" channel="[connection]">
+<![CDATA[
+USER [login]
+]]>
+    </sendMessagePOP>
+    
+    <!-- attend reponse USER -->
+    <receiveMessagePOP name="Receive USER" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.text" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+        <test parameter="[text]" condition="string.contains" value="[login]" />
+    </receiveMessagePOP>
+
+    <!-- envoi requete PASS-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+PASS [password]
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse PASS -->
+    <receiveMessagePOP name="Receive PASS" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+    </receiveMessagePOP>
+
+	<sendMessagePOP channel="[connection]">
+<![CDATA[
+STLS
+]]>
+    </sendMessagePOP>
+	<receiveMessagePOP name="Receive PASS" channel="[connection]" request="false">
+    </receiveMessagePOP>
+	
+    <!-- envoi requete NOOP-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+NOOP
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse NOOP -->
+    <receiveMessagePOP name="Receive NOOP" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+    </receiveMessagePOP>
+
+    <!-- envoi requete STAT-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+STAT
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse STAT -->
+    <receiveMessagePOP name="Receive STAT" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+    </receiveMessagePOP>
+
+    <!-- envoi requete RETR-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+RETR 1
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse RETR -->
+    <receiveMessagePOP name="Receive RETR" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+    </receiveMessagePOP>
+
+    <!-- envoi requete QUIT-->
+    <sendMessagePOP channel="[connection]">
+<![CDATA[
+QUIT
+]]>
+    </sendMessagePOP>
+
+    <!-- attend reponse QUIT -->
+    <receiveMessagePOP name="Receive QUIT" channel="[connection]" request="false">
+        <parameter name="[reponse]" operation="protocol.setFromMessage" value="response.result" />
+        <test parameter="[reponse]" condition="string.equals" value="OK" />
+    </receiveMessagePOP>
+
+    <finally>
+        <closeChannelPOP name="[connection]"/>
+    </finally>
+</scenario>

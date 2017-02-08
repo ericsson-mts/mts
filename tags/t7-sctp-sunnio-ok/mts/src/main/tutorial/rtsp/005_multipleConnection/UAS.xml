@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="listenpointServer" />
+    <createListenpointRTSP name="[listenpoint]" localHost="0.0.0.0" localPort="[remotePortRTSP]"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <receiveMessageRTSP name="Wait DESCRIBE" type="DESCRIBE" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.cseq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK Describe" transactionId="[transactionId]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+Content-type: application/sdp
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait SETUP" type="SETUP" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK Setup" transactionId="[transactionId]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+Transport: RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
+Session: 91389234234
+Conference: 199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait PLAY" type="PLAY" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK PLAY" transactionId="[transactionId]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait PAUSE" type="PAUSE" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK PAUSE" transactionId="[transactionId]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait TEARDOWN" type="TEARDOWN" request="true">
+        <parameter name="[transactionId]" operation="protocol.setFromMessage" value="message.transactionId"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK TEARDOWN" transactionId="[transactionId]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+]]>
+    </sendMessageRTSP>
+
+    <finally>
+        <removeListenpointRTSP name="[listenpoint]"/>
+    </finally>
+
+</scenario>

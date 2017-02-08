@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A001" />
+    <!-- envoi requete capability-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] CAPABILITY
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse CAPABILITY -->
+    <receiveMessageIMAP name="Receive CAPABILITY completed" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A002" />
+    <!-- envoi requete GETQUOTAROOT-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] GETQUOTAROOT "INBOX"
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse GETQUOTAROOT -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A003" />
+    <!-- envoi requete SETQUOTA-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] SETQUOTA "" (STORAGE 1024)
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse SETQUOTA -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+
+    <parameter name="[tagReq]" operation="set" value="A003" />
+    <!-- envoi requete GETQUOTA-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] GETQUOTA "" 
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse GETQUOTA -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

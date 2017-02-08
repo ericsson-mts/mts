@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+<function name="register">
+
+<input>
+	<parameter name="[LocalHost]" />
+	<parameter name="[LocalPort]" />
+	<parameter name="[RemoteHost]" />
+	<parameter name="[RemotePort]" />
+	<parameter name="[Transport]"      			default="udp"  />
+	<parameter name="[Expires]"           	type="number"	default="3600" />
+	<parameter name="[Domain]"           			default="com4innov.com" />
+	<parameter name="[MediaTypes]"         			default=";audio;video" />
+	<parameter name="[IdentUser]" />			<!-- MSISDN|IMSI([MCC][MNC][MSIN]) -->
+	<parameter name="[IMEI]" />
+	<parameter name="[Password]" />
+	<parameter name="[Nonce]"    	        		default="NONE"/> <!-- From preceedding register to skip "first round" -->
+	<parameter name="[Cell-id]"    	        		default="208011D0FCE11"/>
+</input>
+
+<do>
+		<parameter name="[StatusCode]"  	    operation="set"       			value="401"/>
+        <parameter name="[Cseq]"  	        	operation="number.random"       value="10"/>
+        <parameter name="[Cseq]"  	        	operation="number.add"       	value="[Cseq]" value2="1"/>
+        <parameter name="[localTag]"            operation="number.random"       value="10"/>
+        <parameter name="[newCallId]"           operation="number.random"       value="10000000"/>
+        <parameter name="[newBranchId]"         operation="string.random"       value="10"/>
+        <parameter name="[MaxForwards]"         operation="set"                 value="70"/>
+
+        <parameter name="[provider]"            operation="set"                 value="[scenarioName]" />
+
+       	<parameter name="[LocalAddress]"        operation="set"                 value="[LocalHost]:[LocalPort]"/>
+       	<parameter name="[RemoteAddress]"       operation="set"                 value="[RemoteHost]:[RemotePort]"/>
+       	<parameter name="[IMPI-User]"           operation="set"                 value="[IMEI]@[Domain]"/>
+       	<parameter name="[IMPU-User]"           operation="set"                 value="sip:[IdentUser]@[Domain]"/>
+
+        <parameter name="[AuthResponse]"        operation="set"                 value=""/>
+        <parameter name="[WWWAuthRealm]"        operation="set"                 value="[Domain]"/>
+        <parameter name="[WWWAuthNonce]"        operation="set"                 value="[Password]"/>
+        <parameter name="[Method]"              operation="set"                 value="REGISTER"/>
+        <parameter name="[URI]"                 operation="set"                 value="sip:[Domain]" />
+        <parameter name="[HA2]"                 operation="string.digest"       value="[Method]:[URI]"      value2="MD5" />
+
+        <parameter name="[Urn%]"                 operation="set"                 value="urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel" />
+
+        <createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[Transport]"/>
+
+	<if>
+		<condition>
+			<test parameter="[Nonce]" condition="string.equals" value="NONE"/>
+		</condition>
+	<then>
+		<!-- FIRST ROUND -->
+	        <sendMessageSIP name="Send REGISTER" listenpoint="[provider]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+	        	<![CDATA[REGISTER [URI] SIP/2.0
+	                To: <[IMPU-User]>
+	                From: <[IMPU-User]>;tag=[localTag]
+	                Call-ID:[newCallId]
+ 	               	CSeq: [Cseq] REGISTER
+                	Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+                	Max-Forwards: [MaxForwards]
+                	Contact: <sip:[LocalAddress]>
+  					Expires: [Expires]
+                	Content-Length: 0]]>
+        	</sendMessageSIP>
+
+		<receiveMessageSIP name="receive REGISTER response" type="REGISTER" request="false">
+			<parameter name="[StatusCode]" 		operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+			<parameter name="[WWWAuthRealm]" 	operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.realm"/>
+			<parameter name="[WWWAuthNonce]" 	operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.nonce"/>
+			<parameter name="[WWWAuthQop]" 	operation="protocol.setFromMessage" value="header.WWW-Authenticate.Attribute.qop"/>
+			<!--parameter name="[Service-Route]" 	operation="protocol.setFromMessage" value="header.Service-Route"/-->
+		</receiveMessageSIP>
+  	</then>
+  	<else>
+	        <parameter name="[WWWAuthRealm]"        operation="set"                 value="[Domain]"/>
+	        <parameter name="[WWWAuthNonce]"        operation="set"                 value="[Nonce]"/>
+  	</else>
+  	</if>
+
+	<if>
+		<condition>
+			<test parameter="[StatusCode]" condition="string.equals" value="401" />
+		</condition>
+	<then>
+		<!-- SECOND ROUND (re-register & de-register skip first round) -->
+ 		<parameter name="[Cseq]" 		operation="number.add" 		value="[Cseq]" 		value2="1"/>  
+		<parameter name="[HA1]" 		operation="string.digest" 	value="[IMPI-User]:[WWWAuthRealm]:[Password]" value2="MD5" />
+		<!--parameter name="[AuthResponse]" 	operation="string.digest" 	value="[HA1]:[WWWAuthNonce]:[HA2]" value2="MD5" /-->
+		<parameter name="[NonceCount]" operation="set" value="00000001" />
+		<parameter name="[CNonce]"     operation="set" value="xyz" />
+  		<parameter name="[AuthResponse]" operation="string.digest" value2="MD5" value="[HA1]:[WWWAuthNonce]:[NonceCount]:[CNonce]:[WWWAuthQop]:[HA2]" />
+		<parameter name="[newBranchId]" 	operation="string.random" 	value="10"/>
+		<!--parameter name="[localTag]" 		operation="number.add" 		value="[localTag]"  value2="1"/-->
+		<sendMessageSIP name="Send REGISTER" listenpoint="[provider]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]"> 
+       			<![CDATA[REGISTER [URI] SIP/2.0
+               		To: <[IMPU-User]>
+               		From: <[IMPU-User]>;tag=[localTag]
+					Call-ID:[newCallId]
+					CSeq: [Cseq] REGISTER
+	  				Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+	  				Max-Forwards: [MaxForwards]
+	                Contact: <sip:[LocalAddress]>
+	  				Expires: [Expires]
+	  				Supported: path
+	                Authorization: Digest username="[IMPI-User]",realm="[WWWAuthRealm]",nonce="[WWWAuthNonce]",uri="[URI]",response="[AuthResponse]",algorithm=MD5,qop=auth,cnonce="[CNonce]",nc=[NonceCount]
+	  				Content-Length: 0]]>
+  		</sendMessageSIP>
+  		<receiveMessageSIP name="200 OK" type="REGISTER" result="200" request="false">
+  			<parameter name="[StatusCode]" 		operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+  			<parameter name="[IMPU-User]" 		operation="protocol.setFromMessage" value="header.P-Associated-URI"/>
+			<parameter name="[Nextnonce]"		operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nextnonce"/>
+  			<parameter name="[IMPU-User]" 		operation="string.split" value="[IMPU-User]" value2=","/>
+  			<parameter name="[StrLgth]" 		operation="string.length" value="[IMPU-User(0)]"/>
+			<parameter name="[StrLgth]" 		operation="number.substract" value="[StrLgth]" value2="2"/> 
+  			<parameter name="[IMPU-First]" 		operation="string.substring" value="[IMPU-User(0)]" value2="1" value3="[StrLgth]"/>
+  		</receiveMessageSIP>
+	  	<if>
+	  		<condition>
+	  			<test parameter="[StatusCode]" condition="string.matches" value="2[0-9][0-9]" not="true"/>
+	  		</condition>
+	  	<then>	<!-- Second round fails -->
+ 	 		<exit failed="true" name="REGISTER 1st round failure"/>
+	  	</then>
+	  	</if>
+  	</then>
+  	<else>	<!-- First round fails -->
+  		<!--exit failed="true" name="REGISTER 2nd round failure"/-->
+  		<parameter name="[IMPU-First]" 		operation="set" value=""/> 
+  		<parameter name="[Nextnonce]" 		operation="set" value="NONE"/> 
+  	</else>
+  	</if>
+
+
+</do>
+
+<output>
+       	<parameter name="[IMPU-First]" />	<!-- First IMPU returned in 200 OK -->
+	<parameter name="[Nextnonce]" /> 	<!-- For subsequent register to skip "first round" -->
+</output>
+
+</function>
+
+</scenario>
+

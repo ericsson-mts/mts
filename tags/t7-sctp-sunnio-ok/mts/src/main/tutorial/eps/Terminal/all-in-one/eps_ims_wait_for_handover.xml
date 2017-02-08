@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<openSocketUDP socketName="socket" localPort="40001" remoteHost="[eNodeBIP]" remotePort="40000" />
+	<sendDataUDP socketName="socket">
+		<data format="text">RRC: Measurement Report</data>
+	</sendDataUDP>
+	<closeSocketUDP socketName="socket" />
+	
+	<openSocketUDP socketName="socket" localPort="41000" remoteHost="[eNodeBIP]" remotePort="41000" />
+	<receiveDataUDP socketName="socket" timeout="0" >
+	        <parameter name="[ret]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveDataUDP>
+	<closeSocketUDP socketName="socket" />
+
+	<parameter name="[targeteNodeBIP]" operation="binary.toIp" value="[ret]" />
+	<parameter name="[OsProperty]" operation="system.readproperty" value="os.name" />
+	
+	<if>
+		<condition>
+			<test parameter="[OsProperty]" condition="string.contains" value="Windows" />
+		</condition>
+		<then>
+			<log level="INFO">Windows</log>
+			<parameter name="[cr]" operation="system.command" value="route delete [Host-Server] mask 255.255.255.255 [eNodeBIPsortie] metric 1" />
+			<parameter name="[cr2]" operation="system.command" value="route delete [RTP-Server] mask 255.255.255.255 [eNodeBIPsortie] metric 1" />
+			<parameter name="[changeRoute]" operation="system.command" value="route add [Host-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
+			<parameter name="[changeRoute2]" operation="system.command" value="route add [RTP-Server] mask 255.255.255.255 [targeteNodeBIP] metric 1" />
+		</then>
+		<else>
+			<log level="INFO">Linux</log>
+			<parameter name="[cr]" operation="system.command" value="route del -host [Host-Server]" />
+			<parameter name="[cr2]" operation="system.command" value="route del -host [RTP-Server]" />
+			<parameter name="[changeRoute]" operation="system.command" value="route add -host [Host-Server] gw [targeteNodeBIP]" />
+			<parameter name="[changeRoute2]" operation="system.command" value="route add -host [RTP-Server] gw [targeteNodeBIP]" />
+			
+			<test parameter="[changeRoute.returnCode]" condition="number.equals" value="0" />
+			<test parameter="[changeRoute2.returnCode]" condition="number.equals" value="0" />
+		</else>
+	</if>
+	
+	<openSocketUDP socketName="socket" localPort="42000" remoteHost="[targeteNodeBIP]" remotePort="41000" />
+	<sendDataUDP socketName="socket">
+	        <data format="text">handover OK</data>
+	</sendDataUDP>
+       	<closeSocketUDP socketName="socket" />
+
+</scenario>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <!-- this message appears malformed in wireshark, but it is the message given in the specification, sending identicaly.
+             So we consider that our implementation is well done.
+        -->
+        <header name="ProvisioningActionsOperation" TRN="0" MT="O"/>
+        <attribute name="OAdC" value="04568768"/>
+        <attribute name="OTON" value=""/>
+        <attribute name="ONPI" value=""/>
+        <attribute name="STYP" value="2"/>
+        <attribute name="PWD" value=""/>
+        <attribute name="NWD" value=""/>
+        <attribute name="VERS" value="0100"/>
+        <attribute name="LAdC" value="1920870340094000"/>
+        <attribute name="LTON" value=""/>
+        <attribute name="LNPI" value="5"/>
+        <attribute name="OPID" value=""/>
+        <attribute name="RES1" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="ProvisioningActionsOperation" result="A"/>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

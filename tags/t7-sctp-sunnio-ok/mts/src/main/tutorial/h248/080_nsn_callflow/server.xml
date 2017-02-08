@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- call flow for Nokia-Siemens equipment -->
+<!-- provide from HNTrelatching capture file -->
+
+<scenario>
+
+    <!-- "AuditValue #1" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="AuditValue">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>        
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=-{
+AuditValue=ROOT
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "AuditValue #>2" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="AuditValue">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>        
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=-{
+AuditValue=ROOT
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Add #1" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>       
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=39508{
+Add=ip/90/Realm_ext_media01/32926{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.36
+m=audio 48670 RTP/AVP 0
+}}
+}
+}, 
+Add=ip/90/Realm_int_media01/32928{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.68
+m=audio 48670 RTP/AVP 0
+}}
+}
+}
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Substract #1" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Subtract">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>      
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=39508{
+Subtract=ip/90/Realm_ext_media01/32926{
+Statistics{nt/dur= 231, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0}
+}, 
+Subtract=ip/90/Realm_int_media01/32928{
+Statistics{nt/dur= 231, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0}
+}
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Add #2" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>       
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=39510{
+Add=ip/91/Realm_ext_media01/32930{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.36
+m=audio 57662 RTP/AVP 0
+}}
+}
+}, 
+Add=ip/91/Realm_int_media01/32932{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.68
+m=audio 57662 RTP/AVP 0
+}}
+}
+}
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Modify #1" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Modify">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>       
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=39510{
+Modify=ip/91/Realm_ext_media01/32930{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.36
+m=audio 57662 RTP/AVP 18 8 101
+a=fmtp:101 0-15
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+}}
+}
+}, 
+Modify=ip/91/Realm_int_media01/32932{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.68
+m=audio 57662 RTP/AVP 18 8 101
+a=fmtp:101 0-15
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+}}
+}
+}
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Modify #2" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Modify">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>      
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Modify=ip/91/Realm_ext_media01/32930{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.36
+m=audio 57662 RTP/AVP 18 8 101
+a=fmtp:101 0-15
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+}}
+}
+}, 
+Modify=ip/91/Realm_int_media01/32932{
+Media{
+Stream=1{Local{
+v=0
+c=IN IP4 172.20.214.68
+m=audio 57662 RTP/AVP 18 8 101
+a=fmtp:101 0-15
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+}}
+}
+}
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Substract #2" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Subtract">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>      
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/2 [[localHostH248]]:[localPortH248]
+Reply=[transID]{
+Context=39510{
+Subtract=ip/91/Realm_ext_media01/32930{
+Statistics{nt/dur= 18287, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0}
+}, 
+Subtract=ip/91/Realm_int_media01/32932{
+Statistics{nt/dur= 18288, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0}
+}
+}
+}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+</scenario>

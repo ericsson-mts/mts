@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    <!--
+       - local host and port for HTTP client
+     -->
+    <parameter name="[localHostHTTP]" operation="system.ipaddress"/>
+    <parameter name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]"/>
+    <parameter name="[localPortHTTP]" operation="set" value="50000"/>
+    
+    <!--
+       - URL of the HTTP server.
+     -->
+    <parameter name="[remoteHostHTTP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]"/>
+    <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
+    <parameter name="[Remote-URL]" operation="set" value="http://[remoteHostHTTP]:[remotePortHTTP]"/>
+
+    <runProfile>
+        <step frequency="10000" time="0"/>
+        <end iteration="3000"/>
+    </runProfile>
+
+    <testcase description="load client" name="client HTTP 1" number="1" state="true">
+        <scenario file="client.xml" name="client HTTP" routingName="client HTTP"/>
+    </testcase>
+    
+    <testcase description="load client" name="client HTTP 2" number="1" state="true">
+        <scenario file="client.xml" name="client HTTP" routingName="client HTTP"/>
+    </testcase>
+
+</test>

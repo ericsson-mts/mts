@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-server-->
+<scenario>
+    
+    <parameter name="[esme]" operation="set" value="listenpointSMPP-ESME" />
+    <createListenpointSMPP name="[esme]" localHost="[test:remoteHostSMPP]" localPort="12775"/>
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+    
+    <receiveMessageSMPP request="true" listenpoint="[esme]" type="outbind:b">
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="system_id" operation="protocol.setFromMessage" value="attribute.system_id"/>
+        <parameter name="password" operation="protocol.setFromMessage" value="attribute.password"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[system_id]" condition="string.equals" value="test"/>
+        <test parameter="[password]" condition="string.equals" value="loader"/>
+    </receiveMessageSMPP>
+
+    <parameter name="[num]" operation="set" value="1" />
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_receiver" sequence_number="[num]" />
+        <attribute name="system_id" value="IMS"/>
+        <attribute name="password" value="coucou"/>
+        <attribute name="system_type" value="windows MC"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="8"/>
+        <attribute name="addr_npi" value="3"/>
+        <attribute name="address_range" value="255.255.255.0"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="bind_receiver:1" result="0">
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="system_id" operation="protocol.setFromMessage" value="attribute.system_id"/>
+        <parameter name="sc_interface_version" operation="protocol.setFromMessage" value="tlv.sc_interface_version"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[system_id]" condition="string.equals" value="test"/>
+        <test parameter="[sc_interface_version]" condition="string.equals" value="6"/>
+    </receiveMessageSMPP>
+
+    <parameter name="[num]" operation="number.add" value="[num]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="[num]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="unbind:6" result="0">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[seqNum]" condition="string.equals" value="[num]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageSMPP>
+
+    <finally>
+        <removeListenpointSMPP name="[esme]"/>
+    </finally>
+    
+</scenario>

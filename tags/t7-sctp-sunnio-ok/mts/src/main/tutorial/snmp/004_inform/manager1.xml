@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario manager -->
+<scenario>
+    
+    <parameter name="[listenManager]" operation="set" value="manager1" />
+    <createListenpointSNMP name="[listenManager]" localPort="163"/>
+
+    <parameter name="[requestId]" operation="set" value="1" />
+    <sendMessageSNMP listenpoint="[listenManager]" remoteHost="[remoteHostSNMP]" remotePort="162">
+        <header version="2" community="[community]"/>
+        <pdu name="inform" requestId="[requestId]" errorStatus="0" errorIndex="0">
+            <variableBinding name="1.3.6.1.3.4.5.6.7" type="integer32" value="2"/>
+        </pdu>
+    </sendMessageSNMP>
+
+    <receiveMessageSNMP request="false">
+        <parameter name="listenpointName" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="remoteHost" operation="protocol.setFromMessage" value="message.remoteHost"/>
+        <parameter name="remotePort" operation="protocol.setFromMessage" value="message.remotePort"/>
+        <parameter name="requestId" operation="protocol.setFromMessage" value="header.requestId"/>
+        <parameter name="version" operation="protocol.setFromMessage" value="header.version"/>
+        <parameter name="community" operation="protocol.setFromMessage" value="header.community"/>
+        <parameter name="variables" operation="protocol.setFromMessage" value="variables.name"/>
+        <parameter name="oids" operation="protocol.setFromMessage" value="variables.oid"/>
+        <parameter name="mibs" operation="protocol.setFromMessage" value="variables.mib"/>
+    </receiveMessageSNMP>
+
+    <finally>
+        <removeListenpointSNMP name="[listenManager]"/>
+    </finally>
+</scenario>

@@ -1,0 +1,64 @@
+
+<scenario>
+    <parameter name="[item]" operation="list.dequeue" value="[testcaseName]" value2="[queueTimeout]" />
+
+    <if>
+        <condition>
+            <test parameter="[item]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <exit failed="false" />
+        </then>
+    </if>
+    
+<!-- (specific) : do your job with [item]  -->
+    <!-- schedule the bye -->
+    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" value2="[item]" />
+    <parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User" value2="[item]" />
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" value2="[item]" />
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID" value2="[item]" />
+    <parameter name="[lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.number" value2="[item]" />
+    <parameter name="[lastViaBranch]" operation="protocol.setFromMessage" value="header.Via.Parameter.branch" value2="[item]" />
+    <parameter name="[lastContactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI" value2="[item]" />
+    
+    <parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name" value2="[item]" />
+    <parameter name="[Port-Tester]" operation="protocol.setFromMessage" value="listenpoint.localport" value2="[item]" />
+            
+            
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
+    <parameter name="[CseqNumberBye]" operation="number.add" value="1" value2="[lastCSeqNumber]"/>
+    
+    <!-- the bye is from the callee to the caller so we need the invite's contact (from context) -->
+    <try>
+        <finally>
+            <parameter name="[test:contextMutex]" operation="system.semaphorewait" value2="0" />
+            
+            <parameter name="[contextId]" value="[test:[lastToUser]_invite_contextId]" />
+            <parameter name="[invite]" value="[test:context_[contextId]_lastReceivedInvite]" />
+            
+            <parameter name="[test:contextMutex]" operation="system.semaphorenotify" />
+        </finally>
+    </try>
+    
+    <parameter name="[lastContactURI]" operation="protocol.setFromMessage" value="Header.Contact.Address.Uri" value2="[invite]" />
+    <parameter name="[lastRecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route" value2="[invite]" />
+    <parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
+    
+    <sendMessageSIP delay="[CallDurationSec]" listenpoint="[lastListenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]"> 
+<![CDATA[
+BYE [lastContactURI] SIP/2.0
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCallId]
+CSeq: [CseqNumberBye] BYE
+Max-Forwards: 70
+Route: [route]
+Via: SIP/2.0/UDP [Host-Tester]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE
+Content-Length: 0
+
+]]>
+    </sendMessageSIP>      
+<!-- (specific) : end  -->
+</scenario>

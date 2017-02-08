@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[uid]" operation="number.uid"/>
+    <!--openChannelHTTP name="ChannelHTTP_[Local-Port]" localHost="[localHostHTTP]" localPort="[localPortHTTP]" remoteURL="[Remote-URL]"/-->
+    <openChannelHTTP name="ChannelHTTP_[uid]" remoteURL="[Remote-URL]"/>
+
+	<sendMessageHTTP channel="ChannelHTTP_[uid]" destScenario="[destScenario]">
+<![CDATA[
+GET [Remote-URL] HTTP/1.1
+Host: [remoteHostHTTP]:[remotePortHTTP]
+DestScenario:[destScenario]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP>
+		
+	<receiveMessageHTTP result="200"/>
+
+    <closeConnectionHTTP connectionName="ChannelHTTP_[uid]"/> 
+
+</scenario> 

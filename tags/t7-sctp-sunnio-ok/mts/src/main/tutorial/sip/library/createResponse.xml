@@ -1,0 +1,90 @@
+<!--
+~~~~~~~~~~~~~~~~~~~
+|     Parameters INPUT     |
+~~~~~~~~~~~~~~~~~~~
+- statusCode
+- reasonPhrase
+- contentSDP
+- msg			(optional,using for 100/180/200 or 2 clients)
+~~~~~~~~~~~~~~~~~~~
+|    Parameters OUTPUT   |
+~~~~~~~~~~~~~~~~~~~
+-
+-->
+    <!--parameter name="[inviteeName]" operation="set" value="bob"/-->
+    <parameter name="[Host-Testee]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[Host-Testee]" operation="set" value="[Host-Testee(0)]" />
+    <parameter name="[Port-Testee]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[Adresse-Testee]" operation="set" value="[Host-Testee(0)]:[Port-Testee]"/>	
+
+<if>
+	<condition>
+		<test parameter="[msg]" condition="list.exists" />
+		<not><test parameter="[msg]" condition="list.size" value="0" /></not>
+	</condition>
+	<then></then>
+	<else>
+		<parameter name="[msg]" operation="protocol.setFromMessage" value="message"/>
+	</else>
+</if>
+	<!--parameter name="[msg]" operation="protocol.setFromMessage" value="message"/-->
+	<parameter name="[method]" operation="protocol.setFromMessage" value="message.type" value2="[msg]" />
+	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" value2="[msg]" />       
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" value2="[msg]" />   
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID" value2="[msg]" />
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq" value2="[msg]" />
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" value2="[msg]" />
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact" value2="[msg]" />
+	<parameter name="[lastHeaderOthers]" operation="protocol.setFromMessage" value="header.Others" value2="[msg]" />
+	
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route" value2="[msg]" />
+	<!--if>
+	<condition>
+	<test parameter="[RecordRoute]" condition="list.size" value="0" />
+	</condition>
+	<then>
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route" value2="[msg]" />
+	</then>
+	</if-->	
+
+	<if>
+	<condition>
+	<!--test parameter="[method]" condition="string.equals" value="INVITE" /-->	
+	<test parameter="[statusCode]" condition="number.lowerThan" value="200" />
+	</condition>
+	<then>
+		<if>
+		<condition>
+		<test parameter="[statusCode]" condition="string.equals" value="100" />
+		</condition>
+		<then>
+		</then>
+		<else>		
+			<parameter name="[toTag]" operation="string.random" value="10"/>
+			<parameter name="[lastTo]" operation="set" value="[lastTo];tag=[toTag]"/>
+		</else>
+		</if>
+
+	</then>
+	</if>
+
+  <sendMessageSIP name="Send response">
+<![CDATA[SIP/2.0 [statusCode] [reasonPhrase]
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[Adresse-Testee]>
+Record-Route: [RecordRoute]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Type: Application/sdp
+Content-Length: x
+
+[contentSDP]]]>
+  </sendMessageSIP>
+<!--Contact: <sip:[inviteeName]@[Adresse-Testee]-->
+
+		<parameter name="[msg]" operation="list.remove" />

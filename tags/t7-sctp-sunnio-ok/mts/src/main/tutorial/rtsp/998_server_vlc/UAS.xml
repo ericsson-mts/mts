@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<createListenpointRTSP name="sessionVLC" localPort="[remotePortRTSP]"/>
+
+<while>
+<condition />
+<do>
+
+
+<receiveMessageRTSP name="Receive Message RTSP" request="true" timeout="0" >
+	<parameter name="[cmd]" operation="protocol.setFromMessage" value="message.type"/>
+	<parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	<parameter name="[session]" operation="protocol.setFromMessage" value="header.Session"/>
+	<parameter name="[connectionName]" operation="protocol.setFromMessage" value="channel.name"/>
+</receiveMessageRTSP>
+<parameter name="[inDiction]" operation="set" value="false"/>
+
+
+<!--*************************************OPTIONS******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="OPTIONS"/>
+	</condition>
+
+	<then>
+		<sendMessageRTSP name="send OPTIONS response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+Public: DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE
+]]>
+		</sendMessageRTSP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************DESCRIBE******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="DESCRIBE"/>
+	</condition>
+
+	<then>
+        <parameter name="[content]" operation="set">
+<![CDATA[
+v=0
+o=- 89668525000 3IN IP4 [remoteHostRTSP]
+t=0 0
+c=IN IP4 0.0.0.0
+a=tool:IMSLoader
+a=range:npt=0-256.000
+m=video 0 RTP/AVP 32
+a=rtpmap:32 MPV/90000
+a=control:rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1/TrackID=0
+m=audio 0 RTP/AVP 14
+a=rtpmap:14 MP/90000
+a=control:rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1/TrackID=1
+]]>
+        </parameter>
+        <parameter name="[contentLength]" operation="string.length" value="[content]"/>
+		<sendMessageRTSP name="Send DESCRIBE response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+Server: IMSLoader
+Content-Type: application/sdp
+Content-Length: [contentLength]
+
+[content]
+]]>
+		</sendMessageRTSP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************SETUP******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="SETUP"/>
+	</condition>
+
+	<then>
+		<sendMessageRTSP name="Send SETUP response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+Server: IMSLoader
+Transport: RTP/AVP;unicast;server_port=7000-7001
+Session: 123456
+]]>
+		</sendMessageRTSP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************PLAY******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="PLAY"/>
+	</condition>
+
+	<then>
+		<sendMessageRTSP name="Send PLAY response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+Server: IMSLoader
+Session: [session]
+]]>
+		</sendMessageRTSP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+
+<!--*************************************PAUSE******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="PAUSE"/>
+	</condition>
+
+	<then>
+		<sendMessageRTSP name="Send PAUSE response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+Server: IMSLoader
+Session: [session]
+]]>
+		</sendMessageRTSP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************TEARDOWN******************************************************-->
+<if>
+	<condition>
+		<test parameter="[cmd]" condition="string.equals" value="TEARDOWN"/>
+	</condition>
+
+	<then>
+		<sendMessageRTSP name="Send TEARDOWN response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+Server: IMSLoader
+Session: [session]
+]]>
+		</sendMessageRTSP>
+		<parameter name="[inDiction]" operation="set" value="true"/>
+	</then>
+</if>
+
+<!--*************************************UNKNOWN COMMAND******************************************************-->
+<if>
+	<condition>
+		<test parameter="[inDiction]" condition="string.equals" value="false"/>
+	</condition>
+
+	<then>
+		<sendMessageRTSP name="Send unknown command response" channel="[connectionName]">
+<![CDATA[
+RTSP/1.0 200 OK
+CSeq: [cseq]
+]]>
+		</sendMessageRTSP>
+	</then>
+</if>
+
+</do>
+</while>
+</scenario>

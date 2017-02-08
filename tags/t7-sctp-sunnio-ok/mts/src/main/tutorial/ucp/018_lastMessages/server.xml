@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="AllFeaturesResetOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="1"/>
+        <test parameter="[AC]" condition="string.equals" value="balabalabala"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="AllFeaturesResetOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="well done"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="CallInputAdditionalCharacterSetOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="OAdC" operation="protocol.setFromMessage" value="attribute.OAdC"/>
+        <parameter name="OAC" operation="protocol.setFromMessage" value="attribute.OAC"/>
+        <parameter name="AMsg" operation="protocol.setFromMessage" value="attribute.AMsg"/>
+        <parameter name="CS" operation="protocol.setFromMessage" value="attribute.CS"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="1"/>
+        <test parameter="[OAdC]" condition="string.equals" value=""/>
+        <test parameter="[OAC]" condition="string.equals" value=""/>
+        <test parameter="[AMsg]" condition="string.equals" value="encore un test avec un message"/>
+        <test parameter="[CS]" condition="string.equals" value="12"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputAdditionalCharacterSetOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="SM" value="well done"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="UCPVersionStatusRequest">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="IVR5-CP" operation="protocol.setFromMessage" value="attribute.IVR5-CP"/>
+        <parameter name="REQ-OT" operation="protocol.setFromMessage" value="attribute.REQ-OT"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[IVR5-CP]" condition="string.equals" value="9999"/>
+        <test parameter="[REQ-OT]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="UCPVersionStatusRequest" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="IVR5-PNC_I" value="test"/>
+        <attribute name="NPL" value="10"/>
+        <attribute name="OT" value="01"/>
+        <attribute name="OT" value="02"/>
+        <attribute name="OT" value="04"/>
+        <attribute name="OT" value="06"/>
+        <attribute name="OT" value="08"/>
+        <attribute name="OT" value="10"/>
+        <attribute name="OT" value="12"/>
+        <attribute name="OT" value="14"/>
+        <attribute name="OT" value="16"/>
+        <attribute name="OT" value="18"/>
+        <attribute name="SM" value="well done"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="MobileSubscriberFeatureStatusRequest">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="AdC" operation="protocol.setFromMessage" value="attribute.AdC"/>
+        <parameter name="AC" operation="protocol.setFromMessage" value="attribute.AC"/>
+        <parameter name="SSTAT" operation="protocol.setFromMessage" value="attribute.SSTAT"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[AdC]" condition="string.equals" value="9999"/>
+        <test parameter="[AC]" condition="string.equals" value="8888"/>
+        <test parameter="[SSTAT]" condition="string.equals" value=""/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="MobileSubscriberFeatureStatusRequest" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="ROCNT" value="1"/>
+        <attribute name="ROA" value="coucou"/>
+        <attribute name="CBCNT" value="1"/>
+        <attribute name="BAR" value="hello"/>
+        <attribute name="DECNT" value="2"/>
+        <attribute name="DEF" value="test1"/>
+        <attribute name="DEF" value="test2"/>
+        <attribute name="DICNT" value="1"/>
+        <attribute name="DIV" value="10"/>
+        <attribute name="LMN" value="30"/>
+        <attribute name="NMESS" value="10"/>
+        <attribute name="SM" value="well done"/>
+    </sendMessageUCP>
+
+</scenario>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="MSRP NIO test">
+    <parameter editable="true" name="[NumberChannels]" value="1000"/>
+    
+    <parameter name="[remoteHost]" operation="system.ipaddress"/>
+    <parameter name="[remoteHost]" operation="set" value="[remoteHost(0)]"/>
+    <parameter name="[remotePort]" operation="file.readProperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[transport]" operation="set" value="TCP"/>
+
+    <testcase description="creates then remove all channels" name="scenario" state="true">
+        <scenario file="scenario.xml" name="MSRP" routingName="MSRP"/>
+    </testcase>
+</test>

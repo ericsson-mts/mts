@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>	
+<parameter name="[local_port]" operation="set" value="[localPort({integer})]"/>
+<parameter name="[remote_port]" operation="set" value="[remotePort({integer})]"/>
+<createListenpointSIP name="_listenpoint[local_port]" localHost="[local_ip]" localPort="[local_port]"/>
+<if> 
+<condition>
+	<test parameter="[testcase:callNumber_{integer}]" condition="list.exists"/>
+</condition>
+<then>
+	<parameter name="[testcase:callNumber_{integer}]" operation="number.add" value="[testcase:callNumber_{integer}]" value2="1" />
+</then>
+<else>
+	<parameter name="[testcase:callNumber_{integer}]" operation="set" value="0"/>
+	
+	<parameter name="[testcase:{regex:\b(\w*?field\d)\]}_mts]" operation="file.readcsv" value="[_fileName]" value2="{regex:\bfield(\d)\]}"/>
+	<parameter name="[testcase:{regex:(\b(\w*?field\d))\]}_size]" operation="list.size" value="[testcase:{regex:\b(\w*?field\d)\]}_mts]" />
+	
+	<parameter name="[testcase:{regex:\b(\w*?field\d file=&quot;\w+\.\w+&quot;)}_mts]" operation="file.readcsv" value="{regex:file=\&quot;([^\&quot;]*)\&quot;}" value2="{regex:\bfield(.) file=}"/>
+	<parameter name="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_size]" operation="list.size" value="[testcase:{regex:(\b(\w*?field\d file=&quot;\w+\.\w+&quot;))}_mts]" />
+</else>
+</if>
+<parameter name="[testcase:call_number]" operation="set" value="[testcase:callNumber_0]"/>
+<parameter name="[timestamp]" operation="system.timestamp" />
+<parameter name="[call_id]" operation="number.random" value="10000000" />
+<parameter name="[pid]" operation="number.random" value="10000000"/>
+<parameter name="[media_ip_type]" operation="set" value="4"/>
+<parameter name="[local_ip_type]" operation="set" value="4"/>
+</template>

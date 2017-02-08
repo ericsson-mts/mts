@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Gx Re-Auth (RAR/RAA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provision unsollicited QoS rules, 
+	event triggers and event report indications for the session
+<RA-Request> ::= < Diameter Header: 258, REQ, PXY, 16777238 > 
+		< Session-Id > 
+		{ Auth-Application-Id } 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		{ Destination-Realm } 
+		{ Destination-Host } 
+		{ Re-Auth-Request-Type } 
+		[ Session-Release-Cause ] 
+		[ Origin-State-Id ] 
+	   *[ Event-Trigger ] 
+		[ Event-Report-Indication ] 
+	   *[ Charging-Rule-Remove ] 
+		  Charging-Rule-Remove ::= < AVP Header: 1002 > 
+									  *[ Charging-Rule-Name ] 
+									  *[ Charging-Rule-Base-Name ] 
+									  *[ AVP ] 
+	   *[ Charging-Rule-Install ] 
+		  Charging-Rule-Install ::= < AVP Header: 1001 > 
+									   *[ Charging-Rule-Definition ] 
+										  Charging-Rule-Definition ::= < AVP Header: 1003 > 
+																		   { Charging-Rule-Name } 
+																		   [ Service-Identifier ] 
+																		   [ Rating-Group ] 
+																		  *[ Flow-Information ] 
+																		     Flow-Information ::= < AVP Header: 1058 > 
+																									  [ Flow-Description ] 
+																									  [ Packet-Filter-Identifier ] 
+																									  [ Packet-Filter-Usage ] 
+																									  [ ToS-Traffic-Class ] 
+																									  [ Security-Parameter-Index ] 
+																									  [ Flow-Label ] 
+																									  [ Flow-Direction ] 
+																									 *[ AVP ]
+																		   [ Flow-Status ] 
+																		   [ QoS-Information ] 
+																			 QoS-Information ::= < AVP Header: 1016 > 
+																									 [ QoS-Class-Identifier ] 
+																									 [ Max-Requested-Bandwidth-UL ] 
+																									 [ Max-Requested-Bandwidth-DL ] 
+																									 [ Guaranteed-Bitrate-UL ] 
+																									 [ Guaranteed-Bitrate-DL ] 
+																									 [ Bearer-Identifier ] 
+																									 [ Allocation-Retention-Priority] 
+																									 [ APN-Aggregate-Max-Bitrate-UL] 
+																									 [ APN-Aggregate-Max-Bitrate-DL] 
+																									*[ AVP ] 
+																		   
+																		   [ Reporting-Level ]
+																		   [ Online ] 
+																		   [ Offline ] 
+																		   [ Metering-Method ]
+																		   [ Precedence ]
+																		   [ AF-Charging-Identifier ]
+																		  *[ Flows ]
+																			 Flows::= < AVP Header: 510 > 
+																						  { Media-Component-Number } 
+																						 *[Flow-Number] 
+																						  [Final-Unit-Action]
+																		   [ Monitoring-Key]
+																		   [ AF-Signalling-Protocol ]
+																		  *[ AVP ]																					   
+									   *[ Charging-Rule-Name ] 
+									   *[ Charging-Rule-Base-Name ] 
+										[ Bearer-Identifier ] 
+										[ Rule-Activation-Time ] 
+										[ Rule-Deactivation-Time ] 
+										[ Resource-Allocation-Notification ] 
+										[ Charging-Correlation-Indicator ] 
+									   *[ AVP ] 
+		[ Default-EPS-Bearer-QoS ] 
+	   *[ QoS-Information ] 
+		  QoS-Information ::= < AVP Header: 1016 > 
+								  [ QoS-Class-Identifier ] 
+								  [ Max-Requested-Bandwidth-UL ] 
+								  [ Max-Requested-Bandwidth-DL ] 
+								  [ Guaranteed-Bitrate-UL ] 
+								  [ Guaranteed-Bitrate-DL ] 
+								  [ Bearer-Identifier ] 
+								  [ Allocation-Retention-Priority] 
+								  [ APN-Aggregate-Max-Bitrate-UL] 
+								  [ APN-Aggregate-Max-Bitrate-DL] 
+								 *[ AVP ] 
+		[ Revalidation-Time ] 
+	   *[ Usage-Monitoring-Information ] 
+	   *[ Proxy-Info ] 
+	   *[ Route-Record ] 
+	   *[ AVP] 
+ -->
+
+    <!-- Re-Auth-Request-Type - RFC 4006 -->
+    <parameter name="[Re-Auth-Request-Type]" operation="set" value="AUTHORIZE_ONLY"/>
+
+    <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+      previous state, for example upon reboot
+    -->
+    <parameter name="[Origin-State-Id]" operation="set" value="0"/>
+
+    <!-- Event-Trigger: when sent from the PCRF to the PCEF the EventTrigger AVP indicates an event that shall cause
+      a re-request of PCC rules
+    -->
+    <parameter name="[Event-Trigger]" operation="set" value="QOS_CHANGE"/>
+    <parameter name="[Event-Trigger]" operation="set" value="RAT_CHANGE"/>
+    <parameter name="[Event-Trigger]" operation="set" value="USER_LOCATION_CHANGE"/>
+    <parameter name="[Event-Trigger]" operation="set" value="AN_GW_CHANGE"/>
+
+    <!-- Charging-Rule-Install: used to activate, install or modify PCC rules as instructed from the PCRF to the PCEF
+    		- Charging-Rule-Definition
+    			- Charging-Rule-Name
+    			- Flow-Information
+    				- Flow-Description - TS 29.214 : IPFilterRule "action dir proto from src to dst [options]"
+    					src and dst : <address/mask> [ports]
+    			- Flows - TS 29214 : flow number in the media component
+    					
+    -->
+    <parameter name="[Charging-Rule-Name-Rtp]" operation="set" value="RN_RTP_1"/>
+    <parameter name="[Flow-Description-Rtp-in]" operation="set" value="permit in 17 from 218.45.37.28 49234 to 192.168.32.24/32 41212"/>
+    <parameter name="[Flow-Description-Rtp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41212 to 218.45.37.28 49234"/>
+    <parameter name="[Flow-Status-Rtp]" operation="set" value="ENABLED"/>
+    <parameter name="[Max-Requested-Bandwidth-UL-Rtp]" operation="set" value="28000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL-Rtp]" operation="set" value="28000"/>
+    <parameter name="[Reporting-Level-Rtp]" operation="set" value="0"/>	
+    <parameter name="[Online-Rtp]" operation="set" value="DISABLE_ONLINE"/>
+    <parameter name="[Offline-Rtp]" operation="set" value="ENABLE_OFFLINE"/>
+    <parameter name="[Metering-Method-Rtp]" operation="set" value="VOLUME"/>
+    <parameter name="[AF-Charging-Identifier-Rtp]" operation="set" value="12345FGYop"/>
+    <parameter name="[Media-Component-Number-Rtp]" operation="set" value="1"/>
+    <parameter name="[Flow-Number-Rtp]" operation="set" value="1"/>
+
+    <parameter name="[Charging-Rule-Name-Rtcp]" operation="set" value="RN_RTCP_1"/>
+    <parameter name="[Flow-Description-Rtcp-in]" operation="set" value="permit in 17 from 218.45.37.28 49235 to 192.168.32.24/32 41213"/>
+    <parameter name="[Flow-Description-Rtcp-out]" operation="set" value="permit out 17 from 192.168.32.24/32 41213 to 218.45.37.28 49235"/>
+    <parameter name="[Flow-Status-Rtcp]" operation="set" value="ENABLED"/>
+    <parameter name="[Max-Requested-Bandwidth-UL-Rtcp]" operation="set" value="2000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL-Rtcp]" operation="set" value="2000"/>
+    <parameter name="[Reporting-Level-Rtcp]" operation="set" value="0"/>	
+    <parameter name="[Online-Rtcp]" operation="set" value="DISABLE_ONLINE"/>
+    <parameter name="[Offline-Rtcp]" operation="set" value="ENABLE_OFFLINE"/>
+    <parameter name="[Metering-Method-Rtcp]" operation="set" value="VOLUME"/>
+    <parameter name="[AF-Charging-Identifier-Rtcp]" operation="set" value="19845FGjip"/>
+    <parameter name="[Media-Component-Number-Rtcp]" operation="set" value="1"/>
+    <parameter name="[Flow-Number-Rtcp]" operation="set" value="2"/>
+
+    <parameter name="[QoS-Class-Identifier]" operation="set" value="1"/>
+    <parameter name="[Max-Requested-Bandwidth-UL]" operation="set" value="30000"/>
+    <parameter name="[Max-Requested-Bandwidth-DL]" operation="set" value="30000"/>
+    <parameter name="[Guaranteed-Bitrate-UL]" operation="set" value="30000"/>
+    <parameter name="[Guaranteed-Bitrate-DL]" operation="set" value="30000"/>
+    <parameter name="[Priority-Level]" operation="set" value="2"/>
+    <parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
+    <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestRAR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        <avp code="Origin-State-Id:278" value="[Origin-State-Id]"/>
+        <avp code="Charging-Rule-Install:1001" vendorId="[vendorID]">
+            <avp code="Charging-Rule-Definition:1003" vendorId="[vendorID]">
+            <avp code="Charging-Rule-Name:1005" value="[Charging-Rule-Name-Rtp]" vendorId="[vendorID]"/>
+            <avp code="Flow-Information:1058">
+                <avp code="Flow-Description:507" value="[Flow-Description-Rtp-in]" vendorId="[vendorID]"/>
+            </avp>
+            <avp code="Flow-Information:1058">
+                <avp code="Flow-Description:507" value="[Flow-Description-Rtp-out]" vendorId="[vendorID]"/>
+            </avp>
+            <avp code="Flow-Status:511" value="[Flow-Status-Rtp]" vendorId="[vendorID]"/>
+            <avp code="QoS-Information:1016" vendorId="[vendorID]">
+                <avp code="Max-Requested-Bandwidth-UL:516" value="[Max-Requested-Bandwidth-UL-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Max-Requested-Bandwidth-DL:515" value="[Max-Requested-Bandwidth-DL-Rtp]" vendorId="[vendorID]"/>
+            </avp>
+            <avp code="Reporting-Level:1011" value="[Reporting-Level-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Online:1009" value="[Online-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Offline:1008" value="[Offline-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Metering-Method:1007" value="[Metering-Method-Rtp]" vendorId="[vendorID]"/>
+                <avp code="AF-Charging-Identifier:505" value="[AF-Charging-Identif ier-Rtp]" vendorId="[vendorID]"/>
+                <avp code="Flows:510" vendorId="[vendorID]">
+                    <avp code="Media-Component-Number:518" value="[Media-Component-Number-Rtp]" vendorId="[vendorID]"/>
+                    <avp code="Flow-Number:509" value="[Flow-Number-Rtp]" vendorId="[vendorID]"/>
+                </avp>
+            </avp>
+            <avp code="Charging-Rule-Definition:1003" vendorId="[vendorID]">
+                <avp code="Charging-Rule-Name:1005" value="[Charging-Rule-Name-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Flow-Information:1058">
+                    <avp code="Flow-Description:507" value="[Flow-Description-Rtcp-in]" vendorId="[vendorID]"/>
+                </avp>
+                <avp code="Flow-Information:1058">
+                    <avp code="Flow-Description:507" value="[Flow-Description-Rtcp-out]" vendorId="[vendorID]"/>
+                </avp>
+                <avp code="Flow-Status:511" value="[Flow-Status-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="QoS-Information:1016" vendorId="[vendorID]">
+                    <avp code="Max-Requested-Bandwidth-UL:516" value="[Max-Requested-Bandwidth-UL-Rtcp]" vendorId="[vendorID]"/>
+                    <avp code="Max-Requested-Bandwidth-DL:515" value="[Max-Requested-Bandwidth-DL-Rtcp]" vendorId="[vendorID]"/>
+                </avp>
+                <avp code="Reporting-Level:1011" value="[Reporting-Level-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Online:1009" value="[Online-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Offline:1008" value="[Offline-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Metering-Method:1007" value="[Metering-Method-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="AF-Charging-Identifier:505" value="[AF-Charging-Identifier-Rtcp]" vendorId="[vendorID]"/>
+                <avp code="Flows:510" vendorId="[vendorID]">
+                    <avp code="Media-Component-Number:518" value="[Media-Component-Number-Rtcp]" vendorId="[vendorID]"/>
+                    <avp code="Flow-Number:509" value="[Flow-Number-Rtcp]" vendorId="[vendorID]"/>
+                </avp>
+            </avp>
+        </avp>
+        <avp code="QoS-Information:1016" vendorId="[vendorID]">
+            <avp code="QoS-Class-Identifier:1028" value="[QoS-Class-Identifier]" vendorId="[vendorID]"/>
+            <avp code="Guaranteed-Bitrate-UL:1026" value="[Guaranteed-Bitrate-UL]" vendorId="[vendorID]"/>
+            <avp code="Guaranteed-Bitrate-DL:1025" value="[Guaranteed-Bitrate-DL]" vendorId="[vendorID]"/>
+            <avp code="Max-Requested-Bandwidth-UL:516" value="[Max-Requested-Bandwidth-UL]" vendorId="[vendorID]"/>
+            <avp code="Max-Requested-Bandwidth-DL:515" value="[Max-Requested-Bandwidth-DL]" vendorId="[vendorID]"/>
+            <avp code="Allocation-Retention-Priority:1034" vendorId="[vendorID]">
+                <avp code="Priority-Level:1046" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability:1047" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability:1048" value="[Pre-emption-Vulnerability]"/>
+            </avp>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerRAA" channel="channel_client" request="false" type="Re-Auth" result="DIAMETER_SUCCESS">
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<while>
+		<condition>
+			<test parameter="[test:stopeNodeB1]" condition="string.equals" value="false" />
+		</condition>
+		<do>
+			<receiveMessageETHERNET name="receive message">
+				<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+				<parameter name="[ethType]" operation="protocol.setFromMessage" value="ethernet.type" />
+				<parameter name="[dstMac]"  operation="protocol.setFromMessage" value="ethernet.dstMac" />
+				<parameter name="[srcMac]"	operation="protocol.setFromMessage" value="ethernet.srcMac" />
+			</receiveMessageETHERNET>
+			<sendMessageGTP name="send gtp-u message" remoteHost="[sgwS1UIP]" remotePort="[gtpuPort]" transport="[gtpuTransportProto]">
+				<headerV1 type="G-PDU:255" tunnelEndpointId="[teidsgw]"/>
+				<pdu format="binary">h[rawData]</pdu>
+			</sendMessageGTP>
+		</do>
+	</while>
+	
+<finally>
+	<removeProbeETHERNET name="capture" />
+</finally>
+
+</scenario>

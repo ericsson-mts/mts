@@ -1,0 +1,333 @@
+<!--verifie que le service profile existe-->
+<if>
+	<condition>
+		<test parameter="[SP[impu]]" condition="exists"/>
+		<test parameter="[SP[impu]]" condition="contains" value="xml"/>
+	</condition>
+	<then>
+		<parameter name="[part]" operation="set"   value="0"/>
+	</then>
+	<else>
+		<parameter name="[part]" operation="set"   value="1"/>
+		<!--recupere le service profile-->
+		<parameter name="[operation]" 	operation="set" 	value="3"/> 
+		&SAR_sans_private;
+		<!--session case-->
+		<if>
+			<condition>
+				<test parameter="[SC]" condition="equals" value="0"/>
+			</condition>
+			<then>
+				<parameter name="[SC]" operation="set" value="3"/>
+			</then>
+			<else>
+				<parameter name="[SC]" operation="set" value="2"/>
+			</else>
+		</if>
+	</else>
+</if>
+<!--recupere les initial_filter_criteria et ses priority-->
+<parameter name="[tab-ifc]" 	operation="xpath" 	value="[SP[impu](0)]"	value2="//InitialFilterCriteria"/>
+<parameter name="[priority]" 	operation="xpath" 	value="[SP[impu](0)]"	value2="//Priority"/>
+<parameter name="[priority]" 	operation="regexmatches" 	value="[priority]"	value2="[0-9]*"/>
+<!--verifie l existence d ancienne priorite-->
+<parameter name="[size]" 		operation="size" 	value="[priority]"/>
+<parameter name="[size1]" operation="size" value="[ifc[ifc_callid]]"/>
+<!--Verifie que ce n est pas le dernier priorite-->
+<if>
+	<condition>
+		<test parameter="[size1]" condition="equals" value="1"/>
+		<test parameter="[ifc[ifc_callid]]" condition="contains" value="FIN"/>
+	</condition>
+	<then>
+		<parameter name="[size1]" operation="set" value="0"/>
+		<parameter name="[size]" operation="set" value="0"/>
+	</then>
+</if>
+<!--Verifie que ifc ifc call i d existe-->
+<if>
+	<condition>
+		<test parameter="[size1]" condition="equals" value="1"/>
+	</condition>
+	<then>
+		<!--si c est le cas-->
+		<parameter name="[index]" 		operation="set" 	value="0"/>
+		<while>
+			<condition>
+				<test parameter="[index]" condition="lowerThan" value="[size]"/>
+			</condition>
+			<do>
+				<!--Si la priorite est plus grande que l ifc ifc call id-->
+				<if>
+					<condition>
+						<test parameter="[priority([index])]" condition="greaterthan" value="[ifc[lastCall-ID]]"/>
+					</condition>
+					<then>
+						<!--incremente index-->
+						<parameter name="[index]" operation="add" value="[index]" value2="1"/>
+					</then>
+					<else>
+						<!--supprime la ligne des tableaux-->
+						<parameter name="[tab-ifc]" 	operation="removeAt" 	value="[tab-ifc]"	value2="[index]"/>
+						<parameter name="[priority]" 	operation="removeAt" 	value="[priority]"	value2="[index]"/>
+						<parameter name="[size]" 		operation="substract" 	value="[size]" 		value2="1"/>
+					</else>
+				</if>
+			</do>
+		</while>
+	</then>
+</if>
+<!--traite les ifc-->
+<parameter name="[index3]" 		operation="set" 	value="0"/>
+<!--traite toutes les priorites-->
+<while>
+	<condition>
+		<test parameter="[index3]" condition="lowerThan" value="[size]"/>
+	</condition>
+	<do>		
+		<parameter name="[index2]" 		operation="set" 	value="1"/>
+		<parameter name="[prio]" 		operation="set" 	value="0"/>
+		<!--recherche la plus petite priorite-->
+		<while>
+			<condition>
+				<test parameter="[index2]" condition="lowerThan" value="[size]"/>
+			</condition>
+			<do>
+				<!--Si la priorite est plus petite la traite avant-->
+				<if>
+					<condition>
+						<test parameter="[priority([index2])]" condition="greaterThan" value="[priority([prio])]"/>
+					</condition>
+					<then/>
+					<else>
+						<parameter name="[prio]" 		operation="set" 	value="[index2]"/>
+					</else>
+				</if>
+				<parameter name="[index2]" 		operation="add" 	value="[index2]"	value2="1"/>
+			</do>
+		</while>
+		<!-- Valeur de prio-->
+		<parameter name="[vprio]" 				operation="set"		value="[priority([prio])]"/>
+		
+		<!--recupere le triggerpoint le profile partindicator et l applicationserver-->
+		<parameter name="[ifc]" 					operation="set" 		value="[tab-ifc([prio])]"/>
+		<parameter name="[tab-ifc]" 				operation="removeAt" 	value="[tab-ifc]"		value2="[prio]"/>
+		<parameter name="[priority]" 				operation="removeAt" 	value="[priority]"		value2="[prio]"/>
+		<parameter name="[ProfilePartIndicator]"	operation="xpath" 		value="[ifc]"	value2="//ProfilePartIndicator"/>
+			
+		<parameter name="[TriggerPoint]" 			operation="xpath"		value="[ifc]"	value2="//TriggerPoint"/>
+		<parameter name="[ApplicationServer]" 		operation="xpath"		value="[ifc]"	value2="//ApplicationServer"/>
+		<!--verifie le profile part indicator-->
+		<if>
+			<condition>
+				<test parameter="[ProfilePartIndicator]" condition="isempty"/>
+			</condition>
+			<then/>
+			<else>
+				<parameter name="[ProfilePartIndicator]" operation="regexmatches" 	value="[ProfilePartIndicator]"	value2="[0-9]*"/>
+				<if>
+					<condition>
+						<test parameter="[ProfilePartIndicator]" condition="equals" value="[part]"/>
+					</condition>
+					<then/>
+					<else>
+						<goto  name="goto_findeboucle" label="findeboucle" state="true"/>
+					</else>
+				</if>
+			</else>
+		</if>
+		<!--verifie le triggerpoint-->
+		<if>
+			<condition>
+				<test parameter="[TriggerPoint]" condition="isempty"/>
+			</condition>
+			<then/>
+			<else>
+				<parameter name="[ConditionTypeCNF]"	operation="xpath" 		value="[TriggerPoint]"	value2="//ConditionTypeCNF"/>
+				<parameter name="[ConditionTypeCNF]" operation="regexmatches" 	value="[ConditionTypeCNF]"	value2="[0-9]+"/>
+				<parameter name="[SPT]" 			operation="xpath"		value="[TriggerPoint]"	value2="//SPT"/>
+				<parameter name="[Group]" 			operation="xpath"		value="[TriggerPoint]"	value2="//Group"/>
+				<parameter name="[Group]" 			operation="regexmatches" 	value="[Group]"	value2="[0-9]*"/>
+				<if>
+					<condition>
+						<test parameter="[ConditionTypeCNF]" condition="equals" value="0"/>
+					</condition>
+					<then>
+						<!--cas disjonctif-->
+						<parameter name="[Size]" 				operation="size"	value="[SPT]"/>
+						<parameter name="[index1]" 				operation="set"		value="0"/>
+						<parameter name="[index2]" 				operation="set"		value="1"/>
+						<parameter name="[Rep]" 				operation="set"		value="false"/>
+						<while>
+							<condition>
+								<test parameter="[index1]" condition="lowerthan" value="[Size]"/>
+								<test parameter="[Rep]" condition="equals" value="false"/>
+							</condition>
+							<do>
+								<parameter name="[index]" 				operation="set"		value="[index1]"/>
+								&spt_scscf;			
+								<while>
+									<condition>
+										<test parameter="[index2]" condition="lowerthan" value="[Size]"/>
+									</condition>
+									<do>
+										<if>
+											<condition>
+												<test parameter="[Group([index2])]" condition="equals" value="[Group([index1])]"/>
+											</condition>
+											<then>
+												<if>
+													<condition>
+														<test parameter="[Rep]" condition="equals" value="true"/>
+													</condition>
+													<then>
+														<parameter name="[index]" 				operation="set"		value="[index2]"/>
+														&spt_scscf;	
+													</then>	
+												</if>
+												<parameter name="[SPT]" 	operation="removeat"	value="[SPT]"	value2="[index2]"/>
+												<parameter name="[Group]" 	operation="removeat"	value="[Group]"	value2="[index2]"/>
+												<parameter name="[Size]" 	operation="size"		value="[SPT]"/>
+											</then>
+											<else>
+												<parameter name="[index2]" 	operation="add"	value="[index2]"	value2="1"/>
+											</else>
+										</if>
+									</do>
+								</while>
+								
+								<parameter name="[index1]" 	operation="add"	value="[index1]"	value2="1"/>
+								<parameter name="[index2]" 	operation="add"	value="[index1]"	value2="1"/>
+							</do>
+						</while> 
+						<if>
+							<condition>
+								<test parameter="[Rep]" condition="equals" value="false"/>
+							</condition>
+							<then>
+								<goto  name="goto_findeboucle" label="findeboucle" state="true"/>
+							</then>
+						</if>					
+					</then>
+					<else>
+						<!--cas conjonctif-->
+						<parameter name="[Size]" 				operation="size"	value="[SPT]"/>
+						<parameter name="[index1]" 				operation="set"		value="0"/>
+						<parameter name="[index2]" 				operation="set"		value="1"/>
+						<while>
+							<condition>
+								<test parameter="[index1]" condition="lowerthan" value="[Size]"/>
+							</condition>
+							<do>
+								<parameter name="[index]" 				operation="set"		value="[index1]"/>
+								&spt_scscf;			
+								<while>
+									<condition>
+										<test parameter="[index2]" condition="lowerthan" value="[Size]"/>
+									</condition>
+									<do>
+										<if>
+											<condition>
+												<test parameter="[Group([index2])]" condition="equals" value="[Group([index1])]"/>
+											</condition>
+											<then>
+												<if>
+													<condition>
+														<test parameter="[Rep]" condition="equals" value="true"/>
+													</condition>
+													<then/>
+													<else>
+														<parameter name="[index]" 				operation="set"		value="[index2]"/>
+														&spt_scscf;	
+													</else>
+												</if>
+												<parameter name="[SPT]" 	operation="removeat"	value="[SPT]"	value2="[index2]"/>
+												<parameter name="[Group]" 	operation="removeat"	value="[Group]"	value2="[index2]"/>
+												<parameter name="[Size]" 	operation="size"		value="[SPT]"/>
+											</then>
+											<else>
+												<parameter name="[index2]" 	operation="add"	value="[index2]"	value2="1"/>
+											</else>
+										</if>
+									</do>
+								</while>
+								<if>
+									<condition>
+										<test parameter="[Rep]" condition="equals" value="false"/>
+									</condition>
+									<then>
+										<goto  name="goto_findeboucle" label="findeboucle" state="true"/>
+									</then>
+								</if>
+								<parameter name="[index1]" 	operation="add"	value="[index1]"	value2="1"/>
+								<parameter name="[index2]" 	operation="add"	value="[index1]"	value2="1"/>
+							</do>
+						</while>
+					</else>
+				</if>	
+			</else>
+		</if>	
+		<parameter name="[ServerName]" 	operation="xpath"	value="[ApplicationServer]"	value2="//ServerName"/>
+		<parameter name="[ServerName]" 	operation="regexmatches" 	value="[ServerName]"	value2="sip[.-:@_0-9a-zA-Z]+"/>
+		<parameter name="[lastHeader]" 	operation="addfirst" value="[lastHeader]"	value2="Route:[ServerName];lr,sip:[Adresse-Tester];lr;Call:[lastCall-ID]"/>
+<sendRequestSIP name="AS_request" providerName="[scenarioName]">
+<![CDATA[[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendRequestSIP>
+		<parameter name="[size1]" 		operation="size" 	value="[priority]"/>
+		<if>
+			<condition>
+				<test parameter="[size1]" condition="greaterthan" value="0"/>
+			</condition>
+			<then>
+				<parameter name="[ifc[lastCall-ID]]" 	operation="set"	value="[vprio]"/>
+			</then>
+			<else>
+				<parameter name="[ifc[lastCall-ID]]" 	operation="set"	value="FIN"/>
+			</else>
+		</if>
+		<!--supprime le service profile si celui ci n est pas enregistre-->
+		<if>
+			<condition>
+				<test parameter="[part]" condition="equals" value="1"/>
+			</condition>
+			<then>
+				<parameter name="[SP[impu]]" 	operation="unset"/>
+			</then>
+		</if>
+		<goto  name="goto_Begin" label="Begin" state="true"/>
+		<label name="findeboucle"/>
+		
+		<if>
+			<condition>
+				<test parameter="[size1]" condition="equals" value="[size]"/>
+			</condition>
+			<then>
+				<parameter name="[index3]" 		operation="add" 	value="[index3]" value2="1"/>
+			</then>
+			<else>
+				<parameter name="[size]" 		operation="substract" 	value="[size]" value2="1"/>
+			</else>
+		</if>	
+	</do>
+</while>
+<!--supprime le service profile si celui ci n est pas enregistre-->
+<if>
+	<condition>
+		<test parameter="[part]" condition="equals" value="1"/>
+	</condition>
+	<then>
+		<parameter name="[SP[impu]]" 	operation="unset"/>
+	</then>
+</if>	
+<if>
+	<condition>
+		<test parameter="[part]" condition="equals"	value="2"/>
+	</condition>
+	<then>
+		<parameter name="[Sp[impu]]" operation="unset"/>
+	</then>
+</if>
