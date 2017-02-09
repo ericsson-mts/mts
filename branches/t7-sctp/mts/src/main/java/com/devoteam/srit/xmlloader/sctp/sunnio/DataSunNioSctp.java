@@ -23,9 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sctp.sunnio;
 
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.sctp.*;
 
 import java.nio.*;

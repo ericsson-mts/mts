@@ -24,10 +24,8 @@
 package com.devoteam.srit.xmlloader.sctp.sunnio;
 
 import com.devoteam.srit.xmlloader.sctp.InfoSctp;
-import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.sctp.AssociationSctp;
 
-import java.lang.UnsupportedOperationException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 

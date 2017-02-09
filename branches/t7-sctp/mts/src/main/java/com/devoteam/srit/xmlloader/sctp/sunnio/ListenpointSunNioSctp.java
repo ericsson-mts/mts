@@ -30,19 +30,17 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOHandler;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.*;
-
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.sctp.*;
-import com.sun.nio.sctp.SctpChannel;
-import com.sun.nio.sctp.SctpServerChannel;
-import com.sun.nio.sctp.SctpStandardSocketOptions;
+
+import com.sun.nio.sctp.*;
 
 /**
  * @author emicpou
@@ -91,7 +89,22 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
         // Set up sctp server channel
         try
         {
-        	//create
+	    	//ensure a channel config is available
+        	//TODO add setters and let the scenario override the default config
+    		ChannelConfigSctp configSctp = null;
+    		
+    		//disabled because we are in the ctor of the PROTOCOL_SCTP stack
+    		/*
+			if (configSctp == null){
+				Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+		        Config stackConfig = sctpStack.getConfig();
+		        configSctp = new ChannelConfigSctp();
+				configSctp.setFromStackConfig(stackConfig);
+			}
+			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ListenpointSunNioSctp#create config="+configSctp);			
+    		*/
+    		
+			//create
         	assert(this.sctpServerChannel==null);
             this.sctpServerChannel = SctpServerChannel.open();
 
@@ -117,19 +130,12 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
 	        	}
 	        }
             
-            // @todo multihoming
-            // Adds the given address to the bound addresses for the channel's socket. 
-            // this.sctpServerChannel.bindAddress(otherLocalAddress);
-            // Set<SocketAddress> allLocalAddresses = this.sctpServerChannel.getAllLocalAddresses();
-            
-            /// @todo set options
-            // http://docs.oracle.com/javase/8/docs/jre/api/nio/sctp/spec/com/sun/nio/sctp/SctpSocketOption.html
-            // this.sctpServerChannel.setOption( ... );
-	        
-            //max streams count allowed
-            {
-		        int maxInStreams = Short.toUnsignedInt( (short)-1 );
-		        int maxOutStreams = Short.toUnsignedInt( (short)-1 );
+            //options
+            if( configSctp!=null ){
+				GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#open config="+configSctp);			
+
+				int maxInStreams = Short.toUnsignedInt(configSctp.max_instreams);
+		        int maxOutStreams = Short.toUnsignedInt(configSctp.num_ostreams);
 		        SctpStandardSocketOptions.InitMaxStreams initMaxStreamsSctpSocketOption =  SctpStandardSocketOptions.InitMaxStreams.create(maxInStreams, maxOutStreams);
 		        assert(initMaxStreamsSctpSocketOption!=null);	            
 		      	this.sctpServerChannel.setOption(SctpStandardSocketOptions.SCTP_INIT_MAXSTREAMS,initMaxStreamsSctpSocketOption );

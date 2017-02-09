@@ -181,7 +181,10 @@ public abstract class MsgSctp extends Msg{
 	    		associationSctp = infoSctp.getAssociation();
 	    	}
 
-			xml += channelSctp.toXml_PeerAddresses( associationSctp );
+			xml += channelSctp.toXml_LocalAddresses( associationSctp );
+    		xml += System.lineSeparator();
+
+    		xml += channelSctp.toXml_PeerAddresses( associationSctp );
     		xml += System.lineSeparator();
 		}
 
@@ -283,7 +286,7 @@ public abstract class MsgSctp extends Msg{
      */
     //@Nullable
     @Override
-    public Parameter getParameter(String path) throws Exception
+    public final Parameter getParameter(String path) throws Exception
 	{
 		Parameter var = super.getParameter(path);
 		if (var != null)

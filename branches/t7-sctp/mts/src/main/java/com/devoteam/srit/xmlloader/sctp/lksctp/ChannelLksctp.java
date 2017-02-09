@@ -327,21 +327,64 @@ public class ChannelLksctp extends ChannelSctp
  	    return ret;
     }
 
-    
     /**
-     *  
+     *  @param associationFilter optional association id (Nullable)
      */
-    @Override
-    public String toXml_PeerAddresses(AssociationSctp associationSctp) throws Exception{
+    public String toXml_LocalAddresses(AssociationSctp associationFilter) throws Exception{
 		if (this.socket != null) {
 			SCTPSocket theSCTPSocket = this.socket.getSCTPSocket();
 			if (theSCTPSocket != null) {
 				AssociationId associationId = null;
-				if( associationSctp!=null && associationSctp instanceof AssociationLksctp ){
-					AssociationLksctp associationLksctp = (AssociationLksctp)associationSctp;
+				if( associationFilter!=null && associationFilter instanceof AssociationLksctp ){
+					AssociationLksctp associationLksctp = (AssociationLksctp)associationFilter;
 					associationId = associationLksctp.sinfo_assoc_id;
 				}
-				if (associationId != null && associationId.hashCode() != 0) {
+				else{
+					// TODO ensure it will NOT filter
+					associationId = AssociationId.default_;
+				}
+				
+				if (associationId != null /*&& associationId.hashCode() != 0*/) {
+					int port= theSCTPSocket.getLocalInetPort();
+					Collection<InetAddress> col = theSCTPSocket.getLocalInetAddresses(associationId);
+					if (col != null) {
+						String xml = "";
+						xml += "<LocalAddresses>";
+						xml += System.lineSeparator();
+						for (InetAddress ia : col){
+							xml += "<LocalAddress ";
+							xml += "address=\"" + ia.getHostAddress() + "\" ";
+							//xml += "port=\"" + port + "\" ";
+							xml += "/>";
+							xml += System.lineSeparator();
+						}
+						xml += "</LocalAddresses>";
+						return xml;
+					}
+				}
+			}
+		}
+    	return "<LocalAddresses />";
+    }
+    
+    /**
+     *  @param associationFilter optional association id (Nullable)
+     */
+    public String toXml_PeerAddresses(AssociationSctp associationFilter) throws Exception{
+		if (this.socket != null) {
+			SCTPSocket theSCTPSocket = this.socket.getSCTPSocket();
+			if (theSCTPSocket != null) {
+				AssociationId associationId = null;
+				if( associationFilter!=null && associationFilter instanceof AssociationLksctp ){
+					AssociationLksctp associationLksctp = (AssociationLksctp)associationFilter;
+					associationId = associationLksctp.sinfo_assoc_id;
+				}
+				else{
+					// TODO ensure it will NOT filter
+					associationId = AssociationId.default_;
+				}
+				
+				if (associationId != null /*&& associationId.hashCode() != 0*/) {
 					int port= theSCTPSocket.getPeerInetPort(associationId);
 					Collection<InetAddress> col = theSCTPSocket.getPeerInetAddresses(associationId);
 					if (col != null) {
@@ -368,48 +411,41 @@ public class ChannelLksctp extends ChannelSctp
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
     
-    /** 
-     * Get a parameter from the message 
+    /**
+     * 
+     * @return peer hosts adresses
      */
-    @Override
-    public Parameter getParameter(String path) throws Exception
-    {
-		Parameter var = super.getParameter(path);
-		if (var != null)
-		{
-			return var;
-		}
-
-		var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
-
-        if(params[1].equalsIgnoreCase("peerHosts")) 
-        {
-        	SCTPSocket sctpSocket = this.getSocketLksctp().getSCTPSocket();
-			if (sctpSocket != null)
-			{						
-				Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(this.aid);
-				for (InetAddress ia : col)
-				{	
-					var.add(ia.getHostAddress());						
-				}
-			}
-        }
-        else if(params[1].equalsIgnoreCase("peerPort")) 
-        {
-        	SCTPSocket sctpSocket = this.getSocketLksctp().getSCTPSocket();
-			if (sctpSocket != null)
+    protected Parameter getParameterPeerHosts() throws Exception{
+		Parameter var = new Parameter();
+		
+    	SCTPSocket sctpSocket = this.getSocketLksctp().getSCTPSocket();
+		if (sctpSocket != null)
+		{						
+			Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(this.aid);
+			for (InetAddress ia : col)
 			{	
-				int port = sctpSocket.getPeerInetPort(this.aid);
-				var.add(Integer.toString(port));
+				var.add(ia.getHostAddress());						
 			}
-        }    
-        else
-        {
-        	Parameter.throwBadPathKeywordException(path);
-        }
-        return var; 
+		}
+		
+		return var;
+    }
+    
+    /**
+     * 
+     * @return peer hosts adresses
+     */
+    protected Parameter getParameterPeerPort() throws Exception{
+		Parameter var = new Parameter();
+		
+		SCTPSocket sctpSocket = this.getSocketLksctp().getSCTPSocket();
+		if (sctpSocket != null)
+		{	
+			int port = sctpSocket.getPeerInetPort(this.aid);
+			var.add(Integer.toString(port));
+		}
+		
+		return var;
     }
 
 }

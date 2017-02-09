@@ -23,30 +23,29 @@
 
 package com.devoteam.srit.xmlloader.sctp.sunnio;
 
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOHandler;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sctp.*;
-import com.devoteam.srit.xmlloader.sctp.lksctp.DataLksctp;
-import com.devoteam.srit.xmlloader.sctp.lksctp.MsgLksctp;
-import com.devoteam.srit.xmlloader.sctp.lksctp.StackLksctp;
 
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.*;
 
 import com.sun.nio.sctp.*;
+
+import dk.i1.sctp.SCTPSocket;
 
 /**
  * @author emicpou
@@ -61,17 +60,19 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
     public static final int MAX_RECEIVE_BUFFER_LENGTH = Config.getConfigByName("sctp.properties").getInteger("MAX_RECEIVE_BUFFER_LENGTH", 64*1024);
 
     /**
-	 * 
+	 * the implementation communication object
 	 */
 	private SctpChannel sctpChannel;
+	//private SctpMultiChannel sctpChannel;
 	
 	/**
-	 * 
+	 * the implementation communication object is a selectableChannel.
+	 * it is monitored using a selection key
 	 */
 	private SelectionKey selectionKey;
 	
 	/**
-	 * 
+	 * stats
 	 */
     private long startTimestamp = 0;    
 
@@ -131,6 +132,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		}
 		
 		this.sctpChannel = sctpChannel;
+		
 		//some inits here
 
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#ctor");
@@ -155,14 +157,121 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
     }
 
     /**
-     *  
+     *  @param associationFilter optional association id (Nullable)
+     *  TODO support filtering
      */
-    @Override
-    public String toXml_PeerAddresses(AssociationSctp associationSctp) throws Exception{
-    	// TODO implementer
+    public String toXml_LocalAddresses(AssociationSctp associationFilter) throws Exception{
+       	if( this.sctpChannel!=null){
+    		Set<SocketAddress> socketAddresses = this.sctpChannel.getAllLocalAddresses();
+    		if( !socketAddresses.isEmpty() ){
+				String xml = "";
+				xml += "<LocalAddresses>";
+				xml += System.lineSeparator();
+				for (SocketAddress socketAddress : socketAddresses){
+					assert(socketAddress instanceof InetSocketAddress);
+					if( socketAddress instanceof InetSocketAddress ){
+						InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+						xml += "<LocalAddress ";
+						xml += "address=\"" + inetSocketAddress.getAddress().getHostAddress() + "\" ";
+						xml += "port=\"" + inetSocketAddress.getPort() + "\" ";
+						xml += "/>";
+						xml += System.lineSeparator();
+					}
+				}
+				xml += "</LocalAddresses>";
+				return xml;
+			}
+		}
+    	return "<LocalAddresses />";
+    }
+    
+    /**
+     *  @param associationFilter optional association id (Nullable)
+     *  TODO support filtering
+     */
+    public String toXml_PeerAddresses(AssociationSctp associationFilter) throws Exception{
+    	if( this.sctpChannel!=null){
+    		Set<SocketAddress> socketAddresses = this.sctpChannel.getRemoteAddresses();
+    		if( !socketAddresses.isEmpty() ){
+				String xml = "";
+				xml += "<PeerAddresses>";
+				xml += System.lineSeparator();
+				for (SocketAddress socketAddress : socketAddresses){
+					assert(socketAddress instanceof InetSocketAddress);
+					if( socketAddress instanceof InetSocketAddress ){
+						InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+						xml += "<PeerAddress ";
+						xml += "address=\"" + inetSocketAddress.getAddress().getHostAddress() + "\" ";
+						xml += "port=\"" + inetSocketAddress.getPort() + "\" ";
+						xml += "/>";
+						xml += System.lineSeparator();
+					}
+				}
+				xml += "</PeerAddresses>";
+				return xml;
+			}
+		}
     	return "<PeerAddresses />";
     }
     
+    /**
+     * 
+     * @return peer hosts adresses
+     */
+    protected Parameter getParameterPeerHosts() throws Exception{
+		Parameter var = new Parameter();
+    	if( this.sctpChannel!=null){
+    		Set<SocketAddress> socketAddresses = this.sctpChannel.getRemoteAddresses();
+    		if( !socketAddresses.isEmpty() ){
+				for (SocketAddress socketAddress : socketAddresses){
+					assert(socketAddress instanceof InetSocketAddress);
+					if( socketAddress instanceof InetSocketAddress ){
+						InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+						String hostAddress = inetSocketAddress.getAddress().getHostAddress();
+						var.add(hostAddress);
+					}
+				}
+			}
+		}
+		return var;
+    }
+    
+    /**
+     * 
+     * @return peer hosts port
+     */
+    protected Parameter getParameterPeerPort() throws Exception{
+		Parameter var = new Parameter();
+    	if( this.sctpChannel!=null){
+    		Set<SocketAddress> socketAddresses = this.sctpChannel.getRemoteAddresses();
+    		if( !socketAddresses.isEmpty() ){
+    			//takes the first socketAddress
+    			Iterator<SocketAddress> socketAddressesIterator = socketAddresses.iterator();
+    			
+    			SocketAddress firstSocketAddress = socketAddressesIterator.next();
+				assert(firstSocketAddress instanceof InetSocketAddress);
+				if( firstSocketAddress instanceof InetSocketAddress ){
+					InetSocketAddress firstInetSocketAddress = (InetSocketAddress)firstSocketAddress;
+					int firstPort = firstInetSocketAddress.getPort();
+					var.add(firstPort);
+									
+					//all ports should be the same
+					//this check can be disabled
+	    			while ( socketAddressesIterator.hasNext() ){
+	    				SocketAddress socketAddress = socketAddressesIterator.next();
+	    				assert(socketAddress instanceof InetSocketAddress);
+	    				if( socketAddress instanceof InetSocketAddress ){
+	    					InetSocketAddress inetSocketAddress = (InetSocketAddress)socketAddress;
+	    					int port = inetSocketAddress.getPort();
+	    					assert(port==firstPort);
+	    				}
+	    			}
+				}
+			}
+		}
+		return var;
+    }
+
     //---------------------------------------------------------------------
     // methods for the transport
     //---------------------------------------------------------------------
@@ -191,6 +300,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 					configSctp = new ChannelConfigSctp();
 					configSctp.setFromStackConfig(stackConfig);
 				}
+				GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#open config="+configSctp);			
 		    	
 				//create
 		        assert(this.sctpChannel==null);	            

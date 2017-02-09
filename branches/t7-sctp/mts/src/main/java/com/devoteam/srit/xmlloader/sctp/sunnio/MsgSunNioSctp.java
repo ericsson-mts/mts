@@ -29,7 +29,6 @@ import com.devoteam.srit.xmlloader.sctp.*;
 import com.sun.nio.sctp.MessageInfo;
 
 import java.net.*;
-import java.nio.*;
 import java.util.Set;
 
 import com.sun.nio.sctp.*;

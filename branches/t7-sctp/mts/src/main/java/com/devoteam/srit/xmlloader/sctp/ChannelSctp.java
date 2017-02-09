@@ -29,7 +29,10 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import java.net.InetAddress;
+import java.util.Collection;
 import java.util.List;
 
 import org.dom4j.Element;
@@ -181,10 +184,7 @@ public abstract class ChannelSctp extends Channel
     	this.configSctp.setFromXml( sctpElements );
 		
 		// log datas
-		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "ChannelConfigSctp.num_ostreams=", this.configSctp.num_ostreams);			
-		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "ChannelConfigSctp.max_instreams=", this.configSctp.max_instreams);
-		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "ChannelConfigSctp.max_attempts=", this.configSctp.max_attempts);
-		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, "ChannelConfigSctp.max_init_timeo=", this.configSctp.max_init_timeo);
+		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSctp#parseFromXml config="+this.configSctp);			
 
 
     	//common sctp code here...
@@ -219,9 +219,14 @@ public abstract class ChannelSctp extends Channel
     }
    
     /**
-     *  @param associationSctp optional association id (required by lksctp)
+     *  @param associationFilter optional association id (Nullable)
      */
-    public abstract String toXml_PeerAddresses(AssociationSctp associationSctp) throws Exception;
+    public abstract String toXml_LocalAddresses(AssociationSctp associationFilter) throws Exception;
+
+    /**
+     *  @param associationFilter optional association id (Nullable)
+     */
+    public abstract String toXml_PeerAddresses(AssociationSctp associationFilter) throws Exception;
         
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
@@ -231,16 +236,43 @@ public abstract class ChannelSctp extends Channel
      * Get a parameter from the message 
      */
     @Override
-    public Parameter getParameter(String path) throws Exception
+    public final Parameter getParameter(String path) throws Exception
     {
 		Parameter var = super.getParameter(path);
 		if (var != null)
 		{
 			return var;
 		}
-       //common sctp code here...
 
-       return null;
-    }
+		var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+
+        if(params[1].equalsIgnoreCase("peerHosts")) 
+        {
+        	var = this.getParameterPeerHosts();
+        }
+        else if(params[1].equalsIgnoreCase("peerPort")) 
+        {
+        	var = this.getParameterPeerPort();
+        }    
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+        return var; 
+    }    
+    
+    /**
+     * 
+     * @return peer hosts adresses
+     */
+    protected abstract Parameter getParameterPeerHosts() throws Exception;
+    
+    /**
+     * 
+     * @return peer hosts port
+     */
+    protected abstract Parameter getParameterPeerPort() throws Exception;
 
 }

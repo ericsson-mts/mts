@@ -127,7 +127,7 @@ public class ChannelConfigSctp{
     {
         String ret = "";
 
-		ret += "<sctp";
+		ret += "<ChannelConfigSctp";
 		int numOutstreams = this.num_ostreams & 0xffff;
 		ret += " num_ostreams=\"" + numOutstreams + "\"";
 		int maxInstreams = this.max_instreams & 0xffff;
