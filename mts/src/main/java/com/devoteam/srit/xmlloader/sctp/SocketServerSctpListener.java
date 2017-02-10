@@ -34,6 +34,7 @@ import dk.i1.sctp.OneToManySCTPSocket;
 import dk.i1.sctp.OneToOneSCTPSocket;
 import dk.i1.sctp.SCTPSocket;
 import dk.i1.sctp.sctp_event_subscribe;
+import dk.i1.sctp.sctp_initmsg;
 
 import java.net.InetAddress;
 import java.net.Socket;
@@ -62,6 +63,7 @@ public class SocketServerSctpListener extends Thread
         {
         	port = listenpointSctp.getPort();
             sctpSocketserver = new OneToOneSCTPSocket(port);
+            
 			sctp_event_subscribe ses = new sctp_event_subscribe();
 			ses.sctp_data_io_event = true;
 			ses.sctp_association_event = true;
@@ -83,6 +85,10 @@ public class SocketServerSctpListener extends Thread
 			}
 			*/
 			sctpSocketserver.listen();
+
+			//sctp_initmsg initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg(); 
+            //sctpSocketserver.setInitMsg(initmsg);
+
             this.listenpointSctp = listenpointSctp;
         }
         catch(Exception e)
@@ -99,6 +105,10 @@ public class SocketServerSctpListener extends Thread
 		try
 		{
             boolean exception = false;
+            
+			sctp_initmsg initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg(); 
+            sctpSocketserver.setInitMsg(initmsg);
+            
             while (!exception)
 			{
                 try
