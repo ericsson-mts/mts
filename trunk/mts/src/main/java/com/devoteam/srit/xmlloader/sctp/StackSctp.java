@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.sctp.AssociationId;
 import dk.i1.sctp.SCTPData;
+import dk.i1.sctp.sctp_initmsg;
 
 public class StackSctp extends Stack
 {
@@ -46,8 +47,22 @@ public class StackSctp extends Stack
 	}
 
     /**
-     * Creates a Msg specific to each Stack
-     * Used for SCTP like protocol : to build incoming message
+     * get the SCTP InitMsg object from the config
+     */
+    public sctp_initmsg getConfigSCTP_InitMsg() throws Exception    
+    {
+    	sctp_initmsg initMsg = new sctp_initmsg();
+
+		// initialize from the configuration file
+		initMsg.sinit_num_ostreams = (short) getConfig().getInteger("connect.NUM_OSTREAMS");
+		initMsg.sinit_max_instreams = (short) getConfig().getInteger("connect.MAX_INSTREAMS");
+		initMsg.sinit_max_attempts = (short)  getConfig().getInteger("connect.MAX_ATTEMPTS");
+		initMsg.sinit_max_init_timeo= (short) getConfig().getInteger("connect.MAX_INIT_TIMEO");
+		return initMsg;
+    }
+	
+    /**
+     * get the SCTPData object from the config
      */
     public SCTPData getConfigSCTPData() throws Exception    
     {

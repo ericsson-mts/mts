@@ -41,6 +41,7 @@ import com.devoteam.srit.xmlloader.tcp.nio.ChannelTcpNIO;
 
 import dk.i1.sctp.OneToManySCTPSocket;
 import dk.i1.sctp.OneToOneSCTPSocket;
+import dk.i1.sctp.SCTPData;
 import dk.i1.sctp.SCTPSocket;
 import dk.i1.sctp.sctp_initmsg;
 import dk.i1.sctp.sctp_paddrparams;
@@ -75,9 +76,10 @@ public class ChannelSctp extends Channel
     private long startTimestamp = 0;    
     
     /** Creates a new instance of Channel*/
-    public ChannelSctp(Stack stack)
+    public ChannelSctp(Stack stack) throws Exception
     {
     	super(stack);
+    	this.initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg();    	
     }
 
     public ChannelSctp(ListenpointSctp aListenpoint, String aLocalHost, int aLocalPort, String aRemoteHost, int aRemotePort, String aProtocol) throws Exception
@@ -85,7 +87,7 @@ public class ChannelSctp extends Channel
         super(aLocalHost, aLocalPort, aRemoteHost, aRemotePort, aProtocol);
         this.socket = null;
         this.listenpoint = aListenpoint;
-        this.initmsg = new sctp_initmsg();
+        this.initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg();        
     }
 
     public ChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception
@@ -105,6 +107,7 @@ public class ChannelSctp extends Channel
         this.listenpoint = aListenpoint;
         this.socket = new SocketSctp((SCTPSocket) aSocket);
         this.socket.setChannelSctp(this);
+        // we don't get the info from the SCTPSocket object ? STRANGE so
         this.initmsg = new sctp_initmsg();
     }
     
@@ -136,11 +139,11 @@ public class ChannelSctp extends Channel
 			// TODO Take localAddr into account
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
             int intLocalPort = getLocalPort(); 
-            sctpSocket.bind(intLocalPort);
             if (this.initmsg != null)
             {
             	sctpSocket.setInitMsg(this.initmsg);
             }
+            sctpSocket.bind(intLocalPort);            
                         
             String strRemoteHost = getRemoteHost();
             if (strRemoteHost == null || "0.0.0.0".equals(strRemoteHost))
@@ -287,14 +290,8 @@ public class ChannelSctp extends Channel
     {
     	super.parseFromXml(root, runner, protocol);
     	
-    	this.initmsg = new sctp_initmsg();
-    	
-		// initialize from the configuration file
-    	this.initmsg.sinit_num_ostreams = (short) this.stack.getConfig().getInteger("connect.NUM_OSTREAMS");
-    	this.initmsg.sinit_max_instreams = (short) this.stack.getConfig().getInteger("connect.MAX_INSTREAMS");
-    	this.initmsg.sinit_max_attempts = (short)  this.stack.getConfig().getInteger("connect.MAX_ATTEMPTS");
-    	this.initmsg.sinit_max_init_timeo= (short) this.stack.getConfig().getInteger("connect.MAX_INIT_TIMEO");
-		
+    	this.initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg();
+    			
 		// Parse the XML file
 		List<Element> sctpElements = root.elements("sctp");
 		if (sctpElements != null && sctpElements.size() > 0)
