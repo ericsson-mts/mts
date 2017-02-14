@@ -16,9 +16,31 @@
     <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     </receiveMessageSCTP>
 
-    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
-    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
-    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
+     <!-- checks multihoming -->
+    <if>
+	    <condition>
+		    <test parameter="[stackHasFullMultiHomingSupport]" condition="boolean.equals" value="true"/>
+	    </condition>
+	    <then>
+		    <!-- checks full multihoming (addresses selection) -->
+		    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
+		    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHostSCTP]" />
+
+	    </then>
+	    <else>
+		    <!-- checks basic multihoming (all addresses) -->
+                    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
+		    <parameter name="[lastSourceHost]" operation="list.sortString" value="[lastSourceHost]"/>
+		    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+                    <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
+		    <parameter name="[localHosts]" operation="list.sortString" value="[localHosts]"/>
+		    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHosts]" />
+
+	    </else>
+    </if>
+
+  
+    
     <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
     <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
     

@@ -30,10 +30,14 @@
     <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
     <!--test parameter="[lastAid]" condition="number.equals" value="0" /-->
 
+    <!-- checks multihoming (all addresses) -->
     <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
+    <parameter name="[lastSourceHost]" operation="list.sortString" value="[lastSourceHost]"/>
     <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
-    <test parameter="[lastSourceHost(0)]" condition="string.equals" value="[localHosts(0)]" />
-    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
+    <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
+    <parameter name="[localHosts]" operation="list.sortString" value="[localHosts]"/>
+    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHosts]" />
+ 
     <!--test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
 
     <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />

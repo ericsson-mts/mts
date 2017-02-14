@@ -3,9 +3,11 @@
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true"/>
     
-    <parameter name="[localHostSCTP]" operation="system.ipaddress" value2="[IPVersion]"/>
-    <parameter name="[localHostSCTP]" operation="set" value="[localHostSCTP(0)]" description="local address of the MTS host" editable="true"/>
-   <parameter name="[localPortSCTP]" operation="number.random" value="10000" value2="65535" />    
+    <parameter name="[localIpaddresses]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!-- localHostIfce and localHostSCTP shall match -->
+    <parameter name="[localHostIfce]" operation="set" value="eth0" description="local interface of the MTS host" editable="true"/>
+    <parameter name="[localHostSCTP]" operation="set" value="[localIpaddresses(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortSCTP]" operation="number.random" value="10000" value2="65535" />    
     <parameter name="[localPortSCTP]" operation="set" value="[localPortSCTP(0)]" description="local port of the MTS host" editable="true" />
     <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
     
@@ -19,6 +21,8 @@
     
     <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
     <parameter name="[timeout]" operation="set" value="5" description="timeout duration for message receipt : 0 mean always" editable="true"/>
+    
+    <parameter name="[stackHasFullMultiHomingSupport]" operation="set" value="true" description="The sctp stack has full mutihoming support" editable="true"/>
     
     <testcase name="001_channel" state="true" number="[iterations]" description="channel + SCTP XML parameter : flag=0">
         <parameter name="[newSsn]" operation="set" value="0"/>
@@ -45,7 +49,6 @@
 
     <testcase name="005_multihoming" state="true" number="[iterations]" description="multihoming feature">
         <parameter name="[localPortSCTP]" operation="number.random" value="10000" value2="65535" />    
-        <parameter name="[networkInterface]" operation= "set" value="ens224" />
         <parameter name="[timeout]" operation="set" value="10" description="timeout duration for message receipt : 0 mean always"/>
         <scenario name="client" file="005_multihoming/client.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="005_multihoming/server.xml" state="[remoteServer]" routingName="SCTP"/>
