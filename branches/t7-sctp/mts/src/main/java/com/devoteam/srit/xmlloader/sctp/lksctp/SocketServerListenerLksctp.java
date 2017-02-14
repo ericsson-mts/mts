@@ -149,6 +149,8 @@ public class SocketServerListenerLksctp extends Thread
 		{
             //actually we are blocked here for an unknown reason
 			sctpSocketserver.close();
+			//some native methods on a closed sctpSocket may SIGSEGV, it's safer to dereference the object 
+			sctpSocketserver = null;
 		}
 		catch(Exception e)
 		{   

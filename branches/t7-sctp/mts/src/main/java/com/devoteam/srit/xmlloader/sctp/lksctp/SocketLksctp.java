@@ -110,6 +110,8 @@ public class SocketLksctp extends Thread {
         					((StackLksctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("ABORT-ACK", channelSctp, null);
 
                             sctpSocket.close();
+		            //some native methods on a closed sctpSocket may SIGSEGV, it's safer to dereference the object 
+                            sctpSocket = null;
                         }
                         break;
                     }
@@ -203,6 +205,8 @@ public class SocketLksctp extends Thread {
 		{			
 			mutex.acquire();
 			sctpSocket.close();
+			//some native methods on a closed sctpSocket may SIGSEGV, it's safer to dereference the object 
+			sctpSocket = null;
 			mutex.release();
 		}
 		catch(Exception e)
