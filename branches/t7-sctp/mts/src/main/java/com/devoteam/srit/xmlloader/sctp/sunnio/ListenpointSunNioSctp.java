@@ -39,8 +39,10 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.sctp.*;
-
+import com.devoteam.srit.xmlloader.sctp.lksctp.StackLksctp;
 import com.sun.nio.sctp.*;
+
+import dk.i1.sctp.sctp_initmsg;
 
 /**
  * @author emicpou
@@ -88,22 +90,7 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
 
         // Set up sctp server channel
         try
-        {
-	    	//ensure a channel config is available
-        	//TODO add setters and let the scenario override the default config
-    		ChannelConfigSctp configSctp = null;
-    		
-    		//disabled because we are in the ctor of the PROTOCOL_SCTP stack
-    		/*
-			if (configSctp == null){
-				Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
-		        Config stackConfig = sctpStack.getConfig();
-		        configSctp = new ChannelConfigSctp();
-				configSctp.setFromStackConfig(stackConfig);
-			}
-			GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ListenpointSunNioSctp#create config="+configSctp);			
-    		*/
-    		
+        {    		
 			//create
         	assert(this.sctpServerChannel==null);
             this.sctpServerChannel = SctpServerChannel.open();
@@ -131,8 +118,9 @@ public class ListenpointSunNioSctp extends ListenpointSctp implements IOHandler
 	        }
             
             //options
+            ChannelConfigSctp configSctp = this.getConfigSctp();
             if( configSctp!=null ){
-				GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#open config="+configSctp);			
+				GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ListenpointSunNioSctp#create config="+configSctp);			
 
 				int maxInStreams = Short.toUnsignedInt(configSctp.max_instreams);
 		        int maxOutStreams = Short.toUnsignedInt(configSctp.num_ostreams);

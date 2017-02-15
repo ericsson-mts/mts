@@ -110,8 +110,6 @@ public class SocketLksctp extends Thread {
         					((StackLksctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("ABORT-ACK", channelSctp, null);
 
                             sctpSocket.close();
-		            //some native methods on a closed sctpSocket may SIGSEGV, it's safer to dereference the object 
-                            sctpSocket = null;
                         }
                         break;
                     }
@@ -162,11 +160,21 @@ public class SocketLksctp extends Thread {
 	}	
 
 	public SCTPSocket getSCTPSocket(){
+            //some native methods on a closed sctpSocket may SIGSEGV
+	    if( sctpSocket!=null && !sctpSocket.isClosed() ){
 		return sctpSocket;	
+            }else
+	    {
+		return null;
+            }
 	}
 
 	public synchronized void send(Msg msg) throws Exception
 	{
+		if( this.sctpSocket==null){
+			throw new java.net.SocketException("SocketLksctp closed");
+		}
+
 		try
 		{	
 			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
@@ -205,8 +213,6 @@ public class SocketLksctp extends Thread {
 		{			
 			mutex.acquire();
 			sctpSocket.close();
-			//some native methods on a closed sctpSocket may SIGSEGV, it's safer to dereference the object 
-			sctpSocket = null;
 			mutex.release();
 		}
 		catch(Exception e)

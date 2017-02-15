@@ -119,7 +119,17 @@ public class StackFactory
 	        Object anObject = aClass.newInstance();
 	        stack = (Stack) anObject;
 	        
+	        //the stack is registered BEFORE its initialization
 	        listStack.put(protocol, stack);
+	        
+	        try{
+	        	stack.initialize();
+	        }catch(Exception exception){
+	        	//if the initialization fails, the stack MUST be unregistered	        	
+	        	listStack.remove(protocol);
+	        	throw exception;
+	        }
+
         }
         return stack;
     }

@@ -31,8 +31,6 @@ import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import java.net.InetAddress;
-import java.util.Collection;
 import java.util.List;
 
 import org.dom4j.Element;
@@ -53,6 +51,7 @@ public abstract class ChannelSctp extends Channel
     /**
      * the channel initialization parameters
      * to use when opening transport layer
+     * can be null
      */
     protected ChannelConfigSctp configSctp;
 
@@ -114,6 +113,16 @@ public abstract class ChannelSctp extends Channel
     }
     
     /**
+     * the channel initialization parameters
+     * to use when opening transport layer
+     * can be null
+     */
+    //@Immutable
+    public ChannelConfigSctp getConfigSctp(){
+    	return this.configSctp;
+    }
+   
+    /**
      * Open a Channel
      * should be overriden
      */
@@ -122,7 +131,16 @@ public abstract class ChannelSctp extends Channel
     {
     	//does not call super.open intentionally
 
-    	//common sctp code here...
+    	//ensure the channel will apply the default config
+    	if( this.configSctp==null ){
+    		Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+        	Config stackConfig = sctpStack.getConfig();
+        	
+        	this.configSctp = new ChannelConfigSctp();
+        	this.configSctp.setFromStackConfig( stackConfig );
+    	}
+
+    	//other common sctp code here...
 
     	return true;
     }
@@ -174,7 +192,8 @@ public abstract class ChannelSctp extends Channel
     {
     	super.parseFromXml(root, runner, protocol);
 
-    	Config stackConfig = this.stack.getConfig();
+	Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+    	Config stackConfig = sctpStack.getConfig();
     	
        	@SuppressWarnings("unchecked")
     	List<Element> sctpElements = root.elements("sctp");

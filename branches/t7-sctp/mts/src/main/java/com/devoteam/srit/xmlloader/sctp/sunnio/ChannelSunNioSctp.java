@@ -291,19 +291,8 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
     	try{
         	//client side : we need to connect to the remote server
         	if(this.sctpChannel==null){
-		
-		    	//ensure a channel config is available
-        		ChannelConfigSctp configSctp = this.configSctp;
-				if (configSctp == null){
-					Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
-			        Config stackConfig = sctpStack.getConfig();
-					configSctp = new ChannelConfigSctp();
-					configSctp.setFromStackConfig(stackConfig);
-				}
-				GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#open config="+configSctp);			
-		    	
+				    	
 				//create
-		        assert(this.sctpChannel==null);	            
 		   		this.sctpChannel = SctpChannel.open();
 		        assert(this.sctpChannel!=null);	            
 
@@ -330,7 +319,10 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		        }
 		        
 		        //options
+		    	//ensure a channel config is available
+        		ChannelConfigSctp configSctp = this.configSctp;
 		        if(configSctp!=null){
+					GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#open config="+configSctp);			
 			        int maxInStreams = Short.toUnsignedInt(configSctp.max_instreams);
 			        int maxOutStreams = Short.toUnsignedInt(configSctp.num_ostreams);
 			        SctpStandardSocketOptions.InitMaxStreams initMaxStreamsSctpSocketOption =  SctpStandardSocketOptions.InitMaxStreams.create(maxInStreams, maxOutStreams);

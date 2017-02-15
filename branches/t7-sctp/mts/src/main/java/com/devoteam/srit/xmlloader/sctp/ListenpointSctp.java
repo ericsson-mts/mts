@@ -23,13 +23,24 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 
 public abstract class ListenpointSctp extends Listenpoint {
-    	
+	   
+    /**
+     * the channel initialization parameters
+     * to use when opening transport layer
+     * can be null
+     */
+    protected ChannelConfigSctp configSctp;
+   	
     /**
      * Creates a new instance of Listenpoint
      */
@@ -37,8 +48,17 @@ public abstract class ListenpointSctp extends Listenpoint {
     {
     	super(stack);
     }
-
     
+    /**
+     * the channel initialization parameters
+     * to use when opening transport layer
+     * can be null
+     */
+    //@Immutable
+    public ChannelConfigSctp getConfigSctp(){
+    	return this.configSctp;
+    }
+
     //---------------------------------------------------------------------
     // methods for the transport
     //---------------------------------------------------------------------
@@ -51,11 +71,22 @@ public abstract class ListenpointSctp extends Listenpoint {
     @Override
 	public boolean create(String protocol) throws Exception
     {
+		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+" "+this.getUID()+":ListenpointSctp#create protocol="+protocol);			
 		if (!super.create(protocol)) 
 		{
 			return false;
 		}
-		//put additional code here...
+    	
+		//ensure the listenpoint will apply the default config
+    	if( this.configSctp==null ){
+    		Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+        	Config stackConfig = sctpStack.getConfig();
+        	
+        	this.configSctp = new ChannelConfigSctp();
+        	this.configSctp.setFromStackConfig( stackConfig );
+    	}
+
+    	//put additional code here...
 		return true;
     }
     
@@ -100,7 +131,9 @@ public abstract class ListenpointSctp extends Listenpoint {
     @Override
     public boolean remove()
     { 
-        if (!super.remove()) {
+		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+" "+this.getUID()+":ListenpointSctp#remove");			
+
+		if (!super.remove()) {
             return false;
         }
          

@@ -36,11 +36,14 @@ import org.dom4j.Element;
 
 public abstract class StackSctp extends Stack
 {
-	
-	/** Creates a new instance */
+
+	/**
+	 * Creates a new instance
+	 * Setup a deferred initialization
+	 * */
 	public StackSctp() throws Exception
 	{
-		super();
+		super( (new CtorConfig()).setDeferredInitialization(true) );
 	}
 
     /** Get the protocol of this message */

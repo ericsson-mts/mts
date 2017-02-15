@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.sctp.ChannelConfigSctp;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 
 import dk.i1.sctp.*;
@@ -79,6 +80,15 @@ public class SocketServerListenerLksctp extends Thread
 				sctpSocketserver.bind(addr, port);
 			}
 			*/
+            
+            //set options
+            ChannelConfigSctp configSctp = listenpointSctp.getConfigSctp();
+            if( configSctp !=null ){
+            	sctp_initmsg initmsg = new sctp_initmsg();
+            	StackLksctp.configSctp2initMsg(configSctp,initmsg);
+                sctpSocketserver.setInitMsg(initmsg);
+            }
+
 			sctpSocketserver.listen();
             this.listenpointSctp = listenpointSctp;
         }
@@ -149,8 +159,6 @@ public class SocketServerListenerLksctp extends Thread
 		{
             //actually we are blocked here for an unknown reason
 			sctpSocketserver.close();
-			//some native methods on a closed sctpSocket may SIGSEGV, it's safer to dereference the object 
-			sctpSocketserver = null;
 		}
 		catch(Exception e)
 		{   

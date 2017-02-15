@@ -31,7 +31,7 @@ import org.dom4j.Element;
 
 /**
  * @author emicpou
- *
+ * TODO refactor/rename
  */
 public class ChannelConfigSctp{
 	   

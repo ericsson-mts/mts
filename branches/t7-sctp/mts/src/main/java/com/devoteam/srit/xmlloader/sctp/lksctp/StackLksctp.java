@@ -102,5 +102,11 @@ public class StackLksctp extends StackSctp
     public MsgSctp createMsgSctp(DataSctp chunk) throws Exception {
     	return new MsgLksctp(this,chunk);
     }
-   
+	
+	public static void configSctp2initMsg( ChannelConfigSctp configSctp,sctp_initmsg initMsg  ){
+		initMsg.sinit_num_ostreams = configSctp.num_ostreams;
+		initMsg.sinit_max_instreams = configSctp.max_instreams;
+		initMsg.sinit_max_attempts = configSctp.max_attempts;
+		initMsg.sinit_max_init_timeo= configSctp.max_init_timeo;
+	}
 }

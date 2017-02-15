@@ -30,7 +30,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import com.devoteam.srit.xmlloader.sctp.*;
 
@@ -117,13 +116,12 @@ public class ChannelLksctp extends ChannelSctp
             SCTPSocket sctpSocket = new OneToOneSCTPSocket();
             int intLocalPort = getLocalPort(); 
             sctpSocket.bind(intLocalPort);
+            
+            //set options
             if (this.configSctp != null)
             {
             	sctp_initmsg initmsg = new sctp_initmsg();
-            	initmsg.sinit_num_ostreams = this.configSctp.num_ostreams;
-            	initmsg.sinit_max_instreams = this.configSctp.max_instreams;
-            	initmsg.sinit_max_attempts = this.configSctp.max_attempts;
-            	initmsg.sinit_max_init_timeo= this.configSctp.max_init_timeo;
+            	StackLksctp.configSctp2initMsg(this.configSctp,initmsg);
             	sctpSocket.setInitMsg(initmsg);
             }
                         
@@ -345,7 +343,7 @@ public class ChannelLksctp extends ChannelSctp
 				}
 				
 				if (associationId != null /*&& associationId.hashCode() != 0*/) {
-					int port= theSCTPSocket.getLocalInetPort();
+					//int port= theSCTPSocket.getLocalInetPort();
 					Collection<InetAddress> col = theSCTPSocket.getLocalInetAddresses(associationId);
 					if (col != null) {
 						String xml = "";

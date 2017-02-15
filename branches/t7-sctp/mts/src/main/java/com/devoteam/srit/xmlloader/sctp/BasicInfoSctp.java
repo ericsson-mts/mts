@@ -36,15 +36,15 @@ import com.devoteam.srit.xmlloader.core.utils.Config;
  */
 public class BasicInfoSctp extends InfoSctp {
 	
-	protected short streamId = -1;
-	protected short ssn = -1;
-	protected short flags = -1;
-	protected int ppid = -1;
-	protected int context = -1;
-	protected int timetolive = -1;
-	protected int tsn = -1;
-	protected int cumtsn = -1;
-	protected BasicAssociationSctp association = new BasicAssociationSctp(-1);
+	protected short streamId = 1;
+	protected short ssn = 0;
+	protected short flags = 0;
+	protected int ppid = 0;
+	protected int context = 0;
+	protected int timetolive = 0;
+	protected int tsn = 0;
+	protected int cumtsn = 0;
+	protected BasicAssociationSctp association = new BasicAssociationSctp(0);
 	
 	/**
 	 */
