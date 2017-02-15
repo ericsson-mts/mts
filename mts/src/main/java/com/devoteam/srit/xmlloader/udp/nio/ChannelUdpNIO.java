@@ -72,9 +72,10 @@ public class ChannelUdpNIO extends Channel
             InetSocketAddress localDatagramSocketAddress;
 
 
-            if (this.localHost != null)
+            String localHost = this.getLocalHost();
+            if (localHost != null)
             {
-                localDatagramSocketAddress = new InetSocketAddress(this.localHost, this.localPort);
+                localDatagramSocketAddress = new InetSocketAddress(localHost, this.localPort);
             }
             else
             {

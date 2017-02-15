@@ -21,7 +21,7 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp.test;
+package com.devoteam.srit.xmlloader.sctp.lksctp.test;
 
 import dk.i1.sctp.*;
 import java.net.*;

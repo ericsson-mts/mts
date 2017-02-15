@@ -39,8 +39,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.sip.StackSipCommon;
 
-import dk.i1.sctp.SCTPData;
-
 /**
  *
  * @author gpasquiers

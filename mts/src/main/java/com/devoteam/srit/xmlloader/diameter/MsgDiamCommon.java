@@ -23,9 +23,8 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-import com.devoteam.srit.xmlloader.diameter.dictionary.AvpDef;
-import com.devoteam.srit.xmlloader.diameter.dictionary.Dictionary;
-import com.devoteam.srit.xmlloader.diameter.dictionary.TypeDef;
+import com.devoteam.srit.xmlloader.diameter.dictionary.*;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
@@ -41,18 +40,8 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import dk.i1.diameter.AVP;
-import dk.i1.diameter.AVPInterface;
-import dk.i1.diameter.AVP_Float32;
-import dk.i1.diameter.AVP_Float64;
-import dk.i1.diameter.AVP_Grouped;
-import dk.i1.diameter.AVP_Integer32;
-import dk.i1.diameter.AVP_Integer64;
-import dk.i1.diameter.AVP_OctetString;
-import dk.i1.diameter.AVP_Time;
-import dk.i1.diameter.AVP_Unsigned32;
-import dk.i1.diameter.AVP_Unsigned64;
-import dk.i1.diameter.Message;
+import dk.i1.diameter.*;
+
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
@@ -107,8 +96,12 @@ public class MsgDiamCommon extends Msg
         {
         	if (this.message.hdr.application_id!= 0)
         	{
-        		applicationId = StackFactory.SEP_SUB_INFORMATION + Dictionary.getInstance().getApplicationById(this.message.hdr.application_id).get_name() + ":" + this.message.hdr.application_id;
-        		applicationId = applicationId.replace(" ", "");
+        		Application application = Dictionary.getInstance().getApplicationById(this.message.hdr.application_id);
+        		if( application!=null )
+        		{
+        			applicationId = StackFactory.SEP_SUB_INFORMATION + application.get_name() + ":" + this.message.hdr.application_id;
+        			applicationId = applicationId.replace(" ", "");
+        		}
         	}
         }
         catch(Exception e)
@@ -209,14 +202,17 @@ public class MsgDiamCommon extends Msg
     private String getCodeString()
     {
         /** commandCode */
-    	String codeString; 
+    	String codeString = "Unknown"; 
         try
         {
-            codeString = Dictionary.getInstance().getCommandDefByCode(message.hdr.command_code, Integer.toString(message.hdr.application_id)).get_name();
+        	String applicationIdString = Integer.toString(message.hdr.application_id);
+        	CommandDef commandDef = Dictionary.getInstance().getCommandDefByCode(message.hdr.command_code, applicationIdString);
+        	if( commandDef!=null ){        	
+        		codeString = commandDef.get_name();
+        	}
         }
         catch(Exception e)
         {
-            codeString = "Unknown";
         }
 	    return codeString;
     }
@@ -404,14 +400,16 @@ public class MsgDiamCommon extends Msg
     /** get the applicationId as a label from the dictionary */
     private String getApplicationIdString(String applicationId)
     {
-    	String applicationIdString;
+    	String applicationIdString = "Unknown";
 	    try
 	    {
-	        applicationIdString = Dictionary.getInstance().getApplication(applicationId).get_name();
+	    	Application application = Dictionary.getInstance().getApplication(applicationId);
+	    	if( application!=null ){
+		        applicationIdString = application.get_name();
+	    	}
 	    }
 	    catch(Exception e)
 	    {
-	        applicationIdString = "Unknown";
 	    }
 	    return applicationIdString;
     }
@@ -525,6 +523,7 @@ public class MsgDiamCommon extends Msg
     }
 
     /** get the enumeration value as a label from the dictionary */
+    //@Nullable
     private String getEnumerationString(AvpDef avpDef, long code)
     {
     	String enumString = null;
@@ -545,14 +544,16 @@ public class MsgDiamCommon extends Msg
     /** get the vendor Id value as a label from the dictionary */
     private String getVendorIdString(int code, String applicationId)
     {
-    	String vendorIdString;
+    	String vendorIdString = "Unknown";
 	    try
 	    {	    	
-	    	vendorIdString = Dictionary.getInstance().getVendorDefByCode(code, applicationId).get_name();
+	    	VendorDef vendorDef = Dictionary.getInstance().getVendorDefByCode(code, applicationId);
+	    	if( vendorDef!=null ){
+	    		vendorIdString = vendorDef.get_name();
+	    	}
 	    }
 	    catch(Exception e)
 	    {
-	    	vendorIdString = "Unknown";
 	    }
 	    return vendorIdString;
     }

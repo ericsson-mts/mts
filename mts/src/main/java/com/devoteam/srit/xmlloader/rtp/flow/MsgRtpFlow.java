@@ -642,7 +642,7 @@ public class MsgRtpFlow extends Msg {
             LinkedList<String> listAttribute = runner.getParameterPool().parse(deltaTime);
             if (listAttribute.size() > 0)//if more than one element
             {
-                ArrayList listAttributeData = new ArrayList();
+                ArrayList listAttributeData = new ArrayList<Integer>();
 
                 int delta;
                 for (Iterator<String> it = listAttribute.iterator(); it.hasNext();) {

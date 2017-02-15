@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
+    <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
 
-    <openChannelSCTP name="channel" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]">
+    <openChannelSCTP name="[channelName]" localHost="[localHostSCTP]" localPort="[localPortSCTP]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]">
         <sctp num_ostreams="30000" max_instreams="40000" />
     </openChannelSCTP>        
            
-    <sendMessageSCTP channel="channel">
+    <sendMessageSCTP channel="[channelName]">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
+
+    <finally>
+    <pause seconds="1"/>
+    <closeChannelSCTP name="[channelName]"/> 
+    </finally>
 
 </scenario>

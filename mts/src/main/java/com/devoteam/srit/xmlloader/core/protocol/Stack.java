@@ -41,7 +41,9 @@ import com.devoteam.srit.xmlloader.diameter.ListenpointDiamCommon;
 import com.devoteam.srit.xmlloader.sip.light.MsgSip;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
 
-import dk.i1.sctp.SCTPData;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.sctp.DataSctp;
+import com.devoteam.srit.xmlloader.sctp.StackSctp;
 
 import org.dom4j.Element;
 
@@ -116,10 +118,56 @@ public abstract class Stack
     /** Timer to schedule the retransaction */
     public Timer retransmissionTimer = new Timer();
     
+    /**
+     * constructor configuration
+     * @see http://wiki.c2.com/?ParameterObject
+     */
+    public static class CtorConfig{
+    	
+    	//deferred initialization option
+    	//default is to do initialization in the constructor
+    	boolean deferredInitialization = false;
+    	
+    	//your other options here
+    	//...
+    	
+    	public CtorConfig(){
+    	}
+    	
+    	/**
+    	 * set the deferred initialization option
+    	 */
+    	public CtorConfig setDeferredInitialization(boolean deferredInitialization){
+    		this.deferredInitialization = deferredInitialization;
+    		return this;
+    	}
+    } 
     
-    /** Creates a new instance */
+    /**
+     * the constructor config if provided by a superclass
+     * can be null
+     * @see Stack ctor
+     */
+    private CtorConfig ctorConfig;
+    
+    /**
+     * Creates a new instance
+     */
     public Stack() throws Exception
     {
+    	this(new CtorConfig());
+    }
+    
+    /**
+     * Creates a new instance
+     * @param ctorConfig optional constructor config
+     */
+    public Stack( CtorConfig ctorConfig ) throws Exception
+    {
+    	//save the constructor options
+    	assert( ctorConfig!=null );
+  	    this.ctorConfig = ctorConfig;
+    	
         Config config = null;
         try
         {
@@ -182,7 +230,19 @@ public abstract class Stack
         this.channels = Collections.synchronizedMap(new HashMap<String, Channel>());
         this.listenpoints = Collections.synchronizedMap(new HashMap<String, Listenpoint>());
         this.probes = Collections.synchronizedMap(new HashMap<String, Probe>());
+        
+        //default is to do initializations in the constructor
+        if( !this.ctorConfig.deferredInitialization ){
+        	this.initializePrivate();
+        }
+    }
 
+    /**
+     * initialize the 'dynamic' or 'complex' part of the stack
+     * is called by the constructor or by the deferred initialization
+     * according to the constructor config
+     */
+    private final void initializePrivate() throws Exception{    	
         routingThread.start();
         
         // initiate a default listenpoint if port is not empty or null
@@ -202,6 +262,18 @@ public abstract class Stack
         }
     }
 
+    /**
+     * deferred initialization
+     * is called sequentially and synchronously after the construction by the stack builder (the StackFactory)
+     */
+    protected void initialize() throws Exception{
+        //if the private initializations have not be done in the constructor,
+    	//we are doing the deferred initialization
+    	if( this.ctorConfig.deferredInitialization ){
+        	this.initializePrivate();
+        }
+    }
+    
     public static synchronized long nextTransactionId()
     {
         if (transId == Long.MAX_VALUE)
@@ -580,7 +652,7 @@ public abstract class Stack
      * Creates a Msg specific to each Stack
      * Used for SCTP like protocol : to build incoming message
      */
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception    
+    public Msg readFromSCTPData(DataSctp chunk) throws Exception    
     {
     	byte[] bytes = chunk.getData();
     	return readFromDatas(bytes, bytes.length);
@@ -601,7 +673,8 @@ public abstract class Stack
 	        return channelTls;
     	}
     	else {
-    		com.devoteam.srit.xmlloader.sctp.ChannelSctp channelSctp = new com.devoteam.srit.xmlloader.sctp.ChannelSctp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
+        	StackSctp stackSctp = (StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
+        	ChannelSctp channelSctp = stackSctp.createChannelSctp("Channel #" + Stack.nextTransactionId(), listenpoint, socket);
 	        return channelSctp;
     	} 
     }

@@ -41,8 +41,6 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import dk.i1.sctp.SCTPData;
-
 /**
  *
  * @author fvandecasteele

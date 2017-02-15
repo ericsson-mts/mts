@@ -21,40 +21,34 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp;
+package com.devoteam.srit.xmlloader.sctp.lksctp;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.tcp.StackTcp;
+import com.devoteam.srit.xmlloader.sctp.ChannelConfigSctp;
+import com.devoteam.srit.xmlloader.core.protocol.Stack;
 
-import dk.i1.sctp.OneToManySCTPSocket;
-import dk.i1.sctp.OneToOneSCTPSocket;
-import dk.i1.sctp.SCTPSocket;
-import dk.i1.sctp.sctp_event_subscribe;
-import dk.i1.sctp.sctp_initmsg;
+import dk.i1.sctp.*;
 
-import java.net.InetAddress;
-import java.net.Socket;
 import java.net.SocketException;
-
 
 /**
  *
  * @author nghezzaz
  */
 
-public class SocketServerSctpListener extends Thread
+public class SocketServerListenerLksctp extends Thread
 {
 	private OneToOneSCTPSocket sctpSocketserver;
-    private ListenpointSctp listenpointSctp;
+    private ListenpointLksctp listenpointSctp;
 
     /**
      * Creates a new instance of SocketServerSctpListener
      */
-    public SocketServerSctpListener(ListenpointSctp listenpointSctp) throws ExecutionException
+    public SocketServerListenerLksctp(ListenpointLksctp listenpointSctp) throws ExecutionException
     {
     	int port = 0;
 
@@ -64,11 +58,13 @@ public class SocketServerSctpListener extends Thread
         	port = listenpointSctp.getPort();
             sctpSocketserver = new OneToOneSCTPSocket(port);
             
+            /*
 			sctp_event_subscribe ses = new sctp_event_subscribe();
 			ses.sctp_data_io_event = true;
 			ses.sctp_association_event = true;
 			ses.sctp_shutdown_event=true;
-			//sctpSocketserver.subscribeEvents(ses);
+			sctpSocketserver.subscribeEvents(ses);
+			*/
 			
 			/*
 			String host = listenpointSctp.getHost();
@@ -84,11 +80,16 @@ public class SocketServerSctpListener extends Thread
 				sctpSocketserver.bind(addr, port);
 			}
 			*/
+            
+            //set options
+            ChannelConfigSctp configSctp = listenpointSctp.getConfigSctp();
+            if( configSctp !=null ){
+            	sctp_initmsg initmsg = new sctp_initmsg();
+            	StackLksctp.configSctp2initMsg(configSctp,initmsg);
+                sctpSocketserver.setInitMsg(initmsg);
+            }
+
 			sctpSocketserver.listen();
-
-			//sctp_initmsg initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg(); 
-            //sctpSocketserver.setInitMsg(initmsg);
-
             this.listenpointSctp = listenpointSctp;
         }
         catch(Exception e)
@@ -105,10 +106,6 @@ public class SocketServerSctpListener extends Thread
 		try
 		{
             boolean exception = false;
-            
-			sctp_initmsg initmsg = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTP_InitMsg(); 
-            sctpSocketserver.setInitMsg(initmsg);
-            
             while (!exception)
 			{
                 try
@@ -118,12 +115,14 @@ public class SocketServerSctpListener extends Thread
                     
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerSctpListener got a connection");
 
-                    Channel channel = StackFactory.getStack(listenpointSctp.getProtocol()).buildChannelFromSocket(listenpointSctp, sctpSocket);
+                    String listenpointProtocol = listenpointSctp.getProtocol();
+                    Stack stack = StackFactory.getStack(listenpointProtocol);
+                    Channel channel = stack.buildChannelFromSocket(listenpointSctp, sctpSocket);
                     listenpointSctp.openChannel(channel);
                     
 					// Create an empty message for transport connection actions (open or close) 
 					// and on server side and dispatch it to the generic stack
-					((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("INIT-ACK", channel, null);
+					((StackLksctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("INIT-ACK", channel, null);
                 }
                 catch(SocketException e)
                 {

@@ -32,13 +32,29 @@ import java.nio.channels.SelectionKey;
  */
 public interface IOHandler
 {
-    public void init(SelectionKey selectionKey, SelectableChannel channel);
+	/**
+	 * @param selectionKey
+	 * @param selectableChannel (should be same as selectionKey.channel() ?)
+	 */
+    public void onIorInit(SelectionKey selectionKey, SelectableChannel selectableChannel);
 
-    public void inputReady();
+	/**
+     * triggered when readable (there is data to read)
+	 */
+    public void onIorInputReady();
 
-    public void outputReady();
+	/**
+     * triggered when writable (it is possible to write data)
+	 */
+    public void onIorOutputReady();
 
-    public void connectReady();
+	/**
+     * triggered on connect event (channel has either finished, or failed to finish, its socket-connection operation)
+	 */
+    public void onIorConnectReady();
 
-    public void acceptReady();
+	/**
+	 * triggered on accept event (channel is ready to accept a new socket connection)
+	 */
+    public void onIorAcceptReady();
 }
