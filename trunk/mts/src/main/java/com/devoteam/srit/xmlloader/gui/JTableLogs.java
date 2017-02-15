@@ -227,15 +227,23 @@ public class JTableLogs extends JTable implements TextListener {
     private class DateCellRenderer extends MyTableCellRenderer {
 
         private final SimpleDateFormat dateformat = new SimpleDateFormat("HH:mm:ss SSS");
-        private final SimpleDateFormat completeDateformat = new SimpleDateFormat("dd.MM.yy HH:mm:ss SSS");
+        //private final SimpleDateFormat completeDateformat = new SimpleDateFormat("dd.MM.yy HH:mm:ss SSS");
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Date date = new Date(((TextEvent) value).getTimestamp());
             JTextArea jTextArea = super.getJTextArea(isSelected);
-            jTextArea.setText(dateformat.format(date));
-            TextEvent textEvent = (TextEvent) table.getValueAt(row, 1);
-            jTextArea.setForeground(GuiHelper.getColorForLevel(textEvent.getLevel()));
-            jTextArea.setBackground(GuiHelper.getColorForTopic(textEvent.getTopic()));
+            if (null == value) {
+                jTextArea.setText("");
+                jTextArea.setBackground(Color.WHITE);
+                jTextArea.setForeground(Color.BLACK);
+            }
+            else {
+                Date date = null;
+        		date = new Date(((TextEvent) value).getTimestamp());
+	            jTextArea.setText(dateformat.format(date));
+	            TextEvent textEvent = (TextEvent) table.getValueAt(row, 1);
+	            jTextArea.setForeground(GuiHelper.getColorForLevel(textEvent.getLevel()));
+	            jTextArea.setBackground(GuiHelper.getColorForTopic(textEvent.getTopic()));
+            }
             return jTextArea;
         }
     }
@@ -243,18 +251,26 @@ public class JTableLogs extends JTable implements TextListener {
     private class TopicCellRenderer extends MyTableCellRenderer {
 
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            TextEvent textEvent = (TextEvent) value;
+        	TextEvent textEvent = (TextEvent) value;
             JTextArea jTextArea = super.getJTextArea(isSelected);
 
-            if (null != textEvent.getTopic()) {
-                jTextArea.setText(textEvent.getTopic().toString());
+            if (null == value) {
+                jTextArea.setText("");
+                jTextArea.setBackground(Color.WHITE);
+                jTextArea.setForeground(Color.BLACK);
             }
             else {
-                jTextArea.setText("");
+	            
+	            if (null != textEvent.getTopic()) {
+	                jTextArea.setText(textEvent.getTopic().toString());
+	            }
+	            else {
+	                jTextArea.setText("");
+	            }
+	
+	            jTextArea.setForeground(GuiHelper.getColorForLevel(textEvent.getLevel()));
+	            jTextArea.setBackground(GuiHelper.getColorForTopic(textEvent.getTopic()));
             }
-
-            jTextArea.setForeground(GuiHelper.getColorForLevel(textEvent.getLevel()));
-            jTextArea.setBackground(GuiHelper.getColorForTopic(textEvent.getTopic()));
             return jTextArea;
         }
     }
@@ -264,10 +280,16 @@ public class JTableLogs extends JTable implements TextListener {
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             TextEvent textEvent = (TextEvent) value;
             JTextArea jTextArea = super.getJTextArea(isSelected);
-
-            jTextArea.setText(textEvent.getLevelStr());
-            jTextArea.setForeground(GuiHelper.getColorForLevel(textEvent.getLevel()));
-            jTextArea.setBackground(GuiHelper.getColorForTopic(textEvent.getTopic()));
+            if (null == value) {
+                jTextArea.setText("");
+                jTextArea.setBackground(Color.WHITE);
+                jTextArea.setForeground(Color.BLACK);
+            }
+            else {
+	            jTextArea.setText(textEvent.getLevelStr());
+	            jTextArea.setForeground(GuiHelper.getColorForLevel(textEvent.getLevel()));
+	            jTextArea.setBackground(GuiHelper.getColorForTopic(textEvent.getTopic()));
+            }
             return jTextArea;
         }
     }
@@ -339,7 +361,6 @@ public class JTableLogs extends JTable implements TextListener {
         boolean logFormatCSV;
         int i;
         TextEvent textEventReturn = null;
-        BufferedReader bufferedFile;
 
         // Application Log
         if (testcaseIteration == null && scenarioName == null) {
@@ -353,11 +374,8 @@ public class JTableLogs extends JTable implements TextListener {
                     File application = new File(logApplicationPathName.getPath() + listFile[i]);
                     applicationLogFound = true;
                     String nameFile = application.getName();
-                    bufferedFile = new BufferedReader(new FileReader(application));
-                    if (bufferedFile == null) {
-                        throw new ParsingException("File not found : " + application);
-                    }
-
+                    BufferedReader bufferedFile = new BufferedReader(new FileReader(application));
+ 
                     if (nameFile.endsWith(".csv") || (nameFile.endsWith(".log"))) {
                         if (nameFile.endsWith(".csv")) {
                             logFormatCSV = true;

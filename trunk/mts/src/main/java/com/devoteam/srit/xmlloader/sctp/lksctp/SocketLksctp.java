@@ -21,9 +21,8 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.sctp;
+package com.devoteam.srit.xmlloader.sctp.lksctp;
 
-import java.net.SocketException;
 import java.util.concurrent.Semaphore;
 
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -35,25 +34,22 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import dk.i1.sctp.SCTPChunk;
-import dk.i1.sctp.SCTPData;
-import dk.i1.sctp.SCTPNotificationAssociationChangeCommLost;
-import dk.i1.sctp.SCTPNotificationShutdownEvent;
-import dk.i1.sctp.SCTPSocket;
-import dk.i1.sctp.WouldBlockException;
-import dk.i1.sctp.sctp_event_subscribe;
+import com.devoteam.srit.xmlloader.sctp.*;
+
+import dk.i1.sctp.*;
+
 /**
  *
  * @author nghezzaz
  */
 
-public class SocketSctp extends Thread {
+public class SocketLksctp extends Thread {
 
 	private SCTPSocket sctpSocket;
-	private ChannelSctp channelSctp;
+	private ChannelLksctp channelSctp;
 	private Semaphore mutex = new Semaphore(1,true);
 
-	public SocketSctp(SCTPSocket aSctpSocket) throws Exception
+	public SocketLksctp(SCTPSocket aSctpSocket) throws Exception
 	{
 		this.sctpSocket = aSctpSocket;
 		sctp_event_subscribe ses = new sctp_event_subscribe();
@@ -111,17 +107,16 @@ public class SocketSctp extends Thread {
                         {
         					// Create an empty message for transport connection actions (open or close) 
         					// and on server side and dispatch it to the generic stack
-        					((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("ABORT-ACK", channelSctp, null);
+        					((StackLksctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).receiveTransportMessage("ABORT-ACK", channelSctp, null);
 
                             sctpSocket.close();
                         }
                         break;
                     }
-                    /* SETTER L'AID
-                    (SCTPData)chunk).sndrcvinfo.sinfo_assoc_id.hashCode()));
-                    setAidFromMsg();
-                    */
-                    Msg msg = stack.readFromSCTPData(((SCTPData)chunk));
+
+                    DataSctp dataSctp = new DataLksctp( (SCTPData)chunk );
+
+                    Msg msg = stack.readFromSCTPData(dataSctp);
     		    	if (msg != null) 
     		    	{
                         msg.setChannel(channelSctp);
@@ -159,30 +154,43 @@ public class SocketSctp extends Thread {
 		
 	}
 
-	public void setChannelSctp(ChannelSctp aChannelSctp)
+	public void setChannelSctp(ChannelLksctp aChannelSctp)
 	{
 		channelSctp = aChannelSctp;
 	}	
 
-	public SCTPSocket getSctpSocket(){
+	public SCTPSocket getSCTPSocket(){
+            //some native methods on a closed sctpSocket may SIGSEGV
+	    if( sctpSocket!=null && !sctpSocket.isClosed() ){
 		return sctpSocket;	
+            }else
+	    {
+		return null;
+            }
 	}
 
 	public synchronized void send(Msg msg) throws Exception
 	{
+		if( this.sctpSocket==null){
+			throw new java.net.SocketException("SocketLksctp closed");
+		}
+
 		try
 		{	
 			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
 			{
-				MsgSctp msgSctp = (MsgSctp) msg;
-				sctpSocket.send(msgSctp.getSctpData());
+				MsgLksctp msgSctp = (MsgLksctp) msg;
+				sctpSocket.send(msgSctp.getSCTPData());
 			}
 			else
 			{
-				//get the default SCTP config parameters
-				SCTPData data = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTPData();
-				
-				// get the bytes from the msg
+				SCTPData data = new SCTPData();
+				//get the ppid from the config
+				Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+	            int ppidInt = config.getInteger("client.DEFAULT_PPID", 0);                
+	            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppidInt =" + ppidInt);
+	            data.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppidInt);
+	            // get the bytes from the msg
 	            byte[] bytes = msg.encode();
 				data.setData(bytes);
 				sctpSocket.send(data);

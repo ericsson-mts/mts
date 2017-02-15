@@ -23,74 +23,64 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
-import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 
-import dk.i1.sctp.AssociationId;
-import dk.i1.sctp.SCTPData;
-import dk.i1.sctp.sctp_initmsg;
+import java.net.Socket;
 
-public class StackSctp extends Stack
+import org.dom4j.Element;
+
+public abstract class StackSctp extends Stack
 {
-	
-	/** Creates a new instance */
+
+	/**
+	 * Creates a new instance
+	 * Setup a deferred initialization
+	 * */
 	public StackSctp() throws Exception
 	{
-		super();
+		super( (new CtorConfig()).setDeferredInitialization(true) );
 	}
 
-    /**
-     * get the SCTP InitMsg object from the config
-     */
-    public sctp_initmsg getConfigSCTP_InitMsg() throws Exception    
-    {
-    	sctp_initmsg initMsg = new sctp_initmsg();
+    /** Get the protocol of this message */
+    @Override
+	public String getProtocol() {
+		return StackFactory.PROTOCOL_SCTP;  
+	}
 
-		// initialize from the configuration file
-		initMsg.sinit_num_ostreams = (short) getConfig().getInteger("connect.NUM_OSTREAMS");
-		initMsg.sinit_max_instreams = (short) getConfig().getInteger("connect.MAX_INSTREAMS");
-		initMsg.sinit_max_attempts = (short)  getConfig().getInteger("connect.MAX_ATTEMPTS");
-		initMsg.sinit_max_init_timeo= (short) getConfig().getInteger("connect.MAX_INIT_TIMEO");
-		return initMsg;
+    /** 
+     * Returns the Config object to access the protocol config file 
+     */
+    @Override
+    public Config getConfig() throws Exception
+    {
+        return Config.getConfigByName("sctp.properties");
     }
 	
-    /**
-     * get the SCTPData object from the config
-     */
-    public SCTPData getConfigSCTPData() throws Exception    
+	/**
+	 * Creates a Msg specific to each Stack
+	 * 
+	 * useful to set breakpoints
+	 */
+	@Override
+    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-    	SCTPData sctpData = new SCTPData();
-    	
-        Config config = getConfig();
-        sctpData.sndrcvinfo.sinfo_stream = (short) config.getInteger("client.DEFAULT_STREAM", 1);
-		sctpData.sndrcvinfo.sinfo_ssn = (short) config.getInteger("client.DEFAULT_SSN", 0);
-		int ppid = config.getInteger("client.DEFAULT_PPID", 0);
-		sctpData.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppid);
-		sctpData.sndrcvinfo.sinfo_flags = (short) config.getInteger("client.DEFAULT_FLAGS", 0);		
-		sctpData.sndrcvinfo.sinfo_context = config.getInteger("client.DEFAULT_CONTEXT", 0);
-		sctpData.sndrcvinfo.sinfo_timetolive = config.getInteger("client.DEFAULT_TTL", 0);
-		sctpData.sndrcvinfo.sinfo_tsn = config.getInteger("client.DEFAULT_TSN", 0);
-		sctpData.sndrcvinfo.sinfo_cumtsn = config.getInteger("client.DEFAULT_CUMTSN", 0);
-		long assocId = (long) config.getInteger("client.DEFAULT_AID", 0);
-		sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocId);
-
-    	return sctpData;
+		Msg msg = super.parseMsgFromXml(request, root, runner);
+		assert( msg instanceof MsgSctp );
+    	return msg;
     }
 
     /**
      * Creates a Msg specific to each Stack
      * Used for SCTP like protocol : to build incoming message
      */
-    public Msg readFromSCTPData(SCTPData chunk) throws Exception    
+    public Msg readFromSCTPData(DataSctp chunk) throws Exception    
     {
-    	return new MsgSctp(this, chunk);
+	  return this.createMsgSctp(chunk);
     }
 
 	/** 
@@ -106,7 +96,7 @@ public class StackSctp extends Stack
     		{
 				// create an empty message
 				byte[] bytes = new byte[0];
-				MsgSctp msg = new MsgSctp(this);
+				MsgSctp msg = this.createMsgSctp();
 				msg.decode(bytes);
 				msg.setType(type);
 				msg.setChannel(channel);
@@ -122,4 +112,39 @@ public class StackSctp extends Stack
 	
     }
     
+    /**
+     * 
+     * @return a new ListenpointSctp instance
+     */
+    public abstract ListenpointSctp createListenpointSctp() throws Exception;
+    /**
+     * 
+     * @return a new ListenpointSctp instance
+     */
+    public abstract ListenpointSctp createListenpointSctp(Stack stack) throws Exception;
+    
+    /**
+     * 
+     * @return a new ChannelSctp instance
+     */
+    public abstract ChannelSctp createChannelSctp(Stack stack) throws Exception;
+    
+    /**
+     * 
+     * @return a new ChannelSctp instance
+     */
+    public abstract ChannelSctp createChannelSctp(String name, Listenpoint aListenpoint, Socket aSocket) throws Exception;
+    
+    /**
+     * 
+     * @return a new MsgSctp instance
+     */
+    public abstract MsgSctp createMsgSctp() throws Exception;
+
+    /**
+     * 
+     * @return a new MsgSctp instance
+     */
+    public abstract MsgSctp createMsgSctp(DataSctp chunk) throws Exception;
+
 }

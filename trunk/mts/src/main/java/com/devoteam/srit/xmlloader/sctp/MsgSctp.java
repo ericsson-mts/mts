@@ -26,8 +26,6 @@ package com.devoteam.srit.xmlloader.sctp;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
-import java.net.InetAddress;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,44 +35,28 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
-import dk.i1.sctp.AssociationId;
-import dk.i1.sctp.SCTPData;
-import dk.i1.sctp.SCTPSocket;
-
-
-public class MsgSctp extends Msg{
+public abstract class MsgSctp extends Msg{
 	
 	private enum DataType
 	{
 		text,
 		binary
 	}
-
-	private SCTPData sctpData;
-
-	public SCTPData getSctpData() {
-		return sctpData;
-	}
-
-	/** Creates a new instance */
-    public MsgSctp(Stack stack) throws Exception
-    {
-        super(stack);
-    }
     
     /** Creates a new instance */
-	public MsgSctp(Stack stack, SCTPData chunk) throws Exception{
-		this(stack);
-		
-		this.setType("DATA");
-		this.sctpData = chunk;
+	public MsgSctp(Stack stack) throws Exception{
+		super(stack);	
 	}
+
+	/**
+	 * 
+	 * @return the associated DataSctp
+	 */
+	public abstract DataSctp getDataSctp();
 
     /** Get the protocol of this message */
     @Override
@@ -117,12 +99,6 @@ public class MsgSctp extends Msg{
 		return null;
 	}
 
-	/// a utiliser
-	public void setAidFromMsg()
-	{
-		((ChannelSctp) getChannel()).setAssociationId(sctpData.sndrcvinfo.sinfo_assoc_id);
-	}
-
 	
     //-------------------------------------------------
     // methods for the encoding / decoding of the message
@@ -134,7 +110,8 @@ public class MsgSctp extends Msg{
     @Override
     public byte[] encode() throws Exception
     {
-        return this.sctpData.getData();
+    	DataSctp dataSctp = this.getDataSctp();
+        return dataSctp.getData();
     }
 
     /** 
@@ -143,7 +120,8 @@ public class MsgSctp extends Msg{
     @Override
     public void decode(byte[] data) throws Exception
     {
-    	this.sctpData = new SCTPData(data);
+    	DataSctp dataSctp = this.getDataSctp();
+    	dataSctp.setData(data);
     }
 
     
@@ -157,84 +135,74 @@ public class MsgSctp extends Msg{
 	public String toShortString() throws Exception 
     {
     	String ret = super.toShortString();
+
     	ret += "\n";
 		try
 		{
-            ret += Utils.toStringBinary(sctpData.getData(), Math.min(sctpData.getData().length, 100));
+	    	DataSctp dataSctp = this.getDataSctp();
+            ret += Utils.toStringBinary(dataSctp.getData(), Math.min(dataSctp.getLength(), 100));
 		}
 		catch(Exception e)
 		{
             GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "An error occured while logging the SCTP message : ", ret);
-        	e.printStackTrace();
 		}
 		return ret;
 	}
 
     /** 
-     * Convert the message to XML document 
+     * Convert the message to XML document
      */
     @Override
-    public String toXml() throws Exception 
-    {
-		String xml = getTypeComplete();
-		xml += "\n"; 
-		if (sctpData.sndrcvinfo!=null)
-		{
-			xml += "<sctp ";
-			int stream = sctpData.sndrcvinfo.sinfo_stream & 0xffff;
-			xml += "stream=\"" + stream + "\", ";
-			int ssn = sctpData.sndrcvinfo.sinfo_ssn & 0xffff;
-			xml += "ssn=\"" + ssn + "\", ";	
-			long ppid = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid)) & 0xffffffffl;
-			xml += "ppid=\"" + ppid + "\", ";
-			xml += "flags=\"" + sctpData.sndrcvinfo.sinfo_flags + "\", ";
-			long context = ((long) this.sctpData.sndrcvinfo.sinfo_context) & 0xffffffffl;
-			xml += "context=\"" + context + "\", ";
-			long timetolive = ((long) this.sctpData.sndrcvinfo.sinfo_timetolive) & 0xffffffffl;
-			xml += "ttl=\"" + timetolive + "\", ";
-			long tsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn)) & 0xffffffffl;
-			xml += "tsn=\"" + tsn + "\", ";
-			long cumtsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn)) & 0xffffffffl;
-			xml += "cumtsn=\"" + cumtsn + "\", ";
-			long aid = ((long) this.sctpData.sndrcvinfo.sinfo_assoc_id.hashCode()) & 0xffffffffl;			
-			xml += "aid=\"" + aid + "\"/>\n";
-			
-			ChannelSctp channelSctp = (ChannelSctp) getChannel();
-			if (channelSctp != null)
-			{
-				SocketSctp socketSctp = channelSctp.getSocketSctp();
-				if (socketSctp != null)
-				{
-					SCTPSocket sctpSocket = socketSctp.getSctpSocket();
-					if (sctpSocket != null)
-					{
-						AssociationId assoId = sctpData.sndrcvinfo.sinfo_assoc_id;
-						if (assoId != null && assoId.hashCode() != 0)
-						{
-							//System.out.println("assoId" + assoId);
-							int port= sctpSocket.getPeerInetPort(assoId);
-							//int port=  0;
-							Collection<InetAddress> col = sctpSocket.getPeerInetAddresses(assoId);
-							if (col != null)
-							{
-								for (InetAddress ia : col)
-								{	
-									xml += "    <peer ";
-									xml += "address=\"" + ia.getHostAddress() + "\" ";
-									xml += "port=\"" + port + "\" ";
-									xml += "/>\n";
-								}
-							}
-						}
-					}
-				}	
-			}
-			xml += "</sctp>\n";
-		}
-		xml += Utils.byteTabToString(sctpData.getData());
-        return xml;
+    public String toXml() throws Exception {
+    	
+        // TODO change implementation (jackson-dataformat-xml ?)
+    	
+		String xml = "";
 
+		DataSctp dataSctp = this.getDataSctp();
+
+		String completeType = this.getTypeComplete();
+		xml += "<"+completeType+">"; 
+		xml += System.lineSeparator();
+
+    	//<infoSctp>
+    	InfoSctp infoSctp = dataSctp.getInfo();
+    	if (infoSctp!=null){
+    		
+        	xml += infoSctp.toXml();
+    		xml += System.lineSeparator();
+		}
+    	
+    	//<peerAdresses>
+		ChannelSctp channelSctp = (ChannelSctp) this.getChannel();
+		if (channelSctp != null){
+	    	AssociationSctp associationSctp = null;
+	    	if (infoSctp!=null) {
+	    		associationSctp = infoSctp.getAssociation();
+	    	}
+
+			xml += channelSctp.toXml_LocalAddresses( associationSctp );
+    		xml += System.lineSeparator();
+
+    		xml += channelSctp.toXml_PeerAddresses( associationSctp );
+    		xml += System.lineSeparator();
+		}
+
+		//<sctpData>
+    	{
+			xml += "<sctpData>";
+    		xml += System.lineSeparator();
+    		byte[] data = dataSctp.getData();
+    		xml += Utils.byteTabToString(data);
+    		xml += System.lineSeparator();
+			xml += "</sctpData>";
+			xml += System.lineSeparator();
+    	}
+    	
+		xml += "<"+completeType+"/>"; 
+        return xml;
     }
+    
 
     /** 
      * Parse the message from XML element 
@@ -242,8 +210,11 @@ public class MsgSctp extends Msg{
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+		DataSctp dataSctp = this.getDataSctp();
+		dataSctp.clear();
     	this.setType("DATA");
     	 
+		@SuppressWarnings("unchecked")
 		List<Element> xmlData = root.elements("data");
 		List<byte[]> datas = new LinkedList<byte[]>();
 		for(Element element:xmlData)
@@ -253,7 +224,7 @@ public class MsgSctp extends Msg{
 			case text:
 			{
 				String text = element.getText();
-                // change the \n caractère to \r\n caracteres because the dom librairy return only \n.
+                // change the \n caractÃ¨re to \r\n caracteres because the dom librairy return only \n.
                 // this could make some trouble when the length is calculated in the scenario
                 text = text.replace("\r\n","\n");                    
                 text = text.replace("\n","\r\n");                    					
@@ -288,86 +259,21 @@ public class MsgSctp extends Msg{
 				i++;
 			}
 		}	
+		dataSctp.setData(data);
 
-		//get the default SCTP config parameters
-		this.sctpData = ((StackSctp) StackFactory.getStack(StackFactory.PROTOCOL_SCTP)).getConfigSCTPData();
-        this.sctpData.setData(data);
-		
+		// initialize from the configuration file		
+        Config stackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+
 		// Parse the XML file
+		@SuppressWarnings("unchecked")
 		List<Element> sctpElements = root.elements("sctp");
-		if (sctpElements != null && sctpElements.size() > 0)
-		{
-			Element sctpElement = sctpElements.get(0);
-	        
-			String stream = sctpElement.attributeValue("stream");
-			if (stream != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_stream = (short) Integer.parseInt(stream);
-			}
-			
-			String ssn = sctpElement.attributeValue("ssn");
-			if (ssn != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_ssn = (short) Integer.parseInt(ssn);
-			}
-			
-			String ppidString = sctpElement.attributeValue("ppid");
-			if (ppidString != null)
-			{
-				int ppidInt = (int) Long.parseLong(ppidString);
-				this.sctpData.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppidInt);
-			}
-			
-			String flags = sctpElement.attributeValue("flags");
-			if (flags != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_flags = (short) Integer.parseInt(flags);
-			}
-			
-			String context = sctpElement.attributeValue("context");
-			if (context != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_context = (int) Long.parseLong(context);
-			}
-			
-			String ttl = sctpElement.attributeValue("ttl");
-			if (ttl != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_timetolive = (int) Long.parseLong(ttl);
-			}
-			
-			String tsnString = sctpElement.attributeValue("tsn");
-			if (tsnString != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_tsn = (int) Long.parseLong(tsnString);
-			}
-			
-			String cumtsnString = sctpElement.attributeValue("cumtsn");
-			if (cumtsnString != null)
-			{
-				this.sctpData.sndrcvinfo.sinfo_cumtsn = (int) Long.parseLong(cumtsnString);
-			}
 
-			String aid = sctpElement.attributeValue("aid");
-			Long assocIdLong = null; 
-			if (aid != null)
-			{
-				assocIdLong = Long.parseLong(aid);
-				this.sctpData.sndrcvinfo.sinfo_assoc_id = new AssociationId(assocIdLong);
-			}
-			
-			// log datas
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "stream =" + this.sctpData.sndrcvinfo.sinfo_stream);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ssn =" + this.sctpData.sndrcvinfo.sinfo_ssn);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppid =" + this.sctpData.sndrcvinfo.sinfo_ppid);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "flags =" + this.sctpData.sndrcvinfo.sinfo_flags);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "context =" + this.sctpData.sndrcvinfo.sinfo_context);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ttl =" + this.sctpData.sndrcvinfo.sinfo_timetolive);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "tsn =" + this.sctpData.sndrcvinfo.sinfo_tsn);
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "cumtsn =" + this.sctpData.sndrcvinfo.sinfo_cumtsn);			
-			GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "aid =" + this.sctpData.sndrcvinfo.sinfo_assoc_id.toString());
-
-		}
+        BasicInfoSctp infoSctp = new BasicInfoSctp();
+        infoSctp.setFromStackConfig( stackConfig );
+        infoSctp.setFromXml(sctpElements);             
+		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "MsgSctp#parseFromXml infoSctp=",infoSctp);
+		dataSctp.setInfo(infoSctp);
+		
     }
 
     
@@ -378,8 +284,9 @@ public class MsgSctp extends Msg{
     /** 
      * Get a parameter from the message
      */
+    //@Nullable
     @Override
-    public Parameter getParameter(String path) throws Exception
+    public final Parameter getParameter(String path) throws Exception
 	{
 		Parameter var = super.getParameter(path);
 		if (var != null)
@@ -393,72 +300,55 @@ public class MsgSctp extends Msg{
 
         if(params[0].equalsIgnoreCase("sctp")) 
         {
-        	if (this.sctpData != null && this.sctpData.sndrcvinfo != null)
+        	DataSctp dataSctp = this.getDataSctp();
+        	
+        	if (dataSctp != null && dataSctp.getInfo() != null)
         	{
+        		InfoSctp infoSctp = dataSctp.getInfo();
+        		
 	            if(params[1].equalsIgnoreCase("stream")) 
 	            {
-	            	int stream = this.sctpData.sndrcvinfo.sinfo_stream & 0xffff;
-	            	var.add(Integer.toString(stream));
+	            	var.add( InfoSctp.StringPrinter.getStreamId(infoSctp) );
 	            }
 	            else if(params[1].equalsIgnoreCase("ssn")) 
 	            {
-	            	int ssn = this.sctpData.sndrcvinfo.sinfo_ssn & 0xffff;
-	            	var.add(Integer.toString(ssn));
+	            	var.add(InfoSctp.StringPrinter.getSsn(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("ppid")) 
 	            {
-	            	long ppid = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_ppid)) & 0xffffffffl;
-	            	var.add(Long.toString(ppid));
+	            	var.add(InfoSctp.StringPrinter.getPpid(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("flags")) 
 	            {
-	            	int ppid = this.sctpData.sndrcvinfo.sinfo_flags & 0xffff;
-	            	var.add(Integer.toString(ppid));
+	            	var.add(InfoSctp.StringPrinter.getFlags(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("context")) 
 	            {
-	            	long context = ((long) this.sctpData.sndrcvinfo.sinfo_context) & 0xffffffff;
-	            	var.add(Long.toString(context));
+	            	var.add(InfoSctp.StringPrinter.getContext(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("ttl")) 
 	            {
-	            	long ttl = ((long) this.sctpData.sndrcvinfo.sinfo_timetolive) & 0xffffffff;
-	            	var.add(Long.toString(ttl));
+	            	var.add(InfoSctp.StringPrinter.getTtl(infoSctp));
 	            }
-	            else if(params[1].equalsIgnoreCase("tsn")) 
+	            else if(params[1].equalsIgnoreCase("tsn"))
 	            {
-	            	long tsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_tsn)) & 0xffffffff;
-	            	var.add(Long.toString(tsn));
+	            	var.add(InfoSctp.StringPrinter.getTsn(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("cumtsn")) 
 	            {
-	            	long cumtsn = ((long) Utils.convertLittleBigIndian(this.sctpData.sndrcvinfo.sinfo_cumtsn)) & 0xffffffff;
-	            	var.add(Long.toString(cumtsn));
+	            	var.add(InfoSctp.StringPrinter.getCumtsn(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("aid")) 
 	            {
-	            	AssociationId assocId = this.sctpData.sndrcvinfo.sinfo_assoc_id;
-	            	long aid = ((long) assocId.hashCode())  & 0xffffffff;;
-	            	var.add(Long.toString(aid));
-					setAidFromMsg();
+	            	var.add(InfoSctp.StringPrinter.getAssociationId(infoSctp));
 	            }
 	            else if(params[1].equalsIgnoreCase("peerHosts")) 
 		        {
-					SocketSctp socketSctp = ((ChannelSctp) getChannel()).getSocketSctp();
-					if (socketSctp != null)
-					{						
-						Collection<InetAddress> col = socketSctp.getSctpSocket().getPeerInetAddresses(sctpData.sndrcvinfo.sinfo_assoc_id);
-						for (InetAddress ia : col)
-						{	
-							var.add(ia.getHostAddress());						
-						}
-					}
+	            	var = this.getParameterPeerHosts();
 		        }
 		        else if(params[1].equalsIgnoreCase("peerPort")) 
 		        {
-					ChannelSctp connSctp =((ChannelSctp) getChannel());
-					int port=connSctp.getSocketSctp().getSctpSocket().getPeerInetPort(sctpData.sndrcvinfo.sinfo_assoc_id);
-					var.add(Integer.toString(port));
+	            	var = this.getParameterPeerPort();
 		        }
 		        else 
 		        {
@@ -468,13 +358,15 @@ public class MsgSctp extends Msg{
         }
         else if(params[0].equalsIgnoreCase("data")) 
         {
-            if(params[1].equalsIgnoreCase("text")) 
+        	DataSctp dataSctp = this.getDataSctp();
+
+        	if(params[1].equalsIgnoreCase("text")) 
             {
-                var.add(new String(this.sctpData.getData()));
+                var.add(new String(dataSctp.getData()));
             }
             else if(params[1].equalsIgnoreCase("binary")) 
             {
-            	var.add(Array.toHexString(new DefaultArray(this.sctpData.getData())));
+            	var.add(Array.toHexString(new DefaultArray(dataSctp.getData())));
             }
             else 
             {
@@ -489,8 +381,19 @@ public class MsgSctp extends Msg{
         {
         	Parameter.throwBadPathKeywordException(path);
         }
-
 		return var;
-	}    
+	}
+    
+    /**
+     * 
+     * @return peer hosts adresses
+     */
+    protected abstract Parameter getParameterPeerHosts() throws Exception;
+    
+    /**
+     * 
+     * @return peer hosts port
+     */
+    protected abstract Parameter getParameterPeerPort() throws Exception;
 
 }

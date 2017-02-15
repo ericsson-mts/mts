@@ -14,13 +14,13 @@
     </receiveMessageSCTP>
 
     <!-- coupure reseau -->
-    <parameter name="[result]" operation="system.command" value="ip link set [networkInterface] down"/>
+    <parameter name="[result]" operation="system.command" value="ip link set [localHostIfce] down"/>
     <if>
         <condition>
             <test parameter="[result.returnCode]" condition="number.equals" value="0" not="true"/>
         </condition>
         <then>
-            <exit failed="true" exception="Error while cutting the network interface [networkInterface] : [result.standardOut][result.errorOut]"/>
+            <exit failed="true" exception="Error while cutting the network interface [localHostIfce] : [result.standardOut][result.errorOut]"/>
         </then>
     </if>
     <pause seconds="5"/>
@@ -34,13 +34,13 @@
     </receiveMessageSCTP>
 
     <!-- reconnection reseau -->
-    <parameter name="[result]" operation="system.command" value="ip link set [networkInterface] down"/>
+    <parameter name="[result]" operation="system.command" value="ip link set [localHostIfce] up"/>
     <if>
         <condition>
             <test parameter="[result.returnCode]" condition="number.equals" value="0" not="true"/>
         </condition>
         <then>
-            <exit failed="true" exception="Error while restoring the network interface [networkInterface] : [result.standardOut][result.errorOut]"/>
+            <exit failed="true" exception="Error while restoring the network interface [localHostIfce] : [result.standardOut][result.errorOut]"/>
         </then>
     </if>
     <pause seconds="5"/>
@@ -57,13 +57,13 @@
     <finally>
 
       	<!-- reconnection reseau -->
-      	<parameter name="[result]" operation="system.command" value="ip link set [networkInterface] up"/>
+      	<parameter name="[result]" operation="system.command" value="ip link set [localHostIfce] up"/>
     <if>
         <condition>
             <test parameter="[result.returnCode]" condition="number.equals" value="0" not="true"/>
         </condition>
         <then>
-            <exit failed="true" exception="Error while restoring the network interface [networkInterface] : [result.standardOut][result.errorOut]"/>
+            <exit failed="true" exception="Error while restoring the network interface [localHostIfce] : [result.standardOut][result.errorOut]"/>
         </then>
     </if>
 

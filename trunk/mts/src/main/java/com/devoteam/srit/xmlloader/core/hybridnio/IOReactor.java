@@ -26,11 +26,7 @@ package com.devoteam.srit.xmlloader.core.hybridnio;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.nio.channels.DatagramChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -45,6 +41,8 @@ import javax.net.ssl.SSLEngine;
  *  - UDP Sockets
  *  - TCP [SSL]Sockets
  *  - TCP [SSL]ServerSockets
+ *  - SCTP Sockets
+
  *
  * As NIO are somewhat event-based IO, this class dispatches those event (init,
  * read, write, connect, accept) to IOHandlers.
@@ -120,7 +118,7 @@ public class IOReactor
                             if (key.isValid() && key.isWritable())
                             {
                                 IOHandler handler = (IOHandler) key.attachment();
-                                handler.outputReady();
+                                handler.onIorOutputReady();
                             }
                         }
                         catch(Exception e)
@@ -165,7 +163,7 @@ public class IOReactor
                                 //if (key.channel().isOpen() && key.isValid() && key.isReadable())
                                 {
                                     IOHandler handler = (IOHandler) key.attachment();
-                                    handler.inputReady();
+                                    handler.onIorInputReady();
                                 }
                             }
                             catch(Exception e)
@@ -244,12 +242,12 @@ public class IOReactor
                                     if (key.isValid() && key.isAcceptable())
                                     {
                                         IOHandler handler = (IOHandler) key.attachment();
-                                        handler.acceptReady();
+                                        handler.onIorAcceptReady();
                                     }
                                     if (key.isValid() && key.isConnectable())
                                     {
                                         IOHandler handler = (IOHandler) key.attachment();
-                                        handler.connectReady();
+                                        handler.onIorConnectReady();
                                     }
                                     if (key.isValid() && key.isReadable())
                                     {
@@ -286,6 +284,34 @@ public class IOReactor
         dispatcher.start();
     }
 
+    
+    /**
+     * register an selectable channel (generalization of openUDP, openTCP)
+     * 
+     * calls handler callback IOhandler.onIorInit
+     * 
+     * @param channel a selectable channel
+     * @param ops (combinaison of SelectionKey.OP_READ, SelectionKey.OP_ACCEPT, ...)
+     * @param handler
+     * @return the selectionkey
+     * @throws IOException
+     */
+    public SelectionKey registerChannel(SelectableChannel channel, int ops ,IOHandler handler) throws IOException
+    {
+    	SelectionKey selectionKey = null;
+    	
+        channel.configureBlocking(false);
+
+        synchronized(selectorLock)
+        {
+            this.selector.wakeup();
+            selectionKey = channel.register(selector,ops, handler);
+            handler.onIorInit(selectionKey, channel);
+        }
+        
+        return selectionKey;
+    }
+
     public void openUDP(SocketAddress localSocketAddress, IOHandler handler) throws IOException
     {
         // Create a non-blocking socket channel
@@ -296,7 +322,7 @@ public class IOReactor
         synchronized(selectorLock)
         {
             this.selector.wakeup();
-            handler.init(channel.register(selector, SelectionKey.OP_READ, handler), channel);
+            handler.onIorInit(channel.register(selector, SelectionKey.OP_READ, handler), channel);
         }
     }
 
@@ -312,7 +338,7 @@ public class IOReactor
         synchronized(selectorLock)
         {
             this.selector.wakeup();
-            handler.init(channel.register(selector, SelectionKey.OP_READ, handler), channel);
+            handler.onIorInit(channel.register(selector, SelectionKey.OP_READ, handler), channel);
         }
     }
 
@@ -323,7 +349,7 @@ public class IOReactor
         synchronized(selectorLock)
         {
             this.selector.wakeup();
-            handler.init(channel.register(selector, SelectionKey.OP_READ, handler), channel);
+            handler.onIorInit(channel.register(selector, SelectionKey.OP_READ, handler), channel);
         }
     }
 
@@ -347,7 +373,7 @@ public class IOReactor
         synchronized(selectorLock)
         {
             this.selector.wakeup();
-            handler.init(channel.register(selector, SelectionKey.OP_ACCEPT, handler), channel);
+            handler.onIorInit(channel.register(selector, SelectionKey.OP_ACCEPT, handler), channel);
         }
     }
 
@@ -356,7 +382,7 @@ public class IOReactor
         synchronized(selectorLock)
         {
         	SelectionKey select = channelServer.register(selector, 0, handler);
-        	handler.init(select, channelServer);
+        	handler.onIorInit(select, channelServer);
         	channelServer.register(selector, 0, handler);
         	//selector.close();
         }
@@ -401,7 +427,7 @@ public class IOReactor
             // NB for SSL: we do not give the handler the same channel we register into
             //             the selector because we can only register sun's channels
             //             into the selector.
-            handler.init(adapteeChannel.register(selector, SelectionKey.OP_READ, handler), channel);
+            handler.onIorInit(adapteeChannel.register(selector, SelectionKey.OP_READ, handler), channel);
         }
     }
 
@@ -419,7 +445,7 @@ public class IOReactor
         {
             this.selector.wakeup();
             SocketChannel adapteeChannel = ((SocketChannel)channel.getAdapteeChannel());
-            handler.init(adapteeChannel.register(selector, SelectionKey.OP_READ, handler), channel);
+            handler.onIorInit(adapteeChannel.register(selector, SelectionKey.OP_READ, handler), channel);
         }
     }
 
@@ -447,7 +473,8 @@ public class IOReactor
             this.selector.wakeup();
             ServerSocketChannel adapteeChannel = ((ServerSocketChannel)channel.getAdapteeChannel());
             adapteeChannel.register(selector, SelectionKey.OP_ACCEPT, handler);
-            handler.init(adapteeChannel.register(selector, SelectionKey.OP_ACCEPT, handler), channel);
+            handler.onIorInit(adapteeChannel.register(selector, SelectionKey.OP_ACCEPT, handler), channel);
         }
     }
+
 }

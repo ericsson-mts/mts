@@ -103,28 +103,32 @@ public class NIOSocketServerListener extends SocketServerListener implements IOH
         }
     }
 
-    
-    public void init(SelectionKey selectionKey, SelectableChannel channel)
+    @Override
+    public void onIorInit(SelectionKey selectionKey, SelectableChannel channel)
     {
         this.channel = (ServerSocketChannel) channel;
     }
 
-    public void inputReady()
+    @Override
+    public void onIorInputReady()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void outputReady()
+    @Override
+    public void onIorOutputReady()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void connectReady()
+    @Override
+    public void onIorConnectReady()
     {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void acceptReady()
+    @Override
+    public void onIorAcceptReady()
     {
         try
         {

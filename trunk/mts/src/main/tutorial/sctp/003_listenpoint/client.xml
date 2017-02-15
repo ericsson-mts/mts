@@ -2,16 +2,23 @@
 
 <scenario>
 
+    <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
+
     <pause name="wait listenpoint" seconds="1"/>
 
-    <openChannelSCTP name="channelSCTP" remoteHost="[remoteHostSCTP]" remotePort="[remoteListenPortSCTP]">
+    <openChannelSCTP name="[channelName]" remoteHost="[remoteHostSCTP]" remotePort="[remoteListenPortSCTP]">
         <sctp num_ostreams="22223" max_instreams="333334"/>
     </openChannelSCTP>        
 
-    <sendMessageSCTP channel="channelSCTP">
+    <sendMessageSCTP channel="[channelName]">
         <sctp stream="22222" ssn="33333" ppid="4294967295" flags="1"/>
         <data format="text">test value</data>
     </sendMessageSCTP>
+    
+    <finally>
+    <pause seconds="1"/>
+    <closeChannelSCTP name="[channelName]"/> 
+    </finally>
 
 </scenario>
 

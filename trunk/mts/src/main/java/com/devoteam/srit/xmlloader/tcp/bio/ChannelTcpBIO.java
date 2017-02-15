@@ -119,7 +119,8 @@ public class ChannelTcpBIO extends Channel
     		Config.getConfigForTCPSocket(socket, false);
     		
             this.localPort = socket.getLocalPort();
-            this.localHost = socket.getLocalAddress().getHostAddress();
+            String socketLocalHost = socket.getLocalAddress().getHostAddress();
+            this.setLocalHost( socketLocalHost );
             
             socketTcp = new SocketTcpBIO(socket);
     	}

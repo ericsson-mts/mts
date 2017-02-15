@@ -2,16 +2,24 @@
 
 <scenario>
 
-    <openChannelSCTP name="client1" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
+    <parameter name="[channelName1]" operation="set" value="[scenarioName]1"/>
+    <openChannelSCTP name="[channelName1]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
 
-    <openChannelSCTP name="client2" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
+     <parameter name="[channelName2]" operation="set" value="[scenarioName]2"/>
+     <openChannelSCTP name="[channelName2]" remoteHost="[remoteHostSCTP]" remotePort="[remotePortSCTP]"/>
     
-    <sendMessageSCTP channel="client1">
+    <sendMessageSCTP channel="[channelName1]">
         <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
     </sendMessageSCTP>
    
-    <sendMessageSCTP channel="client2">
+    <sendMessageSCTP channel="[channelName2]">
         <data format="binary">h4141414141</data>
     </sendMessageSCTP>
+ 
+    <finally>
+    <pause seconds="1"/>
+    <closeChannelSCTP name="[channelName1]"/> 
+    <closeChannelSCTP name="[channelName2]"/> 
+    </finally>
 
 </scenario>

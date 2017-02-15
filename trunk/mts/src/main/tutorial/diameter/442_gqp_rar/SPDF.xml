@@ -33,7 +33,7 @@ Re-Auth-Request ::= < Diameter Header: 258, REQ, PXY >
 -->
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="Send Request ETSI/Gq'/RAR" channel="channel_client" destScenario="AF">
+    <sendMessageDIAMETER name="Send Request ETSI/Gq'/RAR" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]" proxiable="true" error="false" retransmit="false"/>
           <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[localHostDIAM];[newSessionId]"/>
           <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
