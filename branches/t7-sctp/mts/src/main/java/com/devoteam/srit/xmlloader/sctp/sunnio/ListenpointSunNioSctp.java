@@ -37,12 +37,8 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.*;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.sctp.*;
-import com.devoteam.srit.xmlloader.sctp.lksctp.StackLksctp;
 import com.sun.nio.sctp.*;
-
-import dk.i1.sctp.sctp_initmsg;
 
 /**
  * @author emicpou
