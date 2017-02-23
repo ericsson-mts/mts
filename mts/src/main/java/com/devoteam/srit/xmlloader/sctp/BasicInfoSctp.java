@@ -23,12 +23,6 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import java.util.List;
-
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.core.utils.Config;
-
 /**
  * An implementation of InfoSctp which stores informations in memory
  *
@@ -195,87 +189,4 @@ public class BasicInfoSctp extends InfoSctp {
 		this.association.setId(associationId);
 	}
 	
-    /*
-     * 
-     */
-    public void setFromStackConfig( Config stackConfig ) throws Exception
-    {
-    	this.streamId = (short) stackConfig.getInteger("client.DEFAULT_STREAM", 1);
-    	this.ssn = (short) stackConfig.getInteger("client.DEFAULT_SSN", 0);
-    	this.flags = (short) stackConfig.getInteger("client.DEFAULT_FLAGS", 0);
-    	this.ppid = stackConfig.getInteger("client.DEFAULT_PPID", 0);
-    	this.context = stackConfig.getInteger("client.DEFAULT_CONTEXT", 0);
-    	this.timetolive = stackConfig.getInteger("client.DEFAULT_TTL", 0);
-    	this.tsn = stackConfig.getInteger("client.DEFAULT_TSN", 0);
-    	this.cumtsn = stackConfig.getInteger("client.DEFAULT_CUMTSN", 0);
-    	this.association.setId( stackConfig.getInteger("client.DEFAULT_AID", 0) );
-    }
-
-    /*
-     * 
-     */
-    public void setFromXml(List<Element> sctpElements) throws Exception
-    {
-		// TODO check unsigned->signed conversion and overflows
-
-    	if (sctpElements != null && sctpElements.size() > 0)
-		{
-			Element sctpElement = sctpElements.get(0);
-	        
-			String stream = sctpElement.attributeValue("stream");
-			if (stream != null)
-			{
-				this.streamId = (short) Integer.parseUnsignedInt(stream);
-			}
-			
-			String ssn = sctpElement.attributeValue("ssn");
-			if (ssn != null)
-			{
-				this.ssn = (short) Integer.parseUnsignedInt(ssn);
-			}
-			
-			String flags = sctpElement.attributeValue("flags");
-			if (flags != null)
-			{
-				this.flags = (short) Integer.parseUnsignedInt(flags);
-			}
-			
-			String ppid = sctpElement.attributeValue("ppid");
-			if (ppid != null)
-			{
-				this.ppid = Integer.parseUnsignedInt(ppid);
-			}
-			
-			String context = sctpElement.attributeValue("context");
-			if (context != null)
-			{
-				this.context = Integer.parseUnsignedInt(context);
-			}
-			
-			String ttl = sctpElement.attributeValue("ttl");
-			if (ttl != null)
-			{
-				this.timetolive = Integer.parseUnsignedInt(ttl);
-			}
-			
-			String tsnString = sctpElement.attributeValue("tsn");
-			if (tsnString != null)
-			{
-				this.tsn = Integer.parseUnsignedInt(tsnString);
-			}
-			
-			String cumtsnString = sctpElement.attributeValue("cumtsn");
-			if (cumtsnString != null)
-			{
-				this.cumtsn = Integer.parseUnsignedInt(cumtsnString);
-			}
-
-			String aidString = sctpElement.attributeValue("aid");
-			if (aidString != null)
-			{
-				this.association.setId( Integer.parseUnsignedInt(aidString) );
-			}
-		}
-    }
-
 }

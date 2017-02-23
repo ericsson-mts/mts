@@ -32,7 +32,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import com.devoteam.srit.xmlloader.sctp.*;
 
@@ -179,20 +178,25 @@ public class SocketLksctp extends Thread {
 		{	
 			if (msg.getProtocol().equalsIgnoreCase(StackFactory.PROTOCOL_SCTP))
 			{
+				assert(msg instanceof MsgLksctp );
 				MsgLksctp msgSctp = (MsgLksctp) msg;
 				sctpSocket.send(msgSctp.getSCTPData());
 			}
 			else
 			{
-				SCTPData data = new SCTPData();
-				//get the ppid from the config
-				Config config = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-	            int ppidInt = config.getInteger("client.DEFAULT_PPID", 0);                
-	            GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "ppidInt =" + ppidInt);
-	            data.sndrcvinfo.sinfo_ppid = Utils.convertLittleBigIndian(ppidInt);
 	            // get the bytes from the msg
-	            byte[] bytes = msg.encode();
-				data.setData(bytes);
+	            byte[] chunk = msg.encode();	            
+	            
+	            // create a communication object in a wrapper with the chunk
+	            DataLksctp dataLksctp = new DataLksctp(chunk);
+
+   				// initialize its metadata from the configuration file		
+		        InfoSctp infoSctp = dataLksctp.getInfo();
+		        Config stackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+		        infoSctp.setFromStackConfig( stackConfig );
+
+		        //access the communication object and send it
+		        SCTPData data = dataLksctp.getSCTPData();
 				sctpSocket.send(data);
 			}
 			GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SEND>>> the SCTP message :\n", msg);
