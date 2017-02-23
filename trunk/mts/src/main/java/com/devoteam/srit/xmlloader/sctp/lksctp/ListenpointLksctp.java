@@ -24,7 +24,6 @@
 package com.devoteam.srit.xmlloader.sctp.lksctp;
 
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 

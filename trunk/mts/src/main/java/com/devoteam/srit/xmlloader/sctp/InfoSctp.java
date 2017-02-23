@@ -23,6 +23,12 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import java.util.List;
+
+import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.core.utils.Config;
+
 /**
  * @author emicpou
  *
@@ -157,6 +163,140 @@ public abstract class InfoSctp {
 	public boolean tryGet( InfoSctp dst ){
 		return tryCopy( this,dst );
 	}
+
+	
+	
+	
+	
+    /*
+     * 
+     */
+    public void setFromStackConfig( Config stackConfig ) throws Exception
+    {
+    	{
+    		short streamId = (short) stackConfig.getInteger("client.DEFAULT_STREAM", 1);
+    		this.setStreamId(streamId);
+    	}
+    	{
+    		short ssn = (short) stackConfig.getInteger("client.DEFAULT_SSN", 0);
+    		this.setSsn(ssn);
+    	}
+    	{
+    		short flags = (short) stackConfig.getInteger("client.DEFAULT_FLAGS", 0);
+    		this.setFlags(flags);
+    	}
+    	{
+    		int ppid = stackConfig.getInteger("client.DEFAULT_PPID", 0);
+    		this.setPpid(ppid);
+    	}
+    	{
+    		int context = stackConfig.getInteger("client.DEFAULT_CONTEXT", 0);
+    		this.setContext(context);
+    	}
+    	{
+    		int ttl = stackConfig.getInteger("client.DEFAULT_TTL", 0);
+    		this.setTtl(ttl);
+    	}
+    	{
+    		int tsn = stackConfig.getInteger("client.DEFAULT_TSN", 0);
+    		this.setTsn(tsn);
+    	}
+    	{
+    		int cumtsn = stackConfig.getInteger("client.DEFAULT_CUMTSN", 0);
+    		this.setCumtsn(cumtsn);
+    	}
+    	{
+    		int aid = stackConfig.getInteger("client.DEFAULT_AID", 0);
+    		this.setAssociationId(aid);
+    	}
+    }
+
+    /*
+     * 
+     */
+    public void setFromXml(List<Element> sctpElements) throws Exception
+    {
+		// TODO check unsigned->signed conversion and overflows
+
+    	if (sctpElements != null && sctpElements.size() > 0)
+		{
+			Element sctpElement = sctpElements.get(0);
+			{
+				String streamIdString = sctpElement.attributeValue("stream");
+				if (streamIdString != null)
+				{
+					short streamId = (short) Integer.parseUnsignedInt(streamIdString);
+					this.setStreamId(streamId);
+				}
+			}
+			{
+				String ssnString = sctpElement.attributeValue("ssn");
+				if (ssnString != null)
+				{
+					short ssn = (short) Integer.parseUnsignedInt(ssnString);
+					this.setSsn(ssn);
+				}
+			}
+			{
+				String flagsString = sctpElement.attributeValue("flags");
+				if (flagsString != null)
+				{
+					short flags = (short) Integer.parseUnsignedInt(flagsString);
+					this.setFlags(flags);
+				}
+			}
+			{
+				String ppidString = sctpElement.attributeValue("ppid");
+				if (ppidString != null)
+				{
+					int ppid = Integer.parseUnsignedInt(ppidString);
+					this.setPpid(ppid);
+				}
+			}
+			{
+				String contextString = sctpElement.attributeValue("context");
+				if (contextString != null)
+				{
+					int context = Integer.parseUnsignedInt(contextString);
+					this.setContext(context);
+				}
+			}
+			{
+				String ttlString = sctpElement.attributeValue("ttl");
+				if (ttlString != null)
+				{
+					int ttl = Integer.parseUnsignedInt(ttlString);
+					this.setTtl(ttl);
+				}
+			}
+			{
+				String tsnString = sctpElement.attributeValue("tsn");
+				if (tsnString != null)
+				{
+					int tsn = Integer.parseUnsignedInt(tsnString);
+					this.setTsn(tsn);
+				}
+			}
+			{
+				String cumtsnString = sctpElement.attributeValue("cumtsn");
+				if (cumtsnString != null)
+				{
+					int cumtsn = Integer.parseUnsignedInt(cumtsnString);
+					this.setCumtsn(cumtsn);
+				}
+			}
+			{
+				String aidString = sctpElement.attributeValue("aid");
+				if (aidString != null)
+				{
+					int aid = Integer.parseUnsignedInt(aidString);
+					this.setAssociationId(aid);
+				}
+			}
+		}
+    }
+	
+	
 	
 	/**
 	 * @param dst the stream id value
