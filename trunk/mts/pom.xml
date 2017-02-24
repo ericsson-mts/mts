@@ -2,22 +2,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>myGroupId</groupId>
+    <groupId>com.ericsson.mts</groupId>
     <artifactId>mts-ericsson</artifactId>
     <version>6.4.0_beta</version>
     <packaging>jar</packaging>
 
-    <name>mts-ericsson</name>
-    
-    <url>http://maven.apache.org</url>
-        
+    <name>Multi-protocol Test Suite</name>
+
+    <url>http://mts.arm-tool.com</url>
+
     <properties>
         <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
+
         <target.mts.dir>${project.build.directory}/mts</target.mts.dir>
+
         <target.izpack.dir>${project.build.directory}/izpack</target.izpack.dir>
         <izpack.version>4.3.5</izpack.version>
+
+        <!--
+        <sonar.host.url>defined in ~/.m2/settings.xml</sonar.host.url>
+        <sonar.login>defined in ~/.m2/settings.xml</sonar.login>
+        <sonar.password>defined in ~/.m2/settings.xml</sonar.password>
+        -->
+        <sonar.language>java</sonar.language>
+
     </properties>
-    
+
     <build>
         <plugins>
             <plugin>
@@ -224,7 +234,7 @@
             <version>1.6.1</version>
             <scope>provided</scope>
         </dependency>        
-        
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
