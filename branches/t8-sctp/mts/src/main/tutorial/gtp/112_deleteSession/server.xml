@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="receive message" request="true" type="Delete Session Request:36">
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
+    </receiveMessageGTP>
+                                    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="48240015a7d420660000c80049000100054d00040008000000"/>
+  
+    <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Delete Session Response:37" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Cause:2" >
+            <field name="Cause value" value="Request accepted:16"/>
+            <field name="spare" value="0"/>
+            <field name="PCE" value="0"/>
+            <field name="BCE" value="0"/>
+            <field name="CS" value="Originated by the node sending the message:0"/> 
+        </element>
+    </sendMessageGTP>
+    
+</scenario>

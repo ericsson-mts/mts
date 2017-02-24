@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <if>
+        <condition>
+            <test parameter="[testcaseName]" condition="string.equals" value="[test:for_testcase_name][testcase:index]" />
+            <test parameter="[scenarioName]" condition="string.equals" value="[test:for_scenario_name][testcase:index]" />
+        </condition>
+
+        <else>
+            <exit failed="true" />
+        </else>
+    </if>
+
+</scenario>

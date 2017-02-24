@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    <parameter name="[tunnelEndpointId]" operation="set" value="875561310"/>
+    <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
+
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Create Bearer Request:95" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+			<element tag="EBI:73" description="EPS Bearer ID">
+					<field name="spare" value="0"/>
+					<field name="EBI" value="5"/>
+			</element>
+		
+			<element tag="Bearer Context:93" >
+				<element tag="EBI:73" description="EPS Bearer ID">
+					<field name="spare" value="0"/>
+					<field name="EBI" value="0"/>
+				</element>
+				
+				<element tag="Bearer TFT:84" description="EPS Bearer Level Traffic Flow Template">
+					<field name="TFT operation code" lengthBit="3" type="integer" value="1"/> <!-- 4 = replace packet filter -->
+					<!-- TFT operation code: 0 Spare                    				-->
+					<!--                     1 Create New TFT           				-->
+					<!--                     2 Delete Existing TFT      				-->
+					<!--                     3 Add packet filters to Existing TFT       -->
+					<!--                     4 Replace Packet filters in Existing TFT   -->
+					<!--                     5 Delete Packet Filters from Existing TFT 	-->
+					<!--                     6 No TFT operation   						-->
+					<!--                     7 Reserved                   				-->
+					<field name="E bit" lengthBit="1" type="boolean" value="0"/>
+					<!-- E bit: 0 Parameters list is not included          				-->
+					<!--        1 Parameters list is included	           				-->
+					
+					
+					<field name="Number of packet filters" lengthBit="4" type="integer" value="2"/>
+					<!-- Number of packet filters: coded from 0 to Max 15      			-->
+					<!--     For the "delete existing TFT" operation and for the "no TFT operation", 
+							the number of packet filters shall be coded as 0. For all other operations, 
+							the number of packet filters shall be greater than 0 and less than or equal to 15.	-->
+					
+					
+					<!--               Packet Filter 0                            -->
+					<field name="Spare" lengthBit="2" type="integer" value="0"/>
+					<field name="Packet Filter Direction" lengthBit="2" type="integer" value="1"/>
+					<field name="Packet Filter Identifier" lengthBit="4" type="integer" value="0"/>
+					<field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" value="126"/>
+					<field name="Length of Packet Filter contents" lengthBit="8" type="integer" value="17" description="NOMBRE TOTAL en decimal d'Octets"/>
+					<!-- Packet Filter 0 Component -->
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="16"/>
+					<!--
+						Bits
+						8 7 6 5 4 3 2 1 
+						0 0 0 1 0 0 0 0	IPv4 remote address type: 16 decimal
+						0 0 0 1 0 0 0 1	IPv4 local address type : 17 decimal
+						0 0 1 0 0 0 0 0	IPv6 remote address type : 32 decimal
+						0 0 1 0 0 0 0 1	IPv6 remote address/prefix length type : 33 decimal
+						0 0 1 0 0 0 1 1	IPv6 local address/prefix length type : 35
+						0 0 1 1 0 0 0 0	Protocol identifier/Next header type : 48
+						0 1 0 0 0 0 0 0	Single local port type: 64
+						0 1 0 0 0 0 0 1	Local port range type: 65
+						0 1 0 1 0 0 0 0	Single remote port type : 80
+						0 1 0 1 0 0 0 1	Remote port range type : 81
+						0 1 1 0 0 0 0 0	Security parameter index type : 96
+						0 1 1 1 0 0 0 0	Type of service/Traffic class type : 112
+						1 0 0 0 0 0 0 0	Flow label type: 128								-->
+					<field name="my ipv4 address" type="ipv4_address" value="10.87.179.65" description="IPv4 address" />
+					<field name="my ipv4 address mask" type="ipv4_address" value="255.255.255.255" description="IPv4 address mask"/>					
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="48"/>
+					<field name="Protocol identifier/Next header type" lengthBit="8" type="integer" value="17"/>   <!-- 11h = 17deci = UDP -->
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="64"/>
+					<field name="Single local port type" lengthBit="16" type="integer" value="1111"/>
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="80"/>
+					<field name="Single remote port type" lengthBit="16" type="integer" value="1155"/>
+					
+					
+					<!--               Packet Filter 1                            -->
+					<field name="Spare" lengthBit="2" type="integer" value="0"/>
+					<field name="Packet Filter Direction" lengthBit="2" type="integer" value="2"/>
+					<field name="Packet Filter Identifier" lengthBit="4" type="integer" value="1"/>
+					<field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" value="127"/>
+					<field name="Length of Packet Filter contents" lengthBit="8" type="integer" value="14" description="NOMBRE TOTAL en decimal d'Octets"/>
+					<!-- Packet Filter 1 Component -->
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="16"/>
+					<!--
+						Bits
+						8 7 6 5 4 3 2 1 
+						0 0 0 1 0 0 0 0	IPv4 remote address type: 16 decimal
+						0 0 0 1 0 0 0 1	IPv4 local address type : 17 decimal
+						0 0 1 0 0 0 0 0	IPv6 remote address type : 32 decimal
+						0 0 1 0 0 0 0 1	IPv6 remote address/prefix length type : 33 decimal
+						0 0 1 0 0 0 1 1	IPv6 local address/prefix length type : 35
+						0 0 1 1 0 0 0 0	Protocol identifier/Next header type : 48
+						0 1 0 0 0 0 0 0	Single local port type: 64
+						0 1 0 0 0 0 0 1	Local port range type: 65
+						0 1 0 1 0 0 0 0	Single remote port type : 80
+						0 1 0 1 0 0 0 1	Remote port range type : 81
+						0 1 1 0 0 0 0 0	Security parameter index type : 96
+						0 1 1 1 0 0 0 0	Type of service/Traffic class type : 112
+						1 0 0 0 0 0 0 0	Flow label type: 128								-->
+					<field name="my ipv4 address" type="ipv4_address" value="10.87.179.65" description="IPv4 address" />
+					<field name="my ipv4 address mask" type="ipv4_address" value="255.255.255.255" description="IPv4 address mask"/>					
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="48"/>
+					<field name="Protocol identifier/Next header type" lengthBit="8" type="integer" value="17"/>   <!-- 11h = 17deci = UDP -->
+					<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="80"/>
+					<field name="Single remote port type" lengthBit="16" type="integer" value="1155"/>
+				</element>
+				
+				<element tag="F-TEID:87" instances="0" description="Fully Qualified Tunnel Endpoint Identifier">
+					<field name="V4" value="true:1"/>
+					<field name="V6" value="false:0"/>
+					<field name="Interface Type" value="S1-U SGW GTP-U:1"/>
+					<field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
+					<!-- TODO conditional IP V4 V6 -->      
+					<field name="IPv4 address" value="172.20.70.42"/>
+					<!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+				</element>
+				
+				<element tag="F-TEID:87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
+					<field name="V4" value="true:1"/>
+					<field name="V6" value="false:0"/>
+					<field name="Interface Type" value="S5/S8 PGW GTP-U:5"/>
+					<field name="TEID / GRE Key" value="2147491842" description="GRE key ?"/>
+					<!-- TODO conditional IP V4 V6 -->      
+					<field name="IPv4 address" value="172.20.70.42"/>
+					<!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+				</element>            
+				
+				<element tag="Bearer QoS:80" description="Bearer Quality of Service">
+					<field name="spare1" value="0"/>
+					<field name="PCI" value="true:1" description="Pre-emption Capability"/>
+					<field name="PL" value="2" description="Priority Level"/>
+					<field name="spare2" value="false:0"/>
+					<field name="PVI" value="true:1" description="Pre-emption Vulnerability"/>
+					<field name="Label QCI" value="1"/> 
+					<field name="Maximum bit rate for uplink" value="43"/>
+					<field name="Maximum bit rate for downlink" value="43"/>
+					<field name="Guaranteed bit rate for uplink" value="43"/>
+					<field name="Guaranteed bit rate for downlink" value="43"/>
+				</element>
+				
+				<element tag="Charging ID:94" >
+					<field name="Charging ID value" value="2332033364"/>   
+				</element> 
+
+				<element tag="Bearer Flags:97" description="Bearer Flags">
+					<field name="spare" lengthBit="4" type="integer" value="0"/>
+					<field name="flag ASI" lengthBit="1" type="boolean" value="0" description="Activity Status Indicator"/>  
+					<!-- Activity Status Indicator : if 1, bearer context is preserved in CN without RAB established-->
+					<field name="flag Vind" lengthBit="1" type="boolean" value="0" description="SRVCC Indicator"/> 
+					<!-- vSRVCC indicator to indicate bearer is an IMS video bearer and is candidate for PS to CS (v)SRVCC HO  -->
+					<field name="flag VB" lengthBit="1" type="boolean" value="0" description="Voice Bearer Indicator"/>   
+					<!-- to indicate a voice bearer when doing PSto CS (v)SRVCC HO -->
+					<field name="flag PCC" lengthBit="1" type="boolean" value="0" description="Prohibit Payload Compression Indicator"/>  
+					<!-- Prohibit Payload Compression  -->
+				</element>
+			
+						
+				<element tag="PCO:78" description="Protocol Configuration Options">
+					<field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+				</element>
+			</element>
+	</sendMessageGTP>
+	
+	<receiveMessageGTP name="receive message" request="false" type="Create Bearer Request:95" result="Request accepted:16">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="486000d93430015e56b602000200020010005d0043004900010006020002001000570009008180002002ac14462a570009018580002002ac14462a4e001a008080211001000010810600000000830600000000000d00000a0003000100f28400090002ac14462a0001000284000701210514a01100034e001a008080211001000010810600000000830600000000000d00000a00720002000000560028003f62f210014d014d62f270014d00de02f810014dfa0002f802022b02f8700002083402f801029affff00130004d2656e7472657072697365204475706f6e74"/>
+    
+	
+	
+</scenario>

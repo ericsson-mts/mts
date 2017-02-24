@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<scenario>
+<function name="check-sdp-media-port">
+
+<input>
+	<parameter name="[SDP-MediaType]" /> 
+	<parameter name="[SDP-MediaTypes]" /> 
+	<parameter name="[SDP-MediaPorts]" /> 
+	<parameter name="[expected-media-port]" />
+</input>
+
+<do>
+	<parameter name="[SDP-MediaTypes-Size]" operation="list.size" value="[SDP-MediaTypes]" /> 
+	<parameter name="[SDP-MediaType-Found]" operation="set" value="false" /> 
+	<parameter name="[index]" operation="set" value="0" /> 
+	<parameter name="[SDP-MediaPort-Match]" operation="set" value="false" />
+
+	<while>
+        	<condition>
+                	<test parameter="[SDP-MediaTypes-Size]" condition="number.greaterThan" value="0" /> 
+                </condition>
+                <do>
+                	<parameter name="[temp]" operation="list.getFirst" value="[SDP-MediaTypes]" /> 
+			<if>
+				<condition>
+					<test parameter="[temp]" condition="string.equals" value="[SDP-MediaType]" /> 
+				</condition>
+				<then>
+					<parameter name="[SDP-MediaType-Found]" operation="set" value="true" />
+					<parameter name="[SDP-MediaType-Index]" operation="set" value="[index]" />
+				</then>
+			</if>
+				
+                        <parameter name="[SDP-MediaTypes]" operation="list.removeFirst" value="[SDP-MediaTypes]" /> 
+                        <parameter name="[SDP-MediaTypes-Size]" operation="list.size" value="[SDP-MediaTypes]" /> 
+			<parameter name="[index]" operation="number.add" value="[index]"  value2="1"/>
+             	</do>
+   	</while>
+
+	<if>
+		<condition>
+			<test parameter="[SDP-MediaType-Found]" condition="boolean.equals" value="false" />
+                </condition>
+		<then>
+	  		<exit failed="true" name="check-sdp-media-port - SDP Media Type not found"/>
+		</then>
+	</if>
+
+	<parameter name="[SDP-Ports-Size]" operation="list.size" value="[SDP-MediaPorts]" /> 
+	<parameter name="[index]" operation="set" value="0" /> 
+	<while>
+        	<condition>
+                	<test parameter="[SDP-Ports-Size]" condition="number.greaterThan" value="0" /> 
+                </condition>
+                <do>
+                	<parameter name="[temp]" operation="list.getFirst" value="[SDP-MediaPorts]" /> 
+
+			<if>
+				<condition>
+					<test parameter="[index]" condition="number.equals" value="[SDP-MediaType-Index]" />
+				</condition>
+				<then>
+					<if>
+						<condition>
+							<test parameter="[temp]" condition="number.equals" value="[expected-media-port]" />
+						</condition>
+						<then>
+							<parameter name="[SDP-MediaPort-Match]" operation="set" value="true" />
+						</then>
+					</if>
+				</then>
+			</if>
+                        <parameter name="[SDP-MediaPorts]" operation="list.removeFirst" value="[SDP-MediaPorts]" /> 
+                        <parameter name="[SDP-Ports-Size]" operation="list.size" value="[SDP-MediaPorts]" /> 
+			<parameter name="[index]" operation="number.add" value="[index]"  value2="1"/>
+             	</do>
+   	</while>
+	<if>
+		<condition>
+			<test parameter="[SDP-MediaPort-Match]" condition="boolean.equals" value="false" />
+                </condition>
+		<then>
+	  		<exit failed="true" name="check-sdp-media-port - No SDP [SDP-MediaType] port match for [expected-media-port]"/>
+		</then>
+	</if>
+
+</do>
+
+<output>
+</output>
+
+</function>
+
+</scenario>

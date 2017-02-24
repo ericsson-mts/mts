@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="StandardTextInformationOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="LNo" value="5678"/>
+        <attribute name="LST" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="StandardTextInformationOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="NPL" operation="protocol.setFromMessage" value="attribute.NPL"/>
+        <parameter name="ST" operation="protocol.setFromMessage" value="attribute.ST"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[NPL]" condition="string.equals" value="2"/>
+        <test parameter="[ST(0)]" condition="string.equals" value="non empty"/>
+        <test parameter="[ST(1)]" condition="string.equals" value="non empty again"/>
+        <test parameter="[SM]" condition="string.equals" value="ca roule:une fois de plus"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Chapter : 3.4.1
+    Message : Global RESTART(70)
+
+    The following scenarios send the Q931 message with the following elements :
+    
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M (Note 1) 2-*
+Message type 4.4 Both M 1
+Channel identification 4.5 Both O (Note 2) 2-*
+Display 4.5 n u O (Note 3) (Note 4)
+Restart indicator 4.5 Both M 3
+
+-->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS RESTART" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+    
+    	<ASN1 file="h2250v7.asn"/>    
+    
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- RESTART= b1000110 = h46 = d70-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="RESTART"/>
+      
+      	    <!-- Channel identification = b0011000 = h18 = d24-->
+            <element identifier="Channel identification">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Interface identifier present" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Interface type" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Preferred/Exclusive" lengthBit="1" type="enumeration" value="0"/>
+                <field name="D-channel indicator" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Information channel selection" lengthBit="1" type="enumeration" value="0"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Interface identifier" lengthBit="8" type="integer" value="65"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Number/map" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Channel type/map element type" lengthBit="4" type="enumeration" value="B-channel units"/>
+                <field name="Channel number" lengthBit="32" type="integer" value="70"/>
+            </element>
+	
+    	    <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification" type="string" value="textZZZ"/>
+            </element>
+         
+  	    <!-- Restart indicator= b01111001 =h79 =d121-->
+            <element identifier="Restart indicator" >
+                <field name="Class" lengthBit="8" type="enumeration" value="Indicated channels"/>
+            </element>
+            
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

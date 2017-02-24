@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="echo request" request="true" type="Echo Request:1" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[nPduNum]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
+        <parameter name="[nExtType]" operation="protocol.setFromMessage" value="header.nextExtensionType"/>
+        
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="37010004499602d200010200"/>
+    
+    <sendMessageGTP name="echo Response"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="UDP">
+        <headerV1 type="Echo Response:2" tunnelEndpointId="[teId]" sequenceNumber="[seqNum]" nPduNumber="[nPduNum]" nextExtensionType="[nExtType]"/>
+        <element tag="Recovery:14" >
+            <field name="Recovery" value="23"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="echo request" request="true" type="Echo Request:1" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[teId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="30010000499602d2"/>
+    
+    <sendMessageGTP name="versionNotSupported"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="UDP">
+        <headerV1 type="Version Not Supported:3" tunnelEndpointId="[teId]" />
+    </sendMessageGTP>
+
+</scenario>

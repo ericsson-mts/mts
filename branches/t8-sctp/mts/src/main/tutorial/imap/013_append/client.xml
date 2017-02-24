@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <openChannelIMAP name="[connection]" remoteHost="[test:remoteHostIMAP]" remotePort="[test:remotePortIMAP]"/>
+
+    <parameter name="[tagReq]" operation="set" value="A004" />
+    <!-- envoi requete APPEND-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] APPEND INBOX (\Seen \Flagged) {275}
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse APPEND intermediaire -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.continue.text" />
+    </receiveMessageIMAP>
+
+    <!-- envoi DATA-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+Date: Fri, 17 Oct 2008 21:52:25
+From: Me <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@devoteam.com
+Message-Id: <B27397-0100000@devoteam.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+Hello all! Is this test working or not???
+
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse APPEND  -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    </receiveMessageIMAP>
+    
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+    </finally>
+    
+</scenario>

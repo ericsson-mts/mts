@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 		operation="set" value="[PortUAS]"/>
+	<parameter name="[LocalAddressUAS]" operation="set" value="[HardAddressUAS]"/>	
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+		<parameter name="[Temp]" 				operation="setFromMessage" value="content"/>
+		<parameter name="[ReceivedCSeqNumber]" 	operation="setFromMessage" value="header:CSeqNumber"/>
+		<parameter name="[FromAddress]" 		operation="setFromMessage" value="header:From:Address:URI"/>
+		<parameter name="[ToAddress]" 			operation="setFromMessage" value="header:To:Address:URI"/>
+		<parameter name="[CallId]" 				operation="setFromMessage" value="header:Call-ID"/>
+		<parameter name="[firstlineMethod]" 	operation="setFromMessage" value="firstline:Method"/>
+	</receiveRequestSIP>
+	
+	<!--Writing the Received content header in a table, in order to use the same structre as the variable Content-->
+	
+	<parameter name="[ReceivedContent]" operation="regexmatches" value="[Temp]" value2=".+"/>
+	
+	<if>
+		<condition>
+			<test parameter="[ReceivedContent]" 	condition="equals" value="[testcase:Content]"/>
+			<test parameter="[ReceivedCSeqNumber]" 	condition="equals" value="[testcase:NewCseq]"/>
+			<test parameter="[FromAddress]" 		condition="equals" value="sip:[testcase:LocalAddressUAC]"/>
+			<test parameter="[ToAddress]" 			condition="equals" value="sip:[LocalAddressUAS]"/>
+			<test parameter="[CallId]" 				condition="equals" value="[testcase:NewCallID]"/>
+			<test parameter="[firstlineMethod]" 	condition="equals" value="INVITE"/>
+		</condition>
+	<then>
+		<log level="0">Message not modified by the proxy</log>
+	</then>
+	<else>
+		<log level="3">Message modified by the proxy! Please fix this problem</log>
+		<exit name="exit" failed="true"/>
+	</else>
+	</if>
+
+	
+</scenario>

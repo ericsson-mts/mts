@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<createListenpointRTP name="inviter" localHost="[localHostRTP]" localPort="[localPortRTP]" />
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+	
+	<sendMessageRTP listenpoint="inviter" state="true" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+		<packet>
+    		<header ssrc="0" payloadType="9" seqnum="4" timestamp="0"/>
+    		<payload format="text">Packet #1</payload>
+		</packet>
+	</sendMessageRTP>
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+	
+	<sendMessageRTP listenpoint="inviter" state="true" remoteHost="[remoteHostRTP]" remotePort="[remotePortRTP]">
+		<packet>
+    		<header ssrc="0" payloadType="9" seqnum="1" timestamp="0"/>
+    		<payload format="text">Packet #2</payload>
+		</packet>
+	</sendMessageRTP>
+	
+    <finally>
+		<removeListenpointRTP name="inviter" />
+	</finally>
+
+
+</scenario>

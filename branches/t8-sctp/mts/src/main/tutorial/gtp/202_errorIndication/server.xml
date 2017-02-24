@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="send tunnel endpoint identifier data" request="true" type="Error Indication:26" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+        <parameter name="[nPduNum]" operation="protocol.setFromMessage" value="header.nPduNumber"/>
+        <parameter name="[nExtType]" operation="protocol.setFromMessage" value="header.nextExtensionType"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.equals" value="371a0010499602d200010200100001d97c85000441424344"/>
+    
+</scenario>

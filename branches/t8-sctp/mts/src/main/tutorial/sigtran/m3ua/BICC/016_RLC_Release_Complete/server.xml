@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: 	conf/schemas/scenario.xsd 
+							 	conf/schemas/type_operations_sigtran
+							 	
+	 Related dictionary file:	conf/sigtran/dictionary_m3ua.xml
+	 							conf/sigtran/dictionary_bicc.xml
+	 							
+	 References:				IETF RFC_4666 (M3UA)
+	 							IUT-T Q_1902.3 (BICC)
+-->
+
+
+<!--
+    Document   : bob.xml
+    Created on : 12/08/2009
+    Author     : jbrisseau
+    Description: Receive a BICC-RLC message.
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[RLC]" value="010001010000002802000008000000080210001600000d7e00000d7a0d02000a0d00000010000000" />
+
+	<receiveMessageSIGTRAN name="Wait BICC_RLC">
+		<parameter name="[RLC1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[RLC1]" condition="binary.equals" value="[RLC]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[RLC1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[RLC]"				</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+
+</scenario>

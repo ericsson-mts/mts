@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Rx Session Termination (STR/STA)" -->
+<scenario>
+
+    <call name="diameter.RecCER_SendCEA"/>
+
+    <receiveMessageDIAMETER name="ReceiveRequestSTR" request="true" type="Session-Termination">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+    </receiveMessageDIAMETER>
+
+<!--
+From 3GPP TS 29.214 V10.3.0 : STR is sent by the AF to inform the PCRF that an established session shall be terminated
+<ST-Answer> ::= < Diameter Header: 275, PXY, 16777236 > 
+		< Session-Id > 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		[ Result-Code ] 
+		[ Error-Message ] 
+		[ Error-Reporting-Host ] 
+	   *[ Failed-AVP ] 
+		[ Sponsored-Connectivity-Data ] 
+		[ Origin-State-Id ] 
+	   *[ Class ] 
+	   *[ Redirect-Host ] 
+		[ Redirect-Host-Usage ] 
+		[ Redirect-Max-Cache-Time ] 
+	   *[ Proxy-Info ] 
+	   *[ AVP ] 
+-->
+
+    <sendMessageDIAMETER name="SendAnswerSTA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+   </sendMessageDIAMETER>
+
+</scenario>

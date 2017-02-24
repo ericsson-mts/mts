@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="connectionIMAP" />
+
+    <parameter name="[testcase:sem1]" operation="system.semaphoreWait"/>
+    <parameter name="[remotePortIMAP]" operation="number.add" value="[remotePortIMAP]" value2="10000"/>
+    <openChannelIMAP name="[connection]" remoteHost="[remoteHostIMAP]" remotePort="[remotePortIMAP]" transport="tls"/>
+
+    <parameter name="[tagReq]" operation="set" value="A001" />
+    <!-- envoi requete LOGIN -->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+[tagReq] LOGIN login password
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse LOGIN -->
+    <receiveMessageIMAP name="Receive CAPABILITY completed" channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <parameter name="[cmd]" operation="protocol.setFromMessage" value="response.done.command" />
+        <parameter name="[res]" operation="protocol.setFromMessage" value="response.done.result" />
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.done.text" />
+        <parameter name="[data]" operation="protocol.setFromMessage" value="data" />
+    </receiveMessageIMAP>
+
+	<!-- perform test -->
+    <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    <test parameter="[cmd]" condition="string.equals" value="LOGIN" />
+    <test parameter="[res]" condition="string.equals" value="OK" />
+    <test parameter="[text]" condition="string.equals" value="LOGIN completed" />
+    <test parameter="[data]" condition="string.contains" value="* OK Welcome to M.T.S. (Multiprotocol Test Suite)" />
+    <test parameter="[data]" condition="string.contains" value="[tagRep] OK LOGIN completed" />
+   
+    <parameter name="[tagReq]" operation="set" value="A002" />
+    <!-- envoi requete APPEND-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] APPEND INBOX (\Seen \Flagged) {275}
+]]>
+    </sendMessageIMAP>
+
+    <!-- attend reponse APPEND intermediaire -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="response.continue.text" />
+        <parameter name="[tag]" operation="protocol.setFromMessage" value="response.continue.tag" />
+    </receiveMessageIMAP>
+
+	<!-- perform test -->
+    <test parameter="[text]" condition="string.equals" value="ready to receive data" />
+    <test parameter="[tag]" condition="string.equals" value="+" />
+
+    <!-- envoi DATA-->
+    <sendMessageIMAP channel="[connection]">
+<![CDATA[
+Date: Fri, 17 Oct 2008 21:52:25
+From: Me <theTester@imsloader.com>
+Subject: test to write message
+To: anyone@devoteam.com
+Message-Id: <B27397-0100000@devoteam.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+
+Hello all! Is this test working or not???
+
+]]>
+    </sendMessageIMAP>
+    
+    <!-- attend reponse APPEND  -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+    </receiveMessageIMAP>
+
+	<!-- perform test -->
+    <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+
+    <parameter name="[tagReq]" operation="set" value="A003" />
+    <!-- envoi requete FETCH-->
+    <sendMessageIMAP channel="[connection]" >
+<![CDATA[
+[tagReq] FETCH 2:4 (FLAGS BODY[HEADER.FIELDS (DATE FROM)])
+]]>
+    </sendMessageIMAP>
+
+    <parameter name="[testcase:sem2]" operation="system.semaphoreWait"/>
+
+    <!-- attend reponse FETCH -->
+    <receiveMessageIMAP channel="[connection]" request="false">
+        <parameter name="content" operation="protocol.setFromMessage" value="data" />
+        <parameter name="[tagRep]" operation="protocol.setFromMessage" value="response.done.tag" />
+        <parameter name="[fetch]" operation="protocol.setFromMessage" value="response.data.FETCH" />
+    </receiveMessageIMAP>
+
+	<!-- perform test -->
+    <test parameter="[tagRep]" condition="string.equals" value="[tagReq]" />
+    <test parameter="[fetch(0)]" condition="string.equals" value="* 2 FETCH coucou" />
+    <test parameter="[fetch(1)]" condition="string.equals" value="* 3 FETCH c'est moi" />
+    <test parameter="[fetch(2)]" condition="string.equals" value="* 4 FETCH ca marche" />
+	
+    <finally>
+        <closeChannelIMAP name="[connection]"/>
+		<pause name="pause"     seconds="0.001"       state="true"/>    <!-- pause for be sure channel closes well, without this multiples tests can fail  -->
+    </finally>
+
+
+</scenario>

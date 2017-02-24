@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="test">
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+    <parameter description="Number of subscribers" editable="true" name="[RangeNumberUser]" value="6000"/>
+    <parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" value="0.1"/>
+    <parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" value="3"/>
+    <parameter description="Duration (in sec.) of the call" editable="true" name="[CallDurationSec]" value="5"/>
+    
+    <parameter description="Expiration time (in sec) for the register" editable="true" name="[RegisterExpires]" value="3600"/>
+
+    <parameter description="Duration (in day) of the test " editable="true" name="[TestDurationDay]" value="0"/>
+    <parameter description="Duration (in hour) of the test " editable="true" name="[TestDurationHour]" value="0"/>
+    <parameter description="Duration (in min.) of the test " editable="true" name="[TestDurationMin]" value="5"/>
+    <parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" value="0"/>
+
+    <parameter description="Register Attempts Per Second (RAPS) for initialisation" editable="true" name="[InitRAPS]" value="200"/>
+    <parameter description="Register Attempts Per Second (RAPS)" editable="true" name="[RAPS]" value="40"/>
+    <parameter description="Call Attempts Per Second (CAPS)" editable="true" name="[CAPS]" value="10"/>
+    
+    <parameter description="the domain for user" editable="true" name="[domainName]" value="sip.france.fr"/>
+
+    <!-- compute various durations -->
+    <parameter name="[DayToHour]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+    <parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[DayToHour]"/>
+    <parameter name="[HourToMin]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+    <parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[HourToMin]"/>
+    <parameter name="[MinToSec]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+    <parameter name="[TestDurationSecLoader]" operation="number.add" value="[TestDurationSec]" value2="[MinToSec]"/>
+    <parameter name="[TestDurationSecHandler]" operation="number.add" value="[TestDurationSecLoader]" value2="[CallDurationSec]"/>
+    <parameter name="[TestDurationSecHandler]" operation="number.add" value="[TestDurationSecHandler]" value2="[CallDurationSec]"/>
+    
+
+    
+    <parameter name="[queueTimeout]" value="30"/>
+    <parameter name="[contextMutex]" operation="system.semaphorenotify"/>
+
+
+    <!-- user list usage -->
+    <parameter name="[userIndexForInvite]" value="0"/>
+    <parameter name="[userIndexForRegister]" value="0"/>
+    <parameter name="[userTab]" operation="file.readCsv" value="./user.csv" value2="userName"/>
+    
+    <!-- network parameters -->
+    <!-- TODO : improve -->
+    <parameter name="[Host-Tester]" value="192.168.1.2"/>
+
+    <parameter name="[Host-Server]" value="192.168.1.69"/>
+    <parameter name="[Port-Server]" value="5060"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>
+    
+    <!-- default run profiler for all handlers -->
+    <runProfile>
+        <end delay="[TestDurationSecHandler]"/>
+    </runProfile>
+        
+    <testcase name="loaderRegisterInit" state="true">
+        <runProfile>
+            <start delay="1"/>
+            <step frequency="[InitRAPS]" time="0"/>
+            <end iteration="[RangeNumberUser]"/>
+        </runProfile>
+        <scenario file="scenarios/loaderRegister.xml" name="loaderRegister" routingName="loaderRegister"/>
+    </testcase>
+    
+    <testcase name="loaderRegister" state="true">
+        <runProfile>
+            <start delay="1"/>
+            <step frequency="[RAPS]" time="0"/>
+            <end delay="[TestDurationSecLoader]"/>
+        </runProfile>
+        <scenario file="scenarios/loaderRegister.xml" name="loaderRegister" routingName="loaderRegister"/>
+    </testcase>
+    
+    <testcase name="loaderOption" state="true">
+        <runProfile>
+            <start delay="1"/>
+            <step frequency="[CAPS]" time="0"/>
+            <end delay="[TestDurationSecLoader]"/>
+        </runProfile>
+        <scenario file="scenarios/loaderOption.xml" name="loaderOption" routingName="loaderOption"/>
+    </testcase>
+    
+    <!-- dispatcher, must receive messages in order to dispatch them -->
+    <!-- for convenience, it is possible to have multiple dispatchers -->
+    <testcase name="dispatcher" state="true">
+        <scenario file="scenarios/dispatcher.xml" name="SIP" routingName="SIP"/>
+    </testcase>
+    
+    <!-- scenarios the messages will be dispatched to; each scenario treats one -->
+    <!-- message at a given time -->
+    <testcase name="onInviteRequest" state="true">
+        <scenario file="scenarios/onInviteRequest.xml" name="onInviteRequest" routingName="onInviteRequest"/>
+    </testcase>
+    <testcase name="onInviteResponse" state="true">
+        <scenario file="scenarios/onInviteResponse.xml" name="onInviteResponse" routingName="onInviteResponse"/>
+    </testcase>
+    <testcase name="onAckRequest" state="true">
+        <scenario file="scenarios/onAckRequest.xml" name="onAckRequest" routingName="onAckRequest"/>
+    </testcase>
+    <testcase name="onOptionResponse" state="true">
+        <scenario file="scenarios/onOptionResponse.xml" name="onOptionResponse" routingName="onOptionResponse"/>
+    </testcase>
+    <testcase name="onMessageResponse" state="true">
+        <scenario file="scenarios/onMessageResponse.xml" name="onMessageResponse" routingName="onMessageResponse"/>
+    </testcase>    
+    <testcase name="onByeMessageOptionRequest" state="true">
+        <scenario file="scenarios/onByeMessageOptionRequest.xml" name="onByeMessageOptionRequest" routingName="onByeMessageOptionRequest"/>
+    </testcase>
+    <testcase name="onByeResponse" state="true">
+        <scenario file="scenarios/onByeResponse.xml" name="onByeResponse" routingName="onByeResponse"/>
+    </testcase>    
+    <testcase name="onOther" state="true">
+        <scenario file="scenarios/onOther.xml" name="onOther" routingName="onOther"/>
+    </testcase>
+    <testcase name="on401Or407Response" state="true">
+        <scenario file="scenarios/on401Or407Response.xml" name="on401Or407Response" routingName="on401Or407Response"/>
+    </testcase>
+</test>

@@ -1,0 +1,17 @@
+
+<scenario>
+    <parameter name="[item]" operation="list.dequeue" value="[scenarioName]" value2="[queueTimeout]"/>
+
+    <if>
+        <condition>
+            <test parameter="[item]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <exit failed="false" />
+        </then>
+    </if>
+    
+<!-- (specific) : do your job with [item]  -->
+    <!-- just ignore should receive 200 OK for REGISTER-->
+<!-- (specific) : end  -->
+</scenario>

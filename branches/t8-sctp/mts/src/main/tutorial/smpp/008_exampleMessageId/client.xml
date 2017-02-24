@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelSMPP" />
+    <openChannelSMPP name="[connection]" remoteHost="[test:remoteHostSMPP]" remotePort="[test:remotePortSMPP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <!--<sendMessageSMPP channel="[connection]">-->
+    <sendMessageSMPP channel="[connection]" destScenario="server">
+        <header name="bind_transmitter" sequence_number="[seqNum]" />
+        <attribute name="system_id" value="IMSLoader"/>
+        <attribute name="password" value="coucou"/>
+        <attribute name="system_type" value="windows MC"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="8"/>
+        <attribute name="addr_npi" value="3"/>
+        <attribute name="address_range" value="255.255.255.0"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP type="bind_transmitter:2" result="0">
+        <parameter name="seqNumResp" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="system_id" operation="protocol.setFromMessage" value="attribute.system_id"/>
+        <parameter name="if_vers" operation="protocol.setFromMessage" value="tlv.sc_interface_version"/>
+        <test parameter="[seqNumResp]" condition="string.equals" value="[seqNum]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[system_id]" condition="string.equals" value="test"/>
+        <test parameter="[if_vers]" condition="number.equals" value="6"/>
+    </receiveMessageSMPP>
+
+    <finally>
+        <closeChannelSMPP name="[connection]"/>
+    </finally>
+    
+</scenario>

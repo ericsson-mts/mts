@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="CORE regression tests" name="CORE">
+
+    <parameter description="number of testcase per second" editable="true" name="[speedTestcase]" operation="set" value="10000"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="36000"/>
+    
+    <!-- parameter for monitoring testacse 902_system_monitor -->
+    <parameter description="interval in sec between each vmstat result" editable="true" name="[interval]" operation="set" value="1"/>
+
+    <parameter name="[nameServer]" operation="file.readCsv" value="./vmstat_servers.csv" value2="nameServer"/>
+    <parameter name="[IPServer]" operation="file.readCsv" value="./vmstat_servers.csv" value2="IPServer"/>
+    <parameter name="[login]" operation="file.readCsv" value="./vmstat_servers.csv" value2="login"/>
+    <parameter name="[passwd]" operation="file.readCsv" value="./vmstat_servers.csv" value2="passwd"/>
+
+    <parameter name="[nbServer]" operation="list.size" value="[nameServer]"/>   
+    <parameter name="[nbServer]" operation="number.substract" value="[nbServer]" value2="1"/>
+    
+    <parameter name="[TestDurSecDiv10]" operation="number.divide" value="[TestDurationSec]" value2="10"/>   
+    <parameter name="[TestDurSecDiv20]" operation="number.divide" value="[TestDurationSec]" value2="20"/>       
+    
+    <parameter name="[date]" operation="system.timestamp" value="1970"/>
+    <parameter name="[date]" operation="number.toDate" value="[date]" value2="dd-MM-yy_HH-mm"/>
+
+    <for from="0" index="[numServer]" step="1" to="[nbServer]">
+    	<testcase name="monitoring [nameServer([numServer])]" state="true">
+        	<parameter name="[csvFilename]" operation="set" value="vmstat_[interval]_[nameServer([numServer])]_[date].csv"/>
+                <parameter name="[server]" operation="set" value="[IPServer([numServer])]"/>
+                <parameter name="[login]" operation="set" value="[login([numServer])]"/>
+                <parameter name="[passwd]" operation="set" value="[passwd([numServer])]"/>
+                <parameter name="[nameserver]" operation="set" value="[nameServer([numServer])]"/>
+                
+                <runProfile>                
+                	<step period="0" time="0"/>
+                	<end delay="[TestDurationSec]"/>
+                </runProfile>
+                
+                <scenario file="./monitor.xml" name="monitoring [nameServer([numServer])]" routingName="monitoring [nameServer([numServer])]"/>
+	</testcase>
+    </for>
+
+    <testcase name="loading localhost" state="true">
+              
+	<runProfile>                
+        	<step frequency="0" time="0"/>
+                <step frequency="[speedTestcase]" time="[TestDurSecDiv20]"/>
+                <step frequency="0" time="[TestDurSecDiv10]"/>
+                <end delay="[TestDurationSec]"/>                
+	</runProfile>
+                
+	<scenario file="./loading.xml" name="loading localhost" routingName="loading localhost"/>
+    </testcase>
+
+</test>

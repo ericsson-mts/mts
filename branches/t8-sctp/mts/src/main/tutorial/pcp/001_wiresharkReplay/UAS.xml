@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[listenpoint]" operation="set" value="UAS" />
+    <createListenpointPCP name="[listenpoint]" localHost="[remoteHostPCP]" localPort="[remotePortPCP]"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+
+    <receiveMessagePCP name="Wait Flist" request="true">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[data]" operation="protocol.setFromMessage" value="data"/>
+        <parameter name="[nameinfo]" operation="protocol.setFromMessage" value="nameinfo"/>
+        <parameter name="[nameinfo1]" operation="protocol.setFromMessage" value="nameinfo=1"/>
+        <parameter name="[nameinfo2]" operation="protocol.setFromMessage" value="nameinfo=2.address"/>
+    </receiveMessagePCP>
+
+    <parameter name="[poid]" operation="protocol.setFromMessage" value="poid"/>
+    <test parameter="[poid]" condition="string.contains" value="0.0.0.1 /service/pcm_client 0"/>
+    <parameter name="[account_obj]" operation="protocol.setFromMessage" value="ar_account_obj"/>
+    <!--test parameter="[account_obj]" condition="string.contains" value="0.0.0.1 /account 9876"/-->
+    <parameter name="[children]" operation="protocol.setFromMessage" value="include_children"/>
+    <!--test parameter="[children]" condition="string.equals" value="123"/-->
+    <parameter name="[nameinfo2]" operation="protocol.setFromMessage" value="nameinfo=2.address"/>
+    <!--test parameter="[nameinfo2]" condition="string.equals" value="my address"/-->
+        
+    <sendMessagePCP name="Send next FList" channel="[channel]">
+        <flist>
+          <POID xmlns="">0.0.0.1 /search -1 0</POID>
+          <AR_ACCOUNT_OBJ xmlns="">0.0.0.1 /account 1234 0</AR_ACCOUNT_OBJ>
+          <INCLUDE_CHILDREN xmlns="">123</INCLUDE_CHILDREN>
+          <NAMEINFO elem="1">
+              <ADDRESS>10200 South De Anza Blvd</ADDRESS>
+              <CITY>Cupertino</CITY>
+              <CANON_COMPANY>Portal Software</CANON_COMPANY>
+              <CANON_COUNTRY>USA</CANON_COUNTRY>
+          </NAMEINFO>
+          <NAMEINFO elem="2">
+              <ADDRESS>my address</ADDRESS>
+              <CITY>Lannion</CITY>
+              <CANON_COMPANY>Devoteam</CANON_COMPANY>
+              <CANON_COUNTRY>France</CANON_COUNTRY>
+          </NAMEINFO>
+          <WRITE_ACCESS xmlns="">some string</WRITE_ACCESS>
+        </flist>
+    </sendMessagePCP>
+
+    <finally>    
+        <removeListenpointPCP name="[listenpoint]"/>
+    </finally>    
+
+</scenario>

@@ -1,0 +1,962 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- 
+- This is a scenario that implements the SIP Registrar function with an authentification needed.
+- However, the register time is not mesured, so only a register with expires=0 can unregister 
+- All the variables are persistant (test level), so if launch the test in load mode and it somehow fails  hopefully you won't loose your registrations
+- Allowed messages: INVITE, ACK, BYE, REGISTER, CANCEL
+- SUBSCRIBE messages are ignored.
+- Tested with:
+  - X-Lite 3.0 build 34025 with Voicemail and Presence options desactivated. TIP: You can access a number of advanced optioons by dialing ***7469
+  - SJPhone 1.65.377a
+  - OpenIMS Client Lite 1.0 (OpenIC)
+  - Beware that OpenIC - >  Xlite calls do not pass; Xlite sends 400 Bad request message.
+-->
+
+<scenario>
+
+
+	<parameter name="[test:ServiceTrigger]" operation="list.create"/>
+	<parameter name="[test:lastServiceTrigger]" operation="list.create"/>
+
+	<label name="Begin"/>
+
+	<receiveMessageSIP name="wait_SIP_request" timeout="0">	
+		<parameter name="[test:lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>  		
+		<parameter name="[test:lastResult]" operation="protocol.setFromMessage" value="message.result"/>  				
+
+		<parameter name="[test:lastFirstline]" operation="protocol.setFromMessage" value="firstline"/>  	
+		<parameter name="[test:lastFirstLineVersion]" operation="protocol.setFromMessage" value="firstline.Version"/>  	
+		<parameter name="[test:lastFirstLineMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>  	
+		<parameter name="[test:lastFirstLineURI]" operation="protocol.setFromMessage" value="firstline.URI"/>
+
+		<parameter name="[test:lastTo]" operation="protocol.setFromMessage" value="header.To"/>  
+		<parameter name="[test:lastToAddress]" operation="protocol.setFromMessage" value="header.To.Address"/>  
+		<parameter name="[test:lastToURI]" operation="setFromAddress" value="[test:lastToAddress]" value2="URI"/>  
+	  	<parameter name="[test:lastFrom]" operation="protocol.setFromMessage" value="header.From"/>  	
+	  	<parameter name="[test:lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>		  		  	
+	  	<parameter name="[test:lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	  	<parameter name="[test:lastCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+	  	<parameter name="[test:lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+	  	<parameter name="[test:lastRoute]" operation="protocol.setFromMessage" value="header.Route"/>		  		  	
+	  	<parameter name="[test:lastRecord-Route]" operation="protocol.setFromMessage" value="header.Record-Route"/>		  	
+	  	<parameter name="[test:lastContact]" operation="protocol.setFromMessage" value="header.Contact"/>		  		  	
+
+		<parameter name="[test:lastContactAddress]" operation="protocol.setFromMessage" value="header.Contact.Address"/>		  		  		
+		<parameter name="[test:lastContactExpires]" operation="protocol.setFromMessage" value="header.Contact.Parameter.Expires"/>
+
+	  	<parameter name="[test:lastMax-Forwards]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>		  		  	
+		<parameter name="[test:lastHeaderOthers]" operation="protocol.setFromMessage" value="header.Others"/>		  		  		  	
+	  	<parameter name="[test:lastContent]" operation="protocol.setFromMessage" value="content"/>		  		  	
+	  	<parameter name="[test:lastExpires]" operation="protocol.setFromMessage" value="header.expires"/>		  		  	
+		<parameter name="[test:lastSIPMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>		  		  	
+
+		<parameter name="[AuthResponse_www]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
+		<parameter name="[AuthResponse_proxy]" operation="protocol.setFromMessage" value="header.Proxy-Authorization.Attribute.response"/>
+		<parameter name="[AuthUserName_www]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.username"/>
+		<parameter name="[AuthUserName_proxy]" operation="protocol.setFromMessage" value="header.Proxy-Authorization.Attribute.username"/>
+		<parameter name="[AuthNonce_www]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce"/>
+		<parameter name="[AuthNonce_proxy]" operation="protocol.setFromMessage" value="header.Proxy-Authorization.Attribute.nonce"/>
+		<parameter name="[AuthCNonce_www]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.cnonce"/>
+		<parameter name="[AuthCNonce_proxy]" operation="protocol.setFromMessage" value="header.Proxy-Authorization.Attribute.cnonce"/>
+		
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>	
+	</receiveMessageSIP>
+	
+	<!-- Remove the "max-forwards" line in lastHeaderOthers -->
+
+	<parameter name="[indexes]" operation="list.findmatches" value="[test:lastHeaderOthers]" value2="Max-Forwards:.*"/>
+	<parameter name="[test:lastHeaderOthers]" operation="list.removeat" value="[test:lastHeaderOthers]" value2="[indexes]"/>
+
+	<log level="DEBUG">headerOthers</log>
+	<log level="DEBUG">[test:lastHeaderOthers]</log>
+
+	   	<!-- if firstline is empty (bug with XLite which send an empty message -->
+    <if><condition><test parameter="[test:lastFirstline(0)]" condition="string.equals" value=""/></condition>
+		<then>
+			<goto  name="loop" label="Begin" state="true"/>	
+		</then>
+	</if>
+
+
+	<!-- The IF won't be necessary after the bug is fixed -->
+	<if><condition><test parameter="[test:lastContactAddress]" condition="list.isEmpty"/></condition>
+		<then/>
+		<else>
+			<if><condition><test parameter="[test:lastContact]" condition="string.equals" value="*"/></condition>
+			<then/>
+			<else>
+				<parameter name="[test:lastContactURI]" operation="setFromAddress" value="[test:lastContactAddress]" value2="URI"/>
+			</else>
+			</if>
+		</else>
+	</if>
+
+	<parameter name="[test:localTag]" operation="string.random" value="10"/>
+
+
+	<if><condition><test parameter="[test:lastSIPMethod]" condition="string.equals" value="REGISTER"/></condition>
+	<then>
+		<goto  name="loop" label="Register" state="true"/>
+	</then>
+	</if>
+
+	<if><condition><test parameter="[test:lastSIPMethod]" condition="string.equals" value="SUBSCRIBE"/></condition>
+	<then>
+		<goto  name="loop" label="Subscribe" state="true"/>
+	</then>
+	</if>
+
+	<if><condition><test parameter="[test:lastSIPMethod]" condition="string.equals" value="CANCEL"/></condition>
+	<then>
+		<goto  name="loop" label="Cancel" state="true"/>
+	</then>
+	</if>
+
+	<if><condition><test parameter="[test:lastSIPMethod]" condition="string.equals" value="INVITE"/></condition>
+	<then>
+		<goto  name="loop" label="Invite" state="true"/>
+	</then>
+	<else>
+		<if><condition><test parameter="[test:lastIsRequest]" condition="string.equals" value="true"/></condition>
+		<then>
+			<goto  name="goto_Request" label="Request" state="true"/>
+		</then>
+		<else>
+			<goto  name="goto_Response" label="Response" state="true"/>	    
+		</else>
+		</if>
+	</else>
+	</if>
+
+	<label name="Request"/>	
+<!-- **************************************************************	Request      *****************************************************************************-->
+	<log level="DEBUG">Request received.</log>
+		
+	<if><condition><test parameter="[test:lastSIPMethod]" condition="string.equals" value="ACK"/></condition>
+	<then>
+		<log level="DEBUG">ACK received.</log>
+		
+		<if><condition><test parameter="[test:lastToURI]" condition="string.equals" value="[test:lastFirstLineURI]"/></condition>
+			<then>
+				<log level="DEBUG">The received ACK message has To URI = Req-URI. We assume that it is an ACK for 4xx message. Doing nothing.</log>
+			</then>
+			<else>
+				<parameter name="[test:newBranchId]" operation="string.random" value="10"/>   
+				<!-- This condition will disapear when the removeFirst on null bug is fixed-->
+				<if><condition><test parameter="[test:lastRoute]" condition="list.isEmpty"/></condition><then/>
+				<else>
+				<parameter name="[test:lastRoute]" operation="list.removeFirst" value="[test:lastRoute]"/>   		
+				</else>
+				</if>
+
+				<if><condition><test parameter="[test:lastMax-Forwards]" condition="list.isEmpty" value="0"/></condition>
+				<then>
+					<log level="WARN">Max forwards is not set. Accepting the message (RFC3261 16.3)</log>
+				</then>
+				<else>
+					<if><condition><test parameter="[test:lastMax-Forwards]" condition="string.equals" value="0"/></condition>
+					<then>
+						<log level="WARN">Max forwards is 0. This message will be discarded.</log>
+						<log level="WARN">486 Too many hops message will be sent.</log>
+						<goto  name="goto_Begin" label="Begin" state="true"/>			  		  	
+					</then>
+					<else>
+						<log level="DEBUG">Max forwards is [test:lastMax-Forwards]. Decrementing it's value.</log>
+						<parameter name="[test:newMax-Forwards]" operation="number.substract" value="[test:lastMax-Forwards]" value2="1"/>
+					</else>
+					</if>
+				</else>
+				</if>		
+
+				<log level="WARN"> Call ID Status code : [test:StatusCode_[test:lastCallId]]</log>
+
+				<if>
+					<condition>
+						<test parameter="[test:StatusCode_[test:lastCallId]]" condition="number.lowerthan" value="300"/>
+					</condition>
+					<then>
+						<log level="WARN"> Recherche du send ack 1 : [test:StatusCode_[test:lastCallId]]</log>
+						<sendMessageSIP name="proxy_SIP_request">		
+<![CDATA[
+[test:lastFirstline]
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Via: SIP/2.0/[transportResponse] [test:localSIP];branch=z9hG4bK[test:newBranchId]
+Via: [test:lastVia]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+Max-Forwards: [test:newMax-Forwards]
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+						</sendMessageSIP>
+					</then>	
+				</if>	
+			</else>
+		</if>
+
+		<goto  name="loop" label="Begin" state="true"/>
+	</then>
+	<else>
+
+
+		<!-- new transaction -->
+		<parameter name="[test:newBranchId]" operation="string.random" value="10"/>   
+		<!-- remove the first Route if existing -->		
+		<if><condition><test parameter="[test:lastRoute]" condition="list.isEmpty"/></condition>
+		<then/>
+		<else>
+		<parameter name="[test:lastRoute]" operation="list.removeFirst" value="[test:lastRoute]"/>   		
+		</else></if>
+
+		<if><condition><test parameter="[test:lastMax-Forwards]" condition="list.isEmpty" value="0"/></condition>
+	    <then>
+			<log level="DEBUG">Max forwards is not set. Accepting the message (RFC3261 16.3)</log>
+		</then>
+		<else>
+			<if><condition><test parameter="[test:lastMax-Forwards]" condition="string.equals" value="0"/></condition>
+			<then>
+				<log level="WARN">Max forwards is 0. This message will be discarded.</log>
+				<log level="WARN">486 Too many hops message will be sent.</log>
+				<goto  name="goto_Begin" label="Begin" state="true"/>			  		  	
+			</then>
+			<else>
+				<log level="DEBUG">Max forwards is [test:lastMax-Forwards]. Decrementing it's value.</log>
+				<parameter name="[test:newMax-Forwards]" operation="number.substract" value="[test:lastMax-Forwards]" value2="1"/>
+			</else>
+			</if>
+		</else>
+		</if>		
+		
+		<sendMessageSIP name="proxy_SIP_request">		
+<![CDATA[
+[test:lastFirstline]
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Via: SIP/2.0/[transportResponse] [test:localSIP];branch=z9hG4bK[test:newBranchId]
+Via: [test:lastVia]
+Route: [test:lastRoute]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+Max-Forwards: [test:newMax-Forwards]
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+		</sendMessageSIP>	
+
+	</else>
+	</if>
+
+	<goto  name="loop" label="Begin" state="true"/>
+
+	<label name="Response"/>
+<!-- **************************************************************	Response      *****************************************************************************-->
+	<log level="DEBUG">Response received.</log>
+
+	<if>
+		<condition>
+			<test parameter="[test:lastResult]" condition="string.equals" value="100"/>
+		</condition>
+		<then>
+			<log level="DEBUG"> Trying received. Doing nothing.</log>
+			<goto  name="loop" label="Begin" state="true"/>	
+		</then>
+	</if>
+	
+
+	<parameter name="[test:testResultCode]" operation="string.regexmatches" value="[test:lastResult]" value2="[4,5,6][0-9][0-9]"/>
+
+	<if>
+		<condition>
+			<test parameter="[test:testResultCode]" condition="list.isEmpty"/>
+		</condition>
+		<then>
+			<!-- remove the first Via if existing -->		
+			<parameter name="[test:lastVia]" operation="list.removeFirst" value="[test:lastVia]"/>
+			<log level="info">test:lastFirstline [test:lastFirstline]</log>	
+			<!-- TOUJOURS DES RINGING ou DES OK -->
+			<sendMessageSIP name="proxy_SIP_response">		
+<![CDATA[
+[test:lastFirstline]
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Via: [test:lastVia]
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+			</sendMessageSIP>		
+		</then>
+		<else>
+		
+			<log level="DEBUG">4xx/5xx/6xx message received.</log>
+			<log level="DEBUG">Sending the ACK.</log>
+			<parameter name="[test:firstLastVia]" operation="getFirst" value="[test:lastVia]"/>
+
+			<sendMessageSIP name="proxy_SIP_request">		
+<![CDATA[ACK [test:lastToURI] SIP/2.0 
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeqNumber] ACK
+Via: [test:firstLastVia]
+Route: <[test:[test:lastToURI]];transport=[transportRequest];lr>
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+Max-Forwards: 70
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+			</sendMessageSIP>
+
+			<log level="DEBUG">Forwarding the message.</log>
+			<log level="info">ACK lastfirst line : [lastFirstline]</log> 
+			<parameter name="[test:lastVia]" operation="list.removeFirst" value="[test:lastVia]"/>   		
+			<log level="info">test:lastFirstline 
+							  [test:lastFirstline]</log>
+			<sendMessageSIP name="proxy_SIP_response">	
+
+<![CDATA[
+[test:lastFirstline]
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Via: [test:lastVia]
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+			</sendMessageSIP>		
+
+		</else>
+	</if>
+
+	<log level="info"> go to Begin </log>
+	<goto  name="loop" label="Begin" state="true"/>
+
+<!-- **************************************************************	CANCEL     *****************************************************************************
+<test parameter="[test:index]" condition="list.isEmpty">-->
+
+	<label name="Cancel"/>	
+	<log level="DEBUG">Cancel received.</log>
+
+	<if><condition><test parameter="[test:lastMax-Forwards]" condition="list.isEmpty" value="0"/></condition>
+	    <then>
+			<log level="DEBUG">Max forwards is not set. Accepting the message (RFC3261 16.3)</log>
+		</then>
+		<else>
+			<if><condition><test parameter="[test:lastMax-Forwards]" condition="string.equals" value="0"/></condition>
+			<then>
+				<log level="WARN">Max forwards is 0. This message will be discarded.</log>
+				<log level="WARN">486 Too many hops message will be sent.</log>
+				<goto  name="goto_Begin" label="Begin" state="true"/>			  		  	
+			</then>
+			<else>
+				<log level="DEBUG">Max forwards is [test:lastMax-Forwards]. Decrementing it's value.</log>
+				<parameter name="[test:newMax-Forwards]" operation="number.substract" value="[test:lastMax-Forwards]" value2="1"/>
+			</else>
+			</if>
+		</else>
+	</if>
+
+
+	<log level="DEBUG">Requested URI is [test:lastFirstLineURI]</log>
+		<if><condition><test parameter="[test:[test:lastFirstLineURI]]" condition="list.exists"></test></condition>
+			<then>
+				<log level="INFO"> User [test:lastFirstLineURI] is registered. His contacts are:
+				[test:[test:lastFirstLineURI]]
+				We pick the first one and we forward the request (no forking).
+				</log>
+
+				<if><condition><test parameter="[test:lastRoute]" condition="list.isEmpty"/></condition>
+				<then/>
+				<else>
+					<parameter name="[test:lastRoute]" operation="list.removeFirst" value="[test:lastRoute]"/>   		
+				</else></if>
+
+				<!-- The branchID must be the same as that in INVITE request being canceled and which has been set up during INVITE processing -->
+				<!--parameter name="[test:newBranchId]" operation="string.random" value="10"/-->
+
+		        <log level="DEBUG"> Replies a 200 OK to the caller side (hop by hop basis) </log>
+
+				<sendMessageSIP name="Answer 200 OK">
+<!--******************* BEGIN MESSAGE *******************-->
+<![CDATA[SIP/2.0 200 OK
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo];tag=[test:localTag]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+				</sendMessageSIP>
+
+				<log level="DEBUG"> Forwards the CANCEL to the callee side (hop by hop basis) </log>
+
+				<sendMessageSIP name="proxy_SIP_request">		
+<![CDATA[
+[test:lastFirstLineMethod] [test:[test:lastFirstLineURI](0)] [test:lastFirstLineVersion] 
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Via: SIP/2.0/[transportResponse] [test:localSIP];branch=z9hG4bK[test:lastInviteBranchId]
+Via: [test:lastVia]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+Max-Forwards: [test:newMax-Forwards]
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+				</sendMessageSIP>	
+			</then>
+			<else>
+				<log level="WARN"> User unknown or no contacts for this user. Sending 404 Not Found message</log>
+				<sendMessageSIP name="Answer 404 Not Found ">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 404 Not Found
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo];tag=[test:localTag]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+				</sendMessageSIP>
+			</else>
+		</if>
+
+	<goto  name="loop" label="Begin" state="true"/>
+
+<!-- **************************************************************	INVITE      *****************************************************************************
+<test parameter="[test:index]" condition="list.isEmpty">-->
+
+	<label name="Invite"/>	
+	<log level="DEBUG">Invite received.</log>
+
+	<if><condition><test parameter="[test:lastMax-Forwards]" condition="list.isEmpty" value="0"/></condition>
+	    <then>
+			<log level="WARN">Max forwards is not set. Accepting the message (RFC3261 16.3)</log>
+		</then>
+		<else>
+			<if><condition><test parameter="[test:lastMax-Forwards]" condition="string.equals" value="0"/></condition>
+			<then>
+				<log level="WARN">Max forwards is 0. This message will be discarded.</log>
+				<log level="WARN">486 Too many hops message will be sent.</log>
+				<goto  name="goto_Begin" label="Begin" state="true"/>			  		  	
+			</then>
+			<else>
+				<log level="DEBUG">Max forwards is [test:lastMax-Forwards]. Decrementing it's value.</log>
+				<parameter name="[test:newMax-Forwards]" operation="number.substract" value="[test:lastMax-Forwards]" value2="1"/>
+			</else>
+			</if>
+		</else>
+	</if>
+
+
+	<log level="DEBUG">Requested URI is [test:lastFirstLineURI]</log>
+		<if><condition><test parameter="[test:[test:lastFirstLineURI]]" condition="list.exists"></test></condition>
+			<then>
+				<log level="INFO"> User [test:lastFirstLineURI] is registered. His contacts are:
+				[test:[test:lastFirstLineURI]]
+				We pick the first one and we forward the request (no forking).
+				</log>
+
+				<if><condition><test parameter="[test:lastRoute]" condition="list.isEmpty"/></condition>
+				<then/>
+				<else>
+					<parameter name="[test:lastRoute]" operation="list.removeFirst" value="[test:lastRoute]"/>   		
+				</else></if>
+
+				<parameter name="[test:newBranchId]" operation="string.random" value="10"/>
+				<!-- The BranchID in Via header of the INVITE must be stored in case of further cancelation (CANCEL) -->
+				<parameter name="[test:lastInviteBranchId]" operation="set" value="[test:newBranchId]"/>
+
+
+				<!-- We're doing it, but the SIP stack does it too. Thus, this is optional-->
+				<sendMessageSIP name="Answer 100 Trying ">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 100 Trying
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+				</sendMessageSIP>
+
+				<!-- AUTHENTIFICATION -->
+
+				<if>
+					<condition>
+						<test parameter="[AuthResponse_www]" condition="list.isempty"/>
+					</condition>
+					<then>
+						<!--cas d'un proxy-->
+						<log level="WARN"> PROXY </log>
+						<parameter name="[AuthResponse]" operation="set" value="[AuthResponse_proxy]"/>
+						<parameter name="[AuthUserName]" operation="set" value="[AuthUserName_proxy]"/>
+						<parameter name="[AuthNonce]" operation="set" value="[AuthNonce_proxy]"/>
+						<parameter name="[CNonce]" operation="set" value="[AuthCNonce_proxy]"/>
+					</then>
+					<else>
+					<!--cas d'un terminal-->
+						<log level="WARN"> TERMINAL </log>
+						<parameter name="[AuthResponse]" operation="set" value="[AuthResponse_www]"/>
+						<parameter name="[AuthUserName]" operation="set" value="[AuthUserName_www]"/>
+						<parameter name="[AuthNonce]" operation="set" value="[AuthNonce_www]"/>
+						<parameter name="[CNonce]" operation="set" value="[AuthCNonce_www]"/>
+						<log level="info">AuthUserName : [AuthUserName]</log>
+					</else>
+				</if>
+
+				<!-- <parameter name="[AuthRealm]" operation="set" value="planet.net.tn"/> -->
+				<parameter name="[AuthRealm]" operation="set" value="planet.net.tn"/>
+				
+				<parameter name="[AuthQop]" operation="set" value="auth"/>
+				<parameter name="[Password]" operation="set" value="123"/>	
+				<!--<parameter name="[URI]" operation="set" value="sip:[AuthUserName]" /> -->	
+				<parameter name="[URI]" operation="set" value="[test:lastFirstLineURI]" />
+				<parameter name="[NonceCount]" operation="set" value="00000001" />
+				<!--<parameter name="[CNonce]"     operation="set" value="5c0b2" />-->
+
+				<if>
+					<condition>
+						<test parameter="[AuthResponse]" condition="list.isempty" not="true"/>
+					</condition>
+					<then>
+						<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[AuthUserName]:[AuthRealm]:[Password]"/>
+						<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[test:lastSIPMethod]:[URI]"/>
+						<parameter name="[AuthResponseOK]" operation="string.digest" value2="MD5" value="[HA1]:[AuthNonce]:[NonceCount]:[CNonce]:[AuthQop]:[HA2]" />
+						<log level="warn">AuthResponse : [AuthResponse]</log>
+						<log level="warn">AuthResponseOK : [AuthResponseOK]</log>
+						
+						<log level="warn">HA1 : [HA1]</log>
+						<log level="warn">HA2 : [HA2]</log>	
+						<log level="warn"> URI - test:lastFirstLineURI : [test:lastFirstLineURI]</log>
+						<log level="warn"> test:lastFirstline : [test:lastFirstline]</log>
+						<log level="warn"> test:lastFirstLineVersion : [test:lastFirstLineVersion]</log>
+						<log level="warn"> test:lastFirstLineMethod : [test:lastFirstLineMethod]</log>
+					</then>
+				</if>	
+
+			<log level="WARN"> INVITE AUTH </log>
+			<log level="WARN"> AuthUserName : [AuthUserName] </log>
+			<log level="warn"> AuthRealm : [AuthRealm]</log>
+			<log level="warn"> lastToUser : [lastToUser]</log>
+			<log level="warn"> URI : [URI]</log>
+			<log level="WARN"> HA1 : [HA1] </log>
+			<log level="WARN"> HA2 : [HA2] </log>
+			<log level="warn"> AuthNonce : [AuthNonce]</log>
+			<log level="warn"> AuthResponse : [AuthResponse]</log>
+			<log level="WARN"> AuthResponseOK : [AuthResponseOK] </log>
+			<log level="WARN"> /INVITE AUTH </log>
+				<if>
+					<condition>
+						<or>
+							<test parameter="[AuthResponse]" condition="list.isempty"/>
+							<test parameter="[AuthResponse]" condition="string.equals" value="[AuthResponseOK]" not="true"/>
+						</or>
+					</condition>
+					<then>
+						<!--<parameter name="[AuthNonce]" operation="binary.random" value="20"/> -->
+						<parameter name="[AuthNonce]" operation="set" value="28915DF81A74885F3956"/>
+						<sendMessageSIP name="401 Unauthorized">
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo];tag=[test:localTag]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Contact: [test:lastContact]
+Expires: 3600
+WWW-Authenticate: Digest realm=[AuthRealm], nonce=[AuthNonce], opaque="opaqueData", qop=[AuthQop], algorithm=MD5
+Content-Length: 0
+]]>
+						</sendMessageSIP>
+						<!-- Status code est vide ici
+						<log level="info">apres 401 Status code : [StatusCode]</log> -->
+						<parameter name="[test:StatusCode_[test:lastCallId]]" operation="set" value="401"/>
+					</then>
+					<else>
+						<sendMessageSIP name="proxy_SIP_request">
+<![CDATA[	
+[test:lastFirstLineMethod] [test:[test:lastFirstLineURI](0)] [test:lastFirstLineVersion] 
+To: [test:lastTo]
+From: [test:lastFrom]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Via: SIP/2.0/[transportResponse] [test:localSIP];branch=z9hG4bK[test:newBranchId]
+Via: [test:lastVia]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Contact: [test:lastContact]
+Max-Forwards: [test:newMax-Forwards]
+ServiceTrigger: [test:ServiceTrigger]
+ServiceTrigger: [test:lastServiceTrigger]
+[test:lastHeaderOthers]
+
+[test:lastContent]
+]]>
+						</sendMessageSIP>
+						<log level="info">PROXY SIP REQUEST status code : [StatusCode]</log>
+						<if>
+							<condition>
+								<test parameter="[StatusCode]" condition="list.isempty"/>
+							</condition>
+							<then>
+								<parameter name="[StatusCode]" operation="set" value="100"/>
+								<log level="info">PROXY SIP REQUEST status code mis a 100 : [StatusCode]</log>
+							</then>
+						</if>
+						<parameter name="[test:StatusCode_[test:lastCallId]]" operation="set" value="[StatusCode]"/>
+						<log level="info">autre status code index call : [test:StatusCode_[test:lastCallId]]</log>
+					</else> 
+				</if>
+			</then>
+			<else>
+				<log level="INFO"> User unknown or no contacts for this user. Sending 404 Not Found message</log>
+				<sendMessageSIP name="Answer 404 Not Found ">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 404 Not Found
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo];tag=[test:localTag]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Record-Route: <sip:[test:localSIP];transport=[transportRequest];lr>
+Record-Route: [test:lastRecord-Route]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+				</sendMessageSIP>
+				<parameter name="[test:StatusCode_[test:lastCallId]]" operation="set" value="404"/>	
+				<log level="info">404 status code index call : [test:StatusCode_[test:lastCallId]]</log>
+			</else>
+		</if>
+
+	<goto  name="loop" label="Begin" state="true"/>
+
+
+<!-- **************************************************************	REGISTER      *****************************************************************************-->
+	<label name="Register"/>	
+	<log level="DEBUG">Register received.</log>
+	<log level="DEBUG"> Address of record: [test:lastToURI].</log>
+	<if><condition><test parameter="[test:lastContact]" condition="list.isEmpty" /></condition>	
+
+	<then><log level="WARN">No contacts found.</log></then>
+
+	<else>
+			<parameter name="[test:lastContactLength]" operation="list.size" value="[test:lastContact]"/>
+			<parameter name="[test:lastContactLastElementIndex]" operation="number.substract" value="[test:lastContactLength]" value2="1"/>
+			<parameter name="[test:lastContactIndex]" operation="set" value="0"/>
+			<log level="DEBUG">Number of contacts found: [test:lastContactLength].</log>
+
+		<!-- Iterate on every contact found in the register message-->
+		<while>
+			<condition><test parameter="[test:lastContactIndex]" condition="number.lowerThan" value="[test:lastContactLength]"/></condition>
+			<do>
+				<log level="DEBUG">Processing [test:lastContactURI([test:lastContactIndex])] contact.</log>
+				<!-- We look if there is a Expires headcer present--> 
+				<if><condition><test parameter="[test:lastContactExpires]" condition="list.isEmpty"/></condition>
+					<then>
+						<!-- Expires header is 0 - deleteting a contact-->
+						<if><condition><test parameter="[test:lastExpires]" condition="string.equals" value="0"/></condition>
+						<then>
+							<!-- special case : Contact:* and expires:0 - delete all bindings . RFC 3621 10.2.2 -->
+							<if><condition><test parameter="[test:lastContact]" condition="string.equals" value="*"/></condition>
+							<then>
+								<log level="DEBUG">Expires: [test:lastExpires] and Contact: *. Deleting all contacts of [test:lastToURI].</log>
+								<parameter name="[test:contactLength]" operation="list.size" value="[test:[test:lastToURI]]"/>
+								<while><condition><test parameter="[test:contactLength]" condition="greaterThan" value="0"/></condition>
+									<do>
+										<log level="DEBUG">Deleting [test:[test:lastToURI](0)] contact.</log>
+										<parameter name="[test:[test:[test:lastToURI](0)]]" operation="unset"/>
+										<parameter name="[test:[test:lastToURI]]" operation="removeAt" value="[test:[test:lastToURI]]" value2="0"/>				
+										<parameter name="[test:contactLength]" operation="list.size" value="[test:[test:lastToURI]]"/>
+									</do>
+								</while>
+								<parameter name="[test:[test:lastToURI]]" operation="unset"/>
+							</then>
+							<else>
+
+								<log level="DEBUG"> Expires header is [test:lastExpires].
+									Deleting [test:lastContactURI([test:lastContactIndex])] contact from [test:lastToURI]'s contact list.</log>
+								<parameter name="[test:index]" operation="find" value="[test:[test:lastToURI]]" value2="[test:lastContactURI([test:lastContactIndex])]"/>
+								<log level="DEBUG">   Index is [test:index].</log>
+
+								<if><condition><test parameter="[test:index]" condition="list.isEmpty" /></condition>
+								<then>
+									<log level="DEBUG">  [test:lastContactURI([test:lastContactIndex])] contact doesn't exist in [test:lastToURI]'s contact list.</log>	
+									<log level="DEBUG">  Contact list of [test:lastToURI]:
+									[test:[test:lastToURI]]
+									</log>
+								</then>
+								<else>
+									<parameter name="[test:[test:[test:lastToURI]([test:index])]]" operation="unset"/>
+									<parameter name="[test:[test:lastToURI]]" operation="removeAt" value="[test:[test:lastToURI]]" value2="[test:index]"/>
+									<if><condition><test parameter="[test:[test:lastToURI]]" condition="list.isEmpty"/></condition>
+										<then><parameter name="[test:[test:lastToURI]]" operation="unset"/></then>
+									</if>
+									<log level="INFO">  New contact list of [test:lastToURI]:
+									[test:[test:lastToURI]]
+									</log>
+								</else>
+								</if>
+
+							</else>
+							</if>
+						</then>
+						<else>
+						<!-- All other cases; Expiresheader  is not 0 - adding/updating a contact-->
+							<log level="DEBUG"> Expires header is [lastExpire].
+							Adding [test:lastContactURI([test:lastContactIndex])] contact to [test:lastToURI]'s contact list.</log>
+
+							<parameter name="[test:index]" operation="find" value="[test:[test:lastToURI]]" value2="[test:lastContactURI([test:lastContactIndex])]"/>
+							<if><condition><test parameter="[test:index]" condition="list.isEmpty"></test></condition>
+							<then>
+								<if><condition><test parameter="[test:[test:lastToURI]]" condition="list.exists"></test></condition><then></then>
+								<else><parameter name="[test:[test:lastToURI]]" operation="list.create"/></else></if>
+								<parameter name="[test:[test:lastToURI]]" operation="list.addLast" value="[test:[test:lastToURI]]" value2="[test:lastContactURI([test:lastContactIndex])]" />
+								<!--<parameter name="[test:[test:lastToURI]]" operation="list.addLast" value="[test:[test:lastToURI]]" value2="[test:lastContactURI]" />-->
+								<log level="INFO">  New contact list of [test:lastToURI]:
+								[test:[test:lastToURI]]
+								</log>
+							</then>
+							<else>
+								<!-- Doing nothing since we don't manage the expires/timouts... -->
+								<log level="DEBUG">  [test:lastContactURI([test:lastContactIndex])]] is already registered in [test:lastToURI] contact list.</log>	
+								<log level="DEBUG">  Contact list of [test:lastToURI]:
+								[test:[test:lastToURI]]
+								</log>
+							</else>
+							</if>
+
+						</else>
+						</if>
+
+					</then>
+					<else>
+						<!-- SI JE NE PASSE PAS PAR tempPARAM CA NE MARCHE PAS - BUG -->
+						<parameter name="[test:tempParam]" operation="set" value="[test:lastContactExpires([test:lastContactIndex])]" />
+						<if><condition><test parameter="[test:tempParam]" condition="string.equals" value="0"/></condition>
+						<then>
+							<!-- expires contact parameter is 0 deleting the contact -->
+							<log level="DEBUG"> expires contact parameter is [test:lastContactExpires([test:lastContactIndex])].
+								Deleting [test:lastContactURI([test:lastContactIndex])] contact from [test:lastToURI]'s contact list.</log>
+							<parameter name="[test:index]" operation="find" value="[test:[test:lastToURI]]" value2="[test:lastContactURI([test:lastContactIndex])]"/>
+							<log level="DEBUG">   Index is [test:index].</log>
+
+							<if><condition><test parameter="[test:index]" condition="list.isEmpty" /></condition>
+							<then>
+								<log level="DEBUG">  [test:lastContactURI([test:lastContactIndex])] contact doesn't exist in [test:lastToURI]'s contact list.</log>	
+								<log level="DEBUG">  Contact list of [test:lastToURI]:
+								[test:[test:lastToURI]]
+								</log>
+							</then>
+							<else>
+							<parameter name="[test:[test:[test:lastToURI]([test:index])]]" operation="unset"/>
+								<parameter name="[test:[test:lastToURI]]" operation="removeAt" value="[test:[test:lastToURI]]" value2="[test:index]"/>
+								<if><condition><test parameter="[test:[test:lastToURI]]" condition="list.isEmpty"/></condition>
+									<then><parameter name="[test:[test:lastToURI]]" operation="unset"/></then>
+								</if>
+								<log level="INFO">  New contact list of [test:lastToURI]:
+								[test:[test:lastToURI]]
+								</log>
+
+							</else>
+							</if>
+
+
+						</then>
+
+						<else>
+							<!-- expires contact parameter is not 0 adding/updating the contact -->
+							<log level="DEBUG"> expires contact parameter is [test:lastContactExpires([test:lastContactIndex])].
+							Adding [test:lastContactExpires([test:lastContactIndex])] contact to [test:lastToURI]'s contact list.</log>
+
+							<parameter name="[test:index]" operation="find" value="[test:[test:lastToURI]]" value2="[test:lastContactURI([test:lastContactIndex])]"/>
+							<if><condition><test parameter="[test:index]" condition="list.isEmpty"></test></condition>
+							<then>
+								<if><condition><test parameter="[test:[test:lastToURI]]" condition="list.exists"></test></condition><then></then>
+								<else><parameter name="[test:[test:lastToURI]]" operation="list.create"/></else></if>
+								<parameter name="[test:[test:lastToURI]]" operation="list.addLast" value="[test:[test:lastToURI]]" value2="[test:lastContactURI([test:lastContactIndex])]" />
+								<!--<parameter name="[test:[test:lastToURI]]" operation="list.addLast" value="[test:[test:lastToURI]]" value2="[test:lastContactURI]" />-->
+								<log level="INFO">  New contact list of [test:lastToURI]:
+								[test:[test:lastToURI]]
+								</log>
+							</then>
+							<else>
+								<!-- Doing nothing since we don't manage the expires/timouts... -->
+								<log level="INFO">  [test:lastContactURI([test:lastContactIndex])]] is already registered in [test:lastToURI] contact list.</log>	
+								<log level="DEBUG">  Contact list of [test:lastToURI]:
+								[test:[test:lastToURI]]
+								</log>
+							</else>
+							</if>
+						</else>
+						</if>
+
+
+					</else>
+				</if>				
+				<parameter name="[test:lastContactIndex]" operation="number.add" value="[test:lastContactIndex]" value2="1"/>
+			</do>
+		</while>
+	</else>
+
+	</if>
+	<log level="info">test:lastExpires : [test:lastExpires]</log>
+
+	<!-- Sending the response -->
+	<log level="DEBUG"> Preparing 200 OK or 401 Unauthorized response.</log>
+	<!-- Prepare the contact -->
+	<parameter name="[test:contactList]" operation="list.create"/>
+	<parameter name="[test:contactList]" operation="set" value="Contact:"/>
+	<if><condition><test parameter="[test:[test:lastToURI]]" condition="list.exists"></test></condition>
+		<then>
+			<parameter name="[test:contactLength]" operation="list.size" value="[test:[test:lastToURI]]"/>
+			<parameter name="[test:contactLastElementIndex]" operation="number.substract" value="[test:contactLength]" value2="1"/>
+			<parameter name="[test:contactIndex]" operation="set" value="0"/>
+
+			<log level="DEBUG">  Number of contacts for [test:[test:lastToURI]] URI: [test:contactLength].</log>	
+			<log level="DEBUG">  Contacts to be injected : [test:[test:lastToURI]]</log>
+		</then>
+		<else>
+			<log level="WARN">  No contacts for [test:[test:lastToURI]].</log>
+		</else>
+	</if>
+
+	<!-- [G.ANSQUER] 27/01/11 : ajout authentification -->
+	<log level="WARN">No contacts for [test:[test:lastToURI]].</log>
+
+	<if>
+		<condition>
+			<test parameter="[AuthResponse_www]" condition="list.isempty"/>
+		</condition>
+		<then>
+			<!--cas d'un proxy-->
+			<log level="WARN"> proxy </log>
+			<parameter name="[AuthResponse]" operation="set" value="[AuthResponse_proxy]"/>
+			<parameter name="[AuthUserName]" operation="set" value="[AuthUserName_proxy]"/>
+			<parameter name="[AuthNonce]" operation="set" value="[AuthNonce_proxy]"/>
+			<parameter name="[CNonce]" operation="set" value="[AuthCNonce_proxy]"/>
+		</then>
+		<else>
+			<!--cas d'un terminal-->
+			<log level="WARN"> terminal </log>
+			<parameter name="[AuthResponse]" operation="set" value="[AuthResponse_www]"/>
+			<parameter name="[AuthUserName]" operation="set" value="[AuthUserName_www]"/>
+			<parameter name="[AuthNonce]" operation="set" value="[AuthNonce_www]"/>
+			<parameter name="[CNonce]" operation="set" value="[AuthCNonce_www]"/>
+		</else>
+	</if>
+	
+	<parameter name="[AuthRealm]" operation="set" value="planet.net.tn"/>
+	<parameter name="[AuthQop]" operation="set" value="auth"/>
+	<parameter name="[Password]" operation="set" value="123"/>	
+	<parameter name="[Method]" operation="set" value="REGISTER"/>
+	<parameter name="[domainName]" operation="set" value="orange.tn"/>
+
+	<parameter name="[NonceCount]" operation="set" value="00000001" />
+	<!--<parameter name="[CNonce]"     operation="set" value="7dbc2" /> -->
+	
+	<if>
+		<condition>
+			<test parameter="[AuthResponse]" condition="list.isempty" not="true"/>
+		</condition>
+		<then>
+			<parameter name="[URI]" operation="set" value="[test:lastFirstLineURI]" />	
+			<parameter name="[HA1]" operation="string.digest" value2="MD5" value="[AuthUserName]:[AuthRealm]:[Password]" />
+			<parameter name="[HA2]" operation="string.digest" value2="MD5" value="[Method]:[URI]"/>
+			<parameter name="[AuthResponseOK]" operation="string.digest" value2="MD5" value="[HA1]:[AuthNonce]:[NonceCount]:[CNonce]:[AuthQop]:[HA2]" />
+			<log level="info">AuthUserName : [AuthUserName]</log>
+		</then>
+	</if>
+
+	<if>
+		<condition>
+			<test parameter="[AuthResponse]" condition="string.equals" value="[AuthResponseOK]" not="true"/>
+		</condition>	 
+		<then>
+			<!--AuthNonce is declared is first declared here-->
+			<parameter name="[AuthNonce]" operation="binary.random" value="20"/>
+			<log level="warn"> AuthNonce : [AuthNonce]</log>
+			<!--<parameter name="[AuthNonce]" operation="set" value="28915DF81A74885F3956" />-->
+			<sendMessageSIP name="Answer 401 Unauthorized">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo];tag=[test:localTag]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Contact: [test:lastContact]
+WWW-Authenticate: Digest realm="[AuthRealm]", nonce="[AuthNonce]", opaque="opaqueData", qop="[AuthQop]", algorithm=MD5
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+			</sendMessageSIP>
+
+			<!-- [G.ANSQUER] 27/01/11 : fin ajout authentification -->
+		</then>
+		<else>
+			<sendMessageSIP name="Answer 200 OK">
+<!--******************* BEGIN MESSAGE *******************-->
+<![CDATA[SIP/2.0 200 OK
+Via: [test:lastVia]
+From: [test:lastFrom]
+To: [test:lastTo];tag=[test:localTag]
+Call-ID: [test:lastCallId]
+CSeq: [test:lastCSeq]
+Contact: [test:lastContact]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+			</sendMessageSIP>
+		</else>	
+	</if>	
+	<goto  name="loop" label="Begin" state="true"/>
+
+	<label name="Subscribe"/>	
+		<log>Subscribe message received.</log>
+		<log>Ignoring the message.</log>
+	<goto  name="loop" label="Begin" state="true"/>
+
+
+</scenario>

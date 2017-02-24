@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Based on the specification document 29274-b50_gtpv2_lte.doc
+    Chapter 7.2.1 Create Session Request
+    
+    author fhenry
+-->
+
+<!-- ******************************************************************************************************************************* --> 
+<!-- *********************************** 1 create session request   ******************************************************************************************** -->
+<!-- ******************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************* -->
+<scenario>
+
+    <parameter name="[tunnelEndpointId]" operation="set" value="0"/>
+    <parameter name="[sequenceNumber]" operation="set" value="200"/>
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Create Session Request:32" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+        
+        <element tag="IMSI:1" description="International Mobile Subscriber Identity">
+            <field name="IMSI" value="208014420002670" description="International Mobile Subscriber Identity"/>
+        </element>
+        
+        <element tag="MSISDN:76" description="Mobile Subscriber ISDN Number">
+            <field name="MSISDN" value="33699902670" description="Mobile Subscriber ISDN Number"/>
+        </element>
+        
+        <element tag="MEI:75" description="ME Identity (MEI)">
+            <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
+        </element> 
+        
+        <!-- conditional fields -->
+		<element tag="ULI:86" coding="TLIV" description="User Location Information">
+			<field name="spare1" lengthBit="2" type="integer" value="0"/>
+			<field name="LAI" lengthBit="1" type="boolean" value="1"/>        
+			<field name="ECGI" lengthBit="1" type="boolean" value="1"/>
+			<field name="TAI" lengthBit="1" type="boolean" value="1"/>
+			<field name="RAI" lengthBit="1" type="boolean" value="1"/>
+			<field name="SAI" lengthBit="1" type="boolean" value="1"/>
+			<field name="CGI" lengthBit="1" type="boolean" value="1"/>
+			<!-- CGI Field -->
+			<field name="CGI_MCC_MNC" type="number_mmc" value="262,01"	description="Mobile Country Code+Mobile Network Code"/> 
+			<!--  MCC 3 digits+ on insere le F+ MNC 2 digits, puis on inverse les caracteres Hexa , octet par octet : 26 to 62 / 2F to F2 / 01 to 10  , on colle tout ca et on transforme en decimal/> -->
+			<field name="CGI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
+			<field name="CGI_CI" lengthBit="16" type="integer" value="333" description="Cell Identity"/>
+			<!-- SAI Field 7 octets-->
+			<field name="SAI_MCC_MNC" type="number_mmc" value="262,07"	description="Mobile Country Code 262+Mobile Network Code"/> 
+			<field name="SAI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
+			<field name="SAI_SAC" lengthBit="16" type="integer" value="222" description="Service Area Code"/>
+			<!-- RAI Field 7 octets-->
+			<field name="RAI_MCC_MNC" type="number_mmc" value="208,01"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="RAI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
+			<field name="RAI_RAC" lengthBit="8" type="integer" value="250" description="Routing Area Code"/>
+			<field name="RAI_RAC1" lengthBit="8" type="binary" value="FF" description="Routing Area Code = 11111111"/>
+			<!-- TAI Field 5 octets -->
+			<field name="TAI_MCC_MNC" type="number_mmc" value="208,20"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="TAI_TAC" lengthBit="16" type="integer" value="555" description="Tracking Area Code"/>
+			<!-- ECGI Field 7 octets -->
+			<field name="ECGI_MCC_MNC" type="number_mmc" value="208,07"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="spare" lengthBit="4" type="integer" value="0"/>
+			<field name="ECGI_ECI" lengthBit="28" type="integer" value="133172"/>
+			<!-- LAI Field 5 octets -->
+			<field name="LAI_MCC_MNC" type="number_mmc" value="208,10"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="LAI_LAC" lengthBit="16" type="integer" value="666" description="Location Area Code"/>
+		</element>   
+        
+        <element tag="Serving Network:83" >
+            <field name="MMC" value="208,01"/>
+        </element>
+        
+        <element tag="RAT Type:82" >
+            <field name="RAT Type" value="EUTRAN:6"/>
+        </element>
+        
+        <element tag="Indication:77" description="Indication Flags">
+            <field name="DAF" value="false:0"/>
+            <field name="DTF" value="false:0"/>
+            <field name="HI" value="false:0"/>
+            <field name="DFI" value="false:0"/>
+            <field name="OI" value="false:0"/>
+            <field name="ISRSI" value="false:0"/>
+            <field name="ISRAI" value="false:0"/>
+            <field name="SGWCI" value="false:0"/>
+    
+            <field name="SQCI" value="false:0"/>  
+            <field name="UIMSI" value="false:0"/>
+            <field name="CFSI" value="false:0"/>
+            <field name="CRSI" value="true:1"/>
+            <field name="P" value="false:0"/>
+            <field name="PT" value="true:1"/>
+            <field name="SI" value="false:0"/>
+            <field name="MSV" value="false:0"/>
+    
+            <field name="RetLoc" value="false:0"/>
+            <field name="PBIC" value="false:0"/>
+            <field name="SRNI" value="false:0"/>
+            <field name="S6AF" value="false:0"/>
+            <field name="S4AF" value="false:0"/>
+            <field name="MBMDT" value="false:0"/>
+            <field name="ISRAU" value="false:0"/>
+            <field name="CCRSI" value="false:0"/>
+            
+            <field name="Spare" value="0"/>
+            <field name="CLII" value="false:0"/>
+            <field name="CPSR" value="false:0"/>
+        </element>
+        
+        <!-- mandatory fields -->
+        <element tag="F-TEID:87" instances="0" description="Sender F-TEID for Control Plane">
+            <field name="V4" value="true:1"/>
+            <field name="V6" value="false:0"/>
+            <field name="Interface Type" value="S11 MME GTP-C interface:10"/>
+            <field name="TEID / GRE Key" value="111" description="GRE?"/>
+            <field name="IPv4 address" value="172.16.21.139"/>
+            <!--field name="IPv6 address" value=""/-->
+        </element>
+		<element tag="F-TEID:87" instances="1" description="PGW S5/S8 Address for Control Plane or PMIPe">
+            <field name="V4" value="true:1"/>
+            <field name="V6" value="false:0"/>
+            <field name="Interface Type" value="S5/S8 PGW GTP-C interface:7"/>
+            <field name="TEID / GRE Key" value="0" description="GRE?"/>
+            <field name="IPv4 address" value="192.168.140.234"/>
+            <!--field name="IPv6 address" value=""/-->
+        </element>
+		
+        <element tag="APN:71" description="Access Point Name (APN)">
+        	<field name="APN01" value="nis6coepc" description="Access Point Name"/>
+            <field name="APN02" value="mnc001" description="Access Point Name"/>
+            <field name="APN03" value="mcc208" description="Access Point Name"/> 
+            <field name="APN04" value="gprs" description="Access Point Name"/> 
+        </element>
+        
+        <element tag="Selection Mode:128" >
+            <field name="spare" value="0"/>
+            <field name="Selection Mode" value="MS or network provided APN, subscribed verified:0"/>
+        </element>
+        
+        <element tag="PDN Type:99" >
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4:1"/>
+        </element>
+        
+        <!-- conditional fields -->
+        <element tag="PAA:79" description="PDN Address Allocation (PAA)">
+            <field name="spare" value="0"/>
+            <field name="PDN Type" value="IPv4:1"/>
+            <field name="IPv4 address" value="10.20.30.40"/>
+            <!-- TODO condiditional -->
+            <!--field name="IPv6 address" value="1111:2222:3333:4444:5555:6666:7777:8888"/--> 
+        </element>
+         
+        <element tag="APN Restriction:127" description="Maximum APN Restriction">
+            <field name="Restriction Type value" value="No Existing Contexts or Restriction:0"/>
+        </element>
+        
+        <element tag="AMBR:72" description="Aggregate Maximum Bit Rate (APN-AMBR)">
+            <field name="APN-AMBR for uplink" value="50000"/>
+            <field name="APN-AMBR for downlink" value="100000"/>
+        </element>
+        
+        <element tag="EBI:73" coding="TLIV" description="Linked EPS Bearer ID">
+            <field name="spare" value="0"/>
+            <field name="EBI" value="15" description="EPS Bearer ID"/>
+        </element>
+        
+        <!-- TODO complex element see TS 24008 -->
+        <element tag="PCO:78" description="Protocol Configuration Options (PCO)">
+            <field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+        </element>
+        
+        <element tag="Bearer Context:93" instances="0" description="Bearer Contexts to be created">
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="5"/>
+            </element>
+			<element tag="Bearer TFT:84" description="EPS Bearer Level Traffic Flow Template">
+				<field name="TFT operation code" lengthBit="3" type="integer" value="1"/> <!-- 4 = replace packet filter -->
+				<!-- TFT operation code: 0 Spare                    				-->
+				<!--                     1 Create New TFT           				-->
+				<!--                     2 Delete Existing TFT      				-->
+				<!--                     3 Add packet filters to Existing TFT       -->
+				<!--                     4 Replace Packet filters in Existing TFT   -->
+				<!--                     5 Delete Packet Filters from Existing TFT 	-->
+				<!--                     6 No TFT operation   						-->
+				<!--                     7 Reserved                   				-->
+				<field name="E bit" lengthBit="1" type="boolean" value="0"/>
+				<!-- E bit: 0 Parameters list is not included          				-->
+				<!--        1 Parameters list is included	           				-->
+				
+				
+				<field name="Number of packet filters" lengthBit="4" type="integer" value="2"/>
+				<!-- Number of packet filters: coded from 0 to Max 15      			-->
+				<!--     For the "delete existing TFT" operation and for the "no TFT operation", 
+						the number of packet filters shall be coded as 0. For all other operations, 
+						the number of packet filters shall be greater than 0 and less than or equal to 15.	-->
+				
+				
+				<!--               Packet Filter 0                            -->
+				<field name="Spare" lengthBit="2" type="integer" value="0"/>
+				<field name="Packet Filter Direction" lengthBit="2" type="integer" value="1"/>
+				<field name="Packet Filter Identifier" lengthBit="4" type="integer" value="0"/>
+				<field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" value="126"/>
+				<field name="Length of Packet Filter contents" lengthBit="8" type="integer" value="17" description="NOMBRE TOTAL en decimal d'Octets"/>
+				<!-- Packet Filter 0 Component -->
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="16"/>
+				<!--
+					Bits
+					8 7 6 5 4 3 2 1 
+					0 0 0 1 0 0 0 0	IPv4 remote address type: 16 decimal
+					0 0 0 1 0 0 0 1	IPv4 local address type : 17 decimal
+					0 0 1 0 0 0 0 0	IPv6 remote address type : 32 decimal
+					0 0 1 0 0 0 0 1	IPv6 remote address/prefix length type : 33 decimal
+					0 0 1 0 0 0 1 1	IPv6 local address/prefix length type : 35
+					0 0 1 1 0 0 0 0	Protocol identifier/Next header type : 48
+					0 1 0 0 0 0 0 0	Single local port type: 64
+					0 1 0 0 0 0 0 1	Local port range type: 65
+					0 1 0 1 0 0 0 0	Single remote port type : 80
+					0 1 0 1 0 0 0 1	Remote port range type : 81
+					0 1 1 0 0 0 0 0	Security parameter index type : 96
+					0 1 1 1 0 0 0 0	Type of service/Traffic class type : 112
+					1 0 0 0 0 0 0 0	Flow label type: 128								-->
+				<field name="my ipv4 address" type="ipv4_address" value="10.87.179.65" description="IPv4 address" />
+				<field name="my ipv4 address mask" type="ipv4_address" value="255.255.255.255" description="IPv4 address mask"/>					
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="48"/>
+				<field name="Protocol identifier/Next header type" lengthBit="8" type="integer" value="17"/>   <!-- 11h = 17deci = UDP -->
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="64"/>
+				<field name="Single local port type" lengthBit="16" type="integer" value="1111"/>
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="80"/>
+				<field name="Single remote port type" lengthBit="16" type="integer" value="1155"/>
+				
+				
+				<!--               Packet Filter 1                            -->
+				<field name="Spare" lengthBit="2" type="integer" value="0"/>
+				<field name="Packet Filter Direction" lengthBit="2" type="integer" value="2"/>
+				<field name="Packet Filter Identifier" lengthBit="4" type="integer" value="1"/>
+				<field name="Packet Filter Evaluation Precedence" lengthBit="8" type="integer" value="127"/>
+				<field name="Length of Packet Filter contents" lengthBit="8" type="integer" value="14" description="NOMBRE TOTAL en decimal d'Octets"/>
+				<!-- Packet Filter 1 Component -->
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="16"/>
+				<!--
+					Bits
+					8 7 6 5 4 3 2 1 
+					0 0 0 1 0 0 0 0	IPv4 remote address type: 16 decimal
+					0 0 0 1 0 0 0 1	IPv4 local address type : 17 decimal
+					0 0 1 0 0 0 0 0	IPv6 remote address type : 32 decimal
+					0 0 1 0 0 0 0 1	IPv6 remote address/prefix length type : 33 decimal
+					0 0 1 0 0 0 1 1	IPv6 local address/prefix length type : 35
+					0 0 1 1 0 0 0 0	Protocol identifier/Next header type : 48
+					0 1 0 0 0 0 0 0	Single local port type: 64
+					0 1 0 0 0 0 0 1	Local port range type: 65
+					0 1 0 1 0 0 0 0	Single remote port type : 80
+					0 1 0 1 0 0 0 1	Remote port range type : 81
+					0 1 1 0 0 0 0 0	Security parameter index type : 96
+					0 1 1 1 0 0 0 0	Type of service/Traffic class type : 112
+					1 0 0 0 0 0 0 0	Flow label type: 128								-->
+				<field name="my ipv4 address" type="ipv4_address" value="10.87.179.65" description="IPv4 address" />
+				<field name="my ipv4 address mask" type="ipv4_address" value="255.255.255.255" description="IPv4 address mask"/>					
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="48"/>
+				<field name="Protocol identifier/Next header type" lengthBit="8" type="integer" value="17"/>   <!-- 11h = 17deci = UDP -->
+				<field name="Packet Filter Component Type Identifier" lengthBit="8" type="integer" value="80"/>
+				<field name="Single remote port type" lengthBit="16" type="integer" value="1155"/>
+			</element>
+			
+			
+            <element tag="F-TEID:87" instances="2" description="S5/S8-U SGW F-TEID">
+                <field name="V4" value="true:1"/>
+                <field name="V6" value="false:0"/>
+                <field name="Interface Type" value="S5/S8 PGW GTP-U interface:5"/>
+                <field name="TEID / GRE Key" value="0" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 --> 
+                <field name="IPv4 address" value="192.168.140.231"/>
+                <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+            </element>
+						
+            <element tag="Bearer QoS:80" description="Bearer Quality of Service">
+                <field name="spare1" value="0"/>
+                <field name="PCI" value="false:0" description="Pre-emption Capability"/>
+                <field name="PL" value="1" description="Priority Level"/>
+                <field name="spare2" value="false:0"/>
+                <field name="PVI" value="false:0" description="Pre-emption Vulnerability"/>
+                <field name="Label QCI" value="7"/> 
+                <field name="Maximum bit rate for uplink" value="100000"/>
+                <field name="Maximum bit rate for downlink" value="200000"/>
+                <field name="Guaranteed bit rate for uplink" value="300000"/>
+                <field name="Guaranteed bit rate for downlink" value="400000"/>
+            </element>
+        </element>
+        
+        <!-- TODO complex element see TS 32422 -->
+        <!--element tag="Trace Information:96">
+            <field name="" ../>
+        </element-->
+        
+        <element tag="Recovery:3" >
+            <field name="Recovery" value="123"/>
+        </element>
+        
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="0" description="MME-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv4:0"/>
+            <field name="Number of CSIDs" value="1"/>
+            <field name="Node-ID ipv4" value="192.168.140.232"/>     <!-- if Node-ID == 0 -->
+            <field name="ICSID02" value="128" description="PDN Connection Set Identifier "/>
+        </element>
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="1" description="SGW-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv6:1"/>
+            <field name="Number of CSIDs" value="2"/>
+            <field name="Node-ID ipv6" value="1234:5678:90AB:CDEF:FEDC:BA09:8765:4321"/>     <!-- if Node-ID == 1 -->
+            <field name="ICSID01" value="127" description="PDN Connection Set Identifier "/>
+            <field name="ICSID02" value="128" description="PDN Connection Set Identifier "/>
+        </element>
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="2" description="ePDG-FQ-CSID ">
+            <field name="Node-ID Type" value="MCC/MNC operator:2"/>
+            <field name="Number of CSIDs" value="3"/>
+            <field name="Node-ID MCC/MNC" value="987654"/>            <!-- if Node-ID == 2 -->
+            <field name="Node-ID operator" value="3456"/>           <!-- if Node-ID == 2 -->
+            <field name="ICSID01" value="253" description="PDN Connection Set Identifier "/>
+            <field name="ICSID01" value="254" description="PDN Connection Set Identifier "/>
+            <field name="ICSID02" value="255" description="PDN Connection Set Identifier "/>
+        </element>
+        
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="3" description="TWAN-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv4:0"/>
+            <field name="Number of CSIDs" value="5"/>
+            <field name="Node-ID ipv4" value="98.76.54.31"/>     <!-- if Node-ID == 0 -->
+            <field name="ICSID01" value="1" description="PDN Connection Set Identifier "/>
+            <field name="ICSID02" value="2" description="PDN Connection Set Identifier "/>
+            <field name="ICSID03" value="3" description="PDN Connection Set Identifier "/>
+            <field name="ICSID04" value="4" description="PDN Connection Set Identifier "/>
+            <field name="ICSID05" value="5" description="PDN Connection Set Identifier "/>
+        </element>
+        
+        <element tag="UE Time Zone:114" >
+            <field name="Time Zone" value="64"/>
+            <field name="spare" value="0"/>
+            <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time:0"/>
+        </element>
+        <!-- parameter UCI wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+        <element tag="UCI:145" coding="TLIV" description="User CSG Information">
+            <field name="MMC" value="208,10"/>
+            <field name="spare1" value="0"/>
+            <field name="CSG ID" value="10"/>
+            <field name="Access mode" value="Hybrid Mode:1"/>
+            <field name="spare2" lengthBit="4" value="0"/>
+            <field name="LCSG" value="true:1" description="UE leaves CSG cell/Hybrid cell"/>
+            <field name="CMI" value="Non CSG membership:0"/>
+        </element>
+        
+        <element tag="Charging Characteristics:95" >
+            <field name="Charging Characteristics value" value="2048"/>
+        </element>
+        
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+        <element tag="LDN:151" instances="0" description="MME/S4-SGSN LDN">
+            <field name="LDN" value="abcdefgh" description="Local Distinguished Name"/>
+        </element>
+        <!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="LDN:151" instances="1" description="SGW LDN">
+            <field name="LDN" value="xxxxxxxxxxxxxxxxxxxxxxxxxx" description="Local Distinguished Name"/>
+        </element>
+        <!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="LDN:151" instances="2" description="ePDG LDN">
+            <field name="LDN" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ" description="Local Distinguished Name"/>
+        </element>
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+        <element tag="LDN:151" instances="3" description="TWAN LDN">
+            <field name="LDN" value="FFFFFFFFFFFFFFFFFFFFFFFFFF" description="Local Distinguished Name"/>
+        </element>
+		
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="Signalling Priority Indication:157" >
+			<field name="spare1" value="0"/>
+			<field name="LAPI" value="false:0" description="Low Access Priority Indication"/>
+		</element>
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="0" description="UE Local IP Address">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="123.45.67.89"/>   <!-- if length == 8 -->
+		</element>
+		
+		<element tag="Port Number:126" instances="0" description="UE UDP Port">
+			<field name="Port Number" value="12345"/>
+		</element>
+		
+		<!-- TODO complex element see TS 29275 -->
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="APCO:163" description="Additional Protocol Configuration Options ">
+			<field name="APCO" value="000102030405060708090A0B0C0D0E0F"/>
+		</element>
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="1" description="H(e)NB Local IP Address">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="89.67.45.32"/>   <!-- if length == 8 -->
+		</element>
+		
+		<element tag="Port Number:126" instances="1" description="H(e)NB UDP Port">
+			<field name="Port Number" value="54321"/>
+		</element>
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="2" description="MME/S4-SGSN Identifier">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="111.222.33.44"/>   <!-- if length == 8 -->
+		</element>
+		
+		<!-- conditional fields -->
+		<!-- parameter wrongly decoded by wireshark: IE Type: Unknown (169) + Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="TWAN Identifier:169">
+			<field name="spare1" value="50"/>
+			<field name="BSSIDI" value="true:1" description="BSSID Indicator"/>
+			<field name="SSIDI" value="true:1" description="SSID Indicator"/>
+			<field name="BSSID" value="a1a2a3a4a5"/>          <!-- if BSSIDI == true -->
+			<field name="SSID Length" value="9"/>             <!-- if SSIDI == true -->
+			<field name="SSID" type="f1f2f3f4f5f6f7f8f9"/>    <!-- if SSIDI == true -->
+		</element>
+		
+		<element tag="Private Extension:255" >
+			<field name="Enterprise ID" value="16"/>
+			<field name="Proprietary value" type="properties"/>
+		</element>
+		
+		</sendMessageGTP>
+		
+		
+		<receiveMessageGTP name="echoResponse" request="false" type="Create Session Request:32" result="Request accepted:16">
+			<parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name" /> 
+			<parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber" /> 
+			<parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId" />
+			<parameter name="[F-TEID.TEID / GRE Key]" operation="protocol.setFromMessage" value="element.F-TEID:87.field.TEID / GRE Key" /> 
+		</receiveMessageGTP>
+
+			
+<!-- ******************************************************************************************************************************* --> 
+<!-- ************************************** 2 modify bearer request ***************************************************************************************** -->
+<!-- ******************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************* -->
+			
+		<parameter name="[sequenceNumber]" operation="number.add" value="[sequenceNumber]" value2="1" />		
+		
+
+		<sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+   
+        <headerV2 type="Modify Bearer Request:34" tunnelEndpointId="[F-TEID.TEID / GRE Key(0)]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="MEI:75" description="ME Identity (MEI)">
+            <field name="MEI" value="0044204291218110" description="Mobile Equipment Identity"/>
+        </element> 
+   
+        <!-- conditional fields -->
+		<element tag="ULI:86" coding="TLIV" description="User Location Information">
+			<field name="spare1" lengthBit="2" type="integer" value="0"/>
+			<field name="LAI" lengthBit="1" type="boolean" value="1"/>        
+			<field name="ECGI" lengthBit="1" type="boolean" value="1"/>
+			<field name="TAI" lengthBit="1" type="boolean" value="1"/>
+			<field name="RAI" lengthBit="1" type="boolean" value="1"/>
+			<field name="SAI" lengthBit="1" type="boolean" value="1"/>
+			<field name="CGI" lengthBit="1" type="boolean" value="1"/>
+			<!-- CGI Field -->
+			<field name="CGI_MCC_MNC" type="number_mmc" value="262,01"	description="Mobile Country Code+Mobile Network Code"/> 
+			<!--  MCC 3 digits+ on insere le F+ MNC 2 digits, puis on inverse les caracteres Hexa , octet par octet : 26 to 62 / 2F to F2 / 01 to 10  , on colle tout ca et on transforme en decimal/> -->
+			<field name="CGI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
+			<field name="CGI_CI" lengthBit="16" type="integer" value="333" description="Cell Identity"/>
+			<!-- SAI Field 7 octets-->
+			<field name="SAI_MCC_MNC" type="number_mmc" value="262,07"	description="Mobile Country Code 262+Mobile Network Code"/> 
+			<field name="SAI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
+			<field name="SAI_SAC" lengthBit="16" type="integer" value="222" description="Service Area Code"/>
+			<!-- RAI Field 7 octets-->
+			<field name="RAI_MCC_MNC" type="number_mmc" value="208,01"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="RAI_LAC" lengthBit="16" type="integer" value="333" description="Location Area Code"/>
+			<field name="RAI_RAC" lengthBit="8" type="integer" value="250" description="Routing Area Code"/>
+			<field name="RAI_RAC1" lengthBit="8" type="binary" value="FF" description="Routing Area Code = 11111111"/>
+			<!-- TAI Field 5 octets -->
+			<field name="TAI_MCC_MNC" type="number_mmc" value="208,20"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="TAI_TAC" lengthBit="16" type="integer" value="555" description="Tracking Area Code"/>
+			<!-- ECGI Field 7 octets -->
+			<field name="ECGI_MCC_MNC" type="number_mmc" value="208,07"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="spare" lengthBit="4" type="integer" value="0"/>
+			<field name="ECGI_ECI" lengthBit="28" type="integer" value="133172"/>
+			<!-- LAI Field 5 octets -->
+			<field name="LAI_MCC_MNC" type="number_mmc" value="208,10"	description="Mobile Country Code+Mobile Network Code"/> 
+			<field name="LAI_LAC" lengthBit="16" type="integer" value="666" description="Location Area Code"/>
+		</element>   
+        
+        <element tag="Serving Network:83" >
+            <field name="MMC" value="208,01"/>
+        </element>
+        
+        <element tag="RAT Type:82" >
+            <field name="RAT Type" value="EUTRAN:6"/>
+        </element>
+        
+        <element tag="Indication:77" description="Indication Flags">
+            <field name="DAF" value="false:0"/>
+            <field name="DTF" value="false:0"/>
+            <field name="HI" value="false:0"/>
+            <field name="DFI" value="false:0"/>
+            <field name="OI" value="false:0"/>
+            <field name="ISRSI" value="false:0"/>
+            <field name="ISRAI" value="false:0"/>
+            <field name="SGWCI" value="false:0"/>
+    
+            <field name="SQCI" value="false:0"/>  
+            <field name="UIMSI" value="false:0"/>
+            <field name="CFSI" value="false:0"/>
+            <field name="CRSI" value="true:1"/>
+            <field name="P" value="false:0"/>
+            <field name="PT" value="true:1"/>
+            <field name="SI" value="false:0"/>
+            <field name="MSV" value="false:0"/>
+    
+            <field name="RetLoc" value="false:0"/>
+            <field name="PBIC" value="false:0"/>
+            <field name="SRNI" value="false:0"/>
+            <field name="S6AF" value="false:0"/>
+            <field name="S4AF" value="false:0"/>
+            <field name="MBMDT" value="false:0"/>
+            <field name="ISRAU" value="false:0"/>
+            <field name="CCRSI" value="false:0"/>
+            
+            <field name="Spare" value="0"/>
+            <field name="CLII" value="false:0"/>
+            <field name="CPSR" value="false:0"/>
+        </element>
+        
+        <!-- conditional fields -->
+        <element tag="F-TEID:87" instances="0" description="S5/S8 SGW GTP-C interface"> 
+            <field name="V4" value="true:1"/>
+            <field name="V6" value="false:0"/>
+            <field name="Interface Type" value="S1-U eNodeB GTP-U interface:0"/>
+            <field name="TEID / GRE Key" value="10" description="GRE?"/>
+            <field name="IPv4 address" value="192.168.140.231"/>
+            <!--field name="IPv6 address" value=""/-->
+        </element>
+        
+		<element tag="AMBR:72" description="Aggregate Maximum Bit Rate (APN-AMBR)">
+            <field name="APN-AMBR for uplink" value="50000"/>
+            <field name="APN-AMBR for downlink" value="100000"/>
+        </element>
+		
+		<element tag="Delay value:92" description="Delay Value in integer multiples of 50 millisecs, or zero">
+            <field name="Delay value" lengthBit="8" type="integer" value="10"/>  
+        </element>
+		        
+        <element tag="Bearer Context:93" instances="0" description="Bearer Contexts to be created">
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="5"/>
+            </element>			
+            <element tag="F-TEID:87" instances="0" description="Fully Qualified Tunnel Endpoint Identifier">
+                <field name="V4" value="true:1"/>
+                <field name="V6" value="false:0"/>
+                <field name="Interface Type" value="S5/S8 SGW GTP-U interface:4"/>
+                <field name="TEID / GRE Key" value="2147491878" description="GRE key ?"/>
+                <!-- TODO conditional IP V4 V6 --> 
+                <field name="IPv4 address" value="192.168.140.234"/>
+                <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+            </element>
+        </element>
+		
+		<element tag="Bearer Context:93" instances="1" description="Bearer Contexts to be created">
+            <element tag="EBI:73" description="EPS Bearer ID">
+                <field name="spare" value="0"/>
+                <field name="EBI" value="2"/>
+            </element>			
+        </element>
+		
+		<element tag="Recovery:3" >
+            <field name="Recovery" value="123"/>
+        </element>
+        
+		<element tag="UE Time Zone:114" >
+            <field name="Time Zone" value="64"/>
+            <field name="spare" value="0"/>
+            <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time:0"/>
+        </element>
+		
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="0" description="MME-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv4:0"/>
+            <field name="Number of CSIDs" value="1"/>
+            <field name="Node-ID ipv4" value="123.45.67.89"/>     <!-- if Node-ID == 0 -->
+            <field name="ICSID02" value="128" description="PDN Connection Set Identifier "/>
+        </element>
+        <!-- conditional fields -->
+        <element tag="FQ-CSID:132" instances="1" description="SGW-FQ-CSID ">
+            <field name="Node-ID Type" value="Global unicast IPv6:1"/>
+            <field name="Number of CSIDs" value="2"/>
+            <field name="Node-ID ipv6" value="1234:5678:90AB:CDEF:FEDC:BA09:8765:4321"/>     <!-- if Node-ID == 1 -->
+            <field name="ICSID01" value="127" description="PDN Connection Set Identifier "/>
+            <field name="ICSID02" value="128" description="PDN Connection Set Identifier "/>
+        </element>
+		
+		 <!-- parameter UCI wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+        <element tag="UCI:145" coding="TLIV" description="User CSG Information">
+            <field name="MMC" value="208,10"/>
+            <field name="spare1" value="0"/>
+            <field name="CSG ID" value="10"/>
+            <field name="Access mode" value="Hybrid Mode:1"/>
+            <field name="spare2" lengthBit="4" value="0"/>
+            <field name="LCSG" value="true:1" description="UE leaves CSG cell/Hybrid cell"/>
+            <field name="CMI" value="Non CSG membership:0"/>
+        </element>
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="0" description="UE Local IP Address">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="123.45.67.89"/>   <!-- if length == 8 -->
+		</element>
+		
+		<element tag="Port Number:126" instances="0" description="UE UDP Port">
+			<field name="Port Number" value="12345"/>
+		</element>
+		
+		<!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+        <element tag="LDN:151" instances="0" description="MME/S4-SGSN LDN">
+            <field name="LDN" value="abcdefgh" description="Local Distinguished Name"/>
+        </element>
+        <!-- parameter wrongly decoded by wireshark: Expert Info (Note/Protocol): IE data not dissected yet -->
+		<element tag="LDN:151" instances="1" description="SGW LDN">
+            <field name="LDN" value="xxxxxxxxxxxxxxxxxxxxxxxxxx" description="Local Distinguished Name"/>
+        </element>
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="1" description="H(e)NB Local IP Address">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="89.67.45.32"/>   <!-- if length == 8 -->
+		</element>
+		
+		<element tag="Port Number:126" instances="1" description="H(e)NB UDP Port">
+			<field name="Port Number" value="54321"/>
+		</element>
+		
+		<!-- conditional fields -->
+		<element tag="IP Address:74" instances="2" description="MME/S4-SGSN Identifier">
+			<!--field name="IPv6 address" lengthBit="128" type="ipv6_address"/-->  <!-- if length == 20 -->
+			<field name="IPv4 address" value="111.222.33.44"/>   <!-- if length == 8 -->
+		</element>
+		
+		<element tag="Private Extension:255" >
+			<field name="Enterprise ID" value="16"/>
+			<field name="Proprietary value" type="properties"/>
+		</element>
+		</sendMessageGTP>
+
+		<receiveMessageGTP name="receive message" request="false" type="Modify Bearer Request:34" result="Request accepted:16">
+			<parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+			<parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+		<!--	<parameter name="[EBI]" operation="protocol.setFromMessage" value="element.bearer context:93.element.EBI:73.field.EBI"/> -->
+			<parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId" />
+				
+		</receiveMessageGTP>
+
+		
+
+<!-- ******************************************************************************************************************************* --> 
+<!-- ******************************************************************************************************************************* --> 
+<!-- ************************************** 3 delete session request***************************************************************************************** -->
+<!-- ******************************************************************************************************************************* -->
+<!-- ******************************************************************************************************************************* -->	
+		
+		
+		
+		
+	
+    <parameter name="[sequenceNumber]" operation="number.add" value="[sequenceNumber]" value2="1" />	
+	
+    <sendMessageGTP name="send message" 
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Delete Session Request:36" tunnelEndpointId="2550161430" sequenceNumber="[sequenceNumber]"/>
+		<element tag="EBI:73" description="EPS Bearer ID">
+            <field name="spare" value="0"/>
+        		<field name="EBI" value="15"/>
+        </element>
+		<!-- conditional fields -->
+        	
+		
+		
+    </sendMessageGTP>
+
+	
+	<receiveMessageGTP name="receive message" request="false" type="Delete Session Request:36" result="Request accepted:16">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>     
+    </receiveMessageGTP>
+	
+   
+		
+		
+		
+</scenario>

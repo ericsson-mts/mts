@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="01000e010000005000010008ffffffff0081000800030000000e00354877f4020001fbc0b0a001018a0203f6d4bf03018c0401df140812131415161718192205f480bfefb12303e4ca812401ff000000" />
+
+    <receiveMessageSIGTRAN name="Wait SIGTRAN"/>            
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+      
+</scenario>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE Library [
+  <!ENTITY register    SYSTEM "../Library/register_provider.xml">
+ ]>
+
+
+<scenario>
+
+	<parameter name="[clientName]" 		operation="set" value="[client_UAC]"/>
+	<parameter name="[clientName2]" 	operation="set" value="[client_UAS]"/>
+	<parameter name="[100_DOMAIN_ADDR]" operation="set" value="[domaine]"/>
+	
+	<parameter name="[LocalPort]" 		operation="set" 			value="[port_UAC]"/>
+	<parameter name="[LocalAddress]" 	operation="set" 			value="[LocalHost(0)]:[LocalPort(0)]"/>
+	
+	<createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]"/>
+
+	<parameter name="[Expires]" 		operation="set" value="3600"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	&register;
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+	<parameter name="[testcase:SEM2]" operation="system.semaphorewait"/>
+	 
+	 
+	<parameter name="[newCallID]"   operation="number.random"  value="10000000"/> 
+	<parameter name="[localTag]"   operation="string.random"  value="10"/>
+	<parameter name="[newCseq]" 		operation="number.add" 		value="[newCseq]" value2="1"/>			
+	<parameter name="[newBranchId]"  operation="string.random"  value="10"/>
+	    
+<sendMessageSIP name="Send Invite" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[INVITE sip:[clientName2]@[100_DOMAIN_ADDR] SIP/2.0
+Call-ID: [newCallID]
+CSeq: [newCseq] INVITE
+From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+To: sip:[clientName2]@[100_DOMAIN_ADDR]
+Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Route: [SCSCF]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Content-Type: application/sdp
+P-Preferred-Identity: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+User-Agent: [UserAgent]
+Content-Length: x
+
+v=0
+o=[clientName2] 999 999 IN IP4 [LocalPort]
+s=-
+c=IN IP4 [LocalPort]
+t=0 0
+m=audio 8000 RTP/AVP 0
+]]>
+</sendMessageSIP>	
+   
+<receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" request="false">
+</receiveMessageSIP>
+
+<receiveMessageSIP name="Wait 180 Ringing" type="INVITE" result="180" request="false">
+</receiveMessageSIP>
+  
+	<parameter name="[testcase:SEM4]" operation="system.semaphorenotify"/>
+
+ <receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" request="false">             
+		<parameter name="[From]" 				operation="protocol.setFromMessage" 	value="header.From"/> 
+		<parameter name="[To]" 					operation="protocol.setFromMessage" 	value="header.To"/>	
+		<parameter name="[CallId]" 				operation="protocol.setFromMessage" 	value="header.Call-Id"/>                       
+		<parameter name="[Request-URI]" 		operation="protocol.setFromMessage" 	value="header.Contact.Address.URI"/>	
+		<parameter name="[Record-Route]" 		operation="protocol.setFromMessage" 	value="header.Record-Route"/>	
+		<parameter name="[Contact]"				operation="protocol.setFromMessage" 	value="header.Contact"/>
+</receiveMessageSIP> 
+
+	<parameter name="[nextCseqNumber]" 		operation="number.add" 			value="[newCseq]" 			value2="1"/>   
+	<parameter name="[nextNextCseqNumber]" 	operation="number.add" 			value="[nextCseqNumber]" 	value2="1"/>  
+	<parameter name="[Record-Route-Size]" 	operation="list.size" value="[Record-Route]"/>
+	<parameter name="[Record-Route-Inv]" 	operation="list.create" />
+	
+	<while>
+		<condition>
+			<test parameter="[Record-Route-Size]" condition="number.greaterThan" value="0" />
+		</condition>
+		<do>
+			<parameter name="[temp]" 				operation="list.getFirst" 	value="[Record-Route]" />
+			<parameter name="[Record-Route]" 		operation="list.removeFirst" value="[Record-Route]" />
+			<parameter name="[Record-Route-Inv]" 	operation="list.addFirst" 	value="[Record-Route-Inv]" value2="[temp]"/>
+			<parameter name="[Record-Route-Size]" 	operation="list.size" 		value="[Record-Route]"/>
+		</do>
+	</while>
+    
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	
+ <sendMessageSIP name="Send ACK" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+ <![CDATA[ACK [Request-URI] SIP/2.0
+Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+From: [From]
+To: [To]
+CSeq: [newCseq] ACK
+Call-ID: [newCallID]
+Contact: "[clientName]"<sip:[LocalAddress]>
+Route: [Record-Route-Inv]
+P-Preferred-Identity: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+User-Agent: [UserAgent]
+P-Asserted-Identity: <sip:bob@ims.net>
+Content-Length: 0
+]]> 
+</sendMessageSIP> 
+  
+	<parameter name="[testcase:SEM3]" operation="system.semaphorewait"/>
+
+    <pause name="pause" seconds="0"/>
+
+    <parameter name="[newCseq]" operation="number.add" value="[newCseq]" value2="1"/>		
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/> 	    
+  	    
+<sendMessageSIP name="Send BYE" listenpoint="[scenarioName]" remoteHost="[Host-Server]" remotePort="[Port-Server]">
+<![CDATA[BYE [Request-URI] SIP/2.0
+Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+To: [From]
+From: [To]
+Call-ID: [newCallID]
+CSeq: [newCseq] BYE
+Route: [Record-Route-Inv]
+Contact: "[clientName]"<sip:[LocalAddress]>
+P-Preferred-Identity: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+User-Agent: [UserAgent]
+P-Asserted-Identity: <sip:bob@ims.net>
+Content-Length: 0
+]]>
+</sendMessageSIP>
+                
+<receiveMessageSIP name="Wait 200 OK" type="BYE" result="200" request="false">
+</receiveMessageSIP>
+
+	<parameter name="[testcase:SEM5]" operation="system.semaphorenotify"/>
+  
+	<finally>   
+		<parameter name="[testcase:SEM6]" operation="system.semaphorewait"/>
+  		<parameter name="[Expires]" 		operation="set" value="0"/>
+		&register;
+   </finally> 
+  
+</scenario>

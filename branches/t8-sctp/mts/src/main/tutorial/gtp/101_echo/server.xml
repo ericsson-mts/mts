@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="receive message" request="true" type="Echo Request:1" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="480100080000006f00000100"/>
+    
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Echo Response:2" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Recovery:3">
+            <field name="Recovery" value="23"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive message" request="true" type="Echo Request:1" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+    </receiveMessageGTP>
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="4001000400000200"/>
+    
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Version Not Supported Indication:3" sequenceNumber="[seqNum]"/> 
+    </sendMessageGTP>
+
+</scenario>

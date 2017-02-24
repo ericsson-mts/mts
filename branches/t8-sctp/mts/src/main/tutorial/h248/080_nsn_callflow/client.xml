@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- call flow for Nokia-Siemens equipment -->
+<!-- provide from HNTrelatching capture file -->
+
+<scenario>
+    
+<!-- "AuditValue #1" message -->
+    <parameter name="[newTransID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = - { AV =ROOT{ AT { }  } } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="AuditValue" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge"   destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+<!-- "AuditValue #2" message -->
+    <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
+    <sendMessageH248 name="Send request" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = - { AV =ROOT{ AT { }  } } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="AuditValue" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+<!-- "Add #1" message -->
+    <parameter name="[newTransID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = $ { PR = 0, A =ip/90/Realm_ext_media01/${ M { ST  = 1 { L { v=0
+c=IN IP4 $
+m=audio $ RTP/AVP 0
+ } , R { v=0
+c=IN IP4 172.20.75.65
+m=audio 2 RTP/AVP 0
+ } , O { MO = IN , gm/rsb=ON } } }, E  = 1000{ hangterm/thb{timerx = 3600 } }, SG { ipnapt/latch{napt = LATCH } } }, A =ip/90/Realm_int_media01/${ M { ST  = 1 { L { v=0
+c=IN IP4 $
+m=audio $ RTP/AVP 0
+ } , O { MO = IN , gm/rsb =ON } } } } } }
+]]>
+    </sendMessageH248>
+  
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+        <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.Reply.Context.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+
+<!-- "Substract #1" message -->
+    <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
+    <sendMessageH248 name="Send request" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { S =* } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="Subtract" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+<!-- "Add #2" message -->
+    <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = $ { PR = 0, A =ip/91/Realm_ext_media01/${ M { ST  = 1 { L { v=0
+c=IN IP4 $
+m=audio $ RTP/AVP 0
+ } , R { v=0
+c=IN IP4 172.20.75.65
+m=audio 2 RTP/AVP 0
+ } , O { MO = IN , gm/rsb=ON } } }, E  = 1000{ hangterm/thb{timerx = 3600 } }, SG { ipnapt/latch{napt = LATCH } } }, A =ip/91/Realm_int_media01/${ M { ST  = 1 { L { v=0
+c=IN IP4 $
+m=audio $ RTP/AVP 0
+ } , O { MO = IN , gm/rsb =ON } } } } } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+        <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.Reply.Context.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+<!-- "Modify #1" message -->
+    <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { PR = 0, MF =ip/91/Realm_ext_media01/32930{ M { ST  = 1 { L { v=0
+c=IN IP4 172.20.214.36
+m=audio 57662 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , R { v=0
+c=IN IP4 172.20.75.65
+m=audio 2 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , O { MO = SR , ds/dscp=b8, gm/rsb=ON, gm/saf=ON, gm/sam=172.20.75.65 } } }, E  = 1000{ hangterm/thb{timerx = 3600 } }, SG { ipnapt/latch{napt = LATCH } } }, MF =ip/91/Realm_int_media01/32932{ M { ST  = 1 { L { v=0
+c=IN IP4 172.20.214.68
+m=audio 57662 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , R { v=0
+c=IN IP4 172.20.75.66
+m=audio 22000 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , O { MO = SR , ds/dscp=b8, gm/rsb=ON } } } } } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="Modify" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+<!-- "Modify #2" message -->
+    <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
+    <sendMessageH248 name="Send request" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { PR = 0, MF =ip/91/Realm_ext_media01/32930{ M { ST  = 1 { L { v=0
+c=IN IP4 172.20.214.36
+m=audio 57662 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , R { v=0
+c=IN IP4 172.20.75.65
+m=audio 2 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , O { MO = SR , ds/dscp=b8, gm/rsb=ON, gm/saf=ON, gm/sam=172.20.75.65 } } }, E  = 1000{ hangterm/thb{timerx = 3600 } }, SG { ipnapt/latch{napt = RELATCH } } }, MF =ip/91/Realm_int_media01/32932{ M { ST  = 1 { L { v=0
+c=IN IP4 172.20.214.68
+m=audio 57662 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , R { v=0
+c=IN IP4 172.20.75.16
+m=audio 22002 RTP/AVP 18 8 101
+a=rtpmap:18 G729/8000/1
+a=rtpmap:8 PCMU/8000/1
+a=fmtp:101 0-15
+ } , O { MO = SR , ds/dscp=b8, gm/rsb=ON } } } } } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="Modify" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+<!-- "Substract #2" message -->
+    <parameter name="[newTransID]" operation="number.add" value="[newTransID]" value2="1"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[localHostH248]]:[localPortH248] T = [newTransID]{ C = [contextID] { S =* } }
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive response" request="false" type="Subtract" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.Reply.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send acknowledge" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] K {[newTransID]}
+]]>
+    </sendMessageH248>
+
+</scenario>

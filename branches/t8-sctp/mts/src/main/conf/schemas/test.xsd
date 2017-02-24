@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by XMLSPY 2004 Professional Ed. Release 3, Concurrent + SMP for 5 users (S.R.I.T. Siemens) -->
+<!--
+    Document   : dictionary.xsd
+    Created on : 28 mai 2007, 21:14
+    Author     : Gege
+    Description:
+        Defines a test that is a collection of Testcases.
+        Each Testcase is a collection of Scenarii.
+        Scenarii are referenced by their file path.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xs:element name="test" type="testType"/>
+
+    <xs:complexType name="testType">
+        <xs:sequence minOccurs="0" maxOccurs="1">
+            <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,N]</xs:appinfo>
+                    <xs:documentation>To set some IMSLoader parameters at the test or testcase level.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="runProfile" type="runProfileType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,1]</xs:appinfo>
+                    <xs:documentation>For specifying the way of launching the testcases in load mode (duration and frequency)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element name="testcase" type="testcaseType">
+                    <xs:annotation>
+                        <xs:appinfo>mixed [1,N]</xs:appinfo>
+                        <xs:documentation>To define a testcase in the test list.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="for" type="forType">
+                    <xs:annotation>
+                        <xs:appinfo>mixed [0,N]</xs:appinfo>
+                        <xs:documentation>To define some identical testcase in the test list. Similar to a loop avoiding to make annoying copy/paste to duplicate testcases. Of course the different testcases could have different IMSLoader parameters.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>String</xs:appinfo>
+                <xs:documentation>Generic: The test name</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>String</xs:appinfo>
+                <xs:documentation>Generic: The test description (just a comment)</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="home" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>String (file path)</xs:appinfo>
+                <xs:documentation>The test home directory as an absolute or a relative path to the test description file path (this file). The default value is the directory containing the test file.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="forType">
+        <xs:sequence>
+            <xs:element name="testcase" type="testcaseType" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>mixed [1,N]</xs:appinfo>
+                    <xs:documentation>To define a testcase in the test list.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="index" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>String (parameter name)</xs:appinfo>
+                <xs:documentation>The name of the index parameter for the loop. This parameter is available for the user at testcase and scenario levels as any other ones.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="from" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>Integer</xs:appinfo>
+                <xs:documentation>The starting value for the loop index.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="to" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>Integer</xs:appinfo>
+                <xs:documentation>The ending value for the loop index.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="step" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Integer</xs:appinfo>
+                <xs:documentation>The value to increase the index at each loop run (it could be a negative integer). The default value is 1.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="testcaseType">
+        <xs:sequence>
+            <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,N]</xs:appinfo>
+                    <xs:documentation>To set some IMSLoader parameters at the test or testcase level.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="runProfile" type="runProfileType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,1]</xs:appinfo>
+                    <xs:documentation>For specifying the way of launching the test in load mode (duration and frequency)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="scenario" type="scenarioType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [1,N]</xs:appinfo>
+                    <xs:documentation>To add a scenario in the test list.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>String</xs:appinfo>
+                <xs:documentation>Generic: The testcase name</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>String</xs:appinfo>
+                <xs:documentation>Generic: The testcase description (just a comment).</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="state" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Boolean</xs:appinfo>
+                <xs:documentation>The flag whether the testcase is selected or not for automatic run. Only selected testcase are automatically run during the test running. The default value is true.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="number" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Integer</xs:appinfo>
+                <xs:documentation>The number of time this testcase is started for manual and automatic run. The default value is 1.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="interruptible" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Boolean</xs:appinfo>
+                <xs:documentation>The flag whether the testcase can be stopped by the user during the run.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="scenarioType" mixed="true">
+        <xs:sequence>
+            <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,N]</xs:appinfo>
+                    <xs:documentation>To set some IMSLoader parameters at the test or testcase level.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+            <xs:attribute name="name" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:appinfo>String</xs:appinfo>
+                    <xs:documentation>Generic: The scenario name. Important for the message routing in calculating the scenarioName formula on the message if routingName is not set.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="description" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:appinfo>String</xs:appinfo>
+                    <xs:documentation>Generic: The scenario description (just a comment).</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="state" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:appinfo>String</xs:appinfo>
+                    <xs:documentation>Generic: The flag whether the scenario is run or not when running the testcase.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="routingName" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:appinfo>String</xs:appinfo>
+                    <xs:documentation>Generic: The name using for routing messages to scenario.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="file" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:appinfo>String</xs:appinfo>
+                    <xs:documentation>Generic: Path to the scenario file.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+    </xs:complexType>
+    <!--                                                                                  parameter -->
+    <xs:complexType name="operationType">
+        <xs:attribute name="name" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>String</xs:appinfo>
+                <xs:documentation>Generic: The operation name</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>String</xs:appinfo>
+                <xs:documentation>Generic: The operation description (just a comment)</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="operationTypeSimple">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">    
+                <xs:attribute name="name"    	    type="xs:string"        use="optional">    
+                    <xs:annotation>
+                        <xs:appinfo>String</xs:appinfo>
+                        <xs:documentation>Generic: The operation name</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="description"    type="xs:string"        use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>String</xs:appinfo>
+                        <xs:documentation>Generic: The operation description (just a comment)</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="state"    	    type="xs:string"        use="optional">    
+                    <xs:annotation>
+                        <xs:appinfo>Boolean</xs:appinfo>
+                        <xs:documentation>Generic: A flag to run or not the operation (equivalent to put the operation in comment code)</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+
+    <!--                                                                                   parameter -->
+    <xs:complexType name="parameterType">
+        <xs:simpleContent>
+            <xs:extension base="operationTypeSimple">
+                <xs:attribute name="operation" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>Enumeration</xs:appinfo>
+                        <xs:documentation>The operation type; there are many different ones organized in many category like string, binary, number, boolean, list, protocol, system, file, ...</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>* (specific)</xs:appinfo>
+                        <xs:documentation>The operation first operande value. The format depends on the type of operation.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value2" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>* (specific)</xs:appinfo>
+                        <xs:documentation>The operation second operande value. The format depends on the type of operation.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value3" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>* (specific)</xs:appinfo>
+                        <xs:documentation>The operation third operande value. The format depends on the type of operation.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="value4"    type="xs:string" >
+                    <xs:annotation>
+                        <xs:appinfo>String</xs:appinfo>
+                        <xs:documentation>The operation fourth operande value. The format depends on the type of operation.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="editable" type="xs:string" use="optional">
+                    <xs:annotation>
+                        <xs:appinfo>Boolean</xs:appinfo>
+                        <xs:documentation>A flag whether the parameter is configurable by the user (in the configuration GUI panel or by setting them into the command-line for the CMD interface. The default value is false.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+
+    <!--                                                                                    profile -->
+    <xs:complexType name="runProfileType">
+        <xs:sequence>
+            <xs:element name="start" type="startType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,1]</xs:appinfo>
+                    <xs:documentation>Informations about the start of the test</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="step" type="stepType" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,N]</xs:appinfo>
+                    <xs:documentation>A given point on the temporal graph for speed testcase starting (one and exactly one amongst period or frequency attributes)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="end" type="endType" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,1]</xs:appinfo>
+                    <xs:documentation>Informations about the end of the test</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="stepType">
+        <xs:attribute name="time" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The time (in seconds) of the time step from the starting of the testcase.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="period" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The period between testcase starting at this time step. Don't use it with the frequency attribute (incompatible) but you should set one of both attributes.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="frequency" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The testcase starting frequency (in testcase per second) at this time step. Don't use it with the period attribute (incompatible) but you should set one of both attributes.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="instances" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The maximum number of instances for the testcase at this time step.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="startType">
+        <xs:attribute name="time" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The date (timestamp in seconds) when the test will start.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="delay" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The date (delay from current timestamp in seconds) when the test will start.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="endType">
+        <xs:attribute name="time" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The date (timestamp in seconds) when the test will end.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="delay" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The date (delay from current timestamp in seconds) when the test will end.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="iteration" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:appinfo>Float</xs:appinfo>
+                <xs:documentation>The number of iterations at wich the test will end.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 		operation="set" value="[PortUAS]"/>
+	<parameter name="[LocalAddressUAS]" operation="set" value="[HardAddressUAS]"/>	
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	
+
+  <receiveRequestSIP name="Wait INVITE" method="INVITE">
+    <parameter name="[lastTo]" 			operation="setFromMessage" 	value="header:To"/>       
+    <parameter name="[lastFrom]" 		operation="setFromMessage" 	value="header:From"/>   
+    <parameter name="[lastCallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[lastCseq]" 		operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[lastVia]" 		operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[contact]" 		operation="setFromMessage" 	value="header:Contact"/>
+    <parameter name="[MaxForwards]" 	operation="setFromMessage" 	value="header:Max-Forwards"/>
+	<parameter name="[lastcontent]" 	operation="setFromMessage" 	value="content"/>
+    <parameter name="[localTag]" 		operation="identifier" 		value="newString" value2="10"/>
+	<parameter name="[lastCseqNumber]"	operation="setFromMessage"	value="header:CSeqNumber"/>
+  </receiveRequestSIP>
+  
+
+
+  <sendResponseSIP name="Send 100 Trying">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 100 Trying
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendResponseSIP>
+
+  <pause name="Pause before 180 OK" seconds="0.0"/>
+  
+  <sendResponseSIP name="Send 180 Ringing">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 180 Ringing
+To: [lastTo];tag=[localTag]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendResponseSIP>
+
+
+  <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+  <receiveRequestSIP name="Wait CANCEL" method="CANCEL">
+	<parameter name="[From]" operation="setFromMessage" value="header:From"/>
+    <parameter name="[To]" operation="setFromMessage" value="header:To"/>
+    <parameter name="[CallId]" operation="setFromMessage" value="header:Call-Id"/>
+    <parameter name="[Cseq]" operation="setFromMessage" value="header:CSeq"/>
+    <parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
+    <parameter name="[Contact]" operation="setFromMessage" value="header:Contact"/>
+  </receiveRequestSIP>
+  
+ <sendResponseSIP name="Send 487 Request Terminated">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [To]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+User-Agent: [UserAgent]
+Max-Forwards: 70
+Content-Length: 0
+
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendResponseSIP>
+
+
+</scenario>

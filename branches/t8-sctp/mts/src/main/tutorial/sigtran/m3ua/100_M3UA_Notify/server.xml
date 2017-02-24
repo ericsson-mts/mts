@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : bob.xml
+    Created on : 17/06/2009
+    Author     : jbrisseau
+    Description: Receive a M3UA message that is not described in the m3uaDictionnary
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[notify]" value="010000010000002c000d00080001000300110008000ce738000600080000028e0004000a4e6f746966790000" />
+
+	<receiveMessageSIGTRAN name="Wait Notify1" request="true" type="Notify:0_1">
+		<parameter name="[notify1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[notify1]" condition="binary.equals" value="[notify]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[notify1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[notify]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+	
+	<receiveMessageSIGTRAN name="Wait Notify2"  request="true" type="Notify:0_1">
+		<parameter name="[notify2]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+		<if>
+		<condition>
+			<test parameter="[notify2]" condition="binary.equals" value="[notify]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[notify2]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[notify]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+  
+</scenario>

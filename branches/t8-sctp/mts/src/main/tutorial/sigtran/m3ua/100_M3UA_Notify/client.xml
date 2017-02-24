@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 17/06/2009
+    Author     : jbrisseau
+    Description: Send a M3UA message that is not described in the m3uaDictionnary
+-->
+
+<!--
+    INFOS : 
+    
+    The following scenarios send the same message "Notify" (class = 0, type = 1) as
+    descibed in the RFC 4666 paragraph 3.8.2 with different ways to describe it.
+    
+           0                   1                   2                   3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |        Tag = 0x000d           |          Length = 8           |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |        Status Type = 1        |       Status Information = 3  |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |        Tag = 0x0011           |             Length = 8        |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                        ASP Identifier = 845624                |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |        Tag = 0x0006           |             Length = 8        |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      \                                                               \
+      /                       Routing Context = 654                   /
+      \                                                               \
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |         Tag = 0x0004          |             Length = 10       |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      \                                                               \
+      /                          INFO String = "Notify"               /
+      \                                                               \
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    
+-->
+
+
+<scenario>
+
+<!--
+    MESSAGE1 : Classic message 
+    
+    parameter	: * "tag" is a mandatory attribute that identifies the parameter.
+    			  * "length" is the size in bytes of the parameter. When the parameter is
+    			    not in the dictionnary, the size is automatically calculated and is 
+    			    the sum of the size of each field plus four bytes (tag + length)
+    			  * "format" set at "GROUPED" indicates that a list of "field" markups or
+    			    a list of "parameter" markups is expected.
+    			    
+    field		: * "value" is a mandatory attribute of a field.
+    			  * "format" indicates if the value is an integer or a string.
+    			  * "length" and "lengthBit" indicate the length of the field : 
+    			    fieldLength = 8*length+lengthBit (in bits).
+    
+-->
+
+
+	<sendMessageSIGTRAN	name="Send Notify1" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+		<UA name="m3ua" file="m3ua.xml">
+			<header 	version="1" 
+						reserved="0" 
+						messageClass="0" 
+						messageType="1"/>
+			
+			<parameter tag="13" 		length="8" 			format="GROUPED">
+				<field value="1"		format="integer"	length="2"	lengthBit="0"/>
+				<field value="3"		format="integer"	length="2"	lengthBit="0"/>
+			</parameter>
+			
+			<parameter tag="17" 		length="8" 			format="GROUPED">
+				<field value="845624"	format="integer"	length="4"	lengthBit="0"/>
+			</parameter>
+			
+			<parameter tag="6" 			length="8" 			format="GROUPED">
+				<field value="654"		format="integer"	length="4"	lengthBit="0"/>
+			</parameter>
+			
+			<parameter tag="4"		 	length="10" 		format="GROUPED">
+				<field value="Notify"	format="string"		length="6"	lengthBit="0"/>
+			</parameter>
+			
+		</UA>
+		
+	</sendMessageSIGTRAN>
+	
+	
+	
+	
+	
+	
+	
+	
+<!--
+    MESSAGE2 : ligthened message 
+	
+	
+	parameter length	: "length" in a parameter markup is not mandatory. The length is
+						  automatically calculated from the length of the fields. But if
+						  the parameter is found in the dictionnary, some fields can be
+						  added to the parameter. The solution is to impose the length
+						  with the attribute "length". If the "length" value is less
+						  than the length needed, the parameter is truncated. Else the
+						  parameter is padded with "0" to reach the length specified.
+	field length		: "length" and "lengthBit" are not mandatory. When one of the
+						  values of these attributes is missing, this value is
+						  automatically set at "0". If the two values are missing, a
+						  default length value is set : four bytes if the format is set
+						  to "integer" or the size of the value if the format is set
+						  to "string".
+	parameter format	: "format" is not mandatory. If the attribute is not present,
+						  the format is automatically set to "grouped". When a parameter
+						  is made of a single field, this field can be inserted
+						  as an attribute in the parameter markup : the parameter format
+						  must be set to "integer" or "string". An attribute "value"
+						  containing the field value is then added and the parameter
+						  markup cannot contain another markup. 
+  
+-->
+
+
+
+	<sendMessageSIGTRAN	name="Send Notify2" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+		<UA name="m3ua" file="m3ua.xml">
+			<header messageClass="0" messageType="1"/>
+			
+			<parameter tag="13">
+				<field value="1" length="2"/>
+				<field value="3" lengthBit="16"/>
+			</parameter>
+			
+			<parameter tag="17" format="integer">
+                <field value="845624" length="4" />
+            </parameter>
+			
+			<parameter tag="6">
+				<field value="654" length="4" />
+			</parameter>
+			
+			<parameter tag="4">
+                <field value="Notify" format="string" />
+            </parameter>
+		</UA>
+		
+	</sendMessageSIGTRAN>
+	
+</scenario>

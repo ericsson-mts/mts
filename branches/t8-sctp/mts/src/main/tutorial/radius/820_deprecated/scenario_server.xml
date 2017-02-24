@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[socket_name]" operation="set" value="[scenarioName]" />
+
+    <openSocketRadius socketName="[socket_name]" secret="my_secret" localPort="[remotePortRAD]"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
+
+    <!--
+      - answer to 6 requests
+      -->
+    <parameter name="[loop_counter]" operation="set" value="5" />
+    
+    <label name="loop" />
+    
+    <receiveRequestRadius socketName="[socket_name]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+        <parameter name="[messageType]" operation="protocol.setFromMessage" value="message.type" />
+
+        <parameter name="[message]" operation="protocol.setFromMessage" value="message" />
+    </receiveRequestRadius>
+
+    <if>
+        <condition>
+            <test parameter="[messageType]" condition="string.startsWith" value="access" />
+        </condition>
+        <then>
+        
+        <parameter name="[password]"    operation="protocol.setFromMessage" value="user-password.text"   value2="[message]" />
+            
+        <test parameter="[password]" condition="string.matches" value="password.*" />
+ 
+            <sendResponseRadius socketName="[socket_name]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+                <header code="access-accept" identifier="[identifier]" />
+            </sendResponseRadius>
+        </then>
+        <else>
+            <sendResponseRadius socketName="[socket_name]" remoteHost="[remoteHost]" remotePort="[remotePort]">
+                <header code="accounting-response" identifier="[identifier]" />
+            </sendResponseRadius>
+        </else>
+    </if>
+
+
+    <if>
+        <condition>
+            <test parameter="[loop_counter]" condition="string.equals" value="0" />
+        </condition>
+        <else>
+            <parameter name="[loop_counter]" operation="number.substract" value="[loop_counter]" value2="1" />
+            <goto label="loop" />
+        </else>
+    </if>
+        
+    <closeSocketRadius socketName="[socket_name]" />
+    
+</scenario>

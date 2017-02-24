@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="SMSMessageTransferOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="012345"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="AC" value="azerty"/>
+        <attribute name="NRq" value=""/>
+        <attribute name="NAd" value="4"/>
+        <attribute name="NPID" value="0539"/>
+        <attribute name="DD" value="1"/>
+        <attribute name="DDT" value=""/>
+        <attribute name="VP" value=""/>
+        <attribute name="AMsg" value="toto" encoding="true"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="SMSMessageTransferOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="MVP" operation="protocol.setFromMessage" value="attribute.MVP"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[MVP]" condition="string.equals" value="9999999999"/>
+        <test parameter="[SM]" condition="string.equals" value="is it good"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

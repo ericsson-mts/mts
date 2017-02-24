@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : bob.xml
+    Created on : 23/06/2009
+    Author     : jbrisseau
+    Description: Receive a M3UA message containing a SCCP data
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[data]" value="010001010000003c0200000800000002000600080077ddd00210001b00000d7a00001002030300040b31d400010501234567890000130008000031ef" />
+
+	<receiveMessageSIGTRAN name="Wait DATA1">
+		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[data1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[data]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+  
+</scenario>

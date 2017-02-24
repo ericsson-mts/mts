@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="GGSN" name="GTP">
+  <!-- Local node. -->
+  <parameter description="version of the IP protocol" editable="true" name="[localHost]" operation="system.ipaddress"/>
+  <parameter description="local address of the MTS host" editable="true" name="[localHost]" operation="set" value="[localHost(0)]"/>
+  <!--parameter name="[localHost]" operation="set" value="172.20.19.222" editable="true"/-->
+  <parameter name="[localPort]" operation="file.readproperty" value="gtp.properties" value2="listenpoint.LOCAL_PORT"/>
+  <parameter description="local port of the MTS host" editable="true" name="[localPort]" operation="set" value="[localPort]"/>
+  <!-- Remote node. -->
+  <parameter description="remote address of the SUT host" editable="true" name="[remoteHost]" operation="set" value="[localHost]"/>
+  <!--parameter name="[remoteHost]" operation="set" value="172.20.70.43" editable="true"/-->
+  <parameter description="remote address of the SUT host" editable="true" name="[remotePort]" operation="set" value="[localPort]"/>
+  <!--parameter name="[remotePort]" operation="set" value="2123" editable="true"/-->
+
+  <parameter name="[transportGTP]" operation="set" value="UDP"/>
+
+  <!-- Test configuration file. -->
+  <parameter name="[confTestFilePath]" operation="set" value="tests.conf.txt"/>
+
+  <!-- Test configuration properties. -->
+  <!-- Header. -->
+  <parameter editable="true" name="[remoteTEID]" operation="set" value="0"/>
+  <!--parameter name="[localTEID]" operation="file.readproperty" value="[confTestFilePath]" value2="TEID"/-->
+  <parameter editable="true" name="[localTEID]" operation="set" value="0"/>
+  <parameter name="[v1SequenceNumber]" operation="file.readproperty" value="[confTestFilePath]" value2="v1SequenceNumber"/>
+  <parameter editable="true" name="[v1SequenceNumber]" operation="set" value="[v1SequenceNumber]"/>
+  <parameter name="[v2SequenceNumber]" operation="file.readproperty" value="[confTestFilePath]" value2="v2SequenceNumber"/>
+  <parameter editable="true" name="[v2SequenceNumber]" operation="set" value="[v2SequenceNumber]"/>
+  <!-- Information elements. -->
+  <!-- IMSI. -->
+  <parameter name="[v1IMSI]" operation="file.readproperty" value="[confTestFilePath]" value2="v1IMSI"/>
+  <parameter editable="true" name="[v1IMSI]" operation="set" value="[v1IMSI]"/>
+  <parameter name="[v2IMSI]" operation="file.readproperty" value="[confTestFilePath]" value2="v2IMSI"/>
+  <parameter editable="true" name="[v2IMSI]" operation="set" value="[v2IMSI]"/>
+  <!-- MSISDN. -->
+  <parameter name="[v1MSISDN]" operation="file.readproperty" value="[confTestFilePath]" value2="v1MSISDN"/>
+  <parameter editable="true" name="[v1MSISDN]" operation="set" value="[v1MSISDN]"/>
+  <parameter name="[v2MSISDN]" operation="file.readproperty" value="[confTestFilePath]" value2="v2MSISDN"/>
+  <parameter editable="true" name="[v2MSISDN]" operation="set" value="[v2MSISDN]"/>
+  <!-- MEI. -->
+  <parameter name="[v1MEI]" operation="file.readproperty" value="[confTestFilePath]" value2="v1MEI"/>
+  <parameter editable="true" name="[v1MEI]" operation="set" value="[v1MEI]"/>
+  <parameter name="[v2MEI]" operation="file.readproperty" value="[confTestFilePath]" value2="v2MEI"/>
+  <parameter editable="true" name="[v2MEI]" operation="set" value="[v2MEI]"/>
+  <!-- User Location Information (ULI). -->
+  <parameter name="[ULI_CGIflag]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_CGIflag"/>
+  <parameter editable="true" name="[ULI_CGIflag]" operation="set" value="[ULI_CGIflag]"/>
+  <parameter name="[ULI_SAIflag]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_SAIflag"/>
+  <parameter editable="true" name="[ULI_SAIflag]" operation="set" value="[ULI_SAIflag]"/>
+  <parameter name="[ULI_RAIflag]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_RAIflag"/>
+  <parameter editable="true" name="[ULI_RAIflag]" operation="set" value="[ULI_RAIflag]"/>
+  <parameter name="[ULI_TAIflag]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_TAIflag"/>
+  <parameter editable="true" name="[ULI_TAIflag]" operation="set" value="[ULI_TAIflag]"/>
+  <parameter name="[ULI_ECGIflag]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_ECGIflag"/>
+  <parameter editable="true" name="[ULI_ECGIflag]" operation="set" value="[ULI_ECGIflag]"/>
+  <parameter name="[ULI_LAIflag]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_LAIflag"/>
+  <parameter editable="true" name="[ULI_LAIflag]" operation="set" value="[ULI_LAIflag]"/>
+  <parameter name="[ULI_MCC]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_MCC"/>
+  <parameter editable="true" name="[ULI_MCC]" operation="set" value="[ULI_MCC]"/>
+  <parameter name="[ULI_MNC]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_MNC"/>
+  <parameter editable="true" name="[ULI_MNC]" operation="set" value="[ULI_MNC]"/>
+  <parameter name="[ULI_LAC]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_LAC"/>
+  <parameter editable="true" name="[ULI_LAC]" operation="set" value="[ULI_LAC]"/>
+  <parameter name="[ULI_CI]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_CI"/>
+  <parameter editable="true" name="[ULI_CI]" operation="set" value="[ULI_CI]"/>
+  <parameter name="[ULI_SAC]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_SAC"/>
+  <parameter editable="true" name="[ULI_SAC]" operation="set" value="[ULI_SAC]"/>
+  <parameter name="[ULI_ECI]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_ECI"/>
+  <parameter editable="true" name="[ULI_ECI]" operation="set" value="[ULI_ECI]"/>
+  <parameter name="[ULI_TAC]" operation="file.readproperty" value="[confTestFilePath]" value2="ULI_TAC"/>
+  <parameter editable="true" name="[ULI_TAC]" operation="set" value="[ULI_TAC]"/>
+  <!-- Serving Network. -->
+  <parameter name="[servingNetworkMCC]" operation="file.readproperty" value="[confTestFilePath]" value2="servingNetworkMCC"/>
+  <parameter editable="true" name="[servingNetworkMCC]" operation="set" value="[servingNetworkMCC]"/>
+  <parameter name="[servingNetworkMNC]" operation="file.readproperty" value="[confTestFilePath]" value2="servingNetworkMNC"/>
+  <parameter editable="true" name="[servingNetworkMNC]" operation="set" value="[servingNetworkMNC]"/>
+  <!-- RAT Type. -->
+  <parameter name="[v1RATtype]" operation="file.readproperty" value="[confTestFilePath]" value2="v1RATtype"/>
+  <parameter editable="true" name="[v1RATtype]" operation="set" value="[v1RATtype]"/>
+  <parameter name="[v2RATtype]" operation="file.readproperty" value="[confTestFilePath]" value2="v2RATtype"/>
+  <parameter editable="true" name="[v2RATtype]" operation="set" value="[v2RATtype]"/>
+  <!-- Indication. -->
+  <!-- F-TEID. -->
+  <parameter name="[FTEID_InterfaceType]" operation="file.readproperty" value="[confTestFilePath]" value2="FTEID_InterfaceType"/>
+  <parameter editable="true" name="[FTEID_InterfaceType]" operation="set" value="[FTEID_InterfaceType]"/>
+  <parameter name="[FTEID_TEID]" operation="file.readproperty" value="[confTestFilePath]" value2="FTEID_TEID"/>
+  <parameter editable="true" name="[FTEID_TEID]" operation="set" value="[FTEID_TEID]"/>
+  <!--parameter name="[FTEID_IPv4Address]" operation="file.readproperty" value="[confTestFilePath]" value2="FTEID_IPv4Address"/-->
+  <parameter editable="true" name="[FTEID_IPv4Address]" operation="set" value="[localHost]"/>
+  <!-- APN. -->
+  <parameter name="[v1APN01]" operation="file.readproperty" value="[confTestFilePath]" value2="v1APN01"/>
+  <parameter editable="true" name="[v1APN01]" operation="set" value="[v1APN01]"/>
+  <parameter name="[v1APN02]" operation="file.readproperty" value="[confTestFilePath]" value2="v1APN02"/>
+  <parameter editable="true" name="[v1APN02]" operation="set" value="[v1APN02]"/>
+  <parameter name="[v1APN03]" operation="file.readproperty" value="[confTestFilePath]" value2="v1APN03"/>
+  <parameter editable="true" name="[v1APN03]" operation="set" value="[v1APN03]"/>
+  <parameter name="[v1APN04]" operation="file.readproperty" value="[confTestFilePath]" value2="v1APN04"/>
+  <parameter editable="true" name="[v1APN04]" operation="set" value="[v1APN04]"/>
+  <parameter name="[v2APN01]" operation="file.readproperty" value="[confTestFilePath]" value2="v2APN01"/>
+  <parameter editable="true" name="[v2APN01]" operation="set" value="[v2APN01]"/>
+  <parameter name="[v2APN02]" operation="file.readproperty" value="[confTestFilePath]" value2="v2APN02"/>
+  <parameter editable="true" name="[v2APN02]" operation="set" value="[v2APN02]"/>
+  <parameter name="[v2APN03]" operation="file.readproperty" value="[confTestFilePath]" value2="v2APN03"/>
+  <parameter editable="true" name="[v2APN03]" operation="set" value="[v2APN03]"/>
+  <parameter name="[v2APN04]" operation="file.readproperty" value="[confTestFilePath]" value2="v2APN04"/>
+  <parameter editable="true" name="[v2APN04]" operation="set" value="[v2APN04]"/>
+  <!-- Selection Mode. -->
+  <parameter name="[selectionMode]" operation="file.readproperty" value="[confTestFilePath]" value2="selectionMode"/>
+  <parameter editable="true" name="[selectionMode]" operation="set" value="[selectionMode]"/>
+  <!-- PDN Type. -->
+  <!-- PAA. -->
+  <parameter name="[PAA_IPv4Address]" operation="file.readproperty" value="[confTestFilePath]" value2="PAA_IPv4Address"/>
+  <parameter editable="true" name="[PAA_IPv4Address]" operation="set" value="[PAA_IPv4Address]"/>
+  <!-- APN Restriction. -->
+  <!-- AMBR. -->
+  <parameter name="[createSessionRequestAMBRuplink]" operation="file.readproperty" value="[confTestFilePath]" value2="createSessionRequestAMBRuplink"/>
+  <parameter editable="true" name="[createSessionRequestAMBRuplink]" operation="set" value="[createSessionRequestAMBRuplink]"/>
+  <parameter name="[createSessionRequestAMBRdownlink]" operation="file.readproperty" value="[confTestFilePath]" value2="createSessionRequestAMBRdownlink"/>
+  <parameter editable="true" name="[createSessionRequestAMBRdownlink]" operation="set" value="[createSessionRequestAMBRdownlink]"/>
+  <parameter name="[modifyBearerRequestAMBRuplink]" operation="file.readproperty" value="[confTestFilePath]" value2="modifyBearerRequestAMBRuplink"/>
+  <parameter editable="true" name="[modifyBearerRequestAMBRuplink]" operation="set" value="[modifyBearerRequestAMBRuplink]"/>
+  <parameter name="[modifyBearerRequestAMBRdownlink]" operation="file.readproperty" value="[confTestFilePath]" value2="modifyBearerRequestAMBRdownlink"/>
+  <parameter editable="true" name="[modifyBearerRequestAMBRdownlink]" operation="set" value="[modifyBearerRequestAMBRdownlink]"/>
+  <!-- EBI. -->
+  <parameter name="[EBI]" operation="file.readproperty" value="[confTestFilePath]" value2="EBI"/>
+  <parameter editable="true" name="[EBI]" operation="set" value="[EBI]"/>
+  <!-- PCO. -->
+  <!-- Bearer Context. -->
+  <parameter name="[bearerContextEBI]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextEBI"/>
+  <parameter editable="true" name="[bearerContextEBI]" operation="set" value="[bearerContextEBI]"/>
+  <parameter name="[bearerContextFTEID_InterfaceType]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextFTEID_InterfaceType"/>
+  <parameter editable="true" name="[bearerContextFTEID_InterfaceType]" operation="set" value="[bearerContextFTEID_InterfaceType]"/>
+  <parameter name="[bearerContextFTEID_TEID]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextFTEID_TEID"/>
+  <parameter editable="true" name="[bearerContextFTEID_TEID]" operation="set" value="[bearerContextFTEID_TEID]"/>
+  <!--parameter name="[bearerContextFTEID_IPv4Address]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextFTEID_IPv4Address"/-->
+  <parameter editable="true" name="[bearerContextFTEID_IPv4Address]" operation="set" value="[localHost]"/>
+  <parameter name="[bearerContextQoS_PCI]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextQoS_PCI"/>
+  <parameter editable="true" name="[bearerContextQoS_PCI]" operation="set" value="[bearerContextQoS_PCI]"/>
+  <parameter name="[bearerContextQoS_PL]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextQoS_PL"/>
+  <parameter editable="true" name="[bearerContextQoS_PL]" operation="set" value="[bearerContextQoS_PL]"/>
+  <parameter name="[bearerContextQoS_PVI]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextQoS_PVI"/>
+  <parameter editable="true" name="[bearerContextQoS_PVI]" operation="set" value="[bearerContextQoS_PVI]"/>
+  <parameter name="[bearerContextQoS_QCI]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextQoS_QCI"/>
+  <parameter editable="true" name="[bearerContextQoS_QCI]" operation="set" value="[bearerContextQoS_QCI]"/>
+  <parameter name="[bearerContextMBRuplink]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextMBRuplink"/>
+  <parameter editable="true" name="[bearerContextMBRuplink]" operation="set" value="[bearerContextMBRuplink]"/>
+  <parameter name="[bearerContextMBRdownlink]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextMBRdownlink"/>
+  <parameter editable="true" name="[bearerContextMBRdownlink]" operation="set" value="[bearerContextMBRdownlink]"/>
+  <parameter name="[bearerContextGBRuplink]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextGBRuplink"/>
+  <parameter editable="true" name="[bearerContextGBRuplink]" operation="set" value="[bearerContextGBRuplink]"/>
+  <parameter name="[bearerContextGBRdownlink]" operation="file.readproperty" value="[confTestFilePath]" value2="bearerContextGBRdownlink"/>
+  <parameter editable="true" name="[bearerContextGBRdownlink]" operation="set" value="[bearerContextGBRdownlink]"/>
+  <!-- Trace Information. -->
+  <!-- Recovery. -->
+  <parameter name="[Recovery]" operation="file.readproperty" value="[confTestFilePath]" value2="Recovery"/>
+  <parameter editable="true" name="[Recovery]" operation="set" value="[Recovery]"/>
+  <!-- FQ-CSID. -->
+  <!-- UE Time Zone. -->
+  <!-- UCI. -->
+  <!-- Charging Characteristics. -->
+  <!-- Local Distinguished Name (LDN). -->
+  <!-- Signalling Priority Indication. -->
+  <!-- IP Address. -->
+  <!-- Port Number. -->
+  <!-- Additional Protocol Configuration Options (APCO). -->
+  <!-- IP Address. -->
+  <!-- Port Number. -->
+  <!-- TWAN Identifier. -->
+  <!-- Private Extension. -->
+
+  <!-- GTPv1 -->
+  <!-- Tunnel Endpoint Identifier Data I. -->
+  <parameter name="[TEIDdataI]" operation="file.readproperty" value="[confTestFilePath]" value2="TEIDdataI"/>
+  <parameter editable="true" name="[TEIDdataI]" operation="set" value="[TEIDdataI]"/>
+  <!-- Tunnel Endpoint Identifier Control Plane. -->
+  <parameter name="[TEIDcontrolPlane]" operation="file.readproperty" value="[confTestFilePath]" value2="TEIDcontrolPlane"/>
+  <parameter editable="true" name="[TEIDcontrolPlane]" operation="set" value="[TEIDcontrolPlane]"/>
+  <!-- Teardown Ind. -->
+  <parameter name="[TeardownInd]" operation="file.readproperty" value="[confTestFilePath]" value2="TeardownInd"/>
+  <parameter editable="true" name="[TeardownInd]" operation="set" value="[TeardownInd]"/>
+  <!-- NSAPI. -->
+  <parameter name="[NSAPI]" operation="file.readproperty" value="[confTestFilePath]" value2="NSAPI"/>
+  <parameter editable="true" name="[NSAPI]" operation="set" value="[NSAPI]"/>
+  <!-- End User Address. -->
+  <parameter name="[PDPtypeOrganization]" operation="file.readproperty" value="[confTestFilePath]" value2="PDPtypeOrganization"/>
+  <parameter editable="true" name="[PDPtypeOrganization]" operation="set" value="[PDPtypeOrganization]"/>
+  <parameter name="[PDPtypeNumber]" operation="file.readproperty" value="[confTestFilePath]" value2="PDPtypeNumber"/>
+  <parameter editable="true" name="[PDPtypeNumber]" operation="set" value="[PDPtypeNumber]"/>
+  <parameter name="[PDPaddress]" operation="file.readproperty" value="[confTestFilePath]" value2="PDPaddress"/>
+  <parameter editable="true" name="[PDPaddress]" operation="set" value="[PDPaddress]"/>
+  <!-- SGSN Address for signalling. -->
+  <parameter name="[SGSNaddressControlPlane]" operation="file.readproperty" value="[confTestFilePath]" value2="SGSNaddressControlPlane"/>
+  <parameter editable="true" name="[SGSNaddressControlPlane]" operation="set" value="[SGSNaddressControlPlane]"/>
+  <!-- SGSN Address for user traffic. -->
+  <parameter name="[SGSNaddressUserTraffic]" operation="file.readproperty" value="[confTestFilePath]" value2="SGSNaddressUserTraffic"/>
+  <parameter editable="true" name="[SGSNaddressUserTraffic]" operation="set" value="[SGSNaddressUserTraffic]"/>
+  <!-- Quality of Service (QoS) Profile. -->
+  <parameter name="[CreatePDPcontextRequestAllocationRetentionPriority]" operation="file.readproperty" value="[confTestFilePath]" value2="CreatePDPcontextRequestAllocationRetentionPriority"/>
+  <parameter editable="true" name="[CreatePDPcontextRequestAllocationRetentionPriority]" operation="set" value="[CreatePDPcontextRequestAllocationRetentionPriority]"/>
+  <parameter name="[UpdatePDPcontextRequestAllocationRetentionPriority]" operation="file.readproperty" value="[confTestFilePath]" value2="UpdatePDPcontextRequestAllocationRetentionPriority"/>
+  <parameter editable="true" name="[UpdatePDPcontextRequestAllocationRetentionPriority]" operation="set" value="[UpdatePDPcontextRequestAllocationRetentionPriority]"/>
+  <parameter name="[CreatePDPcontextRequestQoSprofileData]" operation="file.readproperty" value="[confTestFilePath]" value2="CreatePDPcontextRequestQoSprofileData"/>
+  <parameter editable="true" name="[CreatePDPcontextRequestQoSprofileData]" operation="set" value="[CreatePDPcontextRequestQoSprofileData]"/>
+  <parameter name="[UpdatePDPcontextRequestQoSprofileData1]" operation="file.readproperty" value="[confTestFilePath]" value2="UpdatePDPcontextRequestQoSprofileData1"/>
+  <parameter editable="true" name="[UpdatePDPcontextRequestQoSprofileData1]" operation="set" value="[UpdatePDPcontextRequestQoSprofileData1]"/>
+  <parameter name="[UpdatePDPcontextRequestQoSprofileData2]" operation="file.readproperty" value="[confTestFilePath]" value2="UpdatePDPcontextRequestQoSprofileData2"/>
+  <parameter editable="true" name="[UpdatePDPcontextRequestQoSprofileData2]" operation="set" value="[UpdatePDPcontextRequestQoSprofileData2]"/>
+
+  <!-- CSV file. -->
+  <parameter name="[CSV_Separator]" operation="file.readproperty" value="tester.properties" value2="operations.CSV_SEPARATOR_CHAR"/>
+  <parameter editable="true" name="[UserFileNameCsv]" operation="set" value="UserFile.csv"/>
+
+  <!-- GTP Echo Request/Response. -->
+  <testcase name="GTP Echo Request &amp; Response -------------------------" state="false"/>
+  <testcase name="GTP_EchoResponse" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv1_EchoResponse.xml" name="GTP.V1" routingName="GTP.V1"/>
+    <scenario file="GTPv2_EchoResponse.xml" name="GTP.V2" routingName="GTP.V2"/>
+  </testcase>
+  <testcase name="GTPv1_EchoRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv1_EchoRequest.xml" name="client" routingName="client"/>
+  </testcase>
+  <testcase name="GTPv2_EchoRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv2_EchoRequest.xml" name="client" routingName="client"/>
+  </testcase>
+
+  <!-- GTPv1. -->
+  <testcase name="3G -----------------------------------------------------------" state="false"/>
+  <testcase name="GTPv1_CreatePDPcontextRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv1_CreatePDPcontextRequest.xml" name="client" routingName="client"/>
+  </testcase>
+  <testcase name="GTPv1_UpdatePDPcontextRequest1" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv1_UpdatePDPcontextRequest1.xml" name="client" routingName="client"/>
+  </testcase>
+  <testcase name="GTPv1_UpdatePDPcontextRequest2" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv1_UpdatePDPcontextRequest2.xml" name="client" routingName="client"/>
+  </testcase>
+  <testcase name="GTPv1_DeletePDPcontextRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv1_DeletePDPcontextRequest.xml" name="client" routingName="client"/>
+  </testcase>
+
+  <!-- GTPv2. -->
+  <testcase name="4G -----------------------------------------------------------" state="false"/>
+  <testcase name="GTPv2_CreateSessionRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv2_CreateSessionRequest.xml" name="client" routingName="client"/>
+  </testcase>
+  <testcase name="GTPv2_ModifyBearerRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv2_ModifyBearerRequest.xml" name="client" routingName="client"/>
+  </testcase>
+  <testcase name="GTPv2_DeleteSessionRequest" state="false">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv2_DeleteSessionRequest.xml" name="client" routingName="client"/>
+  </testcase>
+
+  <!-- Load testcases. -->
+  <testcase name="Load testcases ---------------------------------------------------" state="false"/>
+  <testcase name="GTPv2_CreateSessionResponses2CSV" state="true">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+    <scenario file="GTPv2_CreateSessionResponses2CSV.xml" name="false" routingName="false"/>
+  </testcase>
+  <testcase name="GTPv2_CreateSessionRequest_LoadTest" state="true">
+    <parameter name="[transport]" operation="set" value="[transportGTP]"/>
+	  <parameter name="[test:IndexMSISDN]" operation="set" value="[v2MSISDN]"/>
+    <parameter name="[test:IndexIMSI]" operation="set" value="[v2IMSI]"/>
+    <parameter name="[test:sequenceNumber]" operation="set" value="[v2SequenceNumber]"/>
+	  <runProfile>
+      <start delay="0"/>
+      <step frequency="100" time="0"/>
+      <step frequency="100" time="30"/>
+      <end delay="50000"/>
+    </runProfile>
+    <scenario file="GTPv2_CreateSessionRequestLoadTest.xml" name="client" routingName="client"/>
+  </testcase>
+
+  <!-- Server testcases. -->
+  <testcase name="Server testcases ---------------------------------------------------" state="false"/>
+  <testcase name="GTPv2_CreateSessionResponses" state="true">
+    <scenario file="server/createSession.xml" name="true" routingName="true"/>
+  </testcase>
+  <!--testcase name="GTPv2_DeleteSessionResponses" state="false">
+    <scenario name="true">server/deleteSession.xml</scenario>
+  </testcase-->
+
+  <!-- GTP remote node testcases. -->
+  <!--&testcasesRemote;-->
+
+</test>

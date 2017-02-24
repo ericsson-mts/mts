@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <parameter name="[channel]" operation="set" value="channelRTSP" />
+    <openChannelRTSP name="[channel]" remoteHost="[remoteHostRTSP]" remotePort="[remotePortRTSP]" />
+
+    <sendMessageRTSP name="Send Describe" channel="[channel]">
+<![CDATA[DESCRIBE rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 1
+Accept: application/sdp
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Setup" channel="[channel]">
+<![CDATA[SETUP rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 2
+Transport:RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
+Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="SETUP" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Play" channel="[channel]">
+<![CDATA[PLAY rtsp://localHost:1234/demo/548/sound RTSP/1.0
+CSeq: 3
+Session: 91389234234
+]]>
+    </sendMessageRTSP>
+    <receiveMessageRTSP name="Wait 200 OK" type="PLAY" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Pause" channel="[channel]">
+<![CDATA[PAUSE rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 4
+Session: 91389234234
+]]>
+    </sendMessageRTSP>
+    <receiveMessageRTSP name="Wait 200 OK" type="PAUSE" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Teardown" channel="[channel]">
+<![CDATA[TEARDOWN rtsp://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 5
+Session: 91389234234
+]]>
+    </sendMessageRTSP>
+    <receiveMessageRTSP name="Wait 200 OK" type="TEARDOWN" result="200">
+    </receiveMessageRTSP>   
+
+    <finally>    
+        <closeChannelRTSP name="[channel]"/>
+    </finally>    
+
+</scenario>

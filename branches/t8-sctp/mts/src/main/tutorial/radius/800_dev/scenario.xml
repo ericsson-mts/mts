@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
+
+    <createListenpointRADIUS name="[listenpoint]" secret="my_secret" localPort="[localPortRAD]"/>
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[localHostRAD]" remotePort="[localPortRAD]">
+        <header code="1" />
+        <avp code="user-name" value="login" />
+        <avp code="user-password" value="password" />
+        <avp code="vendor-specific" value="Unisphere">
+            <!--data value="hff"/-->
+            <avp code="Unisphere-Allow-All-VR-Access" value="disable" />
+            <!--data value="hf2"/-->
+            <avp code="Unisphere-Allow-All-VR-Access" value="enable" />
+        </avp>
+        <avp code="vendor-specific" value="3GPP">
+            <!--data value="hff"/-->
+            <avp code="3GPP-IMSI" value="fabien" />
+            <!--data value="hf2"/-->
+            <avp code="3GPP-PDP-Type" value="100" />
+        </avp>        
+        <avp code="vendor-specific" value="SonicWall">
+            <!--data value="hff"/-->
+            <avp code="SonicWall-User-Privilege" value="Bypass-Filters" />
+            <!--data value="hff"/-->
+        </avp>
+        <!-- Bearer-Identifier (1020) -->
+        <avp code="1020" type="string" value="value"/>
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="2" identifier="[identifier]" />
+        <avp code="user-name" value="login" />
+        <avp code="vendor-specific" value="Unisphere">
+            <avp code="Unisphere-Allow-All-VR-Access" value="disable" />
+        </avp>
+        <avp code="vendor-specific" value="SonicWall">
+            <avp code="SonicWall-User-Privilege" value="Bypass-Filters" />
+        </avp>
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <removeListenpointRADIUS name="[listenpoint]" />
+</scenario>

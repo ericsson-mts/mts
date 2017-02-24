@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+
+    Reference document : rfc4233.txt (obsolete rfc3057.txt)
+    Chapter 3.3.3.1
+    
+    Message : Error
+    Class : 0 (Management_Messages)
+    Type : 0 (Error)
+    
+    
+    The following scenarios send the IUA message with the following elements :  
+    
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |          Tag = 0x000c         |          Length = 8           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                          Error Code                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |          Tag = 0x0007         |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   \                                                               /
+   /                     Diagnostic Information                    \
+   \                                                               /
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      
+-->
+
+<scenario>
+			
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
+                
+        <UA name="IUA" file="iua.xml">
+        
+            <header messageClass="MGMT:Management" messageType="Error"/>						
+
+            <parameter tag="Error_Code">
+                <field name="Error_Code"  value="Invalid_Interface_Identifier"/>
+            </parameter>
+            <parameter tag="Diagnostic_Information">
+	        <field name="Diagnostic_Information" value="abcdefghi"/>
+            </parameter>            
+            
+        </UA>	
+
+    </sendMessageSIGTRAN>
+
+</scenario>

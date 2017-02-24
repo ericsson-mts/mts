@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[localHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[localHostSIP]" operation="set" value="[localHostRTP(0)]"/>
+  <parameter name="[localPortSIP]" operation="set" value="15060"/>
+  
+  <parameter name="[remoteHostSIP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostRTP(0)]"/>
+  <parameter name="[remotePortSIP]" operation="set" value="25060"/>
+  
+  <parameter name="[localHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[localHostRTP]" operation="set" value="[localHostRTP(0)]"/>
+  <parameter name="[localPortRTP]" operation="set" value="10000"/>
+  <parameter name="[transport]" operation="set" value="UDP"/>
+  <parameter name="[remoteHostRTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+  <parameter name="[remoteHostRTP]" operation="set" value="[remoteHostRTP(0)]"/>
+  <parameter name="[remotePortRTP]" operation="set" value="11000"/>
+
+  <parameter name="[localTag]" operation="string.random" value="10"/>
+  <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+  <parameter name="[localCseqNumber]" operation="number.random" value="10000000"/>
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+
+	<parameter name="[CIPHER_SENDER]" operation="set" value="AES_CM_128_HMAC_SHA1_80" />
+	<parameter name="[KEY_AND_SALT_SENDER]" operation="set" value="d0RmdmcmVCspeEc3QGZiNWpVLFJhQX1cfHAwJSoj" />
+	
+
+	<createListenpointSIP name="[scenarioName]" localHost="[localHostSIP(0)]" localPort="[localPortSIP(0)]" transport="[transport]"/>
+
+	<sendMessageSIP name="Send Invite" listenpoint="[scenarioName]" remoteHost="[remoteHostSIP(0)]" remotePort="[remotePortSIP(0)]">
+		<![CDATA[INVITE sip:6001@[100_DOMAIN_ADDR] SIP/2.0
+		Via: SIP/2.0/UDP [LocalAddress];branch=z9hG4bK[newBranchId]
+		Max-Forwards: 70
+		From: "[clientName]"<sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+		To: sip:6001@[100_DOMAIN_ADDR]
+		Contact: "[clientName]"<sip:[LocalAddress]>	
+		Call-ID: [newCallId]
+		CSeq: [newCseq] INVITE
+		Allow: SUBSCRIBE, NOTIFY, PRACK, INVITE, ACK, BYE, CANCEL, UPDATE, MESSAGE, REFER
+		Supported: 100rel, replaces, norefersub, gruu
+		User-Agent: [UserAgent]
+		Content-Type: application/sdp
+		Content-Length: x
+
+		v=0
+		o=- 999 999 IN IP4 [localHostRTP(0)]
+		s=[UserAgent]
+		c=IN IP4 [localHostRTP(0)]
+		t=0 0
+		m=audio [localPortRTP] RTP/SAVP 0
+		a=rtcp:10001
+		a=rtpmap:0 PCMU/8000
+		a=crypto:1 [CIPHER_SENDER] inline:[KEY_AND_SALT_SENDER]
+		a=sendrecv
+		]]>
+	</sendMessageSIP>
+	
+	<receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" request="false">
+	</receiveMessageSIP>
+
+	<receiveMessageSIP name="Wait 180 Ringing" type="INVITE" result="180" request="false">
+	</receiveMessageSIP>
+	
+	<receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" request="false">
+		<parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+        <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+		<parameter name="[crypto]"	operation="protocol.setFromMessage" value="content(0).Sdp.media.attribut.crypto" />
+ 	</receiveMessageSIP>
+	
+	<removeListenpointSIP name="[scenarioName]" />
+
+	<parameter name="[crypto]" operation="string.split" value="[crypto]" value2=" " />
+	<parameter name="[inline]" operation="string.split" value="[crypto(2)]" value2=":" />
+	<parameter name="[inline]" operation="string.split" value="[inline(1)]" value2="|" />
+
+	<parameter name="[CIPHER]" 		operation="set"		value="[crypto(1)]" />
+	<parameter name="[KEY_AND_SALT]" 	operation="set"		value="[inline(0)]" />
+	
+	<createListenpointRTP name="[scenarioName]" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"  transport="[transport]">
+		<srtpSender algorithm="[CIPHER_SENDER]" masterKeyAndSalt="[KEY_AND_SALT_SENDER]" keyDerivationRate="2^20"/>
+		<srtpReceiver algorithm="[CIPHER]" masterKeyAndSalt="[KEY_AND_SALT]" keyDerivationRate="2^20"/>
+	</createListenpointRTP>
+
+	<if>
+     	    <condition>
+      		<test parameter="[transport]" condition="string.equalsIgnoreCase" value="TLS"/>
+     	    </condition>
+     	    <then>     
+        	<parameter name="[remPort]" operation="number.add" value="[remotePortRTP]" value2="1"/>             
+	    </then>
+     	    <else>     
+       		<parameter name="[remPort]" operation="set" value="[remotePortRTP]"/>
+     	    </else>
+  	</if>
+
+  <parameter name="[ssrc]" operation="number.random" value="10000000"/>
+	<sendMessageRTP listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]" transport="[transport]" destScenario="invitee">
+	    <header channel="control" ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
+	    <payload format="text">Packet #1</payload>		
+	    <payload format="text">abcdefghijklmnopqrstuvwxyz</payload>		
+	    <payload format="text">0123456789</payload>		
+	    <payload format="binary">
+	    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+	    </payload>
+	    <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+	</sendMessageRTP>
+	
+	<receiveMessageRTP type="DVI4:17">
+	    <parameter name="[headerSsrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+	    <parameter name="[headerSeqnum]" operation="protocol.setFromMessage" value="header.seqnum"/>
+		<parameter name="[data]"	operation="protocol.setFromMessage"	value="payload.binary" />
+	</receiveMessageRTP>
+
+	<test parameter="[data]" condition="binary.equals" value="5061636b65742023316162636465666768696a6b6c6d6e6f707172737475767778797a30313233343536373839000102030405060708090a0b0c0d0e0f104142434445464748494a4b4c4d4e4f505152535455565758595a" />
+	
+	<finally>
+		<removeListenpointRTP name="[scenarioName]" />
+    </finally>
+</scenario>

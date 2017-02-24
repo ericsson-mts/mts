@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<parameter name="[timestamp]" operation="system.timestamp" />
+<parameter name="[testcase:call_number]" operation="set" value="0" />
+<if> 
+<condition>
+	<test parameter="[testcase:call_number]" condition="list.exists"/>
+</condition>
+<then>
+	<parameter name="[testcase:call_number]" operation="number.add" value="[testcase:call_number]" value2="1" />
+</then>
+<else>
+	<parameter name="[testcase:call_number]" operation="set" value="0"/>
+</else>
+</if>
+<parameter name="[call_id]" operation="number.random" value="10000000" />
+<parameter name="[cseq]" operation="set" value="1" />
+<parameter name="[pid]" operation="number.random" value="10000000"/>
+<parameter name="[media_ip_type]" operation="set" value="4"/>
+<parameter name="[local_ip_type]" operation="set" value="4"/>
+</template>

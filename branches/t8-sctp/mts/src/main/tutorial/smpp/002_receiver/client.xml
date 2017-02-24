@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelSMPP" />
+    <openChannelSMPP name="[connection]" remoteHost="[test:remoteHostSMPP]" remotePort="[test:remotePortSMPP]"/>
+
+    <parameter name="[num]" operation="set" value="1" />
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_receiver" sequence_number="[num]" />
+        <attribute name="system_id" value="IMSLoader"/>
+        <attribute name="password" value="coucou"/>
+        <attribute name="system_type" value="windows MC"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="8"/>
+        <attribute name="addr_npi" value="3"/>
+        <attribute name="address_range" value="255.255.255.0"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="bind_receiver:1" result="0">
+        <parameter name="seqNumResp" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="system_id" operation="protocol.setFromMessage" value="attribute.system_id"/>
+        <parameter name="if_vers" operation="protocol.setFromMessage" value="tlv.sc_interface_version"/>
+        <test parameter="[seqNumResp]" condition="string.equals" value="[num]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[system_id]" condition="string.equals" value="test"/>
+        <test parameter="[if_vers]" condition="number.equals" value="6"/>
+    </receiveMessageSMPP>
+    
+    <receiveMessageSMPP request="true" type="deliver_sm:5">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="service_type" operation="protocol.setFromMessage" value="attribute.service_type"/>
+        <parameter name="source_addr_ton" operation="protocol.setFromMessage" value="attribute.source_addr_ton"/>
+        <parameter name="source_addr_npi" operation="protocol.setFromMessage" value="attribute.source_addr_npi"/>
+        <parameter name="source_addr" operation="protocol.setFromMessage" value="attribute.source_addr"/>
+        <parameter name="dest_addr_ton" operation="protocol.setFromMessage" value="attribute.dest_addr_ton"/>
+        <parameter name="dest_addr_npi" operation="protocol.setFromMessage" value="attribute.dest_addr_npi"/>
+        <parameter name="destination_addr" operation="protocol.setFromMessage" value="attribute.destination_addr"/>
+        <parameter name="esm_class" operation="protocol.setFromMessage" value="attribute.esm_class"/>
+        <parameter name="protocol_id" operation="protocol.setFromMessage" value="attribute.protocol_id"/>
+        <parameter name="priority_flag" operation="protocol.setFromMessage" value="attribute.priority_flag"/>
+        <parameter name="schedule_delivery_time" operation="protocol.setFromMessage" value="attribute.schedule_delivery_time"/>
+        <parameter name="validity_period" operation="protocol.setFromMessage" value="attribute.validity_period"/>
+        <parameter name="registered_delivery" operation="protocol.setFromMessage" value="attribute.registered_delivery"/>
+        <parameter name="replace_if_present_flag" operation="protocol.setFromMessage" value="attribute.replace_if_present_flag"/>
+        <parameter name="data_coding" operation="protocol.setFromMessage" value="attribute.data_coding"/>
+        <parameter name="sm_default_msg_id" operation="protocol.setFromMessage" value="attribute.sm_default_msg_id"/>
+        <parameter name="sm_length" operation="protocol.setFromMessage" value="attribute.sm_length"/>
+        <parameter name="short_message" operation="protocol.setFromMessage" value="attribute.short_message"/>
+        <parameter name="message_payload" operation="protocol.setFromMessage" value="tlv.message_payload"/>
+        <parameter name="[message_payload]" operation="binary.toString" value="[message_payload]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[service_type]" condition="string.equals" value=""/>
+        <test parameter="[source_addr_ton]" condition="string.equals" value="0"/>
+        <test parameter="[source_addr_npi]" condition="string.equals" value="0"/>
+        <test parameter="[source_addr]" condition="string.equals" value=""/>
+        <test parameter="[dest_addr_ton]" condition="string.equals" value="1"/>
+        <test parameter="[dest_addr_npi]" condition="string.equals" value="8"/>
+        <test parameter="[destination_addr]" condition="string.equals" value="172.016.021.207"/>
+        <test parameter="[esm_class]" condition="string.equals" value="0"/>
+        <test parameter="[protocol_id]" condition="string.equals" value="0"/>
+        <test parameter="[priority_flag]" condition="string.equals" value="2"/>
+        <test parameter="[schedule_delivery_time]" condition="string.equals" value=""/>
+        <test parameter="[validity_period]" condition="string.equals" value=""/>
+        <test parameter="[registered_delivery]" condition="string.equals" value="3"/>
+        <test parameter="[replace_if_present_flag]" condition="string.equals" value="0"/>
+        <test parameter="[data_coding]" condition="string.equals" value="0"/>
+        <test parameter="[sm_default_msg_id]" condition="string.equals" value="128"/>
+        <test parameter="[sm_length]" condition="string.equals" value="0"/>
+        <test parameter="[message_payload]" condition="string.equals" value="[coucou]"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="deliver_sm_resp" sequence_number="[seqNum]"/>
+        <attribute name="message_id" value=""/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="true" type="deliver_sm:5">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="service_type" operation="protocol.setFromMessage" value="attribute.service_type"/>
+        <parameter name="source_addr_ton" operation="protocol.setFromMessage" value="attribute.source_addr_ton"/>
+        <parameter name="source_addr_npi" operation="protocol.setFromMessage" value="attribute.source_addr_npi"/>
+        <parameter name="source_addr" operation="protocol.setFromMessage" value="attribute.source_addr"/>
+        <parameter name="dest_addr_ton" operation="protocol.setFromMessage" value="attribute.dest_addr_ton"/>
+        <parameter name="dest_addr_npi" operation="protocol.setFromMessage" value="attribute.dest_addr_npi"/>
+        <parameter name="destination_addr" operation="protocol.setFromMessage" value="attribute.destination_addr"/>
+        <parameter name="esm_class" operation="protocol.setFromMessage" value="attribute.esm_class"/>
+        <parameter name="protocol_id" operation="protocol.setFromMessage" value="attribute.protocol_id"/>
+        <parameter name="priority_flag" operation="protocol.setFromMessage" value="attribute.priority_flag"/>
+        <parameter name="schedule_delivery_time" operation="protocol.setFromMessage" value="attribute.schedule_delivery_time"/>
+        <parameter name="validity_period" operation="protocol.setFromMessage" value="attribute.validity_period"/>
+        <parameter name="registered_delivery" operation="protocol.setFromMessage" value="attribute.registered_delivery"/>
+        <parameter name="replace_if_present_flag" operation="protocol.setFromMessage" value="attribute.replace_if_present_flag"/>
+        <parameter name="data_coding" operation="protocol.setFromMessage" value="attribute.data_coding"/>
+        <parameter name="sm_default_msg_id" operation="protocol.setFromMessage" value="attribute.sm_default_msg_id"/>
+        <parameter name="sm_length" operation="protocol.setFromMessage" value="attribute.sm_length"/>
+        <parameter name="short_message" operation="protocol.setFromMessage" value="attribute.short_message"/>
+        <parameter name="[short_message]" operation="binary.tostring" value="[short_message]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[service_type]" condition="string.equals" value=""/>
+        <test parameter="[source_addr_ton]" condition="string.equals" value="0"/>
+        <test parameter="[source_addr_npi]" condition="string.equals" value="0"/>
+        <test parameter="[source_addr]" condition="string.equals" value=""/>
+        <test parameter="[dest_addr_ton]" condition="string.equals" value="1"/>
+        <test parameter="[dest_addr_npi]" condition="string.equals" value="8"/>
+        <test parameter="[destination_addr]" condition="string.equals" value="172.016.021.207"/>
+        <test parameter="[esm_class]" condition="string.equals" value="0"/>
+        <test parameter="[protocol_id]" condition="string.equals" value="0"/>
+        <test parameter="[priority_flag]" condition="string.equals" value="2"/>
+        <test parameter="[schedule_delivery_time]" condition="string.equals" value=""/>
+        <test parameter="[validity_period]" condition="string.equals" value=""/>
+        <test parameter="[registered_delivery]" condition="string.equals" value="3"/>
+        <test parameter="[replace_if_present_flag]" condition="string.equals" value="0"/>
+        <test parameter="[data_coding]" condition="string.equals" value="0"/>
+        <test parameter="[sm_default_msg_id]" condition="string.equals" value="128"/>
+        <test parameter="[sm_length]" condition="string.equals" value="30"/>
+        <test parameter="[short_message]" condition="string.equals" value="second sms de test à délivrer."/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header id="80000005" sequence_number="[seqNum]"/>
+        <attribute name="message_id" value=""/>
+    </sendMessageSMPP>
+
+    <parameter name="[num]" operation="number.add" value="[num]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="enquire_link" sequence_number="[num]"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="enquire_link:15" result="0">
+        <parameter name="seqNumResp" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[seqNumResp]" condition="string.equals" value="[num]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageSMPP>
+
+    <parameter name="[num]" operation="number.add" value="[num]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="replace_sm" sequence_number="[num]"/>
+        <attribute name="message_id" value="1"/>
+        <attribute name="source_addr_ton" value="1"/>
+        <attribute name="source_addr_npi" value="1"/>
+        <attribute name="source_addr" value=""/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="sm_default_msg_id" value="1"/>
+        <attribute name="sm_length" value="36"/>
+        <attribute name="short_message" value="test sur replace_sm d'envoi d'un sms"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="replace_sm:7" result="0">
+        <parameter name="seqNumResp" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[seqNumResp]" condition="string.equals" value="[num]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageSMPP>
+    
+    <parameter name="[num]" operation="number.add" value="[num]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="[num]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false" type="unbind:6" result="0">
+        <parameter name="seqNumResp" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[seqNumResp]" condition="string.equals" value="[num]"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageSMPP>
+
+    <finally>
+        <closeChannelSMPP name="[connection]"/>
+    </finally>
+    
+</scenario>

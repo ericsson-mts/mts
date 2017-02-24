@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : NOTIFY (110)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.7 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Bearer capability 4.5 n u O (Note 1) 2-12
+Notification indicator 4.5 Both M 3
+Display 4.5 n u O (Note 2) (Note 3)
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN NOTIFY" remoteHost="[remoteHostIUA]" remotePort="[remotePortIUA]">
+        
+        <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- NOTIFY= b1101110 hh6E =d110-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="NOTIFY"/>
+
+      	    <!-- Bearer capability = b0000100 =h4 =d4-->
+            <element identifier="Bearer capability">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Information transfert capability" lengthBit="5" type="enumeration" value="Speech"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1" />
+                <field name="Transfert mode" lengthBit="2" type="enumeration" value="Circuit mode"/>
+                <field name="Information transfert rate" lengthBit="5" type="enumeration" value="64 kbit/s -"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1" />
+                <field name="Layer 1 ident" lengthBit="2" type="integer" value="1"/>
+                <field name="User information layer 1 protocol" lengthBit="5" type="enumeration" value="H.221 and H.242"/>
+            </element>
+            
+    	    <!-- Notification indicator = b00100111 =h27 =d39-->
+            <element identifier="Notification indicator" >
+                <field name="ext" lengthBit="1" type="boolean" value="1" />
+                <field name="Notification description" lengthBit="7" type="enumeration" value="User suspended"/>
+            </element>
+	
+            <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification" type="string" value="textZZZ"/>
+            </element>       
+        </ISDN>
+
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="2"/>
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="Spare" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value=""/>
+            </parameter>
+        </UA>	
+        
+    </sendMessageSIGTRAN>
+
+</scenario>

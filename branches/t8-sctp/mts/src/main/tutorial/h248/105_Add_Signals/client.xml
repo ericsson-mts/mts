@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send Add request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=${
+  Priority = 1,                     
+  Add=ip/1/access/${
+   Signals {
+    pkg/signal1 {       ;extensions 
+     Stream = 1, 
+     SignalType = OnOff,
+     SignalType = TimeOut,
+     SignalType = Brief,
+     Duration = 1234,
+     pkg/param0=0,             ;extensions 
+     pkg/param1>1,             ;extensions 
+     pkg/param2<2,             ;extensions 
+     pkg/param3#3,             ;extensions 
+     pkg/param4=[4,5,6],       ;extensions 
+     pkg/param7={7,8,9},       ;extensions 
+     NotifyCompletion = {TimeOut, IntByEvent, IntBySigDescr, OtherReason, Iteration},
+     KeepActive,
+     SPADirection = External,
+     SPADirection = Internal,
+     SPADirection = Both,
+     SPARequestID = 2,
+     Intersignal = 3
+   }
+  },
+  Add=ip/1/core/${
+   Signals {
+    SignalList = $ {
+     pkg/signal2 {       ;extensions 
+      Stream = 1, 
+      SignalType = OnOff,
+      Duration = 1234,
+      NotifyCompletion = {TimeOut, IntByEvent, IntBySigDescr, OtherReason, Iteration},
+      KeepActive,
+      SPADirection = Both,
+      SPARequestID = 2,
+      Intersignal = 3
+     },
+     pkg/signal3 {       ;extensions 
+      Stream = 2, 
+      SignalType = OnOff,
+      Duration = 1234,
+      NotifyCompletion = {TimeOut, IntByEvent, IntBySigDescr, OtherReason, Iteration},
+      KeepActive,
+      SPADirection = Both,
+      SPARequestID = 4,
+      Intersignal = 5
+     }
+    }
+   }
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- send Add acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="IMS PCSCF test">
+
+	<parameter name="[Domain]" operation="set" value="ims.net"/>
+	<parameter name="[InviterName]" operation="set" value="inviter"/>
+	<parameter name="[InviteeName]" operation="set" value="invitee"/>
+	
+	<!--Please enter here the IP address & the port of the SCSCF you want to test.-->
+	
+	<parameter name="[Host-SCSCF]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[Port-SCSCF]" operation="set" value="4060"/>
+	<parameter name="[Adresse-SCSCF]" operation="set" value="[Host-SCSCF]:[Port-SCSCF]"/>
+	
+	<!--AS (originating) , ICSCF(terminating) & PCSCF(originating) are the 3 elements this script will replace to feign a IMS architecture around your SCSCF(seen as being a part of the originating network).  You can change their port if necessary-->
+	
+	<parameter name="[Host-AS]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[Port-AS]" operation="set" value="7071"/>
+	<parameter name="[Adresse-AS]" operation="set" value="[Host-AS]:[Port-AS]"/>	
+	
+	<parameter name="[Host-ICSCF]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[Port-ICSCF]" operation="set" value="5060"/>
+	<parameter name="[Adresse-ICSCF]" operation="set" value="[Host-ICSCF]:[Port-ICSCF]"/>
+	
+	<parameter name="[Host-PCSCF]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+	<parameter name="[Port-PCSCF]" operation="set" value="7072"/>
+	<parameter name="[Adresse-PCSCF]" operation="set" value="[Host-PCSCF]:[Port-PCSCF]"/>
+	
+	<!-- The following parameters are common to this test, the SCSCF & the ICSCF test. They allow to use common scripts to test the SCSCF, the PCSCF & the ICSCF. You should look at the correspondances between those 
+	common parameters & the addresses of the differents IMS components if you want to rewrite the scripts. Otherwise, you don't have to care about them.-->
+	
+	<parameter name="[Port-TesterCSCF]" operation="set" value="[Port-PCSCF]"/>
+	<parameter name="[Adresse-TesterCSCF]" operation="set" value="[Adresse-PCSCF]"/>
+	<parameter name="[Port-TestedCSCF]" operation="set" value="[Port-SCSCF]"/>
+	<parameter name="[Adresse-TestedCSCF]" operation="set" value="[Adresse-SCSCF]"/>
+	<parameter name="[Port-ServerCSCF]" operation="set" value="[Port-ICSCF]"/>
+	<parameter name="[Adresse-ServerCSCF]" operation="set" value="[Adresse-ICSCF]"/>
+
+	<parameter name="[UserAgent]" operation="set" value="IMSLoader Client"/>
+	<parameter name="[LocalTransport]" operation="set" value="udp"/>
+	<parameter name="[MaxForwardsDefaultValue]" operation="set" value="70"/>
+	<parameter name="[timeout]" operation="set" value="2"/>	
+	<parameter name="[Retransmittimeout]" operation="set" value="6"/>
+	<parameter name="[retransmitNumber]" operation="set" value="10"/>
+	<parameter name="[ConstantBranch]" operation="set" value="z9hG4bK87asdks7"/>
+
+
+    <testcase description="Test on the coverage of the Max-Forwards operations by the proxy" name="max forward gestion" state="true">
+        <scenario file="XCSCF/CommonTests/MaxFwd/maxF_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+        <scenario file="XCSCF/CommonTests/MaxFwd/maxF_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+    </testcase>
+	
+    <testcase description="This testcase checks if your proxy doesn't modify the message content" name="message integrity" state="true">
+        <scenario file="XCSCF/CommonTests/MsgIntegrity/MsgIntegrity_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+        <scenario file="XCSCF/CommonTests/MsgIntegrity/MsgIntegrity_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+    </testcase>
+
+    <testcase description="Does the proxy remove himself from the Route header?" name="route self-removing" state="true">
+        <scenario file="XCSCF/CommonTests/RouteRmv/RouteRmv_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+        <scenario file="XCSCF/CommonTests/RouteRmv/RouteRmv_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+    </testcase>
+	
+	<testcase description="Does your proxy send a 100 Trying when processing a request? " name="100 trying emission" state="true">
+		<scenario file="XCSCF/CommonTests/100TryingEmission/100Emission_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/100TryingEmission/100Emission_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="This testcase checks if your proxy doesn't forward a 100 Trying he received " name="100 trying absorption" state="true">
+		<scenario file="XCSCF/CommonTests/100TryingAbsorption/100Absorption_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/100TryingAbsorption/100Absorption_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+
+	<testcase description="This testcase checks if your proxy doesn't forward a response without via header (responses for the proxy itself) " name="Responses without via treatment" state="true">
+		<scenario file="XCSCF/CommonTests/Noviainresponse/Noviainresponse_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/Noviainresponse/Noviainresponse_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="This testcase checks if your proxy is able to send retransmissions when he doesn't receive any response, and shows the timers in the logs" name="Retransmissions Tempo" state="true">
+		<scenario file="XCSCF/CommonTests/RetransmissionsTempo/RetransmissionsTempo_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/RetransmissionsTempo/RetransmissionsTempo_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="This testcase checks if your proxy forwards the ACK end-to-end over a positive response " name="ACK gestion over 200 OK" state="true">
+		<scenario file="XCSCF/CommonTests/ACKgestionok/ACKgestionok_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/ACKgestionok/ACKgestionok_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="This testcase checks if your proxy forwards the ACK hop-by-hop over a negative response " name="ACK gestion over 486 busy" state="true">
+		<scenario file="XCSCF/CommonTests/ACKgestionbusy/ACKgestionbusy_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/ACKgestionbusy/ACKgestionbusy_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="Does your proxy add a Via header in the requests he forwards? " name="ViaAddition" state="true">
+		<scenario file="XCSCF/CommonTests/ViaAddition/ViaAddition_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/ViaAddition/ViaAddition_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>	
+	
+	<testcase description="Does your proxy add a Record-Route header in the requests he forwards? " name="RecRouteAddition" state="true">
+		<scenario file="XCSCF/CommonTests/RecRouteAddition/RecRouteAddition_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/RecRouteAddition/RecRouteAddition_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="Call-Flow Test" name="Call-Flow : Invite Cancel" state="true">
+		<scenario file="XCSCF/CommonTests/CFInviteCancel/CFInviteCancel_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/CFInviteCancel/CFInviteCancel_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="Call-Flow Test" name="Call-Flow : Invite Info Bye" state="true">
+		<scenario file="XCSCF/CommonTests/CFInviteBye/CFInviteBye_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/CFInviteBye/CFInviteBye_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="Call-Flow Test" name="Call-Flow : Invite Prack Bye" state="true">
+		<scenario file="XCSCF/CommonTests/CFInvitePrack/CFInvitePrack_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/CFInvitePrack/CFInvitePrack_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="Call-Flow Test" name="Call-Flow : Message" state="true">
+		<scenario file="XCSCF/CommonTests/CFMessage/CFMessage_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/CFMessage/CFMessage_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	<testcase description="Call-Flow Test" name="Call-Flow : Suscribe/notify" state="true">
+		<scenario file="XCSCF/CommonTests/CFSubnot/CFSubnot_C.xml" name="[Port-TesterCSCF]" routingName="[Port-TesterCSCF]"/>
+		<scenario file="XCSCF/CommonTests/CFSubnot/CFSubnot_S.xml" name="[Port-ServerCSCF]" routingName="[Port-ServerCSCF]"/>
+	</testcase>
+	
+	
+</test>

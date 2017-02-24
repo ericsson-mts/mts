@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    
+    <or>
+        <test parameter="[testName]"     condition="string.equals" value="test_core"/>
+        <test parameter="[testName]"     condition="string.equals" value="CORE  bad character "/>
+    </or>
+    <or>
+        <test parameter="[testId]"       condition="string.equals" value="test_core  bad character "/>
+        <test parameter="[testId]"       condition="string.equals" value="CORE  bad character "/>
+    </or>
+    
+    <test parameter="[testcaseName]" condition="string.equals" value="070_parameters  bad character "/>
+    <or>
+        <test parameter="[testcaseId]"   condition="string.equals" value="test_core  bad character 070_parameters  bad character "/>
+        <test parameter="[testcaseId]"   condition="string.equals" value="CORE  bad character 070_parameters  bad character "/>
+    </or>
+    <test parameter="[testcaseIndex]" condition="number.equals" value="14"/>
+    
+    <test parameter="[scenarioName]" condition="string.equals" value="nameAndId 120  _;,bad character "/>
+    <test parameter="[scenarioRouting(0)]" condition="string.equals" value="nameAndId 120 : bad character _;"/>
+    <test parameter="[scenarioRouting(1)]" condition="string.equals" value=" /\\:*?\|&lt;&gt;"/>
+    
+    <or>
+        <test parameter="[scenarioId]"   condition="string.equals" value="test_core070_parameters  bad_character nameAndId 120  _;,bad character "/>
+        <test parameter="[scenarioId]"   condition="string.equals" value="CORE  bad character 070_parameters  bad character nameAndId 120  _;,bad character "/>
+    </or>
+    
+</scenario>

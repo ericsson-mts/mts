@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageGTP name="receive message" request="true">
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/> 
+    </receiveMessageGTP>
+                                    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[binary]" condition="binary.equals" value="3210009200000000abcd00000202084124002076f00e240ffd100000da1a110000000114051a0800800002f12183001a066f7461726965066d6e63303031066d6363323038046770727384001580c0231101010011036d69670868656d6d656c696785000414150001850004141500018600063346452320f9870004000b921f970001019800080002f8107de37f2d9a00085397882034495410"/>
+  
+    <parameter name="[tunnelEndpointId]" operation="set" value="17767"/>
+    <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+        <headerV1 extensionHeaderFlag="0" nPduNumberFlag="0"
+                  type="Create PDP Context Response:17"
+                  tunnelEndpointId="[tunnelEndpointId]"
+                  sequenceNumber="[seqNum]"/>
+        <element tag="Cause:1" >
+            <field name="Cause value" value="Request accepted:128"/>
+        </element>
+    </sendMessageGTP>
+    
+</scenario>

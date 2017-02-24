@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <openChannelUCP name="[connection]" remoteHost="[test:remoteHostUCP]" remotePort="[test:remotePortUCP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="RequestDeferredDelivery" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="AC" value="balabalabala"/>
+        <attribute name="ST" value="1234567890"/>
+        <attribute name="SP" value="9876543210"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="RequestDeferredDelivery" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="CancelDeferredDelivery" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="AC" value="balabalabala"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CancelDeferredDelivery" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <parameter name="SM" operation="protocol.setFromMessage" value="attribute.SM"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+        <test parameter="[SM]" condition="string.equals" value="well done"/>
+    </receiveMessageUCP>
+
+    <finally>
+        <closeChannelUCP name="[connection]"/>
+    </finally>
+</scenario>

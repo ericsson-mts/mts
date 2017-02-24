@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[listenpoint]" operation="set" value="[scenarioName]" />
+
+    <parameter name="[testcase:tempLocalPortRAD]" operation="number.add" value="[tempLocalPortRAD]" value2="1"/>
+
+    <createListenpointRADIUS name="[listenpoint]_[tempLocalPortRAD]" localHost="[localHostRAD]" localPort="[testcase:tempLocalPortRAD]" secret="my_secret"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:sem2]" operation="system.semaphorewait" />
+
+    <parameter name="[cleartext_password]" operation="set" value="testing" />
+    <parameter name="[chap_id]"            operation="set" value="10" />
+    <parameter name="[timestamp]"          operation="system.timestamp" value="1900" />
+
+    <parameter name="[temp]" operation="binary.parse" value="s[timestamp]" />
+    <parameter name="[chap_challenge]"     operation="binary.digest" value2="MD5" value="[temp]" />
+    <parameter name="[temp]" operation="binary.parse" value="d[chap_id] s[cleartext_password] h[chap_challenge]" />
+    <parameter name="[chap_password]"      operation="binary.digest" value2="MD5" value="[temp]" />
+
+    <sendMessageRADIUS listenpoint="[listenpoint]_[tempLocalPortRAD]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="access-request" />
+        <avp code="user-name"      type="string" value="someuser" />
+        <avp code="chap-password"  type="octet"  value="d[chap_id] h[chap_password]" />
+        <avp code="chap-challenge" type="octet"  value="h[chap_challenge]" />
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]_[tempLocalPortRAD]" type="access-request:1" result="access-accept:2">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <!--removeListenpointRADIUS name="[listenpoint]_[tempLocalPortRAD]" /-->
+    
+</scenario>

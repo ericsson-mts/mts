@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send Notify request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <parameter name="[contextID]" operation="number.random" value="10000000"/>
+    <parameter name="[termID1]" operation="number.random" value="10000000"/>
+    <parameter name="[termID2]" operation="number.random" value="10000000"/>
+    <parameter name="[requestID1]" operation="number.random" value="10000000"/>
+    <parameter name="[requestID2]" operation="number.random" value="10000000"/>
+    <parameter name="[stream1]" operation="number.random" value="10000000"/>
+    <parameter name="[stream2]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=[contextID]{
+  Priority = 1,                 
+  Notify=ip/1/access/[termID1]{
+   ObservedEvents = [requestID1] { 
+    20100101T12000000:pkg/param1 {      ;extensions 
+     Stream = [streamID1],
+     Stream = [streamID2],
+     pkg/param4=[4,5,6],                ;extensions 
+     pkg/param7={7,8,9}                 ;extensions 
+    }
+   },
+   ObservedEvents = [requestID2] { 
+    20100101T12000000:pkg/param1 {      ;extensions 
+     Stream = [streamID1],
+     Stream = [streamID2],
+     pkg/param4=[4,5,6],                ;extensions 
+     pkg/param7={7,8,9}                 ;extensions 
+    }
+   }
+  },
+  Notify=ip/1/access/[termID2]{
+   ObservedEvents = [requestID1] { 
+    20100101T12000000:pkg/param1 {      ;extensions 
+     Stream = [streamID1],
+     Stream = [streamID2],
+     pkg/param4=[4,5,6],                ;extensions 
+     pkg/param7={7,8,9}                 ;extensions 
+    }
+   },
+   ObservedEvents = [requestID2] { 
+    20100101T12000000:pkg/param1 {      ;extensions 
+     Stream = [streamID1],
+     Stream = [streamID2],
+     pkg/param4=[4,5,6],                ;extensions 
+     pkg/param7={7,8,9}                 ;extensions 
+    }
+   },
+   Error=403 {"Erreur dans la demande de transaction"},
+   Error=413 {"Depassement du nombre maximum de transations dans un message"},
+   Error=422 {"Erreur de syntaxe dans l action"},
+   Error=444 {"Descripteur non pris en charge ou inconnu"},
+   Error=506 {"Nombre de transations en cours depasse"},
+   Error=518 {"Memoire tampon d evenement pleine"}
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Notify response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Notify" result="422">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- send Notify acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>

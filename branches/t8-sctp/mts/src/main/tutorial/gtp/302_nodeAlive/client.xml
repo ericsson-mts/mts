@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+
+    <sendMessageGTP name="node alive request"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerPrime type="Node Alive Request:4" sequenceNumber="1"/>
+        <element tag="chargingGatewayAddress:251" >
+            <field name="IPV v4 Address" value="ac1015cf"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="node alive response" request="false" type="Node Alive Request:4" result="Node Alive Response:5" >
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>       
+    </receiveMessageGTP>
+
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>      
+    <test parameter="[binary]" condition="binary.equals" value="0f0500020001"/>
+
+</scenario>

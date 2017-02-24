@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+    Document   : Call_Agent.xml
+    Created on : 31 janvier 2011, 11:54
+    Author     : indiaye
+    Description:
+        Purpose of the document follows.
+        The Call Agent sends a success response to the gateway
+-->
+
+<scenario>
+
+   <receiveMessageMGCP request="true">
+    </receiveMessageMGCP>
+	
+   <parameter name="[mgcpverb]" operation="protocol.setFromMessage" value="MGCPCommandLine.MGCPVerb"/>
+    <test parameter="[mgcpverb]" condition="string.equals" value="DLCX"/>
+    <parameter name="[version]" operation="protocol.setFromMessage" value="MGCPCommandLine.Version"/>
+    <test parameter="[version]" condition="string.equals" value="MGCP 1.0"/>
+
+    <sendMessageMGCP  remoteHost="[localHostMGCP]" remotePort="[localPortMGCP]">
+<![CDATA[
+200 [transactionId] OK
+]]>
+
+    </sendMessageMGCP>
+
+  
+   
+</scenario>

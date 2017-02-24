@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[login]" operation="set" value="test.imsloader@devoteam.com" />
+    <parameter name="[password]" operation="set" value="test.imsloader" />
+    <parameter name="[connection]" operation="set" value="connectionSMPP" />
+    <parameter name="[seqNum]" operation="set" value="1" />
+
+    <openChannelSMPP name="[connection]" remoteHost="[test:remoteHostSMPP]" remotePort="[test:remotePortSMPP]"/>
+    
+    <parameter name="[seqNum]" operation="set" value="[seqNum]"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="test" sequence_number="[seqNum]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <parameter name="[seqNum]" operation="set" value="[seqNum]"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="test2" sequence_number="[seqNum]" />
+        <attribute name="binary_string" value="coucou normalement c'est un paquet binaire ici"/>
+        <attribute name="binary_string2" value="coucou normalement c'est un paquet binaire ici"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <parameter name="[seqNum]" operation="set" value="[seqNum]"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="test3" sequence_number="[seqNum]" />
+        <tlv name="toto" length="10" value="coucou toi"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <finally>
+        <closeChannelSMPP name="[connection]"/>
+    </finally>
+</scenario>

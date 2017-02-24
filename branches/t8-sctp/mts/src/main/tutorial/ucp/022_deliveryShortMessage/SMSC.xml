@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelUCP" />
+    <createListenpointUCP name="listenpointUCP1" localHost="[test:remoteHostUCP]" localPort="12776"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP listenpoint="listenpointUCP1" remoteHost="[test:remoteHostUCP]" remotePort="12777">
+        <header name="DeliveryShortMessage" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="012345"/>
+        <attribute name="OAdC" value="09876"/>
+        <attribute name="AC" value=""/>
+        <attribute name="NRq" value=""/>
+        <attribute name="NAdC" value=""/>
+        <attribute name="NT" value=""/>
+        <attribute name="NPID" value=""/>
+        <attribute name="LRq" value=""/>
+        <attribute name="LRAd" value=""/>
+        <attribute name="LPID" value=""/>
+        <attribute name="DD" value=""/>
+        <attribute name="DDT" value=""/>
+        <attribute name="VP" value=""/>
+        <attribute name="RPID" value="1234"/>
+        <attribute name="SCTS" value="123456789012"/>
+        <attribute name="Dst" value=""/>
+        <attribute name="Rsn" value=""/>
+        <attribute name="DSCTS" value=""/>
+        <attribute name="MT" value="3"/>
+        <attribute name="NB" value=""/>
+        <!--<attribute name="AMsg" value="4D657373616765203531"/>-->
+        <!--<attribute name="AMsg" value="10412614190438AB4D"/>-->
+        <attribute name="AMsg" value="Momo" encoding="true"/>
+        <attribute name="MMS" value=""/>
+        <attribute name="PR" value=""/>
+        <attribute name="DCs" value=""/>
+        <attribute name="MCLs" value="8"/>
+        <attribute name="RPI" value=""/>
+        <attribute name="CPg" value=""/>
+        <attribute name="RPLy" value=""/>
+        <attribute name="OTOA" value=""/>
+        <attribute name="HPLMN" value=""/>
+        <attribute name="XSer">
+            <xser type="01" length="07" value="06050415720000"/>
+            <xser type="02" length="01" value="00"/>
+            <xser type="03" length="01" value="02"/>
+            <xser type="04" length="02" value="020A"/>
+        </attribute>
+        <attribute name="RES4" value=""/>
+        <attribute name="RES5" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP listenpoint="listenpointUCP1" type="DeliveryShortMessage" result="A"/>
+
+    <finally>
+        <removeListenpointUCP name="listenpointUCP1"/>
+    </finally>
+</scenario>

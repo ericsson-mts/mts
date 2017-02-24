@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <receiveMessageUCP request="true" type="ModifyShortMessageOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="ModifyShortMessageOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="ACK" value="A"/>
+        <attribute name="MVP" value="test"/>
+        <attribute name="SM"  value="well done"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP request="true" type="ModifyShortMessageOperation">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.TRN"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="true"/>
+    </receiveMessageUCP>
+
+    <sendMessageUCP channel="[connection]">
+        <header name="ModifyShortMessageOperation" TRN="[seqNum]" MT="R"/>
+        <attribute name="NACK" value="N"/>
+        <attribute name="EC" value="55"/>
+        <attribute name="SM"  value="malformed message"/>
+    </sendMessageUCP>
+
+</scenario>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send request-->
+    <parameter name="[transID1]" operation="number.random" value="10000000"/>
+    <parameter name="[transID2]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+;authHeader
+AU=0x12345678:0x12345678:0x1234567890123456789012345678901234567890123456789012345678901234
+;header
+!/2 [[remoteHostH248]]:[remotePortH248]
+;descriptors
+T="[transID1]"{                                  ;transaction
+ C=${                                           ;context
+  W-A=[ip/1/access1/$,ip/1/access2/$] {          ;add (optional command)
+   M{                                           ;media
+    ST=1{                                       ;stream
+     O{                                         ;localcontrol
+      MO#IN                                     ;mode
+       {
+       } 
+       ,                    
+      tman/sdr<800 { } ,        ;extensions 
+      ds/dscp>0x00{},           ;extensions 
+      pkg/param0=0,             ;extensions 
+      pkg/param1>1,             ;extensions 
+      pkg/param2<2,             ;extensions 
+      pkg/param3#3,             ;extensions 
+      pkg/param4=[4,5,6],       ;extensions 
+      pkg/param7={7,8,9}        ;extensions 
+     },
+     L{                         ;local
+      c=IN IP4 $
+      v=0
+      m=audio $ RTP/AVP -
+      b=AS:6
+     },
+     R{                         ;remote
+      c=IN IP4 172.20.196.232
+      v=0
+      m=audio 10057 RTP/AVP -
+     }
+    }
+   }
+  },
+  A="ip/1/core/$"{              ;add (generic response)
+   M{                           ;media
+    ST=1{                       ;stream
+     O{                         ;localcontrol
+      MO=RC,                    ;mode
+      tman/sdr=800,             ;extension
+      ds/dscp=0x00              ;extension
+     },
+     L{                         ;local
+      v=0
+      c=IN IP4 $
+      m=audio $ RTP/AVP -
+      b=AS:6
+     }
+    }
+   }
+  }
+ }
+},
+Transaction=[transID2]{
+ Context = 12345 {
+  Subtract = * {
+   Audit {
+     Mux,Modem,Media,DigitMap,Statistics,ObservedEvents,Packages
+   }
+  },
+  O-Subtract = * {
+   Audit {
+     Mux,Modem,Media,DigitMap,Statistics,ObservedEvents,Packages
+   }
+  }
+ }
+}
+
+]]>
+    </sendMessageH248>
+    
+    <!-- receive response #1 -->
+    <receiveMessageH248 name="Receive response #1" request="false" type="Add" result="799">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/2" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID1]" />
+
+    <!-- test header:XXXXXXX -->        
+    <parameter name="[version]" operation="protocol.setFromMessage" value="header.version" />
+    <test parameter="[version]" condition="string.equals" value="2" />
+    <parameter name="[mid]" operation="protocol.setFromMessage" value="header.mid" />
+    <test parameter="[mid]" condition="string.equals" value="&lt;devoteam.com&gt;:[localPortH248]" />
+    <parameter name="[midDomainName]" operation="protocol.setFromMessage" value="header.midDomainName" />
+    <test parameter="[midDomainName]" condition="string.equals" value="devoteam.com" />
+    <parameter name="[midPortNumber]" operation="protocol.setFromMessage" value="header.midPortNumber" />
+    <test parameter="[midPortNumber]" condition="string.equals" value="[localPortH248]" />
+
+    <!-- test authHeader:XXXXXXX -->        
+    <parameter name="[authHeader]" operation="protocol.setFromMessage" value="authHeader" />
+    <test parameter="[authHeader]" condition="string.contains" value="1234567890"/>
+    <parameter name="[securityParamIndex]" operation="protocol.setFromMessage" value="authHeader.securityParamIndex" />
+    <test parameter="[securityParamIndex]" condition="string.equals" value="0x12345678" />
+    <parameter name="[sequenceNum]" operation="protocol.setFromMessage" value="authHeader.sequenceNum" />
+    <test parameter="[sequenceNum]" condition="string.equals" value="0x12345678" />
+    <parameter name="[authData]" operation="protocol.setFromMessage" value="authHeader.authData" />
+    <test parameter="[authData]" condition="string.equals" value="0x1234567890123456789012345678901234567890123456789012345678901234" />
+
+    <!-- test descr:segmentNumber -->        
+    <parameter name="[segNum]" operation="protocol.setFromMessage" value="descr.segmentNumber" />
+    <test parameter="[segNum]" condition="list.size" value="1" />
+    <test parameter="[segNum]" condition="string.equals" value="1" />
+
+    <!-- test descr:segmentComplete -->        
+    <parameter name="[segComp]" operation="protocol.setFromMessage" value="descr.segmentComplete" />
+    <test parameter="[segComp]" condition="list.size" value="0" />
+
+    <!-- test descr:X:Y:Z:value -->        
+    <parameter name="[ctx]" operation="protocol.setFromMessage" value="descr.P.C.value" />
+    <test parameter="[ctx]" condition="list.size" value="1" />
+    <test parameter="[ctx]" condition="string.equals" value="817" />
+    <parameter name="[com]" operation="protocol.setFromMessage" value="descr.P.C.A.value" />
+    <test parameter="[com]" condition="list.size" value="2" />
+    <test parameter="[com(0)]" condition="string.startsWith" value="ip/1/access1/" />
+    <test parameter="[com(1)]" condition="string.startsWith" value="ip/1/core/" />
+    <parameter name="[m]" operation="protocol.setFromMessage" value="descr.P.C.A.M.value" />
+    <test parameter="[m]" condition="list.size" value="0" />
+    <parameter name="[o]" operation="protocol.setFromMessage" value="descr.P.C.A.M.O.value" />
+    <test parameter="[o]" condition="list.size" value="0" />
+
+    <!-- test descr:X:Y:*:n -->        
+    <parameter name="[st]" operation="protocol.setFromMessage" value="descr.P.C.A.M.*.n" />
+    <test parameter="[st]" condition="list.size" value="3" />
+    <test parameter="[st(0)]" condition="string.equals" value="L" />
+    <test parameter="[st(1)]" condition="string.equals" value="R" />
+    <test parameter="[st(2)]" condition="string.equals" value="L" />
+
+    <!-- test descr:X:Y:*:name -->        
+    <parameter name="[st]" operation="protocol.setFromMessage" value="descr.P.C.A.M.*.name" />
+    <test parameter="[st]" condition="list.size" value="3" />
+    <test parameter="[st(0)]" condition="string.equals" value="Local" />
+    <test parameter="[st(1)]" condition="string.equals" value="Remote" />
+    <test parameter="[st(2)]" condition="string.equals" value="Local" />
+    
+    <!-- test descr:X:Y:parameters -->        
+    <parameter name="[m]" operation="protocol.setFromMessage" value="descr.P.C.A.M.parameters" />
+    <test parameter="[m]" condition="list.size" value="2" />
+    <test parameter="[m]" condition="string.contains" value="v=0" />
+    <test parameter="[m]" condition="string.contains" value="RTP/AVP -" />
+
+    <!-- test descr:X:ERR:* -->        
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.ER.n" />
+    <test parameter="[er]" condition="list.size" value="1" />
+    <test parameter="[er]" condition="string.equals" value="ER" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.ER.name" />
+    <test parameter="[er]" condition="list.size" value="1" />
+    <test parameter="[er]" condition="string.equals" value="Error" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.ER.value" />
+    <test parameter="[er]" condition="list.size" value="1" />
+    <test parameter="[er]" condition="string.equals" value="799" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.ER.parameters" />
+    <test parameter="[er]" condition="list.size" value="1" />
+    <test parameter="[er]" condition="string.equals" value="Error in Reply descriptor" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.*.ER.value" />
+    <test parameter="[er]" condition="list.size" value="1" />
+    <test parameter="[er]" condition="string.equals" value="899" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.*.ER.parameters" />
+    <test parameter="[er]" condition="list.size" value="1" />
+    <test parameter="[er]" condition="string.equals" value="Error in Context descriptor" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.*.*.ER.value" />
+    <test parameter="[er]" condition="list.size" value="2" />
+    <test parameter="[er]" condition="string.equals" value="999" />
+    <parameter name="[er]" operation="protocol.setFromMessage" value="descr.*.*.*.ER.parameters" />
+    <test parameter="[er]" condition="list.size" value="2" />
+    <test parameter="[er]" condition="string.equals" value="Error in Add descriptor" />
+
+    <!-- send segment #1-->
+    <sendMessageH248 name="Send segment #1" destScenario="server" 
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+AU =0x12345678:
+0x12345678: 
+0x1234567890123456789012345678901234567890123456789012345678901234
+!/2 [[remoteHostH248]]:[remotePortH248] Segment=[transID1]/1
+]]>
+    </sendMessageH248>
+
+    <!-- receive response #2 -->
+    <receiveMessageH248 name="Receive response #2" request="false" type="Add" result="799">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/2" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID1]" />
+
+    <!-- test descr:segmentNumber -->        
+    <parameter name="[segNum]" operation="protocol.setFromMessage" value="descr.segmentNumber" />
+    <test parameter="[segNum]" condition="list.size" value="1" />
+    <test parameter="[segNum]" condition="string.equals" value="2" />
+    <!-- test descr:segmentComplete -->        
+    <parameter name="[segComp]" operation="protocol.setFromMessage" value="descr.segmentComplete" />
+    <test parameter="[segComp]" condition="list.size" value="1" />
+    <test parameter="[segComp]" condition="string.equals" value="END" />
+
+    <!-- send segment #2-->
+    <sendMessageH248 name="Send segment #2" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+AU =0x12345678:
+0x12345678: 
+0x1234567890123456789012345678901234567890123456789012345678901234
+!/2 [[remoteHostH248]]:[remotePortH248] Segment=[transID1]/2/&}
+]]>
+    </sendMessageH248>
+
+    <!-- send acknowledge -->
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+AU = 0x12345678 : 
+     0x12345678 : 
+     0x1234567890123456789012345678901234567890123456789012345678901234  
+!/2 MTP{1234ABCD} K {[transID1], 0-1000000,2000000-3000000}
+]]>
+    </sendMessageH248>
+
+</scenario>

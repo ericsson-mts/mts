@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- receive Add request-->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- send Add response -->
+    <parameter name="[contextID]" operation="number.random" value="10000000"/>
+    <parameter name="[termID1]" operation="number.random" value="10000000"/>
+    <parameter name="[termID2]" operation="number.random" value="10000000"/>
+    <parameter name="[signalListID1]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Reply = [transaction] {
+ ImmAckRequired,
+ Context=[contextID]{
+  Priority = 1,                     
+  Priority = 1,                     
+  Add=[ip/1/access/[termID1],ip/1/access/[termID2]]{
+   Statistics {
+     pkg/param1=1,
+     pkg/param2=[2,3,4,5],
+     nt/dur= 231, nt/or= 0, nt/os= 0, rtp/delay= 0, rtp/jit= 0, rtp/pr= 0, rtp/ps= 0, xnq/fcumpl= 0, xnq/ncumpl= 0, xnq/nvrange= 0, xnq/rtdmax= 0
+    }
+   }
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+    
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+</scenario>

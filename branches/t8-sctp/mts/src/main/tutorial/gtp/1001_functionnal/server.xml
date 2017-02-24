@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<receiveMessageGTP name="receive request" request="true" type="Create Session Request:32">
+    <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+    <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+    <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[test:remoteTEID]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key"/>
+</receiveMessageGTP>
+
+
+<sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Create Session Response:33" tunnelEndpointId="[test:remoteTEID]" sequenceNumber="[seqNum]"/>
+    <element tag="Cause:2" >
+      <field name="Cause value" value="Request accepted"/>
+      <field name="spare" value="0"/>
+      <field name="PCE" value="false:0"/>
+      <field name="BCE" value="false:0"/>
+      <field name="CS" value="Originated by the node sending the message"/>
+    </element>
+    <element tag="F-TEID:87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
+      <field name="V4" value="true:1"/> 
+      <field name="V6" value="false:0"/>
+      <field name="Interface Type" value="S5/S8 PGW GTP-C"/>
+      <field name="TEID / GRE Key" value="2815696998" description="GRE?"/>
+      <field name="IPv4 address" value="1.2.3.4"/>
+    </element>
+    <element tag="PAA:79" description="PDN Address Allocation">
+      <field name="spare" value="0"/>
+      <field name="PDN Type" value="IPv4"/>
+      <field name="IPv4 address" value="1.2.3.4"/>
+    </element>                   
+    <element tag="APN Restriction:127" >
+      <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+    </element>                      
+    <element tag="Bearer Context:93" >
+      <element tag="EBI:73" description="EPS Bearer ID">
+        <field name="spare" value="0"/> 
+      	<field name="EBI" value="5"/>
+      </element>
+      <element tag="Cause:2" >
+        <field name="Cause value" value="Request accepted"/>
+        <field name="spare" value="0"/>
+        <field name="PCE" value="0"/>
+        <field name="BCE" value="0"/>
+        <field name="CS" value="Originated by the node sending the message"/>
+      </element>            
+      <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
+        <field name="V4" value="true:1"/> 
+        <field name="V6" value="false:0"/>
+        <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+        <field name="TEID / GRE Key" value="2660712550" description="GRE key ?"/>
+        <field name="IPv4 address" value="1.2.3.4"/>
+      </element>
+      <element tag="Charging ID:94" >
+        <field name="Charging ID value" value="566056505"/>
+      </element>            
+    </element>              
+    <element tag="Recovery:3" >
+      <field name="Recovery" value="72"/>
+    </element>
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive request" request="true" type="Modify Bearer Request:34">
+    <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+    <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+    <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[test:remoteTEID]" operation="protocol.setFromMessage" value="element.F-TEID.field.TEID / GRE Key"/>
+  </receiveMessageGTP>
+
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Modify Bearer Response:35" tunnelEndpointId="[test:remoteTEID]" sequenceNumber="[seqNum]"/>
+    <element tag="Cause:2" >
+      <field name="Cause value" value="Request accepted"/>
+      <field name="spare" value="0"/>
+      <field name="PCE" value="false:0"/>
+      <field name="BCE" value="false:0"/>
+      <field name="CS" value="Originated by the node sending the message"/>
+    </element>
+    <element tag="F-TEID:87" instances="1" description="Fully Qualified Tunnel Endpoint Identifier">
+      <field name="V4" value="true:1"/> 
+      <field name="V6" value="false:0"/>
+      <field name="Interface Type" value="S5/S8 PGW GTP-C"/>
+      <field name="TEID / GRE Key" value="2815696998" description="GRE?"/>
+      <field name="IPv4 address" value="1.2.3.4"/>
+    </element>
+    <element tag="PAA:79" description="PDN Address Allocation">
+      <field name="spare" value="0"/>
+      <field name="PDN Type" value="IPv4"/>
+      <field name="IPv4 address" value="1.2.3.4"/>
+    </element>                   
+    <element tag="APN Restriction:127" >
+      <field name="Restriction Type value" value="No Existing Contexts or Restriction"/>
+    </element>                      
+    <element tag="Bearer Context:93" >
+      <element tag="EBI:73" description="EPS Bearer ID">
+        <field name="spare" value="0"/> 
+      	<field name="EBI" value="5"/>
+      </element>
+      <element tag="Cause:2" >
+        <field name="Cause value" value="Request accepted"/>
+        <field name="spare" value="0"/>
+        <field name="PCE" value="0"/>
+        <field name="BCE" value="0"/>
+        <field name="CS" value="Originated by the node sending the message"/>
+      </element>            
+      <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
+        <field name="V4" value="true:1"/> 
+        <field name="V6" value="false:0"/>
+        <field name="Interface Type" value="S5/S8 PGW GTP-U"/>
+        <field name="TEID / GRE Key" value="2660712550" description="GRE key ?"/>
+        <field name="IPv4 address" value="1.2.3.4"/>
+		</element>
+      <element tag="Charging ID:94" >
+        <field name="Charging ID value" value="566056505"/>
+      </element>            
+    </element>              
+    <element tag="Recovery:3" >
+      <field name="Recovery" value="72"/>
+    </element>
+  </sendMessageGTP>
+  
+  <!-- GTP PDU -->
+  
+	<receiveMessageGTP name="inc message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageGTP>
+	<receiveMessageGTP name="inc message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageGTP>
+	<receiveMessageGTP name="inc message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageGTP>
+	<receiveMessageGTP name="inc message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageGTP>
+	<receiveMessageGTP name="inc message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+	</receiveMessageGTP>
+	
+	<receiveMessageGTP name="receive message" request="true" type="Delete Session Request:36">
+    <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+    <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+    <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+  </receiveMessageGTP>
+                                  
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Delete Session Response:37" tunnelEndpointId="[test:remoteTEID]" sequenceNumber="[seqNum]"/>
+    <element tag="Cause:2" >
+        <field name="Cause value" value="Request accepted:16"/>
+        <field name="spare" value="0"/>
+        <field name="PCE" value="0"/>
+        <field name="BCE" value="0"/>
+        <field name="CS" value="Originated by the node sending the message:0"/> 
+    </element>
+  </sendMessageGTP>
+	
+</scenario>

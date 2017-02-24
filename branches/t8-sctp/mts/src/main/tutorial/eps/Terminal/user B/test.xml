@@ -1,0 +1,58 @@
+<!-- Related XMLSchema file: conf/schemas/test.xsd -->
+<test name="echo client GTPv2-C">
+	<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+	<parameter name="[100_DOMAIN_ADDR]" 	operation="set" value="imslab.fr.am" 	editable="true" 	description="domaine name"/>
+	<parameter name="[test:eNodeBIP]"		operation="set"	value="172.16.21.112"	editable="true"		description="eNodeB IP" />
+	<parameter name="[Host-Server]" 	operation="set" value="192.168.90.218" 	editable="true" 	description="P-CSCF IP"/> <!-- PCSCF IP -->
+	<parameter name="[Port-Server]" 	operation="set" value="5060" 		editable="true"		description="P-CSCF Port"/> <!-- PCSCF PORT -->
+
+	<parameter name="[Port-User1]" 		operation="set" value="7072" 		editable="true"		description="User 1 port"/>
+	<parameter name="[Port-User2]" 		operation="set" value="7074" 		editable="true"		description="User 2 port"/>
+	<parameter name="[User1]" 		operation="set" value="alice" 		editable="true"		description="User 1 name"/>
+	<parameter name="[User2]" 		operation="set" value="bob" 		editable="true" 	description="User 2 name"/>
+        
+        <parameter name="[SCSCF]" 		operation="set" value="192.168.90.220" 	editable="true"		description="S-CSCF IP"/> 
+	<parameter name="[UserAgent]" 		operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)" editable="true" description="User Agent"/> 
+
+	<parameter name="[localHostRTP]" 	operation="system.ipaddress" value2="[IPVersion]" /> 
+  	<parameter name="[localHostRTP]" 	operation="set" value="[localHostRTP(0)]" editable="true" /> 
+    	<parameter name="[localPortRTP]" 	operation="set" value="10000" editable="true" /> 
+      	<parameter name="[remoteHostRTP]" 	operation="set" value="192.168.90.225"/> 
+  	<parameter name="[remoteHostRTP]" 	operation="set" value="[remoteHostRTP(0)]" editable="true" /> 
+    	<parameter name="[remotePortRTP]" 	operation="set" value="11000" editable="true" /> 
+	<parameter name="[RTP-Server]"		operation="set" value="192.168.90.225" />
+  	<parameter name="fileWave" 		operation="file.readwave" value="../all-in-one/rtpflow.wav" value2="20" />
+
+	<parameter name="[OsProperty]"		operation="system.readproperty"	value="os.name" />
+
+	<testcase name="Setup Network Route" state="true">
+		<scenario name="setup">../all-in-one/setup_route.xml</scenario>
+	</testcase>
+        <testcase name="SIP REGISTER Bob" state="true">
+        	<scenario name="bob">../all-in-one/eps_ims_register_bob.xml</scenario>
+        </testcase>
+        <testcase name="SIP INVITE BOB FROM ALICE" state="true">
+        	<scenario name="bob">../all-in-one/eps_ims_invite_bob.xml</scenario>
+        </testcase>
+        <testcase name="WAIT FOR HANDOVER" state="false">
+        	<scenario name="UDP">../all-in-one/eps_ims_wait_for_handover.xml</scenario>
+        </testcase>
+        <testcase name="SIP INVITE PRACK BOB FROM ALICE" state="false">
+            <scenario name="bob">../all-in-one/eps_ims_invite_prack_bob.xml</scenario>
+        </testcase>
+        <testcase name="SIP MESSAGE ALICE TO BOB" state="true">
+        	<scenario name="bob">../all-in-one/eps_ims_message_bob.xml</scenario>
+        </testcase>
+        <testcase name="RTP FLOW" state="true">
+        	<scenario name="RTP">../all-in-one/eps_ims_rtpflow.xml</scenario>
+        </testcase>
+        <testcase name="SIP UNREGISTER BOB" state="true">
+        	<scenario name="bob">../all-in-one/eps_ims_unregister_bob.xml</scenario>
+        </testcase>
+        <testcase name="HTTP REQUEST" state="true">
+        	<scenario name="http">../all-in-one/eps_ims_http_request.xml</scenario>
+        </testcase>
+        <testcase name="Remove Network Route" state="true">
+        	<scenario name="setup">../all-in-one/remove_route.xml</scenario>
+        </testcase>
+</test>

@@ -1,0 +1,1 @@
+ant.bat clean,generate_xsd

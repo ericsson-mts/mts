@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <stats>
+    	<reset name="text1"/>
+    </stats>
+
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+
+    <stats>
+        <text name="textDescr1" summary="t1" complete="textLongDescr1">
+            <newValue value="does not appear because erased by the following"/>
+            <newValue>bonjour !</newValue>
+        </text>
+        <text name="textDescr2" summary="t2" complete="textLongDescr2">
+            <newValue milliseconds="[timestamp]">my name is IMSloader</newValue>         
+        </text>        
+    </stats>
+    
+</scenario>

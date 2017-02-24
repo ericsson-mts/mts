@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    
+    <parameter name="[connection]" operation="set" value="channelSMPP" />
+
+    <openChannelSMPP name="[connection]" remoteHost="[remoteHostSMPP]" remotePort="[remotePortSMPP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_transmitter" sequence_number="[seqNum]" />
+        <attribute name="system_id" value="pavel"/>
+        <attribute name="password" value="wpsd"/>
+        <attribute name="system_type" value="Logica"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="1"/>
+        <attribute name="addr_npi" value="1"/>
+        <attribute name="address_range" value="11*"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false"/>
+    
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="submit_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="0"/>
+        <attribute name="source_addr_npi" value="0"/>
+        <attribute name="source_addr" value=""/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="172.016.021.207"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="0"/>
+        <attribute name="priority_flag" value="2"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="0"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="128"/>
+        <attribute name="sm_length" value="26"/>
+        <attribute name="short_message" value="test de sms à transmettre."/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false"/>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="cancel_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="message_id" value="2"/>
+        <attribute name="source_addr_ton" value="0"/>
+        <attribute name="source_addr_npi" value="5"/>
+        <attribute name="source_addr" value="127.000.000.001"/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="192.168.001.002"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false"/>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="deliver_sm" sequence_number="[seqNum]" />
+        <attribute name="service_type" value=""/>
+        <attribute name="source_addr_ton" value="0"/>
+        <attribute name="source_addr_npi" value="0"/>
+        <attribute name="source_addr" value=""/>
+        <attribute name="dest_addr_ton" value="1"/>
+        <attribute name="dest_addr_npi" value="8"/>
+        <attribute name="destination_addr" value="172.016.021.207"/>
+        <attribute name="esm_class" value="0"/>
+        <attribute name="protocol_id" value="0"/>
+        <attribute name="priority_flag" value="2"/>
+        <attribute name="schedule_delivery_time" value=""/>
+        <attribute name="validity_period" value=""/>
+        <attribute name="registered_delivery" value="3"/>
+        <attribute name="replace_if_present_flag" value="0"/>
+        <attribute name="data_coding" value="0"/>
+        <attribute name="sm_default_msg_id" value="128"/>
+        <attribute name="sm_length" value="23"/>
+        <attribute name="short_message" value="test de sms à délivrer."/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false"/>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="[seqNum]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP/>
+
+    <closeChannelSMPP name="[connection]"/>
+
+    <!-- connection in receiver mode -->
+    <openChannelSMPP name="[connection]" remoteHost="[remoteHostSMPP]" remotePort="[remotePortSMPP]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="bind_receiver" sequence_number="[seqNum]" />
+        <attribute name="system_id" value="pavel"/>
+        <attribute name="password" value="wpsd"/>
+        <attribute name="system_type" value="Logica"/>
+        <attribute name="interface_version" value="2"/>
+        <attribute name="addr_ton" value="1"/>
+        <attribute name="addr_npi" value="1"/>
+        <attribute name="address_range" value="11*"/>
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false"/>
+
+    <receiveMessageSMPP request="true">
+        <parameter name="seqNum" operation="protocol.setFromMessage" value="header.sequence_number"/>
+        <parameter name="connection" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSMPP>
+
+    <sendMessageSMPP channel="[connection]">
+        <header name="deliver_sm_resp" sequence_number="[seqNum]"/>
+        <attribute name="message_id" value=""/>
+    </sendMessageSMPP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageSMPP channel="[connection]">
+        <header name="unbind" sequence_number="[seqNum]" />
+    </sendMessageSMPP>
+
+    <receiveMessageSMPP request="false"/>
+
+    <finally>
+        <closeChannelSMPP name="[connection]"/>
+    </finally>
+
+</scenario>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+      <!--parameter name="[test:localPortHTTP]" operation="number.add" value="[test:localPortHTTP]" value2="1"/-->
+
+      <openChannelHTTP name="Channel[test:localPortHTTP]" localHost="[test:localHostHTTP]" localPort="[test:localPortHTTP]" remoteURL="[Remote-URL]"/>
+      <openChannelHTTP name="Channel[test:localPortHTTP]" remoteURL="[Remote-URL]"/>
+      
+      <finally>
+      
+          <closeConnectionHTTP connectionName="Channel[test:localPortHTTP]"/>
+          <closeConnectionHTTP connectionName="Channel[test:localPortHTTP]"/>
+          
+      </finally>
+      
+</scenario> 

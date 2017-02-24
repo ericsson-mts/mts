@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario server-->
+<scenario>
+
+    <createListenpointGTP name="listenpoint" localPort="[listenPort]"/> 
+    <parameter name="[testcase:listenpointCreated]" operation="system.semaphorenotify" />
+
+    <receiveMessageGTP name="receive message" listenpoint="listenpoint" request="true" type="Echo Request:1" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>        
+    </receiveMessageGTP>
+    
+    <sendMessageGTP name="send message" listenpoint="listenpoint"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Echo Response:2" piggyFlag = "0" teidFlag = "1" tunnelEndpointId = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>
+        <element tag="Recovery:3" >
+            <field name="Recovery" value="23"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive message" listenpoint="listenpoint" request="true" type="Echo Request:1" >
+        <parameter name="[remoteHostGTP]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePortGTP]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+        <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+        <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>        
+    </receiveMessageGTP>
+        
+    <sendMessageGTP name="send message" listenpoint="listenpoint"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Version Not Supported:3" piggyFlag = "0" teidFlag = "[tunnelEndpointId]" sequenceNumber="[seqNum]"/>    
+    </sendMessageGTP>
+
+    <finally>
+        <removeListenpointGTP name="listenpoint"/>
+    </finally>
+    
+</scenario>

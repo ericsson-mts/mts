@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- scenario client-->
+<scenario>
+    <parameter name="[tunnelEndpointId]" operation="set" value="875561310"/>
+    <parameter name="[sequenceNumber]" operation="set" value="5682690"/>
+
+    <sendMessageGTP name="send message"
+                    remoteHost="[remoteHostGTP]" remotePort="[remotePortGTP]" transport="[transport]">
+        <headerV2 type="Modify Bearer Failure Indication:65" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+			<element tag="Cause:2" coding="TLIV">
+				<field name="Cause value" type="enumeration" value="16" description="Cause value: Request accepted"/>
+				<field name="spare" lengthBit="5" type="integer" value="0"/>
+				<field name="PCE" lengthBit="1" type="boolean" value="0" description="PDN Connection IE Error"/>
+				<field name="BCE" lengthBit="1" type="boolean" value="0" description="Bearer Context IE Error"/> 
+				<field name="CS" lengthBit="1" type="enumeration" value="0" description="Cause Source:Originated by the node sending the message"/>
+			</element>
+			<element tag="Recovery:3" coding="TLIV">
+				<field name="Recovery" lengthBit="8" type="integer" value="242"/>
+			</element>
+			<element tag="Private Extension:255" coding="TLIV">
+				<field name="Enterprise ID" lengthBit="16" type="integer" value="1234"/>
+				<field name="Proprietary value" type="string" value="entreprise Dupont"/>
+			</element>
+	</sendMessageGTP>
+	
+</scenario>

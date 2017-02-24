@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE COREimport [
+  <!ENTITY scenario_all SYSTEM "../200_all_core/scenario_all.xml">
+]>		
+
+
+<scenario>
+
+    <try>
+        <do>
+            <pause name="pause"     seconds="0.0"  state="true"/>
+        </do>
+        <finally>
+            &scenario_all;	
+        </finally>
+    </try>
+
+    <try>
+        <do>
+            &scenario_all;	
+            <parameter name="[OK]" operation="set" value="true"/>
+        </do>
+        <finally>
+            <if>
+                <condition>
+                    <test parameter="[OK]" condition="boolean.equals" value="true"/>
+                </condition>
+                <then>
+                    <log> OK : no exception.</log>
+                </then>
+                <else>
+                    <exit failed="true"/>
+                    <log> KO : exception occurs.</log>
+                </else>
+            </if> 
+        </finally>
+    </try>
+
+</scenario>

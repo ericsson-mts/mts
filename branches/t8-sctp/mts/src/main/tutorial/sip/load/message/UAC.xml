@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+		<sendMessageSIP name="Send MESSAGE" destScenario="UAS">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[MESSAGE sip:[inviteeName]@[domainName] SIP/2.0
+To: sip:[inviteeName]@[domainName]
+From: "[inviterName]"<sip:[inviterName]@[domainName]>;tag=[localTag]
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[newBranchId]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Contact: <sip:[inviterName]@[localSIP]>;+g.poc.talkburst
+Max-Forwards: 70
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: +g.poc.groupad;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[remoteSIP];transport=UDP;lr>
+Route: <sip:[localSIP];transport=UDP;lr>
+Expires: 0
+Content-Type: application/vnd.poc.group-advertisement+xml
+Content-Length: x
+
+<?xml version="1.0" encoding="UTF-8"?><group-advertisement xmlns="urn:oma:params:xml:ns:poc:group-advertisement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oma:params:xml:ns:poc:group-advertisement">
+<note>Hello blablablai</note>
+<group>
+    <type>"dialed-out"</type>
+    <display-name>null</display-name>
+    <uri>sip:blablabla</uri>
+</group>
+</group-advertisement>
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" type="MESSAGE" result="200">
+		</receiveMessageSIP>
+
+	<pause name="tempo" milliseconds="0"/>
+
+</scenario>

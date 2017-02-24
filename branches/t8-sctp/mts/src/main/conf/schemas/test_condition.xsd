@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : dictionary.xsd
+    Created on : 28 mai 2007, 21:14
+    Author     : Gege
+    Description:
+        Defines a test that is a collection of Testcases.
+        Each Testcase is a collection of Scenarii.
+        Scenarii are referenced by their file path.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	<xs:element name="test" type="Categorie"/>
+	<xs:complexType name="Categorie">
+		<xs:sequence>
+			<xs:element name="binary" type="TestBinary">
+                <xs:annotation><xs:documentation>Binary (hexadecimal) tests (ae3f21b6).</xs:documentation></xs:annotation>
+            </xs:element>
+			<xs:element name="boolean" type="TestBoolean">
+                <xs:annotation><xs:documentation>Boolean tests (true/false).</xs:documentation></xs:annotation>
+            </xs:element>
+			<xs:element name="list" type="TestList">
+                <xs:annotation><xs:documentation>Lists tests.</xs:documentation></xs:annotation>
+            </xs:element>
+			<xs:element name="number" type="TestNumber">
+                <xs:annotation><xs:documentation>Numbers tests.</xs:documentation></xs:annotation>
+            </xs:element>
+			<xs:element name="string" type="TestString">
+                <xs:annotation><xs:documentation>String tests.</xs:documentation></xs:annotation>
+            </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+    <xs:complexType name="TestBinary">
+		<xs:sequence>
+
+			<xs:element name="binary.equals">
+				<xs:annotation><xs:documentation>This test is valid if the two operands represent the same binary content.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="binary.contains">
+				<xs:annotation><xs:documentation>This test is valid if the first operands contains the binary content of the second.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+    <xs:complexType name="TestBoolean">
+		<xs:sequence>
+
+			<xs:element name="boolean.equals">
+				<xs:annotation><xs:documentation>This test is valid if the two operands are equal (as booleans).</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+    <xs:complexType name="TestList">
+		<xs:sequence>
+
+			<xs:element name="list.isempty">
+				<xs:annotation><xs:documentation>This test is valid if the list in "parameter" is empty (size=0).</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>List to test.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="list.size">
+				<xs:annotation><xs:documentation>This test is valid if the list in "parameter" has the expected size "value".</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>List to test.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Expected size.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="list.exists">
+				<xs:annotation><xs:documentation>This test is valid if the list in "parameter" exists.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>List to test.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="list.contains">
+				<xs:annotation><xs:documentation>This test is valid if the first list contains the second list with a strict equal comparaison.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First list.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second list.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="list.flowContains">
+				<xs:annotation><xs:documentation>This test is valid if the first flow contains the second flow ignoring silent packets.
+see into the rtpflow.properties for the pattern to detect silent packets (silent section).</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First flow.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second flow.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+    <xs:complexType name="TestNumber">
+		<xs:sequence>
+
+			<xs:element name="number.equals">
+				<xs:annotation><xs:documentation>This test is valid if the two operands are equal (as numbers).</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="number.lowerequalthan">
+				<xs:annotation><xs:documentation>This test is valid if the first operand is lower or equal (&lt;=) than the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="number.lowerthan">
+				<xs:annotation><xs:documentation>This test is valid if the first operand is lower (&lt;) than the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="number.greaterequalthan">
+				<xs:annotation><xs:documentation>This test is valid if the first operand is greater or equal (&gt;=) than the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="number.greaterthan">
+				<xs:annotation><xs:documentation>This test is valid if the first operand is greater (&gt;) than the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+
+    <xs:complexType name="TestString">
+		<xs:sequence>
+
+			<xs:element name="string.equals">
+				<xs:annotation><xs:documentation>This test is valid if the two operands are equal (as string).</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="string.equalsignorecase">
+				<xs:annotation><xs:documentation>This test is valid if the two operands are equal (as strings, but not case sensitive).</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="string.contains">
+				<xs:annotation><xs:documentation>This test is valid if the first operand contains (as strings) the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="string.matches">
+				<xs:annotation><xs:documentation>This test is valid if the first operand matches the the second operand's regex.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>String compared to a regex.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>The regex.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="string.startswith">
+				<xs:annotation><xs:documentation>This test is valid if the first operand starts with (as strings) the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="string.endswith">
+				<xs:annotation><xs:documentation>This test is valid if the first operand ends with (as strings) the second operand.</xs:documentation></xs:annotation>
+				<xs:complexType>
+					<xs:attribute name="parameter" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>First operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+					<xs:attribute name="value" type="xs:string" use="required">
+						<xs:annotation><xs:documentation>Second operand.</xs:documentation></xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

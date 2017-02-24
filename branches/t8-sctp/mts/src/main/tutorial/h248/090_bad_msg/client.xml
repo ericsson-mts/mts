@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- send request : bad descriptor list -->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+
+MEGACO/2 [[remoteHostH248]]:[remotePortH248]
+T = [transID]{Context=$ {A },{A{}}}}}}
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248>
+
+    <!-- send request : bad descriptor list -->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+
+MEGACO/2 [[remoteHostH248]]:[remotePortH248]
+
+T = [transID]}{Context=$ {A =
+
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248>
+
+    <!-- send request : bad descriptor list -->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/2 [[remoteHostH248]]:[remotePortH248]
+T = [transID] {Context=$ {A =
+
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248>
+
+    <!-- send request : bad descriptor list -->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/2 [[remoteHostH248]]:[remotePortH248]
+FOO = [transID] {Context=$ {A =
+
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248>
+    
+    <!-- send request : bad auth header -->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+AU=
+MEGACO/2 [[remoteHostH248]]:[remotePortH248]
+T = [transID]{Context=$ {A }}
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248>
+
+    <!-- send request : no header -->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+T=[transID]{Context=$ {A }}
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248>
+
+    <!-- send request : bad header -->
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+!
+T=[transID]{Context=$ {A }}
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <!--receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248-->
+
+    <!-- send request : empty message -->
+    <sendMessageH248 name="Send request" destScenario="H248"
+                    remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+]]>
+    </sendMessageH248>
+    <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />    
+
+    <!-- receive response -->
+    <!--receiveMessageH248 name="Receive response" request="false">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="descr.P=[transID].value" />
+    </receiveMessageH248-->
+
+</scenario>

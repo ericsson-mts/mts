@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+<function file="eps_ims_register_func.xml" />
+
+<call name="register">
+<input>
+	<parameter name="[function:LocalHost]"		value="[localHostSIP]"/>
+	<parameter name="[function:LocalPort]"		value="[Port-User2]"/>
+	<parameter name="[function:RemoteHost]"		value="[remoteHostSIP]"/>
+	<parameter name="[function:RemotePort]"		value="[remotePortSIP]"/>
+	<parameter name="[function:Transport]"		value="[transportSIP]"/>
+	<parameter name="[function:Expires]"		value="3600"/>
+	<parameter name="[function:Domain]"		value="[100_DOMAIN_ADDR]"/>
+	<parameter name="[function:IdentUser]"		value="[MSISDN-User2]"/>
+	<parameter name="[function:IMEI]"		value="[IMEI-User2]"/>
+	<parameter name="[function:Password]"		value="[Password-User2]"/>
+</input>
+
+<output>
+       	<parameter name="[test:IMPU-User2]"		value="[function:IMPU-First]"/>
+       	<parameter name="[test:Nextnonce-User2]"	value="[function:Nextnonce]"/>
+</output>
+
+</call>
+
+ 
+</scenario>
+
+

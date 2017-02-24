@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP S6 Delete Subscriber Data (DSR/DSA)" -->
+<scenario>
+
+    <call name="diameter.RecCER_SendCEA"/>
+
+    <receiveMessageDIAMETER name="ReceiveRequestDSR" request="true" type="3GPP-Delete-Subscriber-Data">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[vendorId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:260.Vendor-Id:266.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Vendor-Specific-Application-Id:266.Auth-Application-Id:258.value"/>
+        <parameter name="[authSessionState]" operation="protocol.setFromMessage" value="avp.Auth-Session-State:277.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+    </receiveMessageDIAMETER>
+    
+
+<!--
+From 3GPP TS 29.272 V9.1.0 : DSR from HSS to MME/SGSN to remove some or all data of the HSS user profile stored in the MME/SGSN
+Delete-Subscriber-Data-Answer ::= < Diameter Header: 320, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  [ Result-Code ]
+                                  [ Experimental-Result ]
+                                    Experimental-Result ::= < AVP Header: 297 >
+                                                              { Vendor-Id }
+                                                              { Experimental-Result-Code }
+                                  [ Error-Diagnostic ]
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ DSA-Flags ] 
+								 *[ AVP ]
+                                 *[ Failed-AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+-->
+   
+    <!-- 
+    	DSA-Flags: bitmask - 3GPP TS 29.272
+    		Only bit 0 defined but related to SGSN not MME -> not used
+    -->
+    <parameter name="[DSA-Flags]" operation="set" value="0"/>
+
+    <sendMessageDIAMETER name="SendAnswerDSA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorId]"/>
+            <avp code="Auth-Application-Id:258" value="[authApplicationId]"/>
+        </avp>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+        <avp code="Auth-Session-State:277" value="[authSessionState]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="DSA-Flags:1422" value="[DSA-Flags]"/>
+    </sendMessageDIAMETER>
+
+</scenario>

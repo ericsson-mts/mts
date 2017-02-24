@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<pause milliseconds="{xpath:./@milliseconds}"/>
+<pause milliseconds="[_pauseDuration]" state="{xpath:.[not(@milliseconds)]}"/>
+<pause milliseconds="{xpath:./@variable}"/>
+<pause milliseconds="{xpath:.[@distribution = 'fixed']/@value}"/>
+<parameter name="[_uniformDuration]" operation="number.random" value="{xpath:.[@distribution = 'uniform']/@max}" value2="{xpath:.[@distribution = 'uniform']/@min}"/>
+<pause milliseconds="[_uniformDuration]" state="{xpath:./@max}"/>
+<parameter name="[_normalDuration]" operation="number.randomGaussian" value="{xpath:.[@distribution = 'normal']/@mean}" value2="{xpath:.[@distribution = 'normal']/@stdev}" />
+<pause milliseconds="[_normalDuration]" state="{xpath:./@mean}" />
+</template>

@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Document   : dictionnary.xml
+    Created on : 4 février 2009, 08:58
+    Author     : bbouvier
+    Description:
+-->
+
+<dictionary>
+
+    <message name="GenericResponseNegative" type="response">
+        <attribute name="NACK"  format="string"         mandatory="true" value="N"/>
+        <attribute name="EC"    format="numericString"  mandatory="true" size="2"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="GenericResponsePositive" type="response">
+        <attribute name="ACK"   format="string" mandatory="true" value="A"/>
+        <attribute name="SM"    format="string" mandatory="false"/>
+    </message>
+    
+    <message name="EnquiryOperation" id="00" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+    </message>
+
+    <message name="EnquiryOperation" id="00" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true"  value="A"/>
+        <attribute name="BAS"   format="string"         mandatory="false" size="1"/>
+        <attribute name="LAR"   format="string"         mandatory="false" size="1"/>
+        <attribute name="L1R"   format="string"         mandatory="false" size="1"/>
+        <attribute name="L3R"   format="string"         mandatory="false" size="1"/>
+        <attribute name="LCR"   format="string"         mandatory="false" size="1"/>
+        <attribute name="LUR"   format="string"         mandatory="false" size="1"/>
+        <attribute name="LRR"   format="string"         mandatory="false" size="1"/>
+        <attribute name="RT"    format="numericString"  mandatory="true"  size="1"/>
+        <attribute name="NoN"   format="numericString"  mandatory="false" size="2"/>
+        <attribute name="NoA"   format="numericString"  mandatory="false" size="4"/>
+        <attribute name="NoB"   format="numericString"  mandatory="false" size="5"/>
+    </message>
+
+    <message name="CallInputOperation" id="01" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="1"/>
+            <group value="2">
+                <attribute name="NMsg"  format="numericString"  mandatory="false"/>
+            </group>
+            <group value="3">
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  mandatory="true"/>
+                <attribute name="TMsg"  format="string"         mandatory="false"/>
+            </group>
+            <group value="6">
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+                <attribute name="CS"    format="numericString"  mandatory="false" size="2"/>
+            </group>
+        </choice>
+    </message>
+
+    <message name="MultipleCallInputOperation" id="02" type="operation">
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="RAd"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="1"/>
+            <group value="2">
+                <attribute name="NMsg"  format="numericString"  mandatory="false"/>
+            </group>
+            <group value="3">
+                <attribute name="AMsg"  format="encodedString" mandatory="false"/>
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  mandatory="true"/>
+                <attribute name="TMsg"  format="string"         mandatory="false"/>
+            </group>
+            <group value="5">
+                <attribute name="PNC" format="string"           mandatory="false" size="1"/>
+                <attribute name="LNo" format="numericString"    mandatory="false"/>
+                <attribute name="LST" format="numericString"    mandatory="false"/>
+                <attribute name="TNo" format="numericString"    mandatory="false"/>
+            </group>
+            <group value="6">
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+                <attribute name="CS"    format="numericString"  mandatory="false" size="2"/>
+            </group>
+        </choice>
+    </message>
+
+    <message name="CallInputSupplementaryServicesOperation" id="03" type="operation">
+        <attribute name="RAd"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="GA"    format="string"         mandatory="false" numberOfTime="NPL"/>
+        <attribute name="RP"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="LRP"   format="numericString"  mandatory="false"/>
+        <attribute name="PR"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="LPR"   format="numericString"  mandatory="false"/>
+        <attribute name="UM"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="LUM"   format="numericString"  mandatory="false"/>
+        <attribute name="RC"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="LRC"   format="numericString"  mandatory="false"/>
+        <attribute name="DD"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="DDT"   format="numericString"  mandatory="false" size="10"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="1"/>
+            <group value="2">
+                <attribute name="NMsg"  format="numericString"  mandatory="false"/>
+            </group>
+            <group value="3">
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  mandatory="true"/>
+                <attribute name="TMsg"  format="string"         mandatory="false"/>
+            </group>
+            <group value="5">
+                <attribute name="PNC" format="string"           mandatory="false" size="1"/>
+                <attribute name="LNo" format="numericString"    mandatory="false"/>
+                <attribute name="LST" format="numericString"    mandatory="false"/>
+                <attribute name="TNo" format="numericString"    mandatory="false"/>
+            </group>
+            <group value="6">
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+                <attribute name="CS"    format="numericString"  mandatory="false" size="2"/>
+            </group>
+        </choice>
+    </message>
+
+    <message name="AddressListInformationOperation" id="04" type="operation">
+        <attribute name="GAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+    </message>
+
+    <message name="AddressListInformationOperation" id="04" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="RAd"   format="numericString"  mandatory="true" numberOfTime="NPL"/>
+        <attribute name="GAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="ChangeAddressListOperation" id="05" type="operation">
+        <attribute name="GAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="RAd"   format="numericString"  mandatory="true" numberOfTime="NPL"/>
+        <attribute name="A/D"   format="string"         mandatory="true" size="1"/>
+    </message>
+
+    <message name="AdviceAccumulatedChargesOperation" id="06" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="AdviceAccumulatedChargesOperation" id="06" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="CT"    format="numericString"  mandatory="true" size="10"/>
+        <attribute name="AAC"   format="numericString"  mandatory="true"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="PasswordManagementOperation" id="07" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="NAC"   format="string"         mandatory="true"/>
+    </message>
+
+    <message name="LegitimisationCodeManagementOperation" id="08" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="LAC"   format="numericString"  mandatory="false"/>
+        <attribute name="L1P"   format="numericString"  mandatory="false"/>
+        <attribute name="L3P"   format="numericString"  mandatory="false"/>
+        <attribute name="LRC"   format="numericString"  mandatory="false"/>
+        <attribute name="LUM"   format="numericString"  mandatory="false"/>
+        <attribute name="LRP"   format="numericString"  mandatory="false"/>
+        <attribute name="LST"   format="numericString"  mandatory="false"/>
+    </message>
+
+    <message name="StandardTextInformationOperation" id="09" type="operation">
+        <attribute name="LNo"   format="numericString"  mandatory="true"/>
+        <attribute name="LST"   format="numericString"  mandatory="false"/>
+    </message>
+
+    <message name="StandardTextInformationOperation" id="09" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="ST"    format="string"         mandatory="true" numberOfTime="NPL"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="ChangeStandardTextOperation" id="10" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="LNo"   format="numericString"  mandatory="true"/>
+        <attribute name="TNo"   format="numericString"  mandatory="true"/>
+        <attribute name="STx"   format="string"         mandatory="true"/>
+        <attribute name="CS"    format="numericString"  mandatory="false" size="2"/>
+    </message>
+
+    <message name="RequestRoamingInformationOperation" id="11" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="RequestRoamingInformationOperation" id="11" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="GAR"   format="string"         mandatory="true" numberOfTime="NPL"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="ChangeRoamingOperation" id="12" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="CR"    format="string"         mandatory="true" numberOfTime="NPL"/>
+    </message>
+
+    <message name="RoamingResetOperation" id="13" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="MessageRetrievalOperation" id="14" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="MNo"   format="numericString"  mandatory="true"/>
+        <attribute name="R/T"   format="string"         mandatory="true" size="1"/>
+    </message>
+
+    <message name="MessageRetrievalOperation" id="14" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="NPL"   format="numericString"  mandatory="true"/>
+        <attribute name="Msg"   format="string"         mandatory="false" numberOfTime="NPL"/>
+        <attribute name="SM"  format="string"  mandatory="false"/>
+    </message>
+
+    <message name="RequestCallBarringOperation" id="15" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="ST"    format="numericString"  mandatory="false" size="10"/>
+        <attribute name="SP"    format="numericString"  mandatory="true"  size="10"/>
+    </message>
+
+    <message name="CancelCallBarringOperation" id="16" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="RequestCallDiversionOperation" id="17" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="DAdC"  format="string"         mandatory="true"/>
+        <attribute name="ST"    format="numericString"  mandatory="false" size="10"/>
+        <attribute name="SP"    format="numericString"  mandatory="true"  size="10"/>
+    </message>
+
+    <message name="CancelCallDiversionOperation" id="18" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="RequestDeferredDelivery" id="19" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+        <attribute name="ST"    format="numericString"  mandatory="false" size="10"/>
+        <attribute name="SP"    format="numericString"  mandatory="true"  size="10"/>
+    </message>
+
+    <message name="CancelDeferredDelivery" id="20" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="AllFeaturesResetOperation" id="21" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="string"         mandatory="true"/>
+    </message>
+
+    <message name="CallInputAdditionalCharacterSetOperation" id="22" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="OAC"   format="string"         mandatory="false"/>
+        <attribute name="AMsg"  format="encodedString"  mandatory="true"/>
+        <attribute name="CS"    format="numericString"  mandatory="true" size="2"/>
+    </message>
+
+    <message name="UCPVersionStatusRequest" id="23" type="operation">
+        <attribute name="IVR5-CP" format="string"  mandatory="true"/>
+        <attribute name="REQ-OT"  format="string"  mandatory="false" size="1"/>
+    </message>
+
+    <message name="UCPVersionStatusRequest" id="23" type="response">
+        <attribute name="ACK"        format="string"        mandatory="true" value="A"/>
+        <attribute name="IVR5-PNC_I" format="string"        mandatory="true"/>
+        <attribute name="NPL"        format="numericString" mandatory="true"/>
+        <attribute name="OT"         format="string"        mandatory="false" numberOfTime="NPL"/>
+        <attribute name="SM"         format="string"        mandatory="false"/>
+    </message>
+
+    <message name="MobileSubscriberFeatureStatusRequest" id="24" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  mandatory="true"/>
+        <attribute name="SSTAT" format="numericString"  mandatory="false"/>
+    </message>
+
+    <message name="MobileSubscriberFeatureStatusRequest" id="24" type="response">
+        <attribute name="ACK"   format="string"        mandatory="true" value="A"/>
+        <attribute name="ROCNT" format="string"        mandatory="true"/>
+        <attribute name="ROA"   format="string"        mandatory="false" numberOfTime="ROCNT"/>
+        <attribute name="CBCNT" format="string"        mandatory="true"/>
+        <attribute name="BAR"   format="string"        mandatory="false" numberOfTime="CBCNT"/>
+        <attribute name="DECNT" format="string"        mandatory="true"/>
+        <attribute name="DEF"   format="string"        mandatory="false" numberOfTime="DECNT"/>
+        <attribute name="DICNT" format="string"        mandatory="true"/>
+        <attribute name="DIV"   format="string"        mandatory="false" numberOfTime="DICNT"/>
+        <attribute name="LMN"   format="string"        mandatory="false"/>
+        <attribute name="NMESS" format="string"        mandatory="false"/>
+        <attribute name="SM"    format="string"        mandatory="false"/>
+    </message>
+
+    <message name="SMSMessageTransferOperation" id="30" type="operation">
+        <attribute name="AdC"   format="numericString" mandatory="true"/>
+        <attribute name="OAdC"  format="numericString" mandatory="false"/>
+        <attribute name="AC"    format="string"        mandatory="false"/>
+        <attribute name="NRq"   format="string"        mandatory="false" size="1"/>
+        <attribute name="NAD"   format="numericString" mandatory="false"/>
+        <attribute name="NPID"  format="numericString" mandatory="false" size="4"/>
+        <attribute name="DD"    format="string"        mandatory="false" size="1"/>
+        <attribute name="DDT"   format="numericString" mandatory="false" size="10"/>
+        <attribute name="VP"    format="numericString" mandatory="false" size="10"/>
+        <attribute name="AMsg"  format="encodedString" mandatory="false"/>
+    </message>
+
+    <message name="SMSMessageTransferOperation" id="30" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         mandatory="false"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="SMTAlertOperation" id="31" type="operation">
+        <attribute name="AdC"   format="numericString" mandatory="true"/>
+        <attribute name="PID"   format="numericString"  mandatory="true" size="4"/>
+    </message>
+
+    <message name="SubmitShortMessage" id="51" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  mandatory="false"/>
+        <attribute name="NRQ"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="NAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="NT"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="NPID"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="LRq"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="LRAd"  format="numericString"  mandatory="false"/><!--in spec mandatory=true but for simplification with some cases, set to false-->
+        <attribute name="LPID"  format="numericString"  mandatory="false" size="4"/><!--in spec mandatory=true but for simplification with some cases, set to false-->
+        <attribute name="DD"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="DDT"   format="numericString"  mandatory="false" size="10"/>
+        <attribute name="VP"    format="numericString"  mandatory="false" size="10"/>
+        <attribute name="RPID"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="SCTS"  format="numericString"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="true"  size="1"/>
+        <choice attribute="MT">
+            <group value="2">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="NMsg"  format="numericString"  mandatory="false"/>
+            </group>
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  mandatory="false"/>
+                <attribute name="TMsg"  format="string"         mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="PR"    format="string"         mandatory="false" size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  mandatory="false" size="1"/>
+        <attribute name="RPI"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="HPLMN" format="numericString"  />
+        <attribute name="XSer"  format="numericString"  mandatory="false"/>
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="SubmitShortMessage" id="51" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         mandatory="false"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="DeliveryShortMessage" id="52" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  />
+        <attribute name="NRQ"   format="numericString"  size="1"/>
+        <attribute name="NAdC"  format="numericString"  />
+        <attribute name="NT"    format="numericString"  size="1"/>
+        <attribute name="NPID"  format="numericString"  size="4"/>
+        <attribute name="LRq"   format="numericString"  size="1"/>
+        <attribute name="LRAd"  format="numericString"  />
+        <attribute name="LPID"  format="numericString"  size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  size="10"/>
+        <attribute name="VP"    format="numericString"  size="10"/>
+        <attribute name="RPID"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="SCTS"  format="numericString"  mandatory="true"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="2">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="NMsg"  format="numericString"  mandatory="false"/>
+            </group>
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  mandatory="false"/>
+                <attribute name="TMsg"  format="string"         mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="MCLs"  format="numericString"  mandatory="false" size="1"/>
+        <attribute name="RPI"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  mandatory="false"/>
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="DeliveryShortMessage" id="52" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         />
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+    
+    <message name="DeliveryNotificationOperation" id="53" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  />
+        <attribute name="NRQ"   format="numericString"  size="1"/>
+        <attribute name="NAdC"  format="numericString"  />
+        <attribute name="NT"    format="numericString"  size="1"/>
+        <attribute name="NPID"  format="numericString"  size="4"/>
+        <attribute name="LRq"   format="numericString"  size="1"/>
+        <attribute name="LRAd"  format="numericString"  />
+        <attribute name="LPID"  format="numericString"  size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  size="10"/>
+        <attribute name="VP"    format="numericString"  size="10"/>
+        <attribute name="RPID"  format="numericString"  size="4"/>
+        <attribute name="SCTS"  format="numericString"  mandatory="true" size="12"/>
+        <attribute name="Dst"   format="numericString"  mandatory="true" size="1"/>
+        <attribute name="Rsn"   format="numericString"  mandatory="true" size="3"/>
+        <attribute name="DSCTS" format="numericString"  mandatory="true" size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="3">
+                <attribute name="NB"    format="numericString" />
+                <attribute name="AMsg"  format="encodedString" mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  size="1"/>
+        <attribute name="RPI"   format="numericString"  size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  />
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="DeliveryNotificationOperation" id="53" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         />
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="ModifyShortMessageOperation" id="54" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  mandatory="false"/>
+        <attribute name="NRQ"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="NAdC"  format="numericString"  mandatory="false"/>
+        <attribute name="NT"    format="numericString"  mandatory="false" size="1"/>
+        <attribute name="NPID"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="LRq"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="LRAd"  format="numericString"  mandatory="false"/>
+        <attribute name="LPID"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  mandatory="false" size="10"/>
+        <attribute name="VP"    format="numericString"  mandatory="false" size="10"/>
+        <attribute name="RPID"  format="numericString"  mandatory="false" size="4"/>
+        <attribute name="SCTS"  format="numericString"  mandatory="true"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="false"  size="1"/>
+        <choice attribute="MT">
+            <group value="2">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="NMsg"  format="numericString"  mandatory="false"/>
+            </group>
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  mandatory="true"/>
+                <attribute name="TMsg"  format="string"         mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  mandatory="false" size="1"/>
+        <attribute name="RPI"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  mandatory="false"/>
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="ModifyShortMessageOperation" id="54" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         mandatory="false"/>
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="InquiryMessageOperation" id="55" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  mandatory="false"/>
+        <attribute name="NRQ"   format="numericString"  size="1"/>
+        <attribute name="NAdC"  format="numericString"  />
+        <attribute name="NT"    format="numericString"  size="1"/>
+        <attribute name="NPID"  format="numericString"  size="4"/>
+        <attribute name="LRq"   format="numericString"  size="1"/>
+        <attribute name="LRAd"  format="numericString"  />
+        <attribute name="LPID"  format="numericString"  size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  size="10"/>
+        <attribute name="VP"    format="numericString"  size="10"/>
+        <attribute name="RPID"  format="numericString"  size="4"/>
+        <attribute name="SCTS"  format="numericString"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  size="1"/>
+        <choice attribute="MT">
+            <group value="2">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="NMsg"  format="numericString"  />
+            </group>
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  />
+            </group>
+            <group value="4">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="TMsg"  format="string"         />
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  size="1"/>
+        <attribute name="RPI"   format="numericString"  size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  />
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="InquiryMessageOperation" id="55" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         />
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="DeleteMessageOperation" id="56" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  mandatory="false"/>
+        <attribute name="NRQ"   format="numericString"  size="1"/>
+        <attribute name="NAdC"  format="numericString"  />
+        <attribute name="NT"    format="numericString"  size="1"/>
+        <attribute name="NPID"  format="numericString"  size="4"/>
+        <attribute name="LRq"   format="numericString"  size="1"/>
+        <attribute name="LRAd"  format="numericString"  />
+        <attribute name="LPID"  format="numericString"  size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  size="1"/>
+        <attribute name="VP"    format="numericString"  size="10"/>
+        <attribute name="RPID"  format="numericString"  size="4"/>
+        <attribute name="SCTS"  format="numericString"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  size="1"/>
+        <attribute name="RPI"   format="numericString"  size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  />
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="DeleteMessageOperation" id="56" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         />
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="ResponseInquiryMessageOperation" id="57" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="AC"    format="numericString"  mandatory="false"/>
+        <attribute name="NRQ"   format="numericString"  size="1"/>
+        <attribute name="NAdC"  format="numericString"  />
+        <attribute name="NT"    format="numericString"  size="1"/>
+        <attribute name="NPID"  format="numericString"  size="4"/>
+        <attribute name="LRq"   format="numericString"  size="1"/>
+        <attribute name="LRAd"  format="numericString"  />
+        <attribute name="LPID"  format="numericString"  size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  size="10"/>
+        <attribute name="VP"    format="numericString"  size="10"/>
+        <attribute name="RPID"  format="numericString"  size="4"/>
+        <attribute name="SCTS"  format="numericString"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  size="1"/>
+        <attribute name="RPI"   format="numericString"  size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  />
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="ResponseInquiryMessageOperation" id="57" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         />
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="ResponseDeleteMessageOperation" id="58" type="operation">
+        <attribute name="AdC"   format="numericString"  mandatory="true"/>
+        <attribute name="OAdC"  format="numericString"  />
+        <attribute name="AC"    format="numericString"  />
+        <attribute name="NRQ"   format="numericString"  size="1"/>
+        <attribute name="NAdC"  format="numericString"  />
+        <attribute name="NT"    format="numericString"  size="1"/>
+        <attribute name="NPID"  format="numericString"  size="4"/>
+        <attribute name="LRq"   format="numericString"  size="1"/>
+        <attribute name="LRAd"  format="numericString"  />
+        <attribute name="LPID"  format="numericString"  size="4"/>
+        <attribute name="DD"    format="numericString"  size="1"/>
+        <attribute name="DDT"   format="numericString"  size="10"/>
+        <attribute name="VP"    format="numericString"  size="10"/>
+        <attribute name="RPID"  format="numericString"  size="4"/>
+        <attribute name="SCTS"  format="numericString"  size="12"/>
+        <attribute name="Dst"   format="numericString"  size="1"/>
+        <attribute name="Rsn"   format="numericString"  size="3"/>
+        <attribute name="DSCTS" format="numericString"  size="12"/>
+        <attribute name="MT"    format="numericString"  mandatory="true" size="1"/>
+        <choice attribute="MT">
+            <group value="3">
+                <attribute name="NB"    format="numericString"  />
+                <attribute name="AMsg"  format="encodedString"  mandatory="false"/>
+            </group>
+        </choice>
+        <attribute name="MMS"   format="numericString"  mandatory="false" size="1"/>
+        <attribute name="PR"    format="string"         size="1"/>
+        <attribute name="DCs"   format="numericString"  size="1"/>
+        <attribute name="MCLs"  format="numericString"  size="1"/>
+        <attribute name="RPI"   format="numericString"  size="1"/>
+        <attribute name="CPg"   format="numericString"  size="1"/>
+        <attribute name="RPLy"  format="numericString"  size="1"/>
+        <attribute name="OTOA"  format="numericString"  size="4"/>
+        <attribute name="HPLMN" format="numericString"  mandatory="false"/>
+        <attribute name="XSer"  format="numericString"  />
+        <attribute name="RES4"  format="numericString"  />
+        <attribute name="RES5"  format="numericString"  />
+    </message>
+
+    <message name="ResponseDeleteMessageOperation" id="58" type="response">
+        <attribute name="ACK"   format="string"         mandatory="true" value="A"/>
+        <attribute name="MVP"   format="string"         />
+        <attribute name="SM"    format="string"         mandatory="false"/>
+    </message>
+
+    <message name="SessionManagementOperation" id="60" type="operation">
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="OTON"  format="numericString"  size="1"  mandatory="false"/>
+        <attribute name="OPNI"  format="numericString"  size="1"  mandatory="false"/>
+        <attribute name="STYP"  format="numericString"  size="1"  mandatory="true"/>
+        <attribute name="PWD"   format="encodedString"  mandatory="true"/>
+        <attribute name="NPWD"  format="encodedString"  mandatory="false"/>
+        <attribute name="VERS"  format="numericString"  size="4"  mandatory="true"/>
+        <attribute name="LAdC"  format="numericString"  />
+        <attribute name="LTON"  format="string"         size="1"/>
+        <attribute name="LNPI"  format="string"         size="1"/>
+        <attribute name="OPID"  format="numericString"  size="2"  mandatory="false"/>
+        <attribute name="RES1"  format="numericString"  />
+    </message>
+
+    <message name="ProvisioningActionsOperation" id="61" type="operation">
+        <attribute name="OAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="OTON"  format="numericString"  size="1"  mandatory="false"/>
+        <attribute name="OPNI"  format="numericString"  size="1"  mandatory="false"/>
+        <attribute name="STYP"  format="numericString"  size="1"  mandatory="true"/>
+        <attribute name="PWD"   format="encodedString"  />
+        <attribute name="NPWD"  format="encodedString"  />
+        <attribute name="VERS"  format="numericString"  size="4"  mandatory="true"/>
+        <attribute name="LAdC"  format="numericString"  mandatory="true"/>
+        <attribute name="LTON"  format="string"         size="1"  mandatory="false"/>
+        <attribute name="LNPI"  format="string"         size="1"  mandatory="false"/>
+        <attribute name="OPID"  format="numericString"  size="2"  />
+        <attribute name="RES1"  format="numericString"  />
+    </message>
+
+</dictionary>
+
+
