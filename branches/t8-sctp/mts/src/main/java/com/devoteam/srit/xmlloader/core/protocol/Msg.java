@@ -24,10 +24,12 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -41,6 +43,8 @@ import gp.utils.arrays.DefaultArray;
 
 import java.net.URI;
 import java.util.LinkedList;
+
+import javax.annotation.Nullable;
 
 import org.dom4j.Element;
 
@@ -74,6 +78,25 @@ public abstract class Msg extends MsgLight implements Removable
     protected Listenpoint listenpoint = null;
     protected Probe probe = null;
     
+    /*
+     * Transport layer informations
+     */
+    protected interface TransportInfos{
+    	/**
+    	 * 
+    	 * @param parameterKey the parameter key
+    	 * @return the parameter value
+    	 */
+    	@Nullable
+    	public abstract Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
+    }
+    
+    /*
+     * transport layer informations
+     */
+    @Nullable
+    protected TransportInfos transportInfos;
+  
     private String remoteHost = null;
     private int remotePort =  -1;
     private String transport = null;
@@ -676,8 +699,9 @@ public abstract class Msg extends MsgLight implements Removable
      */
     public Parameter getParameter(String path) throws Exception
     {
-    	path = path.trim();
-        String[] params = Utils.splitPath(path);
+        ParameterKey key = new ParameterKey(path);
+        String[] params = key.getSubkeys();
+
         if (params.length < 1)
         {
             return null;
@@ -810,6 +834,13 @@ public abstract class Msg extends MsgLight implements Removable
             	String xml = "<msg>" + toXml() + "</msg>";
             	var.add(xml);
             }
+            else if (params[1].equalsIgnoreCase("transportInfos") )
+            {
+            	if( this.transportInfos!=null ){
+            		ParameterKey transportInfosKey = key.shift(2);
+            		var = this.transportInfos.getParameter( transportInfosKey );
+            	}
+            }
             else
             {
             	Parameter.throwBadPathKeywordException(path);
@@ -937,5 +968,19 @@ public abstract class Msg extends MsgLight implements Removable
     public void setTlvMessage(TlvMessage tlvMessage) 
     {
     }
+    
+    /**
+	 * @return the transportInfos
+	 */
+	public TransportInfos getTransportInfos() {
+		return transportInfos;
+	}
+
+	/**
+	 * @param transportInfos the transportInfos to set
+	 */
+	public void setTransportInfos(TransportInfos transportInfos) {
+		this.transportInfos = transportInfos;
+	}
     
 }

@@ -24,8 +24,10 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.net.AddressesList;
 import com.devoteam.srit.xmlloader.sctp.StackSctp;
@@ -37,6 +39,8 @@ import com.devoteam.srit.xmlloader.udp.ChannelUdp;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 import org.dom4j.Element;
 
@@ -73,7 +77,26 @@ public class Channel
 
     protected Channel channel = null;
     protected String transport = null;
-	
+    
+    /*
+     * Transport layer informations
+     */
+    protected interface TransportInfos{
+    	/**
+    	 * 
+    	 * @param parameterKey the parameter key
+    	 * @return the parameter value
+    	 */
+    	@Nullable
+    	public abstract Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
+    }
+    
+    /*
+     * transport layer informations
+     */
+    @Nullable
+    protected TransportInfos transportInfos;
+ 	
     /** Creates a new instance of Channel*/
     public Channel(Stack stack)
     {
@@ -418,8 +441,10 @@ public class Channel
      * Get a parameter from the message 
      */
     public Parameter getParameter(String path) throws Exception
-    {       
-        String[] params = Utils.splitPath(path);
+    {   
+        ParameterKey key = new ParameterKey(path);
+        String[] params = key.getSubkeys();
+
         Parameter parameter = new Parameter();
         if(params.length <= 1)
         {
@@ -461,6 +486,13 @@ public class Channel
         else if(params[1].equalsIgnoreCase("xml"))
         {
         	parameter.add(this.toXml());
+        }
+        else if(params[1].equalsIgnoreCase("transportInfos"))
+        {
+        	if( this.transportInfos!=null ){
+        		ParameterKey transportInfosKey = key.shift(2);
+        		parameter = this.transportInfos.getParameter( transportInfosKey );
+        	}
         }
         else
         {
@@ -548,5 +580,19 @@ public class Channel
         
         return true;
     }
+    
+    /**
+	 * @return the transportInfos
+	 */
+	public TransportInfos getTransportInfos() {
+		return transportInfos;
+	}
+
+	/**
+	 * @param transportInfos the transportInfos to set
+	 */
+	public void setTransportInfos(TransportInfos transportInfos) {
+		this.transportInfos = transportInfos;
+	}
     
 }
