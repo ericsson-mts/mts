@@ -3,7 +3,7 @@
   <!--                                                                          openChannel -->
   <xs:complexType name="openChannelDIAMETERType">
       <xs:complexContent>
-          <xs:extension base="operationType">
+          <xs:extension base="openTransportableChannelType">
               <xs:attribute name="localHost" type="xs:string" use="optional">
                   <xs:annotation>
                       <xs:appinfo>String</xs:appinfo>
@@ -61,7 +61,7 @@
   <!--                                                                          createListenpoint -->
   <xs:complexType name="createListenpointDIAMETERType">
       <xs:complexContent>
-          <xs:extension base="operationType">
+          <xs:extension base="createTransportableListenpointType">
               <xs:sequence>
                   <xs:element name="nodeSettings"     type="nodeSettingsType"       minOccurs="0" maxOccurs="1" />
                   <xs:element name="avp"     type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
@@ -177,7 +177,7 @@
 <!--                                                                            sendMessage -->
     <xs:complexType name="sendMessageDIAMETERType">
         <xs:complexContent>
-            <xs:extension base="operationType">
+            <xs:extension base="sendTransportableMessageType">
                 <xs:sequence>
                     <xs:element name="header"  type="headerDIAMType" />
                     <xs:element name="avp"     type="avpDIAMType"       minOccurs="0" maxOccurs="unbounded" />
@@ -243,7 +243,7 @@
 <!--                                                                            receiveMessage -->
     <xs:complexType name="receiveMessageDIAMETERType">
         <xs:complexContent>
-            <xs:extension base="operationType">
+            <xs:extension base="receiveTransportableMessageType">
                 <xs:sequence minOccurs="0" maxOccurs="unbounded">
                     <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
