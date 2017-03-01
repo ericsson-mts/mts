@@ -3,7 +3,7 @@
         <!--                                                                          openChannelSIGTRAN -->
         <xs:complexType name="openChannelSIGTRANType">
             <xs:complexContent>
-                <xs:extension base="operationType">
+                <xs:extension base="openTransportableChannelType">
                     <xs:attribute name="localHost" type="xs:string" use="optional">
                         <xs:annotation>
                             <xs:appinfo>String</xs:appinfo>
@@ -58,7 +58,7 @@
         <!--                                                                          createListenpointSIGTRAN -->
         <xs:complexType name="createListenpointSIGTRANType">
             <xs:complexContent>
-                <xs:extension base="operationType">
+                <xs:extension base="createTransportableListenpointType">
                     <xs:attribute name="localHost" type="xs:string" use="optional">
                         <xs:annotation>
                             <xs:appinfo>String</xs:appinfo>
@@ -125,7 +125,7 @@
         <!--                                                                          sendMessageSIGTRAN (protocol binary) -->
         <xs:complexType name="sendMessageSIGTRANType">
             <xs:complexContent>
-                <xs:extension base="operationType">
+                <xs:extension base="sendTransportableMessageType">
                     <xs:sequence>
                         <xs:element name="ASN"  type="APType" minOccurs="0" maxOccurs="unbounded"/>
                         <xs:element name="ISDN"  type="ISDNType" minOccurs="0" maxOccurs="1"/>
@@ -186,7 +186,7 @@
         <!--                                                                         receiveMessageSIGTRAN -->
         <xs:complexType name="receiveMessageSIGTRANType">
             <xs:complexContent>
-                <xs:extension base="operationType">
+                <xs:extension base="receiveTransportableMessageType">
                     <xs:sequence minOccurs="0" maxOccurs="unbounded">
                         <xs:element name="parameter"  type="parameterType" minOccurs="0" maxOccurs="unbounded" />
                         <xs:element name="test"       type="testType"      minOccurs="0" maxOccurs="unbounded" />
