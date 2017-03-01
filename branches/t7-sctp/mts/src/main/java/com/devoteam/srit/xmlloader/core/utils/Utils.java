@@ -939,6 +939,9 @@ public class Utils
 
     static public String[] splitNoRegex(String string, String splitter)
     {
+    	assert(string!=null);
+    	assert(splitter!=null);
+    	
         int index;
         int splitterLength = splitter.length();
         int size = 1;
@@ -968,6 +971,10 @@ public class Utils
 
     static public String replaceNoRegex(String string, String oldStr, String newStr)
     {
+    	assert(string!=null);
+    	assert(oldStr!=null);
+    	assert(newStr!=null);
+    	
         StringBuilder buff = null;
         int index = 0;
         while (index != -1)
