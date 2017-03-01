@@ -260,6 +260,7 @@ public class MsgSnmp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request,root,runner);
     	// nothing to do : we use external Mibble SNMP stack to transport messages	
     }
 

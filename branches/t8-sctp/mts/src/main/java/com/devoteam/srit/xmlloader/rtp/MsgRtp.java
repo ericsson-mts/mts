@@ -431,7 +431,9 @@ public class MsgRtp extends Msg implements Comparable<MsgRtp> {
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        if(root.element("packet") != null)
+    	super.parseFromXml(request,root,runner);
+
+    	if(root.element("packet") != null)
         {
         	root = root.element("packet");
         	GlobalLogger.instance().logDeprecatedMessage("sendMessageRTP ...><packet>...</packet></sendMessageRTP", "sendMessageRTP ...>...</sendMessageRTP");

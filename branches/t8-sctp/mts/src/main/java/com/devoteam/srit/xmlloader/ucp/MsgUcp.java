@@ -209,7 +209,9 @@ public class MsgUcp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        this.ucpMessage = new UcpMessage();
+    	super.parseFromXml(request,root,runner);
+
+    	this.ucpMessage = new UcpMessage();
 
         // header
         Element header = root.element("header");

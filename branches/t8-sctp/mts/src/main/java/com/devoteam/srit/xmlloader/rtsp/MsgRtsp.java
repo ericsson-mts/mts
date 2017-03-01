@@ -181,7 +181,9 @@ public class MsgRtsp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        String text = root.getText();
+    	super.parseFromXml(request,root,runner);
+
+    	String text = root.getText();
         this.message = new TextMessage(getProtocol(), true, ((StackRtsp) stack).addCRLFContent, null);
     	this.message.parse(text);
         this.message.setGenericfirstline(new FirstLine(this.message.getFirstLineString(),getProtocol()));

@@ -161,7 +161,9 @@ public class MsgPcp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     { 
-        XMLToFlist xmltoflist = XMLToFlist.getInstance();
+    	super.parseFromXml(request,root,runner);
+
+    	XMLToFlist xmltoflist = XMLToFlist.getInstance();
         String xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-15\"?>" + root.element("flist").asXML();
 
         InputSource src = new InputSource(new ByteArrayInputStream(xml.getBytes()));

@@ -522,7 +522,9 @@ public class MsgSigtran extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        List<Element> listAps = root.elements("ASN");
+    	super.parseFromXml(request,root,runner);
+
+    	List<Element> listAps = root.elements("ASN");
         Object[] tabAps = listAps.toArray();
         
         ASNMessage tcapMessage = null;

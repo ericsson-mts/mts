@@ -744,6 +744,8 @@ public class MsgDiamCommon extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request,root,runner);
+
     	this.message = MsgDiameterParser.getInstance().parseMsgFromXml(request, root);
     	    	
         // DEPRECATED begin

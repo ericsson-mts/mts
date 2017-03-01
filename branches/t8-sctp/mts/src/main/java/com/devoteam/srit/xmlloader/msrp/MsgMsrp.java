@@ -164,6 +164,8 @@ public class MsgMsrp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     { 
+    	super.parseFromXml(request,root,runner);
+
     	String text = root.getText();
     	decode(text.getBytes());
     }

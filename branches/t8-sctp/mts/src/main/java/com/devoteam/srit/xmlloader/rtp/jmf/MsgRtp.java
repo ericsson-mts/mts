@@ -239,7 +239,9 @@ public class MsgRtp extends Msg {
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        RTPPacket rtpPacket = parsePacket(root);
+    	super.parseFromXml(request,root,runner);
+
+    	RTPPacket rtpPacket = parsePacket(root);
         if (rtpPacket != null)
         {
         	add(rtpPacket);

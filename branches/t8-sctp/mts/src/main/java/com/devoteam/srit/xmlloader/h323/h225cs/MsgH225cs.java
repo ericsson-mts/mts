@@ -147,6 +147,8 @@ public class MsgH225cs extends Msg {
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request,root,runner);
+
     	this.msgAsn1 = new Asn1Message();
     	this.msgAsn1.parseElement(root);
 

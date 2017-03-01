@@ -183,6 +183,7 @@ public class MsgGtp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request,root,runner);
     	MessageGTP messageGTP = new MessageGTP(root);
     	this.message = messageGTP;
     }

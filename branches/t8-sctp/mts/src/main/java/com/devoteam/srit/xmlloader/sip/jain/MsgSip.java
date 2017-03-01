@@ -173,7 +173,9 @@ public class MsgSip extends MsgSipCommon
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        String text = root.getText();
+    	super.parseFromXml(request,root,runner);
+
+    	String text = root.getText();
         MessageFactory messageFactory = SipFactory.getInstance().createMessageFactory();
 
         text = text.trim();

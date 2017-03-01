@@ -565,7 +565,9 @@ public class MsgH248 extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        String text = root.getText().trim();
+    	super.parseFromXml(request,root,runner);
+
+    	String text = root.getText().trim();
         if ("CRLF".equals(((StackH248 )this.stack).endLineCharacters))
         {
             text = Utils.replaceNoRegex(text, "\n", "\r\n");

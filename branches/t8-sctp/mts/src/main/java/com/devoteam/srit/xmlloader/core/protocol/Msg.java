@@ -43,6 +43,7 @@ import gp.utils.arrays.DefaultArray;
 
 import java.net.URI;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -82,13 +83,21 @@ public abstract class Msg extends MsgLight implements Removable
      * Transport layer informations
      */
     protected interface TransportInfos{
+    	
+    	/**
+    	 * @param transportInfosElements
+    	 * @throws Exception
+    	 */
+    	
+    	public void parseFromXml(List<Element> transportInfosElements)throws Exception;
+    	
     	/**
     	 * 
     	 * @param parameterKey the parameter key
     	 * @return the parameter value
     	 */
     	@Nullable
-    	public abstract Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
+    	public Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
     }
     
     /*
@@ -662,7 +671,13 @@ public abstract class Msg extends MsgLight implements Removable
     /** 
      * Parse the message from XML element 
      */
-    public abstract void parseFromXml(Boolean request, Element root, Runner runner) throws Exception;
+    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception{
+    	if( this.transportInfos!=null ){
+    		@SuppressWarnings("unchecked")
+    		List<Element> transportInfosElements = root.elements("transportInfos");    		
+    		this.transportInfos.parseFromXml(transportInfosElements);
+    	}
+    }
 
     /** summary of the message used for statistics counters */
     public String getSummary(boolean send, boolean prefix) throws Exception

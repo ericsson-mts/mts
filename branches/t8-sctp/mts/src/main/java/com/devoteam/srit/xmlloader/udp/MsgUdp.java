@@ -159,7 +159,9 @@ public class MsgUdp extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        List<Element> elements = root.elements("data");
+    	super.parseFromXml(request,root,runner);
+
+    	List<Element> elements = root.elements("data");
         List<byte[]> datas = new LinkedList<byte[]>();
 
         try

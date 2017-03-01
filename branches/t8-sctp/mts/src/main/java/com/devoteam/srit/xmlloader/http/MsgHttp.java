@@ -328,6 +328,8 @@ public class MsgHttp extends Msg
     @Override
     public void parseFromXml(Boolean request1, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request1,root,runner);
+
     	String text = root.getText();
     	
         BasicHttpResponse responseMessage = null;

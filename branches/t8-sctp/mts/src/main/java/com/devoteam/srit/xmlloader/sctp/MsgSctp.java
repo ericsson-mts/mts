@@ -210,6 +210,8 @@ public abstract class MsgSctp extends Msg{
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request,root,runner);
+    	
 		DataSctp dataSctp = this.getDataSctp();
 		dataSctp.clear();
     	this.setType("DATA");

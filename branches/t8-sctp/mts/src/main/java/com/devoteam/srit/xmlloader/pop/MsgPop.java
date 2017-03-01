@@ -202,6 +202,8 @@ public class MsgPop extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
+    	super.parseFromXml(request,root,runner);
+
     	String text = root.getText().trim();
     	decode(text.getBytes());
     }

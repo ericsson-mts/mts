@@ -433,7 +433,8 @@ public class MsgSigtranHybrid extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        // not called
+    	super.parseFromXml(request,root,runner);
+       // not called
     }
 
 }

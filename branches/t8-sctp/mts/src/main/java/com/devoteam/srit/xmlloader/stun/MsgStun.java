@@ -321,7 +321,9 @@ public class MsgStun extends Msg
     @Override
     public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
     {
-        this.header = new HeaderStun();
+    	super.parseFromXml(request,root,runner);
+
+    	this.header = new HeaderStun();
         parseHeader(root.element("header"));
 
         List<Element> attributes = root.elements("attribute");
