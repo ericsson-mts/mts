@@ -23,7 +23,6 @@
 
 package com.devoteam.srit.xmlloader.core.utils.net;
 
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import java.net.InetAddress;
@@ -53,14 +52,17 @@ public class AddressesList{
 		this.addresses.clear();
 		
 		boolean status = true;
-		String[] addressesStringArray = Utils.splitNoRegex(addressesStringWithSeparator, ",");
-		for( String addressString:addressesStringArray){
-			try{
-				InetAddress address = InetAddress.getByName(addressString);
-				assert(address!=null);
-				this.addresses.add(address);
-			}catch(Exception exception){
-				status = false;
+		if( addressesStringWithSeparator!=null )
+		{
+			String[] addressesStringArray = Utils.splitNoRegex(addressesStringWithSeparator, ",");
+			for( String addressString:addressesStringArray){
+				try{
+					InetAddress address = InetAddress.getByName(addressString);
+					assert(address!=null);
+					this.addresses.add(address);
+				}catch(Exception exception){
+					status = false;
+				}
 			}
 		}
 		return status;
@@ -70,12 +72,15 @@ public class AddressesList{
 		this.addresses.clear();
 		
 		boolean status = true;
-		try{
-			InetAddress address = InetAddress.getByName(addressString);
-			assert(address!=null);
-			this.addresses.add(address);
-		}catch(Exception exception){
-			status = false;
+		if( addressString!=null )
+		{
+			try{
+				InetAddress address = InetAddress.getByName(addressString);
+				assert(address!=null);
+				this.addresses.add(address);
+			}catch(Exception exception){
+				status = false;
+			}
 		}
 		return status;
 	}
