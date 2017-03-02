@@ -442,7 +442,17 @@
         <scenario name="client" file="811_listenpoint/client.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="811_listenpoint/server.xml" state="[remoteServer]" routingName="server"/>
     </testcase>
+   
+    <testcase name="811_listenpoint_transportInfos" state="true" number="[iterations]" description="diameter" >
+        <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
+        <parameter name="[Listen-Client-Port]" operation="set" value="13880"/>
+        <parameter name="[Listen-Server-Host]" operation="set" value="[remoteHostDIAM]"/>
+        <parameter name="[Listen-Server-Port]" operation="set" value="23882"/>
     
+        <scenario name="client" file="811_listenpoint_transportInfos/client.xml" state="[localClient]" routingName="client"/>
+        <scenario name="server" file="811_listenpoint_transportInfos/server.xml" state="[remoteServer]" routingName="server"/>
+    </testcase>
+  
     <testcase name="812_routing_scenarioname" state="false" number="[iterations]" description="diameter" >
         <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
         <parameter name="[Listen-Client-Port]" operation="set" value="3870"/>
