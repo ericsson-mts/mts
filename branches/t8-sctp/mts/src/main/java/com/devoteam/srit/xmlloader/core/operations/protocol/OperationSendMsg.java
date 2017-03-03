@@ -98,7 +98,10 @@ public class OperationSendMsg extends Operation {
                 GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
             }
             // instanciates the msg
-            msg = stack.parseMsgFromXml(request, root, runner);
+            Msg.ParseFromXmlContext context = new Msg.ParseFromXmlContext();
+            context.setRequest(this.request);
+            context.setTransport(transport);
+            msg = stack.parseMsgFromXml(context, root, runner);
             msg.setSend(true);
         }
         finally {

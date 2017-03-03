@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -78,9 +79,11 @@ public abstract class StackSipCommon extends Stack
         
     /** Creates a specific SIP Msg */
     @Override    
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        MsgSipCommon msgSip = (MsgSipCommon) super.parseMsgFromXml(request, root, runner);
+        MsgSipCommon msgSip = (MsgSipCommon) super.parseMsgFromXml(context, root, runner);
+
+        Boolean request = context.getRequest();
 
         // DEPRECATED begin        
         String listenpointName = root.attributeValue("providerName");

@@ -26,20 +26,21 @@ package com.devoteam.srit.xmlloader.core.protocol;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.net.AddressesList;
 import com.devoteam.srit.xmlloader.sctp.StackSctp;
-import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
+import com.devoteam.srit.xmlloader.sctp.ChannelTransportInfosSctp;
 import com.devoteam.srit.xmlloader.tcp.ChannelTcp;
 import com.devoteam.srit.xmlloader.tls.ChannelTls;
 import com.devoteam.srit.xmlloader.udp.ChannelUdp;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.dom4j.Element;
@@ -78,18 +79,30 @@ public class Channel
     protected Channel channel = null;
     protected String transport = null;
     
-    /*
-     * Transport layer informations
-     */
-    protected interface TransportInfos{
-    	/**
-    	 * 
-    	 * @param parameterKey the parameter key
-    	 * @return the parameter value
-    	 */
-    	@Nullable
-    	public abstract Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
-    }
+	/*
+	 * Transport layer informations
+	 */
+	public interface TransportInfos{
+		/**
+		 * @param transportInfosElements
+		 * @throws Exception
+		 */
+		
+		public void parseFromXml(Collection<Element> transportInfosElements)throws Exception;
+		
+		/**
+		 * 
+		 * @param parameterKey the parameter key
+		 * @return the parameter value or an empty Parameter if the key is not valid
+		 */
+		@Nonnull
+		public Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
+		
+		/**
+		 */
+		@Override
+		public boolean equals( Object object );
+	 }
     
     /*
      * transport layer informations
@@ -429,7 +442,26 @@ public class Channel
         {
         	transport = stack.getConfig().getString("listenpoint.TRANSPORT");
         }
-        this.transport = transport.toUpperCase(); 
+        this.transport = transport.toUpperCase();
+        
+        {
+    		@SuppressWarnings("unchecked")
+    		List<Element> transportInfosElements = root.elements("transportInfos");
+    		
+    		if( !transportInfosElements.isEmpty() && this.transport!=null ){
+		    	//TODO refactor (instanciation should not be hardcoded here)
+		        switch (this.transport)
+		        {
+		        case StackFactory.PROTOCOL_SCTP:
+		        	this.setTransportInfos( new ChannelTransportInfosSctp() );	
+		        	break;
+		        }
+    		}
+
+	        if( this.transportInfos!=null ){
+	        	this.transportInfos.parseFromXml(transportInfosElements);
+	        }
+        }
     }
     
 
@@ -521,6 +553,10 @@ public class Channel
     	this.remotePort = channel.getRemotePort();	
     	
     	this.protocol = channel.getProtocol();
+
+    	//the transport layer will use the protocol layer transportInfos
+        assert this.transportInfos==null;
+        this.transportInfos = channel.transportInfos;
     }
 
     /** equals method */
@@ -531,9 +567,9 @@ public class Channel
             return false;
         }
         
-        String name = channel.getName();
         if (this.name != null)
         { 
+            String name = channel.getName();
             if (name != null)
             {
                 if (!this.name.equals(name))
@@ -559,15 +595,8 @@ public class Channel
         
         if (this.remoteHost != null)
         {
-        	if (channel != null)
-        	{
-        		String remoteHost = channel.getRemoteHost();
-                if (!this.remoteHost.equals(remoteHost))
-                {
-                    return false;
-                }
-            }
-            else
+    		String remoteHost = channel.getRemoteHost();
+            if (!this.remoteHost.equals(remoteHost))
             {
                 return false;
             }
@@ -576,6 +605,16 @@ public class Channel
         if (this.remotePort != channel.getRemotePort())
         {
             return false;
+        }
+        
+        if( this.transportInfos!=null || channel.transportInfos!=null ){
+        	if( this.transportInfos==null || channel.transportInfos==null )
+        	{
+        		return false;
+        	}
+        	if( !this.transportInfos.equals(channel.transportInfos) ){
+        		return false;
+        	}        	
         }
         
         return true;
@@ -592,6 +631,7 @@ public class Channel
 	 * @param transportInfos the transportInfos to set
 	 */
 	public void setTransportInfos(TransportInfos transportInfos) {
+    	assert this.transportInfos==null;
 		this.transportInfos = transportInfos;
 	}
     

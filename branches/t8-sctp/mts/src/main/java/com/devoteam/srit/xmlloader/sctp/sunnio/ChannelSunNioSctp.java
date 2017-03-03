@@ -495,6 +495,13 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		
 		    	msg.setChannel(this);
 		        msg.setListenpoint(this.getListenpointSctp());
+		        
+		        //store (wraps) the sctp transport infos
+		        {
+		        	InfoSunNioSctp infoSunNioSctp = new InfoSunNioSctp( messageInfo );
+		        	MsgTransportInfosSctp transportInfos = new MsgTransportInfosSctp( infoSunNioSctp );
+			        msg.setTransportInfos( transportInfos );
+		        }
 		
 		        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" RECEIVE the SCTP message :\n", msg);                       
 		        
@@ -544,13 +551,27 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
             byte[] bytes = msg.encode();
             ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
         	
-            //create a MessageInfo with default settings
-        	BasicInfoSctp defaultInfoSctp = new BasicInfoSctp();
-			Config sctpStackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-			defaultInfoSctp.setFromStackConfig(sctpStackConfig);
-			MessageInfo messageInfo = MessageInfo.createOutgoing(association,null,defaultInfoSctp.getStreamId());			
-			InfoSunNioSctp infoSctp = new InfoSunNioSctp(messageInfo);
-			infoSctp.trySet(defaultInfoSctp);
+            
+	        //get the transport infos
+            InfoSctp infoSctp = null; 
+            {
+            	Msg.TransportInfos transportInfos = msg.getTransportInfos();
+            	if( transportInfos!=null && (transportInfos instanceof MsgTransportInfosSctp) ){
+            		//available from the message
+            		MsgTransportInfosSctp msgTransportInfosSctp = (MsgTransportInfosSctp)transportInfos;
+            		infoSctp = msgTransportInfosSctp.getInfoSctp();
+            	}else{
+                    //create a MessageInfo with default settings
+            		infoSctp = new BasicInfoSctp();
+            		infoSctp.setFromSctpStackConfig();
+            	}
+            }
+            assert infoSctp!=null;
+			
+            int streamId = Short.toUnsignedInt( infoSctp.getStreamId() );
+			MessageInfo messageInfo = MessageInfo.createOutgoing(association,null,streamId);
+			InfoSunNioSctp messageInfoAdapter = new InfoSunNioSctp(messageInfo);
+			messageInfoAdapter.trySet(infoSctp);
 	
 			dataSunNioSctp = new DataSunNioSctp( byteBuffer,messageInfo );    	
         }

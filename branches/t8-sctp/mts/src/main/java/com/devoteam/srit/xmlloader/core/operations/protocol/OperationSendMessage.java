@@ -70,27 +70,58 @@ public class OperationSendMessage extends Operation {
 
         GlobalLogger.instance().getSessionLogger().info(aRunner, TextEvent.Topic.PROTOCOL, this);
         
-        Msg msg;
-        Boolean req = null;
+        Msg msg = null;
 
         try {
             lockAndReplace(runner);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.PROTOCOL, "Operation after pre-parsing \n", this);
             Element root = getRootElement();
             
-            String request = getAttribute("request");
-            if (null != request) {
-                if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol)) {
-                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../><header request=\"xxx\" .../");
-                }
-                else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
-                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
-                }
-                req = Utils.parseBoolean(request, "request");
+            Msg.ParseFromXmlContext context = new Msg.ParseFromXmlContext();
+
+            {
+	            String request = getAttribute("request");
+	            if (request!=null) {
+	                if (StackFactory.PROTOCOL_DIAMETER.equalsIgnoreCase(protocol)) {
+	                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../><header request=\"xxx\" .../");
+	                }
+	                else if (StackFactory.PROTOCOL_RADIUS.equalsIgnoreCase(protocol)) {
+	                    GlobalLogger.instance().logDeprecatedMessage(root.getName() + " request=\"xxx\" .../", "sendMessage" + protocol + " .../");
+	                }
+	                context.setRequest( Utils.parseBoolean(request, "request") );
+	            }
+            }
+            
+            {
+	            String listenpointName = getAttribute("listenpoint");
+	            if (listenpointName != null){
+	            	Listenpoint listenpoint = stack.getListenpoint(listenpointName);
+	            	assert listenpoint!=null;
+	            	context.setListenpoint(listenpoint);
+	            }
+            }
+            
+            {
+	            String channelName = getAttribute("channel");
+	            if (channelName != null){
+	            	Channel channel = stack.getChannel(channelName);
+	            	assert channel!=null;
+	            	context.setChannel(channel);
+	            }
             }
 
+            {
+	            String transport = getAttribute("transport");
+	            if (transport!=null) {
+		            context.setTransport( transport );
+		        }else{
+		        	//TODO retrieve the transport information from the associated listentpoint or channel
+		            context.setTransport( StackFactory.PROTOCOL_SCTP );
+	            }
+            }
+            
             // instanciates the msg
-            msg = stack.parseMsgFromXml(req, root, runner);
+            msg = stack.parseMsgFromXml(context, root, runner);
             msg.setSend(true);
         }
         finally 

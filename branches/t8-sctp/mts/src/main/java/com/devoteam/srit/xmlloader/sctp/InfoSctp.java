@@ -23,10 +23,16 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
-import java.util.List;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
+import com.devoteam.srit.xmlloader.core.exception.ParameterException;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
 /**
@@ -211,16 +217,19 @@ public abstract class InfoSctp {
     	}
     }
 
-    /*
-     * 
-     */
-    public void setFromXml(List<Element> sctpElements) throws Exception
-    {
-		// TODO check unsigned->signed conversion and overflows
+	/**
+	 * 
+	 */
+	public void setFromSctpStackConfig() throws Exception {
+	    Config sctpStackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+	    this.setFromStackConfig( sctpStackConfig );
+	}
 
-    	if (sctpElements != null && sctpElements.size() > 0)
-		{
-			Element sctpElement = sctpElements.get(0);
+	/**
+	 * TODO check unsigned->signed conversion and overflows
+	 */
+	public void setFromXml(Element sctpElement) throws Exception {
+		// TODO check unsigned->signed conversion and overflows
 			{
 				String streamIdString = sctpElement.attributeValue("stream");
 				if (streamIdString != null)
@@ -294,6 +303,133 @@ public abstract class InfoSctp {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 
+	 */
+	public void parseFromXml(Collection<Element> sctpElements) throws Exception {
+	    this.setFromSctpStackConfig();
+	    for( Element sctpElement:sctpElements ){
+		    this.setFromXml(sctpElement);
+	    }	    
+	}    
+	
+	/**
+	 * TODO refactor
+	 */
+	public static boolean isParameterHeadSubkeyValid(ParameterKey parameterKey){
+		try{
+			String headSubkey = parameterKey.getHeadSubkey();
+			switch( headSubkey ){
+			case "stream":
+			case "ssn":
+			case "ppid":
+			case "flags":
+			case "context":
+			case "ttl":
+			case "tsn":
+			case "cumtsn":
+			case "aid":
+				return true;
+			}
+		}catch(Exception exception){
+			//nothing special to do
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 */
+	@Nonnull
+	public Parameter getParameter(ParameterKey parameterKey) throws ParameterException {
+		Parameter parameter = new Parameter();
+		try{
+			String headSubkey = parameterKey.getHeadSubkey();
+			switch( headSubkey ){
+			case "stream":
+				parameter.add( InfoSctp.StringPrinter.getStreamId(this) );
+	    		break;
+			case "ssn":
+				parameter.add( InfoSctp.StringPrinter.getSsn(this) );
+	    		break;
+			case "ppid":
+				parameter.add( InfoSctp.StringPrinter.getPpid(this) );
+	    		break;
+			case "flags":
+				parameter.add( InfoSctp.StringPrinter.getFlags(this) );
+	    		break;
+			case "context":
+				parameter.add( InfoSctp.StringPrinter.getContext(this) );
+	    		break;
+			case "ttl":
+				parameter.add( InfoSctp.StringPrinter.getTtl(this) );
+	    		break;
+			case "tsn":
+				parameter.add( InfoSctp.StringPrinter.getTsn(this) );
+	    		break;
+			case "cumtsn":
+				parameter.add( InfoSctp.StringPrinter.getCumtsn(this) );
+	    		break;
+			case "aid":
+				parameter.add( InfoSctp.StringPrinter.getAssociationId(this) );
+	    		break;
+	    	default:
+	    		Parameter.throwBadPathKeywordException( parameterKey );
+			}
+		}catch(Exception exception){
+			if( exception instanceof ParameterException ){
+				throw exception;
+			}
+			else{
+				throw new ParameterException( "",exception );
+			}
+		}
+		return parameter;
+	}
+    
+    /**
+     */
+    @Override
+    public boolean equals( Object object )
+    {
+    	if( object==null ){
+    		return false;
+    	}
+    	if( !(object instanceof InfoSctp) ){
+    		return false;
+    	}
+    	InfoSctp infoSctp = (InfoSctp)object;
+    	
+    	if( this.getStreamId() != infoSctp.getStreamId() ){
+    		return false;
+    	}
+    	if( this.getSsn() != infoSctp.getSsn() ){
+    		return false;
+    	}
+    	if( this.getFlags() != infoSctp.getFlags() ){
+    		return false;
+    	}
+    	if( this.getPpid() != infoSctp.getPpid() ){
+    		return false;
+    	}
+    	if( this.getContext() != infoSctp.getContext() ){
+    		return false;
+    	}
+    	if( this.getTtl() != infoSctp.getTtl() ){
+    		return false;
+    	}
+    	if( this.getTsn() != infoSctp.getTsn() ){
+    		return false;
+    	}
+    	if( this.getCumtsn() != infoSctp.getCumtsn() ){
+    		return false;
+    	}
+    	if( this.getAssociation().getId() != infoSctp.getAssociation().getId() ){
+    		return false;
+    	}
+    	return true;
     }
 	
 	
@@ -401,7 +537,7 @@ public abstract class InfoSctp {
 	
 	/**
 	 * helper class to convert unsigned values to strings
-	 * @author emicpou
+	 * 
 	 * TODO implementation based on generic
 	 */
 	public static class StringPrinter{

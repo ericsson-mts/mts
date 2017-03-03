@@ -170,9 +170,9 @@ public class MsgTcp extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-    	super.parseFromXml(request,root,runner);
+    	super.parseFromXml(context,root,runner);
 
     	List<Element> elements = root.elements("data");
         List<byte[]> datas = new LinkedList<byte[]>();

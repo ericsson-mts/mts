@@ -120,6 +120,13 @@ public class SocketLksctp extends Thread {
     		    	{
                         msg.setChannel(channelSctp);
                         msg.setListenpoint(channelSctp.getListenpointSctp());
+        		        
+        		        //store (wraps) the sctp transport infos
+        		        {
+        		        	InfoLksctp infoLksctp = new InfoLksctp( ((SCTPData)chunk).sndrcvinfo );
+        		        	MsgTransportInfosSctp transportInfos = new MsgTransportInfosSctp( infoLksctp );
+        			        msg.setTransportInfos( transportInfos );
+        		        }
 
                         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ">>>RECEIVE the SCTP message :\n", msg);                       
                         stack.getChannel(channelSctp.getName()).receiveMessage(msg);
@@ -190,10 +197,24 @@ public class SocketLksctp extends Thread {
 	            // create a communication object in a wrapper with the chunk
 	            DataLksctp dataLksctp = new DataLksctp(chunk);
 
-   				// initialize its metadata from the configuration file		
-		        InfoSctp infoSctp = dataLksctp.getInfo();
-		        Config stackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-		        infoSctp.setFromStackConfig( stackConfig );
+	            //get the transport infos
+	            InfoSctp infoSctp = null; 
+	            {
+	            	Msg.TransportInfos transportInfos = msg.getTransportInfos();
+	            	if( transportInfos!=null && (transportInfos instanceof MsgTransportInfosSctp) ){
+	            		//available from the message
+	            		MsgTransportInfosSctp msgTransportInfosSctp = (MsgTransportInfosSctp)transportInfos;
+	            		infoSctp = msgTransportInfosSctp.getInfoSctp();
+	            	}else{
+	                    //create an info with default settings
+	            		infoSctp = new BasicInfoSctp();
+	            		infoSctp.setFromSctpStackConfig();
+	            	}
+	            }
+	            assert infoSctp!=null;
+	            
+	            //apply the transport infos
+	            dataLksctp.setInfo(infoSctp);
 
 		        //access the communication object and send it
 		        SCTPData data = dataLksctp.getSCTPData();

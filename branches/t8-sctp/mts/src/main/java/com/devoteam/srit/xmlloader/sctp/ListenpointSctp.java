@@ -23,6 +23,9 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import org.dom4j.Element;
+
+import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
@@ -63,6 +66,15 @@ public abstract class ListenpointSctp extends Listenpoint {
     // methods for the transport
     //---------------------------------------------------------------------
 
+	/**
+	 * Parse the listenpoint from XML element
+	 */
+    @Override
+	public void parseFromXml(Element root, Runner runner) throws Exception {
+    	super.parseFromXml(root, runner);
+    	
+    	//common sctp code here...
+    }
     
     /**
      * Create a listenpoint to each Stack
@@ -77,14 +89,20 @@ public abstract class ListenpointSctp extends Listenpoint {
 			return false;
 		}
     	
-		//ensure the listenpoint will apply the default config
+    	//ensure the listenpoint has a config
     	if( this.configSctp==null ){
-    		Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
-        	Config stackConfig = sctpStack.getConfig();
-        	
-        	this.configSctp = new ChannelConfigSctp();
-        	this.configSctp.setFromStackConfig( stackConfig );
+    		if( this.transportInfos!=null && (this.transportInfos instanceof ListenpointTransportInfosSctp) ){
+    	    	//the listenpoint will apply the higher level protocol config (set in the clone method)
+    			ListenpointTransportInfosSctp listenpointTransportInfosSctp = (ListenpointTransportInfosSctp)this.transportInfos;
+    			this.configSctp = listenpointTransportInfosSctp.getChannelConfigSctp();
+    		}
+    		else{
+    	    	//the channel will apply the default config
+	        	this.configSctp = new ChannelConfigSctp();
+	        	this.configSctp.setFromSctpStackConfig();
+    		}
     	}
+    	assert this.configSctp!=null;
 
     	//put additional code here...
 		return true;

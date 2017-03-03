@@ -285,9 +285,9 @@ public class MsgSmtp extends Msg {
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-    	super.parseFromXml(request,root,runner);
+    	super.parseFromXml(context,root,runner);
 
     	this.data = root.getText();
 		this.data = Utils.replaceNoRegex(this.data, "\r\n", "\n");

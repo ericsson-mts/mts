@@ -32,6 +32,7 @@ import java.util.List;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -208,9 +209,9 @@ public abstract class MsgSctp extends Msg{
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-    	super.parseFromXml(request,root,runner);
+    	super.parseFromXml(context,root,runner);
     	
 		DataSctp dataSctp = this.getDataSctp();
 		dataSctp.clear();
@@ -263,16 +264,12 @@ public abstract class MsgSctp extends Msg{
 		}	
 		dataSctp.setData(data);
 
-		// initialize from the configuration file		
-        Config stackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
-
 		// Parse the XML file
 		@SuppressWarnings("unchecked")
 		List<Element> sctpElements = root.elements("sctp");
 
         BasicInfoSctp infoSctp = new BasicInfoSctp();
-        infoSctp.setFromStackConfig( stackConfig );
-        infoSctp.setFromXml(sctpElements);             
+        infoSctp.parseFromXml( sctpElements );
 		GlobalLogger.instance().getSessionLogger().debug(TextEvent.Topic.PROTOCOL, "MsgSctp#parseFromXml infoSctp=",infoSctp);
 		dataSctp.setInfo(infoSctp);
 		
@@ -297,66 +294,33 @@ public abstract class MsgSctp extends Msg{
 		}
 
 		var = new Parameter();
-        path = path.trim();
-        String[] params = Utils.splitPath(path);
+		ParameterKey parameterKey = new ParameterKey(path);
+		String[] params = parameterKey.getSubkeys();
 
         if(params[0].equalsIgnoreCase("sctp")) 
         {
-        	DataSctp dataSctp = this.getDataSctp();
-        	
-        	if (dataSctp != null && dataSctp.getInfo() != null)
-        	{
-        		InfoSctp infoSctp = dataSctp.getInfo();
-        		
-	            if(params[1].equalsIgnoreCase("stream")) 
-	            {
-	            	var.add( InfoSctp.StringPrinter.getStreamId(infoSctp) );
-	            }
-	            else if(params[1].equalsIgnoreCase("ssn")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getSsn(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("ppid")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getPpid(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("flags")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getFlags(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("context")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getContext(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("ttl")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getTtl(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("tsn"))
-	            {
-	            	var.add(InfoSctp.StringPrinter.getTsn(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("cumtsn")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getCumtsn(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("aid")) 
-	            {
-	            	var.add(InfoSctp.StringPrinter.getAssociationId(infoSctp));
-	            }
-	            else if(params[1].equalsIgnoreCase("peerHosts")) 
-		        {
-	            	var = this.getParameterPeerHosts();
-		        }
-		        else if(params[1].equalsIgnoreCase("peerPort")) 
-		        {
-	            	var = this.getParameterPeerPort();
-		        }
-		        else 
-		        {
-		        	Parameter.throwBadPathKeywordException(path);
-		        }
-        	}
+			ParameterKey sctpKey = parameterKey.shift();
+			
+	        if( InfoSctp.isParameterHeadSubkeyValid(sctpKey) )
+	        {
+				DataSctp dataSctp = this.getDataSctp();
+	        	if (dataSctp != null && dataSctp.getInfo() != null)
+	        	{
+	        		InfoSctp infoSctp = dataSctp.getInfo();
+	        		var = infoSctp.getParameter(sctpKey);
+	        	}
+	        }
+	        else if(sctpKey.hasHeadSubkey("peerHosts")) 
+	        {
+            	var = this.getParameterPeerHosts();
+	        }
+	        else if(sctpKey.hasHeadSubkey("peerPort")) 
+	        {
+            	var = this.getParameterPeerPort();
+	        }
+            else{
+	        	Parameter.throwBadPathKeywordException(sctpKey);
+            }
         }
         else if(params[0].equalsIgnoreCase("data")) 
         {

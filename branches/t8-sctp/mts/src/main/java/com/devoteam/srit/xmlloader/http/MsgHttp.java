@@ -326,7 +326,7 @@ public class MsgHttp extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request1, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext request1, Element root, Runner runner) throws Exception
     {
     	super.parseFromXml(request1,root,runner);
 

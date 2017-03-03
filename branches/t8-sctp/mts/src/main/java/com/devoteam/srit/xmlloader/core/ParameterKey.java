@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -168,7 +169,19 @@ public final class ParameterKey {
 		return headSubkey.equalsIgnoreCase(subkey);
 	}
     
-    /**
+	/**
+	 * @param subkey candidate
+	 * @returns status
+	 */
+	@Nonnull
+	public String getHeadSubkey() throws IndexOutOfBoundsException{
+		if(this.offset>=this.subkeys.length){
+			throw new IndexOutOfBoundsException();
+		}
+		return this.subkeys[this.offset];
+	}
+
+	/**
      * @param suffix
      * @returns
      */

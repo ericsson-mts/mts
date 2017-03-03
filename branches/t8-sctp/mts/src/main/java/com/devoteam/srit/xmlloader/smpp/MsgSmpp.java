@@ -225,9 +225,9 @@ public class MsgSmpp extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-    	super.parseFromXml(request,root,runner);
+    	super.parseFromXml(context,root,runner);
 
     	// header
         Element header = root.element("header");
