@@ -327,11 +327,20 @@ public class MsgDiamCommon extends Msg
             if ((var != null) && (var.length() > 0)) 
             {
                 String strvalue = (String) var.get(0);
-                int intVal = new Integer(strvalue).intValue();
-                // value STOP_RECORD:4
-                if (intVal == 4)
-                {
-                    return true;
+                if (strvalue != null)
+                {	   
+                	
+                	int pos = strvalue.indexOf(":");
+                	if (pos >=0)
+                	{
+                		strvalue = strvalue.substring(pos + 1);
+                	}
+                	int intVal = new Integer(strvalue).intValue();
+                	// value STOP_RECORD:4
+                	if (intVal == 4)
+                	{
+                		return true;
+                	}
                 }
             }
         }
@@ -342,11 +351,19 @@ public class MsgDiamCommon extends Msg
             if ((var != null) && (var.length() > 0)) 
             {
                 String strvalue = (String) var.get(0);
-                int intVal = new Integer(strvalue).intValue();
-                // value TERMINATION_REQUEST:3
-                if (intVal == 3)
+                if (strvalue != null)
                 {
-                    return true;
+                	int pos = strvalue.indexOf(":");
+                	if (pos >=0)
+                	{
+                		strvalue = strvalue.substring(pos + 1);
+                	}
+	                int intVal = new Integer(strvalue).intValue();
+	                // value TERMINATION_REQUEST:3
+	                if (intVal == 3)
+	                {
+	                    return true;
+	                }
                 }
             }
         }
