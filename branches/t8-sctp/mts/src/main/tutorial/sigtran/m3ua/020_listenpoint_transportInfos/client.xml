@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 17/09/2013
+    Author     : fhenry
+    Description: use dynamic listenpoint 
+-->
+
+<scenario>
+
+    <parameter name="[testcase:localPortClient]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
+    <createListenpointSIGTRAN name="lp_client" localHost="[localHostM3UA]" localPort="[testcase:localPortClient]" >
+        <transportInfos>
+            <sctp num_ostreams="40" max_instreams="39"/>
+        </transportInfos>
+    </createListenpointSIGTRAN>
+
+    <sendMessageSIGTRAN name="Send Notify1" listenpoint="lp_client" remoteHost="[localHostM3UA]" remotePort="[testcase:localPortServer]">
+        <transportInfos>
+            <sctp stream="10" ppid="42001" />
+        </transportInfos>
+        <UA name="m3ua" file="m3ua.xml">
+            <header version="1" reserved="0" messageClass="0" messageType="1"/>
+
+            <parameter tag="13" length="8" format="GROUPED">
+                <field value="1" format="integer" length="2" lengthBit="0"/>
+                <field value="3" format="integer" length="2" lengthBit="0"/>
+            </parameter>
+
+            <parameter tag="17" length="8" format="GROUPED">
+                <field value="845624" format="integer" length="4" lengthBit="0"/>
+            </parameter>
+
+            <parameter tag="6" length="8" format="GROUPED">
+                <field value="654" format="integer" length="4" lengthBit="0"/>
+            </parameter>
+
+            <parameter tag="4" length="10" format="GROUPED">
+                <field value="Notify" format="string" length="6" lengthBit="0"/>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+
+    <finally>
+        <!--removeListenpointSIGTRAN name="lp_client" /-->
+    </finally>
+
+</scenario>

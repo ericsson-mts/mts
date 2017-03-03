@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 17/09/2013
+    Author     : fhenry
+    Description: use dynamic listenpoint 
+-->
+
+<scenario>
+
+    <parameter name="[testcase:localPortServer]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
+    <createListenpointSIGTRAN name="lp_server" localHost="[localHostM3UA]" localPort="[testcase:localPortServer]" >
+        <transportInfos>
+            <sctp num_ostreams="38" max_instreams="37"/>
+        </transportInfos>
+     </createListenpointSIGTRAN>
+
+    <!-- Message encoded value -->
+    <parameter name="[notify]" value="010000010000002c000d00080001000300110008000ce738000600080000028e0004000a4e6f746966790000" />
+
+    <receiveMessageSIGTRAN name="Wait Notify1" listenpoint="lp_server" request="true" type="Notify:0_1">
+        <parameter name="[notify1]" operation="protocol.setFromMessage" value="message.binary"/>
+
+        <parameter name="[messageTransportInfosSctpStream]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.stream"/>
+        <parameter name="[messageTransportInfosSctpPpid]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.ppid"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.max_instreams"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.num_ostreams"/>
+     </receiveMessageSIGTRAN>
+
+    <if>
+        <condition>
+            <test parameter="[notify1]" condition="binary.equals" value="[notify]"/>
+        </condition>
+        <else>
+            <log level="ERROR"> Message received :</log>
+            <log level="ERROR"> "[notify1]" </log>
+            <log level="ERROR"> Message expected :	</log>
+            <log level="ERROR"> "[notify]" </log>
+            <exit failed="true"/>
+        </else>
+    </if>
+
+    <finally>
+
+        <!--removeListenpointSIGTRAN name="lp_server" /-->
+
+    </finally>
+
+</scenario>
