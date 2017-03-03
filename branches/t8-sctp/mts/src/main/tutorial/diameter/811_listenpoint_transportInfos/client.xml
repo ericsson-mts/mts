@@ -6,17 +6,24 @@
 
     <!-- create a listenpoint with no parameter -->
     <parameter name="[testcase:Listen-Client-Port]" operation="number.add" value="[testcase:Listen-Client-Port]" value2="1"/>    
-    <createListenpointDIAMETER name="lp_client1" localPort="[Listen-Client-Port]"/>
+    <createListenpointDIAMETER name="lp_client1" localPort="[Listen-Client-Port]">
+        <transportInfos>
+            <sctp num_ostreams="42000" max_instreams="42001"/>
+        </transportInfos>
+    </createListenpointDIAMETER>
 
     <call name="diameter.openChannel_SendCER_RecCEA"/>
-        
+
     <parameter name="[stateValue]" operation="set" value="true"/>
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client1" 
         remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
+        <transportInfos>
+            <sctp stream="420" ppid="42001" />
+        </transportInfos>
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 30 - Cx:4321"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
-        		
+
         <avp code="Vendor-Specific-Application-Id:260">
             <avp code="Vendor-Id:266" value="[vendorID]"/>
             <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
@@ -48,18 +55,26 @@
     </sendMessageDIAMETER>
 
     <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client1" request="false" type="506" result="2001" >
+        <parameter name="[messageTransportInfosSctpStream]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.stream"/>
+        <parameter name="[messageTransportInfosSctpPpid]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.ppid"/>
+
+        <parameter name="[channelTransportInfosSctpStream]" operation="protocol.setFromMessage" value="channel.transportInfos.sctp.max_instreams"/>
+        <parameter name="[channelTransportInfosSctpStream]" operation="protocol.setFromMessage" value="channel.transportInfos.sctp.num_ostreams"/>
     </receiveMessageDIAMETER>
-    
+
     <call name="diameter.removeListenpoint">
-      <input>
-        <parameter name="[function:name]" value="lp_client1"/>
-      </input>
+        <input>
+            <parameter name="[function:name]" value="lp_client1"/>
+        </input>
     </call>
-        
+
     <!-- create a listenpoint with all parameters -->
     <parameter name="[testcase:Listen-Client-Port]" operation="number.add" value="[testcase:Listen-Client-Port]" value2="1"/>
     <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>        
     <createListenpointDIAMETER name="lp_client2" localPort="[Listen-Client-Port]">
+        <transportInfos>
+            <sctp num_ostreams="420" max_instreams="42003"/>
+        </transportInfos>
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -79,13 +94,16 @@
     <parameter name="[sessionId]" operation="binary.random" value="10"/>
     <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client2" destScenario="server" 
         remoteURL="diam://[Listen-Server-Host]:[Listen-Server-Port]/path;param=value">
+        <transportInfos>
+            <sctp stream="421" ppid="42003" />
+        </transportInfos>
         <header request="true" command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
         <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
         <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
-        		
+
         <avp code="Vendor-Specific-Application-Id:260">
             <avp code="Vendor-Id:266" value="[vendorID]"/>
             <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
@@ -100,24 +118,30 @@
             <avp code="Authentication-Context:1024" value="INVITE"/>
         </avp>
     </sendMessageDIAMETER>
-    
+
     <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client2" request="false" type="506" result="2001" >
+
+        <parameter name="[messageTransportInfosSctpStream]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.stream"/>
+        <parameter name="[messageTransportInfosSctpPpid]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.ppid"/>
+
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.max_instreams"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.num_ostreams"/>
     </receiveMessageDIAMETER>
 
     <finally>
-    
+
         <call name="diameter.removeListenpoint">
-          <input>
-            <parameter name="[function:name]" value="lp_client1"/>
-          </input>
+            <input>
+                <parameter name="[function:name]" value="lp_client1"/>
+            </input>
         </call>
 
         <call name="diameter.removeListenpoint">
-          <input>
-            <parameter name="[function:name]" value="lp_client2"/>
-          </input>
+            <input>
+                <parameter name="[function:name]" value="lp_client2"/>
+            </input>
         </call>
-        
+
     </finally>
-        
+
 </scenario>

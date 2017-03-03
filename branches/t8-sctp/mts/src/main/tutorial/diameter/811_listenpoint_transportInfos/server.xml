@@ -6,7 +6,11 @@
                            
     <!-- create a listenpoint with no parameter -->
     <parameter name="[testcase:Listen-Server-Port]" operation="number.add" value="[testcase:Listen-Server-Port]" value2="1"/>     
-    <createListenpointDIAMETER name="lp_server1" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
+    <createListenpointDIAMETER name="lp_server1" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
+        <transportInfos>
+            <sctp num_ostreams="43000" max_instreams="43001"/>
+        </transportInfos>
+    </createListenpointDIAMETER>
 
     <call name="diameter.RecCER_SendCEA"/>
     
@@ -22,10 +26,18 @@
         <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
         <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+
+        <parameter name="[messageTransportInfosSctpStream]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.stream"/>
+        <parameter name="[messageTransportInfosSctpPpid]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.ppid"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.max_instreams"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.num_ostreams"/>
     </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server1"
-                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <transportInfos>
+            <sctp stream="430" ppid="43001" />
+        </transportInfos>
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
         <avp code="Origin-Host:264" value="[destinationHost]"/>
@@ -56,6 +68,9 @@
     <parameter name="[testcase:Listen-Server-Port]" operation="number.add" value="[testcase:Listen-Server-Port]" value2="1"/>     
     <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
     <createListenpointDIAMETER name="lp_server2" localURL="aaa://[Listen-Server-Host]:[Listen-Server-Port]/path">
+        <transportInfos>
+            <sctp num_ostreams="43002" max_instreams="43003"/>
+        </transportInfos>
         <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
         <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
         <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
@@ -84,9 +99,17 @@
         <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
         <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+
+        <parameter name="[messageTransportInfosSctpStream]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.stream"/>
+        <parameter name="[messageTransportInfosSctpPpid]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.ppid"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.max_instreams"/>
+        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.num_ostreams"/>
     </receiveMessageDIAMETER>
 
     <sendMessageDIAMETER name="SendAnswerMAA" listenpoint="lp_server2" remoteURL="diameter://[localDIAM]" >
+        <transportInfos>
+            <sctp stream="430" ppid="43001" />
+        </transportInfos>
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
         <avp code="Origin-Host:264" value="[remoteHostDIAM]"/>
@@ -114,8 +137,12 @@
     </call>
 
     <parameter name="[testcase:Listen-Server-Port]" operation="number.add" value="[testcase:Listen-Server-Port]" value2="1"/>
-    <createListenpointDIAMETER name="lp_server3" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]"/>
-    
+    <createListenpointDIAMETER name="lp_server3" localHost="[Listen-Server-Host]" localPort="[Listen-Server-Port]">
+        <transportInfos>
+            <sctp num_ostreams="43004" max_instreams="43005"/>
+        </transportInfos>
+    </createListenpointDIAMETER>
+
     <finally>
 
         <call name="diameter.removeListenpoint">
