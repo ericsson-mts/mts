@@ -302,7 +302,7 @@ public abstract class InfoSctp {
 					this.setAssociationId(aid);
 				}
 			}
-		}
+		
 	}
 
 	/**
