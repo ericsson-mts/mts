@@ -511,10 +511,6 @@
     config parameter in the diameter.properties to "True" with the menu "Test>Edit configuration" -->
     <testcase name="815_channel_sctp" state="false" number="[iterations]" description="diameter" >
         <parameter name="[transport]" operation="set" value="SCTP"/>
-        <parameter name="[remotePortDIAM]" operation="number.add" value="[localPortDIAM]" value2="1"/>
-        <parameter name="[Listen-Client-Host]" operation="set" value="[localHostDIAM]"/>
-        <parameter name="[Listen-Client-Port]" operation="set" value="3880"/>
-    
         <scenario name="client" file="815_channel/client.xml" state="[localClient]" routingName="client"/>
         <scenario name="server" file="815_channel/server.xml" state="[remoteServer]" routingName="DIAMETER"/>
     </testcase>

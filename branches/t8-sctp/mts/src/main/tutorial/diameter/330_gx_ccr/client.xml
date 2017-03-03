@@ -292,4 +292,28 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
     </receiveMessageDIAMETER>
 
 
+	 <sendMessageDIAMETER name="SendRequestCCR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+        
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        <avp code="CC-Request-Type:416" value="3"/>
+        <avp code="CC-Request-Number:415" value="1"/>
+        <avp code="Origin-State-Id:278" value="[Origin-State-Id]"/>
+        <avp code="Subscription-Id:443">
+            <avp code="Subscription-Id-Type:450" value="[Subscription-Id-Type]"/>
+            <avp code="Subscription-Id-Data:444" value="[Subscription-Id-Data]"/>
+        </avp>       
+	</sendMessageDIAMETER>
+
+	
+	
+	
+	
 </scenario>
