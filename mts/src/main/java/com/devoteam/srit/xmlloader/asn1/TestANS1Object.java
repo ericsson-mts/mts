@@ -216,7 +216,7 @@ public class TestANS1Object
 	    		catch (Exception e) 
 	    		{
 	    			// TODO Auto-generated catch block
-	    	        System.out.println("");
+	    	        System.out.println(e);
 	    			e.printStackTrace();
 	    		}
 	
@@ -284,7 +284,7 @@ public class TestANS1Object
 			} 
 			catch (Exception e) 
 			{
-		        System.out.println("");
+		        System.out.println(e);
 				e.printStackTrace();
 				Utils.pauseMilliseconds(100);
 				tabError[i] ++;
