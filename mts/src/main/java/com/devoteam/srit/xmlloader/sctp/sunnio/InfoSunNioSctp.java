@@ -51,7 +51,7 @@ public class InfoSunNioSctp extends InfoSctp {
 	/**
 	 * @param messageInfo reference on the implementation object
 	 */
-	InfoSunNioSctp( MessageInfo messageInfo ){
+	public InfoSunNioSctp( MessageInfo messageInfo ){
 		this.messageInfo = messageInfo;
 		assert(this.messageInfo!=null);
 	}

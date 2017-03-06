@@ -35,6 +35,7 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -62,9 +63,9 @@ public class StackRtp extends Stack
     }
     
     /** Creates a specific RTP Msg */
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {                    
-    	Msg msgRtp = super.parseMsgFromXml(request, root, runner);
+    	Msg msgRtp = super.parseMsgFromXml(context, root, runner);
     	
         // instanciates the channel        
         String channelName = root.attributeValue("sessionName");

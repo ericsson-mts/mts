@@ -225,9 +225,11 @@ public class MsgSmpp extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        // header
+    	super.parseFromXml(context,root,runner);
+
+    	// header
         Element header = root.element("header");
         String msgName = header.attributeValue("name");
         String msgId = header.attributeValue("id");

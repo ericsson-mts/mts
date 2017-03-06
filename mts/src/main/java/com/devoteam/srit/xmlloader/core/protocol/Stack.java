@@ -33,6 +33,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
 import com.devoteam.srit.xmlloader.core.newstats.StatKey;
 import com.devoteam.srit.xmlloader.core.newstats.StatPool;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.ExpireHashMap;
@@ -593,11 +594,11 @@ public abstract class Stack
     }
 
     /** Creates a Msg specific to each Stack */
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
     	Class<?> clStack = this.getClass();
     	Msg msg = (Msg)  instanceObjectFromStackParents(clStack, "Msg");
-    	msg.parseFromXml(request, root, runner);
+    	msg.parseFromXml(context, root, runner);
     	return msg;
     }
 

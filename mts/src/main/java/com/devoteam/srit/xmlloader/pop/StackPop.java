@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
@@ -84,9 +85,9 @@ public class StackPop extends Stack
     
 	/** Creates a specific Msg */
     @Override
-	public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception {
+	public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception {
 
-        Msg msg = super.parseMsgFromXml(request, root, runner);
+        Msg msg = super.parseMsgFromXml(context, root, runner);
 
         String channelName = root.attributeValue("channel");
         String transactionId = root.attributeValue("transactionId");

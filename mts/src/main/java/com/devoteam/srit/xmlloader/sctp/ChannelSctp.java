@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.sctp;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
@@ -131,14 +132,20 @@ public abstract class ChannelSctp extends Channel
     {
     	//does not call super.open intentionally
 
-    	//ensure the channel will apply the default config
+    	//ensure the channel has a config
     	if( this.configSctp==null ){
-    		Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
-        	Config stackConfig = sctpStack.getConfig();
-        	
-        	this.configSctp = new ChannelConfigSctp();
-        	this.configSctp.setFromStackConfig( stackConfig );
+    		if( this.transportInfos!=null && (this.transportInfos instanceof ChannelTransportInfosSctp) ){
+    	    	//the channel will apply the higher level protocol config (set in the clone method)
+    			ChannelTransportInfosSctp channelTransportInfosSctp = (ChannelTransportInfosSctp)this.transportInfos;
+    			this.configSctp = channelTransportInfosSctp.getChannelConfigSctp();
+    		}
+    		else{
+    	    	//the channel will apply the default config
+	        	this.configSctp = new ChannelConfigSctp();
+	        	this.configSctp.setFromSctpStackConfig();
+    		}
     	}
+    	assert this.configSctp!=null;
 
     	//other common sctp code here...
 
@@ -191,22 +198,17 @@ public abstract class ChannelSctp extends Channel
     public void parseFromXml(Element root, Runner runner, String protocol) throws Exception
     {
     	super.parseFromXml(root, runner, protocol);
-
-	Stack sctpStack = StackFactory.getStack(StackFactory.PROTOCOL_SCTP);
-    	Config stackConfig = sctpStack.getConfig();
     	
        	@SuppressWarnings("unchecked")
     	List<Element> sctpElements = root.elements("sctp");
 
        	this.configSctp = new ChannelConfigSctp();
-    	this.configSctp.setFromStackConfig( stackConfig );
-    	this.configSctp.setFromXml( sctpElements );
+       	this.configSctp.parseFromXml(sctpElements);
 		
 		// log datas
 		GlobalLogger.instance().getApplicationLogger().debug(Topic.PROTOCOL, ""+this.getName()+":ChannelSctp#parseFromXml config="+this.configSctp);			
 
-
-    	//common sctp code here...
+    	//other common sctp code here...
     }
     
     //---------------------------------------------------------------------

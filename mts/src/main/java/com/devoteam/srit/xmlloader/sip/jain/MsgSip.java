@@ -171,9 +171,11 @@ public class MsgSip extends MsgSipCommon
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        String text = root.getText();
+    	super.parseFromXml(context,root,runner);
+
+    	String text = root.getText();
         MessageFactory messageFactory = SipFactory.getInstance().createMessageFactory();
 
         text = text.trim();

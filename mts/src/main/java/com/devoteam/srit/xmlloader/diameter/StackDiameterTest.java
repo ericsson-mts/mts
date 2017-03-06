@@ -33,6 +33,7 @@ import org.dom4j.io.SAXReader;
 import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.Tester;
+import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
@@ -83,7 +84,9 @@ public class StackDiameterTest extends TestCase {
         
         Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_DIAMETER);
         
-        MsgDiamCommon request = (MsgDiamCommon) stack.parseMsgFromXml(true, scElem, null);
+        Msg.ParseFromXmlContext context = new Msg.ParseFromXmlContext();
+        context.setRequest(true);
+        MsgDiamCommon request = (MsgDiamCommon) stack.parseMsgFromXml(context, scElem, null);
         MsgDiamCommon response = new MsgDiamCommon(stack, prepareResponse(request.getMessage(), ProtocolConstants.DIAMETER_RESULT_SUCCESS));
         
         ScenarioReference src = new ScenarioReference("srcScenario");

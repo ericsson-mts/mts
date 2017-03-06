@@ -32,6 +32,7 @@ import org.dom4j.Element;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.*;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
@@ -88,9 +89,9 @@ public class StackImap extends Stack
 
 	/** Creates a specific Msg */
     @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        Msg msg = super.parseMsgFromXml(request, root, runner);
+        Msg msg = super.parseMsgFromXml(context, root, runner);
 
         String channelName = root.attributeValue("channel");
         if (existsChannel(channelName))
