@@ -33,7 +33,8 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.net.AddressesList;
-import com.devoteam.srit.xmlloader.sctp.ListenpointTransportInfosSctp;
+
+//TODO transport implementations should not be accessed in this generic class
 import com.devoteam.srit.xmlloader.sctp.StackSctp;
 import com.devoteam.srit.xmlloader.tcp.ListenpointTcp;
 import com.devoteam.srit.xmlloader.tls.ListenpointTls;
@@ -619,25 +620,30 @@ public class Listenpoint {
 			this.transport = transportAttr;
 		}
 
+		//initialize transportInfos if any
 		{
 			@SuppressWarnings("unchecked")
 			List<Element> transportInfosElements = root.elements("transportInfos");
 
 			if (!transportInfosElements.isEmpty() && this.transport!=null) {
 				String transport = this.transport.toUpperCase();
-				// TODO refactor (instanciation should not be hardcoded here)
-				switch (transport) {
-				case StackFactory.PROTOCOL_SCTP:
-					this.setTransportInfos(new ListenpointTransportInfosSctp());
-					break;
+				Stack stack = StackFactory.getStack(transport);
+				assert stack!=null;
+				assert stack instanceof TransportStack;
+				TransportStack transportStack = (TransportStack)stack;
+				Listenpoint.TransportInfos transportInfosInstance = transportStack.createListenpointTransportInfos();
+				if( transportInfosInstance!=null ){
+					this.setTransportInfos(transportInfosInstance);	
 				}
 			}
-
+ 
 			if (this.transportInfos != null) {
 				this.transportInfos.parseFromXml(transportInfosElements);
 			}
 		}
-
+		
+		//initialize other generic stuffs here
+		//...
 	}
 
 	// ------------------------------------------------------
@@ -762,6 +768,14 @@ public class Listenpoint {
 		}
 
 		return true;
+	}
+    
+   /**
+	 * @return the transport type
+	 */
+	public String getTransport() {
+		assert this.transport!=null;
+		return this.transport;
 	}
 
 	/**

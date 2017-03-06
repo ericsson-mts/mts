@@ -35,7 +35,7 @@ import java.net.Socket;
 
 import org.dom4j.Element;
 
-public abstract class StackSctp extends Stack
+public abstract class StackSctp extends TransportStack
 {
 
 	/**
@@ -46,6 +46,31 @@ public abstract class StackSctp extends Stack
 	{
 		super( (new CtorConfig()).setDeferredInitialization(true) );
 	}
+
+
+    /**
+     * 
+     */
+    @Override
+    public Listenpoint.TransportInfos createListenpointTransportInfos(){
+    	return new ListenpointTransportInfosSctp();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Channel.TransportInfos createChannelTransportInfos(){
+    	return new ChannelTransportInfosSctp();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Msg.TransportInfos createMsgTransportInfos(){
+    	return new MsgTransportInfosSctp();
+    }
 
     /** Get the protocol of this message */
     @Override

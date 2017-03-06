@@ -444,24 +444,29 @@ public class Channel
         }
         this.transport = transport.toUpperCase();
         
-        {
-    		@SuppressWarnings("unchecked")
-    		List<Element> transportInfosElements = root.elements("transportInfos");
-    		
-    		if( !transportInfosElements.isEmpty() && this.transport!=null ){
-		    	//TODO refactor (instanciation should not be hardcoded here)
-		        switch (this.transport)
-		        {
-		        case StackFactory.PROTOCOL_SCTP:
-		        	this.setTransportInfos( new ChannelTransportInfosSctp() );	
-		        	break;
-		        }
-    		}
+ 		//initialize transportInfos if any
+		{
+			@SuppressWarnings("unchecked")
+			List<Element> transportInfosElements = root.elements("transportInfos");
 
-	        if( this.transportInfos!=null ){
-	        	this.transportInfos.parseFromXml(transportInfosElements);
-	        }
-        }
+			if (!transportInfosElements.isEmpty()) {
+				Stack stack = StackFactory.getStack(this.transport);
+				assert stack!=null;
+				assert stack instanceof TransportStack;
+				TransportStack transportStack = (TransportStack)stack;
+				Channel.TransportInfos transportInfosInstance = transportStack.createChannelTransportInfos();
+				if( transportInfosInstance!=null ){
+					this.setTransportInfos(transportInfosInstance);	
+				}
+			}
+ 
+			if (this.transportInfos != null) {
+				this.transportInfos.parseFromXml(transportInfosElements);
+			}
+		}
+		
+		//initialize other generic stuffs here
+		//...
     }
     
 

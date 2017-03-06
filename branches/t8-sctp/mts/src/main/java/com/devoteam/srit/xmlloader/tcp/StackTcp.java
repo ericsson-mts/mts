@@ -27,11 +27,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
+import com.devoteam.srit.xmlloader.core.protocol.TransportStack;
 
 import java.io.InputStream;
 
@@ -40,7 +36,7 @@ import java.io.InputStream;
  *
  * @author gpasquiers
  */
-public class StackTcp extends Stack
+public class StackTcp extends TransportStack
 {
  	
 	/** Creates a new instance */

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2012 Devoteam http://www.devoteam.com
+ * Copyright 2017 Ericsson http://www.ericsson.com
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  * 
  * 
@@ -21,22 +21,31 @@
  * 
  */
 
-package com.devoteam.srit.xmlloader.udp;
-
-import com.devoteam.srit.xmlloader.core.protocol.TransportStack;
-
+package com.devoteam.srit.xmlloader.core.protocol;
 
 /**
- *
- * @author 
- */
-public class StackUdp extends TransportStack
-{
+*
+* @author emicpou
+* 
+* the TransportableStack acts as a protocol layer stack,
+* it requires a TransportStack to implement the transport layer
+*/
+public abstract class TransportableStack extends Stack{
 	
-	/** Creates a new instance */
-    public StackUdp() throws Exception
+    /**
+     * Creates a new instance
+     */
+    public TransportableStack() throws Exception
     {
-        super();
+    	super();
     }
     
+    /**
+     * Creates a new instance
+     * @param ctorConfig optional constructor config
+     */
+    public TransportableStack( CtorConfig ctorConfig ) throws Exception{
+    	super( ctorConfig );
+    }
+
 }

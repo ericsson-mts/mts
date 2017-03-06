@@ -114,10 +114,17 @@ public class OperationSendMessage extends Operation {
 	            String transport = getAttribute("transport");
 	            if (transport!=null) {
 		            context.setTransport( transport );
-		        }else{
-		        	//TODO retrieve the transport information from the associated listentpoint or channel
-		            context.setTransport( StackFactory.PROTOCOL_SCTP );
+		        }
+            	else if( context.hasListenpoint() ){
+            		String listenpointTransport = context.getListenpoint().getTransport();
+            		assert listenpointTransport!=null;
+		            context.setTransport( listenpointTransport );
 	            }
+            	else if( context.hasChannel() ){
+            		String channelTransport = context.getChannel().getTransport();
+            		assert channelTransport!=null;
+		            context.setTransport( channelTransport );
+            	}
             }
             
             // instanciates the msg

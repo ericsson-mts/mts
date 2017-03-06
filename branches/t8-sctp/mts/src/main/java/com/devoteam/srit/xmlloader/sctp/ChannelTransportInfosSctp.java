@@ -25,8 +25,6 @@ package com.devoteam.srit.xmlloader.sctp;
 
 import java.util.Collection;
 
-import javax.annotation.Nonnull;
-
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Parameter;

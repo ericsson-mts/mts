@@ -34,11 +34,10 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.Removable;
+
+//TODO protocol implementations should not be accessed in this generic class
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
-
-//TODO refactor
-import com.devoteam.srit.xmlloader.sctp.MsgTransportInfosSctp;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -673,7 +672,8 @@ public abstract class Msg extends MsgLight implements Removable
 
     
     /**
-     * 
+     * a context object provided to a msg when it is parsed
+     * avoid to add new arguments to the Msg parseFromXml method
      */
     public static final class ParseFromXmlContext{
     	private Boolean request = null;
@@ -705,12 +705,7 @@ public abstract class Msg extends MsgLight implements Removable
     	
     	
     	public ParseFromXmlContext setTransport(String value){
-    		if( value!=null ){
-    			this.transport = value.toUpperCase();
-    		}
-    		else{
-    			this.transport = null;
-    		}
+   			this.transport = value;
     		return this;
     	}
     	
@@ -758,22 +753,30 @@ public abstract class Msg extends MsgLight implements Removable
      */
     public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception{
     	
-		@SuppressWarnings("unchecked")
-		List<Element> transportInfosElements = root.elements("transportInfos");
-		
-		if( !transportInfosElements.isEmpty() && context.hasTransport()){
-			//TODO refactor (instanciation should not be hardcoded here)
-	        switch (context.getTransport())
-	        {
-	        case StackFactory.PROTOCOL_SCTP:
-	        	this.setTransportInfos( new MsgTransportInfosSctp() );	
-	        	break;
-	        }
-		}
+		//initialize transportInfos if any
+		{
+			@SuppressWarnings("unchecked")
+			List<Element> transportInfosElements = root.elements("transportInfos");
 
-		if( this.transportInfos!=null ){
-    		this.transportInfos.parseFromXml(transportInfosElements);
+			if (!transportInfosElements.isEmpty() && context.hasTransport()) {
+				String transport = context.getTransport().toUpperCase();
+				Stack stack = StackFactory.getStack(transport);
+				assert stack!=null;
+				assert stack instanceof TransportStack;
+				TransportStack transportStack = (TransportStack)stack;
+				Msg.TransportInfos transportInfosInstance = transportStack.createMsgTransportInfos();
+				if( transportInfosInstance!=null ){
+					this.setTransportInfos(transportInfosInstance);	
+				}
+			}
+ 
+			if (this.transportInfos != null) {
+				this.transportInfos.parseFromXml(transportInfosElements);
+			}
 		}
+		
+		//initialize other generic stuffs here
+		//...
     }
 
     /** summary of the message used for statistics counters */
@@ -1080,7 +1083,7 @@ public abstract class Msg extends MsgLight implements Removable
     public void setTlvMessage(TlvMessage tlvMessage) 
     {
     }
-    
+     
     /**
 	 * @return the transportInfos
 	 */
