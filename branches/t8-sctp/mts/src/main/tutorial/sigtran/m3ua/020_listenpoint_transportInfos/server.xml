@@ -14,7 +14,7 @@
     <parameter name="[testcase:localPortServer]" operation="number.add" value="[localPortM3UA]" value2="20000"/>
     <createListenpointSIGTRAN name="lp_server" localHost="[localHostM3UA]" localPort="[testcase:localPortServer]" >
         <transportInfos>
-            <sctp num_ostreams="38" max_instreams="37"/>
+            <sctp num_ostreams="1" max_instreams="124"/>
         </transportInfos>
      </createListenpointSIGTRAN>
 
@@ -26,9 +26,14 @@
 
         <parameter name="[messageTransportInfosSctpStream]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.stream"/>
         <parameter name="[messageTransportInfosSctpPpid]" operation="protocol.setFromMessage" value="message.transportInfos.sctp.ppid"/>
-        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.max_instreams"/>
-        <parameter name="[listenpointTransportInfosSctpStream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.num_ostreams"/>
+        <parameter name="[listenpointTransportInfosSctpNumOstream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.num_ostreams"/>
+        <parameter name="[listenpointTransportInfosSctpNumMaxInstream]" operation="protocol.setFromMessage" value="listenpoint.transportInfos.sctp.max_instreams"/>
      </receiveMessageSIGTRAN>
+
+     <test parameter="[messageTransportInfosSctpStream]" condition="string.equals" value="123" />
+     <test parameter="[messageTransportInfosSctpPpid]" condition="string.equals" value="3" />
+     <test parameter="[listenpointTransportInfosSctpNumOstream]" condition="string.equals" value="1" />
+     <test parameter="[listenpointTransportInfosSctpNumMaxInstream]" condition="string.equals" value="124" />
 
     <if>
         <condition>
@@ -42,7 +47,7 @@
             <exit failed="true"/>
         </else>
     </if>
-
+ 
     <finally>
 
         <!--removeListenpointSIGTRAN name="lp_server" /-->

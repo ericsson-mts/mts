@@ -14,13 +14,13 @@
     <parameter name="[testcase:localPortClient]" operation="number.add" value="[localPortM3UA]" value2="10000"/>
     <createListenpointSIGTRAN name="lp_client" localHost="[localHostM3UA]" localPort="[testcase:localPortClient]" >
         <transportInfos>
-            <sctp num_ostreams="40" max_instreams="39"/>
+            <sctp num_ostreams="1" max_instreams="1"/>
         </transportInfos>
     </createListenpointSIGTRAN>
 
     <sendMessageSIGTRAN name="Send Notify1" listenpoint="lp_client" remoteHost="[localHostM3UA]" remotePort="[testcase:localPortServer]">
         <transportInfos>
-            <sctp stream="10" ppid="42001" />
+            <sctp stream="123" ppid="3" />
         </transportInfos>
         <UA name="m3ua" file="m3ua.xml">
             <header version="1" reserved="0" messageClass="0" messageType="1"/>
