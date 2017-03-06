@@ -23,7 +23,7 @@ set /p JAVA_MEMORY=< java_memory
 set /p JAVA_ARGUMENTS=< java_arguments
 
 if %MODE% == fork (
-start "" "%JAVA_HOME%\javaw" -Xmx%JAVA_MEMORY%m %JAVA_ARGUMENTS% %CLASS% %ARGS%
+start "" "%JAVA_HOME%\javaw" -Xmx%JAVA_MEMORY%m %JAVA_ARGUMENTS% %CLASS% %ARGS% > ..\logs\start.log 2>&1
 ) else (
-"%JAVA_HOME%\java" -Xmx%JAVA_MEMORY%m %JAVA_ARGUMENTS% %CLASS% %ARGS%
+"%JAVA_HOME%\java" -Xmx%JAVA_MEMORY%m %JAVA_ARGUMENTS% %CLASS% %ARGS% > ..\logs\start.log 2>&1
 )
