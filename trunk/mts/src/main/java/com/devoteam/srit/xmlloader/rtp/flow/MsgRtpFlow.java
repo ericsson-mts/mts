@@ -550,9 +550,11 @@ public class MsgRtpFlow extends Msg {
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        if (root.element("flow") != null) {
+    	super.parseFromXml(context,root,runner);
+
+    	if (root.element("flow") != null) {
             parseFlow(root.element("flow"), runner);
         }
         else {

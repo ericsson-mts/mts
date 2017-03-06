@@ -336,6 +336,11 @@ public class Parameter {
         return version;
     }
 
+
+    public static void throwBadPathKeywordException(ParameterKey key) throws ParameterException {
+        throw new ParameterException("Bad path keyword \"" + key + "\"");
+    }
+
     public static void throwBadPathKeywordException(String operation, String path) throws ParameterException {
         throw new ParameterException("Bad path keyword for \"protocol." + operation + "\" operation: \"" + path + "\"");
     }

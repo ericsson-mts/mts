@@ -319,9 +319,11 @@ public class MsgStun extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        this.header = new HeaderStun();
+    	super.parseFromXml(context,root,runner);
+
+    	this.header = new HeaderStun();
         parseHeader(root.element("header"));
 
         List<Element> attributes = root.elements("attribute");

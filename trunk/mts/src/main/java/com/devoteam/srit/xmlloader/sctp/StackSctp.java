@@ -27,6 +27,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.sctp.ChannelSctp;
 
@@ -34,7 +35,7 @@ import java.net.Socket;
 
 import org.dom4j.Element;
 
-public abstract class StackSctp extends Stack
+public abstract class StackSctp extends TransportStack
 {
 
 	/**
@@ -45,6 +46,31 @@ public abstract class StackSctp extends Stack
 	{
 		super( (new CtorConfig()).setDeferredInitialization(true) );
 	}
+
+
+    /**
+     * 
+     */
+    @Override
+    public Listenpoint.TransportInfos createListenpointTransportInfos(){
+    	return new ListenpointTransportInfosSctp();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Channel.TransportInfos createChannelTransportInfos(){
+    	return new ChannelTransportInfosSctp();
+    }
+
+    /**
+     * 
+     */
+    @Override
+    public Msg.TransportInfos createMsgTransportInfos(){
+    	return new MsgTransportInfosSctp();
+    }
 
     /** Get the protocol of this message */
     @Override
@@ -67,9 +93,9 @@ public abstract class StackSctp extends Stack
 	 * useful to set breakpoints
 	 */
 	@Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-		Msg msg = super.parseMsgFromXml(request, root, runner);
+		Msg msg = super.parseMsgFromXml(context, root, runner);
 		assert( msg instanceof MsgSctp );
     	return msg;
     }

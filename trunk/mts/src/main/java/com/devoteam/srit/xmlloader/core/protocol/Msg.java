@@ -24,15 +24,18 @@
 package com.devoteam.srit.xmlloader.core.protocol;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.ScenarioReference;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.expireshashmap.Removable;
+
+//TODO protocol implementations should not be accessed in this generic class
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvMessage;
 
@@ -40,7 +43,12 @@ import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.dom4j.Element;
 
@@ -74,6 +82,32 @@ public abstract class Msg extends MsgLight implements Removable
     protected Listenpoint listenpoint = null;
     protected Probe probe = null;
     
+	/*
+	 * Transport layer informations
+	 */
+	public interface TransportInfos{
+		/**
+		 * @param transportInfosElements
+		 * @throws Exception
+		 */
+		
+		public void parseFromXml(Collection<Element> transportInfosElements)throws Exception;
+		
+		/**
+		 * 
+		 * @param parameterKey the parameter key
+		 * @return the parameter value or an empty Parameter if the key is not  valid
+		 */
+		@Nonnull
+		public Parameter getParameter( ParameterKey parameterKey )throws ParameterException;
+	 }
+
+    /*
+     * transport layer informations
+     */
+    @Nullable
+    protected TransportInfos transportInfos;
+  
     private String remoteHost = null;
     private int remotePort =  -1;
     private String transport = null;
@@ -636,10 +670,114 @@ public abstract class Msg extends MsgLight implements Removable
      */
     public abstract String toXml() throws Exception;
 
+    
+    /**
+     * a context object provided to a msg when it is parsed
+     * avoid to add new arguments to the Msg parseFromXml method
+     */
+    public static final class ParseFromXmlContext{
+    	private Boolean request = null;
+    	private String transport = null;
+    	private Listenpoint listenpoint = null;
+    	private Channel channel = null;
+    	
+    	
+    	
+    	public ParseFromXmlContext(){
+    	}
+    	
+    	
+    	
+    	public ParseFromXmlContext setRequest(boolean value){
+    		this.request = new Boolean(value);
+    		return this;
+    	}
+    	
+    	public boolean hasRequest(){
+    		return this.request!=null;
+    	}
+    	
+    	/** TODO return IMMUTABLE or boolean to avoid side-effects */
+    	public Boolean getRequest(){
+    		return this.request;
+    	}
+    	
+    	
+    	
+    	public ParseFromXmlContext setTransport(String value){
+   			this.transport = value;
+    		return this;
+    	}
+    	
+    	public boolean hasTransport(){
+    		return this.transport!=null;
+    	}
+    	
+    	public String getTransport(){
+    		return this.transport;
+    	}
+    	
+    	
+    	public ParseFromXmlContext setListenpoint(Listenpoint value){
+    		this.listenpoint = value;
+    		return this;
+    	}
+    	
+    	public boolean hasListenpoint(){
+    		return this.listenpoint!=null;
+    	}
+    	
+    	/** TODO return IMMUTABLE */
+    	public Listenpoint getListenpoint(){
+    		return this.listenpoint;
+    	}
+    	
+    	
+    	public ParseFromXmlContext setChannel(Channel value){
+    		this.channel = value;
+    		return this;
+    	}
+    	
+    	public boolean hasChannel(){
+    		return this.channel!=null;
+    	}
+    	
+    	/** TODO return IMMUTABLE */
+    	public Channel getChannel(){
+    		return this.channel;
+    	}
+    }
+    
     /** 
      * Parse the message from XML element 
      */
-    public abstract void parseFromXml(Boolean request, Element root, Runner runner) throws Exception;
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception{
+    	
+		//initialize transportInfos if any
+		{
+			@SuppressWarnings("unchecked")
+			List<Element> transportInfosElements = root.elements("transportInfos");
+
+			if (!transportInfosElements.isEmpty() && context.hasTransport()) {
+				String transport = context.getTransport().toUpperCase();
+				Stack stack = StackFactory.getStack(transport);
+				assert stack!=null;
+				assert stack instanceof TransportStack;
+				TransportStack transportStack = (TransportStack)stack;
+				Msg.TransportInfos transportInfosInstance = transportStack.createMsgTransportInfos();
+				if( transportInfosInstance!=null ){
+					this.setTransportInfos(transportInfosInstance);	
+				}
+			}
+ 
+			if (this.transportInfos != null) {
+				this.transportInfos.parseFromXml(transportInfosElements);
+			}
+		}
+		
+		//initialize other generic stuffs here
+		//...
+    }
 
     /** summary of the message used for statistics counters */
     public String getSummary(boolean send, boolean prefix) throws Exception
@@ -676,8 +814,9 @@ public abstract class Msg extends MsgLight implements Removable
      */
     public Parameter getParameter(String path) throws Exception
     {
-    	path = path.trim();
-        String[] params = Utils.splitPath(path);
+        ParameterKey key = new ParameterKey(path);
+        String[] params = key.getSubkeys();
+
         if (params.length < 1)
         {
             return null;
@@ -810,6 +949,13 @@ public abstract class Msg extends MsgLight implements Removable
             	String xml = "<msg>" + toXml() + "</msg>";
             	var.add(xml);
             }
+            else if (params[1].equalsIgnoreCase("transportInfos") )
+            {
+            	if( this.transportInfos!=null ){
+            		ParameterKey transportInfosKey = key.shift(2);
+            		var = this.transportInfos.getParameter( transportInfosKey );
+            	}
+            }
             else
             {
             	Parameter.throwBadPathKeywordException(path);
@@ -937,5 +1083,20 @@ public abstract class Msg extends MsgLight implements Removable
     public void setTlvMessage(TlvMessage tlvMessage) 
     {
     }
+     
+    /**
+	 * @return the transportInfos
+	 */
+	public TransportInfos getTransportInfos() {
+		return transportInfos;
+	}
+
+	/**
+	 * @param transportInfos the transportInfos to set
+	 */
+	public void setTransportInfos(TransportInfos transportInfos) {
+    	assert this.transportInfos==null;
+		this.transportInfos = transportInfos;
+	}
     
 }

@@ -759,9 +759,11 @@ public class MsgDiamCommon extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-    	this.message = MsgDiameterParser.getInstance().parseMsgFromXml(request, root);
+    	super.parseFromXml(context,root,runner);
+
+    	this.message = MsgDiameterParser.getInstance().parseMsgFromXml(context.getRequest(), root);
     	    	
         // DEPRECATED begin
         String server = root.attributeValue("server");

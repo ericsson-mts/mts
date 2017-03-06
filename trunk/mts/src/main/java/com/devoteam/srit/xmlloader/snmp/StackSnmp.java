@@ -28,6 +28,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
@@ -134,7 +135,7 @@ public class StackSnmp extends Stack
     }
 
     @Override
-    public Msg parseMsgFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
         // header
         Element header = root.element("header");

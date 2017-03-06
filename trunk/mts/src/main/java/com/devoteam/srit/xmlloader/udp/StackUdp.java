@@ -23,14 +23,14 @@
 
 package com.devoteam.srit.xmlloader.udp;
 
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.TransportStack;
 
 
 /**
  *
  * @author 
  */
-public class StackUdp extends Stack
+public class StackUdp extends TransportStack
 {
 	
 	/** Creates a new instance */

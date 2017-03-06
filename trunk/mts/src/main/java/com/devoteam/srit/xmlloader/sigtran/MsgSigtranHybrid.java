@@ -431,9 +431,10 @@ public class MsgSigtranHybrid extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        // not called
+    	super.parseFromXml(context,root,runner);
+       // not called
     }
 
 }

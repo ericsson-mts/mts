@@ -149,9 +149,11 @@ public class MsgEthernet extends Msg
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-		List<Element> elements = root.elements("data");
+    	super.parseFromXml(context,root,runner);
+
+    	List<Element> elements = root.elements("data");
 		Element header = root.element("ethernet");
         List<byte[]> datas = new LinkedList<byte[]>();        
         for (Element element : elements)

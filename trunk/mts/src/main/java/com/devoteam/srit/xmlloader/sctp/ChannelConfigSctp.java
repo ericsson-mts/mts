@@ -23,9 +23,15 @@
 
 package com.devoteam.srit.xmlloader.sctp;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
+import com.devoteam.srit.xmlloader.core.ParameterKey;
+import com.devoteam.srit.xmlloader.core.exception.ParameterException;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
-import java.util.List;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
 
 import org.dom4j.Element;
 
@@ -71,10 +77,16 @@ public class ChannelConfigSctp{
 	*/
 	public short max_init_timeo = 0;
 
+	/**
+	 * 
+	 */
 	public ChannelConfigSctp()
     {
     }
     
+	/**
+	 * 
+	 */
     public void setFromStackConfig( Config stackConfig ) throws Exception
     {
 		// initialize from the configuration file
@@ -84,43 +96,109 @@ public class ChannelConfigSctp{
     	this.max_init_timeo= (short) stackConfig.getInteger("connect.MAX_INIT_TIMEO");
     }
 
-    /*
+	/**
+	 * 
+	 */
+	public void setFromSctpStackConfig() throws Exception {
+	    Config sctpStackConfig = StackFactory.getStack(StackFactory.PROTOCOL_SCTP).getConfig();
+	    this.setFromStackConfig( sctpStackConfig );
+	}
+
+    /**
      * 
      */
-    public void setFromXml(List<Element> sctpElements) throws Exception
+    public void setFromXml(Element sctpElement) throws Exception
     {
-		// Parse the XML file
- 		if (sctpElements != null && sctpElements.size() > 0)
+		String num_ostreams = sctpElement.attributeValue("num_ostreams");
+		if (num_ostreams != null)
 		{
-			Element sctpElement = sctpElements.get(0);
-	        
-			String num_ostreams = sctpElement.attributeValue("num_ostreams");
-			if (num_ostreams != null)
-			{
-				this.num_ostreams = (short) Integer.parseInt(num_ostreams);	    	
-			}
-	
-			String max_instreams = sctpElement.attributeValue("max_instreams");
-	    	if (max_instreams != null)
-	    	{
-	    		this.max_instreams = (short) Integer.parseInt(max_instreams);
-	    	}
-			
-	    	String max_attempts = sctpElement.attributeValue("max_attempts");
-			if (max_attempts != null)
-			{
-				this.max_attempts = (short) Integer.parseInt(max_attempts);    			
-			}
-			
-			String max_init_timeo = sctpElement.attributeValue("max_initTimeo");
-			if (max_init_timeo != null)
-			{
-				this.max_init_timeo= (short) Integer.parseInt(max_init_timeo);    			
-			}
+			this.num_ostreams = (short) Integer.parseInt(num_ostreams);	    	
+		}
+
+		String max_instreams = sctpElement.attributeValue("max_instreams");
+    	if (max_instreams != null)
+    	{
+    		this.max_instreams = (short) Integer.parseInt(max_instreams);
+    	}
+		
+    	String max_attempts = sctpElement.attributeValue("max_attempts");
+		if (max_attempts != null)
+		{
+			this.max_attempts = (short) Integer.parseInt(max_attempts);    			
+		}
+		
+		String max_init_timeo = sctpElement.attributeValue("max_initTimeo");
+		if (max_init_timeo != null)
+		{
+			this.max_init_timeo= (short) Integer.parseInt(max_init_timeo);    			
 		}
     }
     
-   /** 
+	/**
+	 * 
+	 */
+	public void parseFromXml(Collection<Element> sctpElements) throws Exception {
+	    this.setFromSctpStackConfig();
+	    for( Element sctpElement:sctpElements ){
+		    this.setFromXml(sctpElement);
+	    }	    
+	}    
+	
+	/**
+	 * TODO refactor
+	 */
+	public static boolean isParameterHeadSubkeyValid(ParameterKey parameterKey){
+		try{
+			String headSubkey = parameterKey.getHeadSubkey();
+			switch( headSubkey ){
+			case "num_ostreams":
+			case "max_instreams":
+			case "max_attempts":
+			case "max_init_timeo":
+				return true;
+			}
+		}catch(Exception exception){
+			//nothing special to do
+		}
+		return false;
+	}
+    
+	/**
+	 * 
+	 */
+	@Nonnull
+	public Parameter getParameter(ParameterKey parameterKey) throws ParameterException {
+		Parameter parameter = new Parameter();
+		try{
+			String headSubkey = parameterKey.getHeadSubkey();
+			switch( headSubkey ){
+			case "num_ostreams":
+				parameter.add(  Long.toUnsignedString( Short.toUnsignedLong(this.num_ostreams) ) );
+	    		break;
+			case "max_instreams":
+				parameter.add(  Long.toUnsignedString( Short.toUnsignedLong(this.max_instreams) ) );
+	    		break;
+			case "max_attempts":
+				parameter.add(  Long.toUnsignedString( Short.toUnsignedLong(this.max_attempts) ) );
+	    		break;
+			case "max_init_timeo":
+				parameter.add(  Long.toUnsignedString( Short.toUnsignedLong(this.max_init_timeo) ) );
+	    		break;
+	    	default:
+	    		Parameter.throwBadPathKeywordException( parameterKey );
+			}
+		}catch(Exception exception){
+			if( exception instanceof ParameterException ){
+				throw exception;
+			}
+			else{
+				throw new ParameterException( "",exception );
+			}
+		}
+		return parameter;
+	}
+
+    /** 
      * Returns the string description of the message. Used for logging as DEBUG level 
      */
     public String toString()
@@ -140,5 +218,35 @@ public class ChannelConfigSctp{
 		
 		return ret;
 	}	
+    
+    /**
+     * 
+     */
+    @Override
+    public boolean equals( Object object )
+    {
+    	if( object==null ){
+    		return false;
+    	}
+    	if( !(object instanceof ChannelConfigSctp) ){
+    		return false;
+    	}
+    	ChannelConfigSctp channelConfigSctp = (ChannelConfigSctp)object;
+    	
+    	if( this.num_ostreams != channelConfigSctp.num_ostreams ){
+    		return false;
+    	}
+    	if( this.max_instreams != channelConfigSctp.max_instreams ){
+    		return false;
+    	}
+    	if( this.max_attempts != channelConfigSctp.max_attempts ){
+    		return false;
+    	}
+    	if( this.max_init_timeo != channelConfigSctp.max_init_timeo ){
+    		return false;
+    	}
+    	return true;
+    }
+
 
 }

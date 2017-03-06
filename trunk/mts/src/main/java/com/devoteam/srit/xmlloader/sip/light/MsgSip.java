@@ -175,9 +175,11 @@ public class MsgSip extends MsgSipCommon
      * Parse the message from XML element 
      */
     @Override
-    public void parseFromXml(Boolean request, Element root, Runner runner) throws Exception
+    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception
     {
-        String text = root.getText();
+    	super.parseFromXml(context,root,runner);
+
+    	String text = root.getText();
         StackSip stackSip = (StackSip) stack;
         this.message = new TextMessage(getProtocol(), true, stackSip.addCRLFContent, stackSip.contentBinaryTypes);
         this.message.setCompressedHeader(compressedHeader);
