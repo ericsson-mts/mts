@@ -602,19 +602,31 @@ public class MsgSigtran extends Msg
 
         if (params.length > 0 && params[0].equalsIgnoreCase("asn")) 
         {
-        	return this._apMessage.getParameter(path);
+        	if (_apMessage != null)
+        	{
+        		return this._apMessage.getParameter(path);
+        	}
         }
         else if (params.length > 0 && params[0].equalsIgnoreCase("ap")) 
         {
-        	return this._apMessage.getParameter(path);
+        	if (_apMessage != null)
+        	{
+        		return this._apMessage.getParameter(path);
+        	}
         }
         else if (params.length > 0 && params[0].equalsIgnoreCase("tcap")) 
         {
-        	return this._tcapMessage.getParameter(path);
+        	if (_tcapMessage != null)
+        	{
+        		return this._tcapMessage.getParameter(path);
+        	}
         }
         else if (params.length > 0 && params[0].equalsIgnoreCase("isdn")) 
         {
-        	this._ieMessage.getParameter(var, params, path);
+        	if (_ieMessage != null)
+        	{
+        		this._ieMessage.getParameter(var, params, path);
+        	}
         }
         else if (params.length > 0 && params[0].equalsIgnoreCase("ss7")) 
         {
