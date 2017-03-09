@@ -4,7 +4,7 @@
 <scenario>
 
     <stats>
-    	<reset name="text1"/>
+    	<reset name="textDescr1"/>
     </stats>
 
     <parameter name="[timestamp]" operation="system.timestamp" />
@@ -16,8 +16,17 @@
             <newValue>bonjour !</newValue>
         </text>
         <text name="textDescr2" summary="t2" complete="textLongDescr2">
-            <newValue milliseconds="[timestamp]">my name is IMSloader</newValue>         
+            <newValue milliseconds="[timestamp]">my name is MTS</newValue>         
         </text>        
     </stats>
     
+    <parameter name="[textDescr1]" operation="system.statCounter" value="user" value2="textDescr1"/>
+    <test parameter="[textDescr1.Text]" condition="string.equals" value="bonjour !"/> 
+
+    <parameter name="[textDescr2]" operation="system.statCounter" value="user" value2="textDescr2"/>
+    <test parameter="[textDescr2.Text]" condition="string.equals" value="my name is MTS"/> 
+
+    <parameter name="[filePath]" operation="system.statCounter" value="test" value2="File_path"/>
+    <test parameter="[filePath.Text]" condition="string.endsWith" value="/tutorial/core/test.xml"/> 
+       
 </scenario>
