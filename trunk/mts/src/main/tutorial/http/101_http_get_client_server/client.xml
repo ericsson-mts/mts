@@ -13,5 +13,9 @@ User-Agent: XMLLoader
 	</sendMessageHTTP>
 		
 	<receiveMessageHTTP name="Send 200 OK" request="false" type="GET" result="200">
+		  <parameter name="[contentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>  
 	</receiveMessageHTTP>
+  
+  <test parameter="[contentLength]" condition="string.equals" value="0"/>
+  
 </scenario> 
