@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.system.OSValidator;
 
 /**
  *
@@ -136,8 +137,6 @@ public class StackFactory
 
     public static void getAllStacks() throws Exception
     {    
-    	boolean OSLinux = !System.getProperty("os.name").toLowerCase().contains("windows");
-    	
     	// use the class fields starting with "PROTOCOL_"
     	Field[] fields = StackFactory.class.getDeclaredFields();
     	for (int i = 0; i < fields.length; i++) 
@@ -147,7 +146,7 @@ public class StackFactory
 			String protocolVarname = f.getName(); 
 			if (protocolVarname.startsWith("PROTOCOL_"))
 			{
-				if (!PROTOCOL_SCTP.equals(protocolVarname) || OSLinux)
+				if ( !(PROTOCOL_SCTP.equals(protocolVarname) && OSValidator.isWindows() ) )
 				{
 					String protocol = (String) f.get(StackFactory.class);
 					getStack(protocol);
