@@ -29,6 +29,8 @@ import java.util.concurrent.Callable;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 
+import com.devoteam.srit.xmlloader.core.utils.system.OSValidator;
+
 /**
  * This class provides a workaround for bugs in the Windows implementation of
  * {@link JFileChooser} causing certain operations to deadlock.<br />
@@ -55,11 +57,7 @@ public class BetterFileChooser extends JFileChooser {
 
     /** A reference to the Swing-Shell system thread, needed for deadlock detection. */
     private static Thread s_SwingShellThread = null;
-    private static final boolean WINDOWS;
-    static {
-        String osName = System.getProperty("os.name");
-        WINDOWS = osName.contains("Windows") || osName.contains("windows");
-    }
+    private static final boolean WINDOWS = OSValidator.isWindows();
 
     /**
      * A worker thread that executes the Callable passed to it in the constructor and

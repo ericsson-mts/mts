@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
+import com.devoteam.srit.xmlloader.core.utils.system.OSValidator;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -1272,7 +1273,7 @@ public class Utils
     {
         String root = "";
         boolean isAbsolute = false;
-        if (System.getProperty("os.name").toLowerCase().contains("win"))
+        if (OSValidator.isWindows())
         {
             File[] roots = File.listRoots();
             for (File aRoot : roots)
@@ -1409,7 +1410,7 @@ public class Utils
 		if (path != null)
 		{
 		    //, windows case
-		    if (System.getProperty("os.name").toLowerCase().indexOf("windows") != -1)
+		    if (OSValidator.isWindows())
 		    {
 		        if (!path.startsWith("\""))
 		        {
