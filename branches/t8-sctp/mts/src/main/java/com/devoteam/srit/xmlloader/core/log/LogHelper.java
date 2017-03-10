@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.core.log;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.system.OSValidator;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
 /**
@@ -63,8 +64,7 @@ public class LogHelper {
         String s = e.getText();
         s = Utils.replaceNoRegex(s, "\r\n", "\n");
 
-        String nameOS = System.getProperty("os.name");
-        if (nameOS.contains("Win")) {
+        if (OSValidator.isWindows()) {
             s = Utils.replaceNoRegex(s, "\n", "\r\n");
         }
 

@@ -25,6 +25,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.system.OSValidator;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -463,12 +464,7 @@ public class RTPSessionMgr extends RTPManager
             
         }
     }
-    
-    private boolean Win32()
-    {
-        return System.getProperty("os.name").startsWith("Windows");
-    }
-    
+        
     public void addFormat(Format format, int i)
     {
         if(formatinfo != null)
@@ -524,7 +520,7 @@ public class RTPSessionMgr extends RTPManager
         InetAddress inetaddress2 = InetAddress.getLocalHost();
         if(!inetaddress.isMulticastAddress() && !inetaddress.equals(inetaddress2))
         {
-            if(isBroadcast(inetaddress) && !Win32())
+            if(isBroadcast(inetaddress) && !OSValidator.isWindows())
             {
                 bindtome = false;
             }
@@ -2412,7 +2408,7 @@ public class RTPSessionMgr extends RTPManager
         }
         if(!dataaddress.isMulticastAddress() && !dataaddress.equals(inetaddress))
         {
-            if(isBroadcast(dataaddress) && !Win32())
+            if(isBroadcast(dataaddress) && !OSValidator.isWindows() )
             {
                 bindtome = false;
             }
