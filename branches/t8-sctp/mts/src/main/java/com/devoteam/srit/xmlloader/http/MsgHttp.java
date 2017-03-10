@@ -423,6 +423,7 @@ public class MsgHttp extends Msg
         {
             line = headers.substring(0, endOfLine);
         }
+        boolean contentLengthPresent = false;
         while (endOfLine != -1 && line.length() > 0)
         {
             // Remove line from data since we parse it here
@@ -433,7 +434,7 @@ public class MsgHttp extends Msg
 
             if (index == -1)
             {
-                throw new ExecutionException("Invalid header -> " + line);
+                throw new ExecutionException("Invalid header ':' not found " + line);
             }
 
             String name =  line.substring(0, index).trim();
@@ -441,6 +442,10 @@ public class MsgHttp extends Msg
             if (!name.equals("Content-Length") || Utils.isInteger(value))
             {
             	currentMessage.addHeader(name, value);
+            }
+            else
+            {
+            	contentLengthPresent = true;
             }
 
             // Read next line
@@ -469,7 +474,7 @@ public class MsgHttp extends Msg
                 if (requestMessage.getRequestLine().getMethod().toLowerCase().equals("get") ||
                 		requestMessage.getRequestLine().getMethod().toLowerCase().equals("head"))
                 {
-                    throw new ExecutionException("Request " + requestMessage.getRequestLine().getMethod() + " is not allowed to contain an entity");
+                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Request ", requestMessage.getRequestLine().getMethod(), " is not allowed to contain an entity");
                 }
             }
 
@@ -486,7 +491,7 @@ public class MsgHttp extends Msg
             Header[] contentType = currentMessage.getHeaders("Content-Type");
             Header[] contentLength = currentMessage.getHeaders("Content-Length");
 
-            if(contentType.length > 0 && contentType[0].getValue().toLowerCase().contains("multipart"))
+            if (contentType.length > 0 && contentType[0].getValue().toLowerCase().contains("multipart"))
             {
                 // do nothing, we should not add a CRLF at the end of the data when multipart
             }
@@ -500,7 +505,7 @@ public class MsgHttp extends Msg
              *       But if I try to delete this additional CRLF, most of tutorials tests does not
              *       work anymore.   
              */
-            else if( contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip") )
+            else if (contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip") )
             {
                 messageContent += "\r\n"; // it seems necessary to end the data by a CRLF (???)
             }
@@ -523,21 +528,29 @@ public class MsgHttp extends Msg
             {
                 messageContent += "\r\n"; // when chunked, there must be a double CRLF after the last chunk size
             }
+        }
+        else
+        {
+        	messageContent = datas;
+        	if (contentLengthPresent)
+        	{
+        		currentMessage.addHeader("Content-Length", Integer.toString(0));
+        	}
+        }
 
-            HttpEntity entity = new ByteArrayEntity(messageContent.getBytes());
+        HttpEntity entity = new ByteArrayEntity(messageContent.getBytes());
 
-            if (null != responseMessage)
-            {
-            	responseMessage.setEntity(entity);
-            }
-            else if (null != requestMessage)
-            {
-            	requestMessage.setEntity(entity);
-            }
-            else
-            {
-                entity = null;
-            }
+        if (null != responseMessage)
+        {
+        	responseMessage.setEntity(entity);
+        }
+        else if (null != requestMessage)
+        {
+        	requestMessage.setEntity(entity);
+        }
+        else
+        {
+            entity = null;
         }
         
     }
