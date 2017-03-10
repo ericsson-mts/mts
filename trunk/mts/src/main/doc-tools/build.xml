@@ -1,0 +1,19 @@
+<project name="IMSLoader" basedir=".">
+
+    <property name="conf.schemas" value="../conf/schemas"/>
+    <property name="doc.schemas" value="../doc/schemas"/>
+
+    <target name="clean" description="clean ">
+        <delete dir="${doc.schemas}"/>
+    </target>
+
+    <target name="generate_xsd" description="generate standalone schemas (without entity) for the documentation tools">
+        <xslt basedir="." in="${conf.schemas}/scenario.xsd" out="${doc.schemas}/scenario.xsd" processor="trax" style="copy.xsl" />
+        <copy file="${conf.schemas}/test.xsd" toFile="${doc.schemas}/test.xsd" />
+        <xslt basedir="." in="${conf.schemas}/scenario_protocol.xsd" out="${doc.schemas}/scenario_protocol.xsd" processor="trax" style="copy.xsl" />
+        <copy file="${conf.schemas}/parameter_operation.xsd" toFile="${doc.schemas}/parameter_operation.xsd" />
+        <copy file="${conf.schemas}/test_condition.xsd" toFile="${doc.schemas}/test_condition.xsd" />
+        <copy file="${conf.schemas}/master.xsd" toFile="${doc.schemas}/master.xsd" />
+    </target>
+
+</project>
