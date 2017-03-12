@@ -54,12 +54,23 @@
         <scenario name="server" file="005_multihoming/server.xml" state="[remoteServer]" routingName="SCTP"/>
     </testcase>
     
+    <testcase name="server" description="server as proxy" state="false">
+        <scenario name="server" file="901_server/scenario.xml" routingName="[remotePortSCTP]"/>
+    </testcase>
+
     <testcase name="client" description="client" state="false">
         <scenario name="client" file="901_client/scenario.xml" routingName="client"/>
     </testcase>
-    
-    <testcase name="server" description="server as proxy" state="false">
-        <scenario name="server" file="901_server/scenario.xml" routingName="[remotePortSCTP]"/>
+
+    <!--
+         multihoming test using 2 hosts
+         detailed information in 902_multihoming directory
+    -->
+    <testcase name="multihoming_server" description="multihoming server as proxy" state="false">
+        <scenario name="server" file="902_multihoming_server/scenario.xml" routingName="[remotePortSCTP]"/>
+    </testcase>
+     <testcase name="multihoming_client" description="multihoming client" state="false">
+        <scenario name="client" file="902_multihoming_client/scenario.xml" routingName="client"/>
     </testcase>
     
 </test>
