@@ -461,9 +461,14 @@ public class MsgSigtran extends Msg
 		    			{
 		    				_apMessage = new BN_APMessage("cap/dictionary_CAP.xml");
 		    			}
-		    			else 
+		    			else if (ACN != null && ACN.startsWith("MAP-"))
 		    			{
 		    				_apMessage = new BN_APMessage("map/dictionary_MAP.xml");
+		    			} 
+		    			else
+		    			{		    				
+		    				String dico = ((StackSigtran) this.stack).defaultAPDictionary;
+		    				_apMessage = new BN_APMessage(dico);
 		    			}
 						_apMessage.decode(arrayAP, "BER");
 		    		}
