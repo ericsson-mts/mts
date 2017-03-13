@@ -23,12 +23,12 @@ The scenario 902_multihoming_server is started on the 1st host.
 The sctp listenpoint is bound to the eth1 and eth2 local addresses.
 
 The scenario 902_multihoming_client is started on the 2nd host.
-The sctpannel is bound to the eth1 and eth2 local addresses.
+The sctp channel is bound to the eth1 and eth2 local addresses.
 
 The user use the VirtualBox network cards gui to detach/re-attach the interfaces:
-0. with all interfaces attached, messages should be routed through eth0 (intnet1)
-1. detach client.eth1: messages should be routed through eth1 (intnet2)
-2. attach client.eth1: messages should be routed through eth0 (intnet1)
-3. detach client.eth2: messages should be routed through eth0 (intnet1)
+0. with all interfaces attached, messages should be routed through eth1 (intnet2)
+1. detach client.eth1: messages should be routed through eth2 (intnet3)
+2. attach client.eth1: messages should be routed through eth1 (intnet2)
+3. detach client.eth2: messages should be routed through eth1 (intnet2)
 4. detach client.eth1: the client connection should be broken
 
