@@ -17,7 +17,6 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with Multi-Protocol Test Suite (MTS).
- * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
 
@@ -146,7 +145,7 @@ public class StackFactory
 			String protocolVarname = f.getName(); 
 			if (protocolVarname.startsWith("PROTOCOL_"))
 			{
-				if ( !(PROTOCOL_SCTP.equals(protocolVarname) && OSValidator.isWindows() ) )
+				if ( !(protocolVarname.equals("PROTOCOL_" + PROTOCOL_SCTP) && OSValidator.isWindows() ) )
 				{
 					String protocol = (String) f.get(StackFactory.class);
 					getStack(protocol);
