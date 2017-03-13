@@ -52,8 +52,8 @@ public class StackSigtran extends Stack
     private HashMap<String, TlvDictionary> tlvDictionaries;
     private HashMap<String, FvoDictionary> fvoDictionaries;
 
-    private int defaultPayloadProtocolID = 0;
-        
+    protected int defaultPayloadProtocolID = 3;
+    protected String defaultAPDictionary = "map/dictionary_MAP.xml";    
     
     public StackSigtran() throws Exception 
     {
@@ -62,6 +62,7 @@ public class StackSigtran extends Stack
         this.tlvDictionaries = new HashMap<String, TlvDictionary>();
         this.fvoDictionaries = new HashMap<String, FvoDictionary>();
         this.defaultPayloadProtocolID = getConfig().getInteger("server.DEFAULT_PPID", 3);
+        this.defaultAPDictionary = getConfig().getString("ap.DEFAULT_AP_DICTIONARY", defaultAPDictionary);
     }
 
     public TlvDictionary getTlvDictionnary(String name) throws Exception
