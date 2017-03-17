@@ -161,7 +161,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKey, value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_count =+", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic COUNTER : ", name, "/_count =+", value);
             }
             else if (actionElementName.equals("decrease")) {
                 double value = Double.parseDouble((null != actionElement.attributeValue("value") ? actionElement.attributeValue("value") : actionElement.getText()));
@@ -172,7 +172,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKey, -value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_count =-", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic COUNTER : ", name, "/_count =-", value);
             }
         }
     }
@@ -201,7 +201,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKey, value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_count =+", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic FLOW : ", name, "/_count =+", value);
             }
             else if (actionElementName.equals("decrease")) {
                 double value = Double.parseDouble((null != actionElement.attributeValue("value") ? actionElement.attributeValue("value") : actionElement.getText()));
@@ -212,7 +212,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKey, -value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_count =-", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic FLOW : ", name, "/_count =-", value);
             }
         }
     }
@@ -242,9 +242,8 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKeyValue, value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_total +=", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic VALUE : ", name, "/_total +=", value, "/_count +=", 1);
                 StatPool.getInstance().addValue(statKeyCount, 1);
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_count +=", 1);
             }
         }
     }
@@ -274,7 +273,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKeyValue, value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_value =+", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic PERCENT : ", name, "/_value =+", value);
             }
             else if (actionElementName.equals("incTotal")) {
                 double value = Double.parseDouble((null != actionElement.attributeValue("value") ? actionElement.attributeValue("value") : actionElement.getText()));
@@ -285,7 +284,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKeyTotal, value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_total =+", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic PERCENT : ", name, "/_total =+", value);
             }
         }
     }
@@ -314,7 +313,7 @@ public class OperationStats extends Operation {
                 else {
                     StatPool.getInstance().addValue(statKeyValue, value);
                 }
-                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic : ", name, "/_value +=", value);
+                GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CORE, "Statistic TEXT : ", name, "/_value +=", value);
             }
         }
     }
@@ -331,7 +330,7 @@ public class OperationStats extends Operation {
         counterName = counterName.trim();
         String path = root.attributeValue("path");
         if (path == null) {
-            path = "user>" + counterName;
+            path = "user>value>" + counterName;
         }
         path = path.trim();
         if (path.charAt(0) == '>') {
