@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
+
+    <stats>
+    	<reset name="percent1"/>
+    	<reset name="percent2" path=">user>value>percent2"/>
+    </stats>
+
     <parameter name="[timestamp]" operation="system.timestamp" />
     <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-
     <stats>
         <percent name="percent1" summary="p1" complete="percent1.complete">
             <incValue>10</incValue>
@@ -20,8 +25,7 @@
     
     <pause name="tempo" seconds="0.1"/>    
     <parameter name="[timestamp]" operation="system.timestamp" />
-    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-    
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>    
     <stats>
         <percent name="percent1" summary="p1" complete="percent1.complete">
             <incValue>10</incValue>
@@ -40,7 +44,6 @@
     <pause name="tempo" seconds="0.1"/>    
     <parameter name="[timestamp]" operation="system.timestamp" />
     <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-    
     <stats>
         <percent name="percent1">
             <incValue>-20</incValue>
@@ -53,5 +56,33 @@
             <incTotal milliseconds="[timestamp]">50</incTotal>
         </percent>                        
     </stats>
+
+    <parameter name="[percent1]" operation="system.statCounter" value="user" value2="percent1"/>
+    <test parameter="[percent1]" condition="list.size" value="5"/>
+    <test parameter="[percent1(0)]" condition="string.equals" value="percent1.Count"/>
+    <test parameter="[percent1(1)]" condition="string.equals" value="percent1.Min"/>
+    <test parameter="[percent1(2)]" condition="string.equals" value="percent1.Av"/>    
+    <test parameter="[percent1(3)]" condition="string.equals" value="percent1.Dev"/>
+    <test parameter="[percent1(4)]" condition="string.equals" value="percent1.Max"/>    
+    <test parameter="[percent1.Count]" condition="number.equals" value="20"/>
+    <!--test parameter="[percent1.Min]" condition="number.greaterEqualThan" value="-50"/>   
+    <test parameter="[percent1.Min]" condition="number.lowerEqualThan" value="0"/>
+    <test parameter="[percent1.Av]" condition="number.greaterEqualThan" value="10"/>
+    <test parameter="[percent1.Av]" condition="number.lowerEqualThan" value="20"/>
+    <test parameter="[percent1.Dev]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[percent1.Dev]" condition="number.lowerEqualThan" value="10"/>
+    <test parameter="[percent1.Max]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[percent1.Max]" condition="number.lowerEqualThan" value="100"/-->
+
+    <parameter name="[percent2]" operation="system.statCounter" value="user" value2="percent2"/>
+    <test parameter="[percent2.Count]" condition="number.equals" value="20"/>
+    <!--test parameter="[percent2.Min]" condition="number.greaterEqualThan" value="-50"/>   
+    <test parameter="[percent2.Min]" condition="number.lowerEqualThan" value="0"/>
+    <test parameter="[percent2.Av]" condition="number.greaterEqualThan" value="10"/>
+    <test parameter="[percent2.Av]" condition="number.lowerEqualThan" value="20"/>
+    <test parameter="[percent2.Dev]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[percent2.Dev]" condition="number.lowerEqualThan" value="10"/>
+    <test parameter="[percent2.Max]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[percent2.Max]" condition="number.lowerEqualThan" value="100"/-->
 
 </scenario>

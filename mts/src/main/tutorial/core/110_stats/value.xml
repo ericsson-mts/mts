@@ -2,15 +2,20 @@
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
 <scenario>
+
+    <stats>
+    	<reset name="value1"/>
+    	<reset name="value2" path=">user>value>value2"/>
+    </stats>
+
     <parameter name="[timestamp]" operation="system.timestamp" />
     <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
 
     <parameter name="[value(0)]" operation="set" value="10"/>
     <parameter name="[value(1)]" operation="set" value="40"/>
-    <parameter name="[value(2)]" operation="set" value="0"/>    
-    
+    <parameter name="[value(2)]" operation="set" value="0"/>        
     <stats>
-        <value name="valDescr1" summary="v1" complete="valueLongD1">
+        <value name="value1" summary="v1" complete="valueLongD1">
             <newValue>[value(0)]</newValue>
             <newValue>[value(1)]</newValue>
             <newValue>[value(2)]</newValue> 
@@ -18,7 +23,7 @@
             <newValue milliseconds="[timestamp]">[value(1)]</newValue>
             <newValue milliseconds="[timestamp]">[value(2)]</newValue> 
         </value>
-        <value name="valDescr1" summary="v2" complete="valueLongD1">
+        <value name="value2" summary="v2" complete="valueLongD2">
         </value>        
     </stats>
 
@@ -26,23 +31,21 @@
     
     <parameter name="[receiveTime]" operation="system.timestamp"/>
     <parameter name="[processTime]" operation="number.substract" value="[receiveTime]" value2="[test:sendTime[HubId]]"/>
-
     <stats>
-	<!--counter name="NumberOfCreatedHubs"><increase>1</increase></counter-->
-	<value name="SwitchTraversalTime"><newValue>[processTime]</newValue></value>
+    	 <!--counter name="NumberOfCreatedHubs"><increase>1</increase></counter-->
+	     <value name="SwitchTraversalTime"><newValue>[processTime]</newValue></value>
     </stats>
     
     <pause name="tempo" seconds="0.1"/>    
     <parameter name="[timestamp]" operation="system.timestamp" />
     <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-    
     <stats>
         <value name="value1" >
-	    <newValue>0</newValue>	
-            <newValue>0</newValue>
-            <newValue>10</newValue>            
-            <newValue milliseconds="[timestamp]">0</newValue>
-            <newValue milliseconds="[timestamp]">10</newValue>
+	       <newValue>0</newValue>	
+         <newValue>0</newValue>
+         <newValue>10</newValue>            
+         <newValue milliseconds="[timestamp]">0</newValue>
+         <newValue milliseconds="[timestamp]">10</newValue>
         </value>                
         <value name="value2" >
             <newValue>10</newValue>            
@@ -52,8 +55,7 @@
 
     <pause name="tempo" seconds="0.1"/>    
     <parameter name="[timestamp]" operation="system.timestamp" />
-    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-    
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>    
     <stats>
         <value name="value1" >
             <newValue>10</newValue>
@@ -64,5 +66,22 @@
             <newValue milliseconds="[timestamp]">40</newValue>
         </value>                                
     </stats>
+
+    <parameter name="[value1]" operation="system.statCounter" value="user" value2="value1"/>
+    <test parameter="[value1]" condition="list.size" value="4"/>
+    <test parameter="[value1(0)]" condition="string.equals" value="value1.Min"/>
+    <test parameter="[value1(1)]" condition="string.equals" value="value1.Av"/>    
+    <test parameter="[value1(2)]" condition="string.equals" value="value1.Dev"/>
+    <test parameter="[value1(3)]" condition="string.equals" value="value1.Max"/>    
+    <test parameter="[value1.Min]" condition="number.equals" value="0"/>   
+    <test parameter="[value1.Av]" condition="number.equals" value="13.076923076923077"/>
+    <!--test parameter="[value1.Dev]" condition="number.equals" value="0"/-->
+    <test parameter="[value1.Max]" condition="number.equals" value="40"/>
+
+    <parameter name="[value2]" operation="system.statCounter" value="user" value2="value2"/>
+    <test parameter="[value2.Min]" condition="number.equals" value="10"/>   
+    <test parameter="[value2.Av]" condition="number.equals" value="17.5"/>
+    <!--test parameter="[value2.Dev]" condition="number.equals" value="0"/-->
+    <test parameter="[value2.Max]" condition="number.equals" value="40"/>
 
 </scenario>

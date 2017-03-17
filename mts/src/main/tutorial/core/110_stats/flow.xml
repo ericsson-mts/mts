@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 <scenario>
+
+    <stats>
+    	<reset name="flow1"/>
+    	<reset name="flow2" path=">user>value>flow2"/>
+    </stats>
+
     <parameter name="[aValue]" operation="set" value="10" />
     <parameter name="[timestamp]" operation="system.timestamp" />
     <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
@@ -19,8 +25,7 @@
     
     <pause name="tempo" seconds="0.1"/>    
     <parameter name="[timestamp]" operation="system.timestamp" />
-    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-    
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>    
     <stats>
         <flow name="flow1" summary="sum2" complete="flowDescr1">
             <decrease>10</decrease>
@@ -31,11 +36,10 @@
             <increase milliseconds="[timestamp]">20</increase>
         </flow>                        
     </stats>
-
+    
     <pause name="tempo" seconds="0.1"/>    
     <parameter name="[timestamp]" operation="system.timestamp" />
-    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
-    
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>    
     <stats>
         <counter name="flow1">
             <decrease>10</decrease>
@@ -46,5 +50,34 @@
             <decrease milliseconds="[timestamp]">10</decrease>
         </counter>                        
     </stats>
+
+    <parameter name="[flow1]" operation="system.statCounter" value="user" value2="flow1"/>
+    <test parameter="[flow1]" condition="list.size" value="5"/>
+    <test parameter="[flow1(0)]" condition="string.equals" value="flow1.Count"/>
+    <test parameter="[flow1(1)]" condition="string.equals" value="flow1.Min"/>
+    <test parameter="[flow1(2)]" condition="string.equals" value="flow1.Av"/>    
+    <test parameter="[flow1(3)]" condition="string.equals" value="flow1.Dev"/>
+    <test parameter="[flow1(4)]" condition="string.equals" value="flow1.Max"/>    
+    <test parameter="[flow1.Count]" condition="number.equals" value="20"/>
+    <!--test parameter="[flow1.Min]" condition="number.greaterEqualThan" value="-10"/>
+    <test parameter="[flow1.Min]" condition="number.lowerEqualThan" value="0"/>   
+    <test parameter="[flow1.Av]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[flow1.Av]" condition="number.lowerEqualThan" value="10"/>
+    <test parameter="[flow1.Dev]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[flow1.Dev]" condition="number.lowerEqualThan" value="10"/>
+    <test parameter="[flow1.Max]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[flow1.Max]" condition="number.lowerEqualThan" value="10"/-->
+
+    <parameter name="[flow2]" operation="system.statCounter" value="user" value2="flow2"/>
+    <test parameter="[flow2.Count]" condition="number.equals" value="20"/>
+    <!--test parameter="[flow2.Min]" condition="number.greaterEqualThan" value="-10"/>
+    <test parameter="[flow2.Min]" condition="number.lowerEqualThan" value="0"/>   
+    <test parameter="[flow2.Av]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[flow2.Av]" condition="number.lowerEqualThan" value="10"/>
+    <test parameter="[flow2.Dev]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[flow2.Dev]" condition="number.lowerEqualThan" value="10"/>
+    <test parameter="[flow2.Max]" condition="number.greaterEqualThan" value="0"/>
+    <test parameter="[flow2.Max]" condition="number.lowerEqualThan" value="10"/-->
+
 
 </scenario>
