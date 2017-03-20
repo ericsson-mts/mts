@@ -13,18 +13,39 @@
 
 <dictionary layer="CAP" className="com.devoteam.srit.xmlloader.sigtran.ap.cap.Component">
 
-    <!-- O=initialDP --> 
+    <!-- 0=initialDP --> 
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.InitialDPArg"
         condition="localValue=0"
     />
+    
+    <!-- 16=assistRequestInstructions -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.AssistRequestInstructionsArg"
+        condition="localValue=16"
+    />    
+    <!-- 17=establishTemporaryConnection -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.EstablishTemporaryConnectionArg"
+        condition="localValue=17"
+    />	
+    <!-- 18=disconnectForwardConnection -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.DisconnectForwardConnectionWithArgumentArg"
+        condition="localValue=18"
+    />
+    
     <!-- 20=connect -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ConnectArg"
         condition="localValue=20"
     />
+    
     <!-- 22=releaseCall -->
     <embedded 
         initial="invokeparameter" 
@@ -43,12 +64,46 @@
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.EventReportBCSMArg"
         condition="localValue=24"
     />
+    
+    <!-- 35=applyCharging -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ApplyChargingArg"
+        condition="localValue=35"
+    />
+	
+    <!-- 36=applyChargingReport -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ApplyChargingReportArg"
+        condition="localValue=36"
+    />
+        
+    <!-- 47=playAnnouncement -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.PlayAnnouncementArg"
+        condition="localValue=47"
+    />
+	  <!-- 48=promptAndCollectUserInformation -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.PromptAndCollectUserInformationArg"
+        condition="localValue=48"
+    />
+	  <!-- 49=specializedResourceReport -->
+    <embedded 
+        initial="invokeparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.SpecializedResourceReportArg"
+        condition="localValue=49"
+    />
+        
     <!-- 53=Cancel -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.CancelArg"
         condition="localValue=53"
-    />  
+    />  					
   
     <!--embedded 
         initial="returnparameter" 
