@@ -118,22 +118,22 @@ public abstract class FieldAbstract
         {
         	newField = new BinaryField();
         }
-        else if (type.equalsIgnoreCase("number_bcd")) 
+        else if (type.equalsIgnoreCase("number_bcd") || type.equalsIgnoreCase("numberbcd")) 
         {
         	newField = new NumberBCDField();
         }
-        else if (type.equalsIgnoreCase("number_mmc")) 
+        else if (type.equalsIgnoreCase("number_mmc") || type.equalsIgnoreCase("numbermmc")) 
         {
         	newField = new NumberMMCField();
-        }	            
-        else if (type.equalsIgnoreCase("ipv4_address")) 
+        }
+        else if (type.equalsIgnoreCase("ipv4_address") || type.equalsIgnoreCase("ipv4address")) 
         {
         	newField = new IPV4AddressField();
         }
-        else if (type.equalsIgnoreCase("ipv6_address")) 
+        else if (type.equalsIgnoreCase("ipv6_address") || type.equalsIgnoreCase("ipv6address")) 
         {
         	newField = new IPV6AddressField();
-        }	            	            
+        }
         else
         {
         	throw new ExecutionException("ERROR : The field type \"" + type + "\" is not supported in the field \"" + name + "\"");

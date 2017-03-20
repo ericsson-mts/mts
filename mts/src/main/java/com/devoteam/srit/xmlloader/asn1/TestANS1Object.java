@@ -153,8 +153,8 @@ public class TestANS1Object
         {
         	String className = name;
         	int pos = className.lastIndexOf('.');
-        	String packageName = className.substring(0, pos + 1);
         	
+        	String packageName = className.substring(0, pos + 1);
     		try 
     		{
     			Class<?> classObj = Class.forName(className);
@@ -172,10 +172,13 @@ public class TestANS1Object
         // case the user enters a package name
         else
         {
-        	String packageName = name;        
-       
-			// inspect the classes for the given package
+        	String packageName = name;
+        	
+        	// dans les .jar le séparateur est / au lieu de .
+        	packageName = packageName.replaceAll("\\.", "/");        	
+			// inspect the classes for the given package        	
 	    	List<Class> listClasses = ClassInspector.find(packageName);
+        	packageName = packageName.replaceAll("/", "\\.");        	
 	    	
 	    	// build the hashmap to find the high level classes
 	    	Map<String, Class> mapClasses = new HashMap<String, Class>();
@@ -249,15 +252,15 @@ public class TestANS1Object
         
         long beginTT = new GregorianCalendar().getTimeInMillis();
         String dictionaryFile = null;
-        if (packageName.endsWith("map."))
+        if (packageName.endsWith(".map."))
         {
         	dictionaryFile = "map/dictionary_MAP.xml";
         }
-        else if (packageName.endsWith("tcap."))
+        else if (packageName.endsWith(".tcap."))
         {
         	dictionaryFile = "tcap/dictionary_TCAP.xml";
         }
-        else if (packageName.endsWith("cap."))
+        else if (packageName.endsWith(".cap."))
         {
         	dictionaryFile = "cap/dictionary_CAP.xml";
         }
