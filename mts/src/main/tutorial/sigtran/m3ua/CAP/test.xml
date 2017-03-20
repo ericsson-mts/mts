@@ -36,16 +36,26 @@
     <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
     
     
-    <testcase name="001_InitialDP" description="test sigtran CAP/InitialDP message" number="[iterations]" state="true">
+    <testcase name="001_InitialDP" description="test sigtran CAP/1=InitialDP message" number="[iterations]" state="true">
         <scenario name="client" file="001_InitialDP/client.xml" routingName="client" state="[localClient]"/>
         <scenario name="server" file="001_InitialDP/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
 
+    <testcase name="016_ARI" description="test sigtran CAP/16=AssistRequestInstructions message" number="[iterations]" state="true">
+        <scenario name="client" file="016_ARI/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="016_ARI/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    </testcase>
+    
+    <testcase name="017_ETC" description="test sigtran CAP/17=EstablishTemporaryConnection message" number="[iterations]" state="true">
+        <scenario name="client" file="017_ETC/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="017_ETC/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    </testcase>
+    
     <testcase name="053_Cancel" description="test sigtran CAP/Cancel message" number="[iterations]" state="true">
         <scenario name="client" file="053_Cancel/client.xml" routingName="client" state="[localClient]"/>
         <scenario name="server" file="053_Cancel/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
-        
+      
     <testcase name="801_Wireshark_Sample_camel2" description="test sigtran wireshark capture CAP" number="[iterations]" state="true">
         <scenario name="client" file="801_Wireshark_Sample_camel2/client.xml" routingName="requestReportBCSMEvent:23,connect:20,releaseCall:22" state="[localClient]"/>
         <scenario name="server" file="801_Wireshark_Sample_camel2/server.xml" routingName="initialDP:0,eventReportBCSM:24,SIGTRAN.M3UA" state="[remoteServer]"/>
