@@ -6,7 +6,7 @@
 
     <call name="diameter.RecCER_SendCEA"/>
     
-    <receiveMessageDIAMETER name="ReceiveRequestCCR" request="true" type="Credit-Control">
+    <receiveMessageDIAMETER name="ReceiveRequestCCR+INITIAL_REQUEST:1" request="true" type="Credit-Control">
         <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
         <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
         <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
@@ -16,11 +16,16 @@
         <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
         <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
         <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[originHost]" operation="protocol.setFromMessage" value="avp.Origin-Host:264.value"/>
+        <parameter name="[originRealm]" operation="protocol.setFromMessage" value="avp.origin-Realm:296.value"/>        
         <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
         <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
         <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
         <parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number:415.value"/>
     </receiveMessageDIAMETER>
+    
+    <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+    <test parameter="[CC-Request-Type]" condition="string.equals" value="INITIAL_REQUEST:1"/>        
 
 <!--
 From 3GPP TS 29.212 V9.3.0 : CCR is sent by the PCEF to the PCRF:
@@ -184,13 +189,127 @@ CC-Answer ::= < Diameter Header: 272, PXY >
     <parameter name="[Pre-emption-Capability]" operation="set" value="PRE-EMPTION_CAPABILITY_ENABLED"/>
     <parameter name="[Pre-emption-Vulnerability]" operation="set" value="PRE-EMPTION_VULNERABILITY_DISABLED"/>
 
-    <sendMessageDIAMETER name="SendAnswerCCA" listenpoint="[listenpointName]" 
+    <sendMessageDIAMETER name="SendAnswerCCA+INITIAL_REQUEST:1" listenpoint="[listenpointName]" 
                          remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">     
         <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
         <avp code="Session-Id:263" value="[sessionId]"/>
         <avp code="Auth-Application-Id:258" value="[authApplicationId]"/>
         <avp code="Origin-Host:264" value="[destinationHost]"/>
         <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Destination-Host:293" value="[originHost]"/>        
+        <avp code="Destination-Realm:283" value="[originRealm]"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+        <avp code="CC-Request-Type:416" value="[CC-Request-Type]"/>
+        <avp code="CC-Request-Number:415" value="[CC-Request-Number]"/>
+        <avp code="Charging-Rule-Install:1001" vendorId="[vendorID]">
+            <avp code="Charging-Rule-Definition:1003" vendorId="[vendorID]">
+                <avp code="Charging-Rule-Name:1005" value="[Charging-Rule-Name]" vendorId="[vendorID]"/>
+                <avp code="Flow-Information:1058">
+                    <avp code="Flow-Description:507" value="[Flow-Description-in]" vendorId="[vendorID]"/>
+                    <avp code="Flow-Description:507" value="[Flow-Description-out]" vendorId="[vendorID]"/>
+                </avp>
+            </avp>
+        </avp>
+        <avp code="QoS-Information:1016" vendorId="[vendorID]">
+            <avp code="APN-Aggregate-Max-Bitrate-UL:1041" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
+            <avp code="APN-Aggregate-Max-Bitrate-DL:1040" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
+        </avp>
+        <avp code="Default-EPS-Bearer-QoS:1049">
+            <avp code="QoS-Class-Identifier:1028" value="[QoS-Class-Identifier]" vendorId="[vendorID]"/>
+            <avp code="Allocation-Retention-Priority:1034" vendorId="[vendorID]">
+                <avp code="Priority-Level:1046" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability:1047" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability:1048" value="[Pre-emption-Vulnerability]"/>
+            </avp>
+        </avp>
+   </sendMessageDIAMETER>
+
+   <receiveMessageDIAMETER name="ReceiveRequestCCR+UPDATE_REQUEST:2" request="true" type="Credit-Control">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[originHost]" operation="protocol.setFromMessage" value="avp.Origin-Host:264.value"/>
+        <parameter name="[originRealm]" operation="protocol.setFromMessage" value="avp.origin-Realm:296.value"/>                
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+        <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+        <parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number:415.value"/>
+    </receiveMessageDIAMETER>
+
+    <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+    <test parameter="[CC-Request-Type]" condition="string.equals" value="UPDATE_REQUEST:2"/>            
+
+    <sendMessageDIAMETER name="SendAnswerCCA+UPDATE_REQUEST:2" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">     
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Auth-Application-Id:258" value="[authApplicationId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Destination-Host:293" value="[originHost]"/>        
+        <avp code="Destination-Realm:283" value="[originRealm]"/>        
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+        <avp code="CC-Request-Type:416" value="[CC-Request-Type]"/>
+        <avp code="CC-Request-Number:415" value="[CC-Request-Number]"/>
+        <avp code="Charging-Rule-Install:1001" vendorId="[vendorID]">
+            <avp code="Charging-Rule-Definition:1003" vendorId="[vendorID]">
+                <avp code="Charging-Rule-Name:1005" value="[Charging-Rule-Name]" vendorId="[vendorID]"/>
+                <avp code="Flow-Information:1058">
+                    <avp code="Flow-Description:507" value="[Flow-Description-in]" vendorId="[vendorID]"/>
+                    <avp code="Flow-Description:507" value="[Flow-Description-out]" vendorId="[vendorID]"/>
+                </avp>
+            </avp>
+        </avp>
+        <avp code="QoS-Information:1016" vendorId="[vendorID]">
+            <avp code="APN-Aggregate-Max-Bitrate-UL:1041" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
+            <avp code="APN-Aggregate-Max-Bitrate-DL:1040" value="[APN-Aggregate-Max-Bitrate-UL]" vendorId="[vendorID]"/>
+        </avp>
+        <avp code="Default-EPS-Bearer-QoS:1049">
+            <avp code="QoS-Class-Identifier:1028" value="[QoS-Class-Identifier]" vendorId="[vendorID]"/>
+            <avp code="Allocation-Retention-Priority:1034" vendorId="[vendorID]">
+                <avp code="Priority-Level:1046" value="[Priority-Level]"/>
+                <avp code="Pre-emption-Capability:1047" value="[Pre-emption-Capability]"/>
+                <avp code="Pre-emption-Vulnerability:1048" value="[Pre-emption-Vulnerability]"/>
+            </avp>
+        </avp>
+   </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveRequestCCR+TERMINATION_REQUEST:3" request="true" type="Credit-Control">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id.value"/>
+        <parameter name="[originHost]" operation="protocol.setFromMessage" value="avp.Origin-Host:264.value"/>
+        <parameter name="[originRealm]" operation="protocol.setFromMessage" value="avp.origin-Realm:296.value"/>                
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+        <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+        <parameter name="[CC-Request-Number]" operation="protocol.setFromMessage" value="avp.CC-Request-Number:415.value"/>
+    </receiveMessageDIAMETER>
+    
+    <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+    <test parameter="[CC-Request-Type]" condition="string.equals" value="TERMINATION_REQUEST:3"/>        
+    
+    <sendMessageDIAMETER name="SendAnswerCCA+TERMINATION_REQUEST:3" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">     
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Auth-Application-Id:258" value="[authApplicationId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Destination-Host:293" value="[originHost]"/>        
+        <avp code="Destination-Realm:283" value="[originRealm]"/>        
         <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
         <avp code="CC-Request-Type:416" value="[CC-Request-Type]"/>
         <avp code="CC-Request-Number:415" value="[CC-Request-Number]"/>
