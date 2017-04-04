@@ -245,7 +245,7 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
     <parameter name="[Bearer-Usage]" operation="set" value="IMS_SIGNALLING"/>
 
     <parameter name="[newSessionId]" operation="binary.random" value="10"/>
-    <sendMessageDIAMETER name="SendRequestCCR" channel="channel_client" destScenario="server">
+    <sendMessageDIAMETER name="SendRequestCCR+INITIAL_REQUEST:1" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         
@@ -287,12 +287,42 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
         <avp code="Bearer-Usage:1000" value="[Bearer-Usage]"/>
 	</sendMessageDIAMETER>
 
-    <receiveMessageDIAMETER name="ReceiveAnswerCCA" channel="channel_client" request="false" type="Credit-Control" result="DIAMETER_SUCCESS:2001">
+    <receiveMessageDIAMETER name="ReceiveAnswerCCA+INITIAL_REQUEST:1" channel="channel_client" request="false" type="Credit-Control" result="DIAMETER_SUCCESS:2001">
     		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
     </receiveMessageDIAMETER>
 
+    <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+    <test parameter="[CC-Request-Type]" condition="string.equals" value="INITIAL_REQUEST:1"/>        
 
-	 <sendMessageDIAMETER name="SendRequestCCR" channel="channel_client" destScenario="server">
+	 <sendMessageDIAMETER name="SendRequestCCR+UPDATE_REQUEST:2" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+        
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        <avp code="CC-Request-Type:416" value="2"/>
+        <avp code="CC-Request-Number:415" value="1"/>
+        <avp code="Origin-State-Id:278" value="[Origin-State-Id]"/>
+        <avp code="Subscription-Id:443">
+            <avp code="Subscription-Id-Type:450" value="[Subscription-Id-Type]"/>
+            <avp code="Subscription-Id-Data:444" value="[Subscription-Id-Data]"/>
+        </avp>       
+	</sendMessageDIAMETER>
+
+	
+    <receiveMessageDIAMETER name="ReceiveAnswerCCA+UPDATE_REQUEST:2" channel="channel_client" request="false" type="Credit-Control" result="DIAMETER_SUCCESS:2001">
+    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+    
+    <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+    <test parameter="[CC-Request-Type]" condition="string.equals" value="UPDATE_REQUEST:2"/>        
+    
+	 <sendMessageDIAMETER name="SendRequestCCR+TERMINATION_REQUEST:3" channel="channel_client" destScenario="server">
         <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
         <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
         
@@ -313,7 +343,11 @@ CC-Request ::= < Diameter Header: 272, REQ, PXY >
 	</sendMessageDIAMETER>
 
 	
+    <receiveMessageDIAMETER name="ReceiveAnswerCCA+TERMINATION_REQUEST:3" channel="channel_client" request="false" type="Credit-Control" result="DIAMETER_SUCCESS:2001">
+    		<parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
 	
-	
-	
+    <parameter name="[CC-Request-Type]" operation="protocol.setFromMessage" value="avp.CC-Request-Type:416.value"/>
+    <test parameter="[CC-Request-Type]" condition="string.equals" value="TERMINATION_REQUEST:3"/>        
+		
 </scenario>
