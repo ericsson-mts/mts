@@ -56,7 +56,7 @@
 	<parameter name="[listenpoint]" operation="set" value="listenpoint_[localPortSIP]"/>
   <parameter name="[channel]" operation="set" value="channel_[localPortSIP]"/>
 
-	<sendMessageSIP name="Send INVITE" channel="[channel]" remotePort="[remotePortSIP]" transport="[transport]">
+	<sendMessageSIP name="Send INVITE" listenpoint="[listenpoint]" channel="[channel]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[		
 INVITE sip:[inviteeName]@sip.pfdev.fr SIP/2.0
 To: <sip:[inviteeName]@sip.pfdev.fr:5060>

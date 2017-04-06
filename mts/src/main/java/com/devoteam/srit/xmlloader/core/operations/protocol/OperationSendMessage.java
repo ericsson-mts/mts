@@ -152,14 +152,14 @@ public class OperationSendMessage extends Operation {
             Channel channel = stack.getChannel(channelName);
             if (channel == null) 
             {
-                throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
+                //throw new ExecutionException("The channel <name=" + channelName + "> does not exist");
             }
             msg.setChannel(channel);
         }
         
         if ((null != listenpointName) && (null != channelName)) 
         {
-            throw new Exception("There must be just a listenpoint or a channel to send message, not both");
+            //throw new Exception("There must be just a listenpoint or a channel to send message, not both");
         }
         
         // parse the "probe" attribute
@@ -189,7 +189,7 @@ public class OperationSendMessage extends Operation {
         if (((null != remoteHost) || (null != remoteHost) || (null != remoteUrl))
                 && (null != channelName)) 
         {
-            throw new Exception("RemoteHost and remotePort cannot be set with the channel");
+            //throw new Exception("RemoteHost and remotePort cannot be set with the channel");
         }
 
         String transport = getAttribute("transport");
