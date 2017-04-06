@@ -35,10 +35,10 @@
 	<parameter name="[received]" operation="set" value="false"/>		
 	<receiveMessageSIP name="wait_SIP_request" timeout="[TempDuration]" failedOnTimeout="false">
 		<parameter name="[received]" operation="set" value="true"/>	
-		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+    <parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>    
 		<parameter name="[lastChannel]" operation="protocol.setFromMessage" value="channel.name"/>    
-		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
-		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
+		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="channel.localHost"/>
+		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="channel.localPort"/>
 		<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message.type"/>
 		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
 		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
@@ -147,12 +147,12 @@
 	<log level="info">local port : [lastLocalPort]</log>
 	<log level="info">local host : [lastLocalHost]</log>
 	<log level="info">lastListenpoint</log>
-	<log level="info">listen point : [lastListenpoint]</log>
+	<log level="info">channel point : [lastChannel]</log>
 	<log level="info">Trying duration : [TryingDuration]</log>
 
   	<parameter name="[newToTag]" operation="string.random" value="10"/>
 	
-	<sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="[lastListenpoint]" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+	<sendMessageSIP name="Send 100 Trying" delay="0" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
 <![CDATA[
 SIP/2.0 100 Trying
 To: [lastTo]
@@ -164,7 +164,8 @@ Content-Length: 0
 ]]>			
   	</sendMessageSIP>
   
-    <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="[lastListenpoint]" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+    <sendMessageSIP name="Send 180 Ringing" delay="[TryingDuration]" listenpoint="[lastListenpoint]" channel="[lastChannel]" 
+        remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
 <![CDATA[
 SIP/2.0 180 Ringing
 To: [lastTo];tag=[newToTag]
@@ -193,7 +194,8 @@ Content-Length: 0
 	<parameter name="[tempPortRTP]" operation="number.multiply" value="[indexUser]" value2="2"/>
 	<parameter name="[portRTP]" operation="number.add" value="[RangePortRTP-UAS]" value2="[tempPortRTP]"/>    			
   
-	<sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="[lastListenpoint]" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+	<sendMessageSIP name="Send 200 OK" delay="[RingingDuration]" listenpoint="[lastListenpoint]" channel="[lastChannel]" 
+      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
 <![CDATA[
 SIP/2.0 200 OK
 From: [lastFrom]
@@ -246,8 +248,8 @@ message : [lastMessage]
 	
     <parameter name="[newBranchId]" operation="string.random" value="10"/>
     <parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
-  	<sendMessageSIP name="Send ACK" delay="0" listenpoint="[lastListenpoint]" 
-    remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
+  	<sendMessageSIP name="Send ACK" delay="0" listenpoint="[lastListenpoint]" channel="[lastChannel]" 
+        remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
 ACK [lastContactURI] SIP/2.0
 To: [lastTo]
@@ -285,7 +287,7 @@ Content-Length: 0
 	<parameter name="[newCseqNumber]" operation="number.uid" value="10"/>
 	<parameter name="[route]" operation="list.revert" value="[lastRecordRoute]"/>
   	<sendMessageSIP name="Send BYE" delay="[CallDurationSec]" listenpoint="[lastListenpoint]" channel="[lastChannel]" 
-    remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]"> 
+        remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]"> 
 <![CDATA[
 BYE [lastContactURI] SIP/2.0
 To: [lastTo]
@@ -317,7 +319,8 @@ Content-Length: 0
   
 	<parameter name="[newToTag]" operation="string.random" value="10"/>
     	
-	<sendMessageSIP name="Send 200 OK" delay="0" listenpoint="[lastListenpoint]" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+	<sendMessageSIP name="Send 200 OK" delay="0" listenpoint="[lastListenpoint]" channel="[lastChannel]" 
+      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
 <![CDATA[
 SIP/2.0 200 OK
 To: [lastTo]
