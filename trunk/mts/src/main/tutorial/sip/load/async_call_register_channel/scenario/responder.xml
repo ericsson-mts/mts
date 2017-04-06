@@ -35,10 +35,10 @@
 	<parameter name="[received]" operation="set" value="false"/>		
 	<receiveMessageSIP name="wait_SIP_request" timeout="[TempDuration]" failedOnTimeout="false">
 		<parameter name="[received]" operation="set" value="true"/>	
-    <parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>    
 		<parameter name="[lastChannel]" operation="protocol.setFromMessage" value="channel.name"/>    
-		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="channel.localHost"/>
-		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="channel.localPort"/>
+    <parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>        
+		<parameter name="[lastLocalHost]" operation="protocol.setFromMessage" value="listenpoint.localHost"/>
+		<parameter name="[lastLocalPort]" operation="protocol.setFromMessage" value="listenpoint.localPort"/>
 		<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="message.type"/>
 		<parameter name="[lastIsRequest]" operation="protocol.setFromMessage" value="message.request"/>
 		<parameter name="[lastResult]" operation="protocol.setFromMessage" value="message.result"/>
@@ -152,7 +152,7 @@
 
   	<parameter name="[newToTag]" operation="string.random" value="10"/>
 	
-	<sendMessageSIP name="Send 100 Trying" delay="0" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+	<sendMessageSIP name="Send 100 Trying" delay="0" listenpoint="[lastListenpoint]" channel="[lastChannel]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
 <![CDATA[
 SIP/2.0 100 Trying
 To: [lastTo]
@@ -320,7 +320,7 @@ Content-Length: 0
 	<parameter name="[newToTag]" operation="string.random" value="10"/>
     	
 	<sendMessageSIP name="Send 200 OK" delay="0" listenpoint="[lastListenpoint]" channel="[lastChannel]" 
-      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+      remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
 <![CDATA[
 SIP/2.0 200 OK
 To: [lastTo]
