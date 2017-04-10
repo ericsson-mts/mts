@@ -79,8 +79,8 @@ public class OperationCreateListenpoint extends Operation {
         boolean result = StackFactory.getStack(protocol).createListenpoint(listenpoint, protocol);
         if (result)
         { 
-	        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>CREATE ", protocol, " <LISTENPOINT ", listenpoint, ">");
-	        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " <LISTENPOINT ", listenpoint, ">");
+	        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>CREATE ", protocol, " <Listenpoint ", listenpoint, "/>");
+	        GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " <Listenpoint ", listenpoint, "/>");
         }
         return null;
     }

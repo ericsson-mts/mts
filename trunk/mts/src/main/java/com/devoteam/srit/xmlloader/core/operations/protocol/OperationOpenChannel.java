@@ -74,15 +74,15 @@ public class OperationOpenChannel extends Operation {
 
             Channel oldChannel = StackFactory.getStack(protocol).getChannel(channel.getName());
             if ((oldChannel != null) && (!channel.equals(oldChannel))) {
-                throw new ExecutionException("A channel <name=" + channel.getName() + "> already exists with other attributes.");
+                throw new ExecutionException("A channel called \"" + channel.getName() + "\" already exists with other attributes.");
             }
 
             if (oldChannel == null) {
                 boolean opened = StackFactory.getStack(protocol).openChannel(channel);
                 if (opened)
                 {
-	            	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>OPEN ", protocol, " <CHANNEL ", channel, ">");
-	            	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>OPEN ", protocol, " <CHANNEL ", channel, ">");
+	            	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>OPEN ", protocol, " <Channel ", channel, "/>");
+	            	GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>OPEN ", protocol, " <Channel ", channel, "/>");
                 }
             }
         }

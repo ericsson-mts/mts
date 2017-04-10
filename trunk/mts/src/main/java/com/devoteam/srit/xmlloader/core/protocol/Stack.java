@@ -410,7 +410,7 @@ public abstract class Stack
         {
         	Listenpoint oldListenpoint = listenpoints.get(listenpoint.getName());
 	        if ((oldListenpoint != null) && (!listenpoint.equals(oldListenpoint))) {
-	            throw new ExecutionException("A listenpoint <name=" + listenpoint.getName() + "> already exists with other attributes.");
+	            throw new ExecutionException("A listenpoint called \"" + listenpoint.getName() + "\" already exists with other attributes.");
 	        }
 	        if (oldListenpoint != null)
 	        {
@@ -465,7 +465,7 @@ public abstract class Stack
         {
         	Probe oldProbe = probes.get(probe.getName());
 	        if ((oldProbe != null) && (!probe.equals(oldProbe))) {	        	
-	            throw new ExecutionException("A probe <name=" + probe.getName() + "> already exists with other attributes.");
+	            throw new ExecutionException("A probe called \"" + probe.getName() + "\" already exists with other attributes.");
 	        }
 
 	        if (oldProbe != null) {
