@@ -69,8 +69,8 @@ public class OperationCreateProbe extends Operation
         boolean result = StackFactory.getStack(protocol).createProbe(probe,protocol);
         if (result)
         {
-	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>CREATE ", protocol, " <PROBE ", probe, ">");
-	            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " <PROBE ", probe, ">");
+	        	GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CALLFLOW,     ">>>CREATE ", protocol, " <Probe ", probe, "/>");
+	            GlobalLogger.instance().getSessionLogger().info(runner, TextEvent.Topic.CALLFLOW, ">>>CREATE ", protocol, " <Probe ", probe, "/>");
         }
         return null ;
     }
