@@ -376,7 +376,7 @@ public class Channel
     {
         String ret = "";
         ret += "name=\"" + this.name + "\"";
-        ret += " localAdresses=\"" + this.getLocalAddressesString() + "\"";
+        ret += " localHost=\"" + this.getLocalAddressesString() + "\"";
         ret += " localPort=\"" + this.localPort + "\"";
         ret += " remoteHost=\"" + this.remoteHost + "\"";
         ret += " remotePort=\"" + this.remotePort + "\""; 
