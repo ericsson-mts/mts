@@ -74,7 +74,7 @@ public class ListenpointUdpBIO extends Listenpoint {
 		Config.getConfigForUDPSocket(datagramSocket);
 
         this.setPort(datagramSocket.getLocalPort());
-        this.setHost(datagramSocket.getLocalAddress().getHostAddress());
+        this.setLocalHost(datagramSocket.getLocalAddress().getHostAddress());
         
         socketUdp = new SocketUdpBIO(datagramSocket);
         socketUdp.setListenpointUdp(this);
