@@ -42,6 +42,7 @@ import com.devoteam.srit.xmlloader.udp.ListenpointUdp;
 
 import java.net.InetAddress;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,7 @@ public class Listenpoint {
 	 * on which the communication object () is bound in case of sctp transport,
 	 * the communication object can be bound to many adresses (multihoming)
 	 */
-	private AddressesList addresses = new AddressesList();
+	private String[] localHost;
 
 	private int port = 0;
 	private int portTLS = 0;
@@ -134,10 +135,11 @@ public class Listenpoint {
 		if (host == null || host.isEmpty()) {
 			host = "0.0.0.0";
 		}
-		this.addresses.setFromAddressesStringWithSeparator(host);
-
+		this.localHost = Utils.splitNoRegex(host, ",");
+		
 		this.port = stack.getConfig().getInteger("listenpoint.LOCAL_PORT", 0);
 		this.portTLS = this.stack.getConfig().getInteger("listenpoint.LOCAL_PORT_TLS", 0);
+		
 		this.transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
 		this.listenUDP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_UDP", false);
 		this.listenTCP = this.stack.getConfig().getBoolean("listenpoint.LISTEN_TCP", false);
@@ -156,7 +158,7 @@ public class Listenpoint {
 		if (host == null || host.isEmpty()) {
 			host = "0.0.0.0";
 		}
-		this.addresses.setFromAddressesStringWithSeparator(host);
+		this.localHost = Utils.splitNoRegex(host, ",");
 
 		this.listenUDP = false;
 		this.listenTCP = false;
@@ -181,47 +183,39 @@ public class Listenpoint {
 	 */
 	// @Nullable
 	public String getHost() {
-		InetAddress localAddress = this.addresses.getHeadImmutable();
-		if (localAddress == null) {
+		if (this.localHost == null || this.localHost.length <= 0)
+		{
 			return null;
 		}
-		String hostAddress = localAddress.getHostAddress();
-		String localHost = Utils.formatIPAddress(hostAddress);
-		return localHost;
-	}
-
-	/**
-	 * @return the addresses
-	 */
-	// @Immutable
-	// @Nullable
-	public InetAddress getAddress() {
-		InetAddress localAddress = this.addresses.getHeadImmutable();
-		return localAddress;
+		return localHost[0];
 	}
 
 	/**
 	 * @return the local addresses
 	 */
 	// @Immutable
-	public List<InetAddress> getAddresses() {
-		return this.addresses.getAllImmutable();
+	public List<InetAddress> getAddresses() throws Exception {
+		List<InetAddress> adresses = new ArrayList<InetAddress>();
+		if (this.localHost != null)
+		{
+			for (int i = 0; i < this.localHost.length; i++)
+			{
+				InetAddress address = InetAddress.getByName(localHost[i]);
+				adresses.add(address);
+				
+			}
+		}
+		return adresses;
 	}
 
 	/**
 	 * 
 	 */
 	public String getAddressesString() {
-		return this.addresses.toStringWithSeparator();
+		String ret = Utils.TableToString(this.localHost);
+		return ret;
 	}
 
-	/**
-	 * @param localAdresses
-	 * @return
-	 */
-	public boolean setAddresses(List<InetAddress> addresses) {
-		return this.addresses.set(addresses);
-	}
 
 	/**
 	 * This method has been added for protocol specific channels when we know
@@ -232,8 +226,9 @@ public class Listenpoint {
 	 * @param addressesStringWithSeparator
 	 * @return status
 	 */
-	public boolean setHost(String addressesStringWithSeparator) {
-		return this.addresses.setFromAddressesStringWithSeparator(addressesStringWithSeparator);
+	public boolean setLocalHost(String hosts) {
+		this.localHost = Utils.splitNoRegex(hosts, ",");
+		return true;
 	}
 
 	public int getPort() {
@@ -556,7 +551,7 @@ public class Listenpoint {
 		if (host == null || host.isEmpty()) {
 			host = "0.0.0.0";
 		}
-		this.addresses.setFromAddressesStringWithSeparator(host);
+		this.localHost = Utils.splitNoRegex(host, ",");
 
 		String portAttr = root.attributeValue("localPort");
 		if (portAttr != null) {
@@ -570,8 +565,7 @@ public class Listenpoint {
 			URI uri = new URI(localURL).normalize();
 
 			String uriHost = uri.getHost();
-			this.addresses.setFromAddressString(uriHost);
-
+			this.localHost = Utils.splitNoRegex(uriHost, ",");
 			this.port = uri.getPort();
 		}
 
@@ -703,7 +697,7 @@ public class Listenpoint {
 		}
 		this.name = listenpoint.getName();
 
-		this.addresses.set(listenpoint.addresses);
+		this.setLocalHost(listenpoint.getAddressesString());
 		this.port = listenpoint.getPort();
 		this.portTLS = listenpoint.getPortTLS();
 
@@ -732,7 +726,7 @@ public class Listenpoint {
 			}
 		}
 
-		if (!this.addresses.equals(listenpoint.addresses)) {
+		if (!this.getAddressesString().equals(listenpoint.getAddressesString())) {
 			return false;
 		}
 
