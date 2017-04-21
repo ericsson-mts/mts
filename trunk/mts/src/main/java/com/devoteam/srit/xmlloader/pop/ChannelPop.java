@@ -165,7 +165,7 @@ public class ChannelPop extends Channel
         nextReadMultiLine = value;
     }
 
-    public void checkTransactionRequest(Msg msg) throws Exception
+    public synchronized void checkTransactionRequest(Msg msg) throws Exception
     {
         if(!transactionInProgress)
         {
@@ -178,7 +178,7 @@ public class ChannelPop extends Channel
         }
     }
 
-    public void checkTransactionResponse(Msg msg) throws Exception
+    public synchronized void checkTransactionResponse(Msg msg) throws Exception
     {
         if(transactionInProgress)
         {
