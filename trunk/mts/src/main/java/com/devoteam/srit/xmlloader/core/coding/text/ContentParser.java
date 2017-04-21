@@ -213,24 +213,28 @@ public class ContentParser {
             return new String[]{content};
         }
 
-        // if the content starts with a separator, we remove it to avoid having
-        // an empty cell in the output array of split method
-        if (!protocol.equals("MGCP")) {
-            if (content.startsWith(localMimeSeparator)) {
-                content = content.substring(localMimeSeparator.length());
-            }
-            if (content.endsWith("\r\n" + localMimeSeparator + "--")) {
-                content = content.substring(0, content.length() - localMimeSeparator.length() - 4);
-            }
-            if (content.endsWith("\n" + localMimeSeparator + "--")) {
-                content = content.substring(0, content.length() - localMimeSeparator.length() - 3);
-            }
-        }
-
-        // populate the different hashmaps
+        // specific for MGCP multimime part
         if (protocol.equals("MGCP")){
             String[] parts = Utils.splitNoRegex(content, localMimeSeparator);
             return parts;
+        }
+
+        //if (!protocol.equals("MGCP")) 
+        {
+            // if the content starts with a separator, we remove it to avoid having
+            // an empty cell in the output array of split method        	
+            if (content.startsWith(localMimeSeparator)) {
+                content = content.substring(localMimeSeparator.length());
+            }
+            // we replace the end boundary by a normal boundary
+            content = content.replace("\n" + localMimeSeparator + "--", "\n" + localMimeSeparator);
+            
+            //if (content.endsWith("\r\n" + localMimeSeparator + "--")) {
+            //    content = content.substring(0, content.length() - localMimeSeparator.length() - 4);
+            //}
+            //if (content.endsWith("\n" + localMimeSeparator + "--")) {
+            //    content = content.substring(0, content.length() - localMimeSeparator.length() - 3);
+            //}
         }
 
         String[] parts = Utils.splitNoRegex(content, "\r\n" + localMimeSeparator + "\r\n");
