@@ -8,6 +8,11 @@
   <parameter name="[LocalAddress]" operation="set" value="[LocalHost(0)]:[LocalPort(0)]"/>	
   <parameter name="[LocalPortTLS]" operation="number.add" value="[LocalPort]" value2="1"/> 
 
+  <parameter name="[inviteeName1]" operation="set" value="alice"/>
+  <parameter name="[100_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="bob"/>
+
+
   <createListenpointSIP name="listenpointUAS" localHost="[LocalHost(0)]" localPort="[LocalPort(0)]" localPortTLS="[LocalPortTLS(0)]" listenUDP="true" listenTCP="true" listenSCTP="false" listenTLS="true"/>
 
   <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE" listenpoint="listenpointUAS">
@@ -45,6 +50,7 @@ From: [lastFrom]
 Via: [lastVia]
 Call-ID: [lastCallId]
 CSeq: [lastCseq]
+Contact: <sip:[LocalAddress]>
 Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
 User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
 Content-Length: 0
@@ -61,7 +67,7 @@ Via: [lastVia]
 Server: PoC-serv/OMA1.0 XmlLoader/v0.0
 Call-ID: [lastCallId]
 CSeq: [lastCseq]
-Contact: [lastTo]
+Contact: <sip:[LocalAddress]>
 Require: timer
 Supported: timer
 Session-Expires: 1800;refresher=uac

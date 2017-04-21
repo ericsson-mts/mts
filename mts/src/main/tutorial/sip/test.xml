@@ -107,6 +107,12 @@
         <scenario file="100_sip_invite_bye_uas/UAS.xml" name="bob" state="[remoteServer]" routingName="bob"/>
     </testcase>
 
+    <testcase name="100_invite_sipi" state="true" number="[iterations]" description="sip" >
+        <parameter name="[waitSemaphore]" operation="set" value="false"/>
+        <scenario file="100_sip_invite_sipi/UAC.xml" name="5070" state="[localClient]" routingName="5070"/>
+        <scenario file="100_sip_invite_sipi/UAS.xml" name="5080" state="[remoteServer]" routingName="5080"/>
+    </testcase>
+
     <testcase name="101_re_invite" state="true" number="[iterations]" description="sip" >
         <scenario file="101_sip_reinvite/UAC.xml" name="alice" state="[localClient]" routingName="alice"/>
         <scenario file="101_sip_reinvite/UAS.xml" name="bob" state="[remoteServer]" routingName="bob"/>
