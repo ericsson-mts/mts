@@ -27,14 +27,18 @@ import java.io.UnsupportedEncodingException;
 
 import gp.utils.arrays.Array;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
 import com.devoteam.srit.xmlloader.rtp.srtp.RawPacket;
 import com.devoteam.srit.xmlloader.rtp.srtp.SRTPCryptoContext;
@@ -111,21 +115,17 @@ public class ListenpointRtp extends Listenpoint
 			RawPacket rp = new RawPacket(msgData, 0, msgData.length);
 			
 			rp = this.cipherSender.transform(rp);
-
-			byte[] cipheredMsgData = rp.getBuffer();
 			
-			MsgRtp tmpMsg = (MsgRtp) msg;
-			tmpMsg.cipherThisMessage(cipheredMsgData);
-			
-			msg = tmpMsg;
+			byte[] cipheredMsgData = rp.getBuffer();						
+			((MsgRtp) msg).cipherThisMessage(cipheredMsgData);
 		}
 		
 		return super.sendMessage(msg, remoteHost, remotePort, transport);    
 	}
             
-    public boolean remove()
+    public synchronized boolean remove()
     {
-    	this.cipherReceiver = null;
+    	//this.cipherReceiver = null;
     	this.cipherSender = null;
     	this.isSecured = false;
     	return super.remove();
@@ -153,7 +153,7 @@ public class ListenpointRtp extends Listenpoint
      * Parse the listenpoint from XML element 
      */
     @Override
-    public void parseFromXml(Element root, Runner runner) throws Exception
+    public synchronized void parseFromXml(Element root, Runner runner) throws Exception
     {
 		super.parseFromXml(root, runner);
 		if (root.element("srtpSender") != null)
@@ -169,7 +169,7 @@ public class ListenpointRtp extends Listenpoint
     /* 
      * Parse the XML elements for SRTP protocol 
      */
-	private void parseSRTPSender(Element root, int SR) throws UnsupportedEncodingException, Exception
+	private synchronized void parseSRTPSender(Element root, int SR) throws UnsupportedEncodingException, Exception
 	{
 		String algorithm = root.element(SR == 0 ? "srtpSender" : "srtpReceiver").attributeValue("algorithm");
 		String[] algoExplode = algorithm.replace('_', ' ').split(" ");
@@ -209,18 +209,22 @@ public class ListenpointRtp extends Listenpoint
 
 		if (SR == 0)
 			this.cipherSender = new SRTPTransformer(engine);
-		if (SR == 1)
+		else if (SR == 1)
+		{
 			this.cipherReceiver = new SRTPTransformer(engine);
+		}
 	}
 	
-    public int getCipheredAuthTagLength(int SR)
-    {
+    public synchronized int getCipheredAuthTagLength(int SR)
+    {    	
     	if (SR == 0)
     		return this.cipherSender.getEngine().getSRTPPolicy().getAuthTagLength();
-    	return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
+		else if (SR == 1)
+			return this.cipherReceiver.getEngine().getSRTPPolicy().getAuthTagLength();
+    	return -1;
     }
 
-    public RawPacket reverseTransformCipheredMessage(RawPacket rp)
+    public synchronized RawPacket reverseTransformCipheredMessage(RawPacket rp)
     {
     	return this.cipherReceiver.reverseTransform(rp);
     }

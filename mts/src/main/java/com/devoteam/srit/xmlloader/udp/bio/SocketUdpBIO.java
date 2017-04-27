@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.rtp.MsgRtp;
 
 import java.net.DatagramPacket;
@@ -124,15 +125,15 @@ public class SocketUdpBIO extends Thread {
 
     public synchronized void send(Msg msg, InetSocketAddress remoteDatagramSocketAddress) throws Exception {
     	try {
-            byte[] data = msg.encode();
+            byte[] bytesEncode = msg.encode();            
             if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
-            	data = ((MsgRtp) msg).getCipheredMessage();
+            	bytesEncode = ((MsgRtp) msg).getCipheredMessage();
             	
             if (dp == null) {
-                dp = new DatagramPacket(data, data.length);
+                dp = new DatagramPacket(bytesEncode, bytesEncode.length);
             }
             else {
-                dp.setData(data);
+                dp.setData(bytesEncode);
             }
             dp.setSocketAddress(remoteDatagramSocketAddress);
             datagramSocket.send(dp);

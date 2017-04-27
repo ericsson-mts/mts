@@ -31,6 +31,9 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.rtp.MsgRtp;
+
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectionKey;
@@ -163,7 +166,11 @@ public class SocketUdpNIO implements DatagramHandler
         try
         {
             currentSendBuffer.clear();
-            currentSendBuffer.put(msg.encode());
+            byte[] bytesEncode = msg.encode();
+            if (msg instanceof MsgRtp && ((MsgRtp) msg).isCipheredMessage())
+            	bytesEncode = ((MsgRtp) msg).getCipheredMessage();
+                        
+            currentSendBuffer.put(bytesEncode);            
             currentSendBuffer.flip();
 
             Channel channel = msg.getChannel();
