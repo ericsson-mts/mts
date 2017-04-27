@@ -9,6 +9,13 @@ cd ..\bin
 del /Q/F/S ..\logs
 
 echo *************** functional testing
+call startCmd.bat ..\tutorial\core\test.xml %MODE1% -param:param_1+one -param:[param_2]+two -param:[param_3]+three %OPTIONS%
+call startCmd.bat ..\tutorial\diameter\test.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.dk.StackDiameter %OPTIONS%
+call startCmd.bat ..\tutorial\diameter\test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+false %OPTIONS%
+call startCmd.bat ..\tutorial\diameter\test_light.xml %MODE1% -config:protocol.STACK_CLASS_NAME_DIAMETER+com.devoteam.srit.xmlloader.diameter.light.StackDiameter -config:USE_NIO+true %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test.xml %MODE1% -config:USE_NIO+false %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
+call startCmd.bat ..\tutorial\sip\test_jain.xml %MODE1% -config:protocol.STACK_CLASS_NAME_SIP+com.devoteam.srit.xmlloader.sip.jain.StackSip %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% -config:USE_NIO+false %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml %MODE1% -config:USE_NIO+true %OPTIONS%
 call startCmd.bat ..\tutorial\rtp\test.xml 001_jmf_noreg -config:protocol.STACK_CLASS_NAME_RTP+com.devoteam.srit.xmlloader.rtp.jmf.StackRtp %OPTIONS%
