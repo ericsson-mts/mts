@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[network]" operation="set" value="[localHostSIP]"/>  
+  <parameter name="[filter]" operation="set" value="(src host [localHostSIP]) and (dst host [localHostSIP])"/>
+
+  <createProbeSIP name="probe" networkInterface="[network]" captureFilter="[filter]"/>
+
+  <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+                  
+  <receiveMessageSIP name="Wait INVITE" probe="probe" request="true" type="INVITE">
+    <parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>              
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait 100 Trying" probe="probe" request="false" type="INVITE" result="100">
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait 180 Ringing" probe="probe" request="false" type="INVITE" result="180">
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait 200 OK" probe="probe" request="false" type="INVITE" result="200">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait ACK" probe="probe" request="true" type="ACK">
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait BYE" probe="probe" request="true" type="BYE">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+    <parameter name="[RecordRoute]" operation="protocol.setFromMessage" value="header.Record-Route"/>
+  </receiveMessageSIP>
+                
+  <receiveMessageSIP name="Wait 200 OK" probe="probe" request="false" type="BYE" result="200">
+  </receiveMessageSIP>
+
+  <finally>
+      <removeProbeSIP name="probe"/>
+  </finally>
+  
+</scenario>

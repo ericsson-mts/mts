@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    
+    <receiveMessageDIAMETER name="Receive Request RFC3588 CER" request="true" type="Capabilities-Exchange:257">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[hostIPBinary]" operation="protocol.setFromMessage" value="avp.Host-IP-Address:257.binary"/>                
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+    </receiveMessageDIAMETER>
+
+    <!--parameter name="[hostIPV4Index]" operation="list.findMatches" value="[hostIPBinary]" value2="0001.*"/>
+    <test parameter="[hostIPV4Index]" condition="list.size" value="3"/>
+    <test parameter="[hostIPV4Index(0)]" condition="number.equals" value="0"/>
+    <test parameter="[hostIPV4Index(1)]" condition="number.equals" value="1"/>
+    <test parameter="[hostIPV4Index(2)]" condition="number.equals" value="2"/>
+    <test parameter="[hostIPV4Index]" condition="list.size" value="3"/>    
+    <parameter name="[hostIPV6Index]" operation="list.findMatches" value="[hostIPBinary]" value2="0002.*"/>
+    <test parameter="[hostIPV6Index]" condition="list.size" value="9"/>
+    <test parameter="[hostIPV6Index(0)]" condition="number.equals" value="3"/>
+    <test parameter="[hostIPV6Index(1)]" condition="number.equals" value="4"/>
+    <test parameter="[hostIPV6Index(2)]" condition="number.equals" value="5"/>
+    <test parameter="[hostIPV6Index(3)]" condition="number.equals" value="6"/>
+    <test parameter="[hostIPV6Index(4)]" condition="number.equals" value="7"/>        
+    <test parameter="[hostIPV6Index(5)]" condition="number.equals" value="8"/>
+    <test parameter="[hostIPV6Index(6)]" condition="number.equals" value="9"/>        
+    <test parameter="[hostIPV6Index(7)]" condition="number.equals" value="10"/>
+    <test parameter="[hostIPV6Index(8)]" condition="number.equals" value="11"/-->        
+
+    <parameter name="[hostIPBinary]" operation="binary.subBinary" value="[hostIPBinary]" value2="2"/>
+    <parameter name="[hostIPValue]" operation="binary.toIP" value="[hostIPBinary]"/>
+    <test parameter="[hostIPValue]" condition="list.contains" value="[testcase:localHostsV4(0)]"/>    
+    <test parameter="[hostIPValue]" condition="list.contains" value="[testcase:localHostsV6(0)]"/>
+    <!--test parameter="[hostIPValue]" condition="list.size" value="12"/>
+    <test parameter="[hostIPValue(0)]" condition="string.equals" value="[testcase:localHostsV4(0)]"/>
+    <test parameter="[hostIPValue(1)]" condition="string.equals" value="[testcase:localHostsV4(1)]"/>
+    <test parameter="[hostIPValue(2)]" condition="string.equals" value="[testcase:localHostsV4(2)]"/>
+    <test parameter="[hostIPValue(3)]" condition="string.equals" value="[testcase:localHostsV6(0)]"/>    
+    <test parameter="[hostIPValue(4)]" condition="string.equals" value="[testcase:localHostsV6(1)]"/>
+    <test parameter="[hostIPValue(5)]" condition="string.equals" value="[testcase:localHostsV6(2)]"/>
+    <test parameter="[hostIPValue(6)]" condition="string.equals" value="[testcase:localHostsV6(3)]"/>
+    <test parameter="[hostIPValue(7)]" condition="string.equals" value="[testcase:localHostsV6(4)]"/>
+    <test parameter="[hostIPValue(8)]" condition="string.equals" value="[testcase:localHostsV6(5)]"/>
+    <test parameter="[hostIPValue(9)]" condition="string.equals" value="[testcase:localHostsV6(6)]"/>
+    <test parameter="[hostIPValue(10)]" condition="string.equals" value="[testcase:localHostsV6(7)]"/>
+    <test parameter="[hostIPValue(11)]" condition="string.equals" value="[testcase:localHostsV6(8)]"/-->
+    
+<!--
+From RFC 3588 September 2003 :
+Capabilities-Exchange-Answer ::= < Diameter Header: 257 >
+                                 { Result-Code }
+                                 { Origin-Host }
+                                 { Origin-Realm }
+                              1* { Host-IP-Address }
+                                 { Vendor-Id }
+                                 { Product-Name }
+                                 [ Origin-State-Id ]
+                                 [ Error-Message ]
+                               * [ Failed-AVP ]
+                                   Failed-AVP ::= < AVP Header: 279 >
+                                               1* {AVP}
+                               * [ Supported-Vendor-Id ]
+                               * [ Auth-Application-Id ]
+                               * [ Inband-Security-Id ]
+                               * [ Acct-Application-Id ]
+                               * [ Vendor-Specific-Application-Id ]
+                                   Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                        1* [ Vendor-Id ]
+                                                                        0*1{ Auth-Application-Id }
+                                                                        0*1{ Acct-Application-Id }
+                                 [ Firmware-Revision ]
+                               * [ AVP ]
+-->
+
+    <parameter name="[testcase:localHostsV4]" operation="system.ipaddress" value2="IPV4"/>
+    <parameter name="[hostIPV4Binary]" operation="binary.fromIP" value="[localHostsV4]"/>
+    <parameter name="[hostIPV4Binary]" operation="set" value="0001[hostIPV4Binary]"/>
+    <parameter name="[testcase:localHostsV6]" operation="system.ipaddress" value2="IPV6"/>    
+    <parameter name="[hostIPV6Binary]" operation="binary.fromIP" value="[localHostsV6]"/>
+    <parameter name="[hostIPV6Binary]" operation="set" value="0002[hostIPV6Binary]"/>    
+    <sendMessageDIAMETER name="Send Answer RFC3588 CEA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="false" error="false" retransmit="false"/>
+        <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
+        <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS:2001"/>
+
+        <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+        <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+
+        <!-- One Host-IP-Address AVP for each potential IP address that MAY be locally used when transmitting Diameter messages. -->
+        <avp code="Host-IP-Address:257" mandatory="true" type="binary" value="[hostIPV4Binary]"/>
+        <avp code="Host-IP-Address:257" mandatory="true" type="binary" value="[hostIPV6Binary]"/>
+
+        <!-- The Vendor-Id AVP contains the IANA "SMI Network Management Private Enterprise Codes" value assigned to the vendor of the Diameter application. -->
+        <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+
+        <!-- The Product-Name AVP contains the vendor assigned name for the product. -->
+        <avp code="Product-Name:269" mandatory="true" type="UTF8String" value="Ivan Skytte Jorgensen Java Diameter stack"/>
+
+        <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+        <avp code="Origin-State-Id:278" mandatory="false" type="Unsigned32" value="2414505"/>
+
+        <!-- The Error-Message AVP MAY accompany a Result-Code AVP as a human readable error message. -->
+        <avp code="Error-Message:281" mandatory="false" type="UTF8String" value="ToBeCompleted. Change result code success value."/>
+
+        <!-- The Failed-AVP AVP provides debugging information in cases where a request is rejected or not fully processed due to erroneous information in a specific AVP. -->
+<!--
+          <avp code="Failed-AVP:279">
+            <avp code="???" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+          <avp code="Failed-AVP:279">
+            <avp code="???" vendorId="" mandatory="true/false" private="true/false" type="OctetString / Integer32 / Integer64 / Unsigned32 / Unsigned64 / Float32 / Float64 / Grouped / Address / Time / UTF8String / DiameterIdentity / DiameterURI / Enumerated / IPFilterRule / QoSFilterRule" value="???"/>
+          </avp>
+-->
+        <!-- To inform the peer that the sender supports (a subset of) the vendor-specific AVPs defined by the vendor identified in this AVP. -->
+        <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="2"/>
+        <avp code="Supported-Vendor-Id:265" mandatory="false" type="Unsigned32" value="3"/>
+
+        <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
+        <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="16777215"/>
+        <avp code="Auth-Application-Id:258" mandatory="false" type="Unsigned32" value="16777214"/>
+
+        <!-- The Inband-Security-Id AVP is used in order to advertise support of the Security portion of the application. -->
+        <!-- Possible enumerated values : NO_INBAND_SECURITY (0) / TLS (1). -->
+        <avp code="Inband-Security-Id:299" mandatory="false" type="Unsigned32" value="NO_INBAND_SECURITY:0"/>
+        <avp code="Inband-Security-Id:299" mandatory="false" type="Unsigned32" value="TLS:1"/>
+
+        <!-- The Acct-Application-Id AVP is used in order to advertise support of the Accounting portion of an application. -->
+        <avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="16777213"/>
+        <avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="16777212"/>
+
+        <!-- The Vendor-Specific-Application-Id AVP is used to advertise support of a vendor-specific Diameter Application. -->
+        <avp code="Vendor-Specific-Application-Id:260">
+          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+          <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/>
+          <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777216"/-->
+        </avp>
+        <avp code="Vendor-Specific-Application-Id:260">
+          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+          <!--avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/-->
+          <avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777217"/>
+        </avp>
+
+        <!-- The Firmware-Revision AVP is used to inform a Diameter peer of the firmware revision of the issuing device. -->
+        <avp code="Firmware-Revision:267" mandatory="false" type="Unsigned32" value="0967"/>
+
+    </sendMessageDIAMETER>
+    
+</scenario>

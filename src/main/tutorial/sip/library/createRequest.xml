@@ -1,0 +1,56 @@
+<!--
+~~~~~~~~~~~~~~~~~~~
+|     Parameters INPUT     |
+~~~~~~~~~~~~~~~~~~~
+- from
+- to
+- method
+- contentSDP
+- RemoteAdr
+~~~~~~~~~~~~~~~~~~~
+|    Parameters OUTPUT   |
+~~~~~~~~~~~~~~~~~~~
+- msg		(used in createSubRequest, defined as vide)
+-->
+
+    <parameter name="[localHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" />
+    <parameter name="[localPortSIP]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>	
+
+  <parameter name="[branchId]" operation="string.random" value="10"/>
+  <parameter name="[localTag]" operation="string.random" value="10"/> 
+
+	<parameter name="[CallID]" operation="number.random" value="10000000"/>
+	<parameter name="[CseqNumber]" operation="number.random" value="9"/>
+	<parameter name="[Route]" operation="set" value="sip:[remoteAdr];mode=originating;transport=udp;lr"/>
+  
+  <sendMessageSIP name="Send msg" >
+<![CDATA[[method] [to] SIP/2.0
+To: [to]
+From: [from];tag=[localTag]
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[branchId]
+Call-ID: [CallID]
+CSeq: [CseqNumber] [method]
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: <sip:[localSIP]>
+Supported: timer
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Session-Expires: 3600;refresher=uac
+P-Charging-Vector: icid-value=0.6645971655716005;ggsn=139.10.69.237;pdp-sig=yes;gcid=60ee19cf;auth-token=0.4849361942495226
+P-com.Siemens.MSISDN-ID: 3381164951574
+P-com.Siemens.IMSI-ID: 81164951574
+P-com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
+Route: [Route]
+Content-Type: multipart/mixed;boundary="----=_Part_0"
+Content-Length: x
+
+[contentSDP]]]>
+  </sendMessageSIP>
+  	
+	<!--parameter name="[msg]" operation="list.create" /-->
+  
+        

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)" -->
+
+<scenario>
+
+    <!-- create a listenpoint with no parameter -->
+    <parameter name="[testcase:Listen-Client-Port]" operation="number.add" value="[testcase:Listen-Client-Port]" value2="1"/>    
+    <createListenpointDIAMETER name="lp_client1" localPort="[Listen-Client-Port]"/>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+        
+    <parameter name="[stateValue]" operation="set" value="true"/>
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestMAR"  listenpoint="lp_client1" 
+        remoteHost="[Listen-Server-Host]" remotePort="[Listen-Server-Port]" destScenario="server">
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="Ericsson IMT 30 - Cx:4321"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        		
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
+        </avp>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+
+        <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" vendorId="[vendorID]"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="Auth-Data-Item:1018" state="true">
+            <avp code="Item-Number:1021" value="0"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST" />
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context:1024" value="INVITE"/>
+        </avp>
+        <avp code="10000" value="badValue" vendorId="[vendorID]" state="false"/>
+        <avp code="IMS-Information:876" vendorId="[vendorID]" state="true">
+            <avp code="Event-Type" value="badValue1" vendorId="[vendorID]" state="false"/>
+            <avp code="Role-Of-Node" value="[emptyList]" vendorId="[vendorID]" state="false"/>
+            <avp code="Node-Functionality" value="1212121" vendorId="[vendorID]" state="[stateValue]"/>
+            <avp code="User-Session-ID" value="[emptyList]" vendorId="[vendorID]" state="[stateValue]"/>
+            <avp code="Calling-Party-Address:831" value="badValue5" vendorId="[vendorID]"/>
+            <avp code="Called-Party-Address:832" value="[emptyList]" vendorId="[vendorID]"/>
+        </avp>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client1" request="false" type="506" result="2001" >
+    </receiveMessageDIAMETER>
+    
+    <call name="diameter.removeListenpoint">
+      <input>
+        <parameter name="[function:name]" value="lp_client1"/>
+      </input>
+    </call>
+        
+    <!-- create a listenpoint with all parameters -->
+    <parameter name="[testcase:Listen-Client-Port]" operation="number.add" value="[testcase:Listen-Client-Port]" value2="1"/>
+    <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>        
+    <createListenpointDIAMETER name="lp_client2" localPort="[Listen-Client-Port]">
+        <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Host-IP-Address:257" value="[localHosts]" type="IPAddress" mandatory="true"/>
+        <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
+        <avp code="Product-Name:269" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
+        <avp code="Origin-State-Id:278" value="123456789" type="Unsigned32" mandatory="true"/>
+        <avp code="Firmware-Revision:267" value="987654321" type="Unsigned32" mandatory="true"/>
+        <avp code="Vendor-Specific-Application-Id:260" type="Grouped" mandatory="true">
+            <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216" type="AppId" mandatory="true"/>
+        </avp>
+    </createListenpointDIAMETER>
+
+    <parameter name="[testcase:createListenpoint]" operation="system.semaphorewait"/> 
+
+    <parameter name="[sessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestMAR" listenpoint="lp_client2" destScenario="server" 
+        remoteURL="diam://[Listen-Server-Host]:[Listen-Server-Port]/path;param=value">
+        <header request="true" command="Multimedia-Authentitcation:506" applicationId="3GPP Cx:16777216"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[sessionId]"/>
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>	
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        		
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="3GPP Cx:16777216"/>
+        </avp>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+        <avp code="Public-Identity:601" value="sip:+33875631975@sip.pfdev.fr" vendorId="[vendorID]"/>
+        <avp code="Number-Authentication-Items:1026" value="1"/>
+        <avp code="Auth-Data-Item:1018">
+            <avp code="Item-Number:1021" value="0"/>
+            <avp code="Authentication-Scheme:1020" value="DIGEST"/>
+            <avp code="Authorization:1022" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+            <avp code="Authentication-Context:1024" value="INVITE"/>
+        </avp>
+    </sendMessageDIAMETER>
+    
+    <receiveMessageDIAMETER name="Receive Answer (MAA)" listenpoint="lp_client2" request="false" type="506" result="2001" >
+    </receiveMessageDIAMETER>
+
+    <finally>
+    
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_client1"/>
+          </input>
+        </call>
+
+        <call name="diameter.removeListenpoint">
+          <input>
+            <parameter name="[function:name]" value="lp_client2"/>
+          </input>
+        </call>
+        
+    </finally>
+        
+</scenario>

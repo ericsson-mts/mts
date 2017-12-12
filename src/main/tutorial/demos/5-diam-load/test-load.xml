@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests AAA">
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+	<parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="3600000"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="60"/>
+
+	<parameter name="[localHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<parameter name="[localPortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[localDIA]" operation="set" value="[localHostDIA(0)]:[localPortDIA]"/>	
+	<parameter name="[localRealmDIA]" operation="set" value="sip.pfdev.fr"/>
+
+	<parameter name="[remoteHostDIA]" operation="system.ipaddress" value2="[IPVersion]"/>
+	<!--parameter name="[remoteHostDIA]" operation="set" value="192.168.0.1"/-->
+	<parameter name="[remotePortDIA]" operation="file.readproperty" value="diameter.properties" value2="listenpoint.LOCAL_PORT"/>
+	<!--parameter name="[remotePortDIA]" operation="set" value="3869"/-->
+	<parameter name="[remoteDIA]" operation="set" value="[remoteHostDIA(0)]:[remotePortDIA]"/>
+	<parameter name="[remoteRealmDIA]" operation="set" value="sip.pfdev.fr"/>
+
+	<!--                       -->
+    	<!-- RUNPROFILE PARAMETERS -->
+    	<!--                       -->    
+    	<runProfile>
+        	<step period="0" time="0"/>
+        	<end delay="[TestDurationSec]"/>
+    	</runProfile>
+	
+  	<for from="000" index="[index]" step="1" to="[NumberTestcase]"> 
+		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
+			<scenario file="client.xml" name="client" routingName="client"/>
+			<scenario file="server.xml" name="server" routingName="server"/>	
+		</testcase>
+	</for>
+</test>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" operation="set" value="[PortUAS]"/>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+
+
+
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+		<parameter name="[To]" 					operation="setFromMessage" 	value="header:To"/>
+		<parameter name="[From]" 				operation="setFromMessage" 	value="header:From"/>
+		<parameter name="[CallId]" 				operation="setFromMessage" 	value="header:Call-ID"/>
+		<parameter name="[CSeq]" 				operation="setFromMessage" 	value="header:CSeq"/>
+		<parameter name="[localTag]" 			operation="identifier" 		value="newString" value2="10"/>
+		<parameter name="[Contact]" 			operation="setFromMessage" 	value="header:Contact"/>
+		<parameter name="[Via]" 				operation="setFromMessage" 	value="header:Via"/>
+		<parameter name="[Record-Route]" 		operation="setFromMessage" 	value="header:Record-Route"/>
+		<parameter name="[InviteBranch]" 		operation="setFromMessage" 	value="header:TopmostVia:Parameter:branch"/>
+		
+	</receiveRequestSIP>
+
+	<parameter name="[SizeOfVia]" operation="size" value="[Via]"/>
+	
+<!-- Choosing the Target of the ACK the Client will send. If statefull proxy : Target = proxy. Else, Target = Server-->
+	<if>
+		<condition>
+			<test parameter="[SizeOfVia]" condition="greaterThan" value="1"/>
+		</condition>
+		<then>
+			<parameter name="[testcase:ACKTarget]" operation="set" value="[Adresse-Proxy]"/>
+		</then>
+		<else>
+			<parameter name="[testcase:ACKTarget]" operation="set" value="[HardAddressUAS]"/>
+		</else>
+	</if>
+
+
+	
+<sendResponseSIP name="Send 486 Busy here">
+<![CDATA[SIP/2.0 486 Busy here
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Max-Forwards: 10
+Contact: <sip:[HardAddressUAC]>
+User-Agent: [User-Agent]
+Via: [Via]
+Record-Route: [Record-Route]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+
+
+	<parameter name="[ReceiveACK]" operation="set" value="false"/>
+	
+	<receiveResponseSIP name="Wait ACK"  method="ACK" timeout="[timeout]" failedOnTimeout="false" >
+		<parameter name="[ReceiveACK]" 	operation="set" 			value="true"/>
+		<parameter name="[ACKVia]" 		operation="setFromMessage" 	value="header:Via"/>
+		<parameter name="[CSeqNumber]" 	operation="setFromMessage" 	value="header:CSeqNumber"/>
+		<parameter name="[AckBranch]" 	operation="setFromMessage" 	value="header:TopmostVia:Parameter:branch"/>
+	</receiveResponseSIP>
+
+
+	<if>
+		<condition>
+			<test parameter="[ReceiveACK]" condition="equals" value="true"/>
+		</condition>
+	<then>
+		<parameter name="[SizeOfVia]" operation="size" value="[ACKVia]"/>
+
+		<if>
+			<condition>
+				<test parameter="[SizeOfVia]" condition="greaterThan" value="1"/>
+			</condition>
+		<then>
+			<log level="1">Proxy doesn't forward ACK hop-by-hop over a negative response (negative response used for this test : 486 - busy). If your proxy is stateless, this behaviour is normal. Otherwise, check your proxy config. </log>
+		</then>
+		<else>
+			<if>
+				<condition>
+					<test parameter="[CSeqNumber]" 	condition="equals" value="[testcase:NewCseq]"/>
+					<test parameter="[AckBranch]" 	condition="equals" value="[InviteBranch]"/>
+				</condition>
+			<then>
+				<log level="0">Proxy forwards ACK hop-by-hop over a negative response (neg. response used for this test: 486 busy) </log>
+			</then>
+			</if>
+		</else>
+		</if>
+	</then>
+	<else>
+		<log level="2">This proxy doesn't provide ACK on a negative response. Fix this problem! </log>
+		<exit  name="exit" failed="true"/>
+	</else>
+	</if>
+</scenario>

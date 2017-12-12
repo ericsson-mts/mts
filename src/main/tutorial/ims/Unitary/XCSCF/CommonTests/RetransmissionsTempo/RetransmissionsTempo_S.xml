@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+
+	<parameter name="[retransmitNumber]" operation="set" value="10"/>
+	<parameter name="[MAX]" operation="add" value="[retransmitNumber]" value2="1"/>
+	
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+		<parameter name="[TIME00]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+	</receiveRequestSIP>
+	
+	
+		<parameter name="[index]" operation="set" value="01"/>
+		
+		
+	<!-- CHECKING RETRANSMISSIONS & THEIR TIMERS-->
+		
+	<while>
+		<condition>
+			<test parameter="[index]" condition="lowerThan" value="[MAX]"/>
+		</condition>
+	<do>
+        <parameter name="[index-1]" operation="substract" value="[index]" value2="1"/>
+		
+	<!--WAITING FOR THE RETRANSMISSION[index]-->
+		<receiveRequestSIP name="Wait INVITE"  method="INVITE" failedOnTimeout="true">
+			<parameter name="[TIME[index]]" operation="setFromSystem" value="Timestamp" value2="1970"/>
+		</receiveRequestSIP>
+	
+		<parameter name="[TIMER[index]]" operation="substract" value="[TIME[index]]" value2="[TIME[index-1]]"/>
+		<log level="0">Retransmission number [index] timer : [TIMER[index]]</log>
+        <parameter name="[index]" operation="add" value="[index]" value2="1"/>
+    </do>
+	</while>
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+	<!--CHECK THAT WE DON'T RECEIVE INVITE RETRANSMISSIONS ANYMORE-->
+
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE" timeout="[Retransmittimeout]" failedOnTimeout="false" failedOnReceive="true">
+	</receiveRequestSIP>
+	
+	
+</scenario>

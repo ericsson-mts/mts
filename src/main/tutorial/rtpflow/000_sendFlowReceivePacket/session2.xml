@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+			  
+    <parameter name="cpt" operation="set" value="0"/>
+    <while>
+    <condition>
+        <test parameter="[cpt]" condition="number.lowerThan" value="50"/>
+    </condition>
+    <do>
+        <receiveMessageRTP listenpoint="invitee" type="PCMA:8"/>
+        <parameter name="cpt" operation="number.add" value="[cpt]" value2="1"/>
+	</do>
+    </while>
+
+    <finally>
+		<removeListenpointRTP name="invitee" />
+	</finally>
+    
+</scenario>

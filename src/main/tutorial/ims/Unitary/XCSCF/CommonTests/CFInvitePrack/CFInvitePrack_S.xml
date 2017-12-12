@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+	
+
+  <receiveRequestSIP name="Wait INVITE" method="INVITE">
+    <parameter name="[To]" 					operation="setFromMessage" 	value="header:To"/>       
+    <parameter name="[From]" 				operation="setFromMessage" 	value="header:From"/>   
+    <parameter name="[InviteCallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[InviteCseq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[InviteVia]" 			operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[InviteContact]" 		operation="setFromMessage" 	value="header:Contact"/>
+	<parameter name="[InviteContent]" 		operation="setFromMessage" 	value="content"/>
+    <parameter name="[LocalTag]" 			operation="identifier" 		value="newString" 			value2="10"/>
+	<parameter name="[InviteCseq]"			operation="setFromMessage"	value="header:CSeq"/>
+  </receiveRequestSIP>
+  
+  
+ 
+  <sendResponseSIP name="Send 183 Session Progress">
+<![CDATA[SIP/2.0 183 Session Progress
+To: [To];tag=[LocalTag]
+From: [From]
+Via: [InviteVia]
+Call-ID: [InviteCallId]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+CSeq: [InviteCseq]
+Contact: [InviteContact]
+User-Agent: [UserAgent]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+
+	<receiveRequestSIP name="Wait Prack" method="PRACK">
+	<parameter name="[To]" 					operation="setFromMessage" 	value="header:To"/>
+    <parameter name="[PrackCallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[PrackCseq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[PrackVia]" 			operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[PrackContact]" 		operation="setFromMessage" 	value="header:Contact"/>
+	<parameter name="[PrackContent]" 		operation="setFromMessage" 	value="content"/>
+	<parameter name="[PrackCseq]"			operation="setFromMessage"	value="header:CSeq"/>
+	</receiveRequestSIP>
+	
+	
+  
+  <sendResponseSIP name="Send 200 OK for Prack">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [PrackVia]
+Call-ID: [PrackCallId]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+CSeq: [PrackCseq]
+Contact: [PrackContact]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Type: application/sdp
+Content-Length: x
+
+[PrackContent]
+]]>
+</sendResponseSIP>
+
+
+	<receiveRequestSIP name="Wait Update" method="UPDATE">
+    <parameter name="[UpdateCallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[UpdateCseq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[UpdateVia]" 			operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[UpdateContact]" 		operation="setFromMessage" 	value="header:Contact"/>
+	<parameter name="[UpdateContent]" 		operation="setFromMessage" 	value="content"/>
+    <parameter name="[UpdateLocalTag]" 		operation="identifier" 		value="newString" 				value2="10"/>
+	<parameter name="[UpdateCseq]"			operation="setFromMessage"	value="header:CSeq"/>
+	</receiveRequestSIP>
+
+
+  <sendResponseSIP name="Send 200 OK for Update">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [UpdateVia]
+Call-ID: [UpdateCallId]
+CSeq: [UpdateCseq]
+Contact: [UpdateContact]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Type: application/sdp
+Content-Length: x
+
+[UpdateContent]
+]]>
+</sendResponseSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+	
+  <sendResponseSIP name="Send 180 Ringing">
+<![CDATA[SIP/2.0 180 Ringing
+To: [To];tag=[LocalTag]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+From: [From]
+Via: [InviteVia]
+Call-ID: [InviteCallId]
+CSeq: [InviteCseq]
+User-Agent: [UserAgent]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+  <receiveRequestSIP name="Wait Prack2" method="PRACK">
+	<parameter name="[To]" 					operation="setFromMessage" 	value="header:To"/>
+    <parameter name="[Prack2CallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[Prack2Cseq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[Prack2Via]" 			operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[Prack2Contact]" 		operation="setFromMessage" 	value="header:Contact"/>
+	<parameter name="[Prack2Content]" 		operation="setFromMessage" 	value="content"/>
+	<parameter name="[Prack2Cseq]"			operation="setFromMessage"	value="header:CSeq"/>
+	</receiveRequestSIP>
+	
+	
+
+  <sendResponseSIP name="Send 200 OK for Prack2">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [Prack2Via]
+Call-ID: [Prack2CallId]
+CSeq: [Prack2Cseq]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Contact: [Prack2Contact]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Type: application/sdp
+Content-Length: x
+
+[Prack2Content]
+]]>
+</sendResponseSIP>
+
+
+	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>
+
+  <sendResponseSIP name="Send 200 OK for Invite">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [InviteVia]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Call-ID: [InviteCallId]
+CSeq: [InviteCseq]
+Contact: [InviteContact]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Type: application/sdp
+Content-Length: x
+
+[InviteContent]
+]]>
+</sendResponseSIP>
+
+	<receiveRequestSIP name="Wait ACK" method="ACK">
+	</receiveRequestSIP>
+	
+	
+
+  <receiveRequestSIP name="Wait BYE" method="BYE">  
+    <parameter name="[ByeCallId]" 		operation="setFromMessage" value="header:Call-Id"/>          
+    <parameter name="[ByeCSeq]" 		operation="setFromMessage" value="header:CSeq"/>       
+    <parameter name="[ByeContact]" 		operation="setFromMessage" value="header:Contact"/>                 
+    <parameter name="[ByeVia]" 			operation="setFromMessage" value="header:Via"/> 
+    <parameter name="[MaxForwards]" 	operation="setFromMessage" value="header:Max-Forwards"/>  
+  </receiveRequestSIP>
+
+
+  <sendResponseSIP name="Send 200 OK for Bye">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [ByeVia]
+Call-ID: [ByeCallId]
+CSeq: [ByeCSeq]
+Contact: [ByeContact]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Max-Forwards: [MaxForwardsDefaultValue]  
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+</scenario>

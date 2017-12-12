@@ -1,0 +1,954 @@
+
+
+
+
+
+Network Working Group                                     H. Schulzrinne
+Request for Comments: 3966                           Columbia University
+Obsoletes: 2806                                            December 2004
+Category: Standards Track
+
+
+                   The tel URI for Telephone Numbers
+
+Status of this Memo
+
+   This document specifies an Internet standards track protocol for the
+   Internet community, and requests discussion and suggestions for
+   improvements.  Please refer to the current edition of the "Internet
+   Official Protocol Standards" (STD 1) for the standardization state
+   and status of this protocol.  Distribution of this memo is unlimited.
+
+Copyright Notice
+
+   Copyright (C) The Internet Society (2004).
+
+Abstract
+
+   This document specifies the URI (Uniform Resource Identifier) scheme
+   "tel".  The "tel" URI describes resources identified by telephone
+   numbers.  This document obsoletes RFC 2806.
+
+Table of Contents
+
+   1.   Introduction. . . . . . . . . . . . . . . . . . . . . . . . .  2
+   2.   Terminology . . . . . . . . . . . . . . . . . . . . . . . . .  4
+   3.   URI Syntax. . . . . . . . . . . . . . . . . . . . . . . . . .  4
+   4.   URI Comparisons . . . . . . . . . . . . . . . . . . . . . . .  6
+   5.   Phone Numbers and Their Context . . . . . . . . . . . . . . .  6
+        5.1.   Phone Numbers. . . . . . . . . . . . . . . . . . . . .  6
+               5.1.1. Separators in Phone Numbers . . . . . . . . . .  7
+               5.1.2. Alphabetic Characters Corresponding to Digits .  7
+               5.1.3. Alphabetic, *, and # Characters as Identifiers.  7
+               5.1.4. Global Numbers. . . . . . . . . . . . . . . . .  7
+               5.1.5. Local Numbers . . . . . . . . . . . . . . . . .  8
+        5.2.   ISDN Subaddresses. . . . . . . . . . . . . . . . . . .  9
+        5.3.   Phone Extensions . . . . . . . . . . . . . . . . . . . 10
+        5.4.   Other Parameters . . . . . . . . . . . . . . . . . . . 10
+   6.   Examples  . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+   7.   Rationale . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+        7.1.   Why Not Just Put Telephone Numbers in SIP URIs?. . . . 11
+        7.2.   Why Not Distinguish between Call Types?. . . . . . . . 11
+        7.3.   Why tel. . . . . . . . . . . . . . . . . . . . . . . . 11
+        7.4.   Do Not Confuse Numbers with How They Are Dialed. . . . 11
+
+
+
+Schulzrinne                 Standards Track                     [Page 1]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   8.   Usage of Telephone URIs in HTML . . . . . . . . . . . . . . . 11
+   9.   Use of "tel" URIs with SIP (Informative). . . . . . . . . . . 12
+   10.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . 14
+   11.  Security Considerations . . . . . . . . . . . . . . . . . . . 14
+   12.  Changes Since RFC 2806. . . . . . . . . . . . . . . . . . . . 14
+   13.  References. . . . . . . . . . . . . . . . . . . . . . . . . . 15
+        13.1.  Normative References . . . . . . . . . . . . . . . . . 15
+        13.2.  Informative References . . . . . . . . . . . . . . . . 16
+   Author's Address . . . . . . . . . . . . . . . . . . . . . . . . . 16
+   Full Copyright Statement . . . . . . . . . . . . . . . . . . . . . 17
+
+1.  Introduction
+
+   This document defines the URI scheme "tel", which describes resources
+   identified by telephone numbers.  A telephone number is a string of
+   decimal digits that uniquely indicates the network termination point.
+   The number contains the information necessary to route the call to
+   this point.  (This definition is derived from [E.164] but encompasses
+   both public and private numbers.)
+
+   The termination point of the "tel" URI telephone number is not
+   restricted.  It can be in the public telephone network, a private
+   telephone network, or the Internet.  It can be fixed or wireless and
+   address a fixed wired, mobile, or nomadic terminal.  The terminal
+   addressed can support any electronic communication service (ECS),
+   including voice, data, and fax.  The URI can refer to resources
+   identified by a telephone number, including but not limited to
+   originators or targets of a telephone call.
+
+   The "tel" URI is a globally unique identifier ("name") only; it does
+   not describe the steps necessary to reach a particular number and
+   does not imply dialling semantics.  Furthermore, it does not refer to
+   a specific physical device, only to a telephone number.
+
+   As commonly understood, telephone numbers comprise two related but
+   distinct concepts: a canonical address-of-record and a dial string.
+   We define the concepts below:
+
+   Address-of-record or identifier: The telephone number is understood
+      here as the canonical address-of-record or identifier for a
+      termination point within a specific network.  For the public
+      network, these numbers follow the rules in E.164 [E.164], while
+      private numbers follow the rules of the owner of the private
+      numbering plan.  Subscribers publish these identifiers so that
+      they can be reached, regardless of the location of the caller.
+      (Naturally, not all numbers are reachable from everywhere, for a
+
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 2]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+      variety of technical and local policy reasons.  Also, a single
+      termination point may be reachable from different networks and may
+      have multiple identifiers.)
+
+   Dial string: "Dial strings" are the actual numbers, symbols, and
+      pauses entered by a user to place a phone call.  A dial string is
+      consumed by one or more network entities and understood in the
+      context of the configuration of these entities.  It is used to
+      generate an address-of-record or identifier (in the sense
+      described above) so that a call can be routed.  Dial strings may
+      require prepended digits to exit the private branch exchange (PBX)
+      the end system is connected to, and they may include post-dial
+      dual-tone multi-frequency (DTMF) signaling that could control an
+      interactive voice response (IVR) system or reach an extension.
+      Dial strings are beyond the scope of this document.
+
+   Both approaches can be expressed as a URI.  For dial strings, this
+   URI is passed to an entity that can reproduce the actions specified
+   in the dial string.  For example, in an analog phone system, a dialer
+   translates the dial string into a sequence of actions such as waiting
+   for dial tone, sending DTMF digits, pausing, and generating post-dial
+   DTMF digits after the callee picks up.  In an integrated services
+   digital network (ISDN) or ISDN user part (ISUP) environment, the
+   signaling elements that receive protocol messages containing the dial
+   string perform the appropriate protocol actions.  As noted, this
+   approach is beyond the scope of this specification.
+
+   The approach described here has the URI specify the telephone number
+   as an identifier, which can be either globally unique or only valid
+   within a local context.  The dialling application is aware of the
+   local context, knowing, for example, whether special digits need to
+   be dialed to seize an outside line; whether network, pulse, or tone
+   dialling is needed; and what tones indicate call progress.  The
+   dialling application then converts the telephone number into a dial
+   sequence and performs the necessary signaling actions.  The dialer
+   does not have to be a user application as found in traditional
+   desktop operating systems but could well be part of an IP-to-PSTN
+   gateway.
+
+   To reach a telephone number from a phone on a PBX, for example, the
+   user of that phone has to know how to convert the telephone number
+   identifier into a dial string appropriate for that phone.  The
+   telephone number itself does not convey what needs to be done for a
+   particular terminal.  Instructions may include dialling "9" before
+   placing a call or prepending "00" to reach a number in a foreign
+   country.  The phone may also need to strip area and country codes.
+
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 3]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   The identifier approach described in this document has the
+   disadvantage that certain services, such as electronic banking or
+   voicemail, cannot be specified in a "tel" URI.
+
+   The notation for phone numbers in this document is similar to that in
+   RFC 3191 [RFC3191] and RFC 3192 [RFC3192].  However, the syntax
+   differs as this document describes URIs whereas RFC 3191 and RFC 3192
+   specify electronic mail addresses.  RFC 3191 and RFC 3192 use "/" to
+   indicate parameters (qualifiers).  Since URIs use the forward slash
+   to describe path hierarchy, the URI scheme described here uses the
+   semicolon, in keeping with Session Initiation Protocol (SIP) URI
+   conventions [RFC3261].
+
+   The "tel" URI can be used as a request URI in SIP [RFC3261] requests.
+   The SIP specification also inherits the 'subscriber' part of the
+   syntax as part of the 'user element' in the SIP URI.  Other protocols
+   may also use this URI scheme.
+
+   The "tel" URI does not specify the call type, such as voice, fax, or
+   data call, and does not provide the connection parameters for a data
+   call.  The type and parameters are assumed to be negotiated either
+   in-band by the telephone device or through a signaling protocol such
+   as SIP.
+
+   This document obsoletes RFC 2806.
+
+2.  Terminology
+
+   In this document, the key words "MUST", "MUST NOT", "REQUIRED",
+   "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY",
+   and "OPTIONAL" are to be interpreted as described in BCP 14, RFC
+   2119, [RFC2119] and indicate requirement levels for compliant
+   implementations.
+
+3.  URI Syntax
+
+   The URI is defined using the ABNF (augmented Backus-Naur form)
+   described in RFC 2234 [RFC2234] and uses elements from the core
+   definitions (appendix A of RFC 2234).
+
+   The syntax definition follows RFC 2396 [RFC2396], indicating the
+   actual characters contained in the URI.  If the reserved characters
+   "+", ";", "=", and "?" are used as delimiters between components of
+   the "tel" URI, they MUST NOT be percent encoded.  These characters
+   MUST be percent encoded if they appear in tel URI parameter values.
+
+
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 4]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   Characters other than those in the "reserved" and "unsafe" sets (see
+   RFC 2396 [RFC2396]) are equivalent to their "% HEX HEX" percent
+   encoding.
+
+   The "tel" URI has the following syntax:
+
+   telephone-uri        = "tel:" telephone-subscriber
+   telephone-subscriber = global-number / local-number
+   global-number        = global-number-digits *par
+   local-number         = local-number-digits *par context *par
+   par                  = parameter / extension / isdn-subaddress
+   isdn-subaddress      = ";isub=" 1*uric
+   extension            = ";ext=" 1*phonedigit
+   context              = ";phone-context=" descriptor
+   descriptor           = domainname / global-number-digits
+   global-number-digits = "+" *phonedigit DIGIT *phonedigit
+   local-number-digits  =
+      *phonedigit-hex (HEXDIG / "*" / "#")*phonedigit-hex
+   domainname           = *( domainlabel "." ) toplabel [ "." ]
+   domainlabel          = alphanum
+                          / alphanum *( alphanum / "-" ) alphanum
+   toplabel             = ALPHA / ALPHA *( alphanum / "-" ) alphanum
+   parameter            = ";" pname ["=" pvalue ]
+   pname                = 1*( alphanum / "-" )
+   pvalue               = 1*paramchar
+   paramchar            = param-unreserved / unreserved / pct-encoded
+   unreserved           = alphanum / mark
+   mark                 = "-" / "_" / "." / "!" / "~" / "*" /
+                          "'" / "(" / ")"
+   pct-encoded          = "%" HEXDIG HEXDIG
+   param-unreserved     = "[" / "]" / "/" / ":" / "&" / "+" / "$"
+   phonedigit           = DIGIT / [ visual-separator ]
+   phonedigit-hex       = HEXDIG / "*" / "#" / [ visual-separator ]
+   visual-separator     = "-" / "." / "(" / ")"
+   alphanum             = ALPHA / DIGIT
+   reserved             = ";" / "/" / "?" / ":" / "@" / "&" /
+                          "=" / "+" / "$" / ","
+   uric                 = reserved / unreserved / pct-encoded
+
+   Each parameter name ("pname"), the ISDN subaddress, the 'extension',
+   and the 'context' MUST NOT appear more than once.  The 'isdn-
+   subaddress' or 'extension' MUST appear first, if present, followed by
+   the 'context' parameter, if present, followed by any other parameters
+   in lexicographical order.
+
+      This simplifies comparison when the "tel" URI is compared
+      character by character, such as in SIP URIs [RFC3261].
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 5]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+4.  URI Comparisons
+
+   Two "tel" URIs are equivalent according to the following rules:
+
+   o  Both must be either a 'local-number' or a 'global-number', i.e.,
+      start with a '+'.
+   o  The 'global-number-digits' and the 'local-number-digits' must be
+      equal, after removing all visual separators.
+   o  For mandatory additional parameters (section 5.4) and the 'phone-
+      context' and 'extension' parameters defined in this document, the
+      'phone-context' parameter value is compared as a host name if it
+      is a 'domainname' or digit by digit if it is 'global-number-
+      digits'.  The latter is compared after removing all 'visual-
+      separator' characters.
+   o  Parameters are compared according to 'pname', regardless of the
+      order they appeared in the URI.  If one URI has a parameter name
+      not found in the other, the two URIs are not equal.
+   o  URI comparisons are case-insensitive.
+
+   All parameter names and values SHOULD use lower-case characters, as
+   tel URIs may be used within contexts where comparisons are case
+   sensitive.
+
+   Section 19.1.4 in the SIP specification [RFC3261] discusses one such
+   case.
+
+5.  Phone Numbers and Their Context
+
+5.1.   Phone Numbers
+
+   The 'telephone-subscriber' part of the URI indicates the number.  The
+   phone number can be represented in either global (E.164) or local
+   notation.  All phone numbers MUST use the global form unless they
+   cannot be represented as such.  Numbers from private numbering plans,
+   emergency ("911", "112"), and some directory-assistance numbers
+   (e.g., "411") and other "service codes" (numbers of the form N11 in
+   the United States) cannot be represented in global (E.164) form and
+   need to be represented as a local number with a context.  Local
+   numbers MUST be tagged with a 'phone-context' (section 5.1.5).
+
+   Implementations MUST NOT assume that telephone numbers have a
+   maximum, minimum, or fixed length, or that they always begin with or
+   contain certain digits.
+
+
+
+
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 6]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+5.1.1.  Separators in Phone Numbers
+
+   Phone numbers MAY contain visual separators.  Visual separators
+   ('visual-separator') merely aid readability and are not used for URI
+   comparison or placing a call.
+
+   Although it complicates comparisons, this specification retains
+   visual separators in order to follow the spirit of RFC 2396
+   [RFC2396], which remarks that "A URI often needs to be remembered by
+   people, and it is easier for people to remember a URI when it
+   consists of meaningful components".  Also, ISBN URNs documented in
+   RFC 3187 [RFC3187] use visual separators in a manner similar to this
+   specification.
+
+   However, even though ITU-T E.123 [E.123] recommends the use of space
+   characters as visual separators in printed telephone numbers, "tel"
+   URIs MUST NOT use spaces in visual separators to avoid excessive
+   escaping.
+
+5.1.2.  Alphabetic Characters Corresponding to Digits
+
+   In some countries, it is common to write phone numbers with
+   alphabetic characters corresponding to certain numbers on the
+   telephone keypad.  The URI format does not support this notation, as
+   the mapping from alphabetic characters to digits is not completely
+   uniform internationally, although there are standards [E.161][T1.703]
+   addressing this issue.
+
+5.1.3.  Alphabetic, *, and # Characters as Identifiers
+
+   As called and calling terminal numbers (TNs) are encoded in BCD in
+   ISUP, six additional values per digit can be encoded, sometimes
+   represented as the hexadecimal characters A through F.  Similarly,
+   DTMF allows for the encoding of the symbols *, #, and A through D.
+   However, in accordance with E.164, these may not be included in
+   global numbers.  Their meaning in local numbers is not defined here,
+   but they are not prohibited.
+
+5.1.4.  Global Numbers
+
+   Globally unique numbers are identified by the leading "+" character.
+   Global numbers MUST be composed with the country (CC) and national
+   (NSN) numbers as specified in E.123 [E.123] and E.164 [E.164].
+   Globally unique numbers are unambiguous everywhere in the world and
+   SHOULD be used.
+
+
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 7]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+5.1.5.  Local Numbers
+
+   Local numbers are unique only within a certain geographical area or a
+   certain part of the telephone network, e.g., a private branch
+   exchange (PBX), a state or province, a particular local exchange
+   carrier, or a particular country.  URIs with local phone numbers
+   should only appear in environments where all local entities can
+   successfully set up the call by passing the number to the dialling
+   software.  Digits needed for accessing an outside line, for example,
+   are not included in local numbers.  Local numbers SHOULD NOT be used
+   unless there is no way to represent the number as a global number.
+
+   Local numbers SHOULD NOT be used for several reasons.  Local numbers
+   require that the originator and recipient are configured
+   appropriately so that they can insert and recognize the correct
+   context descriptors.  Since there is no algorithm to pick the same
+   descriptor independently, labelling numbers with their context
+   increases the chances of misconfiguration so that valid identifiers
+   are rejected by mistake.  The algorithm to select descriptors was
+   chosen so that accidental collisions would be rare, but they cannot
+   be ruled out.
+
+   Local numbers MUST have a 'phone-context' parameter that identifies
+   the scope of their validity.  The parameter MUST be chosen to
+   identify the local context within which the number is unique
+   unambiguously.  Thus, the combination of the descriptor in the
+   'phone-context' parameter and local number is again globally unique.
+   The parameter value is defined by the assignee of the local number.
+   It does NOT indicate a prefix that turns the local number into a
+   global (E.164) number.
+
+   There are two ways to label the context:  via a global number or any
+   number of its leading digits (e.g., "+33") and via a domain name,
+   e.g., "houston.example.com".  The choice between the two is left to
+   the "owner" of the local number and is governed by whether there is a
+   global number or domain name that is a valid identifier for a
+   particular local number.
+
+   The domain name does not have to resolve to any actual host but MUST
+   be under the administrative control of the entity managing the local
+   phone context.
+
+   A global number context consists of the initial digits of a valid
+   global number.  All global numbers with these initial digits must be
+   assigned to the same organization, and no such matching number can be
+   used by any other organization.  For example, +49-6151-16 would be a
+   suitable context for the Technical University of Darmstadt, as it
+   uses all numbers starting with those digits.  If such an initial
+
+
+
+Schulzrinne                 Standards Track                     [Page 8]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   string of digits does not exist, the organization SHOULD use the
+   lowest number of the global number range assigned to it.  (This can
+   occur if two organizations share the same decimal block of numbers.
+   For example, assume an organization owns the number range +1-212-
+   555-0100 through +1-212-555-0149.  +1-212-555-1 would not be a valid
+   global number context, but +1-212-555-0100 would work.) It is not
+   required that local numbers within the context actually begin with
+   the chosen set of initial numbers.
+
+   A context consisting of the initial digits of a global number does
+   not imply that adding these to the local number will generate a valid
+   E.164 number.  It might do so by coincidence, but this cannot be
+   relied upon.  (For example, "911" should be labeled with the context
+   "+1", but "+1-911" is not a valid E.164 number.)
+
+   National freephone numbers do not need a context, even though they
+   are not necessarily reachable from outside a particular country code
+   or numbering plan.  Recall that "tel" URIs are identifiers; it is
+   sufficient that a global number is unique, but it is not required
+   that it be reachable from everywhere.
+
+      Even non-freephone numbers may be out of date or may not be
+      reachable from a particular location.  For example, premium
+      services such as "900" numbers in the North American numbering
+      plan are often not dialable from outside the particular country
+      code.
+
+      The two label types were chosen so that, in almost all cases, a
+      local administrator can pick an identifier that is reasonably
+      descriptive and does not require a new IANA-managed assigned
+      number.  It is up to the administrator to assign an appropriate
+      identifier and to use it consistently.  Often, an organization can
+      choose among several different identifiers.
+
+   If the recipient of a "tel" URI uses it simply for identification,
+   the receiver does not need to know anything about the context
+   descriptor.  It simply treats it as one part of a globally unique
+   identifier, with the other being the local number.  If a recipient of
+   the URI intends to place a call to the local number, it MUST
+   understand the context and be able to place calls within that
+   context.
+
+5.2.  ISDN Subaddresses
+
+   A phone number MAY also contain an 'isdn-subaddress' parameter that
+   indicates an ISDN subaddress.
+
+
+
+
+
+Schulzrinne                 Standards Track                     [Page 9]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   ISDN subaddresses typically contain International Alphabet 5 (IA5
+   [T.50]) characters but may contain any octet value.
+
+5.3.  Phone Extensions
+
+   Phone extensions identify stations behind a non-ISDN PBX and are
+   functionally roughly equivalent to ISDN subaddresses.  They are
+   identified with the 'extension' parameter.  At most, one of the
+   'isdn-subaddress' and 'extension' parameters can appear in a "tel"
+   URI, i.e., they cannot appear both at the same time.
+
+5.4.  Other Parameters
+
+   Future protocol extensions to this URI scheme may add other
+   parameters ('parameter' in the ABNF).  Such parameters can be either
+   mandatory or optional.  Mandatory parameters start with "m-".  An
+   implementation MAY ignore optional parameters and MUST NOT use the
+   URI if it contains unknown mandatory parameters.  The "m-" prefix
+   cannot be added to parameters that were already registered (except to
+   create a new, logically distinct parameter).  The "phone-context"
+   parameter in this document is mandatory,  and "isub" and "ext" are
+   optional.
+
+   New mandatory parameters must be described in a standards-track RFC,
+   but an informational RFC is sufficient for optional parameters.
+
+   For example, 'parameter' parameters can be used to store
+   application-specific additional data about the phone number, its
+   intended use, or any conversions that have been applied to the
+   number.
+
+   Entities that forward protocol requests containing "tel" URIs with
+   optional parameters MUST NOT delete or modify parameters they do not
+   understand.
+
+6.  Examples
+
+   tel:+1-201-555-0123: This URI points to a phone number in the United
+      States.  The hyphens are included to make the number more human
+      readable; they separate country, area code and subscriber number.
+
+   tel:7042;phone-context=example.com: The URI describes a local phone
+         number valid within the context "example.com".
+
+   tel:863-1234;phone-context=+1-914-555: The URI describes a local
+      phone number that is valid within a particular phone prefix.
+
+
+
+
+
+Schulzrinne                 Standards Track                    [Page 10]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+7.  Rationale
+
+7.1.  Why Not Just Put Telephone Numbers in SIP URIs?
+
+   The "tel" URI describes a service, reaching a telephone number, that
+   is independent of the means of doing so, be it via a SIP-to-PSTN
+   gateway, a direct SIP call via E.164 number ("ENUM") translation
+   [RFC3761], some other signaling protocols such as H.323, or a
+   traditional circuit-switched call initiated on the client side via,
+   say, the Telephony Application Programming Interface (TAPI).  Thus,
+   in spirit, it is closer to the URN schemes that also leave the
+   resolution to an external mechanism.  The same "tel" URI may get
+   translated to any number of other URIs in the process of setting up
+   the call.
+
+7.2.  Why Not Distinguish between Call Types?
+
+   Signaling protocols such as SIP allow negotiating the call type and
+   parameters, making the very basic indication within the URI scheme
+   moot.  Also, since the call type can change frequently, any such
+   indication in a URI is likely to be out of date.  If such designation
+   is desired for a device that directly places calls without a
+   signaling protocol such as SIP, mechanisms such as the "type"
+   attribute for the "A" element in HTML may be more appropriate.
+
+7.3.  Why "tel"?
+
+   "tel" was chosen because it is widely recognized that none of the
+   other suggestions appeared appropriate.  "Callto" was discarded
+   because URI schemes locate a resource and do not specify an action to
+   be taken.  "Telephone" and "phone" were considered too long and not
+   easily recognized internationally.
+
+7.4.  Do Not Confuse Numbers with How They Are Dialed
+
+   As an example, in many countries the E.164 number "+1-212-555-3141"
+   will be dialed  as 00-1-212-555-3141, where the leading "00" is a
+   prefix for international calls.  (In general, a "+" symbol in E.164
+   indicates that an international prefix is required.)
+
+8.  Usage of Telephone URIs in HTML
+
+   Links using the "tel" URI SHOULD enclose the telephone number so that
+   users can easily predict the action taken when following the link
+
+   Dial <a href="tel:+1-212-555-0101">+1-212-555-0101</a> for
+   assistance.
+
+
+
+
+Schulzrinne                 Standards Track                    [Page 11]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   instead of
+
+   Dial <a href="tel:+1-212-555-0101">this number</a> for assistance.
+
+   On a public HTML page, the telephone number in the URI SHOULD always
+   be in the global form, even if the text of the link uses some local
+   format:
+
+   Telephone (if dialling in the United States):
+     <a href="tel:+1-201-555-0111">(201) 555-0111</a>
+
+   or even
+
+   For having RFCs read aloud, call <a
+   href="tel:+1-555-438-3732">1-555-IETF-RFC</a>.
+
+9.  Use of "tel" URIs with SIP (Informative)
+
+   SIP can use the "tel" URI anywhere a URI is allowed, for example as a
+   Request-URI, along with "sip" and "sips" URIs.  For brevity, we will
+   imply "sips" URIs when talking about SIP URIs.  Both "tel" and SIP
+   URIs can contain telephone numbers.  In SIP URIs, they appear as the
+   user part, i.e., before the @ symbol (section 19.1.6 in [RFC3261]).
+
+   Unless a SIP UA connects directly to a PSTN gateway, one of the SIP
+   proxy servers has to translate the "tel" URI to a SIP URI, with the
+   host part of that URI pointing to a gateway.  Typically, the outbound
+   proxy server, as the first proxy server visited by a call request,
+   performs this translation.  A proxy server can translate all "tel"
+   URIs to the same SIP host name or select a different gateway for
+   different "tel" prefixes, based, for example, on information learned
+   from TRIP [RFC3219].  However, a proxy server could also delegate
+   this translation task to any other proxy server, as proxy servers are
+   free to apply whatever routing logic they desire.  For local numbers,
+   the proxy MUST NOT translate "tel" URIs whose contexts it does not
+   understand.
+
+   As noted earlier, all phone numbers MUST use the global form unless
+   they cannot be represented as such.  If the local-number format is
+   used, it MUST be qualified by the 'phone-context' parameter.
+   Effectively, the combination of local number and phone context makes
+   the "tel" URI globally unique.
+
+   Although web pages, vCard business cards, address books, and
+   directories can easily contain global "tel" URIs, users on twelve-
+   button (IP) phones cannot dial such numbers directly and are
+   typically accustomed to dialling shorter strings, e.g., for PBX
+   extensions or local numbers.  These so-called dial strings (section
+
+
+
+Schulzrinne                 Standards Track                    [Page 12]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   1) are not directly represented by "tel" URIs, as noted.  We refer to
+   the rules that govern the translation of dial strings into SIP and
+   "tel" URIs, global or local, as the dial plan.  Currently,
+   translations from dial strings to "tel" URIs have to take place in
+   end systems.  Future efforts may provide means to carry dial strings
+   in a SIP URI, for example, but no such mechanisms exist as of this
+   writing.
+
+   A SIP UA can use a dial plan to translate dial strings into SIP or
+   "tel" URIs.  The dial plan can be manually configured or, preferably,
+   downloaded as part of a device configuration mechanism.  (At this
+   time, there is no standardized mechanism for this.)
+
+   A mobile user can use at least two dial plans, namely the dial plan
+   for the network that he is currently visiting and the dial plan for
+   his home network.  Generally, dialed numbers meant to represent
+   global numbers will look the same after the translation regardless of
+   the dial plan, even if, say, the visited network uses '0' for
+   dialling an 'outside' number and the user's home network uses '9', as
+   long as the user is aware of the current dial plan.  However, local
+   extensions without a direct global equivalent may well behave
+   differently.  To avoid any ambiguity, the dial plan MUST insert a
+   suitable 'phone-context' string when performing the translation.  If
+   the 'phone-context' is a domain name, there are three cases:
+
+   1.  The outbound proxy recognizes the domain name in the "tel" or SIP
+       URI as its local context and can route the request to a gateway
+       that understands the local number.
+
+   2.  The outbound proxy does not use the same phone context but can
+       route to a proxy that handles this phone context.  This routing
+       can be done via a lookup table, or the domain name of the phone
+       context might be set up to reflect the SIP domain name of a
+       suitable proxy.  For example, a proxy may always route calls with
+       "tel" URIs like
+
+          tel:1234;phone-context=munich.example.com
+
+       to the SIP proxy located at munich.example.com.  (Proxies
+       receiving a tel URI with a context they do not understand are
+       obligated to return a 404 (Not Found) status response so that an
+       outbound proxy may decide to attempt such a heuristic.)
+
+   3.  The outbound proxy does not recognize the phone context and
+       cannot find the appropriate proxy for that phone context.  In
+       that case, the translation fails, and the outbound proxy returns
+       a 404 (Not Found) error response.
+
+
+
+
+Schulzrinne                 Standards Track                    [Page 13]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+10.  Acknowledgments
+
+   This document is derived from RFC 2806 [RFC2806], written by Antti
+   Vaehae-Sipilae.  Mark Allman, Flemming Andreasen, Francois Audet,
+   Lawrence Conroy, Cullen Jennings, Michael Hammer, Paul Kyzivat,
+   Andrew Main, Xavier Marjou, Jon Peterson, Mike Pierce, Jonathan
+   Rosenberg, and James Yu provided extensive comments.
+
+11.  Security Considerations
+
+   The security considerations parallel those for the mailto URL
+   [RFC2368].
+
+   Web clients and similar tools MUST NOT use the "tel" URI to place
+   telephone calls without the explicit consent of the user of that
+   client.  Placing calls automatically without appropriate user
+   confirmation may incur a number of risks, such as those described
+   below:
+
+   o  Calls may incur costs.
+   o  The URI may be used to place malicious or annoying calls.
+   o  A call will take the user's phone line off-hook, thus preventing
+      its use.
+   o  A call may reveal the user's possibly unlisted phone number to the
+      remote host in the caller identification data and may allow the
+      attacker to correlate the user's phone number with other
+      information, such as an e-mail or IP address.
+
+   This is particularly important for "tel" URIs embedded in HTML links,
+   as a malicious party may hide the true nature of the URI in the link
+   text, as in
+
+   <a href="tel:+1-900-555-0191">Find free information here</a>
+   <a href="tel:+1-900-555-0191">tel:+1-800-555-0191</a>
+
+
+   "tel" URIs may reveal private information, similar to including phone
+   numbers as text.  However, the presence of the tel: schema identifier
+   may make it easier for an adversary using a search engine to discover
+   these numbers.
+
+12.  Changes Since RFC 2806
+
+   The specification is syntactically backwards-compatible with the
+   "tel" URI defined in RFC 2806 [RFC2806] but has been completely
+   rewritten.  This document more clearly distinguishes telephone
+   numbers as identifiers of network termination points from dial
+   strings and removes the latter from the purview of "tel" URIs.
+
+
+
+Schulzrinne                 Standards Track                    [Page 14]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+   Compared to RFC 2806, references to carrier selection, dial context,
+   fax and modem URIs, post-dial strings, and pause characters have been
+   removed.  The URI syntax now conforms to RFC 2396 [RFC2396].
+
+   A section on using "tel" URIs in SIP was added.
+
+13.  References
+
+13.1.  Normative References
+
+   [E.123]    International Telecommunications Union, "Notation for
+              national and international telephone numbers,  e-mail
+              addresses and web addresses", Recommendation E.123,
+              February 2001.
+
+   [E.161]    International Telecommunications Union, "Arrangement of
+              digits, letters and symbols on telephones and other
+              devices that can be used for gaining access to a telephone
+              network", Recommendation E.161, May 1995.
+
+   [E.164]    International Telecommunications Union, "The international
+              public telecommunication numbering plan", Recommendation
+              E.164, May 1997.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [RFC2234]  Crocker, D. and P. Overell, "Augmented BNF for Syntax
+              Specifications: ABNF", RFC 2234, November 1997.
+
+   [RFC3261]  Rosenberg, J., Schulzrinne, H., Camarillo, G., Johnston,
+              A., Peterson, J., Sparks, R., Handley, M., and E.
+              Schooler, "SIP:  Session Initiation Protocol", RFC 3261,
+              June 2002.
+
+   [T1.703]   ANSI, "Allocation of Letters to the Keys of Numeric
+              Keypads for Telecommunications", Standard T1.703-1995
+              (R1999), 1999.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Schulzrinne                 Standards Track                    [Page 15]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+13.2.  Informative References
+
+   [RFC2368]  Hoffman, P., Masinter, L., and J. Zawinski, "The mailto
+              URL scheme", RFC 2368, July 1998.
+
+   [RFC2396]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifiers (URI): Generic Syntax", RFC 2396,
+              August 1998.
+
+   [RFC2806]  Vaha-Sipila, A., "URLs for Telephone Calls", RFC 2806,
+              April 2000.
+
+   [RFC3761]  Faltstrom, P. and M. Mealling, "The E.164 to Uniform
+              Resource Identifiers (URI) Dynamic Delegation Discovery
+              System (DDDS) Application (ENUM)", RFC 3761, April 2004.
+
+   [RFC3187]  Hakala, J. and H. Walravens, "Using International Standard
+              Book Numbers as Uniform Resource Names", RFC 3187, October
+              2001.
+
+   [RFC3191]  Allocchio, C., "Minimal GSTN address format in Internet
+              Mail", RFC 3191, October 2001.
+
+   [RFC3192]  Allocchio, C., "Minimal FAX address format in Internet
+              Mail", RFC 3192, October 2001.
+
+   [RFC3219]  Rosenberg, J., Salama, H., and M. Squire, "Telephony
+              Routing over IP (TRIP)", RFC 3219, January 2002.
+
+   [T.50]     International Telecommunications Union, "International
+              Reference Alphabet (IRA) (Formerly International Alphabet
+              No. 5 or IA5) - Information technology - 7-bit coded
+              character set for information interchange", Recommendation
+              T.50, 1992.
+
+Author's Address
+
+   Henning Schulzrinne
+   Columbia University
+   Department of Computer Science
+   450 Computer Science Building
+   New York, NY  10027
+   US
+
+   Phone: +1 212 939 7042
+   EMail: hgs@cs.columbia.edu
+   URI:   http://www.cs.columbia.edu
+
+
+
+
+Schulzrinne                 Standards Track                    [Page 16]
+
+RFC 3966                      The tel URI                  December 2004
+
+
+Full Copyright Statement
+
+   Copyright (C) The Internet Society (2004).
+
+   This document is subject to the rights, licenses and restrictions
+   contained in BCP 78, and except as set forth therein, the authors
+   retain all their rights.
+
+   This document and the information contained herein are provided on an
+   "AS IS" basis and THE CONTRIBUTOR, THE ORGANIZATION HE/SHE REPRESENTS
+   OR IS SPONSORED BY (IF ANY), THE INTERNET SOCIETY AND THE INTERNET
+   ENGINEERING TASK FORCE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED,
+   INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE
+   INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED
+   WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+Intellectual Property
+
+   The IETF takes no position regarding the validity or scope of any
+   Intellectual Property Rights or other rights that might be claimed to
+   pertain to the implementation or use of the technology described in
+   this document or the extent to which any license under such rights
+   might or might not be available; nor does it represent that it has
+   made any independent effort to identify any such rights.  Information
+   on the IETF's procedures with respect to rights in IETF Documents can
+   be found in BCP 78 and BCP 79.
+
+   Copies of IPR disclosures made to the IETF Secretariat and any
+   assurances of licenses to be made available, or the result of an
+   attempt made to obtain a general license or permission for the use of
+   such proprietary rights by implementers or users of this
+   specification can be obtained from the IETF on-line IPR repository at
+   http://www.ietf.org/ipr.
+
+   The IETF invites any interested party to bring to its attention any
+   copyrights, patents or patent applications, or other proprietary
+   rights that may cover technology that may be required to implement
+   this standard.  Please address the information to the IETF at ietf-
+   ipr@ietf.org.
+
+Acknowledgement
+
+   Funding for the RFC Editor function is currently provided by the
+   Internet Society.
+
+
+
+
+
+
+
+Schulzrinne                 Standards Track                    [Page 17]
+

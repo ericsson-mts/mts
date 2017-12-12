@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<userInput>
+    <panel order="0">
+        <field type="title" txt="Configuration of the application" align="left"/>
+        <field type="search" variable="NGN_JAVA_HOME">
+            <spec txt="Java bin directory :" type="directory" result="directory">
+                <choice value="$JAVA_HOME\bin"                        os="windows"/>			
+                <choice value="C:\Program Files\Java\jre6\bin"        os="windows"/>			
+                <choice value="C:\Program Files\Java (x86)\jre6\bin"  os="windows"/>			
+                <choice value="C:\Program Files\Java\jre7\bin" 	      os="windows"/>			
+                <choice value="C:\Program Files\Java\jre7\bin" 	      os="windows"/>			
+                <choice value="C:\Program Files\Java (x86)\jre7\bin"  os="windows"/>			
+  
+                <choice value="$JAVA_HOME/bin"                  os="unix"/>			
+                <choice value="/usr/lib/jvm/java-7-sun/jre/bin" os="unix"/>
+                <choice value="/usr/lib/jvm/java-6-sun/jre/bin" os="unix"/>
+
+                <choice value="/usr/lib/java/bin"         os="unix"/>
+                <choice value="/opt/java/bin"             os="unix"/>
+            </spec>
+            <createForPack name="base"/>
+        </field>
+        <field type="search" variable="BROWSER_PATH">
+            <spec txt="WEB browser (statistic report) :" type="file" result="file">
+                <choice value="/usr/firefox"  os="unix"/>
+                <choice value="C:\Program Files\Mozilla Firefox\firefox.exe" os="windows"/>
+                <choice value="C:\Program Files\Internet Explorer\iexplore.exe" os="windows"/>
+            </spec>
+            <createForPack name="base"/>
+        </field>
+        <field type="search" variable="EDITOR_PATH">
+            <spec txt="Text editor (XML scripts) :" type="file" result="file">
+                <choice value="/usr/gedit"  os="unix"/>
+                
+                <choice value="C:\Program Files (x86)\Notepad++\notepad++.exe" os="windows"/>
+                <choice value="C:\Program Files\Notepad++\notepad++.exe" os="windows"/>
+                <choice value="C:\Program Files\PSPad editor (x86)\pspad.exe" os="windows"/>
+                <choice value="C:\Program Files\PSPad editor\pspad.exe" os="windows"/>
+                <choice value="C:\Program Files\UltraEdit (x86)\uedit32.exe" os="windows"/>
+                <choice value="C:\Program Files\UltraEdit\uedit32.exe" os="windows"/>
+                <choice value="C:\Program Files\Windows NT\Accessories\wordpad.exe" os="windows"/>
+            </spec>
+            <createForPack name="base"/>
+        </field>
+        <field type="rule" variable="java_memory">
+            <spec txt="Memory:" layout="N:5:5" set="0:1024" size="5">
+            </spec>
+            <createForPack name="base"/>
+        </field>
+    </panel>
+</userInput>

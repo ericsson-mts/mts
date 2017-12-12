@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[param]" operation="set" value="zero" />
+    <parameter name="[labelName]" operation="set" value="one" />
+    
+    <goto label="one" />
+    <exit failed="true" />
+    
+    <label name="[labelName]" />
+    
+    <if>
+        <condition>
+            <test parameter="[param]" condition="string.equals" value="zero" />
+        </condition>
+        <then>
+            <parameter name="[param]" operation="set" value="one" />
+            <goto label="two" />
+            <exit failed="true" />
+            <label name="two" />
+            <goto label="[param]" />
+        </then>
+        <else>
+            <while>
+                <condition>
+                    <test parameter="[param]" condition="string.equals" value="one" />
+                </condition>
+                <do>
+                    <goto label="four" />
+                    <exit failed="true" />
+                    <label name="three"/>
+                    <parameter name="[param]" operation="set" value="three" />
+                    <goto label="one" />  
+                    <exit failed="true" />                  
+                    <label name="four"/>
+                    <goto label="three" />
+                    <exit failed="true" />
+                </do>
+            </while>
+        </else>
+    </if>    
+</scenario>

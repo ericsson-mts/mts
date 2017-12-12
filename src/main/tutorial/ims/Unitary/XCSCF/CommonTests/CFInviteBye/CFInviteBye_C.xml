@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-TesterCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+
+  
+	<parameter name="[NewCallID]" 	operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[localTag]" 	operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[NewCseq]" 	operation="set" 		value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" 	value="newString"	value2="10"/>
+	<parameter name="[clientName]" 	operation="set" 		value="Inviter"/>
+  
+  <sendRequestSIP name="Send INVITE" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[InviteeName]@[Domain] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[InviterName]@[Domain]>;tag=[localTag]
+To: "[InviteeName]" <sip:[InviteeName]@[Domain]>
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwardsDefaultValue]
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Preferred-Identity: "[InviterName]" <sip:[InviterName]@[Domain]>
+Privacy: none
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+
+v=0
+o=[clientName] 999 999 IN IP4 [LocalAddressUAC]
+s=-
+c=IN IP4 [LocalAddressUAC]
+t=0 0
+m=audio 45200 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application 25463 udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+]]>
+</sendRequestSIP>
+                
+  <receiveResponseSIP name="Wait 100 Trying" method="INVITE" result="100">
+  </receiveResponseSIP>
+
+  <receiveResponseSIP name="Wait 180 Ringing" method="INVITE" result="180">
+  </receiveResponseSIP>
+
+    <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>                              
+    
+  <receiveResponseSIP name="Wait 200 OK" method="INVITE" result="200">
+    <parameter name="[To]" 				operation="setFromMessage" value="header:To"/>                     
+    <parameter name="[From]" 			operation="setFromMessage" value="header:From"/>                         
+    <parameter name="[CallId]" 			operation="setFromMessage" value="header:Call-Id"/> 
+    <parameter name="[lastCseqNumber]" 	operation="setFromMessage" value="header:CSeqNumber"/>   
+    <parameter name="[Request-URI]" 	operation="setFromMessage" value="header:Contact:Address:URI"/>	
+  </receiveResponseSIP>
+
+    <!--   	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/> -->
+      	
+  <sendRequestSIP name="Send ACK" providerName="[scenarioName]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[ACK [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [lastCseqNumber] ACK
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Max-Forwards: [MaxForwardsDefaultValue]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+User-Agent: [UserAgent]
+Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendRequestSIP>
+
+   <receiveRequestSIP name="Wait INFO" method="INFO">
+    <parameter name="[To]" 				operation="setFromMessage" value="header:To"/>                     
+    <parameter name="[From]" 			operation="setFromMessage" value="header:From"/>                         
+    <parameter name="[CallId]" 			operation="setFromMessage" value="header:Call-Id"/> 
+    <parameter name="[CSeq]" 			operation="setFromMessage" value="header:CSeq"/>   
+    <parameter name="[Request-URI]" 	operation="setFromMessage" value="header:Contact:Address:URI"/>
+	<parameter name="[Contact]" 		operation="setFromMessage" value="header:Contact"/>
+	<parameter name="[Via]" 			operation="setFromMessage" value="header:Via"/> 	
+  </receiveRequestSIP>
+
+  
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Contact: [Contact]
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Max-Forwards: [MaxForwards]  
+User-Agent: [UserAgent]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Length: 0
+]]>
+  </sendResponseSIP>
+  
+  
+	<parameter name="[newBranchId]" 	operation="identifier"	value="newString" 	value2="10"/>
+  	<parameter name="[newCseqNumber]" 	operation="identifier"	value="newInteger"	value2="10000000"/>
+	
+  <sendRequestSIP name="Send BYE" providerName="[scenarioName]">
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [newCseqNumber] BYE
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Contact: "[InviterName]"<sip:[InviterName]@[Domain]>
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+User-Agent: [UserAgent]
+Max-Forwards: [MaxForwardsDefaultValue]
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+                
+  <receiveResponseSIP name="Wait 200 OK" method="BYE" result="200">
+  </receiveResponseSIP>
+        
+</scenario>

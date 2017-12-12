@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- useful link to check message encoding http://www.smartposition.nl/resources/sms_pdu.html -->
+<!-- wireshark is able to decode the message and to show in a readable way -->
+
+<scenario>
+
+<function name="send_message">
+  <input>
+    <parameter name="[function:smsTextLength]" type="number"/>
+    <parameter name="[function:smsBinary]" type="text"/>
+  </input>
+  <do>
+    <parameter name="[clientName]" operation="set" value="[MSISDN-User1]"/>
+    <parameter name="[inviteeName1]" operation="set" value="[MSISDN-User2]"/>
+    <!--parameter name="[remotePortSIP]" operation="set" value="[Port-User2]"/-->
+
+    <createListenpointSIP name="[scenarioName]" localHost="[localHostSIP]" localPort="[Port-User1]" transport="[Transport]"/>
+
+    <!-- send RP-DATA with SMS-SUBMIT from the originating side -->
+    <parameter name="[RP-DATA_BIN]" operation="set" value="00"/>
+    
+    <parameter name="[RP-Message-Reference_BIN]" operation="set" value="00"/>
+        
+    <parameter name="[RP-Originator-Address_XML]" operation="set">
+<![CDATA[
+<sm_RP_OA.Choice>
+    <msisdn.C2.BoxedType><Bytes>
+          <!--field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+          <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+          <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+          <field name="digits" value="[MSISDN-User1]" type="Number_BCD"/-->
+    </Bytes></msisdn.C2.BoxedType>
+</sm_RP_OA.Choice>
+]]>
+</parameter>
+    <parameter name="[RP-Originator-Address_BIN]" operation="binary.xmlToAsn" value="[RP-Originator-Address_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_OA" value3="map/dictionary_MAP .xml"/>
+    <parameter name="[RP-Originator-Address_BIN]" operation="binary.subBinary" value="[RP-Originator-Address_BIN]" value2="1"/>
+    <!--test parameter="[RP-Originator-Address_BIN]" condition="binary.equals" value="00" /-->        
+
+    <parameter name="[RP-Destination-Address_XML]" operation="set">
+<![CDATA[
+<sm_RP_DA.Choice>
+    <serviceCentreAddressDA.C4.BoxedType><Bytes>
+          <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1"/>
+          <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3"/>
+          <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4"/>
+          <field name="digits" value="[MSISDN-SMSC]" type="Number_BCD"/>
+    </Bytes></serviceCentreAddressDA.C4.BoxedType>
+</sm_RP_DA.Choice>
+]]>
+</parameter>
+    <parameter name="[RP-Destination-Address_BIN]" operation="binary.xmlToAsn" value="[RP-Destination-Address_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_DA" value3="map/dictionary_MAP .xml"/>
+    <parameter name="[RP-Destination-Address_BIN]" operation="binary.subBinary" value="[RP-Destination-Address_BIN]" value2="1"/>
+    <!--test parameter="[RP-Destination-Address_BIN]" condition="binary.equals" value="07913306000000f3" /-->
+
+    <parameter name="[MSISDN-User2WithoutPlus]" operation="string.subString" value="[MSISDN-User2]" value2="1"/>    
+    <parameter name="[RP-User-Data_XML]" operation="set">
+<![CDATA[
+<sm_RP_UI.BoxedType><Bytes>
+  <element name="SMS-SUBMIT" coding="V">
+    <field name="TP-RP" value="TP Reply Path parameter is not set in this SMS SUBMIT/DELIVER:0" type="EnumLong" lengthBit="1"/>
+    <field name="TP-UDHI" value="[RP-UD-TP-User-Data-Header-Indicator]" type="EnumLong" lengthBit="1"/>
+    <field name="TP-SRR" value="[TP-SRR_Status-Report-Indicator]" type="EnumLong" lengthBit="1"/>
+    <field name="TP-VPF" value="TP VP field present - relative format:2" type="EnumLong" lengthBit="2"/>
+    <field name="TP-RD" value="Instruct the SC to accept duplicates:0" type="EnumLong" lengthBit="1"/>
+    <field name="TP-MTI" value="SMS-SUBMIT / SMS-SUBMIT-REPORT:1" type="EnumLong" lengthBit="2"/>
+  </element>
+  <element name="TP-MR" coding="V">
+    <field name="TP-MR" value="1" type="Integer" length="1"/>
+  </element>
+  <element name="TP-DA" coding="V">
+    <element name="Address" coding="DV" description="Generic Address" comment="Address of the function.">
+  		<field name="extension" value="no extension:1" type="enumeration" lengthBit="1" description="extension"/>
+      <field name="nature of address" value="international number:1" type="enumeration" lengthBit="3" description="nature of address"/>
+      <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="enumeration" lengthBit="4" description="numbering plan"/>
+      <field name="digits" value="[MSISDN-User2WithoutPlus]" type="number_bcd" description="digits"/>
+    </element>
+  </element>
+  <element name="TP-PID" coding="V">
+    <field name="assignment" value="Assigns bits 0..5 as defined below:0" type="EnumLong" lengthBit="2"/>
+    <field name="telematic interworking" value="no interworking, but SME to SME protocol:0" type="EnumLong" lengthBit="1"/>
+    <field name="telematic devices" value="implicit device type is specific to this SC,:0" type="EnumLong" lengthBit="5"/>
+  </element>
+  <element name="TP-DCS" coding="V">
+    <field name="Coding Group Bits" value="General Data Coding indication:0" type="EnumLong" lengthBit="2"/>
+    <field name="Compression" value="the text is uncompressed:0" type="EnumLong" lengthBit="1"/>
+    <field name="Bit 1-0 significance" value="bits 1 to 0 are reserved and have no message class meaning:0" type="EnumLong" lengthBit="1"/>
+    <field name="Alphabet" value="[smsAlphabet]" type="EnumLong" lengthBit="2"/>
+    <field name="Message Class" value="Class 0:0" type="EnumLong" lengthBit="2"/>
+  </element>
+  <element name="TP-VP" coding="V">
+    <field name="TP-VP" value="63 w(eeks):255" type="EnumLong" length="1"/>
+  </element>
+  <element name="TP-UD" coding="V">
+    <field name="TP-UDL" value="[smsTextLength]" type="integer" length="1"/>
+    <field name="TP-UD" value="[smsBinary]" type="Binary"/>
+  </element>
+</Bytes></sm_RP_UI.BoxedType>
+]]>
+</parameter>
+    <parameter name="[RP-User-Data_BIN]" operation="binary.xmlToAsn" value="[RP-User-Data_XML]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Sm_RP_UI" value3="map/dictionary_MAP .xml"/>
+    <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+    <log>RP-User-Data_BIN=[RP-User-Data_BIN]</log>
+    <!-- sometimes the length is encoded on 2 bytes (comes probably from BER ANS.1 encoding) -->
+    <parameter name="[bugLength]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="0" value3="1"/>
+    <if>
+      <condition>
+        <test parameter="[bugLength]" condition="binary.equals" value="81" />
+      </condition>
+      <then>
+        <parameter name="[RP-User-Data_BIN]" operation="binary.subBinary" value="[RP-User-Data_BIN]" value2="1"/>
+      </then>
+    </if>
+    
+    <!--parameter name="[asn]" operation="set"    value="00000007913306000000f32131010b913336080600f20000ff13d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
+    <!--parameter name="[binMAPMessage]" operation="binary.xmlToAsn" value="[xml]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" value3="map/dictionary_MAP .xml"/-->
+    <parameter name="[binMAPMessage]" operation="set" value="[RP-DATA_BIN][RP-Message-Reference_BIN][RP-Originator-Address_BIN][RP-Destination-Address_BIN][RP-User-Data_BIN]"/>
+    <log>binMAPMessage=[binMAPMessage]</log>
+    <!--parameter name="[binMAPMessage]" operation="set"    value="00000007913306000000F32131010B913336080600f20000ff15d4f29c0e2ab6ebec30bd5c9783865350737a04"/-->
+    <!--parameter name="[binMAPMessage]" operation="set" value="[asn]"/-->
+    <!--test parameter="[binMAPMessage]" condition="binary.equals" value="[asn]" /-->
+    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/> 
+    
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <!-- send RP-DATA -->
+		<sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+    <![CDATA[
+MESSAGE sip:+[MSISDN-SMSC]@[ISIM_DOMAIN_ADDR] SIP/2.0
+Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
+Route: <sip:[remoteHostSIP]:[remotePortSIP];lr>
+Max-Forwards: 70
+From: "[clientName]" <sip:[clientName]@[ISIM_DOMAIN_ADDR]>;tag=[localTag]
+To: <sip:+[MSISDN-SMSC]@[ISIM_DOMAIN_ADDR]>
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Accept-Contact: *;+g.oma.sip-im
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Type: application/vnd.3gpp.sms
+Content-Length: x
+          												              		  
+[strMAPMessage]]]></sendMessageSIP>
+
+    <receiveMessageSIP name="Wait 200 OK" request="false" type="MESSAGE" result="202">
+    </receiveMessageSIP>
+
+    <receiveMessageSIP name="Wait MESSAGE" listenpoint="[scenarioName]" request="true" type="MESSAGE">
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+        <parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageSIP>
+    
+    <!--parameter name="[xmlresult]" operation="binary.asnToXml" value="[content]" value2="com.devoteam.srit.xmlloader.sigtran.ap.map.Mo_forwardSM_Arg" /-->
+    
+    <!-- receive RP-ACK -->    
+    <parameter name="[binMAPMessage]" operation="set" value="03000d0a0d0a0d0a"/>
+    <!-- send RP-ERROR -->
+    <!--parameter name="[binMAPMessage]" operation="set" value="0408016F0d0a0d0a"/-->
+    <parameter name="[content]" operation="string.toBinary" value="[content]"/>
+    <test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/>
+    
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Via: [via]
+From: [from]
+To: [to];tag=[localTag]
+Call-ID: [callId]
+CSeq: [cSeq]
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+Server: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+    <receiveMessageSIP name="Wait MESSAGE" listenpoint="[scenarioName]" request="true" type="MESSAGE">
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[toURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[fromURI]" operation="protocol.setFromMessage" value="header.From.Address.URI"/>
+        <parameter name="[callId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+        <parameter name="[cSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+        <parameter name="[via]" operation="protocol.setFromMessage" value="header.Via"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageSIP>
+
+    <!-- receive RP-ACK -->
+    <parameter name="[binMAPMessage]" operation="set" value="0208"/>
+    <!-- send RP-ERROR -->
+    <parameter name="[binMAPMessage]" operation="set" value="0408016F"/>
+    <parameter name="[strMAPMessage]" operation="string.toBinary" value="[binMAPMessage]"/>
+    <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
+
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <sendMessageSIP name="Send 202 Accepted" listenpoint="[scenarioName]">
+<![CDATA[SIP/2.0 202 Accepted
+Via: [via]
+From: [from]
+To: [to];tag=[localTag]
+Call-ID: [callId]
+CSeq: [cSeq]
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+Server: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+    <!-- receive RP-ACK -->
+    <parameter name="[binMAPMessage]" operation="set" value="0208"/>
+    <!-- send RP-ERROR -->
+    <!--parameter name="[binMAPMessage]" operation="set" value="0408016F"/-->
+    <parameter name="[strMAPMessage]" operation="binary.toString" value="[binMAPMessage]"/>
+    <!--test parameter="[content]" condition="binary.equals" value="[binMAPMessage]"/-->
+
+    <parameter name="[clientName]" operation="set" value="[MSISDN-User1]"/>
+    <parameter name="[inviteeName1]" operation="set" value="[MSISDN-User2]"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <sendMessageSIP name="Send MESSAGE" listenpoint="[scenarioName]"  remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+        <![CDATA[
+MESSAGE [fromURI] SIP/2.0
+Via: SIP/2.0/[transportResponse] [localHostSIP]:[Port-User1];branch=z9hG4bK[newBranchId]
+Route: <sip:[remoteHostSIP]:[remotePortSIP];lr>
+Max-Forwards: 70
+From: [toURI];tag=[localTag]
+To: [fromURI]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] MESSAGE
+Accept-Contact: *;+g.oma.sip-im
+Allow: ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, SUBSCRIBE, UPDATE
+User-Agent: MTS v6.0.3_beta : Multiprotocol Test Suite
+Content-Type: application/vnd.3gpp.sms
+Content-Length: x
+
+[strMAPMessage]]]></sendMessageSIP>
+
+
+        <receiveMessageSIP name="Wait 200 OK" listenpoint="[scenarioName]" request="false" type="MESSAGE" result="200">
+        </receiveMessageSIP>
+
+    </do>
+</function>
+
+</scenario>

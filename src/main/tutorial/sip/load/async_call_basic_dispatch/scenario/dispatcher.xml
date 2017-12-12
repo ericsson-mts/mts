@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[received]" operation="set" value="true"/>
+    <while>
+        <condition>
+            <test parameter="[received]" condition="string.equals" value="true"/>        
+        </condition>
+        <do>
+            <parameter name="[item]" operation="list.remove" />
+			      <parameter name="[received]" operation="set" value="false"/>
+            <receiveMessageSIP timeout="[receiveTimeout]" failedOnTimeout="false">
+                <parameter name="[item]" operation="protocol.setFromMessage" value="message" />
+                <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID" />
+                <parameter name="[lastFirstline]" operation="protocol.setFromMessage" value="firstline" />                
+                <parameter name="[received]" operation="set" value="true"/>                
+            </receiveMessageSIP>
+            <parameter name="[test:receiveTS_[lastCallId][lastFirstline]]" operation="system.timestamp" value="1970"/>
+           
+      			<parameter name="[unused]" 		operation="list.enqueue" value="fifo" value2="[item]" />
+			
+       </do>
+    </while>
+</scenario>

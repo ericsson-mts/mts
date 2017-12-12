@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <createListenpointMSRP name="lp_0" localHost="[localHostMSRP]" localPort="7855" listenTLS="false"/>
+    <createListenpointMSRP name="lp_1" localHost="[localHostMSRP]" localPort="8855" listenTLS="false"/>
+
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    
+    <sendMessageMSRP listenpoint="lp_0" remoteHost="[remoteHostMSRP]" remotePort="8855">
+<![CDATA[
+MSRP [localTransactionID] SEND
+To-Path: msrp://bob.exemple.com:8888/74986;tcp
+From-Path: msrp://alice.exemple.com:7777/564;tcp
+Message-ID: [localMessageID]
+Byte-Range: 1-16/16
+Content-Type: text/plain
+
+Hi, I'm Alice!
+-------[localTransactionID]$
+]]>
+    </sendMessageMSRP>    
+
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    
+    <sendMessageMSRP listenpoint="lp_1" remoteHost="[remoteHostMSRP]" remotePort="7855">
+<![CDATA[
+MSRP [localTransactionID] SEND
+To-Path: msrp://alice.exemple.com:7777/564;tcp
+From-Path: msrp://bob.exemple.com:8888/74986;tcp
+Message-ID: [localMessageID]
+Byte-Range: 1-14/14
+Content-Type: text/plain
+
+Hi, I'm Bob!
+-------[localTransactionID]$
+]]>
+    </sendMessageMSRP> 
+
+    <removeListenpointMSRP name="lp_0"/>
+    <removeListenpointMSRP name="lp_1"/>
+
+</scenario>

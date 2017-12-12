@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 		operation="set" value="[PortUAS]"/>
+	<parameter name="[LocalAddressUAS]" operation="set" value="[HardAddressUAS]"/>	
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	
+
+  <receiveRequestSIP name="Wait SUBSCRIBE" method="SUBSCRIBE">
+    <parameter name="[To]" 					operation="setFromMessage" 	value="header:To"/>       
+    <parameter name="[From]" 				operation="setFromMessage" 	value="header:From"/>   
+    <parameter name="[CallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[Cseq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[Via]" 			operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[Contact]" 		operation="setFromMessage" 	value="header:Contact"/>
+    <parameter name="[MaxForwards]" 		operation="set" 			value="70"/>
+    <parameter name="[LocalTag]" 			operation="identifier" 		value="newString" 			value2="10"/>
+	<parameter name="[Cseq]"			operation="setFromMessage"	value="header:CSeq"/>
+  </receiveRequestSIP>
+  
+  <sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[LocalTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [Cseq]
+Route: <sip:[Adresse-Proxy];lr>
+Contact: [Contact]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+	
+	<parameter name="[newCseqNumber]" operation="identifier" value="newInteger" value2="10000000"/>
+	<parameter name="[NewBranchId]" operation="identifier" value="newString" value2="10"/>
+	
+	<sendRequestSIP name="Send notify" providerName="[scenarioName]">
+<![CDATA[NOTIFY sip:[LocalAddressUAC] SIP/2.0
+To: [To];tag=[LocalTag]
+From: [From]
+Call-ID: [CallId]
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[NewBranchId]
+CSeq: [newCseqNumber] NOTIFY
+Max-Forwards: 70
+Subscription-State: TRUE
+Contact: <sip:[HardAddressUAS]>
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[Adresse-Proxy];lr>
+Expires: 3600
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+
+	<receiveResponseSIP name="Wait 200 OK" method="NOTIFY" result="200">
+	</receiveResponseSIP>
+
+</scenario>

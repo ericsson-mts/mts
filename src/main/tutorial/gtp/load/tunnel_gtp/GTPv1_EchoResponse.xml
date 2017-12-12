@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<label name="Begin"/>
+    <receiveMessageGTP name="receive Echo Request" request="true" type="Echo Request:1" timeout="0">
+      <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+      <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>   
+      <parameter name="[transport]" operation="protocol.setFromMessage" value="channel.transport"/>
+      <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    </receiveMessageGTP>
+
+    <sendMessageGTP name="send Echo Response" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+      <headerV1 type="Echo Response:2" tunnelEndpointId="0" sequenceNumber="[seqNum]"/>
+
+      <!-- Recovery - Mandatory -->
+      <element tag="Recovery:14" >
+        <field name="Recovery" value="[Recovery]"/>
+      </element>
+
+      <!-- Private Extension - Optional -->
+      <!--element tag="privateExtension:255" description="Private Extension">
+		  	<field name="extensionIdentifier" value="3232"/>
+        <field name="extensionValue" value="Proprietary value"/>
+	    </element-->
+    </sendMessageGTP>
+  <goto  name="loop" label="Begin" state="true"/>
+</scenario>

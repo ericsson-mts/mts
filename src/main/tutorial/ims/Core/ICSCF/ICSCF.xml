@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY reponse_icscf    SYSTEM "../../Library/reponse_icscf.xml">
+  <!ENTITY requete_icscf  	SYSTEM "../../Library/requete_icscf.xml">
+  <!ENTITY invite_icscf   	SYSTEM "../../Library/invite_icscf.xml">
+  <!ENTITY UAR 				SYSTEM "../../Library/UAR.xml">
+  <!ENTITY LIR				SYSTEM "../../Library/LIR.xml">
+  <!ENTITY prox_icscf  		SYSTEM "../../Library/prox_icscf.xml">
+  <!ENTITY cancel_icscf   	SYSTEM "../../Library/cancel_icscf.xml">
+  <!ENTITY diameter_icscf   SYSTEM "../../Library/diameter_icscf.xml">
+  <!ENTITY rep_error_icscf  SYSTEM "../../Library/rep_error_icscf.xml">
+  ]>  
+ 
+<scenario>
+
+	<!--adresse du icscf-->
+	<parameter name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    <parameter name="[Port-Tester]" operation="set" value="5060"/>
+    <parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester]:[Port-Tester]"/>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-Tester]" transport="udp"/>
+
+<label name="Begin"/>
+	<!--parametre du icscf-->
+	<parameter name="[newBranchId]" 			operation="identifier" 	value="newString" value2="10"/>
+	<parameter name="[Via]" 					operation="set" 		value="Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]"/>
+	
+	<!--attente de la reception d'un message et recuperation des donnees-->
+	<receiveMessage name="wait_SIP_request" 	timeout="0">
+		<parameter name="[lastMessage]" 		operation="setFromMessage" 	value="message"/> 
+		<parameter name="[lastSIPMethod]" 		operation="setFromMessage" 	value="firstline:Method"/>
+		<parameter name="[lastIsRequest]" 		operation="setFromMessage" 	value="message:request"/>
+		<parameter name="[lastResult]" 			operation="setFromMessage" 	value="message:result"/>
+		<parameter name="[lastFirstline]" 		operation="setFromMessage" 	value="firstline"/> 
+		<parameter name="[lastHeader]" 			operation="setFromMessage" 	value="header"/>
+		<parameter name="[lastContent]" 		operation="setFromMessage" 	value="content"/>
+	</receiveMessage>
+	
+	<!-- parametres necessaire aux reponses cree par le Proxy-->
+	<parameter name="[lastCall-ID]" 			operation="setFromMessage" 	value="header:Call-ID" 	value2="[lastMessage]"/>	
+	<parameter name="[lastTo]" 					operation="setFromMessage" 	value="header:To" 		value2="[lastMessage]"/>
+	<parameter name="[lastFrom]" 				operation="setFromMessage" 	value="header:From" 	value2="[lastMessage]"/>
+	<parameter name="[lastCSeq]" 				operation="setFromMessage" 	value="header:CSeq"		value2="[lastMessage]"/>	
+	<parameter name="[lastVia]" 				operation="setFromMessage" 	value="header:Via"		value2="[lastMessage]"/>	
+		
+	<!-- Traite les messages selon leur role requete ou reponse et envoi les message-->
+	<if>
+	    <condition>
+	    	<test parameter="[lastIsRequest]" condition="equals" value="true"/>
+	    </condition>
+	    <then>
+      		&requete_icscf;
+<sendRequestSIP name="ICSCF_SIP_request" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendRequestSIP>
+		</then>
+		<else>  
+			&reponse_icscf;
+<sendResponseSIP name="ICSCF_SIP_response" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendResponseSIP>
+		</else> 
+	</if> 
+	<goto  name="loop" label="Begin" state="true"/>
+</scenario> 

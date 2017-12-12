@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[provider_Name]" operation="set" value="[scenarioName]"/>
+	
+	<createListenpointSIP name="[provider_Name]" localPort="[UAClocalPortSIP]"/>
+  	
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+  	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+  	<parameter name="[localCseqNumber]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  	    
+  	<parameter name="[portSdpInviter]" operation="set" value="10000"/>		
+  	<sendMessageSIP name="Send INVITE" listenpoint="[provider_Name]" >
+<![CDATA[INVITE sip:[invitee]@[domainName] SIP/2.0
+To: sip:[invitee]@[domainName]
+From: "[inviter]" <sip:[inviter]@[domainName]>;tag=[localTag]
+Via: SIP/2.0/UDP [UAClocalHostSIP]:[UAClocalPortSIP];branch=[newBranchId]
+Call-ID: [newCallId]
+CSeq: [localCseqNumber] INVITE
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"    
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: <sip:[inviter]@[UAClocalHostSIP]:[UAClocalPortSIP]>
+Supported: timer
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Session-Expires: 3600;refresher=uac
+Accept-Contact: +g.poc.talkburst;require;explicit
+P-Alerting-Mode: manual
+P-Asserted-Identity: "Bruno" <sip:[inviter]@[domainName]>,<tel:+3381164951574>
+P-Charging-Vector: icid-value=0.6645971655716005;ggsn=139.10.69.237;pdp-sig=yes;gcid=60ee19cf;auth-token=0.4849361942495226
+P-com.Siemens.MSISDN-ID: 3381164951574
+P-com.Siemens.IMSI-ID: 81164951574
+P-com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
+Content-Type: multipart/mixed;boundary="----=_Part_0"
+Route: <sip:[invitee]@[remoteHostSIP]:[remotePortSIP];lr;mode=originating>
+Route: <sip:[inviter]@[UAClocalHostSIP]:[UAClocalPortSIP];lr;mode=terminating>
+Content-Length: x
+
+------=_Part_0
+Content-Type: application/sdp
+
+v=0
+o=[inviter] 999 999 IN IP4 [UAClocalHostRTP]
+s=-
+c=IN IP4 [UAClocalHostRTP]
+t=0 0
+m=audio [UAClocalPortRTP] RTP/AVP 8 3 0 101
+a=rtpmap:8 PCMA/8000
+a=rtpmap:3 GSM/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-16
+a=ptime:20
+a=sendrecv
+
+------=_Part_0
+Content-Type: application/resource-lists+xml
+Content-Disposition: recipient-list
+
+<?xml version="1.0" encoding="UTF-8"?>
+<resource-lists xmlns="urn:ietf:params:xml:ns:resource-lists" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<list>
+<entry uri="[inviter]"/>
+</list>
+</resource-lists>
+------=_Part_0--]]>
+	</sendMessageSIP>
+                
+  	<receiveMessageSIP name="Wait 100 Trying" type="INVITE" result="100" request="false">
+  	</receiveMessageSIP>
+	
+	<receiveMessageSIP name="Wait 183 Session Progress" type="INVITE" result="183" request="false" >
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	 
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/> 		 
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+		<parameter name="[RSeq]" operation="protocol.setFromMessage" value="header.RSeq"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+	  	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	</receiveMessageSIP>
+
+  	<receiveMessageSIP name="Wait 200 OK" type="INVITE" result="200" request="false">
+	        <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+	        <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+	        <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>
+	        <parameter name="[newBranchId]" operation="number.random" value="10"/>
+	        <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+	        <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+	        <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+  	</receiveMessageSIP>
+
+  	<sendMessageSIP name="Send ACK" listenpoint="[provider_Name]" >
+<![CDATA[ACK [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [localCseqNumber] ACK
+Via: SIP/2.0/UDP [UAClocalHostSIP]:[UAClocalPortSIP];branch=[newBranchId]
+Contact: <sip:[inviter]@[UAClocalHostSIP]:[UAClocalPortSIP]>
+Route: <sip:[invitee]@[remoteHostSIP]:[remotePortSIP];lr;mode=originating>
+Route: <sip:[inviter]@[UAClocalHostSIP]:[UAClocalPortSIP];lr;mode=terminating>
+Max-Forwards: 70
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, CANCEL, BYE, NOTIFY
+Content-Length: 0
+]]>
+	</sendMessageSIP>
+
+<!--******************** Fin message de signalisation *********************-->
+
+
+	<semaphore name="WaitACKservice" action="notify"/>
+	
+	<createListenpointRTPFLOW name="[provider_Name]" localPort="[UAClocalPortRTP]"/>
+	
+	<parameter name="[testcase:RTPSessionOpened]" operation="system.semaphorewait"/>
+	
+	<!-- Creation d'un flux RTP  -->
+    	<parameter name="[packetNumber]" operation="set" value="500"/>		
+    	<parameter name="[payloadType]" operation="set" value="0"/>	
+    	<parameter name="[deltaTime]" operation="set" value="20"/>	
+    	<parameter name="[bitRate]" operation="set" value="8000"/>	
+    	<parameter name="[payloadList]" operation="set" value="00" value2="160"/>
+    	
+    	<sendMessageRTPFLOW listenpoint="[provider_Name]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0(0)]" >    
+	    <flow packetNumber="[packetNumber]" deltaTime="[deltaTime]" synchronous="true" packetLost="0">
+            <header ssrc="875" payloadType="[payloadType]" seqnum="10" timestamp="200"/>
+            <payload format="binary">[payloadList]</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+	
+	<parameter name="[testcase:RTPSessionEnded]" operation="system.semaphorewait"/>	
+		
+	<finally>
+	
+		<!-- Fermeture de la session-->
+	  	<parameter name="[localCseqNumber]" operation="number.add" value="[localCseqNumber]" value2="1"/>
+	  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  	  	
+	  	<sendMessageSIP name="Send BYE" listenpoint="[provider_Name]" >
+<![CDATA[BYE sip:[inviter]@[domainName] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [localCseqNumber] BYE
+Route: <sip:[inviter]@[remoteHostSIP]:[remotePortSIP];lr;mode=originating>
+Route: <sip:[invitee]@[UAClocalHostSIP]:[UAClocalPortSIP];lr;mode=terminating>
+Contact: <sip:[invitee]@[UAClocalHostSIP]:[UAClocalPortSIP]>
+Via: SIP/2.0/UDP [UAClocalHostSIP]:[UAClocalPortSIP];branch=[newBranchId]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+  	</sendMessageSIP>
+	                
+	  	<receiveMessageSIP name="Wait 200 OK" type="BYE" result="200" request="false">
+	  	</receiveMessageSIP>
+	
+		<removeListenpointSIP name="[provider_Name]"/>
+				
+	</finally>
+		
+</scenario>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+
+    Reference document : rfc3807.txt
+    Chapter 4.6
+    
+    Message : Error
+    Class : 14 (V5 Boundary Primitives Transport Messages (V5PTM))
+    Type : 18 (Error)
+    
+    The following scenarios send the V5UA message with the following elements :  
+    
+    Common tags
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x1)           |             Length            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Interface Identifier (integer)                |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x81)          |             Length=8          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            DLCI               |                EFA            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+    Interface Identifier (integer)
+   0                   1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |        Link Identifier                              | Chnl ID |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   
+   Additionnal tags
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           Tag (0x84)           |             Length           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Error Reason                                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   
+-->
+
+<scenario>
+			
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostV5UA]" remotePort="[localPortV5UA]">    		
+                
+        <UA name="V5UA" file="v5ua.xml">
+        
+            <header messageClass="V5PTM:V5 Boundary Primitives Transport" messageType="Error"/>						
+            
+            <!-- integer interface identifier -->
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Link_Identifier"  value="2000"/>
+		            <field name="Channel_Identifier"  value="2"/>                
+            </parameter>
+            
+            <parameter tag="DLCI">
+                <field name="SAPI" value="0"/>
+      	        <field name="Spare_Bit" value="0"/>
+      	        <field name="Zero_Bit" value="0"/>
+      	        <field name="TEI" value="1"/>
+      	        <field name="Un_Bit" value="1"/>
+      	        <field name="EFA" value="ISDN_PROTOCOL"/>
+      	    </parameter>
+
+            <parameter tag="Error_Reason">
+                <field name="Error_Reason" value="OVERLOAD:C-channel is in overload state"/>           
+            </parameter>
+            
+        </UA>	
+
+    </sendMessageSIGTRAN>
+    
+</scenario>

@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<scenario>
+
+	<function file="eps_ims_check_sdp_qos_func.xml" />
+	<function file="eps_ims_check_sip_rack_func.xml" />
+	<function file="eps_ims_get_sdp_media_port_func.xml" />
+
+	<parameter name="[IMPU-org]" operation="set" value="[IMPU-User1]" /> 
+      	<parameter name="[IMPU-term]" operation="set" value="[IMPU-User2]" /> 
+
+        <parameter name="[LocalHost]" operation="set" value="[localHostSIP]" /> 
+        <parameter name="[LocalPort]" operation="set" value="[Port-User2]" /> 
+        <parameter name="[LocalPortRTPAudio]" operation="set" value="[Port-RTP-User2]" /> 
+        <parameter name="[LocalPortRTPVideo]" operation="set" value="[Port-RTP-Video-User2]" /> 
+        <parameter name="[LocalAddress]" operation="set" value="[LocalHost]:[LocalPort]" /> 
+        <parameter name="[LocalTransport]" operation="set" value="[transportSIP]" /> 
+ 	<parameter name="[LocalContact]" operation="string.split" value="[IMPU-term]" value2="@"/>
+        <parameter name="[LocalContact]" operation="set" value="[LocalContact(0)]@[LocalAddress]" />
+       
+        <parameter name="[provider]" operation="set" value="[scenarioName]" /> 
+  
+    	<parameter name="[localTag]" operation="number.random" value="10" /> 
+      	<parameter name="[newCallId]" operation="number.random" value="10000000" /> 
+        <parameter name="[newBranchId]" operation="string.random" value="10" /> 
+        <parameter name="[MaxForwards]" operation="set" value="70" /> 
+ 
+	<!-- SDP Parameters -->
+ 
+        <parameter name="[SdpVersion]" operation="set" value="0" />
+        <parameter name="[SdpUsername]" operation="set" value="-" />
+        <parameter name="[SdpSess-id]" operation="set" value="999" />
+        <parameter name="[SdpSess-version]" operation="set" value="109" />
+        <parameter name="[SdpNettype]" operation="set" value="IN" />
+
+	<if>
+  		<condition>
+  			<test parameter="[IPVersion]" condition="string.equals" value="ipv6" />
+  		</condition>
+  	<then>
+	        <parameter name="[SdpAddrtype]" operation="set" value="IP6" />
+  	</then>
+  	<else>
+	        <parameter name="[SdpAddrtype]" operation="set" value="IP4" />
+  	</else>
+	</if>
+
+        <parameter name="[SdpUnicast-address]" operation="set" value="[localHostSIP]" />
+        <parameter name="[SdpSession-name]" operation="set" value="VoIP" />
+        <parameter name="[SdpStart-time]" operation="set" value="0" />
+        <parameter name="[SdpStop-time]" operation="set" value="0" />
+        <parameter name="[SdpMediaAudio]" operation="set" value="audio" />
+        <parameter name="[SdpPortAudio]" operation="set" value="[LocalPortRTPAudio]" />
+        <parameter name="[SdpProtoAudio]" operation="set" value="RTP/AVP" />	<!-- RTP/AVP(Audio Visual Profile)|AVPF(feedback)|SAVP(secure) -->
+        <parameter name="[SdpAudioPtime]" operation="set" value="20" />	<!-- Media recommended length of time in ms in RTP packet  -->
+        <parameter name="[SdpAudioMaxptime]" operation="set" value="240" />	<!-- Media maximum length of time in ms in RTP packet  -->
+        <parameter name="[SdpBwAudioAS]" operation="set" value="49" />	<!-- Bandwidth AS -->
+        <parameter name="[SdpMediaVideo]" operation="set" value="video" />
+        <parameter name="[SdpPortVideo]" operation="set" value="[LocalPortRTPVideo]" />
+        <parameter name="[SdpProtoVideo]" operation="set" value="RTP/AVP" />	<!-- RTP/AVP(Audio Visual Profile)|AVPF(feedback)|SAVP(secure) -->
+        <parameter name="[SdpBwVideoAS]" operation="set" value="315" />	
+        <parameter name="[SdpBwVideoRS]" operation="set" value="0" />	
+        <parameter name="[SdpBwVideoRR]" operation="set" value="2500" />	
+      
+	<!-- AMR-WB Parameters - RFC 4867 -->
+        <parameter name="[AmrWbOctet-align]" operation="set" value="1" />
+        <parameter name="[AmrWbMode-set]" operation="set" value="0,1,2" />
+        <parameter name="[AmrWbMode-change-period]" operation="set" value="2" />
+        <parameter name="[AmrWbMode-change-capability]" operation="set" value="2" />
+        <parameter name="[AmrWbMode-change-neighbor]" operation="set" value="1" />
+        <parameter name="[AmrWbMax-red]" operation="set" value="0" />
+
+
+        <parameter name="[RTPAudio-type]" operation="set" value="AMR-WB/16000" />
+        <parameter name="[RTPAudio-params]" operation="set" value="octet-align=[AmrWbOctet-align];mode-set=[AmrWbMode-set];mode-change-period=[AmrWbMode-change-period];mode-change-capability=[AmrWbMode-change-capability];mode-change-neighbor=[AmrWbMode-change-neighbor];max-red=[AmrWbMax-red]" />
+
+	<!-- H264 Parameters - RFC 3984 -->
+        <parameter name="[H264-packetization-mode]" operation="set" value="0" />
+        <parameter name="[H264-profile-level-id]" operation="set" value="42e00c" />
+        <parameter name="[H264-sprop-parameter-sets]" operation="set" value="J0LgDJWgUH6Af1A=,KM46gA==" />
+
+	<parameter name="[RTPVideo-type]" operation="set" value="H264/90000" />
+        <parameter name="[RTPVideo-params]" operation="set" value="packetization-mode=[H264-packetization-mode];profile-level-id=[H264-profile-level-id];sprop-parameter-sets=[H264-sprop-parameter-sets]" />
+
+
+        <createListenpointSIP name="[scenarioName]" localHost="[LocalHost]" localPort="[LocalPort]" transport="[LocalTransport]" /> 
+
+
+	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true">
+                <parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To" /> 
+                <parameter name="[lastFromI]" operation="protocol.setFromMessage" value="header.From" /> 
+                <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastCseqI]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+                <parameter name="[lastViaI]" operation="protocol.setFromMessage" value="header.Via" /> 
+                <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+                <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route" /> 
+                <parameter name="[SDP-MediaTypes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Type" /> 
+                <parameter name="[SDP-Attributes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Attribut" /> 
+   	</receiveMessageSIP>
+
+	<call name="check-sdp-qos">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="audio"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-Attributes]"			value="[SDP-Attributes]"/>
+		<parameter name="[function:expected-curr-qos-local]"		value="none"/>
+		<parameter name="[function:expected-curr-qos-remote]"		value="none"/>
+		<parameter name="[function:expected-des-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-des-qos-remote]"		value="sendrecv"/>
+	</input>
+	</call>
+        
+        <sendMessageSIP name="Send 100 Trying" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+                SIP/2.0 100 Trying
+                To: [lastToI]
+                From: [lastFromI]
+                Via: [lastViaI]
+                Call-ID: [lastCallId]
+                CSeq: [lastCseqI]
+                Content-Length: 0
+  		]]> 
+    	</sendMessageSIP>
+      
+        <parameter name="[localTag]" operation="string.random" value="10" /> 
+        <parameter name="[lastToI]" operation="set" value="[lastToI];tag=[localTag]" />
+
+	<parameter name="[newRseq]" operation="number.random" value="1000" /> 
+        <parameter name="[newRseq]" operation="number.add" value="[newRseq]" value2="1" /> 
+        
+	<sendMessageSIP name="Send 183 Session Progress" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+        	SIP/2.0 183 Session Progress
+        	Record-Route:[Record-Route]
+        	To: [lastToI]
+        	From: [lastFromI]
+        	Via: [lastViaI]
+        	Call-ID: [lastCallId]
+        	CSeq: [lastCseqI]
+		Require: 100rel
+		Require: precondition
+        	Rseq: [newRseq]
+        	Contact: <[LocalContact]>
+        	Content-Type: application/sdp
+        	Content-Length: x
+
+		v=[SdpVersion]
+		o=[SdpUsername] [SdpSess-id] [SdpSess-version] [SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		s=[SdpSession-name]
+		c=[SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		t=[SdpStart-time] [SdpStop-time]
+		m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 97 96
+		b=AS:[SdpBwAudioAS]
+		a=rtpmap:97 [RTPAudio-type]
+		a=fmtp:97 [RTPAudio-params]
+		a=rtpmap:96 telephone-event
+		a=curr:qos local none
+		a=curr:qos remote none
+		a=des:qos mandatory local sendrecv
+		a=des:qos mandatory remote sendrecv
+		a=conf:qos remote sendrecv
+		a=sendrecv
+		a=ptime:[SdpAudioPtime]
+		a=maxptime:[SdpAudioMaxptime]
+		]]> 
+    	</sendMessageSIP>
+
+        <parameter name="[expectedRAck]" operation="set" value="[newRseq] [lastCseqI]" />
+
+    	<receiveMessageSIP name="Wait PRACK" type="PRACK" request="true">
+      		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+        	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" /> 
+          	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" /> 
+            	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" /> 
+        	<parameter name="[receivedRAck]" operation="protocol.setFromMessage" value="header.RAck" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+       	</receiveMessageSIP>
+
+	<call name="check-sip-rack">
+	<input>
+		<parameter name="[function:receivedRAck]"		value="[receivedRAck]"/>
+		<parameter name="[function:expectedRAck]"		value="[expectedRAck]"/>
+	</input>
+	</call>
+
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+                SIP/2.0 200 OK
+                Via: [lastVia]
+                Record-Route:[Record-Route]
+                To: [lastTo]
+                From: [lastFrom]
+                Call-ID: [lastCallId]
+                CSeq: [lastCseq]
+		Supported: 100rel
+		Supported: precondition
+                Content-Length: 0
+		]]> 
+    	</sendMessageSIP>
+    	<receiveMessageSIP name="Wait UPDATE" type="UPDATE" request="true">
+      		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+        	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" /> 
+          	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" /> 
+            	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" /> 
+                <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+		<parameter name="[RemoteHostRTP]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+		<parameter name="[SDP-MediaPorts]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+                <parameter name="[SDP-MediaTypes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Type" /> 
+                <parameter name="[SDP-Attributes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Attribut" /> 
+  	</receiveMessageSIP>
+
+	<call name="get-sdp-media-port">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="audio"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-MediaPorts]"			value="[SDP-MediaPorts]"/>
+	</input>
+	<output>
+		<parameter name="[RemotePortRTPAudio]"				value="[function:SDP-MediaPort]"/>
+	</output>
+	</call>
+
+	<call name="check-sdp-qos">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="audio"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-Attributes]"			value="[SDP-Attributes]"/>
+		<parameter name="[function:expected-curr-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-curr-qos-remote]"		value="none"/>
+		<parameter name="[function:expected-des-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-des-qos-remote]"		value="sendrecv"/>
+	</input>
+	</call>
+
+	<parameter name="[SdpSess-version]" operation="number.add" value="[SdpSess-version]" value2="1"/>
+
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+                SIP/2.0 200 OK
+                Via: [lastVia]
+                Record-Route:[Record-Route]
+                To: [lastTo]
+                From: [lastFrom]
+                Call-ID: [lastCallId]
+                CSeq: [lastCseq]
+                Contact: <[LocalContact]>
+		Supported: 100rel
+		Supported: precondition
+                Content-Type: application/sdp
+                Content-Length: x
+
+		v=[SdpVersion]
+		o=[SdpUsername] [SdpSess-id] [SdpSess-version] [SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		s=[SdpSession-name]
+		c=[SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		t=[SdpStart-time] [SdpStop-time]
+		m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 97 96
+		b=AS:[SdpBwAudioAS]
+		a=rtpmap:97 [RTPAudio-type]
+		a=fmtp:97 [RTPAudio-params]
+		a=rtpmap:96 telephone-event
+		a=curr:qos local sendrecv
+		a=curr:qos remote sendrecv
+		a=des:qos mandatory local sendrecv
+		a=des:qos mandatory remote sendrecv
+		a=sendrecv
+		a=ptime:[SdpAudioPtime]
+		a=maxptime:[SdpAudioMaxptime]
+		]]> 
+    	</sendMessageSIP>
+      
+        <parameter name="[newRseq]" operation="number.add" value="[newRseq]" value2="1" /> 
+        
+	<sendMessageSIP name="Send 180 Ringing" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+        	SIP/2.0 180 Ringing
+        	Record-Route:[Record-Route]
+        	Via: [lastViaI]
+        	To: [lastToI]
+        	From: [lastFromI]
+        	Call-ID: [lastCallId]
+        	CSeq: [lastCseqI]
+        	Contact: <[LocalContact]>
+        	Require: 100rel
+        	Rseq: [newRseq]
+        	Content-Length: 0
+		]]> 
+    	</sendMessageSIP>
+
+        <parameter name="[expectedRAck]" operation="set" value="[newRseq] [lastCseqI]" />
+ 
+    	<receiveMessageSIP name="Wait PRACK" type="PRACK" request="true">
+      		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+        	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" /> 
+          	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" /> 
+            	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" /> 
+        	<parameter name="[receivedRAck]" operation="protocol.setFromMessage" value="header.RAck" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+     	</receiveMessageSIP>
+
+	<call name="check-sip-rack">
+	<input>
+		<parameter name="[function:receivedRAck]"		value="[receivedRAck]"/>
+		<parameter name="[function:expectedRAck]"		value="[expectedRAck]"/>
+	</input>
+	</call>
+
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+              	SIP/2.0 200 OK
+              	To: [lastTo]
+              	From: [lastFrom]
+              	Via: [lastVia]
+              	Call-ID: [lastCallId]
+              	CSeq: [lastCseq]
+		Supported: 100rel
+		Supported: precondition
+             	Content-Length: 0
+		]]> 
+  	</sendMessageSIP>
+  	<pause name="pause" seconds="3" />
+      	<sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+      		<![CDATA[ 
+      		SIP/2.0 200 OK
+      		Record-Route:[Record-Route]
+      		To: [lastToI]
+      		From: [lastFromI]
+      		Via: [lastViaI]
+      		Call-ID: [lastCallId]
+      		CSeq: [lastCseqI]
+      		Contact: <[LocalContact]>
+      		Content-Length: 0
+		]]> 
+ 	</sendMessageSIP>
+      	<receiveMessageSIP name="Wait ACK" type="ACK" request="true" />
+
+
+
+	<!-- re-INVITE for hold -->
+
+	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true">
+                <parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To" /> 
+                <parameter name="[lastFromI]" operation="protocol.setFromMessage" value="header.From" /> 
+                <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastCseqI]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+                <parameter name="[lastViaI]" operation="protocol.setFromMessage" value="header.Via" /> 
+                <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+                <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route" /> 
+                <parameter name="[SDP-MediaTypes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Type" /> 
+                <parameter name="[SDP-Attributes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Attribut" /> 
+   	</receiveMessageSIP>
+
+	<call name="check-sdp-qos">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="audio"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-Attributes]"			value="[SDP-Attributes]"/>
+		<parameter name="[function:expected-curr-qos-local]"		value="none"/>
+		<parameter name="[function:expected-curr-qos-remote]"		value="none"/>
+		<parameter name="[function:expected-des-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-des-qos-remote]"		value="sendrecv"/>
+	</input>
+	</call>
+        
+	<call name="check-sdp-qos">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="video"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-Attributes]"			value="[SDP-Attributes]"/>
+		<parameter name="[function:expected-curr-qos-local]"		value="none"/>
+		<parameter name="[function:expected-curr-qos-remote]"		value="none"/>
+		<parameter name="[function:expected-des-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-des-qos-remote]"		value="sendrecv"/>
+	</input>
+	</call>
+        
+	<parameter name="[SdpSess-version]" operation="number.add" value="[SdpSess-version]" value2="1"/>
+
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+      		SIP/2.0 200 OK
+      		Record-Route:[Record-Route]
+      		To: [lastToI]
+      		From: [lastFromI]
+      		Via: [lastViaI]
+      		Call-ID: [lastCallId]
+      		CSeq: [lastCseqI]
+      		Contact: <[LocalContact]>
+      		Content-Length: 0
+
+		v=[SdpVersion]
+		o=[SdpUsername] [SdpSess-id] [SdpSess-version] [SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		s=[SdpSession-name]
+		c=[SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		t=[SdpStart-time] [SdpStop-time]
+		m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 97 96
+		b=AS:[SdpBwAudioAS]
+		a=rtpmap:97 [RTPAudio-type]
+		a=fmtp:97 [RTPAudio-params]
+		a=rtpmap:96 telephone-event
+		a=curr:qos local sendrecv
+		a=curr:qos remote sendrecv
+		a=des:qos mandatory local sendrecv
+		a=des:qos mandatory remote sendrecv
+		a=recvonly
+		a=ptime:[SdpAudioPtime]
+		a=maxptime:[SdpAudioMaxptime]
+		m=[SdpMediaVideo] [SdpPortVideo] [SdpProtoVideo] 100
+		b=AS:[SdpBwVideoAS]
+		b=RS:[SdpBwVideoRS]
+		b=RR:[SdpBwVideoRR]
+		a=rtpmap:100 [RTPVideo-type]
+		a=fmtp:100 [RTPVideo-params]
+		a=curr:qos local sendrecv
+		a=curr:qos remote sendrecv
+		a=des:qos mandatory local sendrecv
+		a=des:qos mandatory remote sendrecv
+		a=recvonly
+		]]> 
+    	</sendMessageSIP>
+      
+      	<receiveMessageSIP name="Wait ACK" type="ACK" request="true" />
+
+	<!-- re-INVITE for resume -->
+
+	<receiveMessageSIP name="Wait INVITE" type="INVITE" request="true">
+                <parameter name="[lastToI]" operation="protocol.setFromMessage" value="header.To" /> 
+                <parameter name="[lastFromI]" operation="protocol.setFromMessage" value="header.From" /> 
+                <parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastCseqI]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+                <parameter name="[lastViaI]" operation="protocol.setFromMessage" value="header.Via" /> 
+                <parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+                <parameter name="[Record-Route]" operation="protocol.setFromMessage" value="header.Record-Route" /> 
+                <parameter name="[SDP-MediaTypes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Type" /> 
+                <parameter name="[SDP-Attributes]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Attribut" /> 
+   	</receiveMessageSIP>
+
+	<call name="check-sdp-qos">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="audio"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-Attributes]"			value="[SDP-Attributes]"/>
+		<parameter name="[function:expected-curr-qos-local]"		value="none"/>
+		<parameter name="[function:expected-curr-qos-remote]"		value="none"/>
+		<parameter name="[function:expected-des-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-des-qos-remote]"		value="sendrecv"/>
+	</input>
+	</call>
+        
+	<call name="check-sdp-qos">
+	<input>
+		<parameter name="[function:SDP-MediaType]"			value="video"/>
+		<parameter name="[function:SDP-MediaTypes]"			value="[SDP-MediaTypes]"/>
+		<parameter name="[function:SDP-Attributes]"			value="[SDP-Attributes]"/>
+		<parameter name="[function:expected-curr-qos-local]"		value="none"/>
+		<parameter name="[function:expected-curr-qos-remote]"		value="none"/>
+		<parameter name="[function:expected-des-qos-local]"		value="sendrecv"/>
+		<parameter name="[function:expected-des-qos-remote]"		value="sendrecv"/>
+	</input>
+	</call>
+        
+	<parameter name="[SdpSess-version]" operation="number.add" value="[SdpSess-version]" value2="1"/>
+
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+      		SIP/2.0 200 OK
+      		Record-Route:[Record-Route]
+      		To: [lastToI]
+      		From: [lastFromI]
+      		Via: [lastViaI]
+      		Call-ID: [lastCallId]
+      		CSeq: [lastCseqI]
+      		Contact: <[LocalContact]>
+      		Content-Length: 0
+
+		v=[SdpVersion]
+		o=[SdpUsername] [SdpSess-id] [SdpSess-version] [SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		s=[SdpSession-name]
+		c=[SdpNettype] [SdpAddrtype] [SdpUnicast-address]
+		t=[SdpStart-time] [SdpStop-time]
+		m=[SdpMediaAudio] [SdpPortAudio] [SdpProtoAudio] 97 96
+		b=AS:[SdpBwAudioAS]
+		a=rtpmap:97 [RTPAudio-type]
+		a=fmtp:97 [RTPAudio-params]
+		a=rtpmap:96 telephone-event
+		a=curr:qos local sendrecv
+		a=curr:qos remote sendrecv
+		a=des:qos mandatory local sendrecv
+		a=des:qos mandatory remote sendrecv
+		a=sendrecv
+		a=ptime:[SdpAudioPtime]
+		a=maxptime:[SdpAudioMaxptime]
+		m=[SdpMediaVideo] [SdpPortVideo] [SdpProtoVideo] 100
+		b=AS:[SdpBwVideoAS]
+		b=RS:[SdpBwVideoRS]
+		b=RR:[SdpBwVideoRR]
+		a=rtpmap:100 [RTPVideo-type]
+		a=fmtp:100 [RTPVideo-params]
+		a=curr:qos local sendrecv
+		a=curr:qos remote sendrecv
+		a=des:qos mandatory local sendrecv
+		a=des:qos mandatory remote sendrecv
+		a=sendrecv
+		]]> 
+    	</sendMessageSIP>
+      
+      	<receiveMessageSIP name="Wait ACK" type="ACK" request="true" />
+
+
+	<if>
+		<condition>
+			<test parameter="[sendRTP]" condition="boolean.equals" value="true" />
+		</condition>
+		<then>
+			<createListenpointRTPFLOW name="[scenarioName]" localHost="[LocalHost(0)]" localPort="[LocalPortRTPAudio]"/>
+			<sendMessageRTPFLOW listenpoint="[scenarioName]" remoteHost="[RemoteHostRTP]" remotePort="[RemotePortRTPAudio]">    
+						<flow packetNumber="[nbPacket]" deltaTime="[deltaTime]">
+							<header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqList]" timestamp="[timestampList]" mark="[markList]" /> 
+							<payload format="binary">[payloadList]</payload>
+				</flow>
+			</sendMessageRTPFLOW>
+			<removeListenpointRTPFLOW name="[scenarioName]"/>
+		</then>
+	</if>
+	
+ 
+	<receiveMessageSIP name="Wait BYE" type="BYE" request="true">
+        	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To" /> 
+            	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From" /> 
+              	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-Id" /> 
+                <parameter name="[lastCSeq]" operation="protocol.setFromMessage" value="header.CSeq" /> 
+                <parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via" /> 
+                <parameter name="[MaxForwards]" operation="protocol.setFromMessage" value="header.Max-Forwards" /> 
+    	</receiveMessageSIP>
+        <sendMessageSIP name="Send 200 OK" listenpoint="[scenarioName]">
+        	<![CDATA[ 
+                SIP/2.0 200 OK
+                To: [lastTo]
+                From: [lastFrom]
+                Record-Route:[Record-Route]
+                Via: [lastVia]
+                Call-ID: [lastCallId]
+                CSeq: [lastCSeq]
+                Content-Length: 0
+		]]> 
+    	</sendMessageSIP>
+</scenario>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!DOCTYPE SIPimport [
+  <!ENTITY createRequest SYSTEM "../Library/createRequest.xml">  
+  <!ENTITY createResponse SYSTEM "../Library/createResponse.xml">  
+  <!ENTITY createSubRequest SYSTEM "../Library/createSubRequest.xml">  
+]>	
+<scenario>
+
+  <parameter name="[from]" operation="set" value="sip:alice@[Host-Tester]"/>
+  <parameter name="[to]" operation="set" value="sip:mrf@[Host-Tester]"/>
+  <parameter name="[method]" operation="set" value="INVITE"/>
+  <parameter name="[remoteAdr]" operation="set" value="[Host-Tester]:7070"/>
+  <parameter name="[contentSDP]" operation="set" >
+<![CDATA[----=_Part_0
+Content-Type: application/sdp
+
+v=0
+o=alice 999 999 IN IP4 [Host-Tester]
+s=-
+c=IN IP4 [Host-Tester]
+t=0 0
+m=audio 45200 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application 25463 udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+----=_Part_0
+Content-Type: application/resource-lists+xml
+Content-Disposition: recipient-list
+
+<?xml version="1.0" encoding="UTF-8"?>
+<resource-lists xmlns="urn:ietf:params:xml:ns:resource-lists" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<list>
+<entry uri="[inviteeName1]"/>
+</list>
+</resource-lists>
+----=_Part_0]]>
+
+  </parameter>
+  &createRequest;
+
+
+  <receiveMessageSIP name="Wait 180 Ringing" request="false" type="INVITE" result="180" />
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200" >
+	<parameter name="[remoteHost]"	operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address" />
+	<parameter name="[remotePort]"	operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port" />
+	<parameter name="[message]" operation="protocol.setFromMessage" value="message"/>
+  </receiveMessageSIP>
+
+
+	<parameter name="[method]" operation="set" value="ACK"/>
+	<parameter name="[msg]" operation="set" value="[message]"/>
+	<parameter name="[ackbyeRoute]" operation="set" value="[remoteAdr]"/>
+	&createSubRequest;
+	
+<!--openConnectionRTP name="OpenConnectionRTP" state="true" sessionName="receiveRTP" localPort="45200" remoteHost="[remoteHost(0)]" remotePort="[remotePort(0)]" />
+<receivePacketRTP name="receivePacketRTP" timeout="10" failedOnTimeout="false" failedOnReceive="false" />
+<closeConnectionRTP name="OpenConnectionRTP" state="true" sessionName="receiveRTP" /-->
+<createListenpointRTPFLOW name="invitee" localHost="[Host-Tester]" localPort="45200" />
+<receiveMessageRTPFLOW listenpoint="invitee" type="8" timeout="0">
+</receiveMessageRTPFLOW>
+
+
+<!--****** test+clients BYE ******-->  
+		<receiveMessageSIP name="Wait BYE" request="true" type="BYE" />
+		<parameter name="[statusCode]" operation="set" value="200"/>
+		<parameter name="[reasonPhrase]" operation="set" value="OK"/>
+		&createResponse;
+
+	<!--parameter name="[method]" operation="set" value="BYE"/>
+	<parameter name="[msg]" operation="set" value="[message]"/>
+	<parameter name="[ackbyeRoute]" operation="set" value="[remoteAdr]"/>
+	&createSubRequest;  
+	<receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200" /-->	
+<!--****** fini test+clients BYE ******-->
+
+		
+<finally>
+<!--closeConnectionRTP name="OpenConnectionRTP" state="true" sessionName="receiveRTP" /-->
+<removeListenpointRTPFLOW name="invitee" />
+</finally>
+
+</scenario>

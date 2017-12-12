@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <parameter name="[tunnelEndpointId]" operation="set" value="[test:localTEID]"/>
+
+  <parameter name="[sequenceNumber]" operation="add" value="[test:v2SequenceNumber]" value2="1"/>
+  <if>
+    <condition>
+      <test parameter="[sequenceNumber]" condition="number.greaterThan" value="16777215"/>
+    </condition>
+    <then>
+      <parameter name="[sequenceNumber]" operation="set" value="0"/>
+    </then>
+  </if>
+
+  <sendMessageGTP name="send message" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Modify Bearer Request:34" tunnelEndpointId="[tunnelEndpointId]" sequenceNumber="[sequenceNumber]"/>
+
+    <!-- ME Identity (MEI) - Conditional -->
+    <element tag="MEI:75" description="Mobile Equipment Identity">
+      <field name="MEI" value="[v2MEI]" description="Mobile Equipment Identity"/>
+    </element>        
+
+    <!-- User Location Information (ULI) - Conditional / Conditional-Optional -->
+    <element tag="ULI:86" description="User Location Information">
+      <field name="spare1" value="0"/>
+      <field name="LAI" value="[ULI_LAIflag]"/>
+      <field name="ECGI" value="[ULI_ECGIflag]"/>
+      <field name="TAI" value="[ULI_TAIflag]"/>
+      <field name="RAI" value="[ULI_RAIflag]"/>
+      <field name="SAI" value="[ULI_SAIflag]"/>
+      <field name="CGI" value="[ULI_CGIflag]"/>
+      <!-- TODO conditional field-->
+      <field name="TAI_MCC_MNC" value="[ULI_MCC],[ULI_MNC]"/>
+      <field name="TAI_TAC" value="[ULI_TAC]"/>
+      <field name="ECGI_MCC_MNC" value="[ULI_MCC],[ULI_MNC]"/>
+      <field name="ECGI_spare" value="0"/>
+      <field name="ECGI_ECI" value="[ULI_ECI]"/>
+    </element>        
+
+    <!-- Serving Network - Conditional-Optional -->
+    <element tag="Serving Network:83" >
+      <field name="MMC" value="[servingNetworkMCC],[servingNetworkMNC]"/>
+    </element>  
+
+    <!-- RAT Type - Conditional / Conditional-Optional / Conditional-Optional -->
+    <element tag="RAT Type:82" >
+      <field name="RAT Type" value="[v2RATtype]"/>
+    </element>
+
+    <!-- Indication Flags - Conditional -->
+    <element tag="Indication:77">
+      <field name="DAF" value="false:0"/>
+      <field name="DTF" value="false:0"/>
+      <field name="HI" value="false:0"/>
+      <field name="DFI" value="false:0"/>
+      <field name="OI" value="false:0"/>
+      <field name="ISRSI" value="false:0"/>
+      <field name="ISRAI" value="false:0"/>
+      <field name="SGWCI" value="false:0"/>
+    
+      <field name="SQCI" value="false:0"/>  
+      <field name="UIMSI" value="false:0"/>
+      <field name="CFSI" value="false:0"/>
+      <field name="CRSI" value="true:1"/>
+      <field name="P" value="false:0"/>
+      <field name="PT" value="true:1"/>
+      <field name="SI" value="false:0"/>
+      <field name="MSV" value="false:0"/>
+    
+      <field name="RetLoc" value="false:0"/>
+      <field name="PBIC" value="false:0"/>
+      <field name="SRNI" value="false:0"/>
+      <field name="S6AF" value="false:0"/>
+      <field name="S4AF" value="false:0"/>
+      <field name="MBMDT" value="false:0"/>
+      <field name="ISRAU" value="false:0"/>
+      <field name="CCRSI" value="false:0"/>
+        
+      <field name="Spare" value="0"/>
+      <field name="CLII" value="false:0"/>
+      <field name="CPSR" value="false:0"/>
+    </element>
+
+    <!-- Sender F-TEID for Control Plane - Conditional -->
+    <element tag="F-TEID:87" description="Fully Qualified Tunnel Endpoint Identifier">
+      <field name="V4" value="true:1"/>
+      <field name="V6" value="false:0"/>
+      <field name="Interface Type" value="[FTEID_InterfaceType]"/>
+      <field name="TEID / GRE Key" value="[FTEID_TEID]" description="GRE?"/>
+      <!-- TODO conditional IP V4 V6 -->
+      <field name="IPv4 address" value="[FTEID_IPv4Address]"/>
+      <!--field name="IPv6 address" value=""/-->
+    </element>
+
+    <!-- Aggregate Maximum Bit Rate (APN-AMBR) - Conditional -->
+    <element tag="AMBR:72" description="Aggregate Maximum Bit Rate">
+      <field name="APN-AMBR for uplink" value="[modifyBearerRequestAMBRuplink]"/>
+      <field name="APN-AMBR for downlink" value="[modifyBearerRequestAMBRdownlink]"/>
+    </element>        
+
+    <!-- Delay Downlink Packet Notification Request Conditional / Conditional-Optional -->
+
+    <!-- Bearer Contexts to be modified             Conditional -->
+    <!-- Bearer Contexts to be removed              Conditional -->
+    <!-- Recovery                                   Conditional -->
+    <!-- UE Time Zone                               Conditional-Optional / Conditional-Optional / Conditional -->
+    <!-- MME-FQ-CSID                                Conditional -->
+    <!-- SGW-FQ-CSID                                Conditional -->
+    <!-- User CSG Information (UCI)                 Conditional-Optional -->
+    <!-- UE Local IP Address                        Conditional-Optional -->
+    <!-- UE UDP Port                                Conditional-Optional -->
+    <!-- MME/S4-SGSN LDN                            Optional -->
+    <!-- SGW LDN                                    Optional -->
+    <!-- H(e)NB Local IP Address                    Conditional-Optional -->
+    <!-- H(e)NB UDP Port                            Conditional-Optional -->
+    <!-- MME/S4-SGSN Identifier                     Conditional-Optional -->
+    <!-- Private Extension                          Optional -->
+
+
+
+<!--
+    <element tag="EBI:73" description="EPS Bearer ID">
+      <field name="spare" value="0"/>
+      <field name="EBI" value="5"/>
+    </element>
+    <element tag="PCO:78" description="Protocol Configuration Options">
+      <field name="PCO" value="8080211001000010810600000000830600000000000d00000a00" description="Protocol Configuration Options"/>
+    </element>
+-->
+    <element tag="Bearer Context:93" >
+      <element tag="EBI:73" description="EPS Bearer ID">
+        <field name="spare" value="0"/>
+        <field name="EBI" value="[bearerContextEBI]"/>
+      </element>
+      <element tag="F-TEID:87" instances="2" description="Fully Qualified Tunnel Endpoint Identifier">
+        <field name="V4" value="true:1"/>
+        <field name="V6" value="false:0"/>
+        <field name="Interface Type" value="[bearerContextFTEID_InterfaceType]"/>
+        <field name="TEID / GRE Key" value="[bearerContextFTEID_TEID]" description="GRE key ?"/>
+        <!-- TODO conditional IP V4 V6 -->      
+        <field name="IPv4 address" value="[bearerContextFTEID_IPv4Address]"/>
+        <!--field name="IPv6 address" value="1212:1234:1256:1278:1290:12ab:12cd:12ef"/-->
+      </element>            
+      <element tag="Bearer QoS:80" description="Bearer Quality of Service">
+        <field name="spare1" value="0"/>
+        <field name="PCI" value="[bearerContextQoS_PCI]" description="Pre-emption Capability"/>
+        <field name="PL" value="[bearerContextQoS_PL]" description="Priority Level"/>
+        <field name="spare2" value="false:0"/>
+        <field name="PVI" value="[bearerContextQoS_PVI]" description="Pre-emption Vulnerability"/>
+        <field name="Label QCI" value="[bearerContextQoS_QCI]"/> 
+        <field name="Maximum bit rate for uplink" value="[bearerContextMBRuplink]"/>
+        <field name="Maximum bit rate for downlink" value="[bearerContextMBRdownlink]"/>
+        <field name="Guaranteed bit rate for uplink" value="[bearerContextGBRuplink]"/>
+        <field name="Guaranteed bit rate for downlink" value="[bearerContextGBRdownlink]"/>
+      </element>
+    </element>
+<!--
+    <element tag="UE Time Zone:114" >
+      <field name="Time Zone" value="64"/>   
+      <field name="spare" value="0"/>
+      <field name="Daylight Saving Time" value="No adjustment for Daylight Saving Time:0"/>
+    </element>
+    <element tag="Charging Characteristics:95" >
+      <field name="Charging Characteristics value" value="2048"/>   
+    </element>        
+-->
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Modify Bearer Response" request="false" type="Modify Bearer Request:34" result="Request accepted:16">
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>             
+  </receiveMessageGTP>
+
+</scenario>

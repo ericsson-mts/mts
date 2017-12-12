@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[inviteeName1]" operation="set" value="bob"/>
+  <parameter name="[100_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+  <parameter name="[CallId]" operation="number.random" value="10000000"/>
+  <parameter name="[CSeqNumber]" operation="number.random" value="10000000"/>
+  <parameter name="[localTag]" operation="string.random" value="10"/>
+  <parameter name="[newBranchId]" operation="string.random" value="10"/> 
+
+  <sendMessageSIP name="Send INVITE" destScenario="bob">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[INVITE sip:[inviteeName1]@[100_DOMAIN_ADDR] SIP/2.0
+From: "[clientName]" <sip:[clientName]@[100_DOMAIN_ADDR]>;tag=[localTag]
+To: sip:[inviteeName1]@[100_DOMAIN_ADDR]
+Call-ID: [CallId]
+CSeq: [CSeqNumber] INVITE
+Max-Forwards: 70
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:bob@[localSIP]>
+User-Agent: XmlLoader
+Content-Type: multipart/mixed;boundary="----=_Part_0"
+NotDefined: bla[param]bla,[param(2)]
+NotDefined: bla[param()]bla,[param(index)],[param(-1)]
+NotDefined:
+Content-Length: x
+
+------=_Part_0
+Content-Type: application/sdp
+
+v=0
+o=[clientName] 999 999 IN IP4 [clientIpAddress]
+s=-
+c=IN IP4 [clientIpAddress]
+t=0 0
+m=audio [clientRtpPort] RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application [clientRtcpPort] udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+
+------=_Part_0
+Content-Type: application/resource-lists+xml
+Content-Disposition: recipient-list
+
+<?xml version="1.0" encoding="UTF-8"?>
+<resource-lists xmlns="urn:ietf:params:xml:ns:resource-lists" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<list>
+<entry uri="[inviteeName1]"/>
+</list>
+</resource-lists>
+------=_Part_0--]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/> 
+    <parameter name="[NotDefined]" operation="protocol.setFromMessage" value="header.NotDefined"/>           
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+  </receiveMessageSIP>
+
+  <test parameter="[NotDefined(0)]" condition="string.equals" value="bla[param]bla,[param(2)]"/>
+  <test parameter="[NotDefined(1)]" condition="string.equals" value="bla[param()]bla,[param(index)],[param(-1)]"/>
+  <test parameter="[NotDefined(2)]" condition="string.equals" value=""/>
+
+  <parameter name="param" operation="set" value="0123456789"/>
+
+   <parameter name="[newBranchId]" operation="string.random" value="10"/>
+   
+  <sendMessageSIP name="Send ACK" destScenario="bob">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[ACK [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeqNumber] ACK
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:bob@[localSIP]>
+Max-Forwards: 70
+User-Agent: XmlLoader
+Simple: bla[param]bla,[param(0)]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <parameter name="[param]" operation="set" value="123"/>
+  <parameter name="[param]" operation="list.addLast" value="[param]" value2="456"/>
+  <parameter name="[param]" operation="list.addLast" value="[param]" value2=""/>
+  <parameter name="[param]" operation="list.addLast" value="[param]" value2="789"/>
+
+  <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>  
+  
+  <sendMessageSIP name="Send BYE" destScenario="bob">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeqNumber] BYE
+Max-Forwards: 70
+Route: <sip:alice@[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:alice@[localSIP];transport=[transportRequest];lr>
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+User-Agent: XmlLoader
+Multiple: bla[param]bla, [param]
+Multiple: bla[param]bla, [param(0)], [unKnown]
+Multiple: [param(2)]
+Multiple: bla[param(0)]bla, [param(1)], [param(2)], [param(3)]
+Multiple: [param(3)], [unKnown]
+Content-Length: 0
+
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
+    <parameter name="[Multiple]" operation="protocol.setFromMessage" value="header.Multiple"/>               
+  </receiveMessageSIP>
+
+  <test parameter="[Multiple(0)]" condition="string.equals" value="bla123bla, 123"/>
+  <test parameter="[Multiple(1)]" condition="string.equals" value="bla456bla, 456"/>
+  <test parameter="[Multiple(2)]" condition="string.equals" value="blabla,"/>
+  <test parameter="[Multiple(3)]" condition="string.equals" value="bla789bla, 789"/>
+  <test parameter="[Multiple(4)]" condition="string.equals" value="bla123bla, 123, [unKnown]"/>
+  <test parameter="[Multiple(5)]" condition="string.equals" value="bla456bla, 123, [unKnown]"/>
+  <test parameter="[Multiple(6)]" condition="string.equals" value="blabla, 123, [unKnown]"/>
+  <test parameter="[Multiple(7)]" condition="string.equals" value="bla789bla, 123, [unKnown]"/>                  
+  <test parameter="[Multiple(8)]" condition="string.equals" value=""/>                   
+  <test parameter="[Multiple(9)]" condition="string.equals" value="bla123bla, 456, , 789"/>                      
+  <test parameter="[Multiple(10)]" condition="string.equals" value="789, [unKnown]"/>                    
+
+</scenario>

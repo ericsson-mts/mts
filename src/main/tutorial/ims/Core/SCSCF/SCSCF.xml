@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!DOCTYPE Library [
+  <!ENTITY reponse_scscf    	SYSTEM "../../Library/reponse_scscf.xml">
+  <!ENTITY requete_scscf  		SYSTEM "../../Library/requete_scscf.xml">
+  <!ENTITY registrar_scscf  	SYSTEM "../../Library/registrar_scscf.xml">
+  <!ENTITY invite_scscf   		SYSTEM "../../Library/invite_scscf.xml">
+  <!ENTITY term_scscf   		SYSTEM "../../Library/term_scscf.xml">
+  <!ENTITY orig_scscf   		SYSTEM "../../Library/orig_scscf.xml">
+  <!ENTITY cancel_scscf 		SYSTEM "../../Library/cancel_scscf.xml">
+  <!ENTITY MAR 					SYSTEM "../../Library/MAR.xml">
+  <!ENTITY SAR					SYSTEM "../../Library/SAR.xml">
+  <!ENTITY SAR_sans_private		SYSTEM "../../Library/SAR_sans_private.xml">
+  <!ENTITY prox_scscf			SYSTEM "../../Library/prox_scscf.xml">
+  <!ENTITY rep_error_scscf  	SYSTEM "../../Library/rep_error_scscf.xml">
+  <!ENTITY ack_scscf   			SYSTEM "../../Library/ack_scscf.xml">
+  <!ENTITY forking_scscf		SYSTEM "../../Library/forking_scscf.xml">
+  <!ENTITY ifc_scscf			SYSTEM "../../Library/ifc_scscf.xml">
+  <!ENTITY spt_scscf			SYSTEM "../../Library/spt_scscf.xml">
+  ]>  
+ 
+<scenario>  
+
+	<parameter name="[Host-Tester]" 	operation="setFromSystem" 	value="IPAddress" value2="eth0"/>
+    <parameter name="[Port-Tester]" 	operation="set" 			value="6060"/>
+    <parameter name="[Adresse-Tester]" 	operation="set" 			value="[Host-Tester]:[Port-Tester]"/>
+	
+	<parameter name="[expire_default]" 	operation="set" 			value="3600"/>
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-Tester]" transport="udp"/>
+
+<label name="Begin"/>
+
+	<parameter name="[newBranchId]" 			operation="identifier" 	value="newString" value2="10"/>
+	<parameter name="[Via]" 					operation="set" 		value="Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]"/>
+	<parameter name="[ServiceRoute]" 			operation="set" 		value="Service-Route: sip:[Adresse-Tester];lr"/>
+		
+	<receiveMessage name="wait_SIP_request" 	timeout="0">
+		<parameter name="[lastMessage]" 		operation="setFromMessage" 	value="message"/> 
+		<parameter name="[lastSIPMethod]" 		operation="setFromMessage" 	value="firstline:Method"/>
+		<parameter name="[lastIsRequest]" 		operation="setFromMessage" 	value="message:request"/>
+		<parameter name="[lastURI]" 			operation="setFromMessage" 	value="firstline:URI"/>
+		<parameter name="[lastResult]" 			operation="setFromMessage" 	value="message:result"/>
+		<parameter name="[lastFirstline]" 		operation="setFromMessage" 	value="firstline"/> 
+		<parameter name="[lastHeader]" 			operation="setFromMessage" 	value="header"/>
+		<parameter name="[lastCSeq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+		<parameter name="[lastContent]" 		operation="setFromMessage" 	value="content"/>
+	</receiveMessage>
+		
+	<!-- parametres necessaire aux reponses cree par le regisatrar ou le proxy -->
+	<parameter name="[lastCall-ID]" 			operation="setFromMessage" 	value="header:Call-ID" 	value2="[lastMessage]"/>	
+	<parameter name="[lastTo]" 					operation="setFromMessage" 	value="header:To" 		value2="[lastMessage]"/>
+	<parameter name="[lastFrom]" 				operation="setFromMessage" 	value="header:From" 	value2="[lastMessage]"/>
+	<parameter name="[lastCSeq]" 				operation="setFromMessage" 	value="header:CSeq"		value2="[lastMessage]"/>	
+	<parameter name="[lastVia]" 				operation="setFromMessage" 	value="header:Via"		value2="[lastMessage]"/>
+	<parameter name="[lastPath]" 				operation="setFromMessage" 	value="header:Path"		value2="[lastMessage]"/>	
+	<parameter name="[index]" 					operation="findMatches" 	value="[lastHeader]" 	value2="Route.*Call.*"/>
+	<parameter name="[ifc_callid]" 				operation="set" 			value="[lastHeader([index])]"/>	
+	<if>
+		<condition>
+			<test parameter="[ifc_callid]" condition="isempty"/>
+		</condition>
+		<then/>
+		<else>
+			<parameter name="[ifc_callid]" 		operation="regexmatches" 	value="[ifc_callid]"	value2="Call.*"/>	
+			<parameter name="[ifc_callid]" 		operation="regexmatches" 	value="[ifc_callid]"	value2="[0-9]+"/>
+		</else>
+	</if>
+	<parameter name="[ifcHeader]" 				operation="set" 		value="[lastHeader]"/>	
+	<parameter name="[ifcContent]" 				operation="set" 		value="[lastContent]"/>
+	<!--recupere la publique identite-->
+<parameter name="[impu]" 		operation="setFromMessage" 	value="header:To:Address:URI"		value2="[lastMessage]"/>
+	
+	<!--Verifie si requete ou reponse-->
+	<if>
+	    <condition>
+	    	<test parameter="[lastIsRequest]" condition="equals" value="true"/>
+	    </condition>
+	    <then>
+      		&requete_scscf;
+<sendRequestSIP name="SCSCF_SIP_request" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendRequestSIP>
+		</then>
+		<else>  
+			&reponse_scscf;
+<sendResponseSIP name="SCSCF_SIP_response" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendResponseSIP>
+		</else> 
+	</if> 
+	<goto  name="loop" label="Begin" state="true"/>
+</scenario> 

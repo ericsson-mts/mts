@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="file" operation="file.readcsv" value="005_sendFlowCSV/flow.csv" value2="0"/>
+
+	<createListenpointRTPFLOW name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP]"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+    <sendMessageRTPFLOW listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP]">
+	    <flow packetNumber="50" deltaTime="20" deltaTimestamp="160">
+            <header ssrc="852" payloadType="8" seqnum="123" timestamp="456"/>
+            <payload format="text">[file]</payload>
+	    </flow>
+	</sendMessageRTPFLOW>
+
+	<finally>
+		<removeListenpointRTPFLOW name="inviter" />
+	</finally>
+		
+</scenario>

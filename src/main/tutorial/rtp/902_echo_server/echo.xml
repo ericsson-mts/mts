@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <createListenpointRTP name="proxy_receiver" localHost="[localHostRTP_proxy_receiver]" localPort="[localPortRTP_proxy_receiver]"/>
+    <createListenpointRTP name="proxy_sender" localHost="[localHostRTP_proxy_sender]" localPort="[localPortRTP_proxy_sender]"/>
+    
+
+    <while>
+        <condition>
+        </condition>
+        <do>
+            <receiveMessageRTP timeout="0">
+                <parameter name="[ssrc]"        operation="protocol.setFromMessage" value="header.ssrc" />
+                <parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType" />
+                <parameter name="[seqnum]"      operation="protocol.setFromMessage" value="header.seqnum" />
+                <parameter name="[timestamp]"   operation="protocol.setFromMessage" value="header.timestamp" />
+                <parameter name="[payload]"     operation="protocol.setFromMessage" value="payload.text" />
+            </receiveMessageRTP>
+
+        	<sendMessageRTP listenpoint="proxy_sender" remoteHost="[remoteHostRTP_proxy_sender]" remotePort="[remotePortRTP_proxy_sender]">
+            	    <header ssrc="[ssrc]" payloadType="[payloadType]" seqnum="[seqnum]" timestamp="[timestamp]"/>
+            	    <payload format="text">[payload]</payload>
+        	</sendMessageRTP>
+        </do>
+    </while>
+
+    <finally>
+        <removeListenpointRTP name="proxy_receiver" />
+        <removeListenpointRTP name="proxy_sender" />
+    </finally>
+
+</scenario>

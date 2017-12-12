@@ -1,0 +1,21 @@
+		
+<!--envoi d une requete LIR en diameter-->	
+  <sendRequestAAA name="Send Request 3GPP/CX-DX/UAR" server="[Default_HSS]" state="true">
+        <header command="Location-Info" applicationId="16777216" proxiable="true" error="false" retransmit="false"/>
+		<avp code="Session-Id" mandatory="true" type="OctetString" value="[DiameterId];45e45ee4;046725;5cd579ef"/>
+	    <avp code="Origin-Host" mandatory="true"  type="DiameterIdentity" value="[DiameterId]"/>
+	    <avp code="Origin-Realm" mandatory="true" type="DiameterIdentity" value="[domaine]"/>
+		<avp code="Destination-Host" mandatory="true" type="DiameterIdentity" value="[destHost]"/> 
+	    <avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[destReal]"/>            
+        <avp code="Vendor-Specific-Application-Id">
+			<avp code="Vendor-Id" mandatory="true" type="Unsigned32" value="10415"/>
+			<avp code="Auth-Application-Id" mandatory="true" type="Unsigned32" value="16777216"/>
+		</avp>
+		<avp code="Auth-Session-State" mandatory="true" type="Enumerated" value="NO_STATE_MAINTAINED"/>
+		<avp code="Public-Identity" mandatory="true" type="DiameterIdentity" value="[impu]" vendorId="10415"/>                   
+	</sendRequestAAA>
+ <!--reception d une LIA et recuperation du scscf ou d info pour le scscf-->	 
+    <receiveAnswerAAA name="Receive Answer 3GPP/CX-DX/UAA" state="true">
+		<parameter name="[index]" operation="setFromMessage" value="602:value"/>
+    </receiveAnswerAAA>
+

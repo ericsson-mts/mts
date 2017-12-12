@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-TesterCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+
+
+	<parameter name="[NewCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[NewCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+
+<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[InviteeName]@[Domain] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[InviterName]@[Domain]>;tag=[localTag]
+To: "[InviteeName]" <sip:[InviteeName]@[Domain]>
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwardsDefaultValue]
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Preferred-Identity: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+
+  
+  <receiveResponseSIP name="Wait 200 OK" method="INVITE" result="200">
+    <parameter name="[To]" 				operation="setFromMessage" value="header:To"/>                     
+    <parameter name="[From]" 			operation="setFromMessage" value="header:From"/>                         
+    <parameter name="[CallId]" 			operation="setFromMessage" value="header:Call-Id"/> 
+    <parameter name="[ContactURI]" 		operation="setFromMessage" value="header:Contact:Address:URI"/>	
+	<parameter name="[Record-Route]" 	operation="setFromMessage" value="header:Record-Route"/>
+  </receiveResponseSIP>
+  
+  <!-- revert the Record-Route header-->
+  <parameter name="[Record-Route-Size]" operation="size" value="[Record-Route]"/>
+  <parameter name="[Record-Route-Inv]" operation="create" />
+  <while>
+	<condition>
+		<test parameter="[Record-Route-Size]" condition="greaterThan" value="0" />
+	</condition>
+	<do>
+		<parameter name="[temp]" operation="getFirst" value="[Record-Route]" />
+		<parameter name="[Record-Route]" operation="removeFirst" value="[Record-Route]" />
+		<parameter name="[Record-Route-Inv]" operation="addFirst" value="[Record-Route-Inv]" value2="[temp]"/>
+		<parameter name="[Record-Route-Size]" operation="size" value="[Record-Route]"/>
+	</do>
+  </while>  
+  <parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>                               
+<sendRequestSIP name="Send ACK" providerName="[scenarioName]">
+
+<![CDATA[
+ACK sip:[InviteeName]@[Domain] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [NewCallID]
+CSeq: [NewCseq] ACK
+Route: [Record-Route-Inv]
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Max-Forwards: 10
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+  
+</scenario>

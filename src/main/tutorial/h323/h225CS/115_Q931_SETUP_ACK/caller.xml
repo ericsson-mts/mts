@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : SETUP ACKNOWLEDGE(13)
+
+    The following scenarios send the Q931 message with the following elements :
+    
+    Chapter : 3.1.15 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Channel identification 4.5 Both O (Note 1) 2-*
+Progress indicator 4.5 Both O (Note 2) 2-4
+Display 4.5 n u O (Note 3) (Note 4)
+Signal 4.5 n u O (Note 5) 2-3
+
+    Chapter : 3.3.10 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Channel identification 4.5 Both O (Note 1) 2-*
+Display 4.5 n u O (Note 2) (Note 3)
+
+-->
+
+    <sendMessageH225CS name="Send H225CS SETUP ACKNOWLEDGE" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+
+    	<ASN1 file="h2250v7.asn"/>    
+	    
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- SETUP ACKNOWLEDGE = b0001101 =hD = d13-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="SETUP ACKNOWLEDGE"/>
+      
+    	    <!-- Channel identification = b0011000 = h18 = d24-->
+            <element identifier="Channel identification">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Interface identifier present" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Interface type" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Preferred/Exclusive" lengthBit="1" type="enumeration" value="0"/>
+                <field name="D-channel indicator" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Information channel selection" lengthBit="1" type="enumeration" value="0"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Interface identifier" lengthBit="8" type="integer" value="65"/>
+                <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Number/map" lengthBit="1" type="enumeration" value="0"/>
+                <field name="Channel type/map element type" lengthBit="4" type="enumeration" value="B-channel units"/>
+                <field name="Channel number" lengthBit="32" type="integer" value="70"/>
+            </element>
+            
+    	    <!-- Progress indicator= b0011110 = h1E = d30-->
+            <!-- ONLY for Circuit message -->                	    
+	    <element identifier="Progress indicator">
+                <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+                <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+                <field name="Spare" lengthBit="1" type="integer" value="0"/>
+                <field name="Location" lengthBit="4" type="enumeration" value="User"/>
+                <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+                <field name="Progress description" lengthBit="7" type="enumeration" value="Call has returned to the ISDN"/>
+            </element>
+            
+            <!-- Display identification = b0101000 = h28 = d40-->
+	    <element identifier="Display identification">
+		<field name="Display identification" type="string" value="textZZZ"/>
+	    </element>
+	    
+    	    <!-- Signal= b0110100 =h34 =d52-->
+            <!-- ONLY for Circuit message -->                	    
+	    <element identifier="Signal">
+		<field name="Signal value" lengthBit="8" type="integer" value="125"/>
+	    </element>
+
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

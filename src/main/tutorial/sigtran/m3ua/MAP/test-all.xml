@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="SIGTRAN SCCP tests" name="SIGTRAN SCCP">
+    
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
+    <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortM3UA]" operation="set" value="[localPortM3UA]"/>
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
+    
+    <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostM3UA]" operation="set" value="137.58.84.58"/>
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
+    <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortM3UA]" operation="set" value="2905"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]"/>
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>	
+    
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="8160"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>    
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="6881"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>    
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="2905"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5556"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5701"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+	      <parameter name="[remotePortM3UA]" operation="set" value="5702"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5703"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5801"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5802"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5803"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+    
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="38080"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="51573"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="51574"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="51580"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="51581"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="51618"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="51619"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="1186"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="3306"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5506"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5701"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5702"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5703"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5801"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5802"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="5803"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="9100"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="9102"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="9103"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="11505"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7001"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7002"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7003"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7101"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7102"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7201"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="7202"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+    <testcase name="01_ForwardSM_[remotePortM3UA]" description="test sigtran SCCP" state="true">
+        <parameter name="[remotePortM3UA]" operation="set" value="9090"/>
+        <scenario name="client" file="01_ForwardSM/client.xml" routingName="client"/>
+        <scenario name="SIGTRAN" file="01_ForwardSM/server.xml" routingName="SIGTRAN"/>
+    </testcase>
+
+
+
+
+
+</test>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : bob.xml
+    Created on : 10/07/2009
+    Author     : jbrisseau
+    Description: Receive a BICC-IAM message.
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[IAM]" value="010001010000005402000008000000010210004100000d7a00000d7e0d0200060d000000011020000a00020d0b831047073063304103500f0a078313061334000031020000700182390631c070c0788200000000" />
+
+	<receiveMessageSIGTRAN name="Wait Notify1">
+		<parameter name="[IAM1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[IAM1]" condition="binary.equals" value="[IAM]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[IAM1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[IAM]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+
+</scenario>

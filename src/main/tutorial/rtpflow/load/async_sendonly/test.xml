@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests with the sending of many RTPflow in an asynchonous way">
+
+    <parameter description="Duration (in sec.) of the call" editable="true" name="[CallDuration]" operation="set" value="100"/>
+    <parameter description="Call Attempting per Second" editable="true" name="[CAPS]" operation="set" value="6"/>
+    <parameter description="Delay (in second) before the test starts" editable="true" name="[DelayDurationSec]" operation="set" value="0"/>
+    <parameter description="Duration (in day) of the test " editable="true" name="[TestDurationDay]" operation="set" value="1"/>
+    <parameter description="Duration (in hour) of the test " editable="true" name="[TestDurationHour]" operation="set" value="12"/>
+    <parameter description="Duration (in min.) of the test " editable="true" name="[TestDurationMin]" operation="set" value="0"/>    	
+    <parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="0"/>    	
+	  <parameter name="[fileWave]" operation="file.readwave" value="rtpflow.wav" value2="20"/> 
+		
+    <!-- local address and port -->
+    <parameter description="Addresse de la MG" name="[Host-Tester]" operation="system.ipaddress"/>
+    <parameter name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    <!--parameter name="[Host-Tester]" operation="set" value="172.16.21.32" description="Host du IMSloader"/-->
+    <parameter description="Port du IMSloader" name="[Port-Tester]" operation="set" value="5060"/>
+    <parameter description="Addresse du IMSloader" name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>
+
+    <!-- remote address and port -->
+    <parameter description="Addresse de la MG" name="[Host-Server]" operation="system.ipaddress"/>
+    <parameter name="[Host-Server]" operation="set" value="[Host-Server(0)]"/>
+    <!--parameter name="[Host-Server]" operation="set" value="172.16.21.32" description="Addresse de l'AS"/-->
+    <parameter description="Port de l'AS" name="[Port-Server]" operation="set" value="5060"/>    	    
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+    
+    <parameter name="[RangeInviterRTPPort]" operation="set" value="10000"/>				
+    
+    <!--                     -->
+  	<!-- INTERNAL PARAMETERS -->
+  	<!--                     -->	
+    <parameter name="[RangeNumberUser]" operation="set" value="5000"/>
+    <parameter name="[countUser]" operation="number.multiply" value="[CAPS]" value2="[CallDuration]"/>   
+	    
+  	<!-- calculate the test duration -->			
+  	<parameter name="[TestDurationDay]" operation="number.multiply" value="[TestDurationDay]" value2="24"/>
+  	<parameter name="[TestDurationHour]" operation="number.add" value="[TestDurationHour]" value2="[TestDurationDay]"/>				
+  	<parameter name="[TestDurationHour]" operation="number.multiply" value="[TestDurationHour]" value2="60"/>
+  	<parameter name="[TestDurationMin]" operation="number.add" value="[TestDurationMin]" value2="[TestDurationHour]"/>					
+  	<parameter name="[TestDurationMin]" operation="number.multiply" value="[TestDurationMin]" value2="60"/>
+  	<parameter name="[TestDurationSec]" operation="number.add" value="[TestDurationSec]" value2="[TestDurationMin]"/>											
+
+  	<!--RPT Parameter-->
+  	<parameter description="Payload type for the media flow" editable="true" name="[payloadTypeRTP]" operation="set" value="17"/>    	       	       
+  	<parameter description="Bytes rate (in byte/sec) for the media flow" editable="true" name="[byteRateRTP]" operation="set" value="8000"/>   
+
+  	<testcase description="send invite with the CAPS number" name="loader_rtpflow" state="true">
+        <runProfile>
+            <start delay="[DelayDurationSec]"/>
+            <step frequency="[CAPS]" time="0"/>
+            <end delay="[TestDurationSec]"/>
+            <!--end iteration="10"/-->
+        </runProfile>
+
+		    <scenario file="loader/loader.xml" name="loader_rtpflow" routingName="loader_rtpflow"/>
+	  </testcase>
+
+	  <testcase description="Test system monitoring " name="CPU" state="false">
+        <scenario file="cpu/scenario.xml" name="cpu" routingName="cpu"/>
+    </testcase>
+	
+</test>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <function name="sendReceive_HTTP:GET">
+        <input>
+            <parameter name="[function:filename]" type="string" default="index.html"/>
+        </input>
+    
+        <do>
+        
+        	<sendMessageHTTP name="Send HTTP:GET" remoteURL="http://[proxyHTTP]">
+<![CDATA[
+GET /[filename] HTTP/1.1
+Accept: image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/xaml+xml, application/x-ms-xbap, application/x-ms-application, */*
+Referer: http://www.imsloader.com/
+Accept-Language: fr
+User-Agent: XMLLoader 5.6
+Proxy-Connection: Keep-Alive
+Host: [remoteHTTP]
+]]>
+</sendMessageHTTP>
+
+	        <receiveMessageHTTP name="Send 200 OK" result="200">
+		        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+	        </receiveMessageHTTP>
+	        
+	        <test parameter="[content]" condition="string.contains" not="true" value="404"/>
+
+        </do>
+      
+        <output>
+        </output>
+    </function>
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="index.html"/>
+        </input>
+        <output/>
+    </call>
+  
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="background.gif"/></input>
+        <output/>
+    </call>
+
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="fading.gif"/>
+        </input>
+        <output/>
+    </call>
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.bmp"/>
+        </input>
+        <output/>
+    </call>
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.gif"/>
+        </input>
+        <output/>
+    </call>
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.jpeg"/>
+        </input>
+        <output/>
+    </call>
+
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.jpg"/>
+        </input>
+        <output/>
+    </call>
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.png"/>
+        </input>
+        <output/>
+    </call>    
+
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.tif"/>
+        </input>
+        <output/>
+    </call> 
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="imsloader.tiff"/>
+        </input>
+        <output/>
+    </call> 
+    
+    <!-- GET -->
+		<call name="sendReceive_HTTP:GET" >
+        <input>
+            <parameter name="[function:filename]" value="style.css"/>
+        </input>
+        <output/>
+    </call> 
+    
+</scenario>
+ 

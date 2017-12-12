@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    <parameter name="[contentSize]" operation="string.length" value="[content]"/>
+    
+    <openChannelMSRP name="channelMSRP" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]"/>
+
+    <sendMessageMSRP channel="channelMSRP"><![CDATA[MSRP [localTransactionID] SEND
+To-Path: msrp://bob.exemple.com:8888/74986;tls
+From-Path: msrp://alice.exemple.com:7777/564;tls
+Message-ID: [localMessageID]
+Byte-Range: 1-[contentSize]/[contentSize]
+DestScenario:[destScenario]
+Content-Type: text/plain
+
+[content]
+-------[localTransactionID]$
+]]></sendMessageMSRP>
+    
+    <receiveMessageMSRP/>
+
+    <finally>
+        <!--closeChannelMSRP name="channelMSRP"/-->
+    </finally>
+
+</scenario> 

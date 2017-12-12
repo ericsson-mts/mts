@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <parameter name="[sequenceNumber]" operation="set" value="1"/>
+  <sendMessageGTP name="send Echo Request" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV2 type="Echo Request:1" sequenceNumber="[sequenceNumber]"/>
+
+    <!-- Recovery - Mandatory -->
+    <element tag="Recovery:3">
+      <field name="Recovery" value="[Recovery]"/>
+    </element>
+
+    <!-- Node Features - Conditional -->
+
+    <!-- Private Extension - Optional -->
+    <!--element tag="privateExtension:255" description="Private Extension">
+		  <field name="Enterprise ID" value="3232"/>
+      <field name="Proprietary value" value="extension value"/>
+	  </element-->
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Echo Response" request="false" type="Echo Request:1" result="Echo Response:2" >
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+    <parameter name="[tunnelEndpointId]" operation="protocol.setFromMessage" value="header.tunnelEndpointId"/>
+  </receiveMessageGTP>
+</scenario>

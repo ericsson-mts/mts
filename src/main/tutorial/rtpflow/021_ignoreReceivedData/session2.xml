@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    <createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP]" localPort="[remotePortRTP]" />
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+	
+    <receiveMessageRTPFLOW listenpoint="invitee" type="G722:9" timeout="10">
+        <parameter name="[payload]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+    </receiveMessageRTPFLOW>
+    
+    <test parameter="[payload]" condition="list.size" value="1"/>
+    
+	<removeListenpointRTPFLOW name="invitee" />
+	
+	<pause seconds="5" />
+	
+    <createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP]" localPort="[remotePortRTP]">
+        <flow qosMeasurment="false" ignoreReceivedMessages="true" />
+    </createListenpointRTPFLOW>
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+    
+    <receiveMessageRTPFLOW listenpoint="invitee" type="G722:9" timeout="10">
+        <parameter name="[payload]" operation="protocol.setFromMessage" value="flow.payload.binary"/>
+    </receiveMessageRTPFLOW>
+    
+    <test parameter="[payload]" condition="list.size" value="0"/>
+
+    <finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

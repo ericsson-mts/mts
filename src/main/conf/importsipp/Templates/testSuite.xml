@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<!-- Local parameters -->
+<parameter name="[local_ip]" operation="system.ipaddress"/>
+<parameter name="[local_ip]" operation="set" value="[local_ip(0)]" editable="true"/>
+<parameter name="[localPort]" operation="set" value="6060,7060,8060,9060,10060" editable="true"/>
+<parameter name="[localPort]" operation="string.split" value="[localPort]" value2="," />
+<!-- Remote parameters -->
+<parameter name="[remote_ip]" operation="system.ipaddress"/>
+<parameter name="[remote_ip]" operation="set" value="[remote_ip(0)]"  editable="true"/>
+<parameter name="[remotePort]" operation="set" value="7060,8060,9060,10060,6060" editable="true"/>
+<parameter name="[remotePort]" operation="string.split" value="[remotePort]" value2="," />
+<!-- Media parameters -->
+<parameter name="[media_ip]" operation="system.ipaddress"/>
+<parameter name="[media_ip]" operation="set" value="[media_ip(0)]" editable="true"/>
+<parameter name="[media_port]" operation="set" value="10000" editable="true"/>
+<parameter name="[auto_media_port]" operation="set" value="20000" editable="true"/>
+<!-- Other parameters -->
+<parameter name="[transport]" operation="set" value="UDP" editable="true"/>
+<parameter name="[_pauseDuration]" operation="set" value="1000" editable="true"/>
+<parameter name="[service]" operation="set" value="service" editable="true" />
+<parameter name="[_fileName]" operation="set" value="nomfichier.csv" editable="true"/>
+<!-- Run profile parameters -->
+<parameter name="[startDelay]" operation="set" value="0" editable="true"/>
+<parameter name="[endDelay]" operation="set" value="0" editable="true"/>
+<parameter name="[frequency]" operation="set" value="10" editable="true" />
+<parameter name="[instances]" operation="set" value="10" editable="true" />
+<parameter name="[cseq]" operation="set" value="1" editable="true"/>
+<parameter name="[recv_timeout]" operation="set" value="30" editable="true"/>
+</template>

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+      
+      <!-- trip for importSIPP module -->
+      <parameter name="[sipplist]" operation="list.create"/>    
+      <parameter name="[sipplist(0)]" operation="set" value="tutu"/>    
+      <parameter name="[sipplist(1)]" operation="set" value="titi"/>
+      <parameter name="[sipplist(2)]" operation="set" value="tata"/>        
+      <parameter name="[sipp1,,sipp3]" operation="set" value="[sublist]"/>
+      <!--test parameter="[sipp1]" condition="string.equals" value="tutu"/-->
+      <!--test parameter="[sipp3]" condition="string.equals" value="tata"/-->
+      
+      <parameter name="[result3]" operation="utils.queue.dequeue" value="[queue]" value2="1"/>        
+      
+      <parameter name="[sublist]" operation="list.create"/>
+      <parameter name="[list]" operation="list.set" value="[sublist]" value2="1"/>
+      
+      <parameter name="[list]" value="012" value2="2"/>
+      <parameter name="[list]" operation="list.addLast" value="[list]" value2="89" />
+      <parameter name="[list]" operation="list.addLast" value="[list]" value2="567" />
+      <parameter name="[list]" operation="list.set" value="[list]" value2="3"/>
+      
+      <test parameter="[list(0)]" condition="string.equals" value="012012012012012012" />
+      <test parameter="[list(1)]" condition="string.equals" value="898989" />
+      <test parameter="[list(2)]" condition="string.equals" value="567567567" />
+      
+      <parameter name="[list]" operation="list.create" />
+      <test parameter="[list]" condition="list.exists" value="true" />
+      <test parameter="[list]" condition="list.isempty" />
+      <parameter name="[boolean]" operation="list.isempty" value="[list]" />
+      <test parameter="[boolean]" condition="boolean.equals" value="true" />
+      <parameter name="[number]" operation="list.size" value="[list]" />
+      <test parameter="[number]" condition="number.equals" value="0" />	
+      
+      <parameter name="[list]" operation="list.remove" />
+      <test parameter="[list]" condition="list.exists" value="false" />
+      <test parameter="[list]" condition="list.isempty" not="true"/>
+      
+      <parameter name="[list]" operation="list.create" />
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="value2"/>
+      <test parameter="[list]" condition="list.size" value="1" />
+      <parameter name="[list]" operation="list.addfirst" value="[list]" value2="value1"/>
+      <test parameter="[list]" condition="list.size" value="2" />
+      <test parameter="[list(0)]" condition="string.equals" value="value1" />
+      <test parameter="[list(1)]" condition="string.equals" value="value2" />
+      
+      <parameter name="[first]" operation="list.getfirst" value="[list]" />
+      <test parameter="[first]" condition="string.equals" value="value1" />
+      
+      <parameter name="[last]" operation="list.getlast" value="[list]" />
+      <test parameter="[last]" condition="string.equals" value="value2" />
+      
+      <parameter name="[number]" operation="list.find" value="[list]" value2="value1"/>
+      <test parameter="[number]" condition="number.equals" value="0" />
+      
+      <parameter name="[number]" operation="list.findmatches" value="[list]" value2="[a-z]*2"/>
+      <test parameter="[number]" condition="number.equals" value="1" />
+      
+      <parameter name="[list]" operation="list.addlast"  value="[list]" value2="value3"/>
+      <test parameter="[list(0)]" condition="string.equals" value="value1" />
+      <test parameter="[list(1)]" condition="string.equals" value="value2" />
+      <test parameter="[list(2)]" condition="string.equals" value="value3" />
+      
+      <parameter name="[list]" operation="list.removeat" value="[list]" value2="1"/>
+      <test parameter="[list]" condition="list.size" value="2" />
+      <test parameter="[list(0)]" condition="string.equals" value="value1" />
+      <test parameter="[list(1)]" condition="string.equals" value="value3" />
+      
+      <parameter name="[list]" operation="list.removefirst"  value="[list]" />
+      <test parameter="[list]" condition="list.size" value="1" />
+      <test parameter="[list(0)]" condition="string.equals" value="value3" />
+      
+      <parameter name="[list]" operation="list.removelast"  value="[list]" />
+      <test parameter="[list]" condition="list.size" value="0" />
+      
+      <parameter name="[plop]" operation="list.create" />
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="0"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="1"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="2"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="3"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="4"/>
+      
+      <parameter name="[last]" operation="list.getLast" value="[plop]" />
+      <test parameter="[last]" condition="number.equals" value="4" />
+      <parameter name="[first]" operation="list.getFirst" value="[plop]" />
+      <test parameter="[first]" condition="number.equals" value="0" />
+      
+      <parameter name="[size]" operation="list.size" value="[plop]" />
+      <test parameter="[size]" condition="number.equals" value="5" />
+      
+      <parameter name="[plop]" operation="list.revert" value="[plop]"/>
+      
+      <parameter name="[last]" operation="list.getLast" value="[plop]" />
+      <test parameter="[last]" condition="number.equals" value="0" />
+      <parameter name="[first]" operation="list.getFirst" value="[plop]" />
+      <test parameter="[first]" condition="number.equals" value="4" />
+      
+      <parameter name="[mix]" operation="list.mix" value="[plop]" value2="5" />
+      <parameter name="[size]" operation="list.size" value="[mix]" />
+      <test parameter="[size]" condition="number.equals" value="5" />
+      
+      <parameter name="[sorted]" operation="list.sortNumber" value="[mix]" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="number.equals" value="0" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="4" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="number.equals" value="1" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="3" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="number.equals" value="2" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="2" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="1" />
+      <test parameter="[first]" condition="number.equals" value="3" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="number.equals" value="4" />
+      
+      <parameter name="[plop]" operation="list.remove" />
+      
+      <parameter name="[plop]" operation="list.create" />
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="0"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="1"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="2"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="3"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="4"/>
+      
+      <parameter name="[max]" operation="list.statMax" value="[plop]" />
+      <test parameter="[max]" condition="number.equals" value="4" />
+      <parameter name="[min]" operation="list.statMin" value="[plop]" />
+      <test parameter="[min]" condition="number.equals" value="0" />
+      <parameter name="[average]" operation="list.statAverage" value="[plop]" />
+      <test parameter="[average]" condition="number.equals" value="2" />
+      <parameter name="[deviation]" operation="list.statDeviation" value="[plop]" />
+      <test parameter="[deviation]" condition="number.equals" value="1.414214" />
+      <parameter name="[variance]" operation="list.statVariance" value="[plop]" />
+      <test parameter="[variance]" condition="number.equals" value="2" />
+      
+      <parameter name="[plop2]" operation="list.mix" value="[plop]" value2="5" />
+      
+      <parameter name="[max]" operation="list.statMax" value="[plop2]" />
+      <test parameter="[max]" condition="number.equals" value="4" />
+      <parameter name="[min]" operation="list.statMin" value="[plop2]" />
+      <test parameter="[min]" condition="number.equals" value="0" />
+      <parameter name="[average]" operation="list.statAverage" value="[plop2]" />
+      <test parameter="[average]" condition="number.equals" value="2" />
+      <parameter name="[deviation]" operation="list.statDeviation" value="[plop2]" />
+      <test parameter="[deviation]" condition="number.equals" value="1.414214" />
+      <parameter name="[variance]" operation="list.statVariance" value="[plop2]" />
+      <test parameter="[variance]" condition="number.equals" value="2" />	
+      
+      <parameter name="[plop]" operation="list.remove" />
+            
+      <parameter name="[plop]" operation="list.create" />
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="toto"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="titi"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="tete"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="tutu"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="tyty"/>
+      <parameter name="[plop]" operation="list.addlast" value="[plop]" value2="tata"/>
+      
+      <parameter name="[last]" operation="list.getLast" value="[plop]" />
+      <test parameter="[last]" condition="string.equals" value="tata" />
+      <parameter name="[first]" operation="list.getFirst" value="[plop]" />
+      <test parameter="[first]" condition="string.equals" value="toto" />
+      
+      <parameter name="[size]" operation="list.size" value="[plop]" />
+      <test parameter="[size]" condition="number.equals" value="6" />
+      
+      <parameter name="[plop]" operation="list.revert" value="[plop]"/>
+      
+      <parameter name="[last]" operation="list.getLast" value="[plop]" />
+      <test parameter="[last]" condition="string.equals" value="toto" />
+      <parameter name="[first]" operation="list.getFirst" value="[plop]" />
+      <test parameter="[first]" condition="string.equals" value="tata" />
+      
+      <parameter name="[mix]" operation="list.mix" value="[plop]" value2="5" />
+      <parameter name="[size]" operation="list.size" value="[mix]" />
+      <test parameter="[size]" condition="number.equals" value="6" />
+      
+      <parameter name="[sorted]" operation="list.sortString" value="[mix]" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="string.equals" value="tata" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="5" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="string.equals" value="tete" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="4" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="string.equals" value="titi" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="3" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="string.equals" value="toto" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="2" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="string.equals" value="tutu" />
+      <parameter name="[sorted]" operation="list.removeFirst" value="[sorted]" />
+      <parameter name="[size]" operation="list.size" value="[sorted]" />
+      <test parameter="[size]" condition="number.equals" value="1" />
+      <parameter name="[first]" operation="list.getFirst" value="[sorted]" />
+      <test parameter="[first]" condition="string.equals" value="tyty" />
+      
+      <!-- a more complex find / remove test-->
+      <parameter name="[list]" operation="list.create" />
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="toto"/>
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="titi"/>
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="toto"/>
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="titi"/>
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="toto"/>
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="titi"/>
+      <parameter name="[list]" operation="list.addlast" value="[list]" value2="toto"/>
+      
+      <parameter name="[indexes]" operation="list.find" value="[list]" value2="titi"/>
+      
+      <parameter name="[list]" operation="list.removeat" value="[list]" value2="[indexes]"/>
+      
+      <test parameter="[list]" condition="string.equals" value="toto" />
+      <test parameter="[list]" condition="list.size"     value="4" />
+      
+      <parameter name="[empty]"    operation="list.set" ></parameter>
+      <test parameter="[empty]" condition="list.size" value="0" />
+      
+      <parameter name="[text]"    operation="list.set" >
+This is some text to put in the 'text' parameter;
+List value is [list]
+      </parameter>
+      <test parameter="[text]" condition="string.contains" value="This is some text to put in the 'text' parameter;" />
+      <test parameter="[text]" condition="string.contains" value="List value is [list]" />
+      
+      <parameter name="[list(0)]" operation="set" value="tutu"/>    
+      <parameter name="[list(1)]" operation="set" value="titi"/>    
+      <parameter name="[list(2)]" operation="set" value="titi"/>    
+      <parameter name="[list(3)]" operation="set" value="titi"/>    
+      <parameter name="[list(4)]" operation="set" value="toto"/>    
+      <parameter name="[list(5)]" operation="set" value="titi"/>    
+      <parameter name="[list(6)]" operation="set" value="toto"/>    
+      <parameter name="[list(7)]" operation="set" value="tutu"/>    
+      
+      <parameter name="[sublist]" operation="list.create"/>    
+      <parameter name="[sublist(0)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(1)]" operation="set" value="toto"/>    
+      <parameter name="[sublist(2)]" operation="set" value="tutu"/>    
+      
+      <test parameter="[list]" condition="list.contains" value="[sublist]" />
+      <test parameter="[list]" condition="list.contains" value="[list]" />
+      <test parameter="[sublist]" condition="list.contains" value="[sublist]" />
+      
+      <parameter name="[list(0)]" operation="set" value="tutu"/>    
+      <parameter name="[list(1)]" operation="set" value="titi"/>    
+      <parameter name="[list(2)]" operation="set" value="titi"/>    
+      <parameter name="[list(3)]" operation="set" value="titi"/>    
+      <parameter name="[list(4)]" operation="set" value="toto"/>    
+      <parameter name="[list(5)]" operation="set" value="titi"/>    
+      <parameter name="[list(6)]" operation="set" value="0000"/>    
+      <parameter name="[list(7)]" operation="set" value="tutu"/>    
+      
+      <parameter name="[sublist]" operation="list.create"/>    
+      <parameter name="[sublist(0)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(1)]" operation="set" value="toto"/>    
+      <parameter name="[sublist(2)]" operation="set" value="tutu"/>    
+      
+      <test parameter="[list]" condition="list.flowcontains" value="[sublist]" />
+      <test parameter="[list]" condition="list.flowcontains" value="[list]" />
+      <test parameter="[sublist]" condition="list.flowcontains" value="[sublist]" />
+      
+      <parameter name="[sublist]" operation="list.create"/>    
+      <parameter name="[sublist(0)]" operation="set" value="tutu"/>    
+      <parameter name="[sublist(1)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(2)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(3)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(4)]" operation="set" value="toto"/>    
+      <parameter name="[sublist(5)]" operation="set" value="titi"/>
+      <test parameter="[list]" condition="list.flowcontains" value="[sublist]" />
+      
+      <parameter name="[sublist]" operation="list.create"/>    
+      <parameter name="[sublist(0)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(1)]" operation="set" value="titi"/>    
+      <parameter name="[sublist(2)]" operation="set" value="toto"/>    
+      <test parameter="[list]" condition="list.flowcontains" value="[sublist]" />
+      
+      <parameter name="[param1]" operation="set" value="titi"/>    
+      <parameter name="[param2]" operation="set" value="toto"/>    
+      <parameter name="[result]" operation="list.enqueue" value="[queue]" value2="[param1]"/>    
+      <parameter name="[result]" operation="list.enqueue" value="[queue]" value2="[param2]"/>    
+      <parameter name="[result1]" operation="list.dequeue" value="[queue]" value2="1"/>        
+      <test parameter="[result1]" condition="string.equals" value="titi"/>
+      <parameter name="[param3]" operation="set" value="tata"/>    
+      <parameter name="[result]" operation="utils.queue.enqueue" value="[queue]" value2="[param3]"/>        
+      <parameter name="[result2]" operation="list.dequeue" value="[queue]" value2="1"/>        
+      <test parameter="[result2]" condition="string.equals" value="toto"/>
+      <parameter name="[result3]" operation="utils.queue.dequeue" value="[queue]" value2="1"/>        
+      <test parameter="[result3]" condition="string.equals" value="tata"/>
+
+</scenario>

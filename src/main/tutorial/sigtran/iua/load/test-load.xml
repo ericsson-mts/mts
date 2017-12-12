@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+	<parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="10000"/>	
+    	<parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="20"/>
+
+        <parameter name="[localHostIUA]" operation="system.ipaddress"/>
+	<parameter editable="true" name="[localHostIUA]" operation="set" value="[Host-Tester(0)]"/>
+	<parameter name="[localPortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter editable="true" name="[localPortIUA]" operation="set" value="[Port-Tester(0)]"/>    
+	<parameter name="[localIUA]" operation="set" value="[localHostIUA]:[localPortIUA]"/>	
+	   
+	<parameter name="[remoteHostIUA]" operation="system.ipaddress"/>
+	<parameter editable="true" name="[remoteHostIUA]" operation="set" value="[Host-Server(0)]"/>
+	<parameter name="[remotePortIUA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter editable="true" name="[remotePortIUA]" operation="set" value="[Port-Server(0)]"/>    
+	<parameter name="[remoteIUA]" operation="set" value="[remoteHostIUA]:[remotePortIUA]"/>	
+
+	
+   	<parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+
+  	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
+
+		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
+
+		    	<parameter name="[indexX2]" operation="number.multiply" value="[index]" value2="4"/> 
+		    	<parameter name="[hostCallerIUA]" operation="set" value="[Host-Server(0)]"/>
+		    	<parameter name="[portCallerIUA]" operation="number.add" value="[remotePortIUA]" value2="[indexX2]"/>    
+    			<parameter name="[listenpointCaller]" operation="set" value="listenpointCaller_[index]"/>		    	
+		    	<parameter name="[indexX2]" operation="number.add" value="[indexX2]" value2="2"/> 		    	
+		    	<parameter name="[Host-Callee]" operation="set" value="[Host-Server(0)]"/>
+		        <parameter name="[Port-Callee]" operation="number.add" value="[remotePortIUA]" value2="[indexX2]"/>
+    			<parameter name="[listenpointCallee]" operation="set" value="listenpointCallee_[index]"/>		    	
+    			
+			<!--                       -->
+		    	<!-- RUNPROFILE PARAMETERS -->
+		    	<!--                       -->    
+		    	<runProfile>
+		        	<step frequency="[speedTestcase]" time="0"/>
+		        	<end delay="[TestDurationSec]"/>
+		    	</runProfile>
+
+		        <scenario file="../001_Keypad_Facility/caller.xml" name="[portCallerIUA]" routingName="[portCallerIUA]"/>
+        		<scenario file="../001_Keypad_Facility/callee.xml" name="[Port-Callee]" routingName="[Port-Callee]"/>
+
+		</testcase>
+
+	</for>
+</test>

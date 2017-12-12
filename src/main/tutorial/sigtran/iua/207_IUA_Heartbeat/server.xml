@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<scenario>
+
+  	<parameter name="[data]" value="010003030000004c00090044010005020000004000010008000000020005000800030000000e00270802006505a104038090a31803a183816c0c2180313030303030303130312c0331323300" />
+  	<receiveMessageSIGTRAN name="Wait DATA1"/>
+  	
+  	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<test parameter="[data1]" condition="binary.equals" value="[data]"/>	
+
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[localHostIUA]" remotePort="[localPortIUA]">    		
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="ASPSM:ASP State Maintenance" messageType="Heartbeat_Ack"/>						
+	    <parameter tag="Heartbeat_Data">
+            	<field name="Heartbeat_Data" value="010005020000004000010008000000020005000800030000000e00270802006505a104038090a31803a183816c0c2180313030303030303130312c0331323300" />
+            </parameter>
+        </UA>	
+    </sendMessageSIGTRAN>	
+
+</scenario>

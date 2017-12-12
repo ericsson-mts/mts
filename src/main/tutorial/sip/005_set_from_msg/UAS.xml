@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
+    
+    <parameter name="[message]" operation="protocol.setFromMessage" value="message"/>
+    
+    <parameter name="[listenpoint]" operation="protocol.setFromMessage" value="listenpoint"/>
+    <test parameter="[listenpoint]" condition="string.contains" value="0.0.0.0"/>
+    <test parameter="[listenpoint]" condition="string.contains" value="[localPortSIP]"/>
+    <parameter name="[listenpointXML]" operation="protocol.setFromMessage" value="listenpoint.xml"/>
+    <test parameter="[listenpointXML]" condition="string.contains" value="LISTENPOINT"/>
+    <test parameter="[listenpointXML]" condition="string.contains" value="0.0.0.0"/>
+    <test parameter="[listenpointXML]" condition="string.contains" value="[localPortSIP]"/>
+    
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel"/>
+    <test parameter="[channel]" condition="string.contains" value="[localHostSIP]"/>
+    <test parameter="[channel]" condition="string.contains" value="[localPortSIP]"/>
+    <test parameter="[channel]" condition="string.contains" value="[remoteHostSIP]"/>
+    <test parameter="[channel]" condition="string.contains" value="[remotePortSIP]"/>
+    <test parameter="[channel]" condition="string.contains" value="UDP"/>
+    <parameter name="[channelXML]" operation="protocol.setFromMessage" value="channel.xml"/>
+    <test parameter="[channelXML]" condition="string.contains" value="CHANNEL"/>
+    <test parameter="[channelXML]" condition="string.contains" value="[localHostSIP]"/>
+    <test parameter="[channelXML]" condition="string.contains" value="[localPortSIP]"/>
+    <test parameter="[channelXML]" condition="string.contains" value="[remoteHostSIP]"/>
+    <test parameter="[channelXML]" condition="string.contains" value="[remotePortSIP]"/>
+    <test parameter="[channelXML]" condition="string.contains" value="UDP"/>
+    
+    <parameter name="[receivedMessageLength]" operation="protocol.setFromMessage" value="message.length"/>
+    
+    <!--test parameter="[receivedMessageLength]" condition="string.equals" value="2155"/--> <!-- Jain SIP stack -->
+    <!--test parameter="[receivedMessageLength]" condition="string.equals" value="2294"/--> <!-- Light SIP stack -->
+    <!-- because of the nsn.ADD_CONTENT_LENGTH = "3" config parameter -->
+    <parameter name="[receivedMessageLength]" operation="number.add" value="[receivedMessageLength]" value2="6"/>
+    <test parameter="[receivedMessageLength]" condition="number.equals" value="[testcase:sentMessageLength]"/>
+    
+    <parameter name="[timestamp1]" operation="system.timestamp" value="1970"/>
+    <parameter name="[timestamp2]" operation="protocol.setFromMessage" value="message.timestamp"/>  
+    <parameter name="[diffTimestamp]" operation="number.substract" value="[timestamp2]" value2="[timestamp1]"/>
+    <test parameter="[diffTimestamp]" condition="number.lowerThan" value="2000"/>
+    
+    <parameter name="[text]" operation="protocol.setFromMessage" value="message.text"/>  
+    <test parameter="[text]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[text]" condition="string.contains" value="------=_Part_0"/>
+    
+    <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
+    <test parameter="[binary]" condition="binary.contains" value="494e5649"/>
+    
+    <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+    <test parameter="[firstline]" condition="string.equals" value="INVITE tel:1234 SIP/2.0"/>
+    
+    <parameter name="[firstlineVersion]" operation="protocol.setFromMessage" value="firstline.Version"/>
+    <test parameter="[firstlineVersion]" condition="string.equals" value="SIP/2.0"/>
+    
+    <parameter name="[firstlineMethod]" operation="protocol.setFromMessage" value="firstline.Method"/>
+    <test parameter="[firstlineMethod]" condition="string.equals" value="INVITE"/>
+    
+    <parameter name="[firstlineURI]" operation="protocol.setFromMessage" value="firstline.URI"/>
+    <test parameter="[firstlineURI]" condition="string.equals" value="tel:1234"/>
+    
+    <parameter name="[firstlineStatusCode]" operation="protocol.setFromMessage" value="firstline.statusCode"/>
+    <test parameter="[firstlineStatusCode]" condition="list.isempty"/>
+    
+    <parameter name="[firstlineReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>
+    <test parameter="[firstlineReasonPhrase]" condition="list.isempty"/>
+    
+    <parameter name="[headers]" operation="protocol.setFromMessage" value="header"/>
+    <parameter name="[headersIndex]" operation="findMatches" value="[headers]" value2="^From.*"/>
+    <test parameter="[headersIndex]" condition="number.equals" value="2"/> <!-- for jre  before or equals 1.7 -->
+    <parameter name="[headersSize]" operation="list.size" value="[headers]"/>
+    <test parameter="[headersSize]" condition="string.equals" value="28"/>
+    <test parameter="[headers(0)]" condition="string.contains" value="To:"/>  <!-- for jre  before or equals 1.7 -->
+    
+    <parameter name="[others]" operation="protocol.setFromMessage" value="header.Others"/>
+    <parameter name="[othersIndex]" operation="findMatches" value="[others]" value2="^Content-Length.*"/>
+    <parameter name="[othersSize]" operation="list.size" value="[others]"/>
+    <!-- test non pertinent car l'ordre des headers n'est pas celui du message -->
+    <!-- il faudrait utiliser une TreeMap au lieu d'une Hashmap java -->
+    <test parameter="[othersSize]" condition="string.equals" value="19"/>
+    <test parameter="[others(9)]" condition="string.contains" value="Content-Type:"/> <!-- for jre  after 1.7 -->        
+    
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <test parameter="[To]" condition="string.contains" value=" &lt;tel:1234&gt;"/>
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.t"/>
+    <test parameter="[To]" condition="string.contains" value=" &lt;tel:1234&gt;"/>
+    
+    <parameter name="[ToAddress]" operation="protocol.setFromMessage" value="header.To.Address"/>
+    <test parameter="[ToAddress]" condition="string.contains" value=" &lt;tel:1234&gt;"/>
+    
+    <parameter name="[ToDisplayName]" operation="protocol.setFromMessage" value="header.To.Address.displayName"/>
+    <test parameter="[ToDisplayName]" condition="string.equals" value="&lt;1234 =,;DUPOND&gt;=,;"/>
+    
+    <parameter name="[ToURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
+    <test parameter="[ToURI]" condition="string.contains" value="tel:1234"/>
+    
+    <parameter name="[ToScheme]" operation="protocol.setFromMessage" value="header.To.Address.URI.Scheme"/>
+    <test parameter="[ToScheme]" condition="string.contains" value="tel"/>
+    
+    <parameter name="[ToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/>
+    <test parameter="[ToUser]" condition="string.contains" value="1234"/>
+    
+    <parameter name="[ToPhoneNumber]" operation="protocol.setFromMessage" value="header.To.Address.URI.PhoneNumber"/>
+    <test parameter="[ToPhoneNumber]" condition="string.equals" value="1234"/>
+    
+    <parameter name="[ToHost]" operation="protocol.setFromMessage" value="header.To.Address.URI.Host"/>
+    <test parameter="[ToHost]" condition="list.isEmpty"/>
+    
+    <parameter name="[ToTag]" operation="protocol.setFromMessage" value="header.To.Parameter.tag"/>
+    <test parameter="[ToTag]" condition="list.isEmpty"/>
+    
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+    <test parameter="[From]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;;tag="/>
+    
+    <!-- trip for importSIPP module -->
+    <parameter name="[FromNV]" operation="protocol.setFromMessage" value="header.From.NameValue"/>
+    <test parameter="[FromNV]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;;tag="/>
+    <test parameter="[FromNV]" condition="string.startsWith" value="From: "/>
+    <parameter name="[FromSIPP]" operation="protocol.setFromMessage" value="header.From: "/>
+    <test parameter="[FromSIPP]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;;tag="/>
+    
+    <parameter name="[FromAddress]" operation="protocol.setFromMessage" value="header.From.Address"/>
+    <test parameter="[FromAddress]" condition="string.contains" value=" &lt;sip:alice@devoteam.com;TesterId=6789&gt;"/>
+    
+    <parameter name="[FromTag]" operation="protocol.setFromMessage" value="header.From.Parameter.tag"/>  
+    <test parameter="[FromTag]" condition="string.equals" value="[testcase:localTag]"/>
+    
+    <!--parameter name="[FromTagDeprecated]" operation="protocol.setFromMessage" value="header.From.Tag"/--> 
+    <!--test parameter="[FromTagDeprecated]" condition="string.equals" value="[FromTag]"/-->
+    
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/> 
+    <test parameter="[Contact(0)]" condition="string.equals" value="&lt;sip:alice@[localSIP]&gt;;expires=3600"/>
+    <test parameter="[Contact(1)]" condition="string.equals" value="&lt;sip:1234@172.16.21.32:5060&gt;;expires=3300"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.m"/> 
+    <test parameter="[Contact(0)]" condition="string.equals" value="&lt;sip:alice@[localSIP]&gt;;expires=3600"/>
+    <test parameter="[Contact(1)]" condition="string.equals" value="&lt;sip:1234@172.16.21.32:5060&gt;;expires=3300"/>
+    
+    <parameter name="[ContactAddress]" operation="protocol.setFromMessage" value="header.Contact.Address"/>
+    <test parameter="[ContactAddress(0)]" condition="string.equals" value="&lt;sip:alice@[localSIP]&gt;"/> 
+    <test parameter="[ContactAddress(1)]" condition="string.contains" value="&lt;sip:1234@172.16.21.32:5060&gt;"/> 
+    
+    <parameter name="[ContactURI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>
+    <test parameter="[ContactURI(0)]" condition="string.equals" value="sip:alice@[localSIP]"/> 
+    <test parameter="[ContactURI(1)]" condition="string.equals" value="sip:1234@172.16.21.32:5060"/> 
+    
+    <parameter name="[ContactExpires]" operation="protocol.setFromMessage" value="header.Contact.Parameter.expires"/>
+    <test parameter="[ContactExpires(0)]" condition="string.equals" value="3600"/>
+    <test parameter="[ContactExpires(1)]" condition="string.equals" value="3300"/>
+    
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <test parameter="[CSeq]" condition="string.equals" value="0001111  INVITE"/>
+    <!-- trip for importSIPP module -->
+    <parameter name="[CSeqNV]" operation="protocol.setFromMessage" value="header.CSeq.Namevalue"/>
+    <test parameter="[CSeqNV]" condition="string.equals" value="CSeq: 0001111  INVITE"/>
+    <parameter name="[CSeqSIPP]" operation="protocol.setFromMessage" value="header.CSeq: "/>
+    <test parameter="[CSeqSIPP]" condition="string.equals" value="0001111  INVITE"/>
+    <parameter name="[CSeqRegex]" operation="string.regexmatches" value="[text]" value2="CSeq:.*"/>
+    <parameter name="[CSeqValue]" operation="string.substring" value="[CSeqRegex]" value2="6"/>
+    <test parameter="[CSeqValue]" condition="string.equals" value="0001111  INVITE"/>
+    
+    <parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+    <test parameter="[CSeqNumber]" condition="string.equals" value="1111"/>
+    
+    <parameter name="[CSeqNumberDeprecated]" operation="protocol.setFromMessage" value="header.CSeqNumber"/>
+    <test parameter="[CSeqNumberDeprecated]" condition="string.equals" value="[CSeqNumber]"/>
+    
+    <parameter name="[CSeqMethod]" operation="protocol.setFromMessage" value="header.CSeq.Method"/>
+    <test parameter="[CSeqMethod]" condition="string.equals" value="INVITE"/>
+    
+    <parameter name="[RSeq]" operation="protocol.setFromMessage" value="header.RSeq"/>
+    <test parameter="[RSeq]" condition="string.equals" value="9999"/>
+    
+    <parameter name="[RAck]" operation="protocol.setFromMessage" value="header.RAck"/>
+    <test parameter="[RAck]" condition="string.contains" value=" INVITE"/>
+    
+    <parameter name="[RAckNumber]" operation="protocol.setFromMessage" value="header.RAck.Number"/>
+    <test parameter="[RAckNumber]" condition="string.equals" value="55"/>       <!-- Light SIP stack -->
+    
+    <parameter name="[RAckCSeq]" operation="protocol.setFromMessage" value="header.RAck.CSeqNumber"/>
+    <test parameter="[RAckCSeq]" condition="string.equals" value="1111"/>       <!-- Light SIP stack -->
+    
+    <parameter name="[RAckMethod]" operation="protocol.setFromMessage" value="header.RAck.Method"/>
+    <test parameter="[RAckMethod]" condition="string.equals" value="INVITE"/>   <!-- Light SIP stack -->
+    
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <test parameter="[CallId]" condition="string.equals" value="1234567890"/>
+    
+    <parameter name="[DialogId]" operation="protocol.setFromMessage" value="header.DialogId"/>
+    <test parameter="[DialogId]" condition="string.equals" value="[CallId]||[FromTag]"/>
+    
+    <parameter name="[CallInfoPurpose]" operation="protocol.setFromMessage" value="header.Call-Info.Parameter.purpose"/>
+    <test parameter="[CallInfoPurpose]" condition="string.equals" value="info"/>
+    
+    <parameter name="[CallInfo]" operation="protocol.setFromMessage" value="header.Call-Info"/>
+    <test parameter="[CallInfo]" condition="string.contains" value="http://www.example.com/alice/"/>
+    
+    <parameter name="[Route]" operation="protocol.setFromMessage" value="header.Route"/> 
+    <test parameter="[Route(0)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;;id=titi"/>
+    <test parameter="[Route(1)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;;id=toto"/>
+    <test parameter="[Route(2)]" condition="string.equals" value="&lt;sip:1234@[localSIP];transport=[transportRequest];lr&gt;;id=tata"/>
+    
+    <parameter name="[RouteAddress]" operation="protocol.setFromMessage" value="header.Route.Address"/>
+    <test parameter="[RouteAddress(0)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;"/>
+    <test parameter="[RouteAddress(1)]" condition="string.equals" value="&lt;sip:1234@[remoteSIP];transport=[transportRequest];lr&gt;"/>
+    <test parameter="[RouteAddress(2)]" condition="string.equals" value="&lt;sip:1234@[localSIP];transport=[transportRequest];lr&gt;"/>
+    
+    <parameter name="[RouteID]" operation="protocol.setFromMessage" value="header.Route.Parameter.id"/>
+    <test parameter="[RouteID(0)]" condition="string.equals" value="titi"/>
+    <test parameter="[RouteID(1)]" condition="string.equals" value="toto"/>
+    <test parameter="[RouteID(2)]" condition="string.equals" value="tata"/>   
+    
+    <parameter name="[RouteLR]" operation="protocol.setFromMessage" value="header.Route.Address.URI.Parameter.lr"/>
+    
+    <parameter name="[TopmostVia]" operation="protocol.setFromMessage" value="header.TopmostVia"/> 
+    <test parameter="[TopmostVia]" condition="string.contains" value="SIP/2.0/"/>
+    
+    <parameter name="[TopmostViaProtocol]" operation="protocol.setFromMessage" value="header.TopmostVia.Protocol"/>
+    <test parameter="[TopmostViaProtocol]" condition="string.equals" value="SIP/2.0"/>
+    
+    <parameter name="[TopmostViaTransport]" operation="protocol.setFromMessage" value="header.TopmostVia.Transport"/>        
+    <test parameter="[TopmostViaTransport]" condition="string.equals" value="[transportResponse]"/>
+    
+    <parameter name="[TopmostViaHost]" operation="protocol.setFromMessage" value="header.TopmostVia.Host"/>
+    <test parameter="[TopmostViaHost]" condition="string.equals" value="[remoteHostSIP]"/>
+    
+    <parameter name="[TopmostViaPort]" operation="protocol.setFromMessage" value="header.TopmostVia.Port"/>
+    <test parameter="[TopmostViaPort]" condition="string.equals" value="[remotePortSIP]"/>
+    
+    <parameter name="[TopmostViaBranch]" operation="protocol.setFromMessage" value="header.TopmostVia.Parameter.branch"/> 
+    <test parameter="[TopmostViaBranch]" condition="string.equals" value="z9hG4bK[newBranchId]"/>
+    
+    <parameter name="[TopmostViaBranchNoMagic]" operation="protocol.setFromMessage" value="header.TopmostVia.Parameter.branchNoMagic"/> 
+    <test parameter="[TopmostViaBranchNoMagic]" condition="string.equals" value="[newBranchId]"/>
+    
+    <parameter name="[TopmostViaTTL]" operation="protocol.setFromMessage" value="header.TopmostVia.Parameter.ttl"/>
+    <test parameter="[TopmostViaTTL]" condition="string.equals" value="3000"/>
+    
+    <parameter name="[TopmostViaReceived]" operation="protocol.setFromMessage" value="header.TopmostVia.Parameter.received"/>
+    <test parameter="[TopmostViaReceived]" condition="string.equals" value="[remoteHostSIP]"/>
+    
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+    <test parameter="[Via]" condition="string.contains" value="SIP/2.0/[transportResponse]"/>
+    <!-- trip for importSIPP module -->
+    <parameter name="[ViaNV]" operation="protocol.setFromMessage" value="header.Via.NameValue "/> 
+    <test parameter="[ViaNV]" condition="string.startsWith" value="VIA: SIP/2.0/[transportResponse]"/>
+    <parameter name="[ViaSIPP]" operation="protocol.setFromMessage" value="header.Via: "/> 
+    <test parameter="[ViaSIPP]" condition="string.startsWith" value="SIP/2.0/[transportResponse]"/>
+    
+    <parameter name="[ViaProtocol]" operation="protocol.setFromMessage" value="header.Via.Protocol"/>
+    <test parameter="[ViaProtocol]" condition="string.equals" value="SIP/2.0"/>
+    
+    <parameter name="[ViaTransport]" operation="protocol.setFromMessage" value="header.Via.Transport"/>
+    <test parameter="[ViaTransport]" condition="string.equals" value="[transportResponse]"/>
+    
+    <parameter name="[ViaHost]" operation="protocol.setFromMessage" value="header.Via.Host"/>
+    <test parameter="[ViaHost(0)]" condition="string.equals" value="[remoteHostSIP]"/>
+    <test parameter="[ViaHost(1)]" condition="string.equals" value="172.16.21.232"/>
+    
+    <parameter name="[ViaPort]" operation="protocol.setFromMessage" value="header.Via.Port"/>
+    <test parameter="[ViaPort(0)]" condition="string.equals" value="[remotePortSIP]"/>
+    <test parameter="[ViaPort(1)]" condition="string.equals" value="5060"/>
+    
+    <parameter name="[ViaBranch]" operation="protocol.setFromMessage" value="header.Via.Parameter.branch"/> 
+    <test parameter="[ViaBranch]" condition="string.equals" value="z9hG4bK[newBranchId]"/>
+    
+    <parameter name="[ViaBranchNoMagic]" operation="protocol.setFromMessage" value="header.Via.Parameter.branchNoMagic"/> 
+    <test parameter="[ViaBranchNoMagic]" condition="string.equals" value="[newBranchId]"/>
+    
+    <parameter name="[ViaTTL]" operation="protocol.setFromMessage" value="header.Via.Parameter.ttl"/>
+    <parameter name="[ViaTTLSize]" operation="list.size" value="[ViaTTL]"/>
+    <test parameter="[ViaTTLSize]" condition="string.equals" value="1"/>
+    <test parameter="[ViaTTL(0)]" condition="string.equals" value="3000"/>
+    
+    <parameter name="[ViaRPort]" operation="protocol.setFromMessage" value="header.Via.Parameter.RPort"/>
+    <parameter name="[ViaRPortSize]" operation="list.size" value="[ViaRPort]"/>
+    <test parameter="[ViaRPortSize]" condition="string.equals" value="1"/>        <!-- Light SIP stack -->
+    <test parameter="[ViaRPort(0)]" condition="string.equals" value=""/>          <!-- Light SIP stack -->
+    
+    <parameter name="[ViaReceived]" operation="protocol.setFromMessage" value="header.Via.Parameter.received"/>
+    <test parameter="[ViaReceived(0)]" condition="string.equals" value="[remoteHostSIP]"/>
+    <test parameter="[ViaReceived(1)]" condition="string.equals" value="172.16.21.230"/>
+    
+    <parameter name="[XmlLoaderId]" operation="protocol.setFromMessage" value="header.XmlLoaderId"/> 
+    <test parameter="[XmlLoaderId]" condition="string.equals" value="XmlLoaderId"/>
+    
+    <parameter name="[MaxForward]" operation="protocol.setFromMessage" value="header.Max-Forwards"/>
+    <test parameter="[MaxForward]" condition="string.equals" value="70"/>
+    
+    <parameter name="[ParamVal]" operation="protocol.setFromMessage" value="header.Param.Parameter"/>
+    <test parameter="[ParamVal]" condition="list.size" value="1"/>
+    <test parameter="[ParamVal]" condition="string.equals" value="val"/>
+    
+    <parameter name="[Param1]" operation="protocol.setFromMessage" value="header.Param.Parameter.param1"/>
+    <test parameter="[Param1]" condition="list.size" value="2"/>
+    <test parameter="[Param1(0)]" condition="string.equals" value="abcde"/>
+    <test parameter="[Param1(1)]" condition="string.equals" value="01234"/>
+    
+    <parameter name="[Param2]" operation="protocol.setFromMessage" value="header.Param.Parameter.param2"/>
+    <test parameter="[Param2]" condition="list.size" value="1"/>
+    <test parameter="[Param2]" condition="string.equals" value="01234"/>
+    
+    <parameter name="[AttrVal]" operation="protocol.setFromMessage" value="header.Attr.Attribute"/>
+    <test parameter="[AttrVal]" condition="list.size" value="3"/>
+    <test parameter="[AttrVal(0)]" condition="string.equals" value="val1"/>
+    <test parameter="[AttrVal(1)]" condition="string.equals" value="val2"/>
+    <test parameter="[AttrVal(2)]" condition="string.equals" value="val3"/>
+    
+    <parameter name="[Attr1]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr1"/>
+    <test parameter="[Attr1]" condition="list.size" value="1"/>
+    <test parameter="[Attr1]" condition="string.equals" value="abcde"/>
+    
+    <parameter name="[Attr2]" operation="protocol.setFromMessage" value="header.Attr.Attribute.attr2"/>
+    <test parameter="[Attr2]" condition="list.size" value="2"/>
+    <test parameter="[Attr2(0)]" condition="string.equals" value="01234"/>
+    <test parameter="[Attr2(1)]" condition="string.equals" value="abcde"/>
+    
+    <parameter name="[Arg0]" operation="protocol.setFromMessage" value="header.Arg.Argument.0"/>
+    <test parameter="[Arg0]" condition="list.size" value="1"/>
+    <test parameter="[Arg0]" condition="string.equals" value="arg0"/>
+    
+    <parameter name="[Arg1]" operation="protocol.setFromMessage" value="header.Arg.Argument.1"/>
+    <test parameter="[Arg1]" condition="list.size" value="1"/>
+    <test parameter="[Arg1]" condition="string.equals" value="arg1"/>
+    
+    <parameter name="[Arg2]" operation="protocol.setFromMessage" value="header.Arg.Argument.2"/>
+    <test parameter="[Arg2]" condition="list.size" value="1"/>
+    <test parameter="[Arg2]" condition="string.equals" value="arg2"/>
+    
+    </receiveMessageSIP>
+    
+    <!-- perform test -->
+    <parameter name="[ContentEncoding]" operation="protocol.setFromMessage" value="header.Content-Encoding"/>
+    <test parameter="[ContentEncoding]" condition="string.equals" value="gzip"/>
+    
+    <parameter name="[ContentLanguage]" operation="protocol.setFromMessage" value="header.Content-Language"/>
+    <test parameter="[ContentLanguage]" condition="string.equals" value="en"/>
+    
+    <parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+    <test parameter="[ContentType]" condition="string.contains" value="multipart/mixed;boundary="/>
+    
+    <parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    <!--test parameter="[ContentLength]" condition="string.contains" value="710"/-->   <!-- Light SIP stack -->
+    
+    <parameter name="[Expires]" operation="protocol.setFromMessage" value="header.Expires"/> 
+    <test parameter="[Expires]" condition="string.equals" value="3600"/>
+    
+    <parameter name="[Authorization]" operation="protocol.setFromMessage" value="header.Authorization"/> 
+    <test parameter="[Authorization]" condition="string.contains" value="username="/> 
+    <test parameter="[Authorization]" condition="string.startsWith" value="Digest username=&quot;Alice&quot;"/>
+    <test parameter="[Authorization]" condition="string.equals" value="Digest username=&quot;Alice&quot;,          realm=&quot;atlanta.com&quot;,          nonce=&quot;84a4cc6f3082121f32b42a2187831a9e&quot;,          uri=&quot;sip:alice@atlanta.com&quot;,          qop=auth,          nc=00000001,          cnonce=&quot;0a4f113b&quot;,          response=&quot;7587245234b3434cc3412213e5f113a5432&quot;,          opaque=&quot;5ccc069c403ebaf9f0171e9517f40e41&quot;"/>
+
+    <!-- trip for importSIPP module -->
+    <parameter name="[AuthorizationNV]" operation="protocol.setFromMessage" value="header.Authorization.NameValue"/>
+    <test parameter="[AuthorizationNV]" condition="string.startsWith" value="Authorization: Digest username="/>
+    <parameter name="[AuthorizationSIPP]" operation="protocol.setFromMessage" value="header.Authorization: "/> 
+    <test parameter="[AuthorizationSIPP]" condition="string.contains" value="username="/>
+    
+    <parameter name="[AuthorizationScheme]" operation="protocol.setFromMessage" value="header.Authorization.Scheme"/>
+    <test parameter="[AuthorizationScheme]" condition="string.equals" value="Digest"/>
+    
+    <parameter name="[AuthorizationURI]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.uri"/>
+    <test parameter="[AuthorizationURI]" condition="string.equals" value="sip:alice@atlanta.com"/>
+    
+    <parameter name="[AuthorizationURIDeprecated]" operation="protocol.setFromMessage" value="header.Authorization.Parameter.uri"/>
+    <test parameter="[AuthorizationURIDeprecated]" condition="string.equals" value="[AuthorizationURI]"/>
+    
+    <parameter name="[AuthorizationNonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nonce"/>
+    <test parameter="[AuthorizationNonce]" condition="string.equals" value="84a4cc6f3082121f32b42a2187831a9e"/>
+    
+    <parameter name="[AuthorizationResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
+    <test parameter="[AuthorizationResponse]" condition="string.equals" value="7587245234b3434cc3412213e5f113a5432"/>
+    
+    <parameter name="[AuthorizationRealm]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.realm"/>
+    <test parameter="[AuthorizationRealm]" condition="string.equals" value="atlanta.com"/>
+    
+    <parameter name="[AuthorizationQop]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.qop"/>
+    <test parameter="[AuthorizationQop]" condition="string.equals" value="auth"/>
+    
+    <parameter name="[AuthorizationCnonce]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.cnonce"/>
+    <test parameter="[AuthorizationCnonce]" condition="string.equals" value="0a4f113b"/>
+    
+    <parameter name="[AuthorizationNC]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.nc"/>
+    <test parameter="[AuthorizationNC]" condition="string.equals" value="00000001"/>
+    
+    <parameter name="[AuthorizationUsername]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.username"/>
+    <test parameter="[AuthorizationUsername]" condition="string.equals" value="Alice"/>
+    
+    <parameter name="[AuthorizationOpaque]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.opaque"/>
+    <test parameter="[AuthorizationOpaque]" condition="string.equals" value="5ccc069c403ebaf9f0171e9517f40e41"/>
+    
+    <parameter name="[AuthInfo]" operation="protocol.setFromMessage" value="header.Authentication-Info"/> 
+    <test parameter="[AuthInfo]" condition="string.startsWith" value="nextnonce=&quot;84a4cc6f3082121f32b42a2187831a9e&quot;"/>
+    <test parameter="[AuthInfo]" condition="string.equals" value="nextnonce=&quot;84a4cc6f3082121f32b42a2187831a9e&quot;, qop=auth,            rspauth=&quot;7587245234b3434cc3412213e5f113a5432&quot;, cnonce=&quot;0a4f113b&quot;, nc=00000001"/>
+    
+    <parameter name="[AuthinfoScheme]" operation="protocol.setFromMessage" value="header.Authentication-Info.Scheme"/>
+    <test parameter="[AuthinfoScheme]" condition="list.size" value="1"/>
+    <test parameter="[AuthinfoScheme]" condition="string.equals" value=""/>
+    
+    <!--parameter name="[AuthinfoNextnonce]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nextnonce"/>
+    <test parameter="[AuthinfoNextnonce]" condition="string.equals" value="84a4cc6f3082121f32b42a2187831a9e"/-->
+    
+    <parameter name="[AuthinfoRspauth]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.rspauth"/>
+    <test parameter="[AuthinfoRspauth]" condition="string.equals" value="7587245234b3434cc3412213e5f113a5432"/>
+    
+    <parameter name="[AuthinfoQop]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.qop"/>
+    <test parameter="[AuthinfoQop]" condition="string.equals" value="auth"/>
+    
+    <parameter name="[AuthinfoCnonce]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.cnonce"/>
+    <test parameter="[AuthinfoCnonce]" condition="string.equals" value="0a4f113b"/>
+    
+    <parameter name="[AuthinfoNC]" operation="protocol.setFromMessage" value="header.Authentication-Info.Attribute.nc"/>
+    <test parameter="[AuthinfoNC]" condition="string.equals" value="00000001"/>
+    
+    <parameter name="[Allow]" operation="protocol.setFromMessage" value="header.Allow"/>
+    <test parameter="[Allow(0)]" condition="string.equals" value="INVITE"/>
+    <test parameter="[Allow(1)]" condition="string.equals" value="ACK"/>
+    <test parameter="[Allow(2)]" condition="string.equals" value="OPTIONS"/>
+    <test parameter="[Allow(3)]" condition="string.equals" value="CANCEL"/>
+    <test parameter="[Allow(4)]" condition="string.equals" value="BYE"/>
+    
+    <parameter name="[Supported]" operation="protocol.setFromMessage" value="header.Supported"/>
+    <test parameter="[Supported]" condition="string.equals" value="timer"/>
+    
+    <parameter name="[ToAddressDisplayName]" operation="protocol.setFromMessage" value="header.To.Address.DisplayName"/>
+    <test parameter="[ToAddressDisplayName]" condition="string.equals" value="&lt;1234 =,;DUPOND&gt;=,;"/>
+    
+    <parameter name="[ToAddressURI]" operation="protocol.setFromMessage" value="header.To.Address.URI"/>
+    <test parameter="[ToAddressURI]" condition="string.equals" value="tel:1234"/>
+    
+    <parameter name="[FromAddressURIHost]" operation="protocol.setFromMessage" value="header.From.Address.URI.Host"/>
+    <test parameter="[FromAddressURIHost]" condition="string.equals" value="devoteam.com"/>
+    
+    <parameter name="[FromAddressURIPort]" operation="protocol.setFromMessage" value="header.From.Address.URI.Port"/>
+    <test parameter="[FromAddressURIPort]" condition="list.isEmpty"/>
+    
+    <parameter name="[FromAddressURIUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User"/>
+    <test parameter="[FromAddressURIUser]" condition="string.equals" value="alice"/>
+    
+    <parameter name="[FromAddressURIPhoneNumber]" operation="protocol.setFromMessage" value="header.From.Address.URI.PhoneNumber"/>
+    <test parameter="[FromAddressURIPhoneNumber]" condition="string.equals" value="alice"/>
+    
+    <parameter name="[FromAddressURITesterId]" operation="protocol.setFromMessage" value="header.From.Address.URI.Parameter.TesterId"/>
+    <test parameter="[FromAddressURITesterId]" condition="string.equals" value="6789"/>
+    
+    <parameter name="[firstlineURIHost]" operation="protocol.setFromMessage" value="firstline.URI.Host"/>
+    <test parameter="[firstlineURIHost]" condition="list.isEmpty"/>
+    
+    <parameter name="[firstlineURIPort]" operation="protocol.setFromMessage" value="firstline.URI.Port"/>
+    <test parameter="[firstlineURIPort]" condition="list.isEmpty"/>
+    
+    <parameter name="[firstlineURIUser]" operation="protocol.setFromMessage" value="firstline.URI.User"/>
+    <test parameter="[firstlineURIUser]" condition="string.equals" value="1234"/>
+    
+    <parameter name="[firstlineURIPhoneNumber]" operation="protocol.setFromMessage" value="firstline.URI.PhoneNumber"/>
+    <test parameter="[firstlineURIPhoneNumber]" condition="string.equals" value="1234"/>
+    
+    <parameter name="[firstlineURITesterId]" operation="protocol.setFromMessage" value="firstline.URI.Parameter.TesterId"/>
+    <test parameter="[firstlineURITesterId]" condition="list.isEmpty"/>
+    
+    <parameter name="[remoteTag]" operation="string.random" value="10"/>
+    
+    <sendMessageSIP name="Send 100 Trying">
+    <![CDATA[
+    
+    SIP/2.0 100 Trying
+    To: [To]
+    From: [From]
+    Call-ID: [CallId]
+    CSeq: [CSeq]
+    Contact: <sip:alice@[localSIP]>
+    Via: [Via]
+    User-Agent: XmlLoader
+    Content-Length: 0
+    ]]>
+    </sendMessageSIP>  
+    
+    <sendMessageSIP name="Send 180 Ringing">
+    <![CDATA[
+    
+    SIP/2.0 180 Ringing
+    To: [To];tag=[remoteTag]
+    From: [From]
+    Call-ID: [CallId]
+    CSeq: [CSeq]
+    Contact: [To]
+    Via: [Via]
+    User-Agent: XmlLoader
+    Content-Length: 0]]>
+    </sendMessageSIP>  
+    
+    <sendMessageSIP name="Send 200 OK">
+    <![CDATA[
+    
+    SIP/2.0 200 OK
+    To: [To];tag=[remoteTag]
+    From: [From]
+    Call-ID: [CallId]
+    CSeq: [CSeq]
+    Contact: [To]
+    Via: [Via]
+    User-Agent: XmlLoader
+    Content-Length: x
+    
+    v=0
+    o=serverName 999 999 IN IP4 [serverHostRTP]
+    s=-
+    c=IN IP4 [serverHostRTP]
+    t=0 0
+    m=audio [serverPortRTP] RTP/AVP 97
+    a=rtpmap:97 amr/8000/1
+    a=fmtp:97 mode-set=1;octet-align=1;crc=0
+    a=+g.poc.talkburst
+    a=maxptime:200
+    a=ptime:200
+    m=application [serverPortRTCP] udp TBCP
+    a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+    
+    
+    ]]>
+    </sendMessageSIP>
+    
+    <parameter name="[sessID]" operation="protocol.setFromMessage" value="session.id"/>
+    <parameter name="[msgSessionInit]" operation="protocol.setFromMessage" value="message"/>
+    
+    <receiveMessageSIP name="Wait ACK" request="true" type="ACK">
+        <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+        <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>
+        <parameter name="[CSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+        <parameter name="[Call-ID]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    </receiveMessageSIP>
+    
+    <parameter name="[msgSessionSubsequent0]" operation="protocol.setFromMessage" value="message"/>
+    
+    <parameter name="[session]" operation="protocol.setFromMessage" value="session"/>
+    <log>[session]</log>
+    <!--parameter name="[sessionID]" operation="protocol.setFromMessage" value="session.id"/>
+    <test parameter="[sessionID]" condition="string.equals" value="[sessID]"/>
+    
+    <parameter name="[sessionName]" operation="protocol.setFromMessage" value="session.name"/>
+    <test parameter="[sessionName]" condition="string.equals" value="200_out&lt;BR&gt;ACK_in"/-->
+    
+    <parameter name="[msgInit]" operation="protocol.setFromMessage" value="session.initial"/>
+    <test parameter="[msgInit]" condition="string.equals" value="[msgSessionInit]"/>
+    <parameter name="[msgInitType]" operation="protocol.setFromMessage" value="message.type" value2="[msgInit]"/>           
+    <test parameter="[msgInitType]" condition="string.equals" value="INVITE"/>
+    <parameter name="[msgInitResult]" operation="protocol.setFromMessage" value="message.result" value2="[msgInit]"/>           
+    <test parameter="[msgInitResult]" condition="string.equals" value="200"/>
+    
+    <parameter name="[msgSubsequents]" operation="protocol.setFromMessage" value="session.subsequents"/>
+    <test parameter="[msgSubsequents]" condition="list.size" value="1"/>
+    <test parameter="[msgSubsequents]" condition="string.equals" value="[msgSessionSubsequent0]"/>
+    
+    	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+    	<parameter name="[newCseqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
+    		<sendMessageSIP name="Send INFO">
+    <!--******************* BEGIN MESSAGE ********************-->
+    <![CDATA[
+    INFO [ContactURI] SIP/2.0
+    To: [From]
+    From: [To]
+    Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId]
+    Call-ID: [Call-ID]
+    CSeq: [newCseqNumber] INFO
+    Max-Forwards: 70
+    Expires: 3600
+    Event: poc-settings
+    User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+    Accept-Contact: *;+g.poc.talkburst;require;explicit
+    Route: <sip:ptt@[remoteSIP];lr;mode=originating>
+    Route: <sip:ptt@[localSIP];lr;mode=originating>
+    Content-Type: application/dtmf-relay
+    Content-Length: 24
+    
+    Signal=5
+    Duration=160]]>
+    </sendMessageSIP>
+    
+    <parameter name="[msgSessionSubsequent1]" operation="protocol.setFromMessage" value="message"/>
+    
+    <parameter name="[session]" operation="protocol.setFromMessage" value="session"/>
+    <log>[session]</log>
+    <parameter name="[sessionID]" operation="protocol.setFromMessage" value="session.id"/>
+    <test parameter="[sessionID]" condition="string.equals" value="[sessID]"/>
+    
+    <parameter name="[sessionName]" operation="protocol.setFromMessage" value="session.name"/>
+    <test parameter="[sessionName]" condition="string.equals" value="200_out&lt;BR&gt;ACK_in&lt;BR&gt;INFO_out"/>
+    
+    <parameter name="[msgInit]" operation="protocol.setFromMessage" value="session.initial"/>
+    <test parameter="[msgInit]" condition="string.equals" value="[msgSessionInit]"/>
+    <parameter name="[msgInitType]" operation="protocol.setFromMessage" value="message.type" value2="[msgInit]"/>           
+    <test parameter="[msgInitType]" condition="string.equals" value="INVITE"/>
+    <parameter name="[msgInitResult]" operation="protocol.setFromMessage" value="message.result" value2="[msgInit]"/>           
+    <test parameter="[msgInitResult]" condition="string.equals" value="200"/>
+    
+    <parameter name="[msgSubsequents]" operation="protocol.setFromMessage" value="session.subsequents"/>
+    <test parameter="[msgSubsequents]" condition="list.size" value="2"/>
+    <test parameter="[msgSubsequents(0)]" condition="string.equals" value="[msgSessionSubsequent0]"/>
+    <test parameter="[msgSubsequents(1)]" condition="string.equals" value="[msgSessionSubsequent1]"/>
+    
+    		<receiveMessageSIP name="Wait 200 OK" request="false" type="INFO" result="200">
+    		</receiveMessageSIP>
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+    <receiveMessageSIP name="Wait BYE" request="true" type="BYE">
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>         
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    </receiveMessageSIP>
+    
+    <sendMessageSIP name="Send 200 OK">
+    <![CDATA[SIP/2.0 200 OK
+    To: [To];tag=[remoteTag]
+    From: [From]
+    Call-ID: [CallId]
+    CSeq: [CSeq]
+    Via: [Via]
+    User-Agent: XmlLoader
+    Content-Length: 0
+    ]]>
+    </sendMessageSIP>
+
+</scenario>

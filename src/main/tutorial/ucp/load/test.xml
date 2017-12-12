@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="UCP non regression load tests">
+
+    <parameter name="[listenIp]" operation="set" value="0.0.0.0"/>
+    <parameter name="[remoteHostUCP]" operation="system.ipaddress"/>
+    <parameter name="[cpt]" operation="set" value="1"/>
+    
+    <for from="27750" index="[i]" to="27755">
+        <testcase name="test_[i]" state="true">
+            <parameter name="[port]" operation="set" value="[i]"/>
+            <scenario file="scenario/client.xml" name="client_[i]" routingName="client_[i]"/>
+            <scenario file="scenario/server.xml" name="[i]" routingName="[i]"/>
+        </testcase>
+    </for>
+</test>

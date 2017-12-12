@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<sendRequestHTTP name="Send POST" server="http://[remoteHTTP]">
+		<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+POST http://[remoteHTTP] HTTP/1.1
+Host: [remoteHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+Content-Length: 14
+
+some content]]>
+		<!--******************** END MESSAGE *********************-->
+	</sendRequestHTTP>
+		
+	<receiveResponseHTTP name="Send 200 OK" result="200">
+  		<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+  		<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	
+  		<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
+  		<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		  		  		
+  		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
+  		<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  			
+		<parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+		<parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+	</receiveResponseHTTP>
+
+	<!-- perform test -->
+    <test parameter="[Firstline]" condition="string.equals" value="HTTP/1.1 200 OK"/>           
+    <test parameter="[Version]" condition="string.equals" value="HTTP/1.1"/>                       
+    <test parameter="[Uri]" condition="list.isEmpty"/>            
+    <test parameter="[Method]" condition="list.isEmpty"/>            
+    <test parameter="[StatusCode]" condition="string.equals" value="200"/>
+    <test parameter="[ReasonPhrase]" condition="string.equals" value="OK"/>            
+    <test parameter="[ContentLength]" condition="string.equals" value="14"/>
+    <test parameter="[Content]" condition="string.contains" value="host message"/>
+
+	<sendRequestHTTP name="Send POST" server="http://[remoteHTTP]">
+		<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+POST http://[remoteHTTP] HTTP/1.1
+Host: [remoteHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+
+some content
+]]>
+		<!--******************** END MESSAGE *********************-->
+	</sendRequestHTTP>
+
+	<receiveResponseHTTP name="Send 200 OK" result="200">
+  		<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+  		<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	
+  		<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
+  		<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		  		  		
+  		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
+  		<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  			
+		<parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+		<parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+	</receiveResponseHTTP>
+
+	<!-- perform test -->
+    <test parameter="[Firstline]" condition="string.equals" value="HTTP/1.1 200 OK"/>           
+    <test parameter="[Version]" condition="string.equals" value="HTTP/1.1"/>                       
+    <test parameter="[Uri]" condition="list.isEmpty"/>            
+    <test parameter="[Method]" condition="list.isEmpty"/>            
+    <test parameter="[StatusCode]" condition="string.equals" value="200"/>
+    <test parameter="[ReasonPhrase]" condition="string.equals" value="OK"/>            
+    <test parameter="[ContentLength]" condition="string.equals" value="14"/>
+    <test parameter="[Content]" condition="string.contains" value="host message"/>
+
+</scenario> 

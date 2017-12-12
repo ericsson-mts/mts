@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    	<parameter description="Duration (in sec.) between 100 and 180" editable="true" name="[TryingDuration]" operation="set" value="0.100"/>
+    	<parameter description="Duration (in sec.) between 180 and 200" editable="true" name="[RingingDuration]" operation="set" value="3"/>
+
+	<!--                     -->
+    	<!-- INTERNAL PARAMETERS -->
+    	<!--                     -->
+	
+    	<parameter description="Addresse du XMLloader" name="[Host-Tester]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    	<parameter description="Port du XMLloader" name="[Port-Tester]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>
+
+   	<parameter description="Addresse de l'AS" name="[Host-Server]" operation="setFromSystem" value="IPAddress" value2="eth0"/>
+    	<parameter description="Port du XMLloader" name="[Port-Server]" operation="setFromConfig" value="sip.properties" value2="DEFAULT_PORT"/>
+    	<!--parameter name="[Port-Server]" operation="set" value="5060"/-->    	
+    	<parameter name="[Adresse-Server]" operation="set" value="[Host-Server(0)]:[Port-Server]"/>
+
+	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    	<parameter name="[inviteeName]" operation="set" value="bob"/>
+    	<parameter name="[inviterName]" operation="set" value="alice"/>
+	
+	<!-- Temporary due to bug with 2 <for> tag in the test file -->
+	<parameter name="[index1]" operation="set" value="000"/>	  	  	
+	
+	<!--                   -->
+    	<!-- RUNNER PARAMETERS -->
+    	<!--                   -->
+	
+    	<runner>
+        	<property name="runner.TEST_DURATION" value="1"/>
+        	<property name="runner.STARTUP_DURATION" value="1"/>        
+        	<property name="runner.PERIOD" value="1"/>               
+        	<property name="runner.STRICT_PERIOD" value="true"/>               
+    	</runner>
+
+	<!-- Temporary due to bug with 2 <for> tag in the test file -->
+  	<!--for index="[index1]" from="001" to="[NumberScenario]" step="1"-->   
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<parameter name="[inviteeName]" operation="set" value="[inviteeName][index1]"/>
+    			<parameter name="[inviterName]" operation="set" value="[inviterName][index1]"/>
+    			
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<parameter name="[inviteeName]" operation="set" value="[inviteeName][index1]"/>
+    			<parameter name="[inviterName]" operation="set" value="[inviterName][index1]"/>
+    			
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<parameter name="[inviteeName]" operation="set" value="[inviteeName][index1]"/>
+    			<parameter name="[inviterName]" operation="set" value="[inviterName][index1]"/>
+    			
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<parameter name="[inviteeName]" operation="set" value="[inviteeName][index1]"/>
+    			<parameter name="[inviterName]" operation="set" value="[inviterName][index1]"/>
+    			
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>
+		<!--parameter name="[index1]" operation="set" value="001"/-->	  	
+		<testcase description="load [index1]" name="[inviteeName][index1]" number="1" state="true">
+			<parameter name="[inviteeName]" operation="set" value="[inviteeName][index1]"/>
+    			<parameter name="[inviterName]" operation="set" value="[inviterName][index1]"/>
+    			
+			<scenario file="UAS.xml" name="[Port-Tester]" routingName="[Port-Tester]"/>
+		</testcase>		
+		
+</test>

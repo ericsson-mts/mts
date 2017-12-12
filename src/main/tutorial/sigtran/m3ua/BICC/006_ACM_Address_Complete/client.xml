@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: 	conf/schemas/scenario.xsd 
+							 	conf/schemas/type_operations_sigtran
+							 	
+	 Related dictionary file:	conf/sigtran/dictionary_m3ua.xml
+	 							conf/sigtran/dictionary_bicc.xml
+	 							
+	 References:				IETF RFC_4666 (M3UA)
+	 							IUT-T Q_1902.3 (BICC)
+-->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 06/08/2009
+    Author     : jbrisseau
+    Description: Send a BICC-ACM message.
+-->
+
+
+<scenario>
+
+
+<!--
+    MESSAGE : ACM (message 30, mss-1.pcap)
+    
+-->
+
+
+	<sendMessageSIGTRAN	name="Send BICC_ACM" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+        <SS7 name="bicc" file="bicc.xml">
+			<header>
+				<field name="CIC"	length="4"							value="13"/>
+                <field name="Message_Type" length="1" value="6" />
+			</header>
+
+			<parameter name="Backward_call_indicators" 					type="F">
+				<field		name="End-to-end_method_indicator"				lengthBit="2" value="0"/>
+				<field		name="Called_party's_category_indicator"		lengthBit="2" value="1"/>
+				<field		name="Called_party's_status_indicator"			lengthBit="2" value="1"/>
+				<field		name="Charge_indicator"							lengthBit="2" value="2"/>
+				<field		name="SCCP_method_indicator"					lengthBit="2" value="0"/>
+				<field		name="Echo_control_device_indicator"			lengthBit="1" value="0"/>
+				<field		name="ISDN_access_indicator"					lengthBit="1" value="1"/>
+				<field		name="Holding_indicator"						lengthBit="1" value="0"/>
+				<field		name="ISDN_user_part/BICC_indicator"			lengthBit="1" value="1"/>
+				<field		name="End-to-end_information_indicator"			lengthBit="1" value="0"/>
+				<field		name="Interworking_indicator"					lengthBit="1" value="0"/>
+			</parameter>
+
+			<parameter		name="Optional_backward_call_indicators" id="41"	type="O">
+				<field		name="Reserved_for_national_use"				lengthBit="4" value="0"/>
+				<field		name="MLPP_user_indicator"						lengthBit="1" value="0"/>
+				<field		name="Simple_segmentation_indicator"			lengthBit="1" value="0"/>
+				<field		name="Call_diversion_may_occur_indicator"		lengthBit="1" value="0"/>
+				<field		name="In-band_information_indicator"			lengthBit="1" value="1"/>
+			</parameter>
+
+		</SS7>
+        
+		<UA name="m3ua" file="m3ua.xml">
+			<header 	version="1" 
+						reserved="0" 
+						messageClass="1" 
+						messageType="1"/>
+						
+			<parameter tag="Network_Appearence">
+                <field name="Network_Appearence"							value="8"/>
+            </parameter>
+			
+			<parameter tag="Protocol_Data">
+				<field name="Originating_Point_Code"					value="3454"/>
+				<field name="Destination_Point_Code"					value="3450"/>
+				<field name="SI"										value="BICC"/>
+				<field name="NI"										value="2"/>
+				<field name="MP"										value="0"/>
+				<field name="SLS"										value="10"/>
+				<field name="DATA"	format="fvo"/>
+			</parameter>
+		</UA>
+		
+	</sendMessageSIGTRAN>
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+</scenario>

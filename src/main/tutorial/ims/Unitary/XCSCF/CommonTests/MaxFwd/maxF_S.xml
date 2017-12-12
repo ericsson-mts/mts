@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-ServerCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+	<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>
+	</receiveRequestSIP>
+	
+	<parameter name="[MaxForwardsDefaultValue-1]" operation="substract" value="[MaxForwardsDefaultValue]" value2="1"/>
+
+	<if>
+        <condition>
+            <test parameter="[MaxForwards]" condition="equals" value="[MaxForwardsDefaultValue-1]"/>
+        </condition>
+		<then>
+			<log level="0">Proxy manages to decrement an existing positive Max-Forwards value</log>
+		</then>
+		<else>
+			<log level="2">Proxy is not able to decrement an existing positive Max-Forwards value</log>
+			<exit  name="exit" failed="true"/>
+		</else>
+	</if>
+	
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+	<parameter name="[SizeHeaderMaxFwd]" operation="size" value="header:Max-Forwards"/>
+	<parameter name="[MaxForwards]" operation="setFromMessage" value="header:Max-Forwards"/>
+	</receiveRequestSIP>
+	
+	
+	<if>
+        <condition>
+            <test parameter="[SizeHeaderMaxFwd]" condition="equals" value="1"/>
+        </condition>
+		<then>
+			<log level="0">Proxy creates a Max-Forwards header with [MaxForwards] as default value when there is no Max-Forwards header in the original request</log>
+		</then>
+		<else>
+			<log level="2">Proxy is not able to create a Max-Forwards header when there is none originally</log>
+			<exit  name="exit" failed="true"/>
+		</else>
+	</if>
+	
+	
+	<parameter name="[testcase:SEM2]" operation="system.semaphorenotify"/>
+	
+	<!--<closeProviderSIP name="close SIP provider" providerName="[scenarioName]"/>-->
+	
+</scenario>
+	

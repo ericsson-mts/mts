@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="POP">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostPOP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostPOP]" operation="set" value="[localHostPOP(0)]"/>
+    <parameter name="[localPortPOP]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortPOP]" operation="set" value="[localPortPOP]"/>
+
+    <parameter name="[remoteHostPOP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostPOP]" operation="set" value="172.16.21.32"/-->
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostPOP]" operation="set" value="[remoteHostPOP(0)]"/>
+    <parameter name="[remotePortPOP]" operation="file.readproperty" value="pop.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortPOP]" operation="set" value="1234"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortPOP]" operation="set" value="[remotePortPOP]"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>    
+    
+    
+    <testcase name="pop/000_classicSequence" number="[iterations]" state="true">
+        <scenario file="000_classicSequence/client.xml" name="client" routingName="client"/>
+        <scenario file="000_classicSequence/server.xml" name="server" routingName="POP"/>
+    </testcase>
+    
+    <testcase name="pop/001_testAllMessages" number="[iterations]" state="true">
+        <scenario file="001_testAllMessages/client.xml" name="client" routingName="client"/>
+        <scenario file="001_testAllMessages/server.xml" name="server" routingName="POP"/>
+    </testcase>
+    
+    <testcase name="pop/002_testAllParameters" number="[iterations]" state="true">
+        <scenario file="002_testAllParameters/client.xml" name="client" routingName="client"/>
+        <scenario file="002_testAllParameters/server.xml" name="server" routingName="POP"/>
+    </testcase>
+    
+    <testcase name="pop/client" number="[iterations]" state="false">
+        <scenario file="client/client.xml" name="client" routingName=""/>
+    </testcase>
+    
+    <testcase name="pop/server" number="[iterations]" state="false">
+        <scenario file="server/server.xml" name="server" routingName="POP"/>
+    </testcase>
+    
+</test>

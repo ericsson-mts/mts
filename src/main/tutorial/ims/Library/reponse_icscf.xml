@@ -1,0 +1,61 @@
+	<!--si la reponse est un 200Ok Cancel  alors  retourne attendre un message-->
+	<if>
+		<condition>
+			<test parameter="[lastCSeq]" 		condition="contains" value="CANCEL"/>
+			<test parameter="[lastResult]" 		condition="equals" value="200"/>
+		</condition>
+		<then>
+			<goto  name="loop" label="Begin" state="true"/>
+		</then>
+	</if>
+	
+	<!--si reponse 100 ne rien faire-->
+	<if>
+		<condition>
+			<test parameter="[lastCSeq]" 	condition="contains" value="INVITE"/>
+			<test parameter="[lastResult]" 	condition="equals" value="100"/>
+		</condition>
+	    <then>
+			<goto  name="loop" label="Begin" state="true"/>
+		</then>
+ 	</if> 	
+	
+	<!--supprime le dernier via-->
+	<parameter name="[index]" 			operation="findMatches" 	value="[lastHeader]" 	value2="Via.*"/>
+	<parameter name="[lastHeader]" 		operation="removeat" 		value="[lastHeader]"	value2="[index]"/>
+	<!--nombre de VIA-->
+	<parameter name="[sizelastVia]" 		operation="size" 		value="[lastVia]"/>
+	<if>
+		<condition>
+			<test parameter="[sizelastVia]" condition="greaterthan" value="1"/>
+		</condition>
+	    <then>
+			<!--supprime le premier via-->
+			<parameter name="[nextVia]" 		operation="removeAt" 		value="[lastVia]"		value2="0"/>
+			
+			<!--ajoute le header via-->
+			<parameter name="[lastHeader]" 		operation="addfirst" 		value="[lastHeader]" value2="Via: [nextVia]"/>
+		</then>
+		<else>
+			<goto  name="loop" label="Begin" state="true"/>
+		</else>
+	</if>
+	
+	<if>
+		<condition>
+			<test parameter="[lastCSeq]" condition="contains" value="INVITE"/>
+			<test parameter="[lastResult]" condition="matches" value=" [4,5,6][0-9][0-9]"/>
+		</condition>
+		<then>
+			&rep_error_icscf;
+		</then>
+	</if>
+	<if>
+		<condition>
+			<test parameter="[lastCSeq]" condition="contains" value="CANCEL"/>
+			<test parameter="[lastResult]" condition="matches" value=" [4,5,6][0-9][0-9]"/>
+		</condition>
+		<then>
+			&rep_error_icscf;
+		</then>
+	</if>

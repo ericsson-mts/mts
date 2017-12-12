@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<parameter name="[test:sequenceNumber]" operation="number.add" value="[test:sequenceNumber]" value2="1" />
+
+<sendMessageGTP name="delete session" 
+                remoteHost="[sgwS11IP]" remotePort="[gtpcPort]" transport="[gtpcTransportProto]">
+    <headerV2 type="Delete Session Request:36" tunnelEndpointId="[F-TEID.TEID / GRE Key(0)]" sequenceNumber="[sequenceNumber]"/>
+        <element tag="EBI:73" description="EPS Bearer ID">
+            <field name="spare" value="0"/>
+        	<field name="EBI" value="5"/>
+        </element>
+        <element tag="Indication:77" >
+            <field name="DAF" value="false:0"/>
+            <field name="DTF" value="false:0"/>
+            <field name="HI" value="false:0"/>
+            <field name="DFI" value="false:0"/>
+            <field name="OI" value="true:1"/>
+            <field name="ISRSI" value="false:0"/>
+            <field name="ISRAI" value="false:0"/>
+            <field name="SGWCI" value="false:0"/>
+    
+            <field name="SQCI" value="false:0"/>  
+            <field name="UIMSI" value="false:0"/>
+            <field name="CFSI" value="false:0"/>
+            <field name="CRSI" value="false:0"/>
+            <field name="P" value="false:0"/>
+            <field name="PT" value="false:0"/>
+            <field name="SI" value="false:0"/>
+            <field name="MSV" value="false:0"/>
+    
+            <field name="RetLoc" value="false:0"/>
+            <field name="PBIC" value="false:0"/>
+            <field name="SRNI" value="false:0"/>
+            <field name="S6AF" value="false:0"/>
+            <field name="S4AF" value="false:0"/>
+            <field name="MBMDT" value="false:0"/>
+            <field name="ISRAU" value="false:0"/>
+            <field name="CCRSI" value="false:0"/>
+            
+            <field name="Spare" value="0"/>
+            <field name="CLII" value="false:0"/>
+            <field name="CPSR" value="false:0"/>
+        </element>
+    </sendMessageGTP>
+
+    <receiveMessageGTP name="receive message" request="false" type="Delete Session Request:36" result="Request accepted:16">
+    </receiveMessageGTP>
+</scenario>

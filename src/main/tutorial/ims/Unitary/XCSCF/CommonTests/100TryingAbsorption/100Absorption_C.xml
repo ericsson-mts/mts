@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-TesterCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+
+
+	<parameter name="[NewCallID]" operation="identifier" value="newInteger" value2="10000000"/>	 
+	<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+	<parameter name="[NewCseq]" operation="set" value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" value="newString" value2="10"/>
+
+
+<sendRequestSIP name="Send Invite" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[InviteeName]@[Domain] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseq] INVITE
+From: "[InviterName]" <sip:[InviterName]@[Domain]>;tag=[localTag]
+To: "[InviteeName]" <sip:[InviteeName]@[Domain]>
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwardsDefaultValue]
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Preferred-Identity: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+<!--Waiting for a first 100, if the proxy is not a stateless one-->
+<!-- The User-Agent parameter of the 100 sent by the SCSCF is : testvalue. That's why we are testing the "User-Agent" value of the received 100. -->
+
+	<parameter name="[RemoteUserAgent]" operation="set" value="empty"/>
+
+	<parameter name="[ReceiveWrong100]" operation="set" value="false"/>
+	
+	<receiveResponseSIP name="Wait 100 - Trying"  method="INVITE" result="100" timeout="2" failedOnTimeout="false" >
+	<parameter name="[RemoteUserAgent]" operation="setFromMessage" value="header:User-Agent"/>
+	</receiveResponseSIP>
+	
+<!-- The next "if" checks the identity of the 100 sender -->
+
+	<if>
+		<condition>
+			<test parameter="[RemoteUserAgent]" condition="equals" value="testvalue"/>
+		</condition>
+		<then>
+		<parameter name="[ReceiveWrong100]" operation="set" value="true"/>
+		</then>
+	</if>
+	
+<!-- Waiting for the 2nd 100. If the proxy is stateless, it doesn't send any 100, so this step will be useless, that's why the timeout is set to 2. -->
+	
+	<receiveResponseSIP name="Wait 100 - Trying"  method="INVITE" result="100" timeout="2" failedOnTimeout="false" >
+	<parameter name="[RemoteUserAgent]" operation="setFromMessage" value="header:User-Agent"/>
+	</receiveResponseSIP>
+	
+
+	<if>
+		<condition>
+			<test parameter="[RemoteUserAgent]" condition="equals" value="testvalue"/>
+		</condition>
+		<then>
+		<parameter name="[ReceiveWrong100]" operation="set" value="true"/>
+		</then>
+	</if>
+	
+	
+	<if>
+        <condition>
+            <test parameter="[ReceiveWrong100]" condition="equals" value="true"/>
+        </condition>
+		<then>
+			<log level="2">Proxy forwards 100 - trying when he receives one ! Please fix this problem.</log>
+			<exit  name="exit" failed="true"/>
+		</then>
+		<else>
+			<log level="0">Proxy doesn't forwards 100 - trying when he receives one. </log>
+		</else>
+	</if>
+	
+
+
+</scenario>

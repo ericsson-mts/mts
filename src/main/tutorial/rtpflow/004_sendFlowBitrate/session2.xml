@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP]" />
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+			  
+    <receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" timeout="30"><!-- in this case, the sent should be of 8 seconds + 5 seconds of receive timeout-->
+        <parameter name="[bitrate]" operation="protocol.setFromMessage" value="qos.bitRate"/>
+    </receiveMessageRTPFLOW>
+
+    <test parameter="[bitrate]" condition="number.greaterThan" value="9"/>
+    <test parameter="[bitrate]" condition="number.lowerThan" value="12"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+    
+    <finally>
+		<removeListenpointRTPFLOW name="invitee" />
+	</finally>
+    
+</scenario>

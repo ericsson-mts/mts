@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <createListenpointRTSP name="session1" localHost="0.0.0.0" localPort="[localPortRTSP]"/>
+
+    <parameter name="[CSeq]" operation="number.random" value="4294967295" />
+    <sendMessageRTSP name="Send Options" listenpoint="session1">
+<![CDATA[OPTIONS rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1 RTSP/1.0
+CSeq: [CSeq]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="OPTIONS" result="200">
+    </receiveMessageRTSP>
+
+    <parameter name="[CSeq]" operation="number.add" value="[CSeq]" value2="1"/>
+    <sendMessageRTSP name="Send Describe" listenpoint="session1">
+<![CDATA[DESCRIBE rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1 RTSP/1.0
+CSeq: [CSeq]
+Accept: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="DESCRIBE" result="200">
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageRTSP>
+
+    <parameter name="[canal]" operation="string.regexmatches" value="[content]" value2="a=control:.*"/>
+    <parameter name="[canal]" operation="regexReplaces" value="[canal]" value2="a=control:" value3=""/>
+
+    <parameter name="[CSeq]" operation="number.add" value="[CSeq]" value2="1"/>
+    <sendMessageRTSP name="Send Setup" listenpoint="session1">
+<![CDATA[SETUP [canal(0)] RTSP/1.0
+CSeq: [CSeq]
+Transport: RTP/AVP;unicast;client_port=4588-4589
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="SETUP" result="200">
+        <parameter name="[session]" operation="protocol.setFromMessage" value="header.Session"/>
+    </receiveMessageRTSP>
+
+    <parameter name="[session]" operation="regexReplaces" value="[session]" value2=";.*" value3=""/>
+
+    <parameter name="[CSeq]" operation="number.add" value="[CSeq]" value2="1"/>
+    <sendMessageRTSP name="Send Setup" listenpoint="session1">
+<![CDATA[SETUP [canal(1)] RTSP/1.0
+CSeq: [CSeq]
+Session: [session]
+Transport: RTP/AVP;unicast;client_port=4590-4591
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="SETUP" result="200">
+    </receiveMessageRTSP>
+
+    <parameter name="[CSeq]" operation="number.add" value="[CSeq]" value2="1"/>
+    <sendMessageRTSP name="Send Play" listenpoint="session1">
+<![CDATA[PLAY rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1 RTSP/1.0
+CSeq: [CSeq]
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="PLAY" result="200">
+    </receiveMessageRTSP>
+    
+    <parameter name="[CSeq]" operation="number.add" value="[CSeq]" value2="1"/>    
+    <sendMessageRTSP name="Send Pause" listenpoint="session1">
+<![CDATA[PAUSE rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1 RTSP/1.0
+CSeq: [CSeq]
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="PAUSE" result="200">
+    </receiveMessageRTSP>
+
+    <pause seconds="0.0"/>
+    
+    <parameter name="[CSeq]" operation="number.add" value="[CSeq]" value2="1"/>
+    <sendMessageRTSP name="Send Teardown" listenpoint="session1">
+<![CDATA[TEARDOWN rtsp://[localHostRTSP]:[remotePortRTSP]/vod_1 RTSP/1.0
+CSeq: [CSeq]
+Session: [session]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" listenpoint="session1" type="TEARDOWN" result="200">
+    </receiveMessageRTSP>
+
+    <finally>
+        <removeListenpointRTSP name="session1"/>
+    </finally>
+
+</scenario>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : SUSPEND REJECT(33)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.20 => Circuit
+Protocol discriminator 4.2 n u M 1
+Call reference 4.3 n u M 2-*
+Message type 4.4 n u M 1
+Cause 4.5 n u M 4-32
+Display 4.5 n u O (Note 1) (Note 2)
+
+-->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS SUSPEND REJECT" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+    
+    	<ASN1 file="h2250v7.asn"/>    
+    
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+	
+	    <!-- SUSPEND REJECT = b0100001 = h21 = d33-->		
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="SUSPEND REJECT"/>
+       
+ 	    <!-- Cause = b0001000 = h8 = d8-->
+	    <element identifier="Cause">
+	        <field name="ext1" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Coding standard" lengthBit="2" type="enumeration" value="ITU-T standardized coding"/>
+	        <field name="Spare" lengthBit="1" type="integer" value="0"/>
+	        <field name="Location" lengthBit="4" type="enumeration" value="User (U)"/>
+	        <field name="ext2" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Recommendation" lengthBit="7" type="enumeration" value="Q.931"/>
+	        <field name="ext3" lengthBit="1" type="boolean" value="1"/>
+	        <field name="Cause value" lengthBit="7" type="integer" value="20"/>
+	    </element>
+
+            <!-- Display identification = b0101000 = h28 = d40-->
+	    <element identifier="b0101000">
+		<field name="Display identification" type="string" value="textZZZ"/>
+	    </element>
+	    
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

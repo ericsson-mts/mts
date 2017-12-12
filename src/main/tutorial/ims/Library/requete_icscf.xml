@@ -1,0 +1,45 @@
+<!--requete subsequent ack-->
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="ACK"/>
+	</condition>
+	<then>
+		<goto  name="loop" label="Begin" state="true"/>
+	</then>
+</if>
+
+<!--si le header route existe ignore la requete-->
+<parameter name="[lastRoute]" 		operation="setFromMessage" 	value="header:route"	value2="[lastMessage]"/>
+<parameter name="[sizelastRoute]" 	operation="size" 			value="[lastRoute]"/>
+<if>
+	<condition>
+		<test parameter="[sizelastRoute]" condition="greaterthan" value="0"/>
+	</condition>
+	<then>
+		<goto  name="loop" label="Begin" state="true"/>
+	</then>
+</if>
+
+<!--tache a effectuer si requete CANCEL-->
+&cancel_icscf; 
+
+<!--realise les taches de proxy-->
+&prox_icscf;
+
+<!--si requete INVITE -->
+&invite_icscf; 
+	
+&diameter_icscf;
+
+
+
+<!--enregistrement route et uri-->
+
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="INVITE"/>
+	</condition>
+	<then>
+		<parameter name="[route[lastCall-ID]]" 	operation="set"	value="Route:[Default_SCSCF];lr"/>
+	</then>
+</if>

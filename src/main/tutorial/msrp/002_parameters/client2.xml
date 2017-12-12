@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <receiveMessageMSRP name="Wait SEND greeting" type="SEND" request="true">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.Method"/>
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To-Path"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From-Path"/>
+        <parameter name="[MessageId]" operation="protocol.setFromMessage" value="header.Message-ID"/>
+        <parameter name="[byteRange]" operation="protocol.setFromMessage" value="header.Byte-Range"/>
+        <parameter name="[byteRangeStart]" operation="protocol.setFromMessage" value="header.Byte-Range.range-start"/>
+        <parameter name="[byteRangeEnd]" operation="protocol.setFromMessage" value="header.Byte-Range.range-end"/>
+        <parameter name="[byteRangeTotal]" operation="protocol.setFromMessage" value="header.Byte-Range.total"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[endLine]" operation="protocol.setFromMessage" value="content.End-line"/>
+    </receiveMessageMSRP>
+    
+    <test parameter="[method]" condition="string.equals" value="SEND"/>
+    <test parameter="[to]" condition="string.equals" value="msrp://bob.exemple.com:8888/74986;tcp"/>
+    <test parameter="[from]" condition="string.equals" value="msrp://alice.exemple.com:7777/564;tcp"/>
+    <test parameter="[byteRange]" condition="string.equals" value="1-16/16"/>
+    <test parameter="[byteRangeStart]" condition="string.equals" value="1"/>
+    <test parameter="[byteRangeEnd]" condition="string.equals" value="16"/>
+    <test parameter="[byteRangeTotal]" condition="string.equals" value="16"/>
+    
+    <sendMessageMSRP channel="[channel]" destScenario="Alice">
+<![CDATA[
+MSRP [transactionID] 200 OK
+To-Path: [from]
+From-Path: [to]
+-------[transactionID]$
+]]>
+    </sendMessageMSRP>
+
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    
+    <sendMessageMSRP channel="[channel]" destScenario="Alice">
+<![CDATA[
+MSRP [localTransactionID] SEND
+To-Path: [from]
+From-Path: [to]
+Message-ID: [localMessageID]
+Byte-Range: 1-21/21
+Content-Type: text/plain
+
+Hi, Alice!  I'm Bob!
+-------[localTransactionID]$
+]]>
+    </sendMessageMSRP>
+
+    <receiveMessageMSRP name="Wait 200 OK" channel="[channel]" request="false" result="200">
+        <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[statusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>
+        <parameter name="[reasonPhrase]" operation="protocol.setFromMessage" value="firstline.Comment"/>
+    </receiveMessageMSRP>
+
+    <test parameter="[firstline]" condition="string.equals" value="MSRP [localTransactionID] 200 OK"/>
+    <test parameter="[statusCode]" condition="string.equals" value="200"/>
+    <test parameter="[reasonPhrase]" condition="string.equals" value="OK"/>
+
+    <receiveMessageMSRP name="Wait SEND Http content with success report" channel="[channel]" type="SEND" request="true">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.Method"/>
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To-Path"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From-Path"/>
+        <parameter name="[MessageId]" operation="protocol.setFromMessage" value="header.Message-ID"/>
+        <parameter name="[successReport]" operation="protocol.setFromMessage" value="header.Success-Report"/>
+        <parameter name="[failureReport]" operation="protocol.setFromMessage" value="header.Failure-report"/>
+        <parameter name="[contentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[endLine]" operation="protocol.setFromMessage" value="content.End-line"/>
+    </receiveMessageMSRP>
+    
+    <test parameter="[method]" condition="string.equals" value="SEND"/>
+    <test parameter="[to]" condition="string.equals" value="msrp://bob.exemple.com:8888/74986;tcp"/>
+    <test parameter="[from]" condition="string.equals" value="msrp://alice.exemple.com:7777/564;tcp"/>
+    <test parameter="[successReport]" condition="string.equals" value="yes"/>
+    <test parameter="[failureReport]" condition="string.equals" value="no"/>
+    <test parameter="[contentType]" condition="string.equals" value="text/html"/>
+
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    
+    <sendMessageMSRP channel="[channel]" destScenario="Alice">
+<![CDATA[
+MSRP [localTransactionID] REPORT
+To-Path: [from]
+From-Path: [to]
+Message-ID: [localMessageID]
+Byte-Range: 1-106/106
+Status: 000 200 OK
+-------[localTransactionID]$
+]]>
+    </sendMessageMSRP>
+    
+</scenario>

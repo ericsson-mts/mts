@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <receiveMessageSIGTRAN name="Wait INVITE">
+ 	
+  </receiveMessageSIGTRAN>
+  
+  
+  <receiveMessageSIGTRAN name="Wait INVITE2">
+ 	<parameter name="[INVITE2b]" operation="protocol.setFromMessage" value="message.binary"/>
+  </receiveMessageSIGTRAN>
+  
+      <parameter name="[INVITE2a]" value="010002040000003802000008000000020012000C000008880000102302060008000028AB02050008000000020004000B626F6E6A6F757200" />
+	
+	<if>
+		<condition>
+			<test parameter="[INVITE2a]" condition="binary.equals" value="[INVITE2b]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :		</log>
+			<log level="ERROR">	"[INVITE2b]"			</log>
+			<log level="ERROR">	Message expected :		</log>
+			<log level="ERROR">	"[INVITE2a]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+  
+  <receiveMessageSIGTRAN name="Wait INVITE3">
+ 	<parameter name="[INVITE3b]" operation="protocol.setFromMessage" value="message.binary"/>
+  </receiveMessageSIGTRAN>
+  
+      <parameter name="[INVITE3a]" value="01000101000000280200000800000002021000170000100200000d7a0303000106ae424c00010000" />
+	
+	<if>
+		<condition>
+			<test parameter="[INVITE3a]" condition="binary.equals" value="[INVITE3b]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :		</log>
+			<log level="ERROR">	"[INVITE3b]"			</log>
+			<log level="ERROR">	Message expected :		</log>
+			<log level="ERROR">	"[INVITE3a]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+  
+  <receiveMessageSIGTRAN name="Wait INVITE4">
+ 	<parameter name="[INVITE4b]" operation="protocol.setFromMessage" value="message.binary"/>
+  </receiveMessageSIGTRAN>
+  
+      <parameter name="[INVITE4a]" value="01000101000000340200000800000002021000230000100200000d7a03030001016a000002020402428e04044302108e0f000000" />
+	
+	<if>
+		<condition>
+			<test parameter="[INVITE4a]" condition="binary.equals" value="[INVITE4b]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :		</log>
+			<log level="ERROR">	"[INVITE4b]"			</log>
+			<log level="ERROR">	Message expected :		</log>
+			<log level="ERROR">	"[INVITE4a]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+
+
+</scenario>

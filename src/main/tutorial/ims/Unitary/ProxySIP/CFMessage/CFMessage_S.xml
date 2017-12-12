@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 		operation="set" value="[PortUAS]"/>
+	<parameter name="[LocalAddressUAS]" operation="set" value="[HardAddressUAS]"/>	
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+	
+
+  <receiveRequestSIP name="Wait Message" method="MESSAGE">
+    <parameter name="[To]" 				operation="setFromMessage" 	value="header:To"/>       
+    <parameter name="[From]" 			operation="setFromMessage" 	value="header:From"/>   
+    <parameter name="[CallId]" 			operation="setFromMessage" 	value="header:Call-Id"/>
+    <parameter name="[Cseq]" 			operation="setFromMessage" 	value="header:CSeq"/>
+    <parameter name="[Via]" 			operation="setFromMessage" 	value="header:Via"/>
+    <parameter name="[Contact]" 		operation="setFromMessage" 	value="header:Contact"/>
+    <parameter name="[MaxForwards]" 	operation="set" 			value="70"/>
+	<parameter name="[Content]" 		operation="setFromMessage" 	value="content"/>
+    <parameter name="[LocalTag]" 		operation="identifier" 		value="newString" 			value2="10"/>
+	<parameter name="[Cseq]"			operation="setFromMessage"	value="header:CSeq"/>
+  </receiveRequestSIP>
+  
+  
+ 
+
+  <sendResponseSIP name="Send 200 OK for Message">
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+Max-Forwards: 70
+Content-Type: application/sdp
+Content-Length: 0
+]]>
+</sendResponseSIP>
+</scenario>

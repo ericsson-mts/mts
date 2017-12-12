@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[inviteeName1]" operation="set" value="bob"/>
+  <parameter name="[106_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+  <parameter name="[clientAddr]" operation="set" value="192.168.56.32"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+		<sendMessageSIP name="Send REFER" destScenario="bob">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REFER sip:[inviteeName1]@[106_DOMAIN_ADDR] SIP/2.0
+To: sip:[inviteeName1]@[106_DOMAIN_ADDR]
+From: "[clientName]" <sip:[clientName]@[106_DOMAIN_ADDR]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] REFER
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburst
+Refer-To: personToInvite
+Route: <sip:[remoteSIP];transport=[transportRequest];lr>
+Route: <sip:[localSIP];transport=[transportRequest];lr>
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 202 Accepted" request="false" type="REFER" result="202">
+		</receiveMessageSIP>
+</scenario>

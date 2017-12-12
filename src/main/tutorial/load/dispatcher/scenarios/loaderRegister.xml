@@ -1,0 +1,98 @@
+
+<scenario>
+    <!-- pick up a user and check if an associated context exists (it is possible because we can re-register). create it if necessary -->
+    <try>
+        <finally>
+            <parameter name="[test:contextMutex]" operation="system.semaphorewait" value2="0" />
+            
+            <parameter name="[user]" value="[test:userTab([test:userIndexForRegister])]" />
+            <parameter name="[test:userIndexForRegister]" operation="number.add" value="[test:userIndexForRegister]" value2="1" />
+            <parameter name="[test:userIndexForRegister]" operation="number.modulo" value="[test:userIndexForRegister]" value2="[test:RangeNumberUser]" />
+            
+            <if>
+                <condition>
+                    <!-- test if a register context exists for this user -->
+                    <not>
+                        <test parameter="[test:[user]_register_contextId]" condition="list.exists" />
+                    </not>
+                </condition>
+                <then>
+                    <!-- initialize the context (and choose a port) -->
+                    <parameter name="[Port-Tester]" operation="number.substract" value="40000" value2="[test:userIndexForRegister]" />
+                    
+                    
+                    <parameter name="[contextId]" operation="number.uid" />
+                    <parameter name="[test:[user]_register_contextId]" value="[contextId]" />
+            
+                    <parameter name="[test:context_[contextId]_user]" value="[user]" />
+                    <parameter name="[test:context_[contextId]_listenpointName]" value="listenpoint_[user]_[Port-Tester]" />
+                    <parameter name="[test:context_[contextId]_listenpointPort]" value="[Port-Tester]" />
+                    <!--             [test:context_[contextId]_nextChallenge401] might exist later -->
+                    <parameter name="[test:context_[contextId]_lastResponse401]" operation="list.create" />
+                    <!--             [test:context_[contextId]_nextChallenge407] might exist later -->
+                    <parameter name="[test:context_[contextId]_lastResponse407]" operation="list.create" />
+                    <parameter name="[test:[user]_register_contextId]" value="[contextId]" />
+                </then>
+                <else>
+                    <!-- get the context id -->
+                    <parameter name="[contextId]" value="[test:[user]_register_contextId]" />
+                    <parameter name="[Port-Tester]" value="[test:context_[contextId]_listenpointPort]" />
+                </else>
+            </if>
+            <parameter name="[test:contextMutex]" operation="system.semaphorenotify" />
+        </finally>
+    </try>
+    
+    <createListenpointSIP name="[test:context_[contextId]_listenpointName]" localHost="[Host-Tester]" localPort="[Port-Tester]" />
+    
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[newCallId]" operation="number.random" value="10000000"/>
+    <parameter name="[newCseq]" operation="number.random" value="10000000"/>
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+
+
+    <!-- read-only access to the context, without mutex (for now) -->
+    <!-- re-compute (if necessary) lastResponseXXX if nextChallengeXXX exists -->
+    <if>
+        <condition>
+            <test parameter="[test:context_[contextId]_nextChallenge401]" condition="list.exists" />
+        </condition>
+        <then>
+            <!-- TODO: recompute [lastResponse401] -->
+        </then>
+    </if>
+    
+    <if>
+        <condition>
+            <test parameter="[test:context_[contextId]_nextChallenge407]" condition="list.exists" />
+        </condition>
+        <then>
+            <!-- TODO: recompute [lastResponse407] -->
+        </then>
+    </if>
+    
+    <!-- if those parameters are empty, the headers will not appear in the message -->
+    <parameter name="[lastResponse401]" value="[test:context_[contextId]_lastResponse401]" />
+    <parameter name="[lastResponse407]" value="[test:context_[contextId]_lastResponse407]" />
+    <parameter name="[listenpointName]" value="[test:context_[contextId]_listenpointName]" />
+
+    <sendMessageSIP listenpoint="[listenpointName]" remoteHost="[Host-Server]" remotePort="[Port-Server]" >
+<![CDATA[
+REGISTER sip:[domainName] SIP/2.0
+To: "[user]" <sip:[user]@[domainName]>
+From: "[user]" <sip:[user]@[domainName]>;tag=[localTag]
+Call-ID: [newCallId]
+CSeq: [newCseq] REGISTER
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+User-Agent: IMSLoader
+Via: SIP/2.0/UDP [Host-Tester]:[Port-Tester];branch=z9hG4bK-[newBranchId]
+Contact: <sip:[user]@[Host-Tester]:[Port-Tester]>
+Expires: [RegisterExpires]
+Authorization: [lastResponse401]
+Proxy-Authorization: [lastResponse407]
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+</scenario>

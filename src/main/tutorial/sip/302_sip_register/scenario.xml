@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[listenpointName]" value="someName" /> 
+    <parameter name="[listenpointHost]" value="[localHostSIP]" />
+    <parameter name="[listenpointPort]" value="5060" />
+    <createListenpointSIP name="[listenpointName]" localHost="[localHostSIP]" localPort="3030" />
+  
+    <call name="sip.sendRegister" >
+        <input>
+            <parameter name="[function:listenpoint]" value="[listenpointName]"/>
+            <parameter name="[function:username]" value="ibra"/>
+            <parameter name="[function:displayname]" value="Gwen"/>
+            <parameter name="[function:domain]" value="imslab.devoteam"/>
+            <parameter name="[function:userhost]" value="[listenpointHost]"/>
+            <parameter name="[function:remotehost]" value="192.168.90.202"/>
+            <parameter name="[function:remoteport]" value="4060"/>
+        </input>
+    </call>
+  
+    <parameter name="[registerMessage]" operation="setFromMessage" value="message" />
+
+    <receiveMessageSIP type="REGISTER" result="401" />
+
+    <parameter name="[responseMessage]" operation="setFromMessage" value="message" />
+    
+    <call name="sip.handle401" >
+        <input>
+            <parameter name="[function:requestMessage]" value="[registerMessage]"/>
+            <parameter name="[function:unauthorizedMessage]" value="[responseMessage]"/>
+            <parameter name="[function:username]" value="ibra@imslab.devoteam"/>
+            <parameter name="[function:password]" value="ibra"/>
+        </input>
+    </call>
+    
+    <receiveMessageSIP type="REGISTER" result="200"/>
+
+    <removeListenpointSIP name="[listenpointName]" />
+</scenario>

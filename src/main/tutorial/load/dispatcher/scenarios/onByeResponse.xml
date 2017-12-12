@@ -1,0 +1,34 @@
+
+<scenario>
+    <parameter name="[item]" operation="list.dequeue" value="[testcaseName]" value2="[queueTimeout]" />
+
+    <if>
+        <condition>
+            <test parameter="[item]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <exit failed="false" />
+        </then>
+    </if>
+    
+<!-- (specific) : do your job with [item]  -->
+    <!-- clean up invite contexts -->
+    <parameter name="[lastToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User" value2="[item]" />
+    <parameter name="[lastFromUser]" operation="protocol.setFromMessage" value="header.From.Address.URI.User" value2="[item]" />
+    <try>
+        <finally>
+            <parameter name="[test:contextMutex]" operation="system.semaphorewait" value2="0" />
+            
+            <parameter name="[contextId]" value="[test:[lastToUser]_invite_contextId]" />
+
+            <parameter name="[test:context_[contextId]_lastReceivedInvite]" value="list.remove" />
+            <parameter name="[test:[lastToUser]_invite_contextId]" value="list.remove" />
+            <parameter name="[test:[lastFromUser]_invite_contextId]" value="list.remove" />
+            
+            <parameter name="[test:contextMutex]" operation="system.semaphorenotify" />
+        </finally>
+    </try>
+    
+    
+<!-- (specific) : end  -->
+</scenario>

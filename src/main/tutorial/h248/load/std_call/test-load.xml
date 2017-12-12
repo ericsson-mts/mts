@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+	<parameter description="number of testcase per second" editable="true" name="[speedTestcase]" operation="set" value="50"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="360000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+
+	<parameter description="Addresse du XMLloader" name="[localHostH248]" operation="system.ipaddress"/>
+    <parameter name="[localHostH248]" operation="set" value="[Host-Tester(0)]"/>
+	<parameter description="Port du XMLloader" name="[localPortH248]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT"/>
+	<parameter name="[localH248]" operation="set" value="[Host-Tester(0)]:[localPortH248]"/>
+
+    <parameter description="Addresse de l'AS" name="[remoteHostH248]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostH248]" operation="set" value="[Host-Server(0)]"/>
+    <!--parameter name="[remoteHostH248]" operation="set" value="172.16.21.31" description="Addresse de l'AS" /-->   	   	
+	<parameter description="Port du XMLloader" name="[remotePortH248]" operation="file.readproperty" value="h248.properties" value2="listenpoint.LOCAL_PORT"/>
+	<!--parameter name="[remotePortH248]" operation="set" value="5060"/-->    	
+	<parameter name="[remoteH248]" operation="set" value="[Host-Server(0)]:[remotePortH248]"/>
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+	<parameter name="[inviteeName]" operation="set" value="bob"/>
+	<parameter name="[inviterName]" operation="set" value="alice"/>
+
+    <!-- transport parameters-->
+	<parameter name="[transportRequest]" operation="set" value="udp"/>
+	<parameter name="[transportResponse]" operation="set" value="UDP"/>
+
+   	<parameter name="[speedTestcase]" operation="number.divide" value="[speedTestcase]" value2="[NumberTestcase]"/>	
+
+	<!--                       -->
+    <!-- RUNPROFILE PARAMETERS -->
+    <!--                       -->    
+    <runProfile>
+        <step frequency="[speedTestcase]" time="0"/>
+        <end delay="[TestDurationSec]"/>
+    </runProfile>
+
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">   
+	    <testcase description="load [index]" name="Testcase[index]" number="1" state="true">
+			<parameter name="[inviterName]" operation="set" value="client[index]"/>
+		    <parameter name="[inviteeName]" operation="set" value="server[index]"/>
+			
+		    <scenario file="client.xml" name="client[index]" routingName="client[index]"/>
+		    <scenario file="server.xml" name="server[index]" routingName="server[index]"/>
+	    </testcase>
+    </for>
+
+</test>

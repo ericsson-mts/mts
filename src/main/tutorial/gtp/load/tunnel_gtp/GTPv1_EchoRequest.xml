@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+  <sendMessageGTP name="send Echo Request" remoteHost="[remoteHost]" remotePort="[remotePort]" transport="[transport]">
+    <headerV1 type="Echo Request:1" tunnelEndpointId="0" sequenceNumber="1"/>
+
+    <!-- Private Extension - Optional -->
+    <!--element tag="privateExtension:255" description="Private Extension">
+		  <field name="extensionIdentifier" value="3232"/>
+      <field name="extensionValue" value="Proprietary value"/>
+	  </element-->
+
+  </sendMessageGTP>
+
+  <receiveMessageGTP name="receive Echo Response" request="false" type="Echo Request:1" result="Echo Response:2" >
+    <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+    <parameter name="[seqNum]" operation="protocol.setFromMessage" value="header.sequenceNumber"/>
+  </receiveMessageGTP>
+</scenario>

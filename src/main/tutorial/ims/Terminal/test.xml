@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="SIP regression tests">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    <parameter name="[LocalHost]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[LocalHost]" operation="set" value="[LocalHost(0)]"/>
+    
+    <parameter description="remote address of the IMS P-CSCF host" editable="true" name="[Host-Server]" operation="set" value="192.168.90.218"/>
+    <parameter description="remote port of the IMS P-CSCF host" editable="true" name="[Port-Server]" operation="set" value="4060"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+    
+    <parameter name="[client_UAC]" operation="set" value="alice"/>
+    <parameter name="[client_UAS]" operation="set" value="bob"/>
+    <parameter name="[domaine]" operation="set" value="imslab.fr.am"/>
+    
+    <parameter name="[UserAgent]" operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/>
+     
+	<parameter name="[UserAgent]" operation="set" value="Fraunhofer FOKUS/NGNI Java IMS UserEndpoint FoJIE 0.1 (jdk1.3)"/>
+	
+	<parameter name="[port_UAC]" operation="set" value="7072"/>
+	<parameter name="[port_UAS]" operation="set" value="7074"/>
+	<parameter name="[port_UAS1]" operation="set" value="7076"/>
+	<parameter name="[port_UAS2]" operation="set" value="7078"/>
+	<parameter name="[port_UAS3]" operation="set" value="7080"/>	
+		
+	<parameter name="[LocalTransport]" operation="set" value="tcp"/>
+   
+	<testcase description="simulation register" name="register_Alice" state="true">
+        <scenario file="registerA.xml" name="[port_UAC]" routingName="[port_UAC]"/>
+    </testcase>
+    
+    <testcase description="simulation register" name="register_Bob" state="true">
+        <scenario file="registerB.xml" name="[port_UAS]" routingName="[port_UAS]"/>
+    </testcase>
+    
+    <testcase description="simulation appel" name="appel_A_vers_B" state="true">
+        <scenario file="InviteA.xml" name="[port_UAC]" routingName="[port_UAC]"/>
+        <scenario file="InviteB.xml" name="[port_UAS]" routingName="[port_UAS]"/>
+    </testcase>
+    
+    <testcase description="simulation prack" name="PRACK_A_vers_B" state="true">
+        <scenario file="PrackA.xml" name="[port_UAC]" routingName="[port_UAC]"/>
+        <scenario file="PrackB.xml" name="[port_UAS]" routingName="[port_UAS]"/>
+    </testcase>
+    
+    <testcase description="simulation message" name="Message_A_vers_B" state="true">
+        <scenario file="MessageA.xml" name="[port_UAC]" routingName="[port_UAC]"/>
+        <scenario file="MessageB.xml" name="[port_UAS]" routingName="[port_UAS]"/>
+    </testcase>
+    
+    <testcase description="simulation cancel" name="Cancel_A_vers_B" state="true">
+        <scenario file="CancelA.xml" name="[port_UAC]" routingName="[port_UAC]"/>
+        <scenario file="CancelB.xml" name="[port_UAS]" routingName="[port_UAS]"/>
+    </testcase>
+    
+    <testcase description="simulation fork" name="Fork_A_vers_B1_B2_B3" state="true">
+        <scenario file="ForkA.xml" name="[port_UAC]" routingName="[port_UAC]"/>
+        <scenario file="ForkB1.xml" name="[port_UAS1]" routingName="[port_UAS1]"/>
+    <scenario file="ForkB2.xml" name="[port_UAS2]" routingName="[port_UAS2]"/>
+    <scenario file="ForkB3.xml" name="[port_UAS3]" routingName="[port_UAS3]"/>
+    </testcase>
+    
+    <testcase description="simulation Subscribe" name="Subscribe" state="true">
+        <scenario file="Subscribe.xml" name="[port_UAS]" routingName="[port_UAS]"/>
+    </testcase>
+
+</test>

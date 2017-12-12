@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[network]" operation="set" value="[localHostRTP]"/>  
+  <parameter name="[filter]" operation="set" value="(src host [localHostRTP]) and (dst host [localHostRTP])"/>
+
+  <createProbeRTP name="probe" networkInterface="[network]" captureFilter="[filter]"/>
+
+  <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+                    
+  <receiveMessageRTP name="Wait RTP events" probe="probe" request="true" type="106">
+	<parameter name="[payload]" operation="protocol.setFromMessage" value="payload.binary"/>	  
+  </receiveMessageRTP>
+
+    <parameter name="[eventID]" operation="binary.subbinary" value="[payload]" value2="0" value3="1"/>
+    <test parameter="[eventID]" condition="binary.equals" value="01"/>
+    <parameter name="[volume]" operation="binary.subbinary" value="[payload]" value2="1" value3="1"/>
+    <test parameter="[volume]" condition="binary.equals" value="0a"/>
+    <parameter name="[duration]" operation="binary.subbinary" value="[payload]" value2="2" value3="2"/>
+    <test parameter="[duration]" condition="binary.equals" value="00A0"/>
+
+    <receiveMessageRTP name="ReceivePacketRTP2" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP3" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP4" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP5" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP6" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP7" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP8" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP9" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP10" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP11" probe="probe" type="106"/>
+    <receiveMessageRTP name="ReceivePacketRTP12" probe="probe" type="106"/>
+
+  <finally>
+      <removeProbeRTP name="probe"/>        
+  </finally>
+  
+</scenario>

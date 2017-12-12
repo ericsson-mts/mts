@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario><!--name="Send Request to server"-->
+<parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+<openChannelSMTP name="session_[port]" localHost="localhost" remoteHost="localhost" remotePort="[port]" />
+
+<!--*************************************EHLO******************************************************-->
+<sendMessageSMTP name="Send EHLO" channel="session_[port]" ><![CDATA[EHLO gmail.com
+]]></sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+
+<!--*************************************MAIL******************************************************-->
+<sendMessageSMTP name="Send MAIL FROM" channel="session_[port]" ><![CDATA[MAIL FROM:<Smith@gmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+
+<!--*************************************RCPT******************************************************-->
+<sendMessageSMTP name="Send Request RCPT" channel="session_[port]" ><![CDATA[RCPT TO:<Jones@hotmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+
+<!--*************************************RCPT******************************************************-->
+<sendMessageSMTP name="Send Request RCPT" channel="session_[port]" ><![CDATA[RCPT TO:<Green@hotmail.com>]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+		
+<!--*************************************DATA******************************************************-->
+<sendMessageSMTP name="Send Request DATA" channel="session_[port]" ><![CDATA[DATA]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+
+<!--*************************************CNTT******************************************************-->
+<sendMessageSMTP name="Send Request CNTT" channel="session_[port]" ><![CDATA[Blah blah blah......etc. etc. etc.
+.]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+
+
+<!--*************************************QUIT******************************************************-->
+<sendMessageSMTP name="Send Request QUIT" channel="session_[port]" ><![CDATA[QUIT]]>
+</sendMessageSMTP>
+<receiveMessageSMTP name="Attente reponse" channel="session_[port]" >
+</receiveMessageSMTP>
+<!--<closeChannelSMTP name="session1"/>-->
+</scenario>

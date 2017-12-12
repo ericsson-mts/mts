@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[Port-TesterCSCF]" transport="[LocalTransport]"/>
+	<parameter name="[providerName]" 		operation="set" value="[scenarioName]"/>
+	
+
+  
+	<parameter name="[NewCallID]" 	operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[localTag]" 	operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[NewCseqNumber]" 	operation="set" 		value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" 	value="newString"	value2="10"/>
+	<parameter name="[clientName]" 	operation="set" 		value="Inviter"/>
+	<parameter name="[NewCseqNumber]" operation="set" value="1"/>	
+  
+  <sendRequestSIP name="Send INVITE" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[InviteeName]@[Domain] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseqNumber] INVITE
+From: "[InviterName]" <sip:[InviterName]@[Domain]>;tag=[localTag]
+To: "[InviteeName]" <sip:[InviteeName]@[Domain]>
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwardsDefaultValue]
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Preferred-Identity: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+Privacy: none
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Content-Type: application/sdp
+User-Agent: [UserAgent]
+Content-Length: x
+
+v=0
+o=[InviterName] 999 999 IN IP4 [InviterName]@[Domain]
+s=-
+c=IN IP4 [InviterName]@[Domain]
+t=0 0
+m=audio 45200 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application 25463 udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+]]>
+</sendRequestSIP>
+
+  <receiveResponseSIP name="Wait 100 Trying" method="INVITE" result="100">
+  </receiveResponseSIP>
+
+  <receiveResponseSIP name="Wait 180 Ringing" method="INVITE" result="180">
+    <parameter name="[To]" 				operation="setFromMessage" value="header:To"/>                     
+    <parameter name="[From]" 			operation="setFromMessage" value="header:From"/>                         
+    <parameter name="[CallId]" 			operation="setFromMessage" value="header:Call-Id"/>   
+  </receiveResponseSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+	<parameter name="[NewCseqNumber]" 	operation="add" value="[NewCseqNumber]" value2="1"/>	
+	
+  <sendRequestSIP name="Send Cancel" providerName="[scenarioName]">
+<![CDATA[CANCEL sip:[InviteeName]@[Domain] SIP/2.0
+Call-ID: [NewCallID]
+CSeq: [NewCseqNumber] CANCEL
+From: "[InviterName]" <sip:[InviterName]@[Domain]>;tag=[localTag]
+To: "[InviteeName]" <sip:[InviteeName]@[Domain]>
+Via: SIP/2.0/UDP [Adresse-TesterCSCF];branch=z9hG4bK[newBranchId]
+Max-Forwards: [MaxForwardsDefaultValue]
+Route: <sip:[Adresse-TestedCSCF];lr>,<sip:[Adresse-ServerCSCF];lr>
+Contact: "[InviterName]" <sip:[InviterName]@[Domain]>
+P-Access-Network-Info: 3GPP-UTRAN-TDD; utran-cell-id-3gpp=00000000
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <receiveResponseSIP name="Wait 487 Request Terminated" method="CANCEL" result="487">
+  </receiveResponseSIP>
+  
+  
+</scenario>

@@ -1,0 +1,82 @@
+
+<scenario>
+    <while>
+        <condition/>
+        <do>
+            <parameter name="[item]" operation="list.remove" />
+            <receiveMessageSIP timeout="[queueTimeout]" failedOnTimeout="false">
+                <parameter name="[item]" operation="setFromMessage" value="message" />
+            </receiveMessageSIP>
+            
+            <if>
+                <condition>
+                    <not><test parameter="[item]" condition="list.exists" /></not>
+                </condition>
+                <then>
+                    <exit failed="false" />
+                </then>
+            </if>
+    
+            <!-- (specific) : build fifo name the way you want -->
+            <parameter name="[type]" operation="setFromMessage" value="message.type" value2="[item]" />
+            <parameter name="[request]" operation="setFromMessage" value="message.request" value2="[item]" />
+            <parameter name="[result]" operation="setFromMessage" value="message.result" value2="[item]" />
+            <if>
+                <condition>
+                    <not>
+                        <test parameter="[type]" condition="list.isEmpty" />
+                    </not>
+                </condition>
+                <then>
+                    <switch parameter="[type]-[request]">
+                        <case equals="INVITE-true">
+                            <parameter name="[fifoName]" value="onInviteRequest" />
+                        </case>
+                        <case equals="INVITE-false">
+                            <parameter name="[fifoName]" value="onInviteResponse" />
+                        </case>
+                        <case equals="MESSAGE-true">
+                            <parameter name="[fifoName]" value="onByeMessageOptionRequest" />
+                        </case>
+                        <case equals="MESSAGE-false">
+                            <parameter name="[fifoName]" value="onMessageResponse" />
+                        </case>
+                        <case equals="OPTIONS-true">
+                            <parameter name="[fifoName]" value="onByeMessageOptionRequest" />
+                        </case>
+                        <case equals="OPTIONS-false">
+                            <parameter name="[fifoName]" value="onOptionResponse" />
+                        </case>
+                        <case equals="BYE-true">
+                            <parameter name="[fifoName]" value="onByeMessageOptionRequest" />
+                        </case>
+                        <case equals="BYE-false">
+                            <parameter name="[fifoName]" value="onByeResponse" />
+                        </case>
+                        <case equals="ACK-true">
+                            <parameter name="[fifoName]" value="onAckRequest" />
+                        </case>
+                        <case equals="REGISTER-true">
+                            <parameter name="[fifoName]" value="onRegisterRequest" />
+                        </case>
+                        <default>
+                            <parameter name="[fifoName]" value="onOther" />
+                        </default>
+                    </switch>
+
+                    <if>
+                        <condition>
+                            <test parameter="[result]" condition="string.matches" value="40[17]" />
+                        </condition>
+                        <then>
+                            <parameter name="[fifoName]" value="on401Or407Response" />
+                        </then>
+                    </if>
+            
+                    <!-- put into the fifo -->
+                    <parameter name="[unused]" operation="list.enqueue" value="[fifoName]" value2="[item]" />
+                </then>
+            </if>
+        </do>
+    </while>
+</scenario>

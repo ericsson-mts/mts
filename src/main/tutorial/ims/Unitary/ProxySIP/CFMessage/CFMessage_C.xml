@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 					operation="set" value="[PortUAC]"/>
+	<parameter name="[testcase:LocalAddressUAC]" 	operation="set" value="[HardAddressUAC]"/>	
+
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+
+  
+	<parameter name="[NewCallID]" 		operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[localTag]" 		operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[NewCseqNumber]" 	operation="set" 		value="1"/>			
+	<parameter name="[InviteBranchId]" 	operation="identifier" 	value="newString"	value2="10"/>
+	<parameter name="[clientName]" 		operation="set" 		value="Inviter"/>
+
+	
+  <sendRequestSIP name="Send MESSAGE" providerName="[scenarioName]">
+<![CDATA[MESSAGE sip:[HardAddressUAS] SIP/2.0
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[InviteBranchId]
+Call-ID: [NewCallID]
+CSeq: [NewCseqNumber] MESSAGE
+Max-Forwards: 70
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH, PRACK
+Contact: "[InviterName]" <sip:[LocalAddressUAC]>
+User-Agent: [UserAgent]
+Route: <sip:[Adresse-Proxy];lr>
+Content-Type: application/vnd.poc.group-advertisement+xml
+Content-Length: x
+
+<?xml version="1.0" encoding="UTF-8"?><group-advertisement xmlns="urn:oma:params:xml:ns:poc:group-advertisement" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oma:params:xml:ns:poc:group-advertisement">
+<note>Hello, this is my message</note>
+<group>
+    <type>"dialed-out"</type>
+    <display-name>null</display-name>
+    <uri>sip:blablabla</uri>
+</group>
+</group-advertisement>
+]]>
+</sendRequestSIP>
+
+
+<receiveResponseSIP name="Wait 200 OK" method="MESSAGE" result="200">
+		</receiveResponseSIP>
+        
+</scenario>

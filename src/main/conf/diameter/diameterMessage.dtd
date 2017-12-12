@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!ELEMENT sendAAA (commandAAA, avp*)>
+<!ATTLIST sendAAA
+	name CDATA #REQUIRED
+	server CDATA #REQUIRED
+>
+
+<!ELEMENT commandAAA EMPTY>
+<!ATTLIST commandAAA
+	code CDATA #REQUIRED
+	applicationId CDATA #REQUIRED
+	proxiable CDATA #IMPLIED
+	request CDATA #IMPLIED
+	version CDATA #IMPLIED
+	flags CDATA #IMPLIED
+>
+
+<!ELEMENT avp (avp*)>
+<!ATTLIST avp
+	code CDATA #IMPLIED
+	type CDATA #IMPLIED
+	value CDATA #IMPLIED
+	mandatory CDATA #IMPLIED
+	private CDATA #IMPLIED
+	vendorSpecific CDATA #IMPLIED
+	vendorId CDATA #IMPLIED
+	flags CDATA #IMPLIED
+>

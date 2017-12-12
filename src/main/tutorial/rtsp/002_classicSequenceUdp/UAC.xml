@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[session]" operation="set" value="sessionClient" />
+    <createListenpointRTSP name="[session]" localHost="0.0.0.0" localPort="[localPortRTSP]" />
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <sendMessageRTSP name="Send Describe" listenpoint="[session]">
+<![CDATA[DESCRIBE rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 1
+Accept: application/sdp
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Setup" listenpoint="[session]">
+<![CDATA[SETUP rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 2
+Transport:RTP/AVP;multicast;destination=225.219.201.15;port=7000-7001;ttl=127
+Conference:199702170042.SAA08642@obiwan.arl.wustl.edu%20Starr
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait 200 OK" type="SETUP" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Play" listenpoint="[session]">
+<![CDATA[PLAY rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 3
+Session: 91389234234
+]]>
+    </sendMessageRTSP>
+    <receiveMessageRTSP name="Wait 200 OK" type="PLAY" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Pause" listenpoint="[session]">
+<![CDATA[PAUSE rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 4
+Session: 91389234234
+]]>
+    </sendMessageRTSP>
+    <receiveMessageRTSP name="Wait 200 OK" type="PAUSE" result="200">
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send Teardown" listenpoint="[session]">
+<![CDATA[TEARDOWN rtspu://[remoteHostRTSP]:[remotePortRTSP]/demo/548/sound RTSP/1.0
+CSeq: 5
+Session: 91389234234
+]]>
+    </sendMessageRTSP>
+    <receiveMessageRTSP name="Wait 200 OK" type="TEARDOWN" result="200">
+    </receiveMessageRTSP>
+
+
+    <finally>
+        <removeListenpointRTSP name="[session]"/>
+    </finally>
+
+</scenario>

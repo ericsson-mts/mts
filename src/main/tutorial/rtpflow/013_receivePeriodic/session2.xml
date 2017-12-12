@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTPFLOW name="invitee" localHost="[remoteHostRTP]" localPort="[remotePortRTP]">
+	 	<flow endTimerPeriodic="1"/>
+	 </createListenpointRTPFLOW>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify" />
+
+	<receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" timeout="30">
+		<parameter name="[packetNb1]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	</receiveMessageRTPFLOW>
+	<test parameter="[packetNb1]" condition="number.greaterThan" value="40"/>
+	<test parameter="[packetNb1]" condition="number.lowerThan" value="60"/>
+	
+	<receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" timeout="30">
+		<parameter name="[packetNb2]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	</receiveMessageRTPFLOW>
+	<test parameter="[packetNb2]" condition="number.greaterThan" value="40"/>
+	<test parameter="[packetNb2]" condition="number.lowerThan" value="60"/>
+	
+	<receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" timeout="30">
+		<parameter name="[packetNb3]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	</receiveMessageRTPFLOW>
+	<test parameter="[packetNb3]" condition="number.greaterThan" value="40"/>
+	<test parameter="[packetNb3]" condition="number.lowerThan" value="60"/>
+	
+	<receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" timeout="30">
+		<parameter name="[packetNb4]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+	</receiveMessageRTPFLOW>
+	<test parameter="[packetNb4]" condition="number.greaterThan" value="0"/>
+	<test parameter="[packetNb4]" condition="number.lowerThan" value="60"/>
+	
+	<pause name="delay" seconds="0.5"/>
+	
+	<parameter name="[packetNb]" operation="number.add" value="[packetNb1]" value2="[packetNb2]"/>
+	<parameter name="[packetNb]" operation="number.add" value="[packetNb]" value2="[packetNb3]"/>
+	<parameter name="[packetNb]" operation="number.add" value="[packetNb]" value2="[packetNb4]"/>
+	<test parameter="[packetNb]" condition="number.lowerThan" value="210"/>
+	<test parameter="[packetNb]" condition="number.greaterThan" value="190"/>
+	
+	<finally>
+	
+		<removeListenpointRTPFLOW name="invitee" />		
+		
+		<receiveMessageRTPFLOW listenpoint="invitee" type="PCMA:8" failedOnTimeout="false" failedOnReceive="true" timeout="1"/>
+
+	</finally>
+            
+</scenario>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : alice.xml
+    Created on : 10/07/2009
+    Author     : jbrisseau
+    Description: Send a BICC-IAM message.
+-->
+
+
+<scenario>
+
+
+<!--
+    MESSAGE : IAM (message 19, mss-1.pcap)
+    
+-->
+
+
+    <sendMessageSIGTRAN	name="Send Notify1" remoteHost="[localHostM3UA]" remotePort="[localPortM3UA]">
+		
+<!--010001010000005402000008000000010210004100000d7a00000d7e0d020006
+0d0000000110 2000 0a 00 020d 0b831047073063304103500f 0a0783130613340000 31020000 700182 390631c070c07882 00 000000	-->	
+        <SS7 name="bicc" file="bicc.xml">
+            <header>
+                <field name="CIC" length="4" value="13" />
+                <field name="Message_Type" length="1" value="1" />
+            </header>
+			
+            <parameter name="Nature_of_connection_indicators" 			type="F">
+                <field		length="1"									value="16"/>
+            </parameter>
+			
+            <parameter name="Forward_call_indicators" 					type="F">
+                <field	name="BICC_preference_indicator"				lengthBit="2" value="0"/>
+                <field	name="BICC_indicator"							lengthBit="1" value="1"/>
+                <field	name="End-to-end_information_indicator"			lengthBit="1" value="0"/>
+                <field	name="Interworking_indicator"					lengthBit="1" value="0"/>
+                <field	name="End-to-end_method_indicator"				lengthBit="2" value="0"/>
+                <field	name="National/international_call_indicator"	lengthBit="1" value="0"/>
+                <field	name="Reserved"									lengthBit="4" value="0"/>
+                <field	name="Spare"									lengthBit="1" value="0"/>
+                <field	name="SCCP_method_indicator"					lengthBit="2" value="0"/>
+                <field	name="ISDN_access_indicator"					lengthBit="1" value="0"/>
+            </parameter>
+			
+            <parameter name="Calling_party's_category"					type="F">
+                <field		name="Calling_party's_category"	length="1"	value="10"/>
+            </parameter>
+			
+            <parameter name="Transmission_medium_requirement"			type="F">
+                <field	name="Transmission_medium_requirement"	length="1" value="0"/>
+            </parameter>
+			
+            <parameter name="Called_party_number" id="4" littleEndian="true" type="V">
+                <field name="Nature_of_address_indicator"				lengthBit="7" value="3"/>
+                <field name="Odd/even_indicator"						lengthBit="1" value="1"/>
+                <field name="Spare"										lengthBit="4" value="0"/>
+                <field name="Numbering_plan_indicator"					lengthBit="3" value="1"/>
+                <field name="Internal_Network_Number_indicator"			lengthBit="1" value="0"/>
+                <field name="Address_signal"							lengthBit="4" value="7"/>
+                <field name="Address_signal"							lengthBit="4" value="4"/>
+
+                <field name="Address_signal"							lengthBit="4" value="7"/>
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+                <field name="Address_signal"							lengthBit="4" value="3"/>
+
+                <field name="Address_signal"							lengthBit="4" value="3"/>
+                <field name="Address_signal"							lengthBit="4" value="6"/>
+
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+                <field name="Address_signal"							lengthBit="4" value="3"/>
+
+                <field name="Address_signal"							lengthBit="4" value="1"/>
+                <field name="Address_signal"							lengthBit="4" value="4"/>
+
+                <field name="Address_signal"							lengthBit="4" value="3"/>
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+                <field name="Address_signal"							lengthBit="4" value="5"/>
+
+                <field name="Address_signal"							lengthBit="4" value="15"/>
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+            </parameter>
+			
+            <parameter name="Calling_party_number" id="10" littleEndian="true" type="O">
+                <field name="Nature_of_address_indicator"				lengthBit="7" value="3"/>
+                <field name="Odd/even_indicator"						lengthBit="1" value="1"/>
+
+                <field name="Screening_indicator"						lengthBit="2" value="3"/>
+                <field name="Address_presentation_restricted_indicator" lengthBit="2" value="0"/>
+                <field name="Numbering_plan_indicator"					lengthBit="3" value="1"/>
+                <field name="Number_Incomplete_indicator"				lengthBit="1" value="0"/>
+
+                <field name="Address_signal"							lengthBit="4" value="6"/>
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+
+                <field name="Address_signal"							lengthBit="4" value="3"/>
+                <field name="Address_signal"							lengthBit="4" value="1"/>
+
+                <field name="Address_signal"							lengthBit="4" value="4"/>
+                <field name="Address_signal"							lengthBit="4" value="3"/>
+
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+                <field name="Address_signal"							lengthBit="4" value="0"/>
+            </parameter>
+			
+            <parameter name="Propagation_delay_counter" id="49"			type="O">
+                <field name="Propagation_delay_value"					length="2"    value="00"/>
+            </parameter>
+			
+            <parameter name="Call_offering_treatment_indicators" id="112"	type="O">
+                <field name="Extension_indicator"						lengthBit="1" value="1"/>
+                <field name="Spare"										lengthBit="5" value="0"/>
+                <field name="Call_to_be_offered_indicator"				lengthBit="2" value="2"/>
+            </parameter>
+			
+            <parameter name="Parameter_compatibility_information" id="57"	type="O">
+                <field name="upgraded_parameter_name"					length="1"	value="49"/>
+                <field name="Instruction_indicators"					length="1"	value="192"/>
+                <field name="upgraded_parameter_name"					length="1"	value="112"/>
+                <field name="Instruction_indicators"					length="1"	value="192"/>
+                <field name="upgraded_parameter_name"					length="1"	value="120"/>
+                <field name="Instruction_indicators"					length="1"	value="130"/>
+            </parameter>
+        </SS7>
+		
+        <UA name="m3ua" file="m3ua.xml">
+            <header 	version="1"
+						reserved="0" 
+						messageClass="1" 
+						messageType="1"/>
+						
+            <parameter tag="Network_Appearence">
+                <field name="Network_Appearence"					value="1"/>
+            </parameter>
+			
+            <parameter tag="Protocol_Data">
+                <field name="Originating_Point_Code"					value="3450"/>
+                <field name="Destination_Point_Code"					value="3454"/>
+                <field name="SI"										value="BICC"/>
+                <field name="NI"										value="2"/>
+                <field name="MP"										value="0"/>
+                <field name="SLS"										value="6"/>
+                <field name="DATA"	format="fvo"/>
+            </parameter>
+        </UA>
+    </sendMessageSIGTRAN>
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+</scenario>

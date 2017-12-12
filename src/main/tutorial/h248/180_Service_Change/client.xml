@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send ServiceChange request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <parameter name="[contextID]" operation="number.random" value="10000000"/>
+    <parameter name="[termID1]" operation="number.random" value="10000000"/>
+    <parameter name="[termID2]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=[contextID]{
+  Priority = 1,                 
+  ServiceChange=ROOT{
+   Services {Method=Failover},
+   Services {Method=Forced},
+   Services {Method=Graceful},
+   Services {Method=Restart},
+   Services {Method=Disconnected},
+   Services {Method=HandOff},
+   Services {Method=Disconnected},
+   Services {pkg/param1>1},             ;extensions 
+   Services {pkg/param2<2},             ;extensions 
+   Services {pkg/param3#3},             ;extensions 
+   Services {pkg/param4=[4,5,6]},       ;extensions 
+   Services {pkg/param7={7,8,9}}        ;extensions 
+  },
+  ServiceChange=ip/1/access/[termID1]{
+   Services {
+    Method=Failover, Reason="901 Cold reboot", Delay=10, ServiceChangeAddress=[remotePortH248], 
+    Profile=ETSI_BGF/3, 20080721T14013777, MgcIdToTry=[[remoteHostH248]:[remotePortH248]], 
+    Version=11, ServiceChangeInc,
+    X+abcdef={a,b,c,d,e,f},
+    X-123456=[1,2,3,4,5,6]
+   }
+  }
+ } 
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive ServiceChange response -->
+    <receiveMessageH248 name="Receive response" request="false" type="ServiceChange" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- send ServiceChange acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>

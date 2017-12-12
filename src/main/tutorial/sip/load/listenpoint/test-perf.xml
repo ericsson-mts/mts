@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+	     <!--                     -->
+    	 <!-- INTERNAL PARAMETERS -->
+    	 <!--                     -->
+    	<parameter description="Addresse du XMLloader" name="[Host-Tester]" operation="system.ipaddress"/>
+    	<parameter description="Addresse du XMLloader" name="[Host-Tester]" operation="set" value="[Host-Tester(0)]"/>
+    	<parameter description="Port du XMLloader" name="[Port-Tester]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    	<parameter description="Addresse du XMLloader" name="[Port-Tester]" operation="set" value="47080"/>
+    	<parameter name="[Adresse-Tester]" operation="set" value="[Host-Tester(0)]:[Port-Tester]"/>
+
+	    <parameter name="[transport]" operation="set" value="udp"/>
+	
+    	<runProfile>
+            <step frequency="10000" time="0"/>
+            <end iteration="5000"/>
+    	</runProfile>
+
+  		<testcase description="load UA" name="UA 1" number="1" state="true">
+			     <scenario file="UA.xml" name="UA" routingName="UA"/>
+		  </testcase>
+		  
+		  <testcase description="load UA" name="UA 2" number="1" state="true">
+			     <scenario file="UA.xml" name="UA" routingName="UA"/>
+		  </testcase>
+	
+</test>

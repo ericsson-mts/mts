@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[socket_name]" operation="set" value="[scenarioName]" />
+
+    <openSocketRadius socketName="[socket_name]" secret="my_secret"/>
+
+    <parameter name="[testcase:sem2]" operation="system.semaphorenotify" />
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="access-request" />
+        <avp code="user-name" value="login" />
+        <avp code="user-password" value="password" />
+    </sendRequestRadius>
+
+    <receiveResponseRadius socketName="[socket_name]" type="access-request:1" result="access-accept:2" />
+
+    <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="Accounting-Request" />
+        <avp code="Acct-Status-Type" value="Accounting-On" />
+        <avp code="Acct-Session-Id"  value="123456798" />
+    </sendRequestRadius>
+
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
+
+    <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="Accounting-Request" />
+        <avp code="Acct-Status-Type" value="Start" />
+        <avp code="Acct-Session-Id"  value="12345679800" />
+    </sendRequestRadius>
+
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
+
+    <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="Accounting-Request" />
+        <avp code="Acct-Status-Type" value="Interim-Update" />
+        <avp code="Acct-Session-Id"  value="12345679800" />
+    </sendRequestRadius>
+
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
+    
+    <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="Accounting-Request" />
+        <avp code="Acct-Status-Type" value="Stop" />
+        <avp code="Acct-Session-Id"  value="12345679800" />
+    </sendRequestRadius>
+
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
+
+
+    <sendRequestRadius socketName="[socket_name]" remoteHost="[remoteHostRAD]" remotePort="[remotePortRAD]">
+        <header code="Accounting-Request" />
+        <avp code="Acct-Status-Type" value="Accounting-Off" />
+        <avp code="Acct-Session-Id"  value="123456798" />
+    </sendRequestRadius>
+
+    <receiveResponseRadius socketName="[socket_name]" type="accounting-request:4" />
+
+    <closeSocketRadius socketName="[socket_name]" />
+    
+</scenario>

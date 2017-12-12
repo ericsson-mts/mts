@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[inviteeName1]" operation="set" value="bob"/>
+  <parameter name="[101_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+
+  <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+    <parameter name="[localTag]" operation="string.random" value="10"/>
+    <parameter name="[pseudo]" operation="setFromAddress" value="[From]" value2="DisplayName"/>
+  </receiveMessageSIP>
+
+  <sendMessageSIP name="Send 100 Trying">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 100 Trying
+To: [To];tag=[localTag]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <pause name="wait" milliseconds="0"/>
+
+  <sendMessageSIP name="Send 180 Ringing">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 180 Ringing
+To: [To];tag=[localTag]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: <sip:[clientName]@[localSIP]>
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+  <receiveMessageSIP name="Wait CANCEL" request="true" type="CANCEL">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    <parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+  </receiveMessageSIP>
+
+  <sendMessageSIP name="Send 487 Request Terminated">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 487 Request Terminated
+To: [To]
+From: [From]
+Via: [Via]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: <sip:[clientName]@[localSIP]>
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Content-Length: 0
+
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+</scenario>

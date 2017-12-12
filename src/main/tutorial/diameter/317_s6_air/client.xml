@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.272 V9.1.0 : AIR from MME/SGSN to HSS to request Authentication Information
+Authentication-Information-Request ::= < Diameter Header: 318, REQ, PXY, 16777251 >
+                                  < Session-Id >
+                                  { Vendor-Specific-Application-Id }
+                                    Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                                         1* [ Vendor-Id ]
+                                                                         0*1{ Auth-Application-Id }
+                                                                         0*1{ Acct-Application-Id }
+                                  { Auth-Session-State }
+                                  { Origin-Host }
+                                  { Origin-Realm }
+                                  [ Destination-Host ]
+                                  { Destination-Realm }
+                                  { User-Name }
+                                 *[ Supported-Features ]
+                                    Supported-Features ::= < AVP Header: 628 10415 >
+													           { Vendor-Id }
+                                                               { Feature-List-ID }
+                                                               { Feature-List }
+                                                             * [ AVP ]
+								  [ Requested-EUTRAN-Authentication-Info ] 
+                                    Requested-EUTRAN-Authentication-Info ::= < AVP Header: 1408 10415 >
+													                             [ Number-Of-Requested-Vectors]
+                                                                                 [ Immediate-Response-Preferred ]
+                                                                                 [ Re-synchronization-Info ]
+                                                                               * [ AVP ]
+								  [ Requested-UTRAN-GERAN-Authentication-Info ]
+                                    Requested-UTRAN-GERAN-Authentication-Info ::= <AVP header: 1409 10415>
+													                             [ Number-Of-Requested-Vectors]
+                                                                                 [ Immediate-Response-Preferred ]
+                                                                                 [ Re-synchronization-Info ]
+                                                                               * [ AVP ]
+								  { Visited-PLMN-Id }
+                                 *[ AVP ]
+                                 *[ Proxy-Info ]
+                                    Proxy-Info ::= < AVP Header: 284 >
+                                                       { Proxy-Host }
+                                                       { Proxy-State }
+                                                     * [ AVP ]
+                                 *[ Route-Record ]
+-->
+
+    <!-- IMSI : 15 didits at most - 3GPP TS 23.003 /-->
+    <parameter name="[Imsi]" operation="set" value="358001045322746"/>
+
+    <!-- Visited-PLMN-Id :  3 bytes - 3GPP TS 29.272 /-->
+    <parameter name="[Visited-PLMN-Id]" operation="set" value="20801"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestAIR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+
+        <avp code="Vendor-Specific-Application-Id:260">
+            <avp code="Vendor-Id:266" value="[vendorID]"/>
+            <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+        </avp>
+        <avp code="Auth-Session-State:277" value="NO_STATE_MAINTAINED:1"/>
+
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/>
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+        <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/> 
+        <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>            
+
+        <avp code="User-Name:1" value="[Imsi]"/>
+        <avp code="Requested-EUTRAN-Authentication-Info:1408">
+            <avp code="Number-Of-Requested-Vectors:1410" value="1"/>
+            <!-- Value of Immediate-Response-Preferred does not matter : only AVP presence is checked by HSS /-->
+            <avp code="Immediate-Response-Preferred:1412" value="0"/>
+        </avp>
+        <avp code="Visited-PLMN-Id:1407" value="[Visited-PLMN-Id]"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerAIA" channel="channel_client" request="false" type="3GPP-Authentication-Information" result="DIAMETER_SUCCESS">
+    </receiveMessageDIAMETER>
+
+
+</scenario>

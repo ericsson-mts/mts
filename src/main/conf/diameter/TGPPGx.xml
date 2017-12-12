@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: TGPPGx.xml 2011-10-10 Devoteam IMSLoader $ -->
+
+<application id="16777238" name="3GPP Gx" uri="http://www.3gpp.org/ftp/Specs/archive/29_series/29.212/29212-b20.zip">
+<!-- 3GPP TS 29.212 V11.2.0 (2011-09). -->
+  <command name="Credit-Control" code="272" vendor-id="None"/>
+
+  <vendor vendor-id="TGPP"  code="10415" name="3GPP"/>
+
+  <!-- ************************* 3GPP Gx AVPs ************************ -->
+  <avp name="Bearer-Usage" code="1000" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall indicate no specific bearer usage information is available. -->
+    <enum name="GENERAL" code="0"/>
+    <!-- This value shall indicate that the bearer is used for IMS signalling only. -->
+    <enum name="IMS_SIGNALLING" code="1"/> 
+  </avp>
+  <avp name="Charging-Rule-Install" code="1001" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="Charging-Rule-Definition"/>
+      <gavp name="Charging-Rule-Name"/>
+      <gavp name="Charging-Rule-Base-Name"/>
+      <gavp name="Bearer-Identifier"/>
+      <gavp name="Rule-Activation-Time"/>
+      <gavp name="Rule-Deactivation-Time"/>
+      <gavp name="Resource-Allocation-Notification"/>
+      <gavp name="Charging-Correlation-Indicator"/>
+    </grouped>
+  </avp>
+  <avp name="Charging-Rule-Remove" code="1002" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="Charging-Rule-Name"/>
+      <gavp name="Charging-Rule-Base-Name"/>
+    </grouped>
+  </avp>
+  <avp name="Charging-Rule-Definition" code="1003" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="Charging-Rule-Name"/>
+      <gavp name="Service-Identifier"/>
+      <gavp name="Rating-Group"/>
+      <gavp name="Flow-Information"/>
+      <gavp name="Flow-Status"/>
+      <gavp name="QoS-Information"/>
+      <gavp name="PS-to-CS-Session-Continuity"/>
+      <gavp name="Reporting-Level"/>
+      <gavp name="Online"/>
+      <gavp name="Offline"/>
+      <gavp name="Metering-Method"/>
+      <gavp name="Precedence"/>
+      <gavp name="AF-Charging-Identifier"/>
+      <gavp name="Flows"/>
+      <gavp name="Monitoring-Key"/>
+      <gavp name="AF-Signalling-Protocol"/>
+      <gavp name="Sponsor-Identity"/>
+      <gavp name="Application-Service-Provider-Identity"/>
+    </grouped>
+  </avp>
+  <avp name="Charging-Rule-Base-Name" code="1004" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="UTF8String"/>
+  </avp>
+  <avp name="Charging-Rule-Name" code="1005" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Event-Trigger" code="1006" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon the change of the serving SGSN PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because the serving SGSN changed. The new value of the serving SGSN shall be indicated in either 3GPP-SGSN-Address AVP or 3GPP-SGSN-IPv6-Address AVP. Applicable only to 3GPP-GPRS and 3GPP-EPS access types. -->
+    <enum name="SGSN_CHANGE" code="0"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon any QoS change (even within the limits of the current authorization) at bearer or APN level PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the requested QoS for a specific bearer (e.g. the previously maximum authorized QoS has been exceeded) or APN. When applicable to 3GPP-GPRS and if the PCRF performs bearer binding, the Bearer-Identifier AVP shall be provided to indicate the affected bearer. QoS-Information AVP is required to be provided in the same request with the new value. When applicable at APN level, this event trigger shall be reported when the corresponding event occurs, even if the event trigger is not provisioned by the PCRF. -->
+    <enum name="QOS_CHANGE" code="1"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a RAT change PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because of a RAT change. The new RAT type shall be provided in the RAT-Type AVP. -->
+    <enum name="RAT_CHANGE" code="2"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a TFT change at bearer level PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because of a change in the TFT. The Bearer-Identifier AVP shall be provided to indicate the affected bearer. All the TFT values for this bearer shall be provided in TFT-Packet-Filter-Information AVP. This event trigger shall be provisioned by the PCRF at the PCEF. Applicable only to 3GPP-GPRS. -->
+    <enum name="TFT_CHANGE" code="3"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a PLMN change PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because there was a change of PLMN. 3GPP-SGSN-MCC-MNC AVP shall be provided in the same request with the new value. -->
+    <enum name="PLMN_CHANGE" code="4"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon loss of bearer, GW should inform PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because the bearer associated with the PCC rules indicated by the corresponding Charging-Rule-Report AVP was lost. The PCC-Rule-Status AVP within the Charging-Rule-Report AVP shall indicate that these PCC rules are temporarily inactive. Applicable to those access-types that handle multiple bearers within one single IP-CAN session (e.g. GPRS).
+         The mechanism of indicating loss of bearer to the GW is IP-CAN access type specific. For GPRS, this is indicated by a PDP context modification request with Maximum Bit Rate (MBR) in QoS profile changed to 0 kbps.
+         When the PCRF performs the bearer binding, the PCEF shall provide the Bearer-Identifier AVP to indicate the bearer that has been lost. -->
+    <enum name="LOSS_OF_BEARER" code="5"/>
+    <!-- This value shall be in CCA and RAR commands by the PCRF used to indicate that upon recovery of bearer, GW should inform PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because the bearer associated with the PCC rules indicated by the corresponding Charging-Rule-Report AVP was recovered. The PCC-Rule-Status AVP within the Charging-Rule-Report AVP shall indicate that these rules are active again. Applicable to those access-types that handle multiple bearers within one single IP-CAN session (e.g. GPRS).
+         The mechanism for indicating recovery of bearer to the GW is IP-CAN access type specific. For GPRS, this is indicated by a PDP context modification request with Maximum Bit Rate (MBR) in QoS profile changed from 0 kbps to a valid value.
+         When the PCRF performs the bearer binding, the PCEF shall provide the Bearer-Identifier AVP to indicate the bearer that has been recovered. -->
+    <enum name="RECOVERY_OF_BEARER" code="6"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change in the IP-CAN type PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because there was a change of IP-CAN type. IP-CAN-Type AVP shall be provided in the same request with the new value. The RAT-Type AVP shall also be provided when applicable to the specific IP-CAN Type (e.g. 3GPP IP-CAN Type). -->
+    <enum name="IP-CAN_CHANGE" code="7"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that only upon a requested QoS change beyond the current authorized value(s) at bearer level PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the requested QoS beyond the authorized value(s) for a specific bearer. The Bearer-Identifier AVP shall be provided to indicate the affected bearer. QoS-Information AVP is required to be provided in the same request with the new value. Applicable only to 3GPP-GPRS. -->
+    <enum name="QOS_CHANGE_EXCEEDING_AUTHORIZATION" code="11"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change in the RAI, PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the RAI. The new RAI value shall be provided in the RAI AVP. If the user location has been changed but the PCEF can not get the detail location information (e.g. handover from 3G to 2G network), the PCEF shall send the RAI AVP to the PCRF by setting the LAC of the RAI to value 0x0000. Applicable only to 3GPP-GPRS and 3GPP-EPS access types. -->
+    <enum name="RAI_CHANGE" code="12"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change in the user location (i.e. i.e. applicable for CGI/SAI/RAI/TAI/ECGI), PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the user location. The new location value shall be provided in the 3GPP-User-Location-Info AVP. If the user location has been changed but the PCEF can not get the detail location information (e.g. handover from 3G to 2G network), the PCEF shall send the 3GPP-User-Location-Info AVP to the PCRF by setting the LAC of the CGI/SAI to value 0x0000, LAC of the RAI to value 0x0000 for GPRS access, and setting the TAC of the TAI to value 0x0000, setting the ECI of the ECGI to value 0x0000 for the EPS access. Applicable only to 3GPP-GPRS and 3GPP-EPS access types. -->
+    <enum name="USER_LOCATION_CHANGE" code="13"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that PCRF does not require any Event Trigger notification except for those events that do not require subscription and are always provisioned. -->
+    <enum name="NO_EVENT_TRIGGERS" code="14"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that the PCEF shall inform the PCRF about the PCC rules for which credit is no longer available, together with the applied termination action. When used in a CCR command, this value indicates that the PCEF generated the request because the PCC rules indicated by the corresponding Charging-Rule-Report AVP have run out of credit, and that the termination action indicated by the corresponding Final-Unit-Indication AVP applies (3GPP TS 32.240 [21] and 3GPP TS 32.299 [19]). -->
+    <enum name="OUT_OF_CREDIT" code="15"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that the PCEF shall inform the PCRF about the PCC rules for which credit has been reallocated after the former out of credit indication. When used in a CCR command, this value indicates that the PCEF generated the request because the PCC rules indicated by the corresponding Charging-Rule-Report AVP have been reallocated credit after the former out of credit indication (3GPP TS 32.240 [21] and 3GPP TS 32.299 [19]). -->
+    <enum name="REALLOCATION_OF_CREDIT" code="16"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon revalidation timeout, the PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a PCC revalidation timeout. -->
+    <enum name="REVALIDATION_TIMEOUT" code="17"/>
+    <!-- When used in a CCR command, this value indicates that the PCEF generated the request because a UE IPv4 address is allocated. The Framed-IP-Address AVP shall be provided in the same request. This event trigger does not require to be provisioned by the PCRF. This event trigger shall be reported when the corresponding event occurs, even if the event trigger is not provisioned by the PCRF. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="UE_IP_ADDRESS_ALLOCATE" code="18"/>
+    <!-- When used in a CCR command, this value indicates that the PCEF generated the request because a UE IPv4 address is released. The Framed-IP-Address AVP shall be provided in the same request. This event trigger does not require to be provisioned by the PCRF. This event trigger shall be reported when the corresponding event occurs, even if the event trigger is not provisioned by the PCRF. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="UE_IP_ADDRESS_RELEASE" code="19"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change in the default EPS Bearer QoS, PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the default EPS Bearer QoS. The new value shall be provided in the Default-EPS-Bearer-QoS AVP. This event trigger shall be reported when the corresponding event occurs, even if the event trigger is not provisioned by the PCRF. Not applicable in 3GPP-GPRS access type. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="DEFAULT_EPS_BEARER_QOS_CHANGE" code="20"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon the change of the serving Access Node Gateway, PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because the serving Access Node gateway changed. The new value of the serving Access Node gateway shall be indicated in the AN-GW-Address AVP. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="AN_GW_CHANGE" code="21"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that the PCEF can inform the PCRF of successful resource allocation for those rules that requires so. When used in a CCR or RAA command, this value indicates that the PCEF informs the PCRF that the resources for a rule have been successfully allocated. The affected rules are indicated within the Charging-Rule-Report AVP with the PCC-Rule-Status AVP set to the value ACTIVE (0). Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="SUCCESSFUL_RESOURCE_ALLOCATION" code="22"/>
+    <!-- This value shall be used in a CCR command to indicate that PCC rules are requested for a resource modification request initiated by the UE. The Packet-Filter-Operation and Packet-Filter-Information AVPs shall be provided in the same request. This event trigger does not require to be provisioned by the PCRF. It shall be reported by the PCEF when the corresponding event occurs even if the event trigger is not provisioned by the PCRF. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="RESOURCE_MODIFICATION_REQUEST" code="23"/>
+    <!-- This value indicates that the command contains a trace activation or deactivation request for the P-GW. Trace activation is indicated with the presence of the Trace-Data AVP with the relevant trace parameters. Trace deactivation is indicated with the presence of the Trace-Reference AVP. This event trigger needs no subscription. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="PGW_TRACE_CONTROL" code="24"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change to the time zone the UE is currently located in, PCC rules shall be requested. When used in a CCR command, this value indicates that the PCEF generated the request because the time zone the UE is currently located in has changed. The new value of the UE’s time zone shall be indicated in the 3GPP-MS-TimeZone AVP. -->
+    <enum name="UE_TIME_ZONE_CHANGE" code="25"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change in the TAI, PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the TAI. The new TAI value shall be provided in the 3GPP-User-Location-Info AVP. If the user tracking area location has been changed but the PCEF can not get the detail location information, the PCEF shall send the 3GPP-User-Location-Info AVP to the PCRF by setting the TAC of the TAI to value 0x0000. Applicable only to 3GPP-EPS access type and to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="TAI_CHANGE" code="26"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon a change in the ECGI, PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the ECGI. The new ECGI value shall be provided in the 3GPP-User-Location-Info AVP. If the ECGI has been changed but the PCEF can not get the detail location information, the PCEF shall send the 3GPP-User-Location-Info AVP to the PCRF by setting the ECI of the ECGI to value 0x0000. Applicable only to 3GPP-EPS access type and to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="ECGI_CHANGE" code="27"/>
+    <!-- The PCRF shall use this value in CCA and RAR commands to indicate that the PCEF shall report the access network charging identifier associated to one or more dynamic PCC Rules within the Access-Network-Charging-Identifier-Gx AVP. The Charging-Correlation-Indicator AVP with value CHARGING_IDENTIFIER_REQUIRED shall be provided. When used in a CCR command, this value indicates that an access network charging identifier has been assigned. The actual value shall be reported with the Access-Network-Charging-Identifier-Gx AVP. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="CHARGING_CORRELATION_EXCHANGE" code="28"/>
+    <!-- The PCEF shall use this value to indicate to the PCRF that APN-AMBR modifications have failed. The PCEF shall use this value in a new CCR command that indicates the failure of either a PUSH initiated modification or a PULL initiated modification. This event trigger needs no subscription. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="APN-AMBR_MODIFICATION_FAILURE" code="29"/>
+    <!-- The PCRF shall use this value to indicate a request of reporting the event that the user enters/leaves a CSG cell. When the user enters a CSG cell, the User-CSG-Information AVP shall also be provided with the event report in the CCR command. Applicable to functionality introduced with the Rel9 feature as described in clause 5.4.1. -->
+    <enum name="USER_CSG_INFORMATION_CHANGE" code="30"/>
+    <!-- This value shall be used in a CCA and RAR commands by the PCRF when requesting usage monitoring at the PCEF. The PCRF shall also provide in the CCA or RAR command the Usage-Monitoring-Information AVP(s) including the Monitoring-Key AVP and the Granted-Service-Unit AVP. When used in a CCR command, this value indicates that the PCEF generated the request to report the accumulated usage for one or more monitoring keys. The PCEF shall also provide the accumulated usage volume using the Usage-Monitoring-Information AVP(s) including the Monitoring-Key AVP and the Used-Service-Unit AVP. Applicable to functionality introduced with the Rel9 feature and, additionally, with the ADC feature, as described in clause 5.4.1. -->
+    <enum name="USAGE_REPORT" code="33"/>
+    <!-- The PCEF shall use this value to indicate to the PCRF that Default EPS Bearer QoS modifications have failed. The PCEF shall use this value in a new CCR command that indicates the failure of either a PUSH initiated modification or a PULL initiated modification. This event trigger needs no subscription. Applicable to functionality introduced with the Rel8 feature as described in clause 5.4.1. -->
+    <enum name="DEFAULT-EPS-BEARER-QOS_MODIFICATION_FAILURE" code="34"/>
+    <!-- The PCRF shall use this value to indicate a request of reporting the event that the user enters/leaves a hybrid cell that the user subscribes to. When the user enters a hybrid cell where the user is a member, the User-CSG-Information AVP shall also be provided with the event report in the CCR command. Applicable to functionality introduced with the Rel9 feature as described in clause 5.4.1. -->
+    <enum name="USER_CSG_HYBRID_SUBSCRIBED_INFORMATION_CHANGE" code="35"/>
+    <!-- The PCRF shall use this value to indicate a request of reporting the event that the user enters/leaves a hybrid cell that the user does not subscribe to. When the user enters a hybrid cell where the user is not a member, the User-CSG-Information AVP shall be provided with the event report in the CCR command. Applicable to functionality introduced with the Rel9 feature as described in clause 5.4.1. -->
+    <enum name="USER_CSG__HYBRID_UNSUBSCRIBED_INFORMATION_CHANGE" code="36"/>
+    <!-- When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change in the IP flow mobility routing rules for flow mobility (installation/modification/removal of the IP flow mobility routing rule). The new IP flow mobility routing rule information shall be provided in the Routing Rule Definition AVP within the same CCR command. This event trigger needs no subscription. Applicable only to IPFlowMobility functionality feature (IFOM) as described in clause 5.4.1. -->
+    <enum name="ROUTING_RULE_CHANGE" code="37"/>
+    <!-- When used in a CCR command, this value indicates that the PCEF generated the request because there has been a change of MBR/APN-AMBR, Maximum-Bandwidth AVP is required to be provided in the same request with the new value. This event trigger needs no subscription. Applicable only to 3GPP-GPRS and 3GPP-EPS access types. -->
+    <enum name="MAX_MBR_APN_AMBR_CHANGE" code="38"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that the PCEF shall inform the PCRF when the start of the application’s traffic for the application, required for detection, has been identified.
+         When used in a CCR command, this value indicates that the PCEF identified the start of the corresponding application’s traffic for an application identified by a TDF-Application-Identifier AVP provided by the PCRF. The detected application(s) shall be identified by the Application-Detection-Information AVP(s). Applicable to functionality introduced with the ADC feature as described in clause 5.4.1.
+         NOTE: APPLICATION_START is always provided together with APPLICATION_STOP, when used by the PCRF in CCA and RAR commands sent to the PCEF. -->
+    <enum name="APPLICATION_START" code="39"/>
+    <!-- This value shall be used in a CCA and RAR commands by the PCRF to indicate that the PCEF shall inform the PCRF when the stop of the application’s traffic for the application, required for detection, has been identified. When used in a CCR command, this value indicates that the PCEF identified the stop of the corresponding application’s traffic for an application identified by a TDF-Application-Identifier AVP provided by the PCRF. The detected application(s) shall be identified by the Application-Detection-Information AVP(s). Applicable to functionality introduced with the ADC feature as described in clause 5.4.1. -->
+    <enum name="APPLICATION_STOP" code="40"/>
+    <!-- This value shall be used in CCA and RAR commands by the PCRF to indicate that upon ADC revalidation timeout, the PCEF shall inform the PCRF. When used in a CCR command, this value indicates that the PCEF generated the request because there has been an ADC revalidation timeout. -->
+    <enum name="ADC_REVALIDATION_TIMEOUT" code="41"/>
+  </avp>
+  <avp name="Metering-Method" code="1007" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the duration of the service data flow shall be metered. -->
+    <enum name="DURATION" code="0"/>
+    <!-- This value shall be used to indicate that volume of the service data flow traffic shall be metered. -->
+    <enum name="VOLUME" code="1"/>
+    <!-- This value shall be used to indicate that the duration and the volume of the service data flow traffic shall be metered. -->
+    <enum name="DURATION_VOLUME" code="2"/>
+  </avp>
+  <avp name="Offline" code="1008" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the offline charging interface for the associated PCC rule shall be disabled. -->
+    <enum name="DISABLE_OFFLINE" code="0"/>
+    <!-- This value shall be used to indicate that the offline charging interface for the associated PCC rule shall be enabled. -->
+    <enum name="ENABLE_OFFLINE" code="1"/>
+  </avp>
+  <avp name="Online" code="1009" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the online charging interface for the associated PCC rule shall be disabled. -->
+    <enum name="DISABLE_ONLINE" code="0"/>
+    <!-- This value shall be used to indicate that the online charging interface for the associated PCC rule shall be enabled. -->
+    <enum name="ENABLE_ONLINE" code="1"/>
+  </avp>
+  <avp name="Precedence" code="1010" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Reporting-Level" code="1011" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the usage shall be reported on service id and rating group combination level, and is applicable when the Service-Identifier and Rating-Group have been provisioned within the Charging-Rule-Definition AVP. -->
+    <enum name="SERVICE_IDENTIFIER_LEVEL" code="0"/>
+    <!-- This value shall be used to indicate that the usage shall be reported on rating group level, and is applicable when the Rating-Group has been provisioned within the Charging-Rule-Definition AVP. -->
+    <enum name="RATING_GROUP_LEVEL" code="1"/>
+    <!-- This value shall be used to indicate that the usage shall be reported on sponsor identity and rating group combination level, and is applicable when the Sponsor-IdentityAVP, Application-Service-Provider-Identity AVP and Rating-Group AVP have been provisioned within the Charging-Rule-Definition AVP. Applicable for offline charging. -->
+    <enum name="SPONSORED_CONNECTIVITY_LEVEL" code="2"/>
+  </avp>
+  <avp name="TFT-Filter" code="1012" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="IPFilterRule"/>
+  </avp>
+  <avp name="TFT-Packet-Filter-Information" code="1013" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="Precedence"/>
+      <gavp name="TFT-Filter"/>
+      <gavp name="ToS-Traffic-Class"/>
+      <gavp name="Security-Parameter-Index"/>
+      <gavp name="Flow-Label"/>
+      <gavp name="Flow-Direction"/>
+    </grouped>
+  </avp>
+  <avp name="ToS-Traffic-Class" code="1014" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="QoS-Information" code="1016" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="QoS-Class-Identifier"/>
+      <gavp name="Max-Requested-Bandwidth-UL"/>
+      <gavp name="Max-Requested-Bandwidth-DL"/>
+      <gavp name="Guaranteed-Bitrate-UL"/>
+      <gavp name="Guaranteed-Bitrate-DL"/>
+      <gavp name="Bearer-Identifier"/>
+      <gavp name="Allocation-Retention-Priority"/>
+      <gavp name="APN-Aggregate-Max-Bitrate-UL"/>
+      <gavp name="APN-Aggregate-Max-Bitrate-DL"/>
+    </grouped>
+  </avp>
+  <avp name="Charging-Rule-Report" code="1018" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="Charging-Rule-Name"/>
+      <gavp name="Charging-Rule-Base-Name"/>
+      <gavp name="Bearer-Identifier"/>
+      <gavp name="PCC-Rule-Status"/>
+      <gavp name="Rule-Failure-Code"/>
+      <gavp name="Final-Unit-Indication"/>
+    </grouped>
+  </avp>
+  <avp name="PCC-Rule-Status" code="1019" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that the PCC rule(s) are successfully installed (for those provisioned from PCRF) or activated (for those pre-provisioned in PCEF) -->
+    <enum name="ACTIVE" code="0"/>
+    <!-- This value is used to indicate that the PCC rule(s) are removed (for those provisioned from PCRF) or inactive (for those pre-provisioned in PCEF) -->
+    <enum name="INACTIVE" code="1"/>
+    <!-- This value is used to indicate that, for some reason (e.g. loss of bearer), already installed or activated PCC rules are temporarily disabled. -->
+    <enum name="TEMPORARILY_INACTIVE" code="2"/>
+  </avp>
+  <avp name="Bearer-Identifier" code="1020" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Bearer-Operation" code="1021" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that a bearer is being terminated. -->
+    <enum name="TERMINATION" code="0"/>
+    <!-- This value is used to indicate that a new bearer is being established. -->
+    <enum name="ESTABLISHMENT" code="1"/>
+    <!-- This value is used to indicate that an existing bearer is being modified. -->
+    <enum name="MODIFICATION" code="2"/>
+  </avp>
+  <avp name="Access-Network-Charging-Identifier-Gx" code="1022" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <grouped>
+      <gavp name="Access-Network-Charging-Identifier-Value"/>
+      <gavp name="Charging-Rule-Base-Name"/>
+      <gavp name="Charging-Rule-Name"/>
+    </grouped>
+  </avp>
+  <avp name="Bearer-Control-Mode" code="1023" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that the UE shall request any resource establishment, modification or termination. -->
+    <enum name="UE_ONLY" code="0"/>
+    <!-- This value is not used in this Release. -->
+    <enum name="RESERVED" code="1"/>
+    <!-- This value is used to indicate that both the UE and PCEF may request any resource establishment, modification or termination by adding, modifying or removing traffic flow information. -->
+    <enum name="UE_NW" code="2"/>
+  </avp>
+  <avp name="Network-Request-Support" code="1024" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that the UE and the access network do not support the network initiated bearer establishment request procedure. -->
+    <enum name="NETWORK_REQUEST_NOT_SUPPORTED" code="0"/>
+    <!-- This value is used to indicate that the UE and the access network support the network initiated bearer establishment request procedure. -->
+    <enum name="NETWORK_REQUEST_SUPPORTED" code="1"/>
+  </avp>
+  <avp name="Guaranteed-Bitrate-DL" code="1025" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Guaranteed-Bitrate-UL" code="1026" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="IP-CAN-Type" code="1027" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the IP-CAN is associated with a 3GPP GPRS access that is connected to the GGSN based on the Gn/Gp interfaces and is further detailed by the RAT-Type AVP. RAT-Type AVP will include applicable 3GPP values, except EUTRAN. -->
+    <enum name="3GPP-GPRS" code="0"/>
+    <!-- This value shall be used to indicate that the IP-CAN is associated with a DOCSIS access. -->
+    <enum name="DOCSIS" code="1"/>
+    <!-- This value shall be used to indicate that the IP-CAN is associated with an xDSL access. -->
+    <enum name="xDSL" code="2"/>
+    <!-- This value shall be used to indicate that the IP-CAN is associated with a WiMAX access (IEEE 802.16). -->
+    <enum name="WiMAX" code="3"/>
+    <!-- This value shall be used to indicate that the IP-CAN is associated with a 3GPP2 access connected to the 3GPP2 packet core as specified in 3GPP2 X.S0011 [20] and is further detailed by the RAT-Type AVP. -->
+    <enum name="3GPP2" code="4"/>
+    <!-- This value shall be used to indicate that the IP-CAN associated with a 3GPP EPS access and is further detailed by the RAT-Type AVP. -->
+    <enum name="3GPP-EPS" code="5"/>
+    <!-- This value shall be used to indicate that the IP-CAN associated with an EPC based non-3GPP access and is further detailed by the RAT-Type AVP. -->
+    <enum name="Non-3GPP-EPS" code="6"/>
+  </avp>
+  <avp name="QoS-Class-Identifier" code="1028" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 1 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_1" code="1"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 2 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_2" code="2"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 3 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_3" code="3"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 4 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_4" code="4"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 5 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_5" code="5"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 6 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_6" code="6"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 7 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_7" code="7"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 8 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_8" code="8"/>
+    <!-- This value shall be used to indicate standardized characteristics associated with standardized QCI value 9 from 3GPP TS 23.203 [7]. -->
+    <enum name="QCI_9" code="9"/>
+  </avp>
+  <avp name="QoS-Negotiation" code="1029" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that a QoS negotiation is not allowed for the corresponding PCC rule request. -->
+    <enum name="NO_QoS_NEGOTIATION" code="0"/>
+    <!-- This value indicates that a QoS negotiation is allowed for the corresponding PCC rule request. This is the default value applicable if this AVP is not supplied -->
+    <enum name="QoS_NEGOTIATION_SUPPORTED" code="1"/>
+  </avp>
+  <avp name="Qos-Upgrade" code="1030" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that the IP-CAN bearer does not support the upgrading of the requested QoS. This is the default value applicable if no QoS-Upgrade AVP has been supplied for an IP CAN bearer. -->
+    <enum name="QoS_UPGRADE_NOT_SUPPORTED" code="0"/>
+    <!-- This value indicates that the IP-CAN bearer supports the upgrading of the requested QoS. -->
+    <enum name="QoS_UPGRADE_SUPPORTED" code="1"/>
+  </avp>
+  <avp name="Rule-Failure-Code" code="1031" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that the pre-provisioned PCC rule could not be successfully activated because the Charging-Rule-Name or Charging-Rule-Base-Name is unknown to the PCEF. -->
+    <enum name="UNKNOWN_RULE_NAME" code="1"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or enforced because the Rating-Group specified within the Charging-Rule-Definition AVP by the PCRF is unknown or, invalid. -->
+    <enum name="RATING_GROUP_ERROR" code="2"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or enforced because the Service-Identifier specified within the Charging-Rule-Definition AVP by the PCRF is invalid, unknown, or not applicable to the service being charged. -->
+    <enum name="SERVICE_IDENTIFIER_ERROR" code="3"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed (for those provisioned from the PCRF) or activated (for those pre-provisioned in PCEF) or enforced (for those already successfully installed) due to GW/PCEF malfunction. -->
+    <enum name="GW/PCEF_MALFUNCTION" code="4"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed (for those provisioned from PCRF) or activated (for those pre-provisioned in PCEF) or enforced (for those already successfully installed) due to a limitation of resources at the PCEF. -->
+    <enum name="RESOURCES_LIMITATION" code="5"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed (for those provisioned from PCRF) or activated (for those pre-provisioned in PCEF) or enforced (for those already successfully installed) due to the fact that the maximum number of bearers has been reached for the IP-CAN session. -->
+    <enum name="MAX_NR_BEARERS_REACHED" code="6"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or enforced at the PCEF because the Bearer-Id specified within the Charging-Rule-Install AVP by the PCRF is unknown or invalid. Applicable only for GPRS in the case the PCRF performs the bearer binding. -->
+    <enum name="UNKNOWN_BEARER_ID" code="7"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or enforced at the PCEF because the Bearer-Id is not specified within the Charging-Rule-Install AVP by the PCRF. Applicable only for GPRS in the case the PCRF performs the bearer binding. -->
+    <enum name="MISSING_BEARER_ID" code="8"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or enforced because the Flow-Information AVP is not specified within the Charging-Rule-Definition AVP by the PCRF during the first install request of the PCC rule. -->
+    <enum name="MISSING_FLOW_INFORMATION" code="9"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or maintained since the bearer establishment/modification failed, or the bearer was released. -->
+    <enum name="RESOURCE_ALLOCATION_FAILURE" code="10"/>
+    <!-- This value is used to indicate that the QoS validation has failed. -->
+    <enum name="UNSUCCESSFUL_QOS_VALIDATION" code="11"/>
+    <!-- This value is used to indicate that the PCC rule could not be successfully installed or modified at the PCEF because the provided flow information is not supported by the network (e.g. the provided IP address(es) or IPv6 prefix(es) do not correspond to an IP version applicable for the IP-CAN session). -->
+    <enum name="INCORRECT_FLOW_INFORMATION" code="12"/>
+    <!-- This value is used to indicate that the PCC rule could not be maintained because of PS to CS handover. This value is only applicable for 3GPP-GPRS and 3GPP-EPS. Applicable to functionality introduced with the Rel9 feature as described in clause 5.4.1. -->
+    <enum name="PS_TO_CS_HANDOVER" code="13"/>
+    <!-- This value is used to indicate that the rule could not be successfully installed or enforced because the TDF-Application-Identifier is invalid, unknown, or not applicable to the application required for detection. -->
+    <enum name="TDF_APPLICATION_IDENTIFIER_ERROR" code="14"/>
+    <!-- This value is used to indicate that there is no IP-CAN bearer without traffic mapping information which the PCEF can bind the PCC rule(s) including Rule-Activation-Time AVP to. -->
+    <enum name="NO_BEARER_BOUND" code="15"/>
+  </avp>
+  <avp name="RAT-Type" code="1032" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the RAT is WLAN. -->
+    <enum name="WLAN" code="0"/>
+    <!-- This value shall be used to indicate that the RAT is unknown. For further details refer to 3GPP TS 29.274 [22]. -->
+    <enum name="VIRTUAL" code="1"/>
+    <!-- This value shall be used to indicate that the RAT is UTRAN. For further details refer to 3GPP TS 29.060 [18]. -->
+    <enum name="UTRAN" code="1000"/>
+    <!-- This value shall be used to indicate that the RAT is GERAN. For further details refer to 3GPP TS 29.060 [18]. -->
+    <enum name="GERAN" code="1001"/>
+    <!-- This value shall be used to indicate that the RAT is GAN. For further details refer to 3GPP TS 29.060 [18] and 3GPP TS 43.318 [29]. -->
+    <enum name="GAN" code="1002"/>
+    <!-- This value shall be used to indicate that the RAT is HSPA Evolution. For further details refer to 3GPP TS 29.060 [18]. -->
+    <enum name="HSPA_EVOLUTION" code="1003"/>
+    <!-- This value shall be used to indicate that the RAT is EUTRAN. For further details refer to 3GPP TS 29.274 [22] -->
+    <enum name="EUTRAN" code="1004"/>
+    <!-- This value shall be used to indicate that the RAT is CDMA2000 1X. For further details refer to 3GPP2 X.S0011 [20]. -->
+    <enum name="CDMA2000_1X" code="2000"/>
+    <!-- This value shall be used to indicate that the RAT is HRPD. For further details refer to 3GPP2 X.S0011 [20]. -->
+    <enum name="HRPD" code="2001"/>
+    <!-- This value shall be used to indicate that the RAT is UMB. For further details refer to 3GPP2 X.S0011 [20]. -->
+    <enum name="UMB" code="2002"/>
+    <!-- This value shall be used to indicate that the RAT is eHRPD. For further details refer to 3GPP2 X.S0057 [24]. -->
+    <enum name="EHRPD" code="2003"/>
+  </avp>
+  <avp name="Event-Report-Indication" code="1033" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Event-Trigger"/>
+      <gavp name="User-CSG-Information"/>
+      <gavp name="RAT-Type"/>
+      <gavp name="QoS-Information"/>
+      <gavp name="RAI"/>
+      <gavp name="3GPP-User-Location-Info"/>
+      <gavp name="Trace-Data"/>
+      <gavp name="Trace-Reference"/>
+      <gavp name="3GPP2-BSID"/>
+      <gavp name="3GPP-MS-TimeZone"/>
+      <gavp name="3GPP-SGSN-Address"/>
+      <gavp name="3GPP-SGSN-IPv6-Address"/>
+      <gavp name="Routing-IP-Address"/>
+    </grouped>
+  </avp>
+  <avp name="Allocation-Retention-Priority" code="1034" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Priority-Level"/>
+      <gavp name="Pre-emption-Capability"/>
+      <gavp name="Pre-emption-Vulnerability"/>
+    </grouped>
+  </avp>
+  <avp name="CoA-IP-Address" code="1035" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="IPAddress"/>
+  </avp>
+  <avp name="Tunnel-Header-Filter" code="1036" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="IPFilterRule"/>
+  </avp>
+  <avp name="Tunnel-Header-Length" code="1037" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Tunnel-Information" code="1038" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Tunnel-Header-Length"/>
+      <!-- 2 --><gavp name="Tunnel-Header-Filter"/>
+    </grouped>
+  </avp>
+  <avp name="CoA-Information" code="1039" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Tunnel-Information"/>
+      <gavp name="CoA-IP-Address"/>
+    </grouped>
+  </avp>
+  <avp name="APN-Aggregate-Max-Bitrate-DL" code="1040" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="APN-Aggregate-Max-Bitrate-UL" code="1041" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Revalidation-Time" code="1042" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Time"/>
+  </avp>
+  <avp name="Rule-Activation-Time" code="1043" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Time"/>
+  </avp>
+  <avp name="Rule-Deactivation-Time" code="1044" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Time"/>
+  </avp>
+  <avp name="Session-Release-Cause" code="1045" vendor-bit="must" vendor-id="TGPP" mandatory="must" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used for unspecified reasons. -->
+    <enum name="UNSPECIFIED_REASON" code="0"/>
+    <!-- This value is used to indicate that the subscription of UE has changed (e.g. removed) and the session needs to be terminated. -->
+    <enum name="UE_SUBSCRIPTION_REASON" code="1"/>
+    <!-- This value is used to indicate that the server is overloaded and needs to abort the session. -->
+    <enum name="INSUFFICIENT_SERVER_RESOURCES" code="2"/>
+    <!-- This value is used to indicate that the corresponding IP-CAN session is terminated. The IP_CAN_SESSION_TERMINATION value is introduced in order to be used by Sd only, when PCRF initiates the TDF session termination within IP-CAN session termination. -->
+    <enum name="IP_CAN_SESSION_TERMINATION" code="3"/>
+  </avp>
+  <avp name="Priority-Level" code="1046" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Pre-emption-Capability" code="1047" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that the service data flow or bearer is allowed to get resources that were already assigned to another service data flow or bearer with a lower priority level. -->
+    <enum name="PRE-EMPTION_CAPABILITY_ENABLED" code="0"/>
+    <!-- This value indicates that the service data flow or bearer is not allowed to get resources that were already assigned to another service data flow or bearer with a lower priority level. This is the default value applicable if this AVP is not supplied. -->
+    <enum name="PRE-EMPTION_CAPABILITY_DISABLED" code="1"/>
+  </avp>
+  <avp name="Pre-emption-Vulnerability" code="1048" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that the resources assigned to the service data flow or bearer can be pre-empted and allocated to a service data flow or bearer with a higher priority level. This is the default value applicable if this AVP is not supplied. -->
+    <enum name="PRE-EMPTION_VULNERABILITY_ENABLED" code="0"/>
+    <!-- This value indicates that the resources assigned to the service data flow or bearer shall not be pre-empted and allocated to a service data flow or bearer with a higher priority level. -->
+    <enum name="PRE-EMPTION_VULNERABILITY_DISABLED" code="1"/>
+  </avp>
+  <avp name="Default-EPS-Bearer-QoS" code="1049" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="QoS-Class-Identifier"/>
+      <gavp name="Allocation-Retention-Priority"/>
+    </grouped>
+  </avp>
+  <avp name="AN-GW-Address" code="1050" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="IPAddress"/>
+  </avp>
+  <avp name="Security-Parameter-Index" code="1056" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Flow-Label" code="1057" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Flow-Information" code="1058" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Flow-Description"/>
+      <gavp name="Packet-Filter-Identifier"/>
+      <gavp name="Packet-Filter-Usage"/>
+      <gavp name="ToS-Traffic-Class"/>
+      <gavp name="Security-Parameter-Index"/>
+      <gavp name="Flow-Label"/>
+      <gavp name="Flow-Direction"/>
+    </grouped>
+  </avp>
+  <avp name="Packet-Filter-Content" code="1059" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="IPFilterRule"/>
+  </avp>
+  <avp name="Packet-Filter-Identifier" code="1060" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Packet-Filter-Information" code="1061" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Packet-Filter-Identifier"/>
+      <gavp name="Precedence"/>
+      <gavp name="Packet-Filter-Content"/>
+      <gavp name="ToS-Traffic-Class"/>
+      <gavp name="Security-Parameter-Index"/>
+      <gavp name="Flow-Label"/>
+      <gavp name="Flow-Direction"/>
+    </grouped>
+  </avp>
+  <avp name="Packet-Filter-Operation" code="1062" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that the resources reserved for the provided packet filter identifiers are to be deleted and are no longer used by the UE. -->
+    <enum name="DELETION" code="0"/>
+    <!-- This value is used to indicate that the UE requests resources allocated for the provided packet filters. -->
+    <enum name="ADDITION" code="1"/>
+    <!-- This value is used to indicate that the reserved QoS, the filter, the precedence, or any of the fields for the provided packet filter identifiers are being modified. -->
+    <enum name="MODIFICATION" code="2"/>
+  </avp>
+  <avp name="Resource-Allocation-Notification" code="1063" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value shall be used to indicate that the allocation of resources for the related PCC rules shall be confirmed. -->
+    <enum name="ENABLE_NOTIFICATION" code="0"/>
+  </avp>
+  <avp name="PDN-Connection-ID" code="1065" vendor-bit="must" vendor-id="TGPP" protected="may" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Monitoring-Key" code="1066" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Usage-Monitoring-Information" code="1067" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Monitoring-Key"/>
+      <gavp name="Granted-Service-Unit"/>
+      <gavp name="Used-Service-Unit"/>
+      <gavp name="Usage-Monitoring-Level"/>
+      <gavp name="Usage-Monitoring-Report"/>
+      <gavp name="Usage-Monitoring-Support"/>
+    </grouped>
+  </avp>
+  <avp name="Usage-Monitoring-Level" code="1068" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value, if provided within an RAR or CCA command by the PCRF, indicates that the usage monitoring instance applies to the entire IP-CAN session. -->
+    <enum name="SESSION_LEVEL" code="0"/>
+    <!-- This value, if provided within an RAR or CCA command by the PCRF indicates that the usage monitoring instance applies to one or more PCC rules. -->
+    <enum name="PCC_RULE_LEVEL" code="1"/>
+    <!-- This value, if provided within an RAR or CCA command by the PCRF, indicates that the usage monitoring instance applies to one or more ADC rules. -->
+    <enum name="ADC_RULE_LEVEL" code="2"/>
+  </avp>
+  <avp name="Usage-Monitoring-Report" code="1069" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value, if provided within an RAR or CCA command by the PCRF indicates that accumulated usage shall be reported by the PCEF. -->
+    <enum name="USAGE_MONITORING_REPORT_REQUIRED" code="0"/>
+  </avp>
+  <avp name="Usage-Monitoring-Support" code="1070" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that usage monitoring is disabled for a monitoring key. -->
+    <enum name="USAGE_MONITORING_DISABLED" code="0"/>
+  </avp>
+  <avp name="CSG-Information-Reporting" code="1071" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that the PCEF reports the user CSG information change to the charging domain when the UE enters/leaves/accesses via a CSG cell. -->
+    <enum name="CHANGE_CSG_CELL" code="0"/>
+    <!-- This value indicates that the PCEF reports the user CSG information change to the charging domain when the UE enters/leaves/accesses via a hybrid cell in which the subscriber is a CSG member. -->
+    <enum name="CHANGE_CSG_SUBSCRIBED_HYBRID_CELL" code="1"/>
+    <!-- This value indicates that the PCEF reports the user CSG information change to the charging domain when the UE enters/leaves/accesses via a hybrid cell in which the subscriber is not a CSG member. -->
+    <enum name="CHANGE_CSG_UNSUBSCRIBED_HYBRID_CELL" code="2"/>
+  </avp>
+  <avp name="Packet-Filter-Usage" code="1072" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <!-- This value is used to indicate that the related traffic mapping information, i.e. the packet filter, shall be sent to the UE, if applicable to the IP-CAN type as per relevant IP-CAN specifications. -->
+    <type type-name="Enumerated"/>
+    <enum name="SEND_TO_UE" code="1"/>
+  </avp>
+  <avp name="Charging-Correlation-Indicator" code="1073" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <!-- This value shall be used to indicate that the Access-Network-Charging-Identifier-Gx AVP for the dynamic PCC rule(s) shall be reported to the PCRF by the PCEF. -->
+    <type type-name="Enumerated"/>
+    <enum name="CHARGING_IDENTIFIER_REQUIRED" code="0"/>
+  </avp>
+  <avp name="Routing-Rule-Remove" code="1075" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Routing-Rule-Identifier"/>
+     </grouped>
+  </avp>
+  <avp name="Routing-Rule-Definition" code="1076" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Routing-Rule-Identifier"/>
+      <gavp name="Routing-Filter"/>
+      <gavp name="Precedence"/>
+      <gavp name="Routing-IP-Address"/>
+    </grouped>
+  </avp>
+  <avp name="Routing-Rule-Identifier" code="1077" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="Routing-Filter" code="1078" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Flow-Description"/>
+      <gavp name="Flow-Direction"/>
+      <gavp name="ToS-Traffic-Class"/>
+      <gavp name="Security-Parameter-Index"/>
+      <gavp name="Flow-Label"/>
+    </grouped>
+  </avp>
+  <avp name="Routing-IP-Address" code="1079" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="IPAddress"/>
+  </avp>
+  <avp name="Flow-Direction" code="1080" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- The corresponding filter applies for traffic to the UE (downlink), but has no specific direction declared. The service data flow detection shall apply the filter for uplink traffic as if the filter was bidirectional. The PCRF shall not use the value UNSPECIFIED in filters created by the network in NW-initiated procedures. The PCRF shall only include the value UNSPECIFIED in filters in UE-initiated procedures if the same value is received from in the CCR request from the PCEF. -->
+    <enum name="UNSPECIFIED" code="0"/>
+    <!-- The corresponding filter applies for traffic to the UE. -->
+    <enum name="DOWNLINK" code="1"/>
+    <!-- The corresponding filter applies for traffic from the UE. -->
+    <enum name="UPLINK" code="2"/>
+    <!-- The corresponding filter applies for traffic both to and from the UE. -->
+    <enum name="BIDIRECTIONAL" code="3"/>
+  </avp>
+  <avp name="Routing-Rule-Install" code="1081" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Routing-Rule-Identifier"/>
+    </grouped>
+  </avp>
+  <avp name="Maximum-Bandwidth" code="1082" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Max-Supported-Bandwidth-UL"/>
+      <gavp name="Max-Supported-Bandwidth-DL"/>
+    </grouped>
+  </avp>
+  <avp name="Max-Supported-Bandwidth-DL" code="1083" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Max-Supported-Bandwidth-UL" code="1084" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Unsigned32"/>
+  </avp>
+  <avp name="Redirect-Information" code="1085" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="Redirect-Support"/>
+      <gavp name="Redirect-Address-Type"/>
+      <gavp name="Redirect-Server-Address"/>
+    </grouped>
+  </avp>
+  <avp name="Redirect- Support" code="1086" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value indicates that redirection is disabled for a detected application’s traffic. -->
+    <enum name="REDIRECTION_DISABLED" code="0"/>
+  </avp>
+  <avp name="TDF-Information" code="1087" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="TDF-Destination-Realm"/>
+      <gavp name="TDF-Destination-Host"/>
+    </grouped>
+  </avp>
+  <avp name="TDF-Application-Identifier" code="1088" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="TDF-Destination-Host" code="1089" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="DiameterIdentity"/>
+  </avp>
+  <avp name="TDF-Destination-Realm" code="1090" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="DiameterIdentity"/>
+  </avp>
+  <avp name="TDF-IP-address" code="1091" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="IPAddress"/>
+  </avp>
+  <avp name="ADC-Rule-Install" code="1092" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="ADC-Rule-Definition"/>
+      <gavp name="ADC-Rule-Name"/>
+      <gavp name="ADC-Rule-Base-Name"/>
+    </grouped>
+  </avp>
+  <avp name="ADC-Rule-Remove" code="1093" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="ADC-Rule-Name"/>
+      <gavp name="ADC-Rule-Base-Name"/>
+    </grouped>
+  </avp>
+  <avp name="ADC-Rule-Definition" code="1094" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="ADC-Rule-Name"/>
+      <gavp name="TDF-Application-Identifier"/>
+      <gavp name="Flow-Status"/>
+      <gavp name="QoS-Information"/>
+      <gavp name="Monitoring-Key"/>
+      <gavp name="Redirect-Information"/>
+    </grouped>
+  </avp>
+  <avp name="ADC-Rule-Base-Name" code="1095" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="UTF8String"/>
+  </avp>
+  <avp name="ADC-Rule-Name" code="1096" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="ADC-Rule-Report" code="1097" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="ADC-Rule-Name"/>
+      <gavp name="ADC-Rule-Base-Name"/>
+      <gavp name="PCC-Rule-Status"/>
+      <gavp name="Rule-Failure-Code"/>
+    </grouped>
+  </avp>
+  <avp name="Application-Detection-Information" code="1098" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <grouped>
+      <gavp name="TDF-Application-Identifier"/>
+      <gavp name="TDF-Application-Instance-Identifier"/>
+      <gavp name="Flow-Information"/>
+    </grouped>
+  </avp>
+  <avp name="PS-to-CS-Session-Continuity" code="1099" vendor-bit="must" vendor-id="TGPP" protected="may" may-encrypt="yes">
+    <type type-name="Enumerated"/>
+    <!-- This value is used to indicate that the service data flow carries video and is a candidate for PS to CS session continuity. -->
+    <enum name="VIDEO_PS2CS_CONT_CANDIDATE" code="0"/> 
+  </avp>
+  <avp name="TDF-Application-Instance-Identifier" code="1100" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="OctetString"/>
+  </avp>
+  <avp name="ADC-Revalidation-Time" code="1101" vendor-bit="must" vendor-id="TGPP" protected="may" mandatory="mustnot" may-encrypt="yes">
+    <type type-name="Time"/>
+  </avp>
+
+</application>

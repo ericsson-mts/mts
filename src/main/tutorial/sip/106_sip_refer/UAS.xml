@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+		<receiveMessageSIP name="Wait REFER" request="true" type="REFER">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	
+		<parameter name="[localTag]" operation="string.random" value="10"/> 		 
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+	
+		</receiveMessageSIP>
+		<sendMessageSIP name="Send 202 Accepted">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 202 Accepted
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->		
+</sendMessageSIP>
+
+</scenario>

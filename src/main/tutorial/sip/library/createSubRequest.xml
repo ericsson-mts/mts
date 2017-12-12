@@ -1,0 +1,188 @@
+<!--
+~~~~~~~~~~~~~~~~~~~
+|     Parameters INPUT     |
+~~~~~~~~~~~~~~~~~~~
+- method
+- msg			(firstime msg can be NOT set, but the following should be SET before )
+- destSC		(bye by server only)
+- ackbyeRoute	(optional; if no recordRoute in 200OK, it should be required.)
+- delay		(optional, if no delay attribut value defaut = 0)
+~~~~~~~~~~~~~~~~~~~
+|    Parameters OUTPUT   |
+~~~~~~~~~~~~~~~~~~~
+-->
+
+    <parameter name="[localHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]" />
+    <parameter name="[localPortSIP]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>	
+	<if>
+	<condition>
+		<test parameter="[delay]" condition="list.exists" />
+		<not><test parameter="[delay]" condition="list.size" value="0" /></not>
+	</condition>
+	<then></then>
+	<else>
+		<parameter name="[delay]" operation="set" value="0"/>
+	</else>
+	</if>
+	
+	<parameter name="[sent]" operation="set" value="false" description="parameter temporal" />
+	
+    <parameter name="[branchId]" operation="string.random" value="10"/>  
+	
+  	
+    <!--ACK/BYE/etc-->
+	<if>
+	<condition>
+		<test parameter="[msg]" condition="list.exists" />
+		<not><test parameter="[msg]" condition="list.size" value="0" /></not>
+	</condition>
+	<then></then>
+	<else>
+		<parameter name="[msg]" operation="protocol.setFromMessage" value="message"/>
+	</else>
+	</if>
+	
+	<parameter name="[via]" operation="protocol.setFromMessage" value="header.Via" value2="[msg]" />	
+	<parameter name="[recordRoute]" operation="protocol.setFromMessage" value="header.Record-Route" value2="[msg]" />
+	<parameter name="[from]" operation="protocol.setFromMessage" value="header.From" value2="[msg]" />
+	<parameter name="[to]" operation="protocol.setFromMessage" value="header.To" value2="[msg]" />
+    <parameter name="[CallID]" operation="protocol.setFromMessage" value="header.Call-ID" value2="[msg]" />
+	<parameter name="[CseqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number" value2="[msg]" />
+	<parameter name="[contact]" operation="protocol.setFromMessage" value="header.Contact.Address" value2="[msg]" />
+	<parameter name="[isRequest]" operation="protocol.setFromMessage" value="message.request" value2="[msg]" />	
+	<parameter name="[lastMethod]" operation="protocol.setFromMessage" value="firstline.Method" value2="[msg]" />	
+	
+	
+		<parameter name="[RRoute]" operation="list.create" />
+<!--test ackbyeroute as contact-->
+		<if>
+		<condition>
+			<test parameter="[ackbyeRoute]" condition="list.exists" />	
+		</condition>
+		<then>
+			<!--parameter name="[list]" operation="set" value="[via]" /-->			
+			<parameter name="[list]" operation="set" value="sip:[ackbyeRoute]" />
+		</then>
+		<else>
+			<if>
+			<condition>
+				<test parameter="[recordRoute]" condition="list.exists" />	
+				<not><test parameter="[recordRoute]" condition="list.size" value="0" /></not>
+			</condition>
+			<then>
+				<parameter name="[list]" operation="set" value="[recordRoute]" />
+			</then>
+			<else>
+				<!--parameter name="[ackbyeRoute]" operation="string.regexreplaces" value="[contact]" value2="sip:|&gt;|&lt;" value3="" /-->
+				<parameter name="[list]" operation="set" value="[contact]" />
+			</else>
+			</if>
+		</else>
+		</if>
+<!--fini test ackbyeroute as contact-->
+		<while>
+		<condition>
+			<test parameter="[list]" condition="list.exists" />
+			<not><test parameter="[list]" condition="list.size" value="0" /></not>
+		</condition>
+		<do>
+			<parameter name="[param]" operation="string.regexreplaces" value="[list(0)]" value2="SIP/.* " value3="sip:" />
+			<parameter name="[param]" operation="string.regexreplaces" value="[param]" value2=";branch=.*" value3="" />
+			<parameter name="[RRoute]" operation="list.addFirst" value="[RRoute]" value2="[param]" />
+            <parameter name="[list]" operation="list.removeFirst" value="[list]" />
+		</do>
+		</while>
+	
+		
+	<if>
+	<condition>
+		<not><test parameter="[method]" condition="string.equals" value="ACK" /></not>
+	</condition>
+	<!--BYE/CANCEL/etc-->
+	<then>
+		<if>
+		<condition>
+			<not><test parameter="[method]" condition="string.equals" value="CANCEL" /></not>
+		</condition>
+		<then>
+			<parameter name="[CseqNumber]" operation="number.add" value="[CseqNumber]" value2="1" />
+		</then>
+		</if>
+	
+		<if>
+		<condition>
+			<test parameter="[isRequest]" condition="string.equals" value="true" />
+			<not><test parameter="[lastMethod]" condition="string.equals" value="INVITE" /></not>			
+			<test parameter="[destSC]" condition="list.exists" />
+		</condition>
+		<then>
+			<parameter name="[mid]" operation="set" value="[to]" />
+			<parameter name="[to]" operation="set" value="[from]" />
+			<parameter name="[from]" operation="set" value="[mid]" />	
+			<sendMessageSIP name="Send msg" destScenario="[destSC]" delay="[delay]" >
+<![CDATA[[method] [contact] SIP/2.0
+To: [to]
+From: [from]
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[branchId]
+Call-ID: [CallID]
+CSeq: [CseqNumber] [method]
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: <sip:[localSIP]>
+Supported: timer
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Session-Expires: 3600;refresher=uac
+P-Charging-Vector: icid-value=0.6645971655716005;ggsn=139.10.69.237;pdp-sig=yes;gcid=60ee19cf;auth-token=0.4849361942495226
+P-com.Siemens.MSISDN-ID: 3381164951574
+P-com.Siemens.IMSI-ID: 81164951574
+P-com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
+Route: [RRoute]
+]]>
+			</sendMessageSIP>
+			<parameter name="[sent]" operation="set" value="true" />
+		</then>
+		</if>				
+	</then>	
+	</if>
+	
+	<if>
+	<condition>
+		<test parameter="[sent]" condition="string.equals" value="false" />
+	</condition>
+	<then>
+	<sendMessageSIP name="Send msg" delay="[delay]" >
+<![CDATA[[method] [contact] SIP/2.0
+To: [to]
+From: [from]
+Via: SIP/2.0/UDP [localSIP];branch=z9hG4bK[branchId]
+Call-ID: [CallID]
+CSeq: [CseqNumber] [method]
+Max-Forwards: 70
+Proxy-Authorization: IMS_GPRS_SCHEMA token="999"
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: <sip:[localSIP]>
+Supported: timer
+User-Agent: PoC-client/OMA1.0 XmlLoader/v0.0
+Session-Expires: 3600;refresher=uac
+P-Charging-Vector: icid-value=0.6645971655716005;ggsn=139.10.69.237;pdp-sig=yes;gcid=60ee19cf;auth-token=0.4849361942495226
+P-com.Siemens.MSISDN-ID: 3381164951574
+P-com.Siemens.IMSI-ID: 81164951574
+P-com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Function-Addresses: ccf=139.10.99.99;ccf_sec=139.10.99.99
+Route: [RRoute]
+]]>
+	</sendMessageSIP>
+	</then>
+	</if>
+
+
+		<parameter name="[method]" operation="list.remove" />
+		<parameter name="[msg]" operation="list.remove" />
+		<parameter name="[delay]" operation="list.remove" />
+		<parameter name="[ackbyeRoute]" operation="list.remove" />
+		<parameter name="[destSC]" operation="list.remove" />
+        

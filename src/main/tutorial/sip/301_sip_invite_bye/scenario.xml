@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <parameter name="[listenpointName]" value="someName" />
+    <parameter name="[listenpointHost]" value="[localHostSIP]" />
+    <parameter name="[listenpointPort]" value="5060" />
+  
+    <createListenpointSIP name="[listenpointName]" localHost="[listenpointHost]" localPort="[listenpointPort]" />
+  
+    <call name="sip.sendRegister" >
+        <input>
+            <parameter name="[listenpoint]" value="[listenpointName]"/>
+            <parameter name="[username]" value="fabien"/>
+            <parameter name="[displayname]" value="Fabien Henry"/>
+            <parameter name="[domain]" value="imslab.devoteam"/>
+            <parameter name="[userhost]" value="[listenpointHost]"/>
+            <parameter name="[remotehost]" value="[remoteHostSIP]"/>
+            <parameter name="[remoteport]" value="[remotePortSIP]"/>
+        </input>
+    </call>
+    <parameter name="[registerMessage]" operation="setFromMessage" value="message" />
+
+    <receiveMessageSIP type="REGISTER" result="401" />
+
+    <parameter name="[responseMessage]" operation="setFromMessage" value="message" />
+
+    <call name="sip.handle401" >
+        <input>
+            <parameter name="[requestMessage]" value="[registerMessage]"/>
+            <parameter name="[unauthorizedMessage]" value="[responseMessage]"/>
+            <parameter name="[username]" value="ibra@imslab.devoteam"/>
+            <parameter name="[password]" value="ibra"/>
+        </input>
+    </call>
+    <receiveMessageSIP type="REGISTER" result="200"/>
+
+
+
+    <parameter name="[responseMessage]" operation="setFromMessage" value="message" />
+
+    <call name="sip.send.invite" >
+        <input>
+            <parameter name="[responseMessage]" value="[responseMessage]"/>
+            <parameter name="[usernameDst]" value="alice"/>
+            <parameter name="[displaynameDst]" value="alice"/>
+            <parameter name="[domainDst]" value="imslab.devoteam"/>
+
+            <parameter name="[transport]" value="UDP" />
+            <parameter name="[Max-Forwards]" value="70" />
+            <parameter name="[Expires]" value="3600" />
+            <parameter name="[Content]" value=""/>
+        </input>
+    </call>
+  
+    <receiveMessageSIP type="INVITE" result="100"/>
+    <receiveMessageSIP type="INVITE" result="180"/>
+    <receiveMessageSIP type="INVITE" result="200"/>
+    <parameter name="[responseMessage200]" operation="setFromMessage" value="message" />
+    
+    <call name="sip.send.ack" >
+        <input>
+            <parameter name="[responseMessage]" value="[responseMessage200]"/>
+            <parameter name="[usernameDst]" value="alice"/>
+            <parameter name="[displaynameDst]" value="alice"/>
+            <parameter name="[domainDst]" value="imslab.devoteam"/>
+
+            <parameter name="[transport]" value="UDP" />
+            <parameter name="[Max-Forwards]" value="70" />
+            <parameter name="[Expires]" value="3600" />
+            <parameter name="[Content]" value=""/>
+        </input>
+    </call>
+    <receiveMessageSIP type="BYE" />
+
+    <parameter name="[responseMessageBye]" operation="setFromMessage" value="message" />
+
+    <call name="sip.send.200forBye" >
+        <input>
+            <parameter name="[responseMessage]" value="[responseMessageBye]"/>
+            <parameter name="[usernameDst]" value="alice"/>
+            <parameter name="[displaynameDst]" value="alice"/>
+            <parameter name="[domainDst]" value="imslab.devoteam"/>
+
+            <parameter name="[transport]" value="UDP" />
+            <parameter name="[Max-Forwards]" value="70" />
+            <parameter name="[Expires]" value="3600" />
+            <parameter name="[Content]" value=""/>
+        </input>
+    </call>
+    <removeListenpointSIP name="[listenpointName]" />
+    
+</scenario>

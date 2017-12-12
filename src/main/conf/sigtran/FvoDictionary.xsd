@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+            elementFormDefault="qualified">
+
+	<xs:element name="dictionary">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="header"		type="parameterType"	  	minOccurs="0" maxOccurs="1"/>
+				<xs:element name="messages"		type="messagesType"	  		minOccurs="0" maxOccurs="1"/>
+				<xs:element name="parameters"	type="parametersType"	  	minOccurs="0" maxOccurs="1"/>
+				<xs:element name="enumerations"	type="enumerationsType"	  	minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="messagesType">
+		<xs:sequence>
+			<xs:element name="message" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="name"       type="xs:string" />
+								<xs:attribute name="type"       type="parameterTypeType" use="required"/>
+								<xs:attribute name="length"     type="xs:decimal" />
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="typeCode"           	type="xs:decimal" use="required"/>
+					<xs:attribute name="typeName"         		type="xs:string" />
+				</xs:complexType>
+			</xs:element>	
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="parameterType">
+		<xs:sequence>
+			<xs:element name="field" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+      				<xs:attribute name="name"               type="xs:string" />
+      				<xs:attribute name="start"              type="xs:decimal" />
+      				<xs:attribute name="length"             type="xs:decimal" />
+      				<xs:attribute name="startBit"           type="xs:decimal" />
+      				<xs:attribute name="lengthBit"          type="xs:decimal" />
+      				<xs:attribute name="format"             type="formatType" />
+      			</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="id"          					type="xs:decimal" use="required"/>
+		<xs:attribute name="name"         					type="xs:string" />
+		<xs:attribute name="pointerLength"  				type="xs:decimal" />
+		<xs:attribute name="lengthIndicatorLength"         	type="xs:decimal" />
+	</xs:complexType>
+	
+	<xs:complexType name="parametersType">
+		<xs:sequence>
+			<xs:element name="parameter"	type="parameterType"	  	minOccurs="0" maxOccurs="unbounded"/>	
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:complexType name="enumerationsType">
+		<xs:sequence>
+			<xs:element name="enumeration" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="value" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="code"         type="xs:decimal" use="required"/>
+								<xs:attribute name="name"         type="xs:string" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+					<xs:attribute name="name"         type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>	
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="formatType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="INTEGER" />
+            <xs:enumeration value="GROUPED" />
+            <xs:enumeration value="STRING" />
+            <xs:enumeration value="DATA" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="parameterTypeType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F" />
+            <xs:enumeration value="V" />
+            <xs:enumeration value="O" />
+        </xs:restriction>
+    </xs:simpleType>	
+	
+</xs:schema>

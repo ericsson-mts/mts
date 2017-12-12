@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="SIP regression tests">
+   
+	<parameter editable="true" name="[IPVersion]" operation="set" value="4"/>
+   	<parameter name="[client_UAS]" operation="set" value="bob"/>
+	<parameter name="[client_UAC]" operation="set" value="alice"/>
+	<parameter name="[domaine]" operation="set" value="ims.net"/>
+
+	
+    <parameter name="[Host-Server]" operation="set" value="172.16.21.150"/>
+    <!--parameter name="[Host-Server]" 	operation="set" value="192.168.130.20"/-->    
+    <parameter name="[Port-Server]" operation="set" value="4060"/>
+    <parameter name="[Adresse-Server]" operation="set" value="[Host-Server]:[Port-Server]"/>	
+	
+	<parameter name="[nom_icscf]" operation="set" value="icscf.ims.net"/>	
+	
+	
+	<parameter name="[Default_SCSCF]" operation="set" value="sip:scscf.ims.net:6060"/>
+	<parameter name="[nom_scscf]" operation="set" value="scscf.ims.net"/>	
+	
+	<parameter name="[Default_HSS]" operation="set" value="aaa://hss.ims.net:3868"/>	
+
+	<testcase description="simulation AS1" name="AS1" state="true">
+		<scenario file="IFC_AS1.xml" name="AS1" routingName="AS1"/>
+    </testcase>
+	
+	<testcase description="simulation AS2" name="AS2" state="true">
+		<scenario file="IFC_AS2.xml" name="AS2" routingName="AS2"/>
+    </testcase>
+	
+	<testcase description="simulation P-CSCF" name="PCSCF" state="true">
+        <scenario file="PCSCF/PCSCF.xml" name="PCSCF" routingName="PCSCF"/>
+    </testcase>
+	
+	<testcase description="simulation I-CSCF" name="ICSCF" state="true">
+        <scenario file="ICSCF/ICSCF.xml" name="ICSCF" routingName="ICSCF"/>
+    </testcase>
+	
+	<testcase description="simulation S-CSCF" name="SCSCF" state="true">
+        <scenario file="SCSCF/SCSCF.xml" name="SCSCF" routingName="SCSCF"/>
+    </testcase>	
+
+	<testcase description="test sip" name="MRF" state="true">
+        <scenario file="MRF/UAC_invite.xml" name="invitee" routingName="invitee"/>
+        <scenario file="MRF/MRF.xml" name="" routingName=""/>	
+    </testcase>
+	
+	<testcase description="simulation SAR" name="SAR" state="false">
+        <scenario file="SAR.xml" name="SAR" routingName="SAR"/>
+    </testcase>	
+	
+</test>

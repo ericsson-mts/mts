@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : 
+        V5.2 => en_30034701v020202p.pdf : ETSIEN300347-1 V2.2.2(1999-12)
+    	V5.1 => en_30032401v020101p.pdf : ETSIEN300324-1 V2.1.1(2000-04)    
+    	
+    Message : AUDIT(38) => V5.2 chapter 17.3.7
+    
+    The following scenarios send the V5.X message with the following elements :
+
+Protocol Discriminator 13.2.1 LE to AN M 1
+BCC Reference Number 17.4.1 LE to AN M 2
+Message Type 17.3 LE to AN M 1
+User Port Identification 17.4.2.1 LE to AN O (note 1) 4
+ISDN Port Channel Identification 17.4.2.2 LE to AN O (note 2) 3
+V5 Time Slot Identification 17.4.2.3 LE to AN O (note 3) 4
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN" remoteHost="[remoteHostV5UA]" remotePort="[remotePortV5UA]">
+       	
+        <ISDN name="V5.X" syntax="../conf/sigtran/v5x.xml">
+        
+	    <!-- AUDIT = b0100110 = h26 = d38-->
+            <header discriminator="Recommendation ETSI300347-1/V5.2" layer3Address="h77f4"  type="AUDIT"/>
+	
+	    <!-- BCC User port identification 17.4.2.1 -->
+	    <element identifier="BCC User port identification">       
+	        <field name="User Port Identification Value HIGH" value="63" lengthBit="6" type="integer" />        
+	        <field name="ext1" value="0" lengthBit="2" type="integer" />        
+	        <field name="User Port Identification Value LOW" value="127" lengthBit="7" type="integer" />                
+	        <field name="ext2" value="1" lengthBit="1" type="boolean" />        
+	    </element>
+
+	    <!-- BCC ISDN port channel identification 17.4.2.2 -->
+	    <element identifier="BCC ISDN port channel identification">
+	        <field name="spare" value="7" lengthBit="3" type="integer" />
+	        <field name="ISDN user port time slot number" value="31" lengthBit="5" type="integer" />        
+	    </element>
+
+	    <!-- BCC V5 time slot identification 17.4.2.3 -->
+	    <element identifier="BCC V5 time slot identification">
+	        <field name="V5 2 048 kbit/s link Identifier" value="255" lengthBit="8" type="integer" />                
+	        <field name="spare" lengthBit="2" value="3" type="integer" />        
+	        <field name="Override" value="1" lengthBit="1" type="boolean" />                
+	        <field name="V5 Time Slot Number" value="31" lengthBit="5" type="integer" />                                
+	    </element>
+	    	
+        </ISDN>
+        
+        <UA name="V5UA" file="v5ua.xml">
+            <header messageClass="V5PTM:V5 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+		<field name="Link_Identifier" value="134217727"/>
+            	<field name="Channel_Identifier" value="31"/>            
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="EFA" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value="DEFINED IN UPPER LAYER"/>
+            </parameter>
+        </UA>	
+        
+    </sendMessageSIGTRAN>
+
+</scenario>

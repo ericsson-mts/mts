@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<scenario>
+
+    <parameter name="[tsBegin]" operation="system.timestamp"/>
+    <parameter name="[testcase:begin]" operation="system.semaphorenotify"/>
+    <parameter name="[testcase:sema_reg]" operation="system.semaphorewait" value="3"/>
+    <parameter name="[testcase:sema_reg]" operation="list.remove"/>
+    <parameter name="[tsEnd]" operation="system.timestamp"/>
+    
+    <parameter name="[diff]" operation="number.substract" value="[tsEnd]" value2="[tsBegin]"/>
+    <log type="main" level="INFO">diff=[diff]</log>
+    <if>
+      <condition>
+        <test parameter="[diff]" condition="number.greaterEqualThan" value="[testcase:delay]" not="true"/>
+      </condition>
+      <then>
+        <log type="main" level="WARN">diff=[diff]</log>
+      </then>    
+    </if>
+    <test parameter="[diff]" condition="number.greaterEqualThan" value="[testcase:delay]"/>
+
+</scenario>

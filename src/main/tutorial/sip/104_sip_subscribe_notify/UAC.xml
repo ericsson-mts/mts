@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[inviteeName1]" operation="set" value="bob"/>
+  <parameter name="[104_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+  <parameter name="[clientAddr]" operation="set" value="192.168.56.32"/>
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newBranchId]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseqNumber]" operation="number.random" value="10000000"/>
+
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+		<sendMessageSIP name="Send Subscribe" destScenario="bob">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SUBSCRIBE sip:[inviteeName1]@[104_DOMAIN_ADDR] SIP/2.0
+To: sip:[inviteeName1]@[104_DOMAIN_ADDR]
+From: "[clientName]"<sip:[clientName]@[104_DOMAIN_ADDR]>;tag=[localTag]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [newCallId]
+CSeq: [newCseqNumber] SUBSCRIBE
+Max-Forwards: 70
+Accept: application/conference-info+xml
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburstst
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[remoteSIP];lr;mode=originating>
+Route: <sip:[localSIP];lr;mode=originating>
+Expires: 3600
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="SUBSCRIBE" result="200">
+    		<parameter name="[subscribeTo]" operation="protocol.setFromMessage" value="header.To"/>
+    		<parameter name="[subscribeFrom]" operation="protocol.setFromMessage" value="header.From"/>
+    		<parameter name="[subscribeCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+    		<parameter name="[subscribeCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    		<parameter name="[subscribeVia]" operation="protocol.setFromMessage" value="header.Via"/>
+		</receiveMessageSIP>
+	
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+	
+		<receiveMessageSIP name="Wait NOTIFY" request="true" type="NOTIFY">
+		<parameter name="[notifyTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[notifyFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[notifyCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[notifyCSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[notifyCSeqNumber]" operation="protocol.setFromMessage" value="header.CSeq.Number"/>
+		<parameter name="[notifyVia]" operation="protocol.setFromMessage" value="header.Via"/>
+		</receiveMessageSIP>
+
+		<sendMessageSIP name="send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [notifyTo]
+From: [notifyFrom]
+Call-ID: [notifyCallId]
+Via: [notifyVia]
+CSeq: [notifyCSeq]
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+		
+    <parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+
+    <parameter name="[newBranchId]" operation="string.random" value="10"/>
+    <parameter name="[subscribeCseqNumber]" operation="number.add" value="[notifyCSeqNumber]" value2="1"/>
+<sendMessageSIP name="Send Subscribe with expires=0">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SUBSCRIBE sip:[inviteeName1]@[104_DOMAIN_ADDR] SIP/2.0
+To: [subscribeTo]
+From: [subscribeFrom]
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];id=[clientName]
+Call-ID: [subscribeCallId]
+CSeq: [subscribeCseqNumber] SUBSCRIBE
+Max-Forwards: 70
+Accept: application/conference-info+xml
+Contact: <sip:[clientName]@[localSIP]>;+g.poc.talkburstst
+Event: conference
+User-Agent: PoC-client/OMA1.0 Siemens/v2.0
+Accept-Contact: *;+g.poc.talkburst;require;explicit
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Route: <sip:[remoteSIP];lr;mode=originating>
+Route: <sip:[localSIP];lr;mode=originating>
+Expires: 0
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+		</sendMessageSIP>
+		<receiveMessageSIP name="Wait 200 OK" request="false" type="SUBSCRIBE" result="200">
+		</receiveMessageSIP>
+	
+</scenario>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Rx Abort-Session (ASR/ASA)" -->
+<scenario>
+
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    
+<!--
+From 3GPP TS 29.214 V10.3.0 : ASR is sent by the PCRF to inform the AF that bearer for the established session is no longer available
+<AS-Request> ::= < Diameter Header: 274, REQ, PXY, 16777236 > 
+ < Session-Id > 
+ { Origin-Host } 
+ { Origin-Realm } 
+ { Destination-Realm } 
+ { Destination-Host } 
+ { Auth-Application-Id } 
+ { Abort-Cause } 
+ [ Origin-State-Id ]
+ *[ Proxy-Info ] 
+ *[ Route-Record ] 
+ *[ AVP ] 
+ -->
+
+    <!-- Abort-Cause - enum  
+      BEARER_RELEASED(0)|INSUFFICIENT_SERVER_RESOURCES(1)|INSUFFICIENT_BEARER_RESOURCES(2)|PS_TO_CS_HANDOVER(3)
+    -->
+    <parameter name="[Abort-Cause]" operation="set" value="2"/>
+
+    <parameter name="[newSessionId]" operation="binary.random" value="10"/>
+    <sendMessageDIAMETER name="SendRequestASR" channel="channel_client" destScenario="server">
+        <header request="true" command="[commandCode]" applicationId="[applicationID]"/>
+        <avp code="Session-Id:263" value="[localHostDIAM];[newSessionId]"/>
+        
+        <avp code="Auth-Application-Id:258" value="[applicationID]"/>
+
+        <avp code="Origin-Host:264" value="[localHostDIAM]"/>
+        <avp code="Origin-Realm:296" value="[localRealmDIAM]"/>
+        <avp code="Destination-Host:293" value="[remoteHostDIAM]"/>
+        <avp code="Destination-Realm:283" value="[remoteRealmDIAM]"/>
+        
+        <avp code="Abort-Cause:500" value="[Abort-Cause]" vendorId="[vendorID]"/>
+    </sendMessageDIAMETER>
+
+    <receiveMessageDIAMETER name="ReceiveAnswerASA" channel="channel_client" request="false" type="Abort-Session" result="DIAMETER_SUCCESS">
+        <parameter name="[equipmentStatus]" operation="protocol.setFromMessage" value="avp.Equipment-Status.value"/>
+    </receiveMessageDIAMETER>
+
+
+</scenario>

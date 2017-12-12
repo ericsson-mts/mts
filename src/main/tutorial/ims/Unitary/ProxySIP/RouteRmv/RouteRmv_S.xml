@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" operation="set" value="[PortUAS]"/>
+	<parameter name="[LocalAddressUAS]" operation="set" value="[HardAddressUAS]"/>	
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+	<parameter name="[TopmostRoute]" operation="setFromMessage" value="header:TopmostRoute"/>
+	</receiveRequestSIP>
+
+	
+	<parameter name="[SizeOfTopmostRoute]" operation="size" value="[TopmostRoute]"/>
+	
+	
+	<if>
+		<condition>
+			<test parameter="[SizeOfTopmostRoute]" condition="greaterThan" value="0"/>
+		</condition>
+		<then>
+			<parameter name="[RouteProxyPresence]" operation="contains" value="[TopmostRoute]" value2="sip:[Adresse-Proxy];lr" />
+
+			<if>
+				<condition>
+					<test parameter="[RouteProxyPresence]" condition="equals" value="false"/>
+				</condition>
+				<then>
+					<log level="0">Proxy removes himself from the Route header</log>
+				</then>
+				<else>
+					<log level="3">Proxy DOESN'T remove himself from the Route header!</log>
+				</else>
+			</if>
+
+		</then>
+		<else>
+			<log level="0">Proxy removes himself from the Route header</log>
+		</else>
+</if>
+		
+</scenario>
+	

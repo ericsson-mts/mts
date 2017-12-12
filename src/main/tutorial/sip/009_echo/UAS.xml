@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+    <parameter name="[NotDefined]" operation="protocol.setFromMessage" value="header.NotDefined"/> 
+    <parameter name="[localTag]" operation="string.random" value="10"/>         
+  </receiveMessageSIP>
+
+  <test parameter="[NotDefined(0)]" condition="string.equals" value="bla[param]bla,[param(2)]"/>
+  <test parameter="[NotDefined(1)]" condition="string.equals" value="bla[param()]bla,[param(index)],[param(-1)]"/>
+  <test parameter="[NotDefined(2)]" condition="string.equals" value=""/>
+
+   <sendMessageSIP name="Send 100 Trying">
+<![CDATA[SIP/2.0 100 Trying
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Contact: <sip:alice@[localSIP]>
+Via: [Via]
+User-Agent: XmlLoader
+Content-Length: 0]]>
+  </sendMessageSIP>  
+
+  <sendMessageSIP name="Send 180 Ringing">
+<![CDATA[SIP/2.0 180 Ringing
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Contact: [To]
+Via: [Via]
+User-Agent: XmlLoader
+Content-Length: 0]]>
+  </sendMessageSIP>  
+ 
+
+  <sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Via: [Via]
+Contact: <sip:alice@[remoteSIP]>
+User-Agent: XmlLoader
+NotDefined: [NotDefined]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <receiveMessageSIP name="Wait ACK" request="true" type="ACK">
+    <parameter name="[Simple]" operation="protocol.setFromMessage" value="header.Simple"/>                   
+  </receiveMessageSIP>
+
+  <test parameter="[Simple]" condition="string.equals" value="bla0123456789bla,0123456789"/>
+
+  <receiveMessageSIP name="Wait BYE" request="true" type="BYE">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>   
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>       
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>          
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>       
+    <parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>                 
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/> 
+    <parameter name="[Multiple]" operation="protocol.setFromMessage" value="header.Multiple"/>               
+  </receiveMessageSIP>
+
+  <test parameter="[Multiple(0)]" condition="string.equals" value="bla123bla, 123"/>
+  <test parameter="[Multiple(1)]" condition="string.equals" value="bla456bla, 456"/>
+  <test parameter="[Multiple(2)]" condition="string.equals" value="blabla,"/>
+  <test parameter="[Multiple(3)]" condition="string.equals" value="bla789bla, 789"/>
+  <test parameter="[Multiple(4)]" condition="string.equals" value="bla123bla, 123, [unKnown]"/>
+  <test parameter="[Multiple(5)]" condition="string.equals" value="bla456bla, 123, [unKnown]"/>
+  <test parameter="[Multiple(6)]" condition="string.equals" value="blabla, 123, [unKnown]"/>
+  <test parameter="[Multiple(7)]" condition="string.equals" value="bla789bla, 123, [unKnown]"/>                  
+  <test parameter="[Multiple(8)]" condition="string.equals" value=""/>                   
+  <test parameter="[Multiple(9)]" condition="string.equals" value="bla123bla, 456, , 789"/>                      
+  <test parameter="[Multiple(10)]" condition="string.equals" value="789, [unKnown]"/>                    
+
+  <sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Via: [Via]
+Contact: [Contact]
+User-Agent: XmlLoader
+Multiple: [Multiple]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+                                
+</scenario>

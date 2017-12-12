@@ -1,0 +1,33 @@
+<!--envoi requete MAR-->
+<sendRequestAAA name="SendRequestMAR" server="[Default_HSS]" state="true">
+	<header command="Multimedia-Auth" applicationId="IMS_Cx_Dx" proxiable="true"/>
+	<!-- Standard AVP described ion 3588 RFC -->
+	<avp code="Session-Id" mandatory="true" 	type="UTF8String" value="[nom_scscf];45e45ee4;046725;5cd579de"/>
+	<avp code="Origin-Host" mandatory="true" 	type="DiameterIdentity" value="[nom_scscf]"/>
+	<avp code="Origin-Realm" mandatory="true" 	type="DiameterIdentity" value="[domaine]"/>
+	<avp code="Destination-Realm" mandatory="true" type="DiameterIdentity" value="[domaine]"/>
+	<avp code="Vendor-Specific-Application-Id">
+			<avp code="Vendor-Id" value="TGPP"/>
+			<avp code="Auth-Application-Id" value="IMS_Cx_Dx"/>
+	</avp>
+	<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+	<!-- The Public-Identity AVP contains a Public User Identity. -->
+	<avp code="Public-Identity" mandatory="true" type="UTF8String" value="[impu]" vendorId="10415"/>                   
+		<!-- The User-Name AVP contains a Private User Identity. -->
+	<avp code="User-Name" mandatory="true" type="UTF8String" value="[impi]"/>
+	<!-- The SIP-Auth-Data-Item AVP contains the authentication and/or authorization information for the Diameter client. -->		
+	<avp code="SIP-Number-Auth-Items" value="1"/>
+		<!-- The SIP-Auth-Data-Item AVP contains the authentication and/or authorization information for the Diameter client. -->
+	<avp code="SIP-Auth-Data-Item">
+		<!-- The SIP-Authentication-Scheme AVP indicates the authentication scheme used in the authentication of SIP messages. -->		
+		<avp code="SIP-Authentication-Scheme" value="unknown"/>
+	</avp>
+	<!-- The Server-Name AVP contains a SIP-URL. -->
+	 <avp code="Server-Name" value="[Default_SCSCF]"/>
+ </sendRequestAAA>
+<!--reception requete MAA-->
+<receiveAnswerAAA name="Receive Answer (MAA)" >
+	<parameter name="[nonce]" 		operation="setFromMessage" 	value="612:609:value"/>
+	<parameter name="[password]" 	operation="setFromMessage" 	value="612:610:value"/> 
+	<parameter name="[domain]" 	operation="setFromMessage" 	value="296:value"/> 
+</receiveAnswerAAA>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<parameter name="[search_in]" operation="set" value="[last_Message]" state="{xpath:.[@search_in = 'msg']/@search_in}"/>
+<parameter name="[search_in]" operation="set" value="{xpath:./@variable}" state="{xpath:.[@search_in = 'var']/@search_in}"/>
+<parameter name="[search_in]" operation="setFromMessage" value="header.{xpath:./@header}" state="{xpath:.[@search_in = 'hdr' and @start_line != 'true']/@search_in}"/>
+<parameter name="[search_in]" operation="setFromMessage" value="firstline" state="{xpath:.[@search_in = 'hdr' and @start_line = 'true']/@search_in}" />
+<parameter name="[search_in]" operation="setFromMessage" value="content" state="{xpath:.[@search_in = 'body']/@search_in}" />
+<parameter name="[{xpath:./@assign_to}]" operation="string.matches" value="[search_in]" value2="{xpath:./@regexp}" />
+<parameter name="[result]" operation="set" value="[{xpath:./@assign_to}]" />
+<test parameter="[result]" condition="boolean.equals" value="true" state="{xpath:.[@check_it = 'true']/@check_it}" />
+<test parameter="[result]" condition="boolean.equals" value="true" state="{xpath:.[@check_it_inverse = 'true']/@check_it_inverse}"/>
+</template>

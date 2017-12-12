@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+  <parameter name="[normalString]" operation="set"><![CDATA[ ²&é"'(-è_çà)= azertyuiop^$qsdfghjklmù*<wxcvbn,;:!]]></parameter>            
+  <parameter name="[shiftString]" operation="set"><![CDATA[ 1234567890°+AZERTYUIOP£QSDFGHJKLM%µ>WXCVBN?./§ ]]></parameter>        
+  <parameter name="[altgrString]" operation="set"><![CDATA[ €~#{[|`\^@]} ]]></parameter>    
+  <parameter name="[accentString]" operation="set"><![CDATA[ âêûîôÂÊÛÎÔäëüïöÄËÜÏÖ ]]></parameter>
+      
+	<parameter name="[allString]" operation="set" value="[normalString][shiftString][altgrString][accentString]"/>
+  <parameter name="[allStringLength]" operation="string.length" value="[allString]" />
+	<test parameter="[allStringLength]" condition="number.equals" value="134" />               
+	<test parameter="[allString]" condition="string.equals" value="[normalString][shiftString][altgrString][accentString]" />
+  
+  <parameter name="[allStringBinary]" operation="string.toBinary" value="[allString]"/>
+  <parameter name="[allstringBinLength]" operation="binary.length" value="[allStringBinary]" />
+	<test parameter="[allstringBinLength]" condition="number.equals" value="134" />      
+	<test parameter="[allStringBinary]" condition="binary.equals" value="20b226e92227282de85fe7e0293d20617a6572747975696f705e247173646667686a6b6c6df92a3c77786376626e2c3b3a212031323334353637383930b02b415a4552545955494f50a35153444647484a4b4c4d25b53e57584356424e3f2e2fa72020a47e237b5b7c605c5e405d7d2020e2eafbeef4c2cadbced4e4ebfceff6c4cbdccfd620" />
+  <parameter name="[allStringNew]" operation="binary.toString" value="[allStringBinary]"/>    
+	<test parameter="[allStringNew]" condition="string.equals" value="[allString]" />
+  
+  <parameter name="[allStringBinary]" operation="string.toBinary" value="[allString]" value2="ISO-8859-2"/>
+  <parameter name="[allstringBinLength]" operation="binary.length" value="[allStringBinary]" />
+	<test parameter="[allstringBinLength]" condition="number.equals" value="134" />          
+	<test parameter="[allStringBinary]" condition="binary.equals" value="203f26e92227282d3f5fe73f293d20617a6572747975696f705e247173646667686a6b6c6d3f2a3c77786376626e2c3b3a212031323334353637383930b02b415a4552545955494f503f5153444647484a4b4c4d253f3e57584356424e3f2e2fa720203f7e237b5b7c605c5e405d7d2020e23f3feef4c23f3fced4e4ebfc3ff6c4cbdc3fd620" />
+  <parameter name="[allStringNew]" operation="binary.toString" value="[allStringBinary]" value2="ISO-8859-2"/>
+  <!-- this test does not work : a lot of characters are translated to ? -->    
+	<!--test parameter="[allStringNew]" condition="string.equals" value="[allString]" /-->
+  
+  <parameter name="[allStringBinary]" operation="string.toBinary" value="[allString]" value2="ISO-8859-15"/>
+  <parameter name="[allstringBinLength]" operation="binary.length" value="[allStringBinary]" />
+	<test parameter="[allstringBinLength]" condition="number.equals" value="134" />          
+	<test parameter="[allStringBinary]" condition="binary.equals" value="20b226e92227282de85fe7e0293d20617a6572747975696f705e247173646667686a6b6c6df92a3c77786376626e2c3b3a212031323334353637383930b02b415a4552545955494f50a35153444647484a4b4c4d25b53e57584356424e3f2e2fa72020a47e237b5b7c605c5e405d7d2020e2eafbeef4c2cadbced4e4ebfceff6c4cbdccfd620" />
+  <parameter name="[allStringNew]" operation="binary.toString" value="[allStringBinary]" value2="ISO-8859-15"/>
+  <!-- this test does not work : a lot of characters are translated to ? -->    
+	<!--test parameter="[allStringNew]" condition="string.equals" value="[allString]" /-->
+  
+  <parameter name="[allStringBinary]" operation="string.toBinary" value="[allString]" value2="UTF-8"/>
+  <parameter name="[allstringBinLength]" operation="binary.length" value="[allStringBinary]" />
+	<test parameter="[allstringBinLength]" condition="number.equals" value="166" />          
+	<test parameter="[allStringBinary]" condition="binary.equals" value="20c2b226c3a92227282dc3a85fc3a7c3a0293d20617a6572747975696f705e247173646667686a6b6c6dc3b92a3c77786376626e2c3b3a212031323334353637383930c2b02b415a4552545955494f50c2a35153444647484a4b4c4d25c2b53e57584356424e3f2e2fc2a72020e282ac7e237b5b7c605c5e405d7d2020c3a2c3aac3bbc3aec3b4c382c38ac39bc38ec394c3a4c3abc3bcc3afc3b6c384c38bc39cc38fc39620" />
+  <parameter name="[allStringNew]" operation="binary.toString" value="[allStringBinary]" value2="UTF-8"/>  
+	<test parameter="[allStringNew]" condition="string.equals" value="[allString]" />
+
+  <parameter name="[allStringBinary]" operation="string.toBinary" value="[allString]" value2="UTF-16BE"/>
+  <parameter name="[allstringBinLength]" operation="binary.length" value="[allStringBinary]" />
+	<test parameter="[allstringBinLength]" condition="number.equals" value="268" />          
+	<test parameter="[allStringBinary]" condition="binary.equals" value="002000b2002600e9002200270028002d00e8005f00e700e00029003d00200061007a006500720074007900750069006f0070005e0024007100730064006600670068006a006b006c006d00f9002a003c00770078006300760062006e002c003b003a00210020003100320033003400350036003700380039003000b0002b0041005a004500520054005900550049004f005000a3005100530044004600470048004a004b004c004d002500b5003e00570058004300560042004e003f002e002f00a70020002020ac007e0023007b005b007c0060005c005e0040005d007d0020002000e200ea00fb00ee00f400c200ca00db00ce00d400e400eb00fc00ef00f600c400cb00dc00cf00d60020" />
+  <parameter name="[allStringNew]" operation="binary.toString" value="[allStringBinary]" value2="UTF-16BE"/>  
+	<test parameter="[allStringNew]" condition="string.equals" value="[allString]" />
+      
+  <parameter name="[allstring]" operation="string.tolowercase" value="[allString]" />
+  <parameter name="[allstringLength]" operation="string.length" value="[allstring]" />
+	<test parameter="[allstringLength]" condition="number.equals" value="134" />  
+  <test parameter="[allstring]" condition="string.equalsIgnoreCase" value="[allString]" />
+  
+  <parameter name="[ALLSTRING]" operation="string.touppercase" value="[allString]" />
+  <parameter name="[ALLSTRINGLength]" operation="string.length" value="[ALLSTRING]" />
+	<test parameter="[ALLSTRINGLength]" condition="number.equals" value="134" />    
+  <test parameter="[ALLSTRING]" condition="string.equalsIgnoreCase" value="[allString]" />
+
+  <parameter name="[normalStringLength]" operation="string.length" value="[normalString]"/>
+  <parameter name="[normalStringLength]" operation="number.substract" value="[normalStringLength]" value2="1"/>
+  <parameter name="[normalStringNew]" operation="string.substring" value="[allString]" value2="0" value3="[normalStringLength]"/>
+  <test parameter="[normalStringNew]" condition="string.equals" value="[normalString]"/>
+  <parameter name="[normalStringNew]" operation="string.substring" value="[allString]" value2="0"/>
+  <test parameter="[normalStringNew]" condition="string.equals" value="[normalString][shiftString][altgrString][accentString]"/>
+  <parameter name="[normalStringNew]" operation="string.substring" value="[allString]" value2="0" value3="1000"/>
+  <test parameter="[normalStringNew]" condition="string.equals" value="[normalString][shiftString][altgrString][accentString]"/>
+  
+  <parameter name="[shiftStringLength]" operation="string.length" value="[shiftString]"/>  
+  <parameter name="[shiftStringLength]" operation="number.add" value="[shiftStringLength]" value2="[normalStringLength]"/>
+  <parameter name="[normalStringLength]" operation="number.add" value="[normalStringLength]" value2="1"/>  
+  <parameter name="[shiftStringNew]" operation="string.substring" value="[allString]" value2="[normalStringLength]" value3="[shiftStringLength]"/>
+  <test parameter="[shiftStringNew]" condition="string.equals" value="[shiftString]"/>
+  <parameter name="[shiftStringNew]" operation="string.substring" value="[allString]" value2="[normalStringLength]"/>
+  <test parameter="[shiftStringNew]" condition="string.equals" value="[shiftString][altgrString][accentString]"/>
+  <parameter name="[shiftStringNew]" operation="string.substring" value="[allString]" value2="[normalStringLength]" value3="1000"/>
+  <test parameter="[shiftStringNew]" condition="string.equals" value="[shiftString][altgrString][accentString]"/>
+
+  <parameter name="[altgrStringLength]" operation="string.length" value="[altgrString]"/>  
+  <parameter name="[altgrStringLength]" operation="number.add" value="[altgrStringLength]" value2="[shiftStringLength]"/>
+  <parameter name="[shiftStringLength]" operation="number.add" value="[shiftStringLength]" value2="1"/>  
+  <parameter name="[altgrStringNew]" operation="string.substring" value="[allString]" value2="[shiftStringLength]" value3="[altgrStringLength]"/>
+  <test parameter="[altgrStringNew]" condition="string.equals" value="[altgrString]"/>
+  <parameter name="[altgrStringNew]" operation="string.substring" value="[allString]" value2="[shiftStringLength]"/>
+  <test parameter="[altgrStringNew]" condition="string.equals" value="[altgrString][accentString]"/>
+  <parameter name="[altgrStringNew]" operation="string.substring" value="[allString]" value2="[shiftStringLength]" value3="1000"/>
+  <test parameter="[altgrStringNew]" condition="string.equals" value="[altgrString][accentString]"/>
+  
+  <parameter name="[accentStringLength]" operation="string.length" value="[accentString]"/>  
+  <parameter name="[accentStringLength]" operation="number.add" value="[accentStringLength]" value2="[altgrStringLength]"/>
+  <parameter name="[altgrStringLength]" operation="number.add" value="[altgrStringLength]" value2="1"/>  
+  <parameter name="[accentStringNew]" operation="string.substring" value="[allString]" value2="[altgrStringLength]" value3="[accentStringLength]"/>
+  <test parameter="[accentStringNew]" condition="string.equals" value="[accentString]"/>
+  <parameter name="[accentStringNew]" operation="string.substring" value="[allString]" value2="[altgrStringLength]"/>
+  <test parameter="[accentStringNew]" condition="string.equals" value="[accentString]"/>
+  <parameter name="[accentStringNew]" operation="string.substring" value="[allString]" value2="[altgrStringLength]" value3="1000"/>
+  <test parameter="[accentStringNew]" condition="string.equals" value="[accentString]"/>
+
+  <parameter name="[accentStringLength]" operation="number.add" value="[accentStringLength]" value2="1"/>
+  <parameter name="[emptyStringNew]" operation="string.substring" value="[allString]" value2="[accentStringLength]"/>  
+  <test parameter="[emptyStringNew]" condition="string.equals" value=""/>
+    
+</scenario>

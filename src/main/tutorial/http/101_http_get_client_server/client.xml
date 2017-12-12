@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<sendMessageHTTP name="Send GET" remoteURL="http://[remoteHTTP]">
+<![CDATA[GET http://[remoteHTTP] HTTP/1.1
+Host: [proxyHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP>
+		
+	<receiveMessageHTTP name="Send 200 OK" request="false" type="GET" result="200">
+		  <parameter name="[contentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>  
+	</receiveMessageHTTP>
+  
+  <test parameter="[contentLength]" condition="string.equals" value="0"/>
+  
+</scenario> 

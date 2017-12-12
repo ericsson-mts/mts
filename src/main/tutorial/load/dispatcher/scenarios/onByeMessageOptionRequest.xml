@@ -1,0 +1,36 @@
+
+<scenario>
+    <parameter name="[item]" operation="list.dequeue" value="[testcaseName]" value2="[queueTimeout]" />
+
+    <if>
+        <condition>
+            <test parameter="[item]" condition="list.isEmpty" />
+        </condition>
+        <then>
+            <exit failed="false" />
+        </then>
+    </if>
+    
+<!-- (specific) : do your job with [item]  -->
+    <!-- answer to 200 OK -->
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To" value2="[item]" />
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From" value2="[item]" />
+    <parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID" value2="[item]" />
+    <parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq" value2="[item]" />
+    <parameter name="[localTag]" operation="number.uid" />
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via" value2="[item]" />
+    <parameter name="[listenpoint]" operation="protocol.setFromMessage" value="listenpoint.name" value2="[item]" />
+    
+    <sendMessageSIP listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" >
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+<!-- (specific) : end  -->
+</scenario>

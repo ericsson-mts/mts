@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+        
+    <openChannelMSRP name="channelMSRP" remoteHost="[remoteHostMSRP]" remotePort="[remotePortMSRP]" transport="[transport]"/>             
+
+    <receiveMessageMSRP name="Wait SEND" channel="channelMSRP" request="true" type="SEND">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+   	<parameter name="[recRequest]" operation="protocol.setFromMessage" value="message.text"/>
+    </receiveMessageMSRP>
+    
+    <test parameter="[recRequest]" condition="string.equals" value="[testcase:sendRequest]"/>
+    
+    <sendMessageMSRP channel="channelMSRP">
+<![CDATA[
+MSRP [transactionID] 200 OK
+To-Path: msrp://alice.exemple.com:7777/564;tls
+From-Path: msrp://bob.exemple.com:8888/74986;tls
+-------[transactionID]$
+]]>
+   </sendMessageMSRP>   
+   
+   <parameter name="[testcase:sendResponse]" operation="protocol.setFromMessage" value="message.text"/>
+
+    <finally>
+        <closeChannelMSRP name="channelMSRP"/>
+    </finally>
+</scenario>

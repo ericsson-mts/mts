@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    
+    <parameter name="[min]" value="0"/>
+    <parameter name="[max]" value="10"/>
+    <parameter name="[step]" value="2"/>	
+    
+    <parameter name="[list]" operation="list.create"/>
+    <for index="[index]" from="[min]" to="[max]" step="[step]">
+          <log level="2">index value = [index]</log>
+          <parameter name="[list]" operation="list.addLast" value="[list]" value2="[index]"/>
+    </for>
+    
+    <test parameter="[list]" condition="list.size" value="6"/>
+    <test parameter="[list(0)]" condition="string.equals" value="0"/>
+    <test parameter="[list(1)]" condition="string.equals" value="2"/>	
+    <test parameter="[list(2)]" condition="string.equals" value="4"/>
+    <test parameter="[list(3)]" condition="string.equals" value="6"/>
+    <test parameter="[list(4)]" condition="string.equals" value="8"/>
+    <test parameter="[list(5)]" condition="string.equals" value="10"/>
+    
+    <parameter name="[list]" operation="list.create"/>
+    <for index="[index]" from="[min]" to="[max]" step="[step]">
+          <log level="2">index value = [index]</log>
+          <parameter name="[list]" operation="list.addLast" value="[list]" value2="[index]"/>
+    </for>
+    
+    <test parameter="[list]" condition="list.size" value="6"/>
+    <test parameter="[list(0)]" condition="string.equals" value="0"/>
+    <test parameter="[list(1)]" condition="string.equals" value="2"/>	
+    <test parameter="[list(2)]" condition="string.equals" value="4"/>
+    <test parameter="[list(3)]" condition="string.equals" value="6"/>
+    <test parameter="[list(4)]" condition="string.equals" value="8"/>
+    <test parameter="[list(5)]" condition="string.equals" value="10"/>
+    
+    <parameter name="[list]" operation="list.create"/>
+    <for index="[index1]" from="101789" to="98790" step="-1000">
+    
+         <for index="[index2]" from="-10.123456789" to="10" step="5.55555555">
+              <log level="2">index values = [index1]:[index2]</log>
+              <parameter name="[list]" operation="list.addLast" value="[list]" value2="[index1]:[index2]"/>
+        </for>
+        
+    </for>
+          
+    <test parameter="[list]" condition="list.size" value="12"/>
+    <test parameter="[list(0)]" condition="string.equals" value="101789:-10.123456789"/>
+    <test parameter="[list(1)]" condition="string.equals" value="101789:-4.567901239"/>
+    <test parameter="[list(2)]" condition="string.equals" value="101789:0.987654311"/>
+    <test parameter="[list(3)]" condition="string.equals" value="101789:6.543209861"/>	
+    <test parameter="[list(4)]" condition="string.equals" value="100789:-10.123456789"/>
+    <test parameter="[list(5)]" condition="string.equals" value="100789:-4.567901239"/>
+    <test parameter="[list(6)]" condition="string.equals" value="100789:0.987654311"/>
+    <test parameter="[list(7)]" condition="string.equals" value="100789:6.543209861"/>	
+    <test parameter="[list(8)]" condition="string.equals" value="99789:-10.123456789"/>
+    <test parameter="[list(9)]" condition="string.equals" value="99789:-4.567901239"/>
+    <test parameter="[list(10)]" condition="string.equals" value="99789:0.987654311"/>
+    <test parameter="[list(11)]" condition="string.equals" value="99789:6.543209861"/>	
+    
+    <parameter name="[number]" operation="set" value="10"/>
+    <parameter name="[list]" operation="list.create"/>
+    <for index="[index]" from="[number]" to="0" step="-1">
+        <log level="2">index value : [index]</log>
+        <parameter name="[list]" operation="list.addLast" value="[list]" value2="[index]"/>
+    </for>
+    
+    <parameter name="[total]" operation="number.add" value="[number]" value2="1"/>
+    <test parameter="[list]" condition="list.size" value="[total]"/>
+    <parameter name="[iter]" operation="set" value="[number]"/>
+    <while>
+        <condition>
+            <test parameter="[iter]" condition="number.greaterThan" value="0"/>
+        </condition>
+        <do>
+          <parameter name="[result]" operation="number.substract" value="[number]" value2="[iter]"/>
+          <test parameter="[list([iter])]" condition="number.equals" value="[result]"/>
+          <parameter name="[iter]" operation="number.substract" value="[iter]" value2="1"/>
+        </do>
+    </while>
+
+    <for index="[index1]" from="0" to="1000" step="0">
+        <log level="2">index value : [index1]</log>
+        <exit failed="true"/>
+    </for>
+
+    <for index="[index1]" from="1000" to="0" step="1">
+        <log level="2">index value : [index1]</log>
+        <exit failed="true"/>
+    </for>
+
+</scenario>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<createListenpointRTP name="inviter" localHost="[localHostRTP(0)]" localPort="[localPortRTP(0)]" />
+
+	<createListenpointRTP name="inviter1" localHost="[remoteHostRTP(0)]" localPort="[remotePortRTP(0)]"/>
+
+  	<parameter name="[ssrc]" operation="number.random" value="2147483647"/>
+	<sendMessageRTP listenpoint="inviter" remoteHost="[remoteHostRTP(0)]" remotePort="[remotePortRTP(0)]">
+	    <header ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
+	    <payload format="text">Packet #1</payload>		
+	    <payload format="text">abcdefghijklmnopqrstuvwxyz</payload>		
+	    <payload format="text">0123456789</payload>		
+	    <payload format="binary">
+	    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+    	    H00 H01 H2 H03 H4 H5 H06 H07 H08 H09 H0A H0b H0C Hd HE H0f H10
+	    B01010101 B10101010 B11111111 B0 B101
+	    </payload>
+	    <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+	</sendMessageRTP>
+
+	<sendMessageRTP listenpoint="inviter1" remoteHost="[localHostRTP(0)]" remotePort="[localPortRTP(0)]">
+	    <header ssrc="[ssrc]" payloadType="17" seqnum="0" timestamp="0"/>
+	    <payload format="text">Packet #1</payload>		
+	    <payload format="text">abcdefghijklmnopqrstuvwxyz</payload>		
+	    <payload format="text">0123456789</payload>		
+	    <payload format="binary">
+	    0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+	    H00 H01 H2 H03 H4 H5 H06 H07 H08 H09 H0A H0b H0C Hd HE H0f H10
+	    B01010101 B10101010 B11111111 B0 B101
+	    </payload>
+	    <payload format="text">ABCDEFGHIJKLMNOPQRSTUVWXYZ</payload>
+	</sendMessageRTP>
+
+	<finally>
+		<removeListenpointRTP name="inviter" />	
+        <removeListenpointRTP name="inviter1" />
+		<pause name="wait close listenpoint" seconds="1" state="true"/>
+		
+    </finally>
+
+</scenario>

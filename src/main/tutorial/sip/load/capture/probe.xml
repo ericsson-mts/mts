@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[network]" operation="set" value="[localHostSIP]"/>  
+  <parameter name="[filter]" operation="set" value="(src host [localHostSIP]) and (dst host [localHostSIP])"/>
+  <createProbeSIP name="probe" networkInterface="[network]" captureFilter="[filter]"/>
+
+  <label name="start"/>  
+    
+      <receiveMessageSIP name="Wait INVITE" timeout="0">
+        <parameter name="[lastRequest]" operation="protocol.setFromMessage" value="message.request"/>           
+        <parameter name="[lastType]" operation="protocol.setFromMessage" value="message.type"/>           
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[contentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+      </receiveMessageSIP>
+
+      <if>
+        <condition>
+            <test parameter="[contentLength]" condition="list.isEmpty" not="true"/>
+            <test parameter="[contentLength]" condition="string.equals" value="0" not="true"/>
+        </condition>
+        <then>
+          <parameter name="[ctLength]" operation="string.length" value="[content]"/>
+          <parameter name="[ctLength]" operation="number.add" value="[ctLength]" value2="4"/>
+          <test parameter="[ctLength]" condition="string.equals" value="[contentLength]"/>
+        </then>
+      </if>
+        
+  <goto name="goto start label" label="start"/>
+  
+</scenario>

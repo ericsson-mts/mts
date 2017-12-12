@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<stats>
+		<counter name="ListenPointReceive" summary="LPReceive" complete="Listen point receive"/>
+    </stats>
+
+
+	<pause name="waiting register" seconds="50"/>
+	<parameter name="[SemaphoreTimeOut]" operation="number.multiply" value="[CallDurationSec]" value2="3"/>
+	<parameter name="[test:receive]" operation="system.semaphorewait" value2="[SemaphoreTimeOut]"/>
+
+	<parameter name="[CallDurationSecReceive]" operation="number.multiply" value="[CallDurationSec]" value2="3.5"/>
+
+	<label name="BEGIN"/>
+
+	<parameter name="[received]" operation="set" value="false"/>
+
+	<receiveMessageRTPFLOW timeout="[CallDurationSecReceive]" failedOnTimeout="false">
+		<parameter name="[received]" operation="set" value="true"/>
+		<parameter name="[ssrc]" operation="protocol.setFromMessage" value="header.ssrc"/>
+		<parameter name="[payloadType]" operation="protocol.setFromMessage" value="header.payloadType"/>	
+		<parameter name="[lastListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+		<parameter name="[lastListenpointPort]" operation="protocol.setFromMessage" value="listenpoint.localport"/>
+		<parameter name="[flowPayloadPlayer]" operation="protocol.setFromMessage" value="flow.payload.player"/>
+		<parameter name="[packetNumberRec]" operation="protocol.setFromMessage" value="flow.packetNumber"/>
+		<parameter name="[flowPayloadText]" operation="protocol.setFromMessage" value="flow.payload.text"/> 
+		<parameter name="[packetLostRec]" operation="protocol.setFromMessage" value="qos.packetLost"/> 
+		<parameter name="[packetSpacingMeanRec]" operation="protocol.setFromMessage" value="qos.packetSpacingMean"/>
+		<parameter name="[deltaTimeMeanRec]" operation="protocol.setFromMessage" value="qos.deltaTimeMean"/>
+		<parameter name="[jitterDelayMeanRec]" operation="protocol.setFromMessage" value="qos.jitterDelayMean"/>
+		<parameter name="[mos]" operation="protocol.setFromMessage" value="qos.mos"/>
+	</receiveMessageRTPFLOW>
+
+	<!-- value2 = payloadType, do not change it -->
+	<!-- value3 = payloadPLayer, do not change it -->
+	<!-- value4 = bitsPerSample (optional) -->
+	<!-- value5 = sampleRate (optional) (8000 Hz for PCMA or PCMU) -->
+	<!-- value6 = number of channel (optional) (1 for mono, 2 for stereo) -->
+	<parameter name="file" operation="file.writewave" value="ReceivedFlow/rtpflowReceived_[lastListenpointPort].wav" 
+	value2="[payloadType]"	
+	value3="[flowPayloadPlayer]"
+	value4="8"
+	value5="8000"
+	value6="2"
+	/> 
+
+	<log level="info">ssrc : [ssrc]</log>	
+	<log level="info">packetNumberRec : [packetNumberRec]</log>	
+	<log level="info">listen point : [lastListenpoint]</log>	
+
+	<if>
+		<condition>
+			<test parameter="[received]" condition="string.equals" value="false"/>
+		</condition>
+		<then>
+			<exit/>
+		</then>
+	</if>
+
+	<try>
+		<do>
+			<removeListenpointRTPFLOW name="[lastListenpoint]"/>
+			<stats>
+				<counter name="ListenPointReceive"><decrease>1</decrease></counter>
+			</stats>	
+		</do>
+		<finally>
+			<log level="info">Listenpoint enleve</log>
+		</finally>	
+	</try>
+
+	<stats>
+		<percent name="packetLostRec" summary="p_lost_out" complete="received packets lost for outgoing flow ">
+			<incValue>[packetLostRec]</incValue>
+			<incTotal>[packetNumberRec]</incTotal>
+		</percent>	
+		<value name="packetSpacingMeanRec" summary="packet_spacing_mean" complete="received packet spacing mean">
+			<newValue value="[packetSpacingMeanRec]"/>
+		</value>
+		<value name="deltaTimeMeanRec" summary="delta_time_mean" complete="received delta time mean">
+			<newValue value="[deltaTimeMeanRec]"/>
+		</value>
+		<value name="jitterDelayMeanRec" summary="jitter_delay_mean" complete="received jitter delay for outgoing flow between real and theorical timestamp">
+			<newValue value="[jitterDelayMeanRec]"/>
+		</value>
+	</stats>
+
+	<goto  name="goto_begin" label="BEGIN" state="true"/>	
+
+</scenario>

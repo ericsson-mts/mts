@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+	<!--name="Receive SMTP from Inviter"-->
+	<!--openChannelSMTP name="session1" localHost="localhost" localPort="2222" /-->
+	<!-- <sendMessageSMTP name="Server is well prepared" channel="session1" >
+	<![CDATA[220 hotmail.com Simple Mail Transfer Service Ready ]]>	
+</sendMessageSMTP-->
+
+<!--*************************************EHLO******************************************************-->
+	<receiveMessageSMTP name="Receive Send EHLO" request="true">
+		<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+		<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+	</receiveMessageSMTP>
+	<sendMessageSMTP name="Send Response HLO" transactionId="[tranid]" ><![CDATA[250-hotmail.com
+250-8BITMIME
+250-SIZE
+250-DSN
+250 HELP
+]]></sendMessageSMTP>
+	
+<!--*************************************MAIL******************************************************-->
+<receiveMessageSMTP name="Receive Send MAIL request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response MAIL request" transactionId="[tranid]" ><![CDATA[250 OK]]>
+</sendMessageSMTP>
+
+<!--*************************************RCPT******************************************************-->
+<receiveMessageSMTP name="Receive Request RCPT request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response RCPT request" transactionId="[tranid]" ><![CDATA[250 OK]]>
+</sendMessageSMTP>
+
+<!--*************************************RSET***************************************************-->
+<receiveMessageSMTP name="Receive Request  RSET request" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response RSET request" transactionId="[tranid]" ><![CDATA[250 OK]]>
+</sendMessageSMTP>
+
+<!--*************************************QUIT***************************************************-->
+<receiveMessageSMTP name="Receive Request Quit" request="true">
+	<parameter name="[result]" operation="protocol.setFromMessage" value="firstline.replyCode"/>
+	<parameter name="[tranid]" operation="protocol.setFromMessage" value="message.transactionId"/>
+</receiveMessageSMTP>
+<sendMessageSMTP name="Send Response Quit" transactionId="[tranid]" ><![CDATA[221 hotmail.com Service closing transmission channel]]>	
+</sendMessageSMTP>
+
+
+</scenario>

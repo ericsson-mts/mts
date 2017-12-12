@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="3GPP Gx Re-Auth (RAR/RAA)" -->
+<scenario>
+
+    <call name="diameter.RecCER_SendCEA"/>
+    
+    <receiveMessageDIAMETER name="ReceiveRequestRAR" request="true" type="Re-Auth">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+    </receiveMessageDIAMETER>
+
+<!--
+From 3GPP TS 29.212 V9.3.0 : RAR is sent by the PCCR to the PCEF used to provision unsollicited QoS rules, 
+	event triggers and event report indications for the session
+<RA-Answer> ::= < Diameter Header: 258, PXY, 16777238> 
+		< Session-Id > 
+		{ Origin-Host } 
+		{ Origin-Realm } 
+		[ Result-Code ] 
+		[ Experimental-Result ] 
+		[ Origin-State-Id ] 
+		[ IP-CAN-Type ] 
+		[ RAT-Type ] 
+	0*2 [ AN-GW-Address ] 
+		[ 3GPP-SGSN-MCC-MNC ] 
+		[ 3GPP-SGSN-Address ] 
+		[ 3GPP-SGSN-IPv6-Address ] 
+		[ RAI ] 
+		[ 3GPP-User-Location-Info ] 
+		[ 3GPP-MS-TimeZone ]
+	  * [ Charging-Rule-Report] 
+		[ Error-Message ] 
+		[ Error-Reporting-Host ] 
+	  * [ Failed-AVP ] 
+	  * [ Proxy-Info ] 
+	  * [ AVP ] 
+-->
+
+    <!-- Origin-State-Id - RFC 3588: value that is incremented whenever a Diameter entity restarts with loss of 
+      previous state, for example upon reboot
+    -->
+    <parameter name="[Origin-State-Id]" operation="set" value="0"/>
+
+    <!-- Provide parameters that match event-triggers in RAR: in the example only RAT-Type is provided
+    -->
+    <parameter name="[RAT-Type]" operation="set" value="EUTRAN"/>
+
+    <sendMessageDIAMETER name="SendAnswerRAA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" proxiable="true" hopByHop="[hopByHop]" endToEnd="[endToEnd]"/>
+        <avp code="Session-Id:263" value="[sessionId]"/>
+        <avp code="Origin-Host:264" value="[destinationHost]"/>
+        <avp code="Origin-Realm:296" value="[destinationRealm]"/>
+        <avp code="Result-Code:268" value="DIAMETER_SUCCESS:2001"/>
+        <avp code="Origin-State-Id:278" value="[Origin-State-Id]"/>
+        <avp code="RAT-Type:1032" value="[RAT-Type]" vendorId="[vendorID]"/>
+   </sendMessageDIAMETER>
+
+</scenario>

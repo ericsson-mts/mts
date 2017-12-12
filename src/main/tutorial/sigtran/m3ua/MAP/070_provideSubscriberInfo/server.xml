@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Receive a MAP message
+-->
+
+<scenario>
+
+    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
+	       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSIGTRAN>
+    
+   
+    
+    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
+    
+        <UA name="m3ua" file="m3ua.xml">
+            <header version="1" reserved="0" messageClass="3" messageType="4"/>
+    				
+            <parameter tag="17" >
+                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
+            </parameter>
+    	
+            <parameter tag="INFO_String">
+                <field name="INFO_String" format="String" value="ASPUP"/>
+            </parameter>
+        </UA>
+        
+    </sendMessageSIGTRAN>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000094020000080000006600060008000000650210007c000000010000000203020001090103070b044302000804430100085c625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="70">
+      <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+      <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+      <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+      <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
+    	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+        
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+
+    <!-- Message encoded value -->
+  	<parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+	
+    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+        
+    <!-- AP LAYER -->
+    <ASN dictionary="map/dictionary_MAP.xml">
+      <Component.Choice>
+        <returnResultLast.C2.Sequence>
+           <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+           <resultretres>
+            <opCode.Choice>
+               <localValue.BoxedType><Long>provideSubscriberInfo:70</Long></localValue.BoxedType>
+               <!--globalValue><ObjectIdentifier>0.1.233.30.41.26.113</ObjectIdentifier></globalValue-->
+            </opCode.Choice>
+            <returnparameter>
+               <ProvideSubscriberInfoRes.Sequence>
+                  <subscriberInfo.Sequence>
+                     <locationInformation.C0.Sequence>
+                        <ageOfLocationInformation.BoxedType><Integer>3865 minuts:3865</Integer></ageOfLocationInformation.BoxedType>
+                        <geographicalInformation.C0.BoxedType><Bytes>852e2ecff026dc05
+                              <field name="TypeOfShape" value="Ellipsoid point with altitude:8" type="EnumLong" lengthBit="4" />
+                              <field name="spare" value="5" type="Integer" lengthBit="4" />
+                              <field name="DegreesOfLatitude" value="3026639" type="Integer" length="3" />
+                              <field name="DegreesOfLongitude" value="15738588" type="Integer" length="3" />
+                              <field name="UncertaintyCode" value="5" type="Integer" length="1" />
+                           </Bytes></geographicalInformation.C0.BoxedType>
+                        <vlr_number.C1.BoxedType><Bytes>ec0181
+                              <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                              <field name="nature of address" value="abbreviated number:6" type="EnumLong" lengthBit="3" />
+                              <field name="numbering plan" value="12" type="EnumLong" lengthBit="4" />
+                              <field name="digits" value="1018" type="Number_bcd" length="2" />
+                           </Bytes></vlr_number.C1.BoxedType>
+                        <locationNumber.C2.BoxedType><Bytes>d7d15117
+                              <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1" />
+                              <field name="Nature of address" value="spare:87" type="EnumLong" lengthBit="7" />
+                              <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1" />
+                              <field name="Numbering plan" value="private numbering plan:5" type="EnumLong" lengthBit="3" />
+                              <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2" />
+                              <field name="Screening" value="user provided, verified and passed:1" type="EnumLong" lengthBit="2" />
+                              <field name="digits" value="1571" type="Number_bcd" length="2" />
+                           </Bytes></locationNumber.C2.BoxedType>
+                        <cellGlobalIdOrServiceAreaIdOrLAI.C3.Choice>
+                           <cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType><Bytes>611811f5971fc1
+                                 <field name="MMC" value="168,111" type="number_mmc" length="3" />
+                                 <field name="LAC" value="62871" type="Integer" length="2" />
+                                 <field name="CI_SAC" value="8129" type="Integer" length="2" />
+                              </Bytes></cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType>
+                           <laiFixedLength.C1.BoxedType><Bytes>514222e22e
+                                 <field name="MMC" value="152,224" type="number_mmc" length="3" />
+                                 <field name="LAC" value="57902" type="Integer" length="2" />
+                              </Bytes></laiFixedLength.C1.BoxedType>
+                        </cellGlobalIdOrServiceAreaIdOrLAI.C3.Choice>
+                        <!--extensionContainer.C4.Sequence>
+                           <privateExtensionList.C0.BoxedType>
+                              <Collection>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.28</ObjectIdentifier></extId>
+                                    <extType>58b6530719f88f</extType>
+                                 </PrivateExtension.Sequence>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.223</ObjectIdentifier></extId>
+                                    <extType>104a</extType>
+                                 </PrivateExtension.Sequence>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.219.54.120.46.56.76.123.97</ObjectIdentifier></extId>
+                                    <extType>326c42</extType>
+                                 </PrivateExtension.Sequence>
+                              </Collection>
+                           </privateExtensionList.C0.BoxedType>
+                           <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                        </extensionContainer.C4.Sequence-->
+                        <selectedLSA_Id.C5.BoxedType><Bytes>968be2
+                              <field name="LSA type" value="Universal LSA number:1" type="EnumLong" lengthBit="1" />
+                              <field name="Identifier" value="1477602" type="Integer" lengthBit="23" />
+                           </Bytes></selectedLSA_Id.C5.BoxedType>
+                        <msc_Number.C6.BoxedType><Bytes>b12200
+                              <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                              <field name="nature of address" value="network specific number:3" type="EnumLong" lengthBit="3" />
+                              <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                              <field name="digits" value="2200" type="Number_BCD" lengthBit="2" />
+                           </Bytes></msc_Number.C6.BoxedType>
+                        <geodeticInformation.C7.BoxedType><Bytes>79980708af70763b3dd4
+                              <field name="spare" value="7" type="Integer" lengthBit="4" />
+                              <field name="LPRI" value="location not available (Note):2" type="EnumLong" lengthBit="2" />
+                              <field name="screnning" value="user provided, verified and passed:1" type="EnumLong" lengthBit="2" />
+                              <field name="ext" value="1" type="Integer" lengthBit="1" />
+                              <field name="TypeOfShape" value="spare:24" type="EnumLong" lengthBit="7" />
+                              <field name="DegreesOfLatitude" value="460975" type="Integer" length="3" />
+                              <field name="DegreesOfLongitude" value="7370299" type="Integer" length="3" />
+                              <field name="UncertaintyCode" value="61" type="Integer" length="1" />
+                              <field name="Confidence" value="212" type="Integer" length="1" />
+                           </Bytes></geodeticInformation.C7.BoxedType>
+                        <currentLocationRetrieved.C8></currentLocationRetrieved.C8>
+                        <sai_Present.C9></sai_Present.C9>
+                     </locationInformation.C0.Sequence>
+                     <subscriberState.C1.Choice>
+                        <assumedIdle.C0></assumedIdle.C0>
+                        <camelBusy.C1></camelBusy.C1>
+                        <notProvidedFromVLR.C2></notProvidedFromVLR.C2>
+                     </subscriberState.C1.Choice>
+                     <!--extensionContainer.C2.Sequence>
+                        <privateExtensionList.C0.BoxedType>
+                           <Collection>
+                              <PrivateExtension.Sequence>
+                                 <extId><ObjectIdentifier>0.1.243.32.44.53.110.120.76.9</ObjectIdentifier></extId>
+                                 <extType>4e78</extType>
+                              </PrivateExtension.Sequence>
+                              <PrivateExtension.Sequence>
+                                 <extId><ObjectIdentifier>0.1.270.114.5.12.44.18.72.96.85</ObjectIdentifier></extId>
+                                 <extType>f31ca3ac3b15</extType>
+                              </PrivateExtension.Sequence>
+                              <PrivateExtension.Sequence>
+                                 <extId><ObjectIdentifier>0.1.288.81</ObjectIdentifier></extId>
+                                 <extType>6229dfdde11f</extType>
+                              </PrivateExtension.Sequence>
+                           </Collection>
+                        </privateExtensionList.C0.BoxedType>
+                        <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                     </extensionContainer.C2.Sequence-->
+                     <locationInformationGPRS.C3.Sequence>
+                        <cellGlobalIdOrServiceAreaIdOrLAI.C0.Choice>
+                           <cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType><Bytes>41755113976b5f
+                                 <field name="MMC" value="145,157" type="number_mmc" length="3" />
+                                 <field name="LAC" value="5015" type="Integer" length="2" />
+                                 <field name="CI_SAC" value="27487" type="Integer" length="2" />
+                              </Bytes></cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType>
+                           <laiFixedLength.C1.BoxedType><Bytes>71f63834c1
+                                 <field name="MMC" value="176,83" type="number_mmc" length="3" />
+                                 <field name="LAC" value="13505" type="Integer" length="2" />
+                              </Bytes></laiFixedLength.C1.BoxedType>
+                        </cellGlobalIdOrServiceAreaIdOrLAI.C0.Choice>
+                        <routeingAreaIdentity.C1.BoxedType><Bytes>11f014ee4516
+                              <field name="MMC" value="110,41" type="number_mmc" length="3" />
+                              <field name="LAC" value="60997" type="Integer" length="2" />
+                              <field name="RAC" value="22" type="Integer" length="1" />
+                           </Bytes></routeingAreaIdentity.C1.BoxedType>
+                        <geographicalInformation.C2.BoxedType><Bytes>9d04b1a6fac0ede8
+                              <field name="TypeOfShape" value="Ellipsoid point with altitude and uncertainty Ellipsoid:9" type="EnumLong" lengthBit="4" />
+                              <field name="spare" value="13" type="Integer" lengthBit="4" />
+                              <field name="DegreesOfLatitude" value="307622" type="Integer" length="3" />
+                              <field name="DegreesOfLongitude" value="16433389" type="Integer" length="3" />
+                              <field name="UncertaintyCode" value="232" type="Integer" length="1" />
+                           </Bytes></geographicalInformation.C2.BoxedType>
+                        <sgsn_Number.C3.BoxedType><Bytes>7757251540f3
+                              <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                              <field name="nature of address" value="reserved for extension:7" type="EnumLong" lengthBit="3" />
+                              <field name="numbering plan" value="spare:7" type="EnumLong" lengthBit="4" />
+                              <field name="digits" value="755251043" type="Number_BCD" lengthBit="36" />
+                           </Bytes></sgsn_Number.C3.BoxedType>
+                        <selectedLSAIdentity.C4.BoxedType><Bytes>e7274c
+                              <field name="LSA type" value="Universal LSA number:1" type="EnumLong" lengthBit="1" />
+                              <field name="Identifier" value="6760268" type="Integer" lengthBit="23" />
+                           </Bytes></selectedLSAIdentity.C4.BoxedType>
+                        <!--extensionContainer.C5.Sequence>
+                           <privateExtensionList.C0.BoxedType>
+                              <Collection>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.279.24.101.32.71.31.42</ObjectIdentifier></extId>
+                                    <extType>0896657c</extType>
+                                 </PrivateExtension.Sequence>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.222.12.96.119.68.109.62</ObjectIdentifier></extId>
+                                    <extType>25239d73d3</extType>
+                                 </PrivateExtension.Sequence>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.2112.74</ObjectIdentifier></extId>
+                                    <extType>17</extType>
+                                 </PrivateExtension.Sequence>
+                              </Collection>
+                           </privateExtensionList.C0.BoxedType>
+                           <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                        </extensionContainer.C5.Sequence-->
+                        <sai_Present.C6></sai_Present.C6>
+                        <geodeticInformation.C7.BoxedType><Bytes>da3321b31026372fb4ac
+                              <field name="spare" value="13" type="Integer" lengthBit="4" />
+                              <field name="LPRI" value="location not available (Note):2" type="EnumLong" lengthBit="2" />
+                              <field name="screnning" value="user provided, verified and failed:2" type="EnumLong" lengthBit="2" />
+                              <field name="ext" value="0" type="Integer" lengthBit="1" />
+                              <field name="TypeOfShape" value="spare:51" type="EnumLong" lengthBit="7" />
+                              <field name="DegreesOfLatitude" value="2208528" type="Integer" length="3" />
+                              <field name="DegreesOfLongitude" value="2504495" type="Integer" length="3" />
+                              <field name="UncertaintyCode" value="180" type="Integer" length="1" />
+                              <field name="Confidence" value="172" type="Integer" length="1" />
+                           </Bytes></geodeticInformation.C7.BoxedType>
+                        <currentLocationRetrieved.C8></currentLocationRetrieved.C8>
+                        <ageOfLocationInformation.C9.BoxedType><Integer>124195623</Integer></ageOfLocationInformation.C9.BoxedType>
+                     </locationInformationGPRS.C3.Sequence>
+                     <ps_SubscriberState.C4.Choice>
+                        <notProvidedFromSGSN.C0></notProvidedFromSGSN.C0>
+                        <ps_Detached.C1></ps_Detached.C1>
+                        <ps_AttachedNotReachableForPaging.C2></ps_AttachedNotReachableForPaging.C2>
+                        <ps_AttachedReachableForPaging.C3></ps_AttachedReachableForPaging.C3>
+                        <ps_PDP_ActiveNotReachableForPaging.C4.BoxedType>
+                           <Collection>
+                              <PDP_ContextInfo.Sequence>
+                                 <pdp_ContextIdentifier.C0.BoxedType><Integer>699933584</Integer></pdp_ContextIdentifier.C0.BoxedType>
+                                 <pdp_ContextActive.C1></pdp_ContextActive.C1>
+                                 <pdp_Type.C2.BoxedType><Bytes>d7ec
+                                       <field name="spare" value="13" type="Integer" lengthBit="4" />
+                                       <field name="PDP type organisation" value="reserved:7" type="EnumLong" lengthBit="4" />
+                                       <field name="PDP type number" value="236" type="EnumLong" length="1" />
+                                    </Bytes></pdp_Type.C2.BoxedType>
+                                 <pdp_Address.C3.BoxedType><Bytes>6f915f73
+                                       <field name="IPV4  address" value="111.145.95.115" type="IPV4_Address" length="4" />
+                                    </Bytes></pdp_Address.C3.BoxedType>
+                                 <apn_Subscribed.C4.BoxedType><Bytes>6f30
+                                       <field name="DNS string" value="o0" type="String" length="1" />
+                                    </Bytes></apn_Subscribed.C4.BoxedType>
+                                 <apn_InUse.C5.BoxedType><Bytes>6c70
+                                       <field name="DNS string" value="lp" type="String" length="1" />
+                                    </Bytes></apn_InUse.C5.BoxedType>
+                                 <nsapi.C6.BoxedType><Integer>75790529</Integer></nsapi.C6.BoxedType>
+                                 <transactionId.C7.BoxedType><Bytes>aeb2
+                                       <field name="TI flag" value="The message is sent to the side that originates the TI:1" type="EnumLong" lengthBit="1" />
+                                       <field name="TIO" value="2" type="Integer" lengthBit="3" />
+                                       <field name="NA" value="14" type="Integer" lengthBit="4" />
+                                       <field name="Ext" value="1" type="Integer" lengthBit="1" />
+                                       <field name="TIE" value="50" type="Integer" lengthBit="7" />
+                                    </Bytes></transactionId.C7.BoxedType>
+                                 <teid_ForGnAndGp.C8.BoxedType><Bytes>d999eb03
+                                       <field name="TEID" value="3650743043" type="Integer" length="4" />
+                                    </Bytes></teid_ForGnAndGp.C8.BoxedType>
+                                 <teid_ForIu.C9.BoxedType><Bytes>3cfb55cc
+                                       <field name="TEID" value="1023104460" type="Integer" length="4" />
+                                    </Bytes></teid_ForIu.C9.BoxedType>
+                                 <ggsn_Address.C10.BoxedType><Bytes>b305c6cbf1
+                                       <field name="Address type" value="2" type="EnumLong" lengthBit="2" />
+                                       <field name="AddressLength" value="51" type="Integer" lengthBit="6" />
+                                       <field name="IPV4 address" value="5.198.203.241" type="IPV4_Address" length="4" />
+                                    </Bytes></ggsn_Address.C10.BoxedType>
+                                 <qos_Subscribed.C11.BoxedType><Bytes>c4c94d8d166eb98661
+                                       <field name="Allocation/Retention Priority" value="196" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Reserved:6" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="With delivery order ('yes'):1" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="No detect ('-'):1" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="77" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="141" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="22" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="1*10 power -6:6" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="Reserved:14" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="46" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 1:1" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="134" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="97" type="Integer" length="1" />
+                                    </Bytes></qos_Subscribed.C11.BoxedType>
+                                 <qos_Requested.C12.BoxedType><Bytes>6a2896f66536ce5a02
+                                       <field name="Allocation/Retention Priority" value="106" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Conversational class:1" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="With delivery order ('yes'):1" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Subscribed delivery of erroneous SDUs / Reserved:0" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="150" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="246" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="101" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="1*10 power -3:3" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="1*10 power -4:6" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="51" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 2:2" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="90" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="2" type="Integer" length="1" />
+                                    </Bytes></qos_Requested.C12.BoxedType>
+                                 <qos_Negotiated.C13.BoxedType><Bytes>cf244407af2ce6d136
+                                       <field name="Allocation/Retention Priority" value="207" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Conversational class:1" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="Subscribed delivery class / Reserved:0" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Reserved:4" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="68" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="7" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="175" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="7*10 power -3:2" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="Reserved:12" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="57" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 2:2" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="209" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="54" type="Integer" length="1" />
+                                    </Bytes></qos_Negotiated.C13.BoxedType>
+                                 <chargingId.C14.BoxedType><Bytes>3b631afb
+                                       <field name="Charging ID" value="996350715" type="Integer" length="4" />
+                                    </Bytes></chargingId.C14.BoxedType>
+                                 <chargingCharacteristics.C15.BoxedType><Bytes>7b8f
+                                       <field name="Reserved" value="7" type="Integer" lengthBit="4" />
+                                       <field name="N flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="P flag" value="0" type="Integer" lengthBit="1" />
+                                       <field name="F flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="H flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="Charging Value" value="143" type="Integer" length="1" />
+                                    </Bytes></chargingCharacteristics.C15.BoxedType>
+                                 <rnc_Address.C16.BoxedType><Bytes>957a8d70d3
+                                       <field name="Address type" value="2" type="EnumLong" lengthBit="2" />
+                                       <field name="AddressLength" value="21" type="Integer" lengthBit="6" />
+                                       <field name="IPV4 address" value="122.141.112.211" type="IPV4_Address" length="4" />
+                                    </Bytes></rnc_Address.C16.BoxedType>
+                                 <!--extensionContainer.C17.Sequence>
+                                    <privateExtensionList.C0.BoxedType>
+                                       <Collection>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.27</ObjectIdentifier></extId>
+                                             <extType>ecbceb630d96ffbc</extType>
+                                          </PrivateExtension.Sequence>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.2115</ObjectIdentifier></extId>
+                                             <extType>e92fdc235f899211b5</extType>
+                                          </PrivateExtension.Sequence>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.2104.60.47.34.40.120.2.32.25.49</ObjectIdentifier></extId>
+                                             <extType>00</extType>
+                                          </PrivateExtension.Sequence>
+                                       </Collection>
+                                    </privateExtensionList.C0.BoxedType>
+                                    <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                                 </extensionContainer.C17.Sequence-->
+                                 <qos2_Subscribed.C18.BoxedType><Bytes>d234574b33
+                                       <field name="spare" value="6" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Optimised for signalling traffic:1" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:2" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="52" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="87" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="75" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="51" type="Integer" length="1" />
+                                    </Bytes></qos2_Subscribed.C18.BoxedType>
+                                 <qos2_Requested.C19.BoxedType><Bytes>674ef9e5c2
+                                       <field name="spare" value="3" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Not optimised for signalling traffic:0" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:7" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="78" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="249" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="229" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="194" type="Integer" length="1" />
+                                    </Bytes></qos2_Requested.C19.BoxedType>
+                                 <qos2_Negotiated.C20.BoxedType><Bytes>32ecd4430d
+                                       <field name="spare" value="1" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Optimised for signalling traffic:1" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:2" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="236" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="212" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="67" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="13" type="Integer" length="1" />
+                                    </Bytes></qos2_Negotiated.C20.BoxedType>
+                              </PDP_ContextInfo.Sequence>
+                              <!--PDP_ContextInfo.Sequence>
+                                 <pdp_ContextIdentifier.C0.BoxedType><Integer>44501335</Integer></pdp_ContextIdentifier.C0.BoxedType>
+                                 <pdp_ContextActive.C1></pdp_ContextActive.C1>
+                                 <pdp_Type.C2.BoxedType><Bytes>28fd
+                                       <field name="spare" value="2" type="Integer" lengthBit="4" />
+                                       <field name="PDP type organisation" value="reserved:8" type="EnumLong" lengthBit="4" />
+                                       <field name="PDP type number" value="253" type="EnumLong" length="1" />
+                                    </Bytes></pdp_Type.C2.BoxedType>
+                                 <pdp_Address.C3.BoxedType><Bytes>785a0e12
+                                       <field name="IPV4  address" value="120.90.14.18" type="IPV4_Address" length="4" />
+                                    </Bytes></pdp_Address.C3.BoxedType>
+                                 <apn_Subscribed.C4.BoxedType><Bytes>31724a5437
+                                       <field name="DNS string" value="1rJT7" type="String" lengthBit="20" />
+                                    </Bytes></apn_Subscribed.C4.BoxedType>
+                                 <apn_InUse.C5.BoxedType><Bytes>30304f7764566770
+                                       <field name="DNS string" value="00OwdVgp" type="String" length="4" />
+                                    </Bytes></apn_InUse.C5.BoxedType>
+                                 <nsapi.C6.BoxedType><Integer>524528661</Integer></nsapi.C6.BoxedType>
+                                 <transactionId.C7.BoxedType><Bytes>418f
+                                       <field name="TI flag" value="The message is sent from the side that originates the TI:0" type="EnumLong" lengthBit="1" />
+                                       <field name="TIO" value="4" type="Integer" lengthBit="3" />
+                                       <field name="NA" value="1" type="Integer" lengthBit="4" />
+                                       <field name="Ext" value="1" type="Integer" lengthBit="1" />
+                                       <field name="TIE" value="15" type="Integer" lengthBit="7" />
+                                    </Bytes></transactionId.C7.BoxedType>
+                                 <teid_ForGnAndGp.C8.BoxedType><Bytes>b02c3a08
+                                       <field name="TEID" value="2955688456" type="Integer" length="4" />
+                                    </Bytes></teid_ForGnAndGp.C8.BoxedType>
+                                 <teid_ForIu.C9.BoxedType><Bytes>eea1c854
+                                       <field name="TEID" value="4003579988" type="Integer" length="4" />
+                                    </Bytes></teid_ForIu.C9.BoxedType>
+                                 <ggsn_Address.C10.BoxedType><Bytes>7776c36730
+                                       <field name="Address type" value="IPV6:1" type="EnumLong" lengthBit="2" />
+                                       <field name="AddressLength" value="55" type="Integer" lengthBit="6" />
+                                       <field name="IPV4 address" value="118.195.103.48" type="IPV4_Address" length="4" />
+                                    </Bytes></ggsn_Address.C10.BoxedType>
+                                 <qos_Subscribed.C11.BoxedType><Bytes>9de91843ccd9168288
+                                       <field name="Allocation/Retention Priority" value="157" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Reserved:7" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="With delivery order ('yes'):1" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="No detect ('-'):1" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="24" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="67" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="204" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="Reserved:13" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="6*10 power -8:9" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="5" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 2:2" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="130" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="136" type="Integer" length="1" />
+                                    </Bytes></qos_Subscribed.C11.BoxedType>
+                                 <qos_Requested.C12.BoxedType><Bytes>7b9f7c4718d5ae3f6e
+                                       <field name="Allocation/Retention Priority" value="123" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Background class:4" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="Reserved:3" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Reserved:7" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="124" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="71" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="24" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="Reserved:13" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="1*10 power -3:5" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="43" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 2:2" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="63" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="110" type="Integer" length="1" />
+                                    </Bytes></qos_Requested.C12.BoxedType>
+                                 <qos_Negotiated.C13.BoxedType><Bytes>340b5bf643ab9787d6
+                                       <field name="Allocation/Retention Priority" value="52" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Subscribed traffic class / Reserved:0" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="With delivery order ('yes'):1" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Erroneous SDUs are not delivered ('no'):3" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="91" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="246" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="67" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="Reserved:10" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="Reserved:11" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="37" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 3:3" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="135" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="214" type="Integer" length="1" />
+                                    </Bytes></qos_Negotiated.C13.BoxedType>
+                                 <chargingId.C14.BoxedType><Bytes>8f026c72
+                                       <field name="Charging ID" value="2399300722" type="Integer" length="4" />
+                                    </Bytes></chargingId.C14.BoxedType>
+                                 <chargingCharacteristics.C15.BoxedType><Bytes>8ee6
+                                       <field name="Reserved" value="8" type="Integer" lengthBit="4" />
+                                       <field name="N flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="P flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="F flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="H flag" value="0" type="Integer" lengthBit="1" />
+                                       <field name="Charging Value" value="230" type="Integer" length="1" />
+                                    </Bytes></chargingCharacteristics.C15.BoxedType>
+                                 <rnc_Address.C16.BoxedType><Bytes>7be1c85935
+                                       <field name="Address type" value="IPV6:1" type="EnumLong" lengthBit="2" />
+                                       <field name="AddressLength" value="59" type="Integer" lengthBit="6" />
+                                       <field name="IPV4 address" value="225.200.89.53" type="IPV4_Address" length="4" />
+                                    </Bytes></rnc_Address.C16.BoxedType>
+                                 <extensionContainer.C17.Sequence>
+                                    <privateExtensionList.C0.BoxedType>
+                                       <Collection>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.2117.126.45.122.22.21.56.30</ObjectIdentifier></extId>
+                                             <extType>289e60df0a9d7e67</extType>
+                                          </PrivateExtension.Sequence>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.2101.2.6.7.4.51</ObjectIdentifier></extId>
+                                             <extType>3137d4d332b1c3c4</extType>
+                                          </PrivateExtension.Sequence>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.23.99.62.4.109.88</ObjectIdentifier></extId>
+                                             <extType>ca6bab4e90734daf</extType>
+                                          </PrivateExtension.Sequence>
+                                       </Collection>
+                                    </privateExtensionList.C0.BoxedType>
+                                    <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                                 </extensionContainer.C17.Sequence>
+                                 <qos2_Subscribed.C18.BoxedType><Bytes>6ccba5d5c0
+                                       <field name="spare" value="3" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Not optimised for signalling traffic:0" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:12" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="203" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="165" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="213" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="192" type="Integer" length="1" />
+                                    </Bytes></qos2_Subscribed.C18.BoxedType>
+                                 <qos2_Requested.C19.BoxedType><Bytes>2fef4a0e0c
+                                       <field name="spare" value="1" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Not optimised for signalling traffic:0" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:15" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="239" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="74" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="14" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="12" type="Integer" length="1" />
+                                    </Bytes></qos2_Requested.C19.BoxedType>
+                                 <qos2_Negotiated.C20.BoxedType><Bytes>5f65c32c05
+                                       <field name="spare" value="2" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Optimised for signalling traffic:1" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:15" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="101" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="195" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="44" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="5" type="Integer" length="1" />
+                                    </Bytes></qos2_Negotiated.C20.BoxedType>
+                              </PDP_ContextInfo.Sequence-->
+                           </Collection>
+                        </ps_PDP_ActiveNotReachableForPaging.C4.BoxedType>
+                        <ps_PDP_ActiveReachableForPaging.C5.BoxedType>
+                           <Collection>
+                              <PDP_ContextInfo.Sequence>
+                                 <pdp_ContextIdentifier.C0.BoxedType><Integer>560143202</Integer></pdp_ContextIdentifier.C0.BoxedType>
+                                 <pdp_ContextActive.C1></pdp_ContextActive.C1>
+                                 <pdp_Type.C2.BoxedType><Bytes>a103
+                                       <field name="spare" value="10" type="Integer" lengthBit="4" />
+                                       <field name="PDP type organisation" value="IETF:1" type="EnumLong" lengthBit="4" />
+                                       <field name="PDP type number" value="3" type="EnumLong" length="1" />
+                                    </Bytes></pdp_Type.C2.BoxedType>
+                                 <pdp_Address.C3.BoxedType><Bytes>ee1dbd81
+                                       <field name="IPV4  address" value="238.29.189.129" type="IPV4_Address" length="4" />
+                                    </Bytes></pdp_Address.C3.BoxedType>
+                                 <apn_Subscribed.C4.BoxedType><Bytes>76707a70
+                                       <field name="DNS string" value="vpzp" type="String" length="2" />
+                                    </Bytes></apn_Subscribed.C4.BoxedType>
+                                 <apn_InUse.C5.BoxedType><Bytes>4c7a
+                                       <field name="DNS string" value="Lz" type="String" length="1" />
+                                    </Bytes></apn_InUse.C5.BoxedType>
+                                 <nsapi.C6.BoxedType><Integer>171934715</Integer></nsapi.C6.BoxedType>
+                                 <transactionId.C7.BoxedType><Bytes>9cc6
+                                       <field name="TI flag" value="The message is sent to the side that originates the TI:1" type="EnumLong" lengthBit="1" />
+                                       <field name="TIO" value="1" type="Integer" lengthBit="3" />
+                                       <field name="NA" value="12" type="Integer" lengthBit="4" />
+                                       <field name="Ext" value="1" type="Integer" lengthBit="1" />
+                                       <field name="TIE" value="70" type="Integer" lengthBit="7" />
+                                    </Bytes></transactionId.C7.BoxedType>
+                                 <teid_ForGnAndGp.C8.BoxedType><Bytes>f446c351
+                                       <field name="TEID" value="4098278225" type="Integer" length="4" />
+                                    </Bytes></teid_ForGnAndGp.C8.BoxedType>
+                                 <teid_ForIu.C9.BoxedType><Bytes>1c5ae24d
+                                       <field name="TEID" value="475718221" type="Integer" length="4" />
+                                    </Bytes></teid_ForIu.C9.BoxedType>
+                                 <ggsn_Address.C10.BoxedType><Bytes>5e6f69063a
+                                       <field name="Address type" value="IPV6:1" type="EnumLong" lengthBit="2" />
+                                       <field name="AddressLength" value="30" type="Integer" lengthBit="6" />
+                                       <field name="IPV4 address" value="111.105.6.58" type="IPV4_Address" length="4" />
+                                    </Bytes></ggsn_Address.C10.BoxedType>
+                                 <qos_Subscribed.C11.BoxedType><Bytes>8e5336d2cded9e7168
+                                       <field name="Allocation/Retention Priority" value="142" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Streaming class:2" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="Without delivery order ('no'):2" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Erroneous SDUs are not delivered ('no'):3" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="54" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="210" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="205" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="Reserved:14" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="Reserved:13" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="39" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 2:2" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="113" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="104" type="Integer" length="1" />
+                                    </Bytes></qos_Subscribed.C11.BoxedType>
+                                 <qos_Requested.C12.BoxedType><Bytes>6fcf4a0e72e7ef291c
+                                       <field name="Allocation/Retention Priority" value="111" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Reserved:6" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="With delivery order ('yes'):1" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Reserved:7" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="74" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="14" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="114" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="Reserved:14" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="1*10 power -5:7" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="59" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Priority level 3:3" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="41" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="28" type="Integer" length="1" />
+                                    </Bytes></qos_Requested.C12.BoxedType>
+                                 <qos_Negotiated.C13.BoxedType><Bytes>32ece910a3361c6032
+                                       <field name="Allocation/Retention Priority" value="50" type="Integer" length="1" />
+                                       <field name="Traffic class" value="Reserved:7" type="EnumLong" lengthBit="3" />
+                                       <field name="Delivery class" value="With delivery order ('yes'):1" type="EnumLong" lengthBit="2" />
+                                       <field name="Delivery erroneous SDUs" value="Reserved:4" type="EnumLong" lengthBit="3" />
+                                       <field name="Maximum SDU size" value="233" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink" value="16" type="Integer" length="1" />
+                                       <field name="Maximum bitrate downlink" value="163" type="Integer" length="1" />
+                                       <field name="SDU error ratio" value="1*10 power -3:3" type="EnumLong" lengthBit="4" />
+                                       <field name="Residual BER" value="1*10 power -4:6" type="EnumLong" lengthBit="4" />
+                                       <field name="Transfer delay" value="7" type="Integer" lengthBit="6" />
+                                       <field name="Traffic handling priority" value="Subscribed traffic handling priority / Reserved:0" type="EnumLong" lengthBit="2" />
+                                       <field name="Guaranteed bitrate uplink" value="96" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink" value="50" type="Integer" length="1" />
+                                    </Bytes></qos_Negotiated.C13.BoxedType>
+                                 <chargingId.C14.BoxedType><Bytes>2f26fb3e
+                                       <field name="Charging ID" value="791083838" type="Integer" length="4" />
+                                    </Bytes></chargingId.C14.BoxedType>
+                                 <chargingCharacteristics.C15.BoxedType><Bytes>819d
+                                       <field name="Reserved" value="8" type="Integer" lengthBit="4" />
+                                       <field name="N flag" value="0" type="Integer" lengthBit="1" />
+                                       <field name="P flag" value="0" type="Integer" lengthBit="1" />
+                                       <field name="F flag" value="0" type="Integer" lengthBit="1" />
+                                       <field name="H flag" value="1" type="Integer" lengthBit="1" />
+                                       <field name="Charging Value" value="157" type="Integer" length="1" />
+                                    </Bytes></chargingCharacteristics.C15.BoxedType>
+                                 <rnc_Address.C16.BoxedType><Bytes>19bc4471f7
+                                       <field name="Address type" value="IPV4:0" type="EnumLong" lengthBit="2" />
+                                       <field name="AddressLength" value="25" type="Integer" lengthBit="6" />
+                                       <field name="IPV4 address" value="188.68.113.247" type="IPV4_Address" length="4" />
+                                    </Bytes></rnc_Address.C16.BoxedType>
+                                 <!--extensionContainer.C17.Sequence>
+                                    <privateExtensionList.C0.BoxedType>
+                                       <Collection>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.240</ObjectIdentifier></extId>
+                                             <extType>5455</extType>
+                                          </PrivateExtension.Sequence>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.232.35.8.96.119.22.121.91.29</ObjectIdentifier></extId>
+                                             <extType>c993e9</extType>
+                                          </PrivateExtension.Sequence>
+                                          <PrivateExtension.Sequence>
+                                             <extId><ObjectIdentifier>0.1.278.54.79.61.56.87.58</ObjectIdentifier></extId>
+                                             <extType>4bb271</extType>
+                                          </PrivateExtension.Sequence>
+                                       </Collection>
+                                    </privateExtensionList.C0.BoxedType>
+                                    <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                                 </extensionContainer.C17.Sequence-->
+                                 <qos2_Subscribed.C18.BoxedType><Bytes>273e45a12d
+                                       <field name="spare" value="1" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Not optimised for signalling traffic:0" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:7" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="62" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="69" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="161" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="45" type="Integer" length="1" />
+                                    </Bytes></qos2_Subscribed.C18.BoxedType>
+                                 <qos2_Requested.C19.BoxedType><Bytes>96c87b2e2d
+                                       <field name="spare" value="4" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Optimised for signalling traffic:1" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:6" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="200" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="123" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="46" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="45" type="Integer" length="1" />
+                                    </Bytes></qos2_Requested.C19.BoxedType>
+                                 <qos2_Negotiated.C20.BoxedType><Bytes>d69b6353c7
+                                       <field name="spare" value="6" type="Integer" lengthBit="3" />
+                                       <field name="Signalling Indication" value="Optimised for signalling traffic:1" type="EnumLong" lengthBit="1" />
+                                       <field name="Source Statistics Descriptor" value="unknown:6" type="EnumLong" lengthBit="4" />
+                                       <field name="Maximum bitrate downlink (extended)" value="155" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate downlink (extended)" value="99" type="Integer" length="1" />
+                                       <field name="Maximum bitrate uplink (extended)" value="83" type="Integer" length="1" />
+                                       <field name="Guaranteed bitrate uplink (extended)" value="199" type="Integer" length="1" />
+                                    </Bytes></qos2_Negotiated.C20.BoxedType>
+                              </PDP_ContextInfo.Sequence>
+                           </Collection>
+                        </ps_PDP_ActiveReachableForPaging.C5.BoxedType>
+                        <netDetNotReachable.Enum>
+                           <EnumType>restrictedArea.2</EnumType>
+                        </netDetNotReachable.Enum>
+                     </ps_SubscriberState.C4.Choice>
+                     <imei.C5.BoxedType><TBCD_STRING.BoxedType><Bytes>21
+                              <field name="digits" value="12" type="Number_BCD" length="1" />
+                           </Bytes></TBCD_STRING.BoxedType></imei.C5.BoxedType>
+                     <ms_Classmark2.C6.BoxedType><Bytes>5176d6
+                           <field name="spare1" value="0" type="Integer" lengthBit="1" />
+                           <field name="Revision level" value="Used by mobile stations supporting R99 or later versions of the protocol:2" type="EnumLong" lengthBit="2" />
+                           <field name="ES IND" value="ES IND option is implemented in the MS (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                           <field name="A5/1 algorithm supported " value="available:0" type="EnumLong" lengthBit="1" />
+                           <field name="RF Power Capability" value="class 1 (GSM):1" type="EnumLong" lengthBit="3" />
+                           <field name="spare2" value="0" type="Integer" lengthBit="1" />
+                           <field name="PS capability" value="present (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                           <field name="SS Screening Indicator" value="for future use :3" type="EnumLong" lengthBit="2" />
+                           <field name="SM capability" value="does not support:0" type="EnumLong" lengthBit="1" />
+                           <field name="VBS notification reception" value="notification wanted (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                           <field name="VGCS notification reception" value="notification wanted (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                           <field name="FC Frequency Capability" value="does not support the E-GSM or R-GSM band:0" type="EnumLong" lengthBit="1" />
+                           <field name="CM3" value="supports:1" type="EnumLong" lengthBit="1" />
+                           <field name="spare3" value="1" type="Integer" lengthBit="1" />
+                           <field name="LCS VA capability" value="request notification not supported:0" type="EnumLong" lengthBit="1" />
+                           <field name="UCS2 treatment" value="no preference for the default alphabet :1" type="EnumLong" lengthBit="1" />
+                           <field name="SoLSA" value="does not support:0" type="EnumLong" lengthBit="1" />
+                           <field name="CM Service Prompt (CMSP)" value="supported at least one CM protocol:1" type="EnumLong" lengthBit="1" />
+                           <field name="A5/3 algorithm supported" value="available (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                           <field name="A5/2 algorithm supported" value="not available:0" type="EnumLong" lengthBit="1" />
+                        </Bytes></ms_Classmark2.C6.BoxedType>
+                     <gprs_MS_Class.C7.Sequence>
+                        <mSNetworkCapability.C0.BoxedType><Bytes>8303e0
+                              <field name="value" value="8303e0" type="Binary" length="3" />
+                           </Bytes></mSNetworkCapability.C0.BoxedType>
+                        <mSRadioAccessCapability.C1.BoxedType><Bytes>0b01
+                              <field name="value" value="0b01" type="Binary" length="2" />
+                           </Bytes></mSRadioAccessCapability.C1.BoxedType>
+                     </gprs_MS_Class.C7.Sequence>
+                     <mnpInfoRes.C8.Sequence>
+                        <routeingNumber.C0.BoxedType><TBCD_STRING.BoxedType><Bytes>22645810f6
+                                 <field name="digits" value="224685016" type="Number_BCD" lengthBit="36" />
+                              </Bytes></TBCD_STRING.BoxedType></routeingNumber.C0.BoxedType>
+                        <imsi.C1.BoxedType><Bytes>7386
+                              <field name="digits" value="3768" type="Number_BCD" length="2" />
+                           </Bytes></imsi.C1.BoxedType>
+                        <msisdn.C2.BoxedType><Bytes>521291
+                              <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                              <field name="nature of address" value="reserved:5" type="EnumLong" lengthBit="3" />
+                              <field name="numbering plan" value="spare:2" type="EnumLong" lengthBit="4" />
+                              <field name="digits" value="2119" type="Number_BCD" length="2" />
+                           </Bytes></msisdn.C2.BoxedType>
+                        <numberPortabilityStatus.C3.Enum>
+                           <EnumType>ownNumberNotPortedOut.4</EnumType>
+                        </numberPortabilityStatus.C3.Enum>
+                        <!--extensionContainer.C4.Sequence>
+                           <privateExtensionList.C0.BoxedType>
+                              <Collection>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.2</ObjectIdentifier></extId>
+                                    <extType>8aca7af3b4</extType>
+                                 </PrivateExtension.Sequence>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.2110.126.29.12</ObjectIdentifier></extId>
+                                    <extType>a6fd695d3f</extType>
+                                 </PrivateExtension.Sequence>
+                                 <PrivateExtension.Sequence>
+                                    <extId><ObjectIdentifier>0.1.253.99.80.15.21.67.21</ObjectIdentifier></extId>
+                                    <extType>6a3b589e29eea4e1</extType>
+                                 </PrivateExtension.Sequence>
+                              </Collection>
+                           </privateExtensionList.C0.BoxedType>
+                           <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                        </extensionContainer.C4.Sequence-->
+                     </mnpInfoRes.C8.Sequence>
+                  </subscriberInfo.Sequence>
+                  <!--extensionContainer.Sequence>
+                     <privateExtensionList.C0.BoxedType>
+                        <Collection>
+                           <PrivateExtension.Sequence>
+                              <extId><ObjectIdentifier>0.1.217.12</ObjectIdentifier></extId>
+                              <extType>98</extType>
+                           </PrivateExtension.Sequence>
+                           <PrivateExtension.Sequence>
+                              <extId><ObjectIdentifier>0.1.229.42.2.41.83.14.64</ObjectIdentifier></extId>
+                              <extType>718c55</extType>
+                           </PrivateExtension.Sequence>
+                           <PrivateExtension.Sequence>
+                              <extId><ObjectIdentifier>0.1.2100</ObjectIdentifier></extId>
+                              <extType>2603ae</extType>
+                           </PrivateExtension.Sequence>
+                        </Collection>
+                     </privateExtensionList.C0.BoxedType>
+                     <pcsExtensions.C1.Sequence></pcsExtensions.C1.Sequence>
+                  </extensionContainer.Sequence-->
+               </ProvideSubscriberInfoRes.Sequence>            
+            </returnparameter>
+         </resultretres>
+        </returnResultLast.C2.Sequence>
+      </Component.Choice>
+    </ASN>
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage>
+        <end>
+          <dtid><Bytes>00000001</Bytes></dtid>
+          <dialoguePortion>
+            <DialogueOC>
+              <ExternalPDU>
+                <ExternalPDUSequenceType>
+                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                  <!--indirect_reference>856649051904125184</indirect_reference-->
+                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
+                  <encoding>
+                    <single_ASN1_type>
+                      <DialoguePDU>
+                        <dialogueResponse>
+                          <AARE_apduSequenceType>
+                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                            <application_context_name><ObjectIdentifier><ObjectIdentifier>subscriberInfoEnquiryContext-v2:0.4.0.0.1.0.28.2</ObjectIdentifier></ObjectIdentifier>
+                            </application_context_name>
+                            <result><Associate_result><Long>0</Long></Associate_result></result>
+                            <result_source_diagnostic>
+                              <Associate_source_diagnostic>
+                                <dialogue_service_user>
+                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
+                                </dialogue_service_user>
+                              </Associate_source_diagnostic>
+                            </result_source_diagnostic>
+                            <!--Collection>
+                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
+                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
+                              <user_information>0403d079a4</user_information>
+                            </Collection-->
+                          </AARE_apduSequenceType>
+                        </dialogueResponse>
+                      </DialoguePDU>
+                    </single_ASN1_type>
+                  </encoding>
+                </ExternalPDUSequenceType>
+              </ExternalPDU>
+            </DialogueOC>
+          </dialoguePortion>
+        </end>
+      </TCMessage>
+    </ASN>
+    
+	  <!-- SCCP LAYER  -->
+    <!-- SCCP MESSAGE LONG UNITDATA WITH DATA FIELD -->
+  	<SS7 name="sccp" file="sccp.xml">
+    		<header>
+            <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+        </header>
+    		<parameter name="Protocol_Class" type="F" littleEndian="false">
+    			<field value="0" lengthBit="4" />
+    			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+    		</parameter>
+    		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+    			<field name="Address_Indicator" value="67" length="1" />
+    			<field name="Signalling_Point_Code" value="1" length="2" />
+    			<field name="Subsystem_Number" value="8" length="1" />	
+    		</parameter>
+    		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+    			<field name="Address_Indicator" value="67" length="1" />
+    			<field name="Signalling_Point_Code" value="2" length="2" />
+    			<field name="Subsystem_Number" value="8" length="1" />
+    		</parameter>
+    		<parameter id="15" name="Data" type="V" littleEndian="false">
+    			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+          <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+    		</parameter>
+  	</SS7>
+
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+				
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+        <parameter tag="Protocol_Data">
+            <field value="2" name="Originating_Point_Code"/>
+            <field value="1" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+	
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+  
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <!--test parameter="[data1]" condition="binary.equals" value="[data]"/-->
+
+</scenario>

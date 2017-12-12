@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+
+<scenario>
+
+    <parameter name="[test:simu_ePDG]" operation="set" value="ePDG" />
+  	<createListenpointDIAMETER name="[test:simu_ePDG]" localHost="[hostePDG]" localPort="[portePDG]"/>
+  
+    <call name="diameter.openChannel_SendCER_RecCEA"/>
+  
+  	<!-- init paramètre de la fonction attach pour ePDG -->
+  	<parameter name="[UserA]" operation="set" value="[test:userIndexPourDER]"/>	<!-- index dans table des User -->	
+  	<parameter name="[applicationID]" operation="set" value="[applicationID_SWm]"/>
+
+    <function file="./350_swm_attach/fonc_attach_simu_ePDG.xml"/>
+    <call name="fonc_attach_simu_ePDG">
+      <input> 
+        <parameter name="[function:Index_UserA]" value="0" />
+      </input>
+      <output> 
+    			<parameter name="[SessionDER]" value="[function:SessionDER]" />
+    			<parameter name="[HopByHopDER]" value="[function:HopByHopDER]" />
+    			<parameter name="[EndToEndDER]" value="[function:EndToEndDER]" />
+      </output>                      
+    </call>    
+
+</scenario>

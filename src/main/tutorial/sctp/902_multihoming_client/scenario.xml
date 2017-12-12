@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[channelName]" operation="set" value="[scenarioName]"/>
+    <openChannelSCTP name="[channelName]" localHost="10.1.2.100,10.1.3.100" remoteHost="10.1.2.101" remotePort="14000" />
+
+    <while>
+        <condition>       
+        </condition>
+        <do>
+
+
+            <sendMessageSCTP channel="[channelName]">
+                <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+            </sendMessageSCTP>
+
+            <receiveMessageSCTP channel="[channelName]"/>
+            <parameter name="[stream]" operation="protocol.setFromMessage" value="sctp.stream"/>
+            <parameter name="[ssn]" operation="protocol.setFromMessage" value="sctp.ssn"/>
+            <parameter name="[ppid]" operation="protocol.setFromMessage" value="sctp.ppid"/>
+            <parameter name="[tsn]" operation="protocol.setFromMessage" value="sctp.tsn"/>    
+            <parameter name="[aid]" operation="protocol.setFromMessage" value="sctp.aid"/>
+            <!--test parameter="[aid]" condition="string.equals" value="1" /-->
+
+            <parameter name="[sourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
+            <!--test parameter="[sourceHost]" condition="string.equals" value="[localHostSCTP]" /-->
+            <parameter name="[sourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
+            <!--test parameter="[sourcePort]" condition="string.equals" value="[localPortSCTP]" /-->
+
+            <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+            <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+
+            <pause seconds="5"/>
+
+        </do>
+    </while>
+
+
+    <finally>
+        <closeChannelSCTP name="[channelName]"/>
+    </finally>
+
+</scenario>

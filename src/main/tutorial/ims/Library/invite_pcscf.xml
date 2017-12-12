@@ -1,0 +1,34 @@
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="INVITE"/>
+	</condition>
+	<then>
+<!--envoi d'un  trying lors de la reception d'une requete INVITE-->
+<sendResponseSIP name="Answer 100 Trying " providerName="[scenarioName]">
+<![CDATA[SIP/2.0 100 Trying
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+</sendResponseSIP>
+<!--Ajout du header Record-Route-->
+		<parameter name="[lastRecord-Route]" 	operation="setFromMessage" 	value="header:record-route"	value2="[lastMessage]"/>
+		<if>
+			<condition>
+				<test parameter="[lastRecord-Route]" condition="isEmpty"/>
+			</condition>
+			<then>
+				<parameter name="[lastHeader]" 		operation="addfirst" 	value="[lastHeader]" value2="[Record-Route]"/>			
+			</then>
+			<else>
+				<!--supprime le champ record route-->
+				<parameter name="[index]" 			operation="findMatches" 	value="[lastHeader]" 	value2="Record-Route.*"/>
+				<parameter name="[lastHeader]" 		operation="removeat" 		value="[lastHeader]" 	value2="[index]"/>
+				<parameter name="[lastHeader]" 		operation="addfirst" 	value="[lastHeader]"		value2="[lastRecord-Route]"/>
+				<parameter name="[lastHeader]" 		operation="addfirst" 	value="[lastHeader]"		value2="[Record-Route]"/>
+			</else>
+		</if>
+	</then>
+</if>

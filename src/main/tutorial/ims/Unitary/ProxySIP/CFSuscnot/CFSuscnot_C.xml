@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 					operation="set" value="[PortUAC]"/>
+	<parameter name="[testcase:LocalAddressUAC]" 	operation="set" value="[HardAddressUAC]"/>	
+
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+
+  
+	<parameter name="[NewCallID]" 		operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[localTag]" 		operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[NewCseqNumber]" 	operation="set" 		value="1"/>			
+	<parameter name="[NewBranchId]" 	operation="identifier" 	value="newString"	value2="10"/>
+	<parameter name="[clientName]" 		operation="set" 		value="Inviter"/>
+
+	
+  <sendRequestSIP name="Send SUBSCRIBE" providerName="[scenarioName]">
+<![CDATA[SUBSCRIBE sip:[HardAddressUAS] SIP/2.0
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[NewBranchId]
+Call-ID: [NewCallID]
+CSeq: [NewCseqNumber] SUBSCRIBE
+Max-Forwards: 70
+Accept: application/conference-info+xml
+Event: conference
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH, PRACK
+Contact: "[InviterName]" <sip:[LocalAddressUAC]>
+User-Agent: [UserAgent]
+Route: <sip:[Adresse-Proxy];lr>
+Expires: 3600
+Server: PoC-client/OMA1.0 Siemens/v2.0
+Content-Type: multipart/mixed;boundary="----=_Part_0"
+Content-Length: 0
+]]>
+</sendRequestSIP>
+
+
+  <receiveResponseSIP name="Wait 200 OK" method="SUBSCRIBE" result="200">
+  </receiveResponseSIP>
+  
+  <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+
+	<receiveRequestSIP name="Wait NOTIFY" method="NOTIFY">
+	<parameter name="[To]" 			operation="setFromMessage" 	value="header:To"/>  	
+	<parameter name="[From]" 		operation="setFromMessage" 	value="header:From"/>  	
+	<parameter name="[CallId]" 		operation="setFromMessage" 	value="header:Call-Id"/>  	
+	<parameter name="[CSeq]" 		operation="setFromMessage" 	value="header:CSeq"/>  	 		
+	<parameter name="[Via]" 		operation="setFromMessage" 	value="header:Via"/>
+	<parameter name="[localTag]" 	operation="identifier" 		value="newString" value2="10"/> 
+	<parameter name="[Contact]" 	operation="setFromMessage" 	value="header:Contact"/>
+	</receiveRequestSIP>
+
+
+<sendResponseSIP name="send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Route: <sip:[Adresse-Proxy];lr>
+Contact: [Contact]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+  
+  
+</scenario>

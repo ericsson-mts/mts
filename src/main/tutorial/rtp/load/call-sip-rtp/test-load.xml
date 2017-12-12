@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load test SIP_RTP">
+
+    <parameter description="Duration (in sec.) of the call" editable="true" name="[CallDurationSec]" operation="set" value="5"/>    	       	       
+    <parameter description="Payload type for the media flow" editable="true" name="[payloadTypeRTP]" operation="set" value="17"/>    	       	       
+    <parameter description="Bytes rate (in byte/sec) for the media flow" editable="true" name="[byteRateRTP]" operation="set" value="4000"/>    	       	           
+    <parameter description="Duration (in sec.) of the test " editable="true" name="[TestDurationSec]" operation="set" value="300"/>   	       
+    <parameter description="Number of simultaneous testcase (call) in parallel" editable="true" name="[TestcaseNumber]" operation="set" value="20"/>    	       	       
+    <parameter description="Dialing delay (in seconds) : time between INVITE and 180 response" editable="true" name="[dialingDelay]" operation="set" value="0.5"/>    	       	       
+    <parameter description="Time spacing (in seconds) : time between real and theorical timestamp" editable="true" name="[timeSpacing]" operation="set" value="0.005"/>    	       	       
+    <parameter description="Packets lost (in percent)" editable="true" name="[packetLost]" operation="set" value="0.1"/>    	       	       
+
+    <parameter description="Domain name for inviter and invitee identities" editable="true" name="[domainName]" operation="set" value="devoteam.com"/>
+    <parameter description="Inviter user name" editable="true" name="[inviter]" operation="set" value="alice"/>
+    <parameter description="Invitee user name" editable="true" name="[invitee]" operation="set" value="bob"/>	
+	
+    <parameter name="[localHostSIP]" operation="system.ipaddress"/>        
+    <!--parameter name="[localHostSIP]" operation="set" value="172.16.21.32"/-->        
+    <parameter description="Remote host for the SIP protocol" name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remoteHostSIP]" operation="system.ipaddress"/>
+    <!--parameter name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT" description="Remote port for the SIP protocol"/-->
+    <parameter name="[remotePortSIP]" operation="set" value="5060"/>
+
+    <parameter name="[localHostRTP]" operation="system.ipaddress"/>
+    <parameter description="Start of the range port for the RTP protocol for the inviter" editable="true" name="[inviterBaseRTP]" operation="set" value="10000"/>
+    <parameter name="[remoteHostRTP]" operation="system.ipaddress"/>    
+    <parameter description="Start of the range port for the RTP protocol for the invitee" editable="true" name="[inviteeBaseRTP]" operation="set" value="11000"/>
+                      
+    <parameter name="[temp]" operation="file.create" value="dialingDelay.csv"/>
+    <parameter name="[tempPacketRTP]" operation="number.divide" value="[byteRateRTP]" value2="160"/>
+    <parameter name="[delayPacketRTP]" operation="number.divide" value="1000" value2="[tempPacketRTP]"/>
+
+    <runProfile>
+        <step period="0" time="0"/>
+        <step period="0" time="3600"/>
+        <end delay="[TestDurationSec]"/>
+    </runProfile>
+           	              	                  	       
+    <for from="01" index="[number]" step="1" to="[TestcaseNumber]">          	       
+    	<testcase description="Call with mixed SIP/RTP protocol" name="call[number]" state="true">
+		    <parameter name="[inviter]" operation="set" value="alice[number]"/>
+    		<parameter name="[invitee]" operation="set" value="bob[number]"/>	    		
+    		<parameter name="[num]" operation="number.multiply" value="[number]" value2="2"/>
+            <parameter name="[remotePortRTP]" operation="number.add" value="[inviteeBaseRTP]" value2="[num]"/>
+            <parameter name="[localPortRTP]" operation="number.add" value="[inviterBaseRTP]" value2="[num]"/>
+        	<scenario file="UAC.xml" name="[inviter][number]" routingName="[inviter][number]"/>
+        	<scenario file="UAS.xml" name="[invitee][number]" routingName="[invitee][number]"/>
+    	</testcase>
+    </for>
+    
+</test>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <parameter name="[readFromCSV]" operation="set" value="995_http_web_server/type.csv"/>
+    <parameter name="[ct]" operation="file.readCSV" value="[readFromCSV]" value2="ct" />
+    <parameter name="[mime]" operation="file.readCSV" value="[readFromCSV]" value2="mime" />	
+
+	<parameter name="[URI]" operation="set" value="995_http_web_server/files" />
+	<parameter name="[indexHTML]" operation="set" value="index.html"/>
+	<parameter name="[indexError]" operation="set" value="errorPage.html"/>
+	<parameter name="[imageJPG]" operation="set" value="jpg.jpg"/>
+	<parameter name="[imagePNG]" operation="set" value="png.png"/>
+	<parameter name="[imageGIF]" operation="set" value="gif.gif"/>
+	
+    <label name="ReceiveMessageHTTP"/>
+
+  	<receiveMessageHTTP name="Wait HTTP/HTTPS" timeout="0" request="true">
+		<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>		
+		<parameter name="[Content_type]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+		<parameter name="[URIReceived]" operation="protocol.setFromMessage" value="firstline.uri"/>  		
+	</receiveMessageHTTP>
+	<if>
+	<condition>
+		<test parameter="[URIReceived]" condition="string.equals" value="/"/>
+	</condition>
+	<then>
+		<parameter name="[fileName]" operation="set" value="/[indexHTML]" />
+	</then>
+	<else>
+		<parameter name="[fileName]" operation="set" value="[URIReceived]" />
+	</else>
+	</if>
+	<parameter name="[filetype]" operation="string.split" value="[fileName]" value2="."/>	
+	<parameter name="[filetypesize]" operation="list.size" value="[filetype]"/>
+	<parameter name="[filetypesize]" operation="number.substract" value="[filetypesize]" value2="1"/>
+	<parameter name="[index]" operation="list.find" value="[ct]" value2="[filetype([filetypesize])]"/>		
+	<parameter name="[indexSize]" operation="list.size" value="[index]"/>	
+	
+	<if>
+	<condition>
+		<test parameter="[indexSize]" condition="string.equals" value="0"/>
+	</condition>
+	<then>
+		<parameter name="[mtype]" operation="set" value="binary" />
+	</then>
+	<else>
+		<parameter name="[mtype]" operation="set" value="[mime([index])]" />
+	</else>
+	</if>
+	
+	<parameter name="[tryKO]" operation="set" value="true" />
+	<try>
+	<do>
+		<parameter name="[readFromFiles]" operation="file.readstring" value="[URI][fileName]"/>
+		<parameter name="[tryKO]" operation="set" value="false" />
+	</do>
+	<finally>	
+	<if>
+	<condition>
+		<test parameter="[tryKO]" condition="boolean.equals" value="true"/>
+	</condition>
+	<then>
+		<parameter name="[mtype]" operation="set" value="text/html" />
+		<parameter name="[readFromFiles]" operation="file.readstring" value="[URI]/[indexError]"/>
+	</then>	
+	</if>
+	</finally>
+	</try>
+	
+	<try>
+	<do>
+	<sendMessageHTTP name="Send POST 200 OK" transactionId="[transaction_id]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[HTTP/1.1 200 OK
+Etag: blabla:4cd
+Accept: *.*
+Accept-Ranges: bytes
+Server: Microsoft-IIS/6.0
+User-Agent: XMLLoader
+Content-Type: [mtype]
+Content-Length: auto
+
+[readFromFiles]]]>
+<!--******************** END MESSAGE *********************-->
+	</sendMessageHTTP>
+	</do>
+	<finally>
+	</finally>
+	</try>
+	
+    <goto name="goto receiveMessageHTTP" label="ReceiveMessageHTTP" state="true"/>
+	
+</scenario>

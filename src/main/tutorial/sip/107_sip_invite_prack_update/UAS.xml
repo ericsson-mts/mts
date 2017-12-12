@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <parameter name="[clientName]" operation="set" value="bob"/>
+       
+	<receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
+		<parameter name="[inviteTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[inviteFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[inviteCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+		<parameter name="[inviteVia]" operation="protocol.setFromMessage" value="header.Via"/>	
+		<parameter name="[inviteCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+  		<parameter name="[localTag]" operation="setFromAddress" value="[inviteFrom]" value2="Parameter.tag"/>
+	</receiveMessageSIP>
+		
+    <sendMessageSIP name="Send 100 Trying">
+<![CDATA[SIP/2.0 100 Trying
+To: [inviteTo]
+From: [inviteFrom]
+Via: [inviteVia]
+Call-ID: [inviteCallId]
+CSeq: [inviteCseq]
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+	
+    <parameter name="[newRSeqNumber]" operation="number.random" value="10000000"/>		    
+    <parameter name="[remoteTag]" operation="string.random" value="10"/>
+	<sendMessageSIP name="Send 183 Session Progress">
+<![CDATA[SIP/2.0 183 Session Progress
+To: [inviteTo];tag=[remoteTag]
+From: [inviteFrom]
+Via: [inviteVia]
+Call-ID: [inviteCallId]
+CSeq: [inviteCseq]
+RSeq: [newRSeqNumber]
+Contact: <sip:[clientName]@[localSIP]>
+Require: 100rel
+Supported: 100rel
+Session-Expires: 1800
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName] 999 999 IN IP4 [clientIpAddress]
+s=-
+c=IN IP4 [clientIpAddress]
+t=0 0
+m=audio 20000 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=maxptime:200
+a=ptime:200
+]]>
+    </sendMessageSIP>
+
+	<receiveMessageSIP name="Wait Prack" request="true" type="PRACK">
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>	
+		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	</receiveMessageSIP>
+
+	<sendMessageSIP name="Send 200 OK for PRACK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[clientName]@[localSIP]>
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+    	<receiveMessageSIP name="Wait UPDATE" request="true" type="UPDATE">
+		<parameter name="[inviteTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[inviteFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[inviteCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+		<parameter name="[updateVia]" operation="protocol.setFromMessage" value="header.Via"/>	
+		<parameter name="[updateCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+  		<parameter name="[localTag]" operation="setFromAddress" value="[inviteFrom]" value2="Parameter.tag"/>
+    	</receiveMessageSIP>    
+
+    	<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [updateVia]
+Call-ID: [inviteCallId]
+CSeq: [updateCseq]
+Contact: <sip:[clientName]@[localSIP]>
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+    	</sendMessageSIP>		
+
+    <parameter name="[newRSeqNumber]" operation="number.random" value="10000000"/>		    
+	<sendMessageSIP name="Send 180 Ringing">
+<![CDATA[SIP/2.0 180 Ringing
+To: [inviteTo];tag=[remoteTag]
+From: [inviteFrom]
+Via: [inviteVia]
+Call-ID: [inviteCallId]
+CSeq: [inviteCseq]
+RSeq: [newRSeqNumber]
+Contact: <sip:[clientName]@[localSIP]>
+Require: 100rel
+Supported: 100rel
+Session-Expires: 1800
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName] 999 999 IN IP4 [clientIpAddress]
+s=-
+c=IN IP4 [clientIpAddress]
+t=0 0
+m=audio 20000 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=maxptime:200
+a=ptime:200
+]]>
+    </sendMessageSIP>
+
+	<receiveMessageSIP name="Wait Prack" request="true" type="PRACK">
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>	
+		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+	</receiveMessageSIP>
+
+	<sendMessageSIP name="Send 200 OK for PRACK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+Contact: <sip:[clientName]@[localSIP]>
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+			
+    	<sendMessageSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [inviteVia]
+Call-ID: [inviteCallId]
+CSeq: [inviteCseq]
+Contact: <sip:[clientName]@[localSIP]>
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+    </sendMessageSIP>		
+		
+    <receiveMessageSIP name="Wait Ack" request="true" type="ACK">
+		<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+		<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+		<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+		<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>	
+		<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageSIP>
+	
+    <receiveMessageSIP name="Wait BYE" request="true" type="BYE">
+    	<parameter name="[lastTo]" operation="protocol.setFromMessage" value="header.To"/>
+    	<parameter name="[lastFrom]" operation="protocol.setFromMessage" value="header.From"/>
+    	<parameter name="[lastCallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  				
+    	<parameter name="[lastVia]" operation="protocol.setFromMessage" value="header.Via"/>	
+    	<parameter name="[lastCseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageSIP>
+		
+    <sendMessageSIP name="Send 200 OK for BYE">
+<![CDATA[SIP/2.0 200 OK
+To: [lastTo]
+From: [lastFrom]
+Via: [lastVia]
+Call-ID: [lastCallId]
+CSeq: [lastCseq]
+User-Agent: IMSLoader
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+</scenario>

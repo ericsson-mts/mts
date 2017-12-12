@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<scenario>
+
+    <createListenpointUDP name="proxy_receiver" localHost="[localHostUDP_proxy]" localPort="[localPortUDP_proxy]" />
+    <createListenpointUDP name="proxy_sender" />
+
+    <while>
+        <condition>
+        </condition>
+        <do>
+            <receiveMessageUDP timeout="0">
+              <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+              <parameter name="[remoteHostUDP]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        	  <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort" />
+            </receiveMessageUDP>
+
+            <sendMessageUDP listenpoint="proxy_sender" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+                <data format="text">[contents]</data>
+	        </sendMessageUDP>
+        </do>
+    </while>
+
+    <finally>
+        <removeListenpointUDP name="proxy_receiver" />
+        <removeListenpointUDP name="proxy_sender" />
+    </finally>
+
+</scenario>

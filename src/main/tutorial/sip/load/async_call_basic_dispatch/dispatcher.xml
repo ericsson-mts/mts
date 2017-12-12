@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <while>
+        <condition/>
+        <do>
+            <parameter name="[item]" operation="list.remove" />
+			
+            <receiveMessageDIAMETER failedOnTimeout="false">
+                <parameter name="[item]" operation="protocol.setFromMessage" value="message" />
+            </receiveMessageDIAMETER>
+           
+      			<parameter name="[unused]" 		operation="list.enqueue" value="fifo" value2="[item]" />
+			
+       </do>
+    </while>
+</scenario>

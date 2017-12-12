@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : 
+        V5.2 => en_30034701v020202p.pdf : ETSIEN300347-1 V2.2.2(1999-12)
+    	V5.1 => en_30032401v020101p.pdf : ETSIEN300324-1 V2.1.1(2000-04)    
+    	
+    Message : SIGNAL(2) => V5.1 chapter 13.3.3
+
+    The following scenarios send the V5.2 message with the following elements :
+
+Protocol discriminator 13.4.2 Both M 1
+L3addr 13.4.3 Both M 2
+Message type 13.4.4 Both M 1
+Sequence-number 13.4.7.1 Both M 3
+Pulse notification 13.4.6.1 AN to LE C 1
+Autonomous-signalling-sequence 13.4.6.4 LE to AN C 1
+Sequence-response 13.4.6.5 AN to LE C 1
+Cadenced-ringing 13.4.7.2 LE to AN C 3
+Pulsed-signal 13.4.7.3 Both C 3 to 5
+Steady-signal 13.4.7.4 Both C 3
+Digit-signal 13.4.7.5 Both C 3
+Resource-unavailable 13.4.7.10 AN to LE C 3 to 8
+Enable-metering 13.4.7.11 LE to AN C 4 to 7
+Metering-report 13.4.7.12 AN to LE C 4 to 5
+Attenuation 13.4.7.13 LE to AN C 3
+    
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN" remoteHost="[remoteHostV5UA]" remotePort="[remotePortV5UA]">
+       	
+        <ISDN name="V5.X" syntax="../conf/sigtran/v5x.xml">
+        
+	    <!-- SIGNAL = b0000010 = h2 = d2-->
+            <header discriminator="Recommendation ETSI300347-1/V5.2" layer3Address="h77f4"  type="SIGNAL"/>
+
+	    <!-- PSTN Sequence-number chapter 14 (13.4.7.1) -->
+	    <element identifier="PSTN Sequence-number">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Sequence number" value="123" lengthBit="7" type="integer" />
+	    </element>
+
+	    <!-- PSTN Pulse-notification 14 (13.4.6.1) -->
+	    <element identifier="PSTN Pulse-notification" />
+
+	    <!-- PSTN Sequence response 14 (13.4.6.5) -->
+	    <element identifier="PSTN Sequence response"/>
+            		   
+	    <!-- PSTN Autonomous signalling sequence 14 (13.4.6.4) -->
+	    <element identifier="PSTN Autonomous signalling sequence" />
+	    
+    	    <!-- PSTN Cadenced-ringing 14 (13.4.7.2) -->
+	    <element identifier="PSTN Cadenced-ringing">
+        	<field name="ext1" value="1" lengthBit="1" type="boolean" />
+        	<field name="Cadenced-ringing type" value="10" lengthBit="7" type="integer" />        
+    	    </element>
+	    
+	    <!-- PSTN Pulsed-signal 14 (13.4.7.3) -->
+	    <element identifier="PSTN Pulsed-signal">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Pulse type" value="Register recall (timed loop open)" lengthBit="7" type="enumeration" />                
+	        <field name="ext2" value="1" lengthBit="1" type="boolean" />
+	        <field name="Suppression indicator" value="Suppression allowed by pre-defined line signal from TE" lengthBit="2" type="enumeration" />                
+	        <field name="Pulse duration type" value="20" lengthBit="5" type="integer" />                
+	        <field name="ext3" lengthBit="1" value="1" type="boolean" />
+	        <field name="Acknowledge request indicator" value="Ending acknowledgement requested when finished each pulse" lengthBit="2" type="enumeration" />                
+	        <field name="Number of pulses" value="31" lengthBit="5" type="integer" />                        
+	    </element>
+
+	    <!-- PSTN Steady-signal 14 (13.4.7.4) -->
+	    <element identifier="PSTN Steady-signal">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Steady-signal type" value="Alternate reduced power/no power" lengthBit="7" type="enumeration" />                
+	    </element>
+
+	    <!-- PSTN Digit-signal 14 (13.4.7.5) -->
+	    <element identifier="PSTN Digit-signal">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Digit acknowledge request indicator" value="Ending acknowledgement requested when digit transmission is finished" lengthBit="1" type="enumeration" />                
+	        <field name="spare" value="1" lengthBit="2" type="integer" />                
+	        <field name="Digit information" value="15" lengthBit="4" type="integer" />                        
+	    </element>
+
+	    <!-- PSTN Resource-unavailable 14 (13.4.7.10) -->
+	    <element identifier="PSTN Resource-unavailable">
+	    	<!--BUG -->
+	        <!--field name="ext1" value="1" lengthBit="1" type="boolean" /-->
+	        <field name="Copy of information element with failed request" value="1213141516171819" type="binary" />
+	    </element>
+
+	    <!-- PSTN Enable-meetering 14 (13.4.7.11) -->
+	    <element identifier="PSTN Enable-meetering">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Pulse type" value="Pulsed b-wire connected to earth" lengthBit="7" type="enumeration" />                
+	        <field name="ext2" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Rate type" value="Nometering pulses to be applied automatically." lengthBit="7" type="enumeration" />                
+	        <field name="ext3" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Reporting pulse count HIGH" value="63" lengthBit="7" type="integer" />
+	        <field name="ext4" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Repetition indicator" value="Continue to apply pulses at same rate until the call is disconnected or receipt of new binstructions from LE" lengthBit="2" type="enumeration" />
+	        <field name="Reporting pulse count LOW" value="15" lengthBit="5" type="integer" />
+		<field name="ext5" value="1" lengthBit="1" type="boolean" />        	        
+	        <field name="Suppression indicator" value="Suppression allowed by pre-defined V5.1 SIGNAL message from LE" lengthBit="2" type="enumeration" />                
+	        <field name="Pulse duration type" value="17" lengthBit="5" type="integer" />                                       
+	    </element>
+	    
+	    <!-- PSTN Metering-report 14 (13.4.7.12) -->
+	    <element identifier="PSTN Metering-report">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Pulse count HIGH" value="100" lengthBit="7" type="integer" />
+	        <field name="ext2" value="1" lengthBit="1" type="boolean" />        
+	        <field name="Report type" value="Positive acknowledgement of new automatic metering instructions" lengthBit="2" type="enumeration" />
+	        <field name="Pulse count LOW" value="10" lengthBit="5" type="integer" />
+	        <field name="ext3" value="1" lengthBit="1" type="boolean" />
+	        <field name="Failure Reason" value="Port blocked (FE203/204)" lengthBit="7" type="enumeration" />
+	    </element>
+	    
+	    <!-- PSTN Attenuation 14 (13.4.7.13) -->
+	    <element identifier="PSTN Attenuation">
+	        <field name="ext1" value="1" lengthBit="1" type="boolean" />
+	        <field name="Attenuation value" value="127" lengthBit="7" type="integer" />        
+	    </element>
+	    
+        </ISDN>
+        
+        <UA name="V5UA" file="v5ua.xml">
+            <header messageClass="V5PTM:V5 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+		<field name="Link_Identifier" value="134217727"/>
+            	<field name="Channel_Identifier" value="31"/>            
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="EFA" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value="DEFINED IN UPPER LAYER"/>
+            </parameter>
+        </UA>	
+        
+    </sendMessageSIGTRAN>
+
+</scenario>

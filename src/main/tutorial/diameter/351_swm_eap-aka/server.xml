@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP S6 Authentication (AIR/AIA)" -->
+
+<scenario>
+         
+    <call name="diameter.RecCER_SendCEA"/>                  
+             
+    <parameter name="[binInputEAP]" operation="list.create" />
+    
+    <call name="diameter.RecDER_SendDEA">
+      <input>       
+        <parameter name="[function:binInputEAP]" value="[binInputEAP]" />
+        <parameter name="[function:EAPType]" value="AKA-Identity:5"/>        
+      </input>
+      <output>       
+    		<parameter name="[binOutputEAP]" value="[function:binOutputEAP]" />
+      </output>                      
+    </call>    
+
+    <call name="diameter.RecDER_SendDEA">
+      <input>       
+        <parameter name="[function:binInputEAP]" value="[binInputEAP]" />
+        <parameter name="[function:EAPType]" value="MD5-Challenge:4"/>        
+      </input>
+      <output>       
+    		<parameter name="[binOutputEAP]" value="[function:binOutputEAP]" />
+      </output>                      
+    </call>    
+
+    <call name="diameter.RecDER_SendDEA">
+      <input>       
+        <parameter name="[function:binInputEAP]" value="[binInputEAP]" />
+        <parameter name="[function:EAPType]" value="Expanded Types:254"/>
+      </input>
+      <output>       
+    		<parameter name="[binOutputEAP]" value="[function:binOutputEAP]" />
+      </output>                      
+    </call>    
+
+</scenario>

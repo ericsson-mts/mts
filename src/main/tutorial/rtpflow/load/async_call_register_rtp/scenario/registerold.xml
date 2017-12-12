@@ -1,0 +1,15 @@
+<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[Host-Server]" remotePort="[Port-Server]" transport="[transport]">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[REGISTER sip:[userName]@[domainName];transport=[transport] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [Host-Tester]:[Port-Tester];branch=z9hG4bK[newBranchId]
+Max-Forwards: 70
+Contact: <sip:[userName]@[Host-Tester]:[Port-Tester]>
+Authorization: Digest username="[userName]", realm="[WWWAuthRealm]", nonce="[WWWAuthNonce]",uri="sip:[userName]@[domainName]", response="[AuthResponse]", algorithm=MD5, cnonce="[CNonce]", opaque="opaqueData", qop="[WWWAuthQop]", nc=[NonceCount]
+Expires: 3600
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+					</sendMessageSIP>

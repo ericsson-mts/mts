@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<master name="master_dev" description="description du master">
+    <parameter name="[global]" operation="set" value="toto" />
+    
+    <test name="http_local1" runner="load" slave="esclaveLocal" path="../../http/load/test.xml" home="." description="description" >
+        <parameter name="[test]" operation="set" value="titi" />
+    </test>
+    
+    <test name="http_xubuntu" runner="load" slave="DefaultSlaveName" path="../../http/load/test.xml" home="../load1">
+        <parameter name="[test]" operation="set" value="tata" />
+    </test>
+</master>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="MGCP regression tests" name="MGCP">
+
+	<parameter name="[transactionId]" operation="number.uid" value="[transactionId]"/>
+    
+    <parameter name="[localHostMGCP]" operation="system.ipaddress"/>
+    <parameter name="[localHostMGCP]" operation="set" value="[Host-Tester(0)]"/>
+	<parameter name="[localPortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[remoteHostMGCP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostMGCP]" operation="set" value="[Host-Server(0)]"/>
+	<parameter name="[remotePortMGCP]" operation="file.readProperty" value="mgcp.properties" value2="listenpoint.LOCAL_PORT"/>
+	
+	<for from="1" index="[index]" step="1" to="10">
+	
+		<testcase description="test createConnection" name="mgcp/createConnection" state="true">
+			<scenario file="Call_Agent.xml" name="Call-Agent" routingName="Call-Agent"/>
+			<scenario file="Gateway.xml" name="Call-Server" routingName="Call-Server"/>
+		</testcase>
+	 </for>
+	 
+</test>

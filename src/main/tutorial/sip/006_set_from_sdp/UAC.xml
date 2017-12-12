@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <parameter name="[inviteeName1]" operation="set" value="bob"/>
+  <parameter name="[101_DOMAIN_ADDR]" operation="set" value="devoteam.com"/>
+  <parameter name="[clientName]" operation="set" value="alice"/>
+  <parameter name="[CallId]" operation="number.random" value="10000000"/>
+  <parameter name="[CSeqNumber]" operation="number.random" value="10000000"/>
+  <parameter name="[localTag]" operation="string.random" value="10"/>
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  <parameter name="[newBranchIdBYE]" operation="string.random" value="10"/>
+
+  <sendMessageSIP name="Send INVITE">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0
+From: "[clientName]" <sip:[clientName]@[101_DOMAIN_ADDR]>;tag=[localTag]
+To: sip:[inviteeName1]@[101_DOMAIN_ADDR]
+Call-ID:[CallId]
+CSeq: [CSeqNumber] INVITE
+Max-Forwards: 70
+Expires: 3600
+Content-Encoding: gzip
+Content-Language: en
+Allow: INVITE
+Allow: ACK
+Allow: OPTIONS
+Allow: CANCEL
+Allow: BYE
+Supported: foo
+Content-Type: multipart/mixed;boundary="----=_Part_0" 
+Authorization: Digest username="Alice",
+ realm="atlanta.com",
+ scheme="sip",
+ nonce="84a4cc6f3082121f32b42a2187831a9e",
+ uri="sip:Alice@atlanta.com",
+ qop=auth,
+ nc=00000001,
+ cnonce="0a4f113b",
+ response="7587245234b3434cc3412213e5f113a5432",
+ opaque="5ccc069c403ebaf9f0171e9517f40e41"
+Route: <sip:[inviteeName1]@[remoteSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[localSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@172.16.21.32:5060;transport=[transportRequest];lr>;id=tata
+Contact: <sip:bob@[localSIP]>;expires=3600,<sip:bob@172.16.21.32:[remotePortSIP]>;expires=3300
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000;received=[localHostSIP]
+Via: SIP/2.0/[transportResponse] 172.16.21.32:[remotePortSIP];received=172.16.21.30;branch=z9hG4bK[newBranchId]
+Ttl: 3000
+User-Agent: XmlLoader
+XmlLoaderId: XmlLoaderId
+Content-Length: x
+
+------=_Part_0
+Content-Type: application/sdp
+
+v=0
+o=mhandley 2890844526 2890842807 IN IP4 126.16.64.4
+s=SDP Seminar
+i=A Seminar on the session description protocol
+u=http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps
+e=mjh@isi.edu (Mark Handley)
+c=IN IP4 224.2.17.12/127
+t=3034423619 3042462419
+a=type:H332
+a=recvonly:20
+b=CT:128
+m=video 49232/2 RTP/AVP 98
+i=mavideo
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+b=SA:256
+c=IN IP4 224.2.17.12/127
+m=audio 49230/3 RTP/AVP 96
+i=monaudio
+a=rtpmap:96 L8/8000
+a=fmtp:rtsp h-session=zAxFWEW6kvasMzCpn2CV
+a=fmtp:rtsp h-uri=fwAAAcCoW7eME3pBeEZXRVc2a3Zhc016Q3BuMkNW
+b=CT:128
+c=IN IP4 224.2.17.12/127
+------=_Part_0
+Content-Type: application/resource-lists+xml
+Content-Disposition: recipient-list
+
+<?xml version="1.0" encoding="UTF-8"?>
+<resource-lists xmlns="urn:ietf:params:xml:ns:resource-lists" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<list>
+<entry uri="[inviteeName1]"/>
+</list>
+</resource-lists>
+------=_Part_0--]]>
+                <!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">
+  </receiveMessageSIP>
+
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="INVITE" result="200">
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>           
+    <parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>               
+    <parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>                                   
+    <parameter name="[Request-URI]" operation="protocol.setFromMessage" value="header.Contact.Address.URI"/>	
+  </receiveMessageSIP>
+
+    <parameter name="[SDP0]" operation="protocol.setFromMessage" value="content"/>
+    <test parameter="[SDP0]" condition="string.contains" value="s=SDP Seminar"/>
+    <parameter name="[SDPSDP0]" operation="protocol.setFromMessage" value="content.Sdp"/>
+    <test parameter="[SDPSDP0]" condition="string.contains" value="t=3034423619 3042462419"/>
+    <parameter name="[SDPType0]" operation="protocol.setFromMessage" value="content.Type"/>
+    <test parameter="[SDPType0]" condition="list.isEmpty"/>
+
+    <parameter name="[SDPVersion0]" operation="protocol.setFromMessage" value="content.Sdp.Version"/>
+    <test parameter="[SDPVersion0]" condition="string.equals" value="0"/>
+
+    <parameter name="[SDPOrigin0]" operation="protocol.setFromMessage" value="content.Sdp.Origin"/>
+    <test parameter="[SDPOrigin0]" condition="string.contains" value="mhandley 2890844526 2890842807 IN IP4 126.16.64.4"/>
+    <parameter name="[SDPOriginAddress]" operation="protocol.setFromMessage" value="content.Sdp.Origin.Address"/>
+    <test parameter="[SDPOriginAddress]" condition="string.equals" value="126.16.64.4"/>
+    <parameter name="[SDPOriginAddressType]" operation="protocol.setFromMessage" value="content.Sdp.Origin.AddressType"/>
+    <test parameter="[SDPOriginAddressType]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPOriginSessionVersion0]" operation="protocol.setFromMessage" value="content.Sdp.Origin.SessionVersion"/>
+    <test parameter="[SDPOriginSessionVersion0]" condition="string.equals" value="2890842807"/>
+    <parameter name="[SDPOriginSessionId0]" operation="protocol.setFromMessage" value="content.Sdp.Origin.SessionId"/>  
+    <test parameter="[SDPOriginSessionId0]" condition="string.equals" value="2890844526"/>
+    <parameter name="[SDPOriginNetworkType]" operation="protocol.setFromMessage" value="content.Sdp.Origin.NetworkType"/>
+    <test parameter="[SDPOriginNetworkType]" condition="string.equals" value="IN"/>
+    <parameter name="[SDPOriginUserName0]" operation="protocol.setFromMessage" value="content.Sdp.Origin.UserName"/>
+    <test parameter="[SDPOriginUserName0]" condition="string.equals" value="mhandley"/>
+
+    <parameter name="[SDPEmail0]" operation="protocol.setFromMessage" value="content(0).Sdp.Email"/>
+    <test parameter="[SDPEmail0]" condition="string.contains" value="mjh@isi.edu"/>
+    
+    <parameter name="[SDPConnection0]" operation="protocol.setFromMessage" value="content.Sdp.Connection"/>
+    <test parameter="[SDPConnection0]" condition="string.contains" value="c=IN IP4 224.2.17.12/127"/>
+    <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content.Sdp.Connection.Address"/>
+    <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="224.2.17.12"/>
+    <parameter name="[SDPConnectionAddressType0]" operation="protocol.setFromMessage" value="content.Sdp.Connection.AddressType"/>
+    <test parameter="[SDPConnectionAddressType0]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPConnectionNetworkType0]" operation="protocol.setFromMessage" value="content.Sdp.Connection.NetworkType"/>
+    <test parameter="[SDPConnectionNetworkType0]" condition="string.equals" value="IN"/>
+    <parameter name="[SDPInformation0]" operation="protocol.setFromMessage" value="content.Sdp.Information"/>
+    <test parameter="[SDPInformation0]" condition="string.contains" value="A Seminar on the session description protocol"/>
+
+    <parameter name="[SDPUri0]" operation="protocol.setFromMessage" value="content.Sdp.Uri"/>
+    <test parameter="[SDPUri0]" condition="string.contains" value="http://www.cs.ucl.ac.uk/staff/M.Handley/sdp.03.ps"/>
+
+    <parameter name="[SDPMedia0]" operation="protocol.setFromMessage" value="content.Sdp.Media"/>
+    <test parameter="[SDPMedia0(0)]" condition="string.contains" value="49232/2 RTP/AVP 98"/>
+    <test parameter="[SDPMedia0(1)]" condition="string.contains" value="49230/3 RTP/AVP 96"/>
+    <parameter name="[SDPMediaInformation0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Information"/>
+    <test parameter="[SDPMediaInformation0(0)]" condition="string.equals" value="mavideo"/>
+    <test parameter="[SDPMediaInformation0(1)]" condition="string.equals" value="monaudio"/>
+    <parameter name="[SDPMediaPortCount0]" operation="protocol.setFromMessage" value="content.Sdp.Media.PortCount"/>
+    <test parameter="[SDPMediaPortCount0(0)]" condition="string.equals" value="2"/>
+    <test parameter="[SDPMediaPortCount0(1)]" condition="string.equals" value="3"/>
+    <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Port"/>
+    <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
+    <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+    <parameter name="[SDPMediaProtocol0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Protocol"/>
+    <test parameter="[SDPMediaProtocol0(0)]" condition="string.equals" value="RTP/AVP"/>
+    <test parameter="[SDPMediaProtocol0(1)]" condition="string.equals" value="RTP/AVP"/>
+    <parameter name="[SDPMediaType0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Type"/>
+    <test parameter="[SDPMediaType0(0)]" condition="string.equals" value="video"/>
+    <test parameter="[SDPMediaType0(1)]" condition="string.equals" value="audio"/>
+    <parameter name="[SDPMediaFormat0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Format"/>
+    <test parameter="[SDPMediaFormat0(0)]" condition="string.equals" value="98"/>
+    <test parameter="[SDPMediaFormat0(1)]" condition="string.equals" value="96"/>
+    <parameter name="[SDPMediaBandWidth]" operation="protocol.setFromMessage" value="content.Sdp.Media.BandWidth"/>
+    <test parameter="[SDPMediaBandWidth(0)]" condition="string.contains" value="b=SA:256"/>
+    <test parameter="[SDPMediaBandWidth(1)]" condition="string.contains" value="b=CT:128"/>
+    <parameter name="[SDPMediaBandWidthType]" operation="protocol.setFromMessage" value="content.Sdp.Media.BandWidth.Type"/>
+    <test parameter="[SDPMediaBandWidthType(0)]" condition="string.equals" value="SA"/>
+    <test parameter="[SDPMediaBandWidthType(1)]" condition="string.equals" value="CT"/>
+    <parameter name="[SDPMediaBandWidthValue]" operation="protocol.setFromMessage" value="content.Sdp.Media.BandWidth.Value"/>
+    <test parameter="[SDPMediaBandWidthValue(0)]" condition="string.equals" value="256"/>
+    <test parameter="[SDPMediaBandWidthValue(1)]" condition="string.equals" value="128"/>
+    <parameter name="[SDPMediaAttribute0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Attribut"/>
+    <test parameter="[SDPMediaAttribute0(0)]" condition="string.contains" value="a=rtpmap:97 amr/8000/1"/>
+    <test parameter="[SDPMediaAttribute0(1)]" condition="string.contains" value="a=fmtp:97 mode-set=1;octet-align=1;crc=0"/>
+    <test parameter="[SDPMediaAttribute0(2)]" condition="string.contains" value="a=rtpmap:96 L8/8000"/>
+    <parameter name="[SDPMediaAttributeRTPMAPValue0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Attribut.rtpmap"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(0)]" condition="string.equals" value="97 amr/8000/1"/>
+    <test parameter="[SDPMediaAttributeRTPMAPValue0(1)]" condition="string.equals" value="96 L8/8000"/>
+    <parameter name="[SDPMediaAttributeFMTPValue0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Attribut.fmtp"/>
+    <test parameter="[SDPMediaAttributeFMTPValue0(0)]" condition="string.contains" value="97 mode-set=1;octet-align=1;crc=0"/>
+    <parameter name="[SDPMediaConnection0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Connection"/>
+    <test parameter="[SDPMediaConnection0]" condition="string.contains" value="c=IN IP4 224.2.17.12/127"/>
+    <parameter name="[SDPMediaConnectionAddress0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Connection.Address"/>
+    <test parameter="[SDPMediaConnectionAddress0]" condition="string.equals" value="224.2.17.12"/>
+    <parameter name="[SDPMediaConnectionddressType0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Connection.AddressType"/>
+    <test parameter="[SDPMediaConnectionddressType0]" condition="string.equals" value="IP4"/>
+    <parameter name="[SDPMediaConnectionNetworkType0]" operation="protocol.setFromMessage" value="content.Sdp.Media.Connection.NetworkType"/>
+    <test parameter="[SDPMediaConnectionNetworkType0]" condition="string.equals" value="IN"/>
+    
+    <parameter name="[SDPBandWidth]" operation="protocol.setFromMessage" value="content.Sdp.BandWidth"/>
+    <test parameter="[SDPBandWidth]" condition="string.contains" value="b=CT:128"/>
+    <parameter name="[SDPBandWidthType]" operation="protocol.setFromMessage" value="content.Sdp.BandWidth.Type"/>
+    <test parameter="[SDPBandWidthType]" condition="string.equals" value="CT"/>
+    <parameter name="[SDPBandWidthValue]" operation="protocol.setFromMessage" value="content.Sdp.Media.BandWidth.Value"/>
+    <test parameter="[SDPBandWidthValue(0)]" condition="string.equals" value="256"/>
+    <test parameter="[SDPBandWidthValue(1)]" condition="string.equals" value="128"/>
+
+    <parameter name="[SDPAttribute0]" operation="protocol.setFromMessage" value="content.Sdp.Attribut"/>
+    <test parameter="[SDPAttribute0(0)]" condition="string.contains" value="a=type:H332"/>
+    <test parameter="[SDPAttribute0(1)]" condition="string.contains" value="a=recvonly:20"/>
+    <parameter name="[SDPAttributeRecvonly0]" operation="protocol.setFromMessage" value="content.Sdp.Attribut.recvonly"/>
+    <test parameter="[SDPAttributeRecvonly0]" condition="string.equals" value="20"/>
+
+    <parameter name="[SDPSessionName]" operation="protocol.setFromMessage" value="content.Sdp.SessionName"/>
+    <test parameter="[SDPSessionName]" condition="string.contains" value="SDP Seminar"/>
+
+    <parameter name="[SDPTime]" operation="protocol.setFromMessage" value="content.Sdp.Time"/>
+    <test parameter="[SDPTime]" condition="string.contains" value="t=3034423619 3042462419"/>
+    <parameter name="[SDPTimeStart]" operation="protocol.setFromMessage" value="content.Sdp.Time.Start"/>
+    <!--test parameter="[SDPTimeStart]" condition="string.equals" value="2873397496"/-->
+    <parameter name="[SDPTimeStop]" operation="protocol.setFromMessage" value="content.Sdp.Time.Stop"/>
+    <!--test parameter="[SDPTimeStop]" condition="string.equals" value="2873404696"/-->
+
+    <!-- errors occured with the following operations on the SDP jar caused by classes TimeZoneAdjustment, RepeatTime and MediaDescription-->
+    <!--parameter name="[SDPMediaMimeParameters0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.MimeParameters"/-->
+    <!--parameter name="[SDPMediaMimeTypes0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.MimeTypes"/-->
+
+    <!-- test content(N):Sdp:ZoneAdjustment:xxx -->
+    <!--parameter name="[SDPZoneAdjustment]" operation="protocol.setFromMessage" value="content(0).Sdp.ZoneAdjustment"/-->
+
+    <!-- test content(N):Sdp:RepeatTime:xxx -->
+    <!--parameter name="[SDPRepeatTime]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime"/-->
+    <!--parameter name="[SDPRepeatTimeDuration]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime.Duration"/-->
+    <!--parameter name="[SDPRepeatTimeInterval]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime.Duration.Interval"/-->
+    <!--parameter name="[SDPRepeatTimeOffset]" operation="protocol.setFromMessage" value="content(0).Sdp.RepeatTime.Duration.Offset"/-->
+
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>
+  
+  <sendMessageSIP name="Send ACK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[ACK [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeqNumber] ACK
+Max-Forwards: 70
+Route: <sip:[inviteeName1]@[remoteSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[localSIP];transport=[transportRequest];lr>;id=toto
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000
+User-Agent: XmlLoader
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <parameter name="[CSeqNumber]" operation="number.add" value="[CSeqNumber]" value2="1"/>
+  <parameter name="[newBranchId]" operation="string.random" value="10"/>  
+
+  <sendMessageSIP name="Send BYE">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[BYE [Request-URI] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeqNumber] BYE
+Max-Forwards: 70
+Route: <sip:[inviteeName1]@[remoteSIP];transport=[transportRequest];lr>;id=toto
+Route: <sip:[inviteeName1]@[localSIP];transport=[transportRequest];lr>;id=toto
+Contact: <sip:bob@[localSIP]>
+Via: SIP/2.0/[transportResponse] [localSIP];branch=z9hG4bK[newBranchId];ttl=3000
+User-Agent: XmlLoader
+Content-Length: 0
+
+]]>
+<!--******************** END MESSAGE *********************-->
+  </sendMessageSIP>
+
+  <receiveMessageSIP name="Wait 200 OK" request="false" type="BYE" result="200">
+  </receiveMessageSIP>
+</scenario>

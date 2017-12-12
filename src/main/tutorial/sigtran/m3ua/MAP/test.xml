@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="SIGTRAN MAP" description="SIGTRAN MAP tests">
+    
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
+    <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
+    <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
+    <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localPortM3UA]" operation="number.random" value="10000" value2="65535" />    
+    <parameter name="[localPortM3UA]" operation="set" value="[localPortM3UA(0)]" description="local port of the MTS host" editable="true" />
+    <parameter name="[localM3UA]" operation="set" value="[localHostM3UA]:[localPortM3UA]"/>	
+    
+    <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="164.48.85.83"/-->
+    <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/-->
+    <parameter name="[remotePortM3UA]" operation="set" value="2905"/>
+    <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
+    
+    <parameter name="[transport]" operation="set" value="TCP" editable="true"/>
+    <parameter name="[pause]" operation="set" value="0.0" editable="true"/>
+
+    <parameter name="[smsText]" operation="set" value="ssssss"/>
+    <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
+    <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
+    <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
+    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
+    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    
+    <testcase name="044_mt-forwardSM" description="test sigtran MAP mt-forwardSM message" number="[iterations]" state="true">
+        <scenario name="client" file="044_mt-forwardSM/client.xml" routingName="client"/>
+        <scenario name="server" file="044_mt-forwardSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA"/>
+    </testcase>
+    
+    <testcase name="045_sendRoutingInfoForSM" description="test sigtran MAP sendRoutingInfoForSM message" number="[iterations]" state="true">
+        <scenario name="client" file="045_sendRoutingInfoForSM/client.xml" routingName="client"/>
+        <scenario name="server" file="045_sendRoutingInfoForSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="045_sendRoutingInfoForSM_Error" description="test sigtran MAP sendRoutingInfoForSM_Error message" number="[iterations]" state="true">
+        <scenario name="client" file="045_sendRoutingInfoForSM_Error/client.xml" routingName="client"/>
+        <scenario name="server" file="045_sendRoutingInfoForSM_Error/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="046_mo-forwardSM" description="test sigtran MAP mo-forwardSM message" number="[iterations]" state="true">
+        <scenario name="client" file="046_mo-forwardSM/client.xml" routingName="client"/>
+        <scenario name="server" file="046_mo-forwardSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="047_reportSM-DeliveryStatus" description="test sigtran MAP reportSM-DeliveryStatus message" number="[iterations]" state="true">
+        <scenario name="client" file="047_reportSM-DeliveryStatus/client.xml" routingName="client"/>
+        <scenario name="server" file="047_reportSM-DeliveryStatus/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+    
+    <testcase name="066_readyForSM" description="test sigtran MAP readyForSM message" number="[iterations]" state="true">
+        <scenario name="client" file="066_readyForSM/client.xml" routingName="client"/>
+        <scenario name="server" file="066_readyForSM/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="070_provideSubscriberInfo" description="test sigtran MAP provideSubscriberInfo message" number="[iterations]" state="true">
+        <scenario name="client" file="070_provideSubscriberInfo/client.xml" routingName="client"/>
+        <scenario name="server" file="070_provideSubscriberInfo/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="071_PSI_undefined_length" description="test sigtran MAP provideSubscriberInfo message" number="[iterations]" state="true">
+        <scenario name="client" file="071_PSI_undefined_length/client.xml" routingName="client"/>
+        <scenario name="server" file="071_PSI_undefined_length/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="083_provideSubscriberLocation" description="test sigtran MAP provideSubscriberInfo message" number="[iterations]" state="true">
+        <scenario name="client" file="083_provideSubscriberLocation/client.xml" routingName="client"/>
+        <scenario name="server" file="083_provideSubscriberLocation/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="085_sendRoutingInfoForLCS" description="test sigtran MAP provideSubscriberInfo message" number="[iterations]" state="true">
+        <scenario name="client" file="085_sendRoutingInfoForLCS/client.xml" routingName="client"/>
+        <scenario name="server" file="085_sendRoutingInfoForLCS/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+    
+    <testcase name="801_Mobicent_simulator_SUBMIT" description="test sigtran mobicent capture SMS-SUBMIT/REPORT" number="[iterations]" state="true">
+        <scenario name="client" file="801_Mobicent_simulator_SUBMIT/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Mobicent_simulator_SUBMIT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="801_Mobicent_simulator_DELIVER" description="test sigtran mobicent capture SMS-DELIVER/REPORT" number="[iterations]" state="true">
+        <scenario name="client" file="801_Mobicent_simulator_DELIVER/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Mobicent_simulator_DELIVER/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="801_Mobicent_simulator_STATUSREPORT" description="test sigtran mobicent capture SMS-STATUS-REPORT" number="[iterations]" state="true">
+        <scenario name="client" file="801_Mobicent_simulator_STATUSREPORT/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Mobicent_simulator_STATUSREPORT/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="801_Mobicent_simulator_COMMAND" description="test sigtran mobicent capture SMS-COMMAND (set SIGTRAN/map.DECODE_SMS_COMMAND config parameter to 'true'" number="[iterations]" state="false">
+        <scenario name="client" file="801_Mobicent_simulator_COMMAND/client.xml" routingName="client"/>
+        <scenario name="server" file="801_Mobicent_simulator_COMMAND/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+    
+    <testcase name="802_GMPC_capture" description="test sigtran GMPC capture" number="[iterations]" state="true">
+        <scenario name="client" file="802_GMPC_capture/client.xml" routingName="client"/>
+        <scenario name="server" file="802_GMPC_capture/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="803_CSME_emulator" description="test sigtran CSME capture" number="[iterations]" state="true">
+        <scenario name="client" file="803_CSME_emulator/client.xml" routingName="client"/>
+        <scenario name="server" file="803_CSME_emulator/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+    <testcase name="810_dico" description="test sigtran dictionary processing" number="[iterations]" state="true">
+        <scenario name="client" file="810_dico/client.xml" routingName="client"/>
+        <scenario name="server" file="810_dico/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+    
+    <testcase name="811_set_from_msg" description="test sigtran dictionary processing" number="[iterations]" state="true">
+        <scenario name="client" file="811_set_from_msg/client.xml" routingName="client"/>
+        <scenario name="server" file="811_set_from_msg/server.xml" routingName="SIGTRAN.MAP,SIGTRAN.M3UA"/>
+    </testcase>
+
+</test>

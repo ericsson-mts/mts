@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP CX Multimedia Authentication answer (MAR/MAA)" -->
+<scenario>
+
+    <createListenpointDIAMETER name="proxy" localHost="[Listen-Proxy-Host]" localPort="[Listen-Proxy-Port]">
+        <nodeSettings idleTimeout="3600000" watchdogInterval="60000"/>
+        <avp code="Origin-Host:263" value="[localHostDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Origin-Realm:264" value="[localRealmDIAM]" type="DiameterIdentity" mandatory="true"/>
+        <avp code="Host-IP-Address:257" value="[localHostDIAM]" type="IPAddress" mandatory="true"/>
+        <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
+        <avp code="Product-Name:269" value="IMSLoader - MTS" type="UTF8String" mandatory="true"/>
+        <avp code="Origin-State-Id:278" value="123456789" type="Unsigned32" mandatory="true"/>
+        <avp code="Firmware-Revision:267" value="987654321" type="Unsigned32" mandatory="true"/>
+        <avp code="Vendor-Specific-Application-Id:297" type="Grouped" mandatory="true">		
+            <avp code="Vendor-Id:266" value="[vendorID]" type="VendorId" mandatory="true"/>
+            <avp code="Auth-Application-Id:298" value="[applicationID]" type="AppId" mandatory="true"/>
+        </avp>	
+    </createListenpointDIAMETER>
+
+    <label name="BeginProxy"/>
+    
+     <receiveMessageDIAMETER name="ReceiveMessage" timeout="0">
+        <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationID]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[request]" operation="protocol.setFromMessage" value="header.request"/>
+        <parameter name="[error]" operation="protocol.setFromMessage" value="header.error"/>
+        <parameter name="[proxiable]" operation="protocol.setFromMessage" value="header.proxiable"/>
+        <parameter name="[retransmit]" operation="protocol.setFromMessage" value="header.retransmit"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id.value"/>
+        <parameter name="[avpCode]" operation="protocol.setFromMessage" value="avp.Route-Record.value"/>
+        <parameter name="[avpResultCode]" operation="protocol.setFromMessage" value="avp.Result-Code.value"/>
+    </receiveMessageDIAMETER>
+
+    <if>
+        <condition>
+            <test parameter="[request]" condition="boolean.equals" value="true"/>
+        </condition>
+        <then>
+            <sendMessageDIAMETER name="SendRequest" listenpoint="proxy" remoteURL="diameter://[remoteDIAM]">
+                <header request="[request]" command="[commandCode]" applicationId="[applicationID]" endToEnd="[endToEnd]"/>
+                <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
+                
+                <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+                <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+                <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+                <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+                
+                <avp code="Vendor-Specific-Application-Id:260">
+                    <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+                    <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="[applicationID]"/>
+                    <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="[applicationID]"/-->
+                 </avp>
+                 
+                <avp code="Route-Record:282" mandatory="true" value="[avpCode]"/>    
+            </sendMessageDIAMETER>
+            <parameter name="[newHopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+            <parameter name="[CTXHopByHop_[newHopByHop]]" operation="set" value="[hopByHop]"/>
+        </then>
+        <else>
+            <parameter name="[oldHopByHop]" operation="set" value="[CTXHopByHop_[hopByHop]]"/>
+            <sendMessageDIAMETER name="SendAnswer" listenpoint="proxy">
+                <header request="[request]" command="User-Authorization" applicationId="16777216" proxiable="[proxiable]" hopByHop="[oldHopByHop]" endToEnd="[endToEnd]"/>
+                <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
+                 
+                <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[localHostDIAM]"/>
+                <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[localRealmDIAM]"/>
+                <avp code="Destination-Host:293" mandatory="true" type="DiameterIdentity" value="[remoteHostDIAM]"/> 
+                <avp code="Destination-Realm:283" mandatory="true" type="DiameterIdentity" value="[remoteRealmDIAM]"/>
+                 
+                <avp code="Vendor-Specific-Application-Id:260">
+                    <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="[vendorID]"/>
+                    <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/>
+                    <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777216"/-->
+                 </avp>
+                 
+                <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="[avpResultCode]"/>              
+                <avp code="Route-Record:282" mandatory="true" value="[avpCode]"/>    
+            </sendMessageDIAMETER>
+        </else>
+    </if>
+          
+    <goto name="goto Begin" label="BeginProxy" />
+    
+    <finally>
+    
+        <removeListenpointDIAMETER name="proxy"/>
+         
+    </finally>
+    
+</scenario>

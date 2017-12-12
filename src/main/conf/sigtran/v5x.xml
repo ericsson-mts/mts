@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/dico_q931.xsd -->
+
+<!--   
+
+    Reference document : 
+        en_30034701v020202p.pdf => ETSIEN300347-1 V2.2.2(1999-12)
+    	  en_30032401v020101p.pdf => ETSIEN300324-1 V2.1.1(2000-04)
+        T-REC-G.965-200103-I!!PDF-E.pdf => ITU G965 (03/2001) 
+    			 
+-->
+
+<dico layer="V5.X" >
+    <header>
+
+        <field name="Protocol discriminator" lengthBit="8" type="enumeration">
+            <enum value="b00001000" name="Recommendation ETSI300324-1/V5.1" />
+            <enum value="b01001000" name="Recommendation ETSI300347-1/V5.2" />            
+        </field>
+
+        <field name="Layer 3 address" lengthBit="16" type="integer">
+        </field>
+
+        <!-- annex M table M1 in the reference document -->
+        <field name="Message type" lengthBit="7" type="enumeration">
+	          <!-- PSTNprotocol message types -->        
+            <enum value="b0000000" name="ESTABLISH" />
+            <enum value="b0000001" name="ESTABLISHACKNOWLEDGE" />
+            <enum value="b0000010" name="SIGNAL" />
+            <enum value="b0000011" name="SIGNALACKNOWLEDGE" />
+            <enum value="b0001000" name="DISCONNECT" />
+            <enum value="b0001001" name="DISCONNECTCOMPLETE" />
+            <enum value="b0001100" name="STATUSENQUIRY" />
+            <enum value="b0001101" name="STATUS" />
+            <enum value="b0001110" name="PROTOCOLPARAMETER" />
+	          <!-- Control protocol message types -->        
+            <enum value="b0010000" name="PORTCONTROL" />
+            <enum value="b0010001" name="PORTCONTROLACKNOWLEDGE" />
+            <enum value="b0010010" name="COMMONCONTROL" />
+            <enum value="b0010011" name="COMMONCONTROLACKNOWLEDGE" />
+            <!-- Protection protocol message types -->  
+            <enum value="b0011000" name="SWITCH-OVERREQ" />
+            <enum value="b0011001" name="SWITCH-OVERCOM" />
+            <enum value="b0011010" name="OS-SWITCH-OVERCOM" />
+            <enum value="b0011011" name="SWITCH-OVERACKNOWLEDGE" />
+            <enum value="b0011100" name="SWITCH-OVERREJECT" />
+            <enum value="b0011101" name="PROTOCOLERROR" />
+            <enum value="b0011110" name="RESETSNCOMMAND" />
+            <enum value="b0011111" name="RESETSNACKNOWLEDGE" />
+            <!-- BCC protocol message types -->        
+            <enum value="b0100000" name="ALLOCATION" />
+            <enum value="b0100001" name="ALLOCATIONCOMPLETE" />
+            <enum value="b0100010" name="ALLOCATIONREJECT" />
+            <enum value="b0100011" name="DE-ALLOCATION" />
+            <enum value="b0100100" name="DE-ALLOCATIONCOMPLETE" />
+            <enum value="b0100101" name="DE-ALLOCATIONREJECT" />
+            <enum value="b0100110" name="AUDIT" />
+            <enum value="b0100111" name="AUDITCOMPLETE" />
+            <enum value="b0101000" name="ANFAULT" />
+            <enum value="b0101001" name="ANFAULTACKNOWLEDGE" />
+            <enum value="b0101010" name="PROTOCOLERROR" />
+            <!-- Link control protocol message types -->        
+            <enum value="b0110000" name="LINKCONTROL" />
+            <enum value="b0110001" name="LINKCONTROLACKNOWLEDGE" />        
+        </field>
+    </header>
+    
+    <!-- annex M table M2 in the reference document -->
+    <!-- 0 - - - - - - - VARIABLE LENGTH INFORMATION ELEMENTS -->
+    <!-- PSTN Sequence-number chapter 14 (13.4.7.1) -->
+    <element identifier="b00000000" name="PSTN Sequence-number" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Sequence number" lengthBit="7" type="integer" />
+    </element>
+    
+    <!-- PSTN Cadenced-ringing 14 (13.4.7.2) -->
+    <element identifier="b00000001" name="PSTN Cadenced-ringing" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Cadenced-ringing type" lengthBit="7" type="integer" />        
+    </element>
+    
+    <!-- PSTN Pulsed-signal 14 (13.4.7.3) -->
+    <element identifier="b00000010" name="PSTN Pulsed-signal" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Pulse type" lengthBit="7" type="enumeration">                
+            <enum value="b1111111" name="Pulsed normal polarity" />
+            <enum value="b1111110" name="Pulsed reversed polarity" />
+            <enum value="b1111101" name="Pulsed battery on c-wire" />
+            <enum value="b1111100" name="Pulsed on hook" />
+            <enum value="b1111011" name="Pulsed reduced battery" />
+            <enum value="b1111010" name="Pulsed no battery" />
+            <enum value="b1111001" name="Initial ring" />
+            <enum value="b1111000" name="Meter pulse" />
+            <enum value="b1110111" name="50 Hz pulse" />
+            <enum value="b1110110" name="Register recall (timed loop open)" />
+            <enum value="b1110101" name="Pulsed off hook (pulsed loop closed)" />
+            <enum value="b1110100" name="Pulsed b-wire connected to earth" />
+            <enum value="b1110011" name="Earth loop pulse" />
+            <enum value="b1110010" name="Pulsed b-wire connected to battery" />
+            <enum value="b1110001" name="Pulsed a-wire connected to earth" />
+            <enum value="b1110000" name="Pulsed a-wire connected to battery" />
+            <enum value="b1101111" name="Pulsed c-wire connected to earth" />
+            <enum value="b1101110" name="Pulsed c-wire disconnected" />
+            <enum value="b1101101" name="Pulsed normal battery" />
+            <enum value="b1101100" name="Pulsed a-wire disconnected" />
+            <enum value="b1101011" name="Pulsed b-wire disconnected" />    
+        </field>
+        <field name="ext2" lengthBit="1" type="boolean" />
+        <field name="Suppression indicator" lengthBit="2" type="enumeration">                
+            <enum value="b00" name="No suppression" />
+            <enum value="b01" name="Suppression allowed by pre-defined V5.1 SIGNAL message from LE" />
+            <enum value="b10" name="Suppression allowed by pre-defined line signal from TE" />
+            <enum value="b11" name="Suppression allowed by pre-defined V5.1 SIGNAL message from LE or pre-defined line signal from TE" />
+        </field>            
+        <field name="Pulse duration type" lengthBit="5" type="integer" />                
+        <field name="ext3" lengthBit="1" type="boolean" />
+        <field name="Acknowledge request indicator" lengthBit="2" type="enumeration">                
+            <enum value="b00" name="No acknowledgement requested" />
+            <enum value="b01" name="Ending acknowledgement requested when finished each pulse" />
+            <enum value="b10" name="Ending acknowledgement requested when finished all pulses" />
+            <enum value="b11" name="Start of pulse acknowledgement requested" />
+        </field>            
+        <field name="Number of pulses" lengthBit="5" type="integer" />                        
+    </element>
+    
+    <!-- PSTN Steady-signal 14 (13.4.7.4) -->
+    <element identifier="b00000011" name="PSTN Steady-signal" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Steady-signal type" lengthBit="7" type="enumeration">                
+            <enum value="b0000000" name="Normal polarity" />
+            <enum value="b0000001" name="Reversed polarity" />
+            <enum value="b0000010" name="Battery on c-wire" />
+            <enum value="b0000011" name="No battery on c-wire" />
+            <enum value="b0000100" name="Off hook (loop closed)" />
+            <enum value="b0000101" name="On hook (loop open)" />
+            <enum value="b0000110" name="Battery on a-wire" />
+            <enum value="b0000111" name="A-wire on earth" />
+            <enum value="b0001000" name="No battery on a-wire" />
+            <enum value="b0001001" name="No battery on b-wire" />
+            <enum value="b0001010" name="Reduced battery" />
+            <enum value="b0001011" name="No battery" />
+            <enum value="b0001100" name="Alternate reduced power/no power" />
+            <enum value="b0001101" name="Normal battery" />
+            <enum value="b0001110" name="Stop ringing" />
+            <enum value="b0001111" name="Start pilot frequency" />
+            <enum value="b0010000" name="Stop pilot frequency" />
+            <enum value="b0010001" name="Low impedance on b-wire" />
+            <enum value="b0010010" name="B-wire connected to earth" />
+            <enum value="b0010011" name="B-wire disconnected from earth" />
+            <enum value="b0010100" name="Battery on b-wire" />
+            <enum value="b0010101" name="Low loop impedance" />
+            <enum value="b0010110" name="High loop impedance" />
+            <enum value="b0010111" name="Anomalous loop impedance" />
+            <enum value="b0011000" name="A-wire disconnected from earth" />
+            <enum value="b0011001" name="C-wire on earth" />
+            <enum value="b0011010" name="C-wire disconnected from earth" />
+            <enum value="b0011101" name="Ramp to reverse polarity" />
+            <enum value="b0011110" name="Ramp to normal polarity" />
+        </field>        
+    </element>
+    
+    <!-- PSTN Digit-signal 14 (13.4.7.5) -->
+    <element identifier="b00000100" name="PSTN Digit-signal" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Digit acknowledge request indicator" lengthBit="1" type="enumeration">                
+            <enum value="b0" name="No ending acknowledgement requested" />
+            <enum value="b1" name="Ending acknowledgement requested when digit transmission is finished" />
+        </field>                    
+        <field name="spare" lengthBit="2" type="integer" />                
+        <field name="Digit information" lengthBit="4" type="integer" />                        
+    </element>
+    
+    <!-- PSTN Recognition-time 14 (13.4.7.6) -->
+    <element identifier="b00010000" name="PSTN Recognition-time" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Signal" lengthBit="7" type="integer" />                                
+        <field name="ext2" lengthBit="1" type="boolean" />
+        <field name="spare" lengthBit="1" type="integer" />                                
+        <field name="Duration type" lengthBit="7" type="integer" />                                                
+    </element>
+    
+    <!-- PSTN Enable-autonomous-acknowledge 14 (13.4.7.7) -->
+    <element identifier="b00010001" name="PSTN Enable-autonomous-acknowledge" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Signal" lengthBit="7" type="integer" />                                
+        <field name="ext2" lengthBit="1" type="boolean" />
+        <field name="Response" lengthBit="7" type="integer" />                                
+        <field name="ext3" lengthBit="1" type="boolean" />
+        <field name="Suppression indicator" lengthBit="2" type="enumeration">                
+            <enum value="b00" name="No suppression" />
+            <enum value="b01" name="Suppression allowed by pre-defined V5.1 SIGNAL message from LE" />
+            <enum value="b10" name="Suppression allowed by pre-defined line signal from TE" />
+            <enum value="b11" name="Suppression allowed by pre-defined V5.1 SIGNAL message from LE or pre-defined line signal from TE" />
+        </field>            
+        <field name="Pulse duration type" lengthBit="5" type="integer" />                
+        <field name="ext4" lengthBit="1" type="boolean" />
+        <field name="Acknowledge request indicator" lengthBit="2" type="enumeration">                
+            <enum value="b00" name="No acknowledgement requested" />
+            <enum value="b01" name="Ending acknowledgement requested when finished each pulse" />
+            <enum value="b10" name="Ending acknowledgement requested when finished all pulses" />
+            <enum value="b11" name="Start of pulse acknowledgement requested" />
+        </field>            
+        <field name="Number of pulses" lengthBit="5" type="integer" />                                        
+    </element>
+    
+    <!-- PSTN Disable-autonomous-acknowledge 14 (13.4.7.8) -->
+    <element identifier="b00010010" name="PSTN Disable-autonomous-acknowledge" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Signal" lengthBit="7" type="integer" />                                        
+    </element>
+    
+    <!-- PSTN Cause 14 (13.4.7.9) -->
+    <element identifier="b00010011" name="PSTN Cause" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Cause type" lengthBit="7" type="enumeration">                                        
+      	    <enum value="b0000000" name="Response to STATUS ENQUIRY" />
+      	    <enum value="b0000001" name="Not used" />
+      	    <enum value="b0000011" name="L3addr error" />
+      	    <enum value="b0000100" name="Message type unrecognized" />
+      	    <enum value="b0000101" name="Out of sequence information element" />
+      	    <enum value="b0000110" name="Repeated optional information element" />
+      	    <enum value="b0000111" name="Mandatory information element missing" />
+      	    <enum value="b0001000" name="Unrecognized information element" />
+      	    <enum value="b0001001" name="Mandatory information element content error" />
+      	    <enum value="b0001010" name="Optional information element content error" />
+      	    <enum value="b0001011" name="Message not compatible with path state" />
+      	    <enum value="b0001100" name="Repeated mandatory information element" />
+      	    <enum value="b0001101" name="Too many information elements" />
+        </field>
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Diagnostic Message" lengthBit="7" type="enumeration">        
+      	    <!-- PSTNprotocol message types -->        
+            <enum value="b0000000" name="ESTABLISH" />
+            <enum value="b0000001" name="ESTABLISHACKNOWLEDGE" />
+            <enum value="b0000010" name="SIGNAL" />
+            <enum value="b0000011" name="SIGNALACKNOWLEDGE" />
+            <enum value="b0001000" name="DISCONNECT" />
+            <enum value="b0001001" name="DISCONNECTCOMPLETE" />
+            <enum value="b0001100" name="STATUSENQUIRY" />
+            <enum value="b0001101" name="STATUS" />
+            <enum value="b0001110" name="PROTOCOLPARAMETER" />
+	          <!-- Control protocol message types -->        
+            <enum value="b0010000" name="PORTCONTROL" />
+            <enum value="b0010001" name="PORTCONTROLACKNOWLEDGE" />
+            <enum value="b0010010" name="COMMONCONTROL" />
+            <enum value="b0010011" name="COMMONCONTROLACKNOWLEDGE" />
+            <!-- Protection protocol message types -->  
+            <enum value="b0011000" name="SWITCH-OVERREQUEST" />
+            <enum value="b0011001" name="SWITCH-OVERCOMMAND" />
+            <enum value="b0011010" name="OSSWITCH-OVERCOMMAND" />
+            <enum value="b0011011" name="SWITCH-OVERACKNOWLEDGE" />
+            <enum value="b0011100" name="SWITCH-OVERREJECT" />
+            <enum value="b0011101" name="PROTOCOLERROR" />
+            <enum value="b0011110" name="RESET SN COMMAND" />
+            <enum value="b0011111" name="RESET SN ACKNOWLEDGE" />
+            <!-- BCCprotocol message types -->        
+            <enum value="b0100000" name="ALLOCATION" />
+            <enum value="b0100001" name="ALLOCATIONCOMPLETE" />
+            <enum value="b0100010" name="ALLOCATIONREJECT" />
+            <enum value="b0100011" name="DE-ALLOCATION" />
+            <enum value="b0100100" name="DE-ALLOCATIONCOMPLETE" />
+            <enum value="b0100101" name="DE-ALLOCATIONREJECT" />
+            <enum value="b0100110" name="AUDIT" />
+            <enum value="b0100111" name="AUDITCOMPLETE" />
+            <enum value="b0101000" name="ANFAULT" />
+            <enum value="b0101001" name="ANFAULTACKNOWLEDGE" />
+            <enum value="b0101010" name="PROTOCOLERROR" />
+            <!-- Link control protocol message types -->        
+            <enum value="b0110000" name="LINKCONTROL" />
+            <enum value="b0110001" name="LINKCONTROLACK" />        
+	      </field>
+        <field name="Diagnostic Element" lengthBit="8" type="integer" />        
+    </element>
+    
+    <!-- PSTN Resource-unavailable 14 (13.4.7.10) -->
+    <element identifier="b00010100" name="PSTN Resource-unavailable" coding="Q931">
+        <!--field name="ext1" lengthBit="1" type="boolean" /-->
+        <field name="Copy of information element with failed request" type="binary" />
+    </element>
+    
+    <!-- PSTN Enable-meetering 14 (13.4.7.11) -->
+    <element identifier="b00100010" name="PSTN Enable-meetering" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Pulse type" lengthBit="7" type="enumeration">                
+            <enum value="b1111111" name="Pulsed normal polarity" />
+            <enum value="b1111110" name="Pulsed reversed polarity" />
+            <enum value="b1111101" name="Pulsed battery on c-wire" />
+            <enum value="b1111100" name="Pulsed on hook" />
+            <enum value="b1111011" name="Pulsed reduced battery" />
+            <enum value="b1111010" name="Pulsed no battery" />
+            <enum value="b1111001" name="Initial ring" />
+            <enum value="b1111000" name="Meter pulse" />
+            <enum value="b1110111" name="50 Hz pulse" />
+            <enum value="b1110110" name="Register recall (timed loop open)" />
+            <enum value="b1110101" name="Pulsed off hook (pulsed loop closed)" />
+            <enum value="b1110100" name="Pulsed b-wire connected to earth" />
+            <enum value="b1110011" name="Earth loop pulse" />
+            <enum value="b1110010" name="Pulsed b-wire connected to battery" />
+            <enum value="b1110001" name="Pulsed a-wire connected to earth" />
+            <enum value="b1110000" name="Pulsed a-wire connected to battery" />
+            <enum value="b1101111" name="Pulsed c-wire connected to earth" />
+            <enum value="b1101110" name="Pulsed c-wire disconnected" />
+            <enum value="b1101101" name="Pulsed normal battery" />
+            <enum value="b1101100" name="Pulsed a-wire disconnected" />
+            <enum value="b1101011" name="Pulsed b-wire disconnected" />    
+        </field>
+        <field name="ext2" lengthBit="1" type="boolean" />        
+        <field name="Rate type" lengthBit="7" type="enumeration">                
+            <enum value="b0000000" name="Nometering pulses to be applied automatically." />
+        </field>
+        <field name="ext3" lengthBit="1" type="boolean" />        
+        <field name="Reporting pulse count HIGH" lengthBit="7" type="integer" />
+        <field name="ext4" lengthBit="1" type="boolean" />        
+        <field name="Repetition indicator" lengthBit="2" type="enumeration">
+	          <enum value="b00" name="Cease to apply pulses after number specified by reporting pulse count have been applied" />
+            <enum value="b11" name="Continue to apply pulses at same rate until the call is disconnected or receipt of new binstructions from LE" />
+            <enum value="b01" name="Reserved for ETSI use." />
+            <enum value="b10" name="Reserved for ETSI use." />
+        </field>
+        <field name="Reporting pulse count LOW" lengthBit="5" type="integer" />
+        <field name="ext5" lengthBit="1" type="boolean" />                
+        <field name="Suppression indicator" lengthBit="2" type="enumeration">                
+            <enum value="b00" name="No suppression" />
+            <enum value="b01" name="Suppression allowed by pre-defined V5.1 SIGNAL message from LE" />
+            <enum value="b10" name="Suppression allowed by pre-defined line signal from TE" />
+            <enum value="b11" name="Suppression allowed by pre-defined V5.1 SIGNAL message from LE or pre-defined line signal from TE" />
+        </field>            
+        <field name="Pulse duration type" lengthBit="5" type="integer" />                                       
+    </element>
+    
+    <!-- PSTN Metering-report 14 (13.4.7.12) -->
+    <element identifier="b00100011" name="PSTN Metering-report" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Pulse count HIGH" lengthBit="7" type="integer" />
+        <field name="ext2" lengthBit="1" type="boolean" />        
+        <field name="Report type" lengthBit="2" type="enumeration">
+      	    <enum value="b00" name="Meter report - metering ended" />
+      	    <enum value="b01" name="Meter report - metering continuing" />
+      	    <enum value="b10" name="Positive acknowledgement of new automatic metering instructions" />
+      	    <enum value="b11" name="Failure of metering in the AN - no more metering pulses can be applied automatically" />
+        </field>                    
+        <field name="Pulse count LOW" lengthBit="5" type="integer" />
+        <field name="ext3" lengthBit="1" type="boolean" />
+        <field name="Failure Reason" lengthBit="7" type="enumeration">
+      	    <enum value="b0000000" name="Unknown reason" />
+      	    <enum value="b0000001" name="Port blocked (FE203/204)" />
+        </field>                    
+    </element>
+    
+    <!-- PSTN Attenuation 14 (13.4.7.13) -->
+    <element identifier="b00100100" name="PSTN Attenuation" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Attenuation value" lengthBit="7" type="integer" />        
+    </element>
+    
+    <!-- Control Control function element 15.4 (14.4.2.5.4) -->
+    <element identifier="b00100000" name="CTRL function element" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Control function element" lengthBit="7" type="enumeration">
+            <enum value="b0000001" name="FE101 (activate access)" />
+            <enum value="b0000010" name="FE102 (activation initiated by user)" />
+            <enum value="b0000011" name="FE103 (DS activated)" />
+            <enum value="b0000100" name="FE104 (access activated)" />
+            <enum value="b0000101" name="FE105 (deactivate access)" />
+            <enum value="b0000110" name="FE106 (access deactivated)" />
+            <enum value="b0010001" name="FE201/202 (unblock)" />
+            <enum value="b0010101" name="FE205 (block request)" />
+            <enum value="b0010110" name="FE206 (performance grading)" />
+            <enum value="b0010111" name="FE207 (D-channel block)" />
+            <enum value="b0011000" name="FE208 (D-channel unblock)" />
+      	    <enum value="b0011001" name="FE209(TEoutofservice)" />
+            <enum value="b0011010" name="FE210(failureinsidenetwork)" />
+        </field>
+    </element>
+    
+    <!-- Control Control function identification 15.4 (14.4.2.5.5) -->
+    <element identifier="b00100001" name="CTRL function identification" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Control function identification" lengthBit="7" type="enumeration">
+            <enum value="b0000000" name="Verify re-provisioning" />
+            <enum value="b0000001" name="Ready for re-provisioning" />
+            <enum value="b0000010" name="Not ready for re-provisioning" />
+            <enum value="b0000011" name="Switch-over to new variant" />
+            <enum value="b0000100" name="Re-provisioning started" />
+            <enum value="b0000101" name="Cannot re-provision" />
+            <enum value="b0000110" name="Request variant and interface ID" />
+            <enum value="b0000111" name="Variant and interface ID" />
+            <enum value="b0001000" name="Blocking started" />
+            <enum value="b0010000" name="Restart request" />
+            <enum value="b0010001" name="Restart complete" />
+            <enum value="b0010010" name="UNBLOCKALLRELEVANT PSTN AND ISDN PORTS REQUEST" />
+            <enum value="b0010011" name="UNBLOCKALLRELEVANT PSTN AND ISDN PORTS ACCEPTED" />
+            <enum value="b0010100" name="UNBLOCKALLRELEVANT PSTN AND ISDN PORTS REJECTED" />
+            <enum value="b0010101" name="UNBLOCKALLRELEVANT PSTN AND ISDN PORTS COMPLETED" />
+            <enum value="b0010110" name="UNBLOCKALLRELEVANT PSTN PORTS REQUEST" />
+            <enum value="b0010111" name="UNBLOCKALLRELEVANT PSTN PORTS ACCEPTED" />
+            <enum value="b0011000" name="UNBLOCKALLRELEVANT PSTN PORTS REJECTED" />
+            <enum value="b0011001" name="UNBLOCKALLRELEVANT PSTN PORTS COMPLETED" />
+            <enum value="b0011010" name="UNBLOCKALLRELEVANT ISDN PORTS REQUEST" />
+            <enum value="b0011011" name="UNBLOCKALLRELEVANT ISDN PORTS ACCEPTED" />
+            <enum value="b0011100" name="UNBLOCKALLRELEVANT ISDN PORTS REJECTED" />
+            <enum value="b0011101" name="UNBLOCKALLRELEVANT ISDN PORTS COMPLETED" />
+            <enum value="b0011110" name="BLOCKALLPSTNPORTSREQUEST" />
+            <enum value="b0011111" name="BLOCKALLPSTNPORTSACCEPTED" />
+            <enum value="b0100000" name="BLOCKALLPSTNPORTSREJECTED" />
+            <enum value="b0100001" name="BLOCKALLPSTNPORTSCOMPLETED" />
+            <enum value="b0100010" name="BLOCKALLISDNPORTSREQUEST" />
+            <enum value="b0100011" name="BLOCKALLISDNPORTSACCEPTED" />
+            <enum value="b0100100" name="BLOCKALLISDNPORTSREJECTED" />
+            <enum value="b0100101" name="BLOCKALLISDNPORTSCOMPLETED" />
+        </field>
+    </element>
+    
+    <!-- Control Variant 15.4 (14.4.2.5.6) -->
+    <element identifier="b00100010" name="CTRL Variant" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Variant" lengthBit="7" type="integer" />
+    </element>
+    
+    <!-- Control Interface-ID 15.4 (14.4.2.5.7) -->
+    <element identifier="b00100011" name="CTRL Interface-ID" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Interface ID" lengthBit="23" type="integer" />        
+    </element>
+    
+    <!-- Link control Link control function 16.3.2.2 -->
+    <element identifier="b00110000" name="LINK control function" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Link control function" lengthBit="7" type="enumeration">
+            <enum value="b0000000" name="FE-IDReq" />
+            <enum value="b0000001" name="FE-IDAck" />
+            <enum value="b0000010" name="FE-IDRel" />
+            <enum value="b0000011" name="FE-IDRej" />
+            <enum value="b0000100" name="FE301/302 (link unblock)" />
+            <enum value="b0000101" name="FE303/304 (link block)" />
+            <enum value="b0000110" name="FE305(deferredlinkblockrequest)" />
+            <enum value="b0000111" name="FE306(non-deferred link block request)" />
+        </field>        
+    </element>
+    
+    <!-- BCC User port identification 17.4.2.1 -->
+    <element identifier="b01000000" name="BCC User port identification" coding="Q931">       
+        <field name="User Port Identification Value HIGH" lengthBit="6" type="integer" />        
+        <field name="ext1" lengthBit="2" type="integer" />        
+        <field name="User Port Identification Value LOW" lengthBit="7" type="integer" />                
+        <field name="ext2" lengthBit="1" type="boolean" />        
+    </element>
+    
+    <!-- BCC ISDN port channel identification 17.4.2.2 -->
+    <element identifier="b01000001" name="BCC ISDN port channel identification" coding="Q931">
+        <field name="spare" lengthBit="3" type="integer" />
+        <field name="ISDN user port time slot number" lengthBit="5" type="integer" />        
+    </element>
+    
+    <!-- BCC V5 time slot identification 17.4.2.3 -->
+    <element identifier="b01000010" name="BCC V5 time slot identification" coding="Q931">
+        <field name="V5 2 048 kbit/s link Identifier" lengthBit="8" type="integer" />                
+        <field name="spare" lengthBit="2" type="integer" />        
+        <field name="Override" lengthBit="1" type="boolean" />                
+        <field name="V5 Time Slot Number" lengthBit="5" type="integer" />                                
+    </element>
+    
+    <!-- BCC Multi-slot map 17.4.2.4 -->
+    <element identifier="b01000011" name="BCC Multi-slot map" coding="Q931">
+        <field name="V5 2 048 kbit/s link Identifier" lengthBit="8" type="integer" />                
+        <field name="V5TS31" lengthBit="1" type="boolean" />                        
+        <field name="V5TS30" lengthBit="1" type="boolean" />                        
+        <field name="V5TS29" lengthBit="1" type="boolean" />                        
+        <field name="V5TS28" lengthBit="1" type="boolean" />                        
+        <field name="V5TS27" lengthBit="1" type="boolean" />                        
+        <field name="V5TS26" lengthBit="1" type="boolean" />                        
+        <field name="V5TS25" lengthBit="1" type="boolean" />                        
+        <field name="V5TS24" lengthBit="1" type="boolean" />                        
+        <field name="V5TS23" lengthBit="1" type="boolean" />                        
+        <field name="V5TS22" lengthBit="1" type="boolean" />                        
+        <field name="V5TS21" lengthBit="1" type="boolean" />                        
+      	<field name="V5TS20" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS19" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS18" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS17" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS16" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS15" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS14" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS13" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS12" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS11" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS10" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS09" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS08" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS07" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS06" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS05" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS04" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS03" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS02" lengthBit="1" type="boolean" />                                
+      	<field name="V5TS01" lengthBit="1" type="boolean" />                                
+      	<field name="spare1" lengthBit="1" type="boolean" />                                
+        <field name="UPTS31" lengthBit="1" type="boolean" />                        
+        <field name="UPTS30" lengthBit="1" type="boolean" />                        
+        <field name="UPTS29" lengthBit="1" type="boolean" />                        
+        <field name="UPTS28" lengthBit="1" type="boolean" />                        
+        <field name="UPTS27" lengthBit="1" type="boolean" />                        
+        <field name="UPTS26" lengthBit="1" type="boolean" />                        
+        <field name="UPTS25" lengthBit="1" type="boolean" />                        
+        <field name="UPTS24" lengthBit="1" type="boolean" />                        
+        <field name="UPTS23" lengthBit="1" type="boolean" />                        
+        <field name="UPTS22" lengthBit="1" type="boolean" />                        
+        <field name="UPTS21" lengthBit="1" type="boolean" />                        
+      	<field name="UPTS20" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS19" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS18" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS17" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS16" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS15" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS14" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS13" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS12" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS11" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS10" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS09" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS08" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS07" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS06" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS05" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS04" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS03" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS02" lengthBit="1" type="boolean" />                                
+      	<field name="UPTS01" lengthBit="1" type="boolean" />                                
+      	<field name="spare2" lengthBit="1" type="boolean" />                                	
+    </element>
+    
+    <!-- BCC Reject cause 17.4.2.5 -->
+    <element identifier="b01000100" name="BCC Reject cause" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Reject cause type" lengthBit="7" type="enumeration">
+            <enum value="b0000000" name="Unspecified" />
+            <enum value="b0000001" name="Access network fault" />
+            <enum value="b0000010" name="Access network blocked (internally)" />
+            <enum value="b0000011" name="Connection already present at the PSTN user port to a different V5 time slot" />
+            <enum value="b0000100" name="Connection already present at the V5 time slot(s) to a different port or ISDN user port time slot" />
+            <enum value="b0000101" name="Connection already present at the ISDN user port time slot(s) to a different V5 time slot(s)" />
+            <enum value="b0000110" name="User port unavailable (blocked)" />
+            <enum value="b0000111" name="De-allocation cannot be completed due to incompatible data content" />
+            <enum value="b0001000" name="De-allocation cannot be completed due to V5 time slot(s) data incompatibility" />
+            <enum value="b0001001" name="De-allocation cannot be completed due to port data incompatibility" />
+            <enum value="b0001010" name="De-allocation cannot be completed due to user port time slot(s) data incompatibility" />
+            <enum value="b0001011" name="User port not provisioned" />
+            <enum value="b0001100" name="Invalid V5 time slot(s) identification(s)" />
+            <enum value="b0001101" name="Invalid V5 2 048 kbit/s link identification" />
+            <enum value="b0001110" name="Invalid user port time slot(s) identification(s)" />
+            <enum value="b0001111" name="V5 time slot(s) being used as physical C-channel(s)" />
+            <enum value="b0010000" name="V5 link unavailable (blocked)" />
+        </field>        
+        <field name="Diagnostic" type="string" />        
+    </element>
+    
+    <!-- BCC Protocol error cause 17.4.2.6 -->
+    <element identifier="b01000101" name="BCC Protocol error cause" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Protocol error cause type" lengthBit="7" type="enumeration">                                        
+      	    <enum value="b0000001" name="Protocol discriminator error" />
+      	    <enum value="b0000100" name="Message type unrecognized" />
+      	    <enum value="b0000101" name="Out of sequence information element" />
+      	    <enum value="b0000110" name="Repeated optional information element" />
+      	    <enum value="b0000111" name="Mandatory information element missing" />
+      	    <enum value="b0001000" name="Unrecognized information element" />
+      	    <enum value="b0001001" name="Mandatory information element content error" />
+      	    <enum value="b0001010" name="Optional information element content error" />
+      	    <enum value="b0001011" name="Message not compatible with the BCC protocol state" />
+      	    <enum value="b0001100" name="Repeated mandatory information element" />
+      	    <enum value="b0001101" name="Too many information elements" />
+      	    <enum value="b0001111" name="BCC Reference Number coding error" />
+        </field>
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Diagnostic Message" lengthBit="7" type="enumeration">        
+      	    <!-- PSTNprotocol message types -->        
+            <enum value="b0000000" name="ESTABLISH" />
+            <enum value="b0000001" name="ESTABLISHACKNOWLEDGE" />
+            <enum value="b0000010" name="SIGNAL" />
+            <enum value="b0000011" name="SIGNALACKNOWLEDGE" />
+            <enum value="b0001000" name="DISCONNECT" />
+            <enum value="b0001001" name="DISCONNECTCOMPLETE" />
+            <enum value="b0001100" name="STATUSENQUIRY" />
+            <enum value="b0001101" name="STATUS" />
+            <enum value="b0001110" name="PROTOCOLPARAMETER" />
+	          <!-- Control protocol message types -->        
+            <enum value="b0010000" name="PORTCONTROL" />
+            <enum value="b0010001" name="PORTCONTROLACKNOWLEDGE" />
+            <enum value="b0010010" name="COMMONCONTROL" />
+            <enum value="b0010011" name="COMMONCONTROLACKNOWLEDGE" />
+            <!-- Protection protocol message types -->  
+            <enum value="b0011000" name="SWITCH-OVERREQUEST" />
+            <enum value="b0011001" name="SWITCH-OVERCOMMAND" />
+            <enum value="b0011010" name="OSSWITCH-OVERCOMMAND" />
+            <enum value="b0011011" name="SWITCH-OVERACKNOWLEDGE" />
+            <enum value="b0011100" name="SWITCH-OVERREJECT" />
+            <enum value="b0011101" name="PROTOCOLERROR" />
+            <enum value="b0011110" name="RESET SN COMMAND" />
+            <enum value="b0011111" name="RESET SN ACKNOWLEDGE" />
+            <!-- BCCprotocol message types -->        
+            <enum value="b0100000" name="ALLOCATION" />
+            <enum value="b0100001" name="ALLOCATIONCOMPLETE" />
+            <enum value="b0100010" name="ALLOCATIONREJECT" />
+            <enum value="b0100011" name="DE-ALLOCATION" />
+            <enum value="b0100100" name="DE-ALLOCATIONCOMPLETE" />
+            <enum value="b0100101" name="DE-ALLOCATIONREJECT" />
+            <enum value="b0100110" name="AUDIT" />
+            <enum value="b0100111" name="AUDITCOMPLETE" />
+            <enum value="b0101000" name="ANFAULT" />
+            <enum value="b0101001" name="ANFAULTACKNOWLEDGE" />
+            <enum value="b0101010" name="PROTOCOLERROR" />
+            <!-- Link control protocol message types -->        
+            <enum value="b0110000" name="LINKCONTROL" />
+            <enum value="b0110001" name="LINKCONTROLACK" />        
+      	</field>
+        <field name="Diagnostic Element" lengthBit="8" type="integer" />        
+    </element>
+    
+    <!-- BCC Connection incomplete 17.4.2.7 -->
+    <element identifier="b01000110" name="BCC Connection incomplete" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Reason" lengthBit="7" type="enumeration">                                        
+      	    <enum value="b0000000" name="Incomplete normal" />
+      	    <enum value="b0000001" name="Access network fault" />	    
+      	    <enum value="b0000010" name="User port not provisioned" />	    
+      	    <enum value="b0000011" name="Invalid V5 time slot identification" />	    
+      	    <enum value="b0000100" name="Invalid V5 2 048 kbit/s link identification" />
+      	    <enum value="b0000101" name="Time slot being used as physical C-channel" />
+        </field>        
+    </element>
+    
+    <!-- Protection Sequence number 18.5.2 -->
+    <element identifier="b01010000" name="PROTECT Sequence number" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+      	<field name="Sequence number" lengthBit="7" type="integer" />                                                
+    </element>
+    
+    <!-- Protection Physical C-channel identification 18.5.3 -->
+    <element identifier="b01010001" name="PROTECT Physical C-channel identification" coding="Q931">
+      	<field name="V5 2 048 kbit/s link Identifier" lengthBit="8" type="integer" />  
+      	<field name="spare" lengthBit="3" type="integer" />                                                      
+      	<field name="V5 Time Slot Number" lengthBit="5" type="integer" />  
+    </element>
+    
+    <!-- Protection Rejection cause 18.5.4 -->
+    <element identifier="b01010010" name="PROTECT Rejection cause" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Rejection Cause type" lengthBit="7" type="enumeration">                                        
+      	    <enum value="b0000000" name="No standby C-channel available" />
+      	    <enum value="b0000001" name="Target physical C-channel not operational" />	    
+      	    <enum value="b0000010" name="Target physical C-channel not provisioned" />	    
+      	    <enum value="b0000011" name="Protection switching impossible (AN/LE failure)" />	    
+      	    <enum value="b0000100" name="Protection group mismatchRequested allocation exists already" />
+      	    <enum value="b0000101" name="Requested allocation exists already" />
+      	    <enum value="b0000110" name="Target physical C-channel already has logical C-channel" />
+        </field>
+    </element>
+    
+    <!-- Protection Protocol error cause 18.5.5 -->
+    <element identifier="b01010011" name="PROTECT Protocol error cause" coding="Q931">
+        <field name="ext1" lengthBit="1" type="boolean" />
+        <field name="Protocol Error Cause type" lengthBit="7" type="enumeration">                                        
+      	    <enum value="b0000001" name="Protocol discriminator error" />
+      	    <enum value="b0000100" name="Message type unrecognized" />
+      	    <enum value="b0000111" name="Mandatory information element missing" />
+      	    <enum value="b0001000" name="Unrecognized information element" />
+      	    <enum value="b0001001" name="Mandatory information element content error" />
+      	    <enum value="b0001011" name="Message not compatible with protection protocol state" />
+      	    <enum value="b0001100" name="Repeated mandatory information element" />
+      	    <enum value="b0001101" name="Too many information elements" />
+      	    <enum value="b0001111" name="Logical C-Channel identification error" />
+        </field>
+        <field name="ext2" lengthBit="1" type="boolean" />
+        <field name="Diagnostic Message" lengthBit="7" type="enumeration">        
+      	    <!-- PSTNprotocol message types -->        
+            <enum value="b0000000" name="ESTABLISH" />
+            <enum value="b0000001" name="ESTABLISHACKNOWLEDGE" />
+            <enum value="b0000010" name="SIGNAL" />
+            <enum value="b0000011" name="SIGNALACKNOWLEDGE" />
+            <enum value="b0001000" name="DISCONNECT" />
+            <enum value="b0001001" name="DISCONNECTCOMPLETE" />
+            <enum value="b0001100" name="STATUSENQUIRY" />
+            <enum value="b0001101" name="STATUS" />
+            <enum value="b0001110" name="PROTOCOLPARAMETER" />
+      	    <!-- Control protocol message types -->        
+            <enum value="b0010000" name="PORTCONTROL" />
+            <enum value="b0010001" name="PORTCONTROLACKNOWLEDGE" />
+            <enum value="b0010010" name="COMMONCONTROL" />
+            <enum value="b0010011" name="COMMONCONTROLACKNOWLEDGE" />
+            <!-- Protection protocol message types -->  
+            <enum value="b0011000" name="SWITCH-OVERREQUEST" />
+            <enum value="b0011001" name="SWITCH-OVERCOMMAND" />
+            <enum value="b0011010" name="OSSWITCH-OVERCOMMAND" />
+            <enum value="b0011011" name="SWITCH-OVERACKNOWLEDGE" />
+            <enum value="b0011100" name="SWITCH-OVERREJECT" />
+            <enum value="b0011101" name="PROTOCOLERROR" />
+            <enum value="b0011110" name="RESET SN COMMAND" />
+            <enum value="b0011111" name="RESET SN ACKNOWLEDGE" />
+            <!-- BCCprotocol message types -->        
+            <enum value="b0100000" name="ALLOCATION" />
+            <enum value="b0100001" name="ALLOCATIONCOMPLETE" />
+            <enum value="b0100010" name="ALLOCATIONREJECT" />
+            <enum value="b0100011" name="DE-ALLOCATION" />
+            <enum value="b0100100" name="DE-ALLOCATIONCOMPLETE" />
+            <enum value="b0100101" name="DE-ALLOCATIONREJECT" />
+            <enum value="b0100110" name="AUDIT" />
+            <enum value="b0100111" name="AUDITCOMPLETE" />
+            <enum value="b0101000" name="ANFAULT" />
+            <enum value="b0101001" name="ANFAULTACKNOWLEDGE" />
+            <enum value="b0101010" name="PROTOCOLERROR" />
+            <!-- Link control protocol message types -->        
+            <enum value="b0110000" name="LINKCONTROL" />
+            <enum value="b0110001" name="LINKCONTROLACK" />        
+	      </field>
+        <field name="Diagnostic Element" lengthBit="8" type="integer" />        
+    </element>
+    
+    <!-- 1 - - - - - - - SINGLE OCTET INFORMATION ELEMENTS -->
+    <!-- PSTN Line information 14 (13.4.6.2) -->
+    <!-- element identifier="b1000XXXX" name="PSTN Line information" coding="Q931"/-->    
+    <element identifier="b10000000" name="PSTN Line information" coding="Q931"/>
+    
+    <!-- PSTN State 14 (13.4.6.3) -->
+    <!-- element identifier="b1001XXXX" name="PSTN State" coding="Q931"/-->
+    <element identifier="b10010000" name="PSTN State" coding="Q931"/>
+    
+    <!-- PSTN Autonomous signalling sequence 14 (13.4.6.4) -->
+    <!--element identifier="b1010XXXX" name="PSTN Autonomous signalling sequence" coding="Q931"/-->    
+    <element identifier="b10100000" name="PSTN Autonomous signalling sequence" coding="Q931"/>
+    
+    <!-- PSTN Sequence response 14 (13.4.6.5) -->
+    <!--element identifier="b1011XXXX" name="PSTN Sequence response" coding="Q931"/-->    
+    <element identifier="b10110000" name="PSTN Sequence response" coding="Q931"/>
+    
+    <!-- PSTN Pulse-notification 14 (13.4.6.1) -->
+    <element identifier="b11000000" name="PSTN Pulse-notification" coding="Q931"/>
+    
+    <!-- Control Performance grading 15.4 (14.4.2.5.2) -->
+    <!--element identifier="b1110XXXX" name="CTRL Performance grading" coding="Q931"/-->
+    <element identifier="b11100000" name="CTRL Performance grading" coding="Q931"/>
+    
+    <!-- Control Rejection cause 15.4 (14.4.2.5.1) -->
+    <!--element identifier="b1111XXXX" name="CTRL Rejection cause" coding="Q931"/-->
+    <element identifier="b11110000" name="CTRL Rejection cause" coding="Q931"/>
+        
+</dico>

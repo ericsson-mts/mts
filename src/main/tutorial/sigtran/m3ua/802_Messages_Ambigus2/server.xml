@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+  <receiveMessageSIGTRAN name="Wait INVITE11" >
+  	<parameter name="[INVITE11b]" operation="protocol.setFromMessage" value="message.binary"/>
+  	<parameter name="[test]" operation="protocol.setFromMessage" value="m3ua.header.messageType"/>
+ 	<parameter name="[test2]" operation="protocol.setFromMessage" value="m3ua.parameter.528.field.1.value"/>
+ 	<test parameter="[test]" condition="string.equals" value="1"/>
+ 	<test parameter="[test2]" condition="string.equals" value="4098"/>  
+  </receiveMessageSIGTRAN>
+
+  	<parameter name="[INVITE11a]" value="010001010000003002000008000000020210001e00000d7a0000100203030004090003050902428e04437a0d8e000000" />
+
+	
+	<if>
+		<condition>
+			<test parameter="[INVITE11a]" condition="binary.equals" value="[INVITE11b]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :		</log>
+			<log level="ERROR">	"[INVITE11b]"			</log>
+			<log level="ERROR">	Message expected :		</log>
+			<log level="ERROR">	"[INVITE11a]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+
+	
+	<receiveMessageSIGTRAN name="Wait INVITE12">
+		<parameter name="[INVITE12b]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<parameter name="[INVITE12a]" value="010001010000003002000008000000020210001e00000d7a0000100203030004090003050902428e04437a0d8e000000" />
+
+	
+	<if>
+		<condition>
+			<test parameter="[INVITE12a]" condition="binary.equals" value="[INVITE12b]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :		</log>
+			<log level="ERROR">	"[INVITE12b]"			</log>
+			<log level="ERROR">	Message expected :		</log>
+			<log level="ERROR">	"[INVITE12a]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+	
+</scenario>

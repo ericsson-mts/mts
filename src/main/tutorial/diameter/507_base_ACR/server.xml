@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+    <call name="diameter.RecCER_SendCEA"/>
+    
+    <receiveMessageDIAMETER name="Receive Request ACR" request="true" type="Accounting:271">
+        <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+        <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+        <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>        
+        <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
+        <parameter name="[applicationId]" operation="protocol.setFromMessage" value="header.applicationId"/>
+        <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
+        <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
+        <parameter name="[sessionId]" operation="protocol.setFromMessage" value="avp.Session-Id:263.value"/>
+        <parameter name="[authApplicationId]" operation="protocol.setFromMessage" value="avp.Auth-Application-Id:258.value"/>
+        <parameter name="[destinationHost]" operation="protocol.setFromMessage" value="avp.Destination-Host:293.value"/>
+        <parameter name="[destinationRealm]" operation="protocol.setFromMessage" value="avp.Destination-Realm:283.value"/>
+    </receiveMessageDIAMETER>
+
+<!--
+From RFC 3588 September 2003 :
+Accounting-Answer ::= < Diameter Header: 271, PXY >
+                      < Session-Id >
+                      { Result-Code }
+                      { Origin-Host }
+                      { Origin-Realm }
+                      { Accounting-Record-Type }
+                      { Accounting-Record-Number }
+                      [ Acct-Application-Id ]
+                      [ Vendor-Specific-Application-Id ]
+                        Vendor-Specific-Application-Id ::= < AVP Header: 260 >
+                                                        1* [ Vendor-Id ]
+                                                        0*1{ Auth-Application-Id }
+                                                        0*1{ Acct-Application-Id }
+                      [ User-Name ]
+                      [ Accounting-Sub-Session-Id ]
+                      [ Acct-Session-Id ]
+                      [ Acct-Multi-Session-Id ]
+                      [ Error-Reporting-Host ]
+                      [ Acct-Interim-Interval ]
+                      [ Accounting-Realtime-Required ]
+                      [ Origin-State-Id ]
+                      [ Event-Timestamp ]
+                    * [ Proxy-Info ]
+                        Proxy-Info ::= < AVP Header: 284 >
+                                       { Proxy-Host }
+                                       { Proxy-State }
+                                     * [ AVP ]
+                    * [ AVP ]
+-->
+
+    <sendMessageDIAMETER name="Send Answer ACA" listenpoint="[listenpointName]" 
+                         remoteHost="[remoteHost]" remotePort="[remotePortDIAM]">
+        <header request="false" command="[commandCode]" applicationId="[applicationId]" hopByHop="[hopByHop]" endToEnd="[endToEnd]" proxiable="true" error="false" retransmit="false"/>
+        <!-- The Session-Id AVP is used to identify a specific session. -->
+        <avp code="Session-Id:263" mandatory="true" type="UTF8String" value="[sessionId]"/>
+        <!-- The Result-Code AVP indicates whether a particular request was completed successfully or whether an error occurred. -->
+        <avp code="Result-Code:268" mandatory="true" type="Unsigned32" value="DIAMETER_SUCCESS:2001"/>
+
+        <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->
+        <avp code="Origin-Host:264" mandatory="true" type="DiameterIdentity" value="[destinationHost]"/>
+        <!-- The Origin-Realm AVP contains the Realm of the originator of any Diameter message. -->
+        <avp code="Origin-Realm:296" mandatory="true" type="DiameterIdentity" value="[destinationRealm]"/>
+
+        <!-- The Accounting-Record-Type AVP contains the type of accounting record being sent. -->
+        <!-- Possible enumerated values : EVENT_RECORD(1) / START_RECORD(2) / INTERIM_RECORD(3) / STOP_RECORD(4). -->
+        <!-- Possible enumerated values among dictionary : "Event Record"(1) / "Start Record"(2) / "Interim Record"(3) / "Stop Record"(4). -->
+        <avp code="Accounting-Record-Type:480" mandatory="true" type="Enumerated" value="Event Record"/>
+
+        <!-- The Accounting-Record-Number AVP identifies this record within one session. -->
+        <avp code="Accounting-Record-Number:485" mandatory="true" type="Unsigned32" value="0"/>
+
+        <!-- The Acct-Application-Id AVP is used in order to advertise support of the Accounting portion of an application. -->
+        <avp code="Acct-Application-Id:259" mandatory="false" type="Unsigned32" value="3"/>
+
+        <!-- The Vendor-Specific-Application-Id AVP is used to advertise support of a vendor-specific Diameter Application. -->
+        <avp code="Vendor-Specific-Application-Id:260">
+          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+          <avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/>
+          <!--avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777216"/-->
+        </avp>
+        <avp code="Vendor-Specific-Application-Id:260">
+          <avp code="Vendor-Id:266" mandatory="true" type="Unsigned32" value="0"/>
+          <!--avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="16777216"/-->
+          <avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="16777217"/>
+        </avp>
+
+        <!-- The User-Name AVP contains the User-Name, in a format consistent with the Network Access Identifier (NAI) specification. -->
+        <avp code="User-Name:1" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+
+        <!-- The Accounting-Sub-Session-Id AVP contains the accounting sub-session identifier. -->
+        <avp code="Accounting-Sub-Session-Id:287" mandatory="false" type="Unsigned64" value="0"/>
+        <!-- The RADIUS Acct-Session-Id AVP is a unique Accounting ID to make it easy to match start and stop records in a log file. -->
+        <!-- Dictionary code of the Acct-Session-Id AVP is mistaken translated as Accounting-Session-Id. -->
+        <avp code="Acct-Session-Id:44" mandatory="false"  type="OctetString" value="ToBeCompleted"/>
+        <!-- The Acct-Multi-Session-Id AVP is used to link together multiple related accounting sessions. -->
+        <!-- Dictionary code of the Acct-Multi-Session-Id AVP is mistaken translated as Accounting-Multi-Session-Id. -->
+        <avp code="Accounting-Multi-Session-Id:50" mandatory="false" type="UTF8String" value="ToBeCompleted"/>
+
+        <!-- The Error-Reporting-Host AVP contains the identity of the Diameter host that sent the Result-Code AVP to a value other than 2001 (Success). -->
+        <avp code="Error-Reporting-Host:294" mandatory="false" type="DiameterIdentity" value="aaa[s]:// FQDN [ :port ] [ ;transport=tcp/sctp/udp ] [ ;protocol=diameter/radius/tacacs+ ]"/>
+
+        <!-- The client uses information in the Acct-Interim-Interval AVP to decide how and when to produce accounting records. -->
+        <avp code="Acct-Interim-Interval:85" mandatory="false" type="Unsigned32" value="0"/>
+
+        <!-- The client uses information in the Accounting-Realtime-Required AVP to decide what to do if the sending of accounting records to the accounting server has been temporarily prevented. -->
+        <!-- Possible enumerated values : DELIVER_AND_GRANT(1) / GRANT_AND_STORE(2) / GRANT_AND_LOSE(3). -->
+        <avp code="Accounting-Realtime-Required:483" mandatory="false" type="Enumerated" value="DELIVER_AND_GRANT:1"/>
+
+        <!-- The Origin-State-Id AVP is a monotonically increasing value that is advanced whenever a Diameter entity restarts with loss of previous state. -->
+        <avp code="Origin-State-Id:278" mandatory="false" type="Unsigned32" value="0"/>
+
+        <!-- The Event-Timestamp MAY be included in an Accounting-Request and Accounting-Answer messages to record the time that the reported event occurred, in seconds sinceJanuary 1, 1900 00:00 UTC. -->
+        <avp code="Event-Timestamp:55" mandatory="false" type="Time" value="0"/>
+
+        <!-- The Proxy-Host AVP contains the identity of the host that added the Proxy-Info AVP. -->
+        <!-- The Proxy-State AVP contains state local information. -->
+        <avp code="Proxy-Info:284">
+          <avp code="Proxy-Host:280" mandatory="true" private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+        </avp>
+        <avp code="Proxy-Info:284">
+          <avp code="Proxy-Host:280" mandatory="true"  private="false" type="DiameterIdentity" value="ToBeCompleted"/>
+          <avp code="Proxy-State:33" mandatory="true"  private="false" type="OctetString" value="ToBeCompleted"/>
+        </avp>
+    </sendMessageDIAMETER>
+    
+</scenario>

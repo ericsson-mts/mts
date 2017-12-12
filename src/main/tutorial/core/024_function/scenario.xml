@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    
+    <!--parameter name="[realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
+    <parameter name="[userName]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
+    <parameter name="[password]" value="f572f8d08007bc0b"/>
+    <parameter name="[password]" operation="binary.tostring" value="[password]"/>      
+    
+		<parameter name="[method]" value="REGISTER"/>
+		<parameter name="[uri]" value="sip:ims.mnc001.mcc208.3gppnetwork.org"/>
+    
+    <parameter name="[nonce]" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
+    <parameter name="[qop]" value="auth"/>
+    <parameter name="[nonceCount]" value="00000001" />
+    <parameter name="[cnonce]" value="dsf232sun3723794246xyx" />
+
+    <parameter name="[HA1]" operation="string.digest" value2="MD5" value="[userName]:[realm]:[password]" />
+    <parameter name="[HA2]" operation="string.digest" value2="MD5" value="[method]:[uri]" />
+    <parameter name="[res]" operation="string.digest" value2="MD5" value="[HA1]:[nonce]:[nonceCount]:[cnonce]:[qop]:[HA2]" /-->                     
+
+    <!--parameter name="[length]" operation="set" value="12"/>
+    <parameter name="[password]" operation="string.random" value="[length]"/-->
+    
+    <!-- trace Vincent Roudil 20150817_TRACE_REFERENCE_Register_OK.pcapng -->
+    <parameter name="[password]" value="f572f8d08007bc0b"/>
+    <parameter name="[password]" operation="binary.tostring" value="[password]"/>  
+    <call name="calcul_digest_MD5" >
+        <input>
+            <parameter name="[function:realm]" value="ims.mnc001.mcc208.3gppnetwork.org"/>
+            <parameter name="[function:username]" value="208014469115210@ims.mnc001.mcc208.3gppnetwork.org"/>
+            <parameter name="[function:password]" value="[password]"/>
+            <!--parameter name="[function:password]" value="00000000000000000000000000000000"/-->
+            <!--parameter name="[function:password]" value="mobileeu2015"/-->            
+        		<parameter name="[function:method]" value="REGISTER"/>
+        		<parameter name="[function:uri]" value="sip:ims.mnc001.mcc208.3gppnetwork.org"/>
+            
+            <parameter name="[function:nonce]" value="QCTeRPA/R3+cOdVZo6omkS1RwDFC+QAAG+ohYH48asJjZGQwNmUwMA=="/>
+            <parameter name="[function:qop]" value="auth"/>
+            <parameter name="[function:nonceCount]" value="00000001" />
+            <parameter name="[function:cnonce]" value="dsf232sun3723794246xyx" />
+        </input>
+        <output>
+            <parameter name="[function:res]" />
+        </output>
+    </call>    
+    
+    <if>
+      <condition>
+        <test parameter="[res]" condition="binary.equals" value="b227a1d73311c9a3439f789bd15deaf4"/>
+      </condition>
+      <then>
+        <log type="Main" level="ERROR">password=[password]</log>
+      </then>
+      <else>
+        <exit failed="true"/>
+      </else>
+    </if>
+    
+    <!-- example from IETF RFC2617 -->
+    <call name="calcul_digest_MD5" >
+        <input>
+            <parameter name="[function:realm]" value="testrealm@host.com"/>
+            <parameter name="[function:username]" value="Mufasa"/>
+            <parameter name="[function:password]" value="Circle Of Life"/>  
+            
+        		<parameter name="[function:method]" value="GET"/>
+        		<parameter name="[function:uri]" value="/dir/index.html"/>
+            
+            <parameter name="[function:nonce]" value="dcd98b7102dd2f0e8b11d0f600bfb0c093"/>
+            <parameter name="[function:qop]" value="auth"/>
+            <parameter name="[function:nonceCount]" value="00000001" />
+            <parameter name="[function:cnonce]" value="0a4f113b" />
+        </input>
+        <output>
+            <parameter name="[function:res]" />
+        </output>
+    </call>
+
+    <if>
+      <condition>
+        <test parameter="[res]" condition="binary.equals" value="6629fae49393a05397450978507c4ef1"/>
+      </condition>
+      <then>
+        <log type="Main" level="ERROR">password="[password]"</log>
+      </then>
+      <else>
+        <exit failed="true"/>
+      </else>
+    </if>
+    
+    <test parameter="[res]" condition="binary.equals" value="6629fae49393a05397450978507c4ef1"/>
+
+</scenario>

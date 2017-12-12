@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- receive AuditCapability request-->
+    <receiveMessageH248 name="Receive request" request="true" type="AuditCapability">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+        <parameter name="[contextID]" operation="protocol.setFromMessage" value="descr.*.Context.value" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- send AuditCapability response -->
+    <parameter name="[termID1]" operation="number.random" value="10000000"/>
+    <parameter name="[termID2]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Reply = [transaction] {
+ ImmAckRequired,
+ Context=[contextID]{
+  Priority = 1,                 
+  AuditCapability = Context {ip/1/access/[termID1] , ip/1/core/[termID2]},
+  AuditCapability = [ip/1/access/[termID1] , ip/1/core/[termID2] ] {
+   Media{
+    Stream=1{
+     LocalControl{
+      Mode,
+      tman/sdr,
+      ds/dscp,
+      ReservedValue,
+      ReservedValue,
+      ReservedGroup,
+      ReservedGroup,
+      pkg/param0,               ;extensions 
+      pkg/param1,               ;extensions 
+      pkg/param2,               ;extensions 
+      pkg/param3,               ;extensions 
+      pkg/param4,               ;extensions 
+      pkg/param7                ;extensions 
+     },
+     Local,
+     Remote,
+     Statistics{
+      pkg/param1,
+      pkg/param2,
+      nt/dur, nt/or, nt/os, rtp/delay, rtp/jit, rtp/pr, rtp/ps, xnq/fcumpl, xnq/ncumpl, xnq/nvrange, xnq/rtdmax
+     }
+    },
+    TerminationState {
+     ServiceStates,
+     Buffer,
+     Buffer
+    }
+   }
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive AuditCapability acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+    
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+</scenario>

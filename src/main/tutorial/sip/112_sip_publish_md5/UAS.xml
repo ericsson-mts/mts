@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+	<parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+	</receiveMessageSIP>
+
+	<sendMessageSIP name="Answer 401 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: [Via]
+From: [From]
+To: [To]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+WWW-Authenticate: 
+	Digest realm="sip.mobistar.fr",
+	domain="sip:ttcnserver@sip.mobistar.fr",
+	nonce="1af6e6744f2880715614625e0da87566",
+	stale=false,
+	qop="auth",
+	algorithm=MD5
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="Wait REGISTER" request="true" type="REGISTER">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[AuthResponse]" operation="protocol.setFromMessage" value="header.Authorization.Attribute.response"/>
+	</receiveMessageSIP>
+		
+	<sendMessageSIP name="Answer 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+Via: [Via]
+From: [From]
+To: [To]
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: [Contact]
+Content-Length: 0]]>
+<!--******************** END MESSAGE *********************-->
+        </sendMessageSIP>
+
+	<receiveMessageSIP name="Wait PUBLISH" request="true" type="PUBLISH">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>
+		<parameter name="[Cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		<parameter name="[Contact]" operation="protocol.setFromMessage" value="header.Contact"/>
+		<parameter name="[localTag]" operation="string.random" value="10"/>
+	  
+	</receiveMessageSIP>
+	<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Via: [Via]
+Server: PoC-serv/OMA1.0 XmlLoader/v0.0
+Call-ID: [CallId]
+CSeq: [Cseq]
+Contact: <sip:[localSIP]>
+Require: timer
+Supported: timer
+Session-Expires: 1800;refresher=uac
+P-Asserted-Identity: <sip:[clientName]@[103_DOMAIN_ADDR]>,<tel:+3381165049515>
+P-Charging-Vector: icid-value=000000018b0a45ed;ggsn=139.10.69.237;pdp-sig=yes;gcid=32665c1f;auth-token=0.18800729653403492
+P-Com.Siemens.IMSI-ID: 81165049515
+P-Com.Siemens.SGSN-ID: 139.10.69.237
+P-Charging-Info: ggsn-addr=139.10.69.237;gcid=32665c1f;msisdn=3381165049515;imsi=81165049515;sgsn-addr=139.10.69.237;ccf=139.10.99.99;ccf_sec=139.10.99.99
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName] 999 999 IN IP4 [clientIpAddress]
+s=-
+c=IN IP4 [clientIpAddress]
+t=0 0
+m=audio [clientRtpPort] RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application [clientRtcpPort] udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0]]>
+<!--******************** END MESSAGE *********************-->
+	</sendMessageSIP>
+
+</scenario>

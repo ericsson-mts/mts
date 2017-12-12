@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+       
+		<receiveMessageSIP name="Wait MESSAGE" request="true" type="MESSAGE">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>  	
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-Id"/>  	
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	
+		<parameter name="[localTag]" operation="string.random" value=""/> 		 
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		</receiveMessageSIP>
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+Via: [Via]
+CSeq: [CSeq]
+Content-Length: 0
+]]>
+<!--******************** END MESSAGE *********************-->		
+</sendMessageSIP>
+
+	<pause name="tempo" milliseconds="0"/>
+
+</scenario>

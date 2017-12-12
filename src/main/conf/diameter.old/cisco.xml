@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: Cisco.xml 22251 2009-09-01 Francois Bougant Orange LABS CORE/M2I/ATP $ -->
+
+<application id="16777238" name="Cisco Gx" uri="http://www.ietf.org/rfc/rfc3588.txt?number=3588">
+
+	
+			<command name="Credit-Control" code="272" vendor-id="None"/>
+
+		<vendor vendor-id="ciscoSystems" code="9" name="Cisco"/>
+		<!-- ************************* Cisco Gx AVPs ************************ -->
+                <!-- This list is not complete yet -->
+
+				<avp name="Cisco-Charging-Rule-Definition" code="131072" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Charging-Rule-Name"/>
+				<gavp name="Service-Name"/>
+				<gavp name="Rating-Group"/>
+				<gavp name="Cisco-Flow-Description"/>
+				<gavp name="Cisco-Flow-Status"/>
+				<gavp name="QoS-Information"/>
+				<gavp name="Online"/>
+				<gavp name="Offline"/>
+				<gavp name="Precedence"/>
+				<gavp name="AF-Charging-Identifier"/>
+				<gavp name="Charging-Rule-Event-Trigger"/>
+				</grouped>
+		</avp>		
+		<avp name="Content-Definition" code="131073" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Content-Flow-Description"/>
+				<gavp name="Content-Scope"/>
+				<gavp name="Content-Idle-Timer"/>
+				<gavp name="Nexthop"/>
+				<gavp name="L7-Parse-Protocol-Type"/>
+				<gavp name="L7-Parse-Length"/>
+				<gavp name="Billing-Policy-Name"/>
+				<gavp name="Replicate-Session"/>
+				<gavp name="Intermediate-CDR-Threshold"/>
+				<gavp name="CDR-Generation-Delay"/>
+				<gavp name="Content-Pending-Timer"/>
+				<gavp name="Operation-Status"/>
+				<gavp name="Subscriber-IP-Source"/>
+				<gavp name="Flow-Status-Policy-Mismatch"/>
+				</grouped>
+		</avp>		
+		<avp name="Billing-Policy-Definition" code="131074" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<!-- 0*3 --><gavp name="Policy-Map-Name"/>
+				<gavp name="Accounting"/>
+				<gavp name=""/>
+				</grouped>
+		</avp>		
+		<avp name="Policy-Map-Definition" code="131075" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Policy-Map-Replace"/>
+				<gavp name="Policy-Map-Match-Remove"/>
+				<gavp name="Policy-Map-Match-Install"/>
+				</grouped>
+		</avp>		
+		<avp name="Service-Definition" code="131076" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Service-Reporting-Level"/>
+				<gavp name="Service-CDR-Threshold"/>
+				<gavp name="Service-Activation"/>
+				<gavp name="Advice-Of-Charge"/>
+				<gavp name="Service-Class"/>
+				<gavp name="Service-Idle-Time"/>
+				<gavp name="Owner-Id"/>
+				<gavp name="Owner-Name"/>
+				<gavp name="Online-Passthrough-Quota"/>
+				<gavp name="Online-Reauthorization-Threshold"/>
+				<gavp name="Online-Reauthorization-Timeout"/>
+				<gavp name="Refund-Policy"/>
+				<gavp name="Meter-Exclude"/>
+				<gavp name="Meter-Include-Imap"/>
+				<gavp name="Metering-Granularity"/>
+				<gavp name="Verify"/>
+				<gavp name="Content-Policy-Map"/>
+				<gavp name=""/>
+				</grouped>
+		</avp>		
+		<avp name="Content-Policy-Map" code="131077" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+					<gavp name="Weight"/>
+					</grouped>
+		</avp>		
+		<avp name="Service-Info" code="131078" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Online"/>
+				<gavp name="Offline"/>
+				</grouped>
+		</avp>		
+		<avp name="Billing-Plan-Definition" code="131079" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Online"/>
+				<gavp name="Offline"/>
+				<gavp name="User-Idle-Timer"/>
+				<gavp name="Service-Info"/>
+				</grouped>
+		</avp>		
+		<avp name="Volume-Threshold" code="131080" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Time-Threshold" code="131081" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Content-Idle-Timer" code="131082" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Nexthop-Uplink" code="131083" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="IPAddress"/>		   
+		</avp>		
+		<avp name="Service-Status" code="131086" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Cisco-Flow-Status"/>
+				<gavp name="Service-Rating-Group"/>
+				<gavp name="Cisco-QoS"/>
+				</grouped>
+		</avp>		
+		<avp name="Service-Name" code="131087" mandatory="must" vendor-bit="must" vendor-id="ciscoSystems">
+			<type type-name="UTF8String"/>
+		</avp>		
+		<avp name="Online-Billing-Basis" code="131093" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Enumerated"/>
+		</avp>
+		<avp name="Charging-Rule-Trigger-Type" code="131123" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Enumerated"/>
+			<enum name="NO_CHARGING_RULE_EVENT_TRIGGERS" code="0"/>
+			<enum name="VOLUME_THRESHOLD" code="1"/>
+			<enum name="TIME_THRESHOLD" code="2"/>
+			<enum name="SVC_FLOW_DETECTION" code="3"/>
+			<enum name="CHARGING_RULE_REMOVE" code="4"/>
+		</avp>	
+		<avp name="Charging-Rule-Event" code="131124" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Charging-Rule-Name"/>
+				<gavp name="Charging-Rule-Trigger-Type"/>
+				<gavp name="Volume-Usage"/>
+				<gavp name="Time-Usage"/>
+				</grouped>
+		</avp>		
+		
+		<avp name="Charging-Rule-Event-Trigger" code="131139" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Volume-Threshold"/>
+				<gavp name="Time-Threshold"/>
+				</grouped>
+		</avp>		
+		<avp name="Billing-Plan-Name" code="131140" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<type type-name="UTF8String"/>
+		</avp>		
+		<avp name="Content-Flow-Description" code="131141" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Content-Flow-Filter"/>
+				<gavp name="VRF-Name"/>
+				<gavp name="VLAN-Id"/>
+				</grouped>
+		</avp>		
+		<avp name="Content-Flow-Filter" code="131142" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Client-Group-Id"/>
+				<gavp name="Destination-IP-Address"/>
+				<gavp name="Destination-Mask"/>
+				<gavp name="Protocol-ID"/>
+				<gavp name="Start-of-Port-Range"/>
+				<gavp name="End-of-Port-range"/>
+				</grouped>
+		</avp>		
+		<avp name="Client-Group-Id" code="131143" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="ACL-Number"/>
+				<gavp name="ACL-Name"/>
+				</grouped>
+		</avp>		
+		<avp name="ACL-Number" code="131144" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="ACL-Name" code="131145" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Destination-IP-Address" code="131146" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="IPAddress"/>		   
+		</avp>		
+		<avp name="Destination-Mask" code="131147" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="IPAddress"/>		   
+		</avp>		
+		<avp name="Protocol-ID" code="131148" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Start-of-Port-Range" code="131149" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="End-of-Port-range" code="131150" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Content-Name" code="131151" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<type type-name="UTF8String"/>
+		</avp>
+
+		
+		
+		<avp name="Volume-Usage" code="131155" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned64"/>		   
+		</avp>		
+		<avp name="Time-Usage" code="131156" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Duration"/>
+				<gavp name="First-Packet-Timestamp"/>
+				<gavp name="Last-Packet-Timestamp"/>
+				</grouped>
+		</avp>
+		<avp name="Duration" code="131157" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="First-Packet-Timestamp" code="131158" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Last-Packet-Timestamp" code="131159" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+
+		<avp name="Cisco-Flow-Description" code="131160" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<grouped>
+				<gavp name="Content-Flow-Description"/>
+			</grouped> 
+		</avp>		
+		<avp name="Terminate-Bearer" code="131161" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<grouped>
+				<gavp name="Bearer-Identifier"/>
+			</grouped> 
+		</avp>		
+
+		<avp name="Cisco-Flow-Status" code="131169" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Enumerated"/>
+			<enum name="FORWARD" code="0"/>
+			<enum name="BLOCK" code="1"/>
+		</avp>		
+		<avp name="Cisco-QoS" code="131170" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="QoS-Rate-Limit-UL"/>
+				<gavp name="QoS-Rate-Limit-DL"/>
+				</grouped>
+		</avp>		
+		<avp name="QoS-Rate-Limit-UL" code="131171" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="QoS-Rate-Limit"/>
+				</grouped>
+		</avp>		
+		<avp name="QoS-Rate-Limit-DL" code="131172" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="QoS-Rate-Limit"/>
+				</grouped>
+		</avp>		
+		<avp name="QoS-Rate-Limit" code="131173" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Max-Bandwidth"/>
+				<gavp name="Max-Burst-Size"/>
+				<gavp name="Rate-Limit-Conform-Action"/>
+				<gavp name="Rate-Limit-Exceed-Action"/>
+				</grouped>
+		</avp>		
+		<avp name="Max-Bandwidth" code="131174" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>		
+		<avp name="Rate-Limit-Conform-Action" code="131175" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Rate-Limit-Action"/>
+				<gavp name="DSCP"/>
+				</grouped>
+		</avp>		
+		<avp name="Rate-Limit-Exceed-Action" code="131176" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Rate-Limit-Action"/>
+				<gavp name="DSCP"/>
+				</grouped>
+		</avp>		
+		<avp name="Rate-Limit-Action" code="131177" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Enumerated"/>
+			<enum name="FORWARD" code="0"/>
+			<enum name="DROP" code="1"/>
+			<enum name="MARK_DSCP" code="2"/>
+		</avp>
+		<avp name="DSCP" code="131178" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>
+		<avp name="Max-Burst-Size" code="131190" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Unsigned32"/>		   
+		</avp>
+		<avp name="Cisco-Event-Trigger-Type" code="131192" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+		   <type type-name="Enumerated"/>
+			<enum name="NO_CISCO_TRIGGERS" code="0"/>
+			<enum name="TCP_SYN_DETECTION" code="1"/>
+			<enum name="VOLUME_THRESHOLD" code="2"/>
+			<enum name="TIME_THRESHOLD" code="3"/>
+		</avp>
+		<avp name="Cisco-Event-Trigger" code="131193" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+				<grouped>
+				<gavp name="Cisco-Event-Trigger-Type"/>
+				<gavp name="Volume-Threshold"/>
+				<gavp name="Time-Threshold"/>
+				<gavp name="Cisco-Report-Usage"/>
+				</grouped>
+		</avp>
+		<avp name="TCP-SYN" code="131194" mandatory="must" vendor-bit="must" vendor-id="ciscoSystems">
+			<type type-name="OctetString"/>
+		</avp>		
+		<avp name="Cisco-Event" code="131195" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<grouped>
+				<gavp name="Cisco-Event-Trigger-Type"/>
+				<gavp name="TCP-SYN"/>	
+				<gavp name= "Volume-Usage"/>
+				<gavp name= "Time-Usage"/>
+				<gavp name= "Cisco-Report-Usage"/>
+				</grouped>
+		</avp>		
+		<avp name="Service-Group-Name" code="131243" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<type type-name="UTF8String"/>
+		</avp>
+		<avp name="Service-Group-Definition" code="131244" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<grouped>
+				<gavp name="Service-Group-Name"/>				
+				<gavp name="Cisco-Event-Trigger"/>
+				<gavp name="Cisco-QoS"/>
+				<gavp name="Cisco-Flow-Status"/>
+				<gavp name="Redirect-Server"/>
+				</grouped>
+		</avp>
+		<avp name="Service-Group-Install" code="131245" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<grouped>
+				<gavp name="Service-Group-Definition"/>				
+			</grouped>
+		</avp>
+		<avp name="Service-Group-Event" code="131247" mandatory="may" vendor-bit="must" vendor-id="ciscoSystems">
+			<grouped>
+				<gavp name="Service-Group-Name"/>				
+				<gavp name="Cisco-Event"/>
+			</grouped>
+		</avp>
+
+	
+	</application>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<parameter name="[{regex:(last_[^:]+\b)}:]" operation="setFromMessage" value="header.{regex:last_([^:]*)}.Namevalue" value2="[last_Message]" />
+<parameter name="[branch]" operation="string.random" value="10"/>
+<parameter name="[cseq]" operation="setFromMessage" value="header.CseqNumber" value2="[last_Message]"/>
+<parameter name="[next_url]" operation="setFromMessage" value="header.Contact.address.Uri" value2="[last_Message]"/>
+<parameter name="[routes]" operation="setFromMessage" value="header.RecordRoute" value2="[last_Message]"/>
+<parameter name="[peer_tag_param]" operation="setFromMessage" value="header.To.parameter.tag" value2="[last_Message]"/>
+<parameter name="[peer_tag_param]" operation="set" value=";tag=[peer_tag_param]"/>
+<sendMessageSIP listenpoint="_listenpoint[local_port]" remoteHost="[remote_ip]" remotePort="[remote_port]" transport="[transport]" state="{regex:(SIP\/\d.\d)\n}">
+{xpath:./text()}
+</sendMessageSIP>
+<sendMessageSIP listenpoint="_listenpoint[local_port]" state="{regex:(\sSIP\/\d.\d[^\n\/])}">
+{xpath:./text()}
+</sendMessageSIP>
+<if state="{xpath:./@next}"> 
+<condition>
+	<test parameter="[{xpath:./@test}]" condition="list.isempty" not="true"/>
+</condition>
+<then>
+	<goto label="{xpath:./@next}" />
+</then>
+</if>
+</template>
+

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+    
+    <parameter name="[testcase:SEM1]" operation="system.semaphorenotify"/>
+    
+		<receiveMessageSIP name="Wait OPTIONS" request="true" type="OPTIONS">
+		<parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/> 
+		<parameter name="[ToUser]" operation="protocol.setFromMessage" value="header.To.Address.URI.User"/> 
+		<parameter name="[From]" operation="protocol.setFromMessage" value="header.From"/>  	
+		<parameter name="[CallId]" operation="protocol.setFromMessage" value="header.Call-ID"/>  	
+		<parameter name="[CSeq]" operation="protocol.setFromMessage" value="header.CSeq"/>  	
+		<parameter name="[localTag]" operation="string.random" value="10"/> 		 
+		<parameter name="[Via]" operation="protocol.setFromMessage" value="header.Via"/>
+		</receiveMessageSIP>
+		
+		<sendMessageSIP name="Send 200 OK">
+<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[ 
+SIP/2.0 200 OK
+Via: [Via]
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Contact: [ToUser]
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE
+Accept: application/sdp 
+Accept-Encoding: gzip 
+Accept-Language: en
+Supported: foo 
+Content-Type: application/sdp 
+Content-Length: x
+
+v=0
+o=[ToUser] 28908764872 28908764872 IN IP4 [localHostSIP]
+s=-
+t=0 0
+c=IN IP4 [localHostSIP]
+m=audio 0 RTP/AVP 0 1 3
+a=rtpmap:0 PCMU/8000
+a=rtpmap:1 1016/8000
+a=rtpmap:3 GSM/8000
+m=video 0 RTP/AVP 31 34
+a=rtpmap:31 H261/90000
+a=rtpmap:34 H263/90000
+]]>
+
+<!--******************** END MESSAGE *********************-->		
+</sendMessageSIP>
+</scenario>

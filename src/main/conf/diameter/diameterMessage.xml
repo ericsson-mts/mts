@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE scenario SYSTEM "file:[XML_LOADER_HOME]/conf/scenario.dtd">
+
+<scenario name="Send 3GPP CX Multimedia Authentication request (MAR/MAA)">
+
+	<sendMessageDIAMETER name="Send CX Pull/Put" server="diameter://HSS.sip.france.fr:3871">
+		<header command="Multimedia-Authentitcation" applicationId="Ericsson IMT 30 - Cx" proxiable="true" request="true"/>
+		<avp code="Origin-Host" value="CXCSCFCX.sip.france.fr"/>
+		<avp code="Origin-Realm" value="sip.france.fr"/>
+		<avp code="Destination-Host" value="hss.sip.france.fr"/>	
+		<avp code="Destination-Realm" value="sip.france.fr"/>		
+		<avp code="Vendor-Specific-Application-Id">
+	        	<avp code="Vendor-Id" value="10415"/>
+        		<avp code="Auth-Application-Id" value="16777216"/>
+		</avp>
+		<avp code="Session-Id" value="CXCSCFCX.sip.france.fr;45e45ee4;046725;5cd579ef"/>
+		<avp code="Auth-Session-State" value="NO_STATE_MAINTAINED"/>
+		<avp code="Public-Identity" value="sip:+33875610603@sip.france.fr"/>
+    		<avp code="Number-Authentication-Items" value="1"/>
+    		<avp code="Auth-Data-Item">
+        		<avp code="Item-Number" value="0"/>
+        		<avp code="Authentication-Scheme" value="DIGEST"/>
+        		<avp code="Authenticate" value='Digest username=\"33875631975@sip.pfdev.fr\",realm=\"sip.pfdev.fr\",cnonce=\"40b18ccf\",nc=00000001,qop=auth,uri=\"sip:sip.pfdev.fr\",nonce=\"21bc27679ddac8fd6c0088817c8ae385\",response=\"38179d99cc34ce0ad002ac4d70e37c0a\",algorithm=MD5'/>
+        		<avp code="Authentication-Context" value="INVITE"/>
+    		</avp>
+	</sendMessageDIAMETER>
+	
+</scenario>

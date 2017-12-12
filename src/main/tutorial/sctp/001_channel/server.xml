@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="[timeout]"/>
+     
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
+
+    <parameter name="[lastStream]" operation="protocol.setFromMessage" value="sctp.stream"/>
+    <test parameter="[lastStream]" condition="number.equals" value="10" />
+    <!-- ssn is incremented automatically by the sctp stack if flag == 0 -->
+    <parameter name="[lastSsn]" operation="protocol.setFromMessage" value="sctp.ssn"/>
+    <test parameter="[lastSsn]" condition="number.equals" value="0" />
+    <parameter name="[lastPpid]" operation="protocol.setFromMessage" value="sctp.ppid"/>
+    <test parameter="[lastPpid]" condition="number.equals" value="2222222222" />
+    <parameter name="[lastFlags]" operation="protocol.setFromMessage" value="sctp.flags"/>
+    <test parameter="[lastFlags]" condition="number.equals" value="0" />
+    <!-- context is always set to 0 by the sctp stack --> 
+    <parameter name="[lastContext]" operation="protocol.setFromMessage" value="sctp.context"/>
+    <test parameter="[lastContext]" condition="number.equals" value="0" />    <!-- tts is always set to 0 by the sctp stack --> 
+    <parameter name="[lastTtl]" operation="protocol.setFromMessage" value="sctp.ttl"/>
+    <test parameter="[lastTtl]" condition="number.equals" value="0" />
+    <!-- ttl is choosen automatically by the sctp stack --> 
+    <parameter name="[lastTsn]" operation="protocol.setFromMessage" value="sctp.tsn"/>
+    <!--test parameter="[lastTsn]" condition="number.equals" value="0" /-->
+     <!-- cumtls is managed automatically by the sctp stack -->
+    <parameter name="[lastCumtsn]" operation="protocol.setFromMessage" value="sctp.cumtsn"/>
+    <!--test parameter="[lastCumtsn]" condition="number.equals" value="0" /-->
+    <!-- aid is choosen automatically by the sctp stack --> 
+    <parameter name="[lastAid]" operation="protocol.setFromMessage" value="sctp.aid"/>
+    <!--test parameter="[lastAid]" condition="number.equals" value="0" /-->
+
+    <parameter name="[lastPeerHosts]" operation="protocol.setFromMessage" value="channel.peerHosts"/>
+    <!--parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+    <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
+    <test parameter="[lastPeerHosts]" condition="string.equals" value="[localHosts]" /-->
+    <parameter name="[lastPeerPort]" operation="protocol.setFromMessage" value="channel.peerPort"/>
+    <!--test parameter="[lastPeerPort]" condition="string.equals" value="[localPortSCTP]"/--> 
+
+
+    <!-- checks multihoming -->
+    <if>
+	    <condition>
+		    <test parameter="[stackHasFullMultiHomingSupport]" condition="boolean.equals" value="true"/>
+	    </condition>
+	    <then>
+		    <!-- checks full multihoming (addresses selection) -->
+		    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
+		    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHostSCTP]" />
+
+	    </then>
+	    <else>
+		    <!-- checks basic multihoming (all addresses) -->
+                    <parameter name="[lastSourceHost]" operation="protocol.setFromMessage" value="sctp.peerHosts"/>
+		    <parameter name="[lastSourceHost]" operation="list.sortString" value="[lastSourceHost]"/>
+		    <parameter name="[localHosts]" operation="system.ipaddress" value2="ipv4"/>
+                    <parameter name="[localHosts]" operation="list.removelast" value="[localHosts]"/>
+		    <parameter name="[localHosts]" operation="list.sortString" value="[localHosts]"/>
+		    <test parameter="[lastSourceHost]" condition="string.equals" value="[localHosts]" />
+
+	    </else>
+    </if>
+
+    <parameter name="[lastSourcePort]" operation="protocol.setFromMessage" value="sctp.peerPort"/>
+    <test parameter="[lastSourcePort]" condition="string.equals" value="[localPortSCTP]" />
+    
+    <parameter name="[lastContents]" operation="protocol.setFromMessage" value="data.text" />
+    <test parameter="[lastContents]" condition="string.equals" value="AAAAA" />
+
+    <parameter name="[newStream]" operation="number.random" value="0" value2="9"/>
+    <!-- [newStream] is not taken into account BUG  I don't know why ?-->
+    <sendMessageSCTP channel="[lastChannelName]"> 
+        <sctp stream="[newStream]" ssn="[lastSsn]" ppid="[lastPpid]" flags="[lastFlags]" aid="[lastAid]"/>
+        <data format="binary">h41:1 h441:1 b01000001:1 d0000065:1 65</data>
+    </sendMessageSCTP>
+
+    <receiveMessageSCTP request="true" type="INIT-ACK" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
+
+    <receiveMessageSCTP request="true" type="DATA" timeout="[timeout]">
+        <parameter name="[lastChannelName]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageSCTP>
+
+    <finally>
+
+        <closeChannelSCTP name="[lastChannelName]"/> 
+	
+    </finally>
+
+</scenario>

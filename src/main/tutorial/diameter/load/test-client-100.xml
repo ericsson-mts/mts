@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+	<parameter description="number of transaction per second" editable="true" name="[speedTrans]" operation="set" value="100"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="600"/>
+	<parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="100"/>
+
+    <parameter name="[localHostDIAM]" operation="system.ipaddress"/>
+	<parameter name="[localPortDIAM]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+	<parameter name="[localDIAM]" operation="set" value="[Local-Host(0)]:[localPortDIAM]"/>	
+	<parameter name="[localRealmDIAM]" operation="set" value="sip.pfdev.fr"/>
+
+	<parameter name="[remoteHostDIAM]" operation="system.ipaddress"/>
+	<parameter name="[remotePortDIAM]" operation="file.readproperty" value="diameter.properties" value2="node.LISTENING_PORT"/>
+	<parameter name="[remoteDIAM]" operation="set" value="[remoteHost(0)]:[remotePortDIAM]"/>
+	<parameter name="[remoteRealmDIAM]" operation="set" value="sip.pfdev.fr"/>
+
+	<parameter name="[delayTestcase]" operation="divide" value="1" value2="[speedTrans]"/>	
+    <parameter name="[delayTestcase]" operation="multiply" value="[delayTestcase]" value2="[NumberTestcase]"/>
+
+    <!--                   -->
+	<!-- RUNPROFILE PARAMETERS -->
+	<!--                   -->	
+	<runProfile>
+        <step period="0" time="0"/>
+        <end delay="0"/>
+	</runProfile>
+	
+  	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
+  	
+		<testcase description="load [index]" name="UNIT-[index]" number="1">
+			<scenario file="client2.xml" name="client" routingName="client"/>
+		</testcase>
+		
+	</for>
+</test>

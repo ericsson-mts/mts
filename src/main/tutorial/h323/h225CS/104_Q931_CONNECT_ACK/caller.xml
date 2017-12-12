@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : CONNECT ACKNOWLEDGE(15)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.4 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+Signal 4.5 n u O (Note 3) 2-3
+
+    Chapter : 3.2.4=> Packet
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+    Chapter : 3.3.5 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+
+-->
+
+<scenario>
+
+    <sendMessageH225CS name="Send H225CS CONNECT ACK" remoteHost="[remoteHostH323]" remotePort="[remotePortH323]">
+    
+    	<ASN1 file="h2250v7.asn"/>    
+    
+	<ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- CONNECT ACK = b0001111 = hF = d15-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="CONNECT ACKNOWLEDGE"/>
+      
+            <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification" type="string" value="textZZZ"/>
+            </element>
+     
+            <!-- Signal = b0110100 =h34 =d52-->
+            <!-- ONLY for Circuit message -->            
+            <element identifier="Signal">
+                <field name="Signal value" lengthBit="8" type="integer" value="125"/>
+            </element>
+
+        </ISDN>
+     
+    </sendMessageH225CS>
+
+</scenario>

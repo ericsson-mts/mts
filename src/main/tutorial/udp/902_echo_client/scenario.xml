@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<scenario>
+
+    <createListenpointUDP name="proxy_client"/>
+ 
+    <sendMessageUDP listenpoint="proxy_client" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+    	<data format="text">AAAAA</data>
+    </sendMessageUDP>
+	    
+    <receiveMessageUDP timeout="5">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+        <test parameter="[contents]" condition="string.equals" value="AAAAA" />
+    </receiveMessageUDP>
+	
+    <finally>
+    	<removeListenpointUDP name="proxy_client" />
+    </finally>
+
+    				
+</scenario>

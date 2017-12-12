@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+	<!-- parameter at testcase level -->	
+	<!-- BUG should normally work -->
+	<!--parameter name="[testcase:tabTcTc(0)]" operation="number.multiply" value="[tabTcTc(0)]" value2="3"/>
+	<parameter name="[testcase:tabTcTc(1)]" operation="number.multiply" value="[tabTcTc(1)]" value2="3"/>
+	<parameter name="[testcase:tabTcTc(2)]" operation="number.multiply" value="[testcase:tabTcTc(2)]" value2="3"/>
+
+	<test parameter="[tabTcTc(0)]" condition="number.equals" value="0"/>
+    	<test parameter="[testcase:tabTcTc(1)]" condition="number.equals" value="1"/>
+    	<test parameter="[tabTcTc(2)]" condition="number.equals" value="2"/-->
+
+	<!-- parameter at scenario level -->
+	<parameter name="[tabSc(0)]" operation="set" value="0" />
+	<parameter name="[tabSc(1)]" operation="set" value="1" />
+	<parameter name="[tabSc(2)]" operation="set" value="2" />
+	
+	<parameter name="[tabSc(0)]" operation="number.add" value="[tabSc(0)]" value2="1"/>
+	<parameter name="[tabSc(1)]" operation="number.add" value="[tabSc(1)]" value2="1"/>
+	<parameter name="[tabSc(2)]" operation="number.add" value="[tabSc(2)]" value2="1"/>
+	
+	<test parameter="[tabSc(0)]" condition="number.equals" value="1"/>
+    	<test parameter="[tabSc(1)]" condition="number.equals" value="2"/>
+    	<test parameter="[tabSc(2)]" condition="number.equals" value="3"/>
+    	
+    	<!-- parameter at testcase level -->
+	<parameter name="[testcase:tabTcSc(0)]" operation="set" value="0" />
+	<parameter name="[testcase:tabTcSc(1)]" operation="set" value="1" />
+	<parameter name="[testcase:tabTcSc(2)]" operation="set" value="2" />
+
+	<parameter name="[testcase:tabTcSc(0)]" operation="number.multiply" value="[testcase:tabTcSc(0)]" value2="2"/>
+	<parameter name="[testcase:tabTcSc(1)]" operation="number.multiply" value="[tabTcSc(1)]" value2="2"/>
+	<parameter name="[testcase:tabTcSc(2)]" operation="number.multiply" value="[testcase:tabTcSc(2)]" value2="2"/>
+
+	<test parameter="[tabTcSc(0)]" condition="number.equals" value="0"/>
+    	<test parameter="[testcase:tabTcSc(1)]" condition="number.equals" value="2"/>
+    	<test parameter="[tabTcSc(2)]" condition="number.equals" value="4"/>
+
+    	<!-- parameter at test level -->
+	<parameter name="[test:tabTestSc(0)]" operation="set" value="0" />
+	<parameter name="[test:tabTestSc(1)]" operation="set" value="1" />
+	<parameter name="[test:tabTestSc(2)]" operation="set" value="2" />
+
+	<parameter name="[test:tabTestSc(0)]" operation="number.substract" value="[tabTestSc(0)]" value2="2"/>
+	<!-- BUG should normally work -->
+	<!--parameter name="[test:tabTestSc(1)]" operation="number.substract" value="[testcase:tabTestSc(1)]" value2="2"/-->
+	<parameter name="[test:tabTestSc(1)]" operation="number.substract" value="[test:tabTestSc(1)]" value2="2"/>	
+	<parameter name="[test:tabTestSc(2)]" operation="number.substract" value="[test:tabTestSc(2)]" value2="2"/>
+
+	<test parameter="[tabTestSc(0)]" condition="number.equals" value="-2"/>
+	<!-- BUG should normally work -->
+    	<!--test parameter="[testcase:tabTestSc(1)]" condition="number.equals" value="-1"/-->
+    	<test parameter="[test:tabTestSc(1)]" condition="number.equals" value="-1"/>
+    	<test parameter="[test:tabTestSc(2)]" condition="number.equals" value="0"/>
+
+    	<!-- test list.addLast sub operation -->
+	<parameter name="[array]" operation="set" value="value 0" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 1" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 2" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 3" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 4" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 5" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 6" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 7" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 8" />
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 9" />
+
+    <parameter name="[result]" operation="set" value="" />
+    <parameter name="[result_2]" operation="set" value="" />
+
+    <!-- initialize result_2 parameter -->
+    <parameter name="[index]" operation="set" value="0" />
+    <while>
+        <condition>
+            <test condition="number.lowerThan" parameter="[index]" value="10" />
+        </condition>
+        <do>
+            <parameter name="[array_2([index])]" operation="set" value="uninitialized" />
+            <parameter name="[index]"  operation="number.add" value="[index]" value2="1" />
+        </do>
+    </while>
+    
+    <!-- initialize result_2 parameter -->
+    <parameter name="[index]" operation="set" value="0" />
+    <while>
+        <condition>
+            <test condition="number.lowerThan" parameter="[index]" value="10" />
+        </condition>
+        <do>
+            <parameter name="[array_2([index])]" operation="set" value="[array([index])]" />
+            <parameter name="[index]"  operation="number.add" value="[index]" value2="1" />
+        </do>
+    </while>
+    
+    <parameter name="[index]" operation="set" value="0" />
+    <while>
+        <condition>
+            <test condition="number.lowerThan" parameter="[index]" value="10" />
+        </condition>
+        <do>
+            <parameter name="[result_2]" operation="set" value="[result_2] [array_2([index])]" />
+            <parameter name="[result]" operation="set" value="[result] [array([index])]" />
+            <parameter name="[index]"  operation="number.add" value="[index]" value2="1" />
+        </do>
+    </while>
+
+    <if>
+        <condition>
+            <test condition="string.equals" parameter="[result]" value=" value 0 value 1 value 2 value 3 value 4 value 5 value 6 value 7 value 8 value 9" />
+            <test condition="string.equals" parameter="[result_2]" value=" value 0 value 1 value 2 value 3 value 4 value 5 value 6 value 7 value 8 value 9" />
+        </condition>
+        <else>
+            <exit failed="true" />
+        </else>
+    </if>	
+    
+</scenario>

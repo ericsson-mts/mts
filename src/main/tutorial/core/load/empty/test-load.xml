@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="CORE_Load_Test">
+
+    <parameter description="number of testcase per second" editable="true" name="[speedTestcase]" operation="set" value="10000"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="60"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+	
+    <parameter name="[delayTestcase]" operation="divide" value="1" value2="[speedTestcase]"/>	
+    <parameter name="[delayTestcase]" operation="multiply" value="[delayTestcase]" value2="[NumberTestcase]"/>	
+    <runProfile>
+        <start delay="10"/>
+        <step period="[delayTestcase]" time="0"/>       
+        <step period="[delayTestcase]" time="10"/>       
+        <end delay="20" iteration="3000"/>
+    </runProfile>
+
+
+    <for from="001" index="[index]" step="1" to="[NumberTestcase]">
+        <testcase description="empty testcase" name="empty" number="1" state="true">
+        	<parameter name="[rand]" operation="number.random" value="5"/>
+            <runProfile>
+                <start delay="0"/>
+                <step period="0" time="0"/>       
+                <end delay="[TestDurationSec]"/>
+            </runProfile>
+            <scenario file="empty.xml" name="empty" routingName="empty"/>	
+        </testcase> 
+    </for>
+	  
+</test>

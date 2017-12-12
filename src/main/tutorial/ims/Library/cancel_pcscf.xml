@@ -1,0 +1,29 @@
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="CANCEL"/>
+	</condition>
+	<then>
+<!--envoi d un 200 OK-->
+<sendResponseSIP name="Answer 200 OK" providerName="[scenarioName]">
+<![CDATA[SIP/2.0 200 OK
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+</sendResponseSIP>
+		<parameter name="[nextURI]" 		operation="setFromMessage" 	value="firstline:URI"  value2="[lastMessage]"/>
+		<parameter name="[index]" 		operation="findmatches" 	value="[URIf[lastCall-ID]]" 	value2="[nextURI]"/>
+		<parameter name="[sizeindex]" 	operation="size" 	value="[index]"/>
+		<if>
+			<condition>
+			<test parameter="[sizeindex]" 		condition="equals" value="1"/>
+				<test parameter="[index]" 	condition="matches" value="[0-9]+"/>
+			</condition>
+			<then>
+				<parameter name="[Via]" 	operation="set" 	value="[Viaf[lastCall-ID]([index])]" />
+			</then>	
+		</if>
+	</then>
+</if>

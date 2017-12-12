@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[cleartext_password]" operation="set" value="testing" />
+
+    <parameter name="[listenpoint]" operation="set" value="000_dev_socket" />
+
+    <createListenpointRADIUS name="[listenpoint]" secret="secret"/>
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="172.16.21.18" remotePort="1812">
+        <header code="1" />
+        <avp code="user-name" value="someuser" />
+        <avp code="user-password" value="[cleartext_password]" />
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <parameter name="[timestamp]"          operation="system.timestamp" value="1900" />
+
+    <parameter name="[chap_id]"            operation="set" value="10" />
+
+    
+    <parameter name="[temp]" operation="binary.parse" value="s[timestamp]" />
+    <parameter name="[chap_challenge]"     operation="binary.digest" value2="MD5" value="[temp]" />
+    <parameter name="[temp]" operation="binary.parse" value="d[chap_id] s[cleartext_password] h[chap_challenge]" />
+    <parameter name="[chap_password]"      operation="binary.digest" value2="MD5" value="[temp]" />
+
+    <sendMessageRADIUS listenpoint="[listenpoint]" remoteHost="172.16.21.18" remotePort="1812">
+        <header code="1" />
+        <avp code="user-name"      type="string" value="someuser" />
+        <avp code="chap-password"  type="octet"  value="d[chap_id] h[chap_password]" />
+        <avp code="chap-challenge" type="octet"  value="h[chap_challenge]" />
+    </sendMessageRADIUS>
+
+    <receiveMessageRADIUS listenpoint="[listenpoint]">
+        <parameter name="[identifier]" operation="protocol.setFromMessage" value="header.identifier" />
+        <parameter name="[remoteHostRAD]" operation="protocol.setFromMessage" value="channel.remoteHost" />
+        <parameter name="[remotePortRAD]" operation="protocol.setFromMessage" value="channel.remotePort" />
+    </receiveMessageRADIUS>
+
+    <removeListenpointRADIUS name="[listenpoint]" />
+</scenario>

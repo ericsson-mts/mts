@@ -1,0 +1,50 @@
+<!--recuperation de  l impu-->
+<parameter name="[impu]" 	operation="setFromMessage" 	value="header:To:Address:URI"		value2="[lastMessage]"/>
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="REGISTER"/>
+	</condition>
+	<then>
+		<!--parametres permettant d etre authoriser-->
+		<parameter name="[impi]" 				operation="setFromMessage" 	value="header:Authorization:Parameter:username"	value2="[lastMessage]"/>
+		<parameter name="[P-Visited-Network]" 	operation="setFromMessage" 	value="header:P-Visited-Network-ID"				value2="[lastMessage]"/>
+		<!--si requete REGISTER -->
+		&UAR; 
+		<!--verifie si la valeur 602 contient le scscf-->
+		<parameter name="[sizeindex]" operation="size" value="[index]"/>
+		<if>
+			<condition>
+				<test parameter="[sizeindex]" 	condition="equals" value="1"/>
+				<test parameter="[index]" 		condition="contains" value="sip"/>
+			</condition>
+			<then>
+				<!--ajoute le scscf assacie a l utilisateur-->
+				<parameter name="[Default_SCSCF]" 	operation="set" value="[index]"/>	
+			</then>
+		</if>	
+		<!-- rajoute la route -->
+		<parameter name="[lastFirstline]" operation="set" value="REGISTER [Default_SCSCF] SIP/2.0"/>
+	</then>
+	<else>
+		<!-- recuperation du du dest real et dest host -->
+		<parameter name="[destReal]" 	operation="set" 	value="[domaine]"/>
+		<parameter name="[destHost]" 	operation="set" 			value="[domaine]"	/>	
+		<!--si autre type de requete -->
+		&LIR;
+		<!--verifie si la valeur 602 contient le scscf-->
+		<parameter name="[sizeindex]" operation="size" value="[index]"/>
+		<if>
+			<condition>
+				<test parameter="[sizeindex]" 	condition="equals" value="1"/>
+				<test parameter="[index]" condition="matches" value=".*sip.*"/>
+			</condition>
+			<then>
+				<!--ajoute le scscf assacie a l utilisateur-->
+				<parameter name="[Default_SCSCF]" 		operation="set" 		value="[index]"/>	
+			</then>
+		</if>	
+<!-- rajoute la route -->
+ <parameter name="[lastHeader]" 		operation="addfirst" 		value="[lastHeader]"		value2="Route:[Default_SCSCF];lr"/>
+	</else>
+</if>
+		

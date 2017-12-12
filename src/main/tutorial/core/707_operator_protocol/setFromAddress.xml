@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+<!-- test setFromAddress operation -->
+	<parameter name="[Address]" operation="set">
+<![CDATA[
+"bob" <sip:+33650741278@biloxi.com;lr>;expires=3600
+]]>
+    </parameter>
+
+    <parameter name="[expires]" operation="setFromAddress" value="[Address]" value2="parameter.expires"/>
+    <test parameter="[expires]" condition="string.equals" value="3600"/>
+    <parameter name="address_sip_2" operation="setFromAddress" value="sip:alice@atlanta.com;lr" value2="uri"/>
+    <test parameter="[address_sip_2]" condition="string.equals" value="sip:alice@atlanta.com;lr"/>
+    <parameter name="address_sip_3" operation="setFromAddress" value="&lt;sip:bob@biloxi.com:35;lr&gt;;transport=tcp" value2="parameter.transport"/>
+    <test parameter="[address_sip_3]" condition="string.equals" value="tcp"/>
+    <parameter name="address_sip_4" operation="setFromAddress" value="alice&lt;sip:alice@atlanta.com;lr&gt;;lr" value2="uri"/>
+    <test parameter="[address_sip_4]" condition="string.equals" value="sip:alice@atlanta.com;lr"/>
+    <parameter name="address_sip_5" operation="setFromAddress" value="&lt;sip:+1212551212@phone2net.com&gt;;tag=887s" value2="parameter.tag"/>
+    <test parameter="[address_sip_5]" condition="string.equals" value="887s"/>
+    <parameter name="address_sip_6" operation="setFromAddress" value="MBoss&lt;tel:1212;phone-context=+33-1-7411;lr&gt;;tag=khopp" value2="uri"/>
+    <test parameter="[address_sip_6]" condition="string.contains" value="tel:1212"/>
+    <test parameter="[address_sip_6]" condition="string.contains" value="phone-context=+33-1-7411"/>
+    <test parameter="[address_sip_6]" condition="string.contains" value="lr"/>
+    <parameter name="address_sip_7" operation="setFromUri" value="[address_sip_4]" value2="lr"/>
+    <test parameter="[address_sip_7]" condition="string.equals" value="lr"/>
+    <parameter name="address_sip_8" operation="setFromUri" value="[address_sip_6]" value2="phoneContext"/>
+    <test parameter="[address_sip_8]" condition="string.equals" value="+33-1-7411"/>
+    <parameter name="address_sip_9" operation="setFromUri" value="[address_sip_2]" value2="lr"/>
+    <test parameter="[address_sip_9]" condition="string.equals" value="lr"/>
+    <parameter name="address_sip_10" operation="setFromUri" value="[address_sip_2]" value2="header.tag"/>
+    <test parameter="[address_sip_10]" condition="list.isEmpty"/>
+    <parameter name="address_sip_11" operation="setFromAddress" value="&lt;sip:alice@atlanta.com&gt;;expires=3600" value2="uri"/>
+    <test parameter="[address_sip_11]" condition="string.equals" value="sip:alice@atlanta.com"/>
+    <parameter name="address_sip_12" operation="setFromAddress" value="&lt;sip:alice@atlanta.com&gt;;expires=3600" value2="uri.host"/>
+    <test parameter="[address_sip_12]" condition="string.equals" value="atlanta.com"/>
+    <!-- deprecated -->
+    <parameter name="address_sip_12" operation="setFromAddress" value="&lt;sip:alice@atlanta.com&gt;;expires=3600" value2="uri:host"/>
+    <test parameter="[address_sip_12]" condition="string.equals" value="atlanta.com"/>
+    <parameter name="address_sip_13" operation="setFromAddress" value="alice&lt;sip:alice@atlanta.com;lr&gt;;lr" value2="uri.user"/>    
+    <test parameter="[address_sip_13]" condition="string.equals" value="alice"/>
+                         
+</scenario>

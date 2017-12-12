@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <receiveMessageRTSP name="Wait DESCRIBE" type="DESCRIBE" request="true">
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK Describe" channel="[connection]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+Content-type: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait DESCRIBE" type="DESCRIBE" request="true">
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK Describe" channel="[connection]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+Content-type: application/sdp
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait PLAY" type="PLAY" request="true">
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK PLAY" channel="[connection]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+
+]]>
+    </sendMessageRTSP>
+
+    <receiveMessageRTSP name="Wait PLAY" type="PLAY" request="true">
+        <parameter name="[connection]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[cseq]" operation="protocol.setFromMessage" value="header.CSeq"/>
+    </receiveMessageRTSP>
+
+    <sendMessageRTSP name="Send 200 OK PLAY" channel="[connection]">
+<![CDATA[RTSP/1.0 200 OK
+CSeq: [cseq]
+
+]]>
+    </sendMessageRTSP>
+
+</scenario>

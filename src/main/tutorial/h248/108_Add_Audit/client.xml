@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send Add request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=${
+  Priority = 1,                     
+  Add=ip/1/access/${
+   Audit {
+     Mux,Modem,Media,DigitMap,Statistics,ObservedEvents,Packages
+   },
+   Signals,
+   EventBuffer,
+   Events
+  },
+  Add=ip/1/core/${
+   Audit {
+     Mux,Modem,Media,DigitMap,Statistics,ObservedEvents,Packages
+   },
+   Signals,
+   EventBuffer,
+   Events
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- send Add acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>

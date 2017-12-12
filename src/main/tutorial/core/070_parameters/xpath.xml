@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!-- test matches operation -->
+<!-- to have an overview of the XPATH use, then please look at the following WEB sites
+     http://www.w3schools.com/xpath/xpath_syntax.asp
+     http://jerome.developpez.com/xmlxsl/xpath
+-->
+
+<scenario>
+
+    <parameter name="[fichier1_xml]" operation="set">
+<![CDATA[<?xml version="1.0"?>
+<!DOCTYPE svc_result SYSTEM "MLP_SVC_RESULT_320.DTD">
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:gpp="urn:3GPP">
+
+<SOAP-ENV:IMSSubscription>
+<gpp:PrivateID>alice@ims.net</gpp:PrivateID>
+<gpp:PrivateID>bob@ims.net</gpp:PrivateID>
+</SOAP-ENV:IMSSubscription>
+</SOAP-ENV:Envelope>
+]]>
+    </parameter>
+    <parameter name="[res1_xpath]" 	operation="string.xpath" value="[fichier1_xml]" value2="SOAP-ENV:IMSSubscription"/>
+    <parameter name="[verif_res1]" operation="set">
+<![CDATA[<SOAP-ENV:IMSSubscription xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<gpp:PrivateID xmlns:gpp="urn:3GPP">alice@ims.net</gpp:PrivateID>
+<gpp:PrivateID xmlns:gpp="urn:3GPP">bob@ims.net</gpp:PrivateID>
+</SOAP-ENV:IMSSubscription>]]></parameter>
+    <test parameter="[res1_xpath]" 		condition="string.equals" 	value="[verif_res1]"/>
+
+	<parameter name="[res2_xpath]" 	operation="string.xpath" value="[fichier1_xml]" value2="//gpp:PrivateID"/>
+    <parameter name="[verif_res2(0)]" operation="set">
+<![CDATA[<gpp:PrivateID xmlns:gpp="urn:3GPP">alice@ims.net</gpp:PrivateID>]]></parameter>
+    <parameter name="[verif_res2(1)]" operation="set">
+ <![CDATA[<gpp:PrivateID xmlns:gpp="urn:3GPP">bob@ims.net</gpp:PrivateID>]]></parameter>
+	<test parameter="[res2_xpath]" 	condition="string.equals" 	value="[verif_res2]"/>
+
+	<parameter name="[res3_xpath]" 	operation="string.xpath" value="[fichier1_xml]" value2="/SOAP-ENV:Envelope/SOAP-ENV:IMSSubscription/*"/>
+    <test parameter="[res3_xpath]" 		condition="string.equals" 	value="[verif_res2]"/>
+
+	<parameter name="[res4_xpath]" 	operation="string.xpath" value="[fichier1_xml]" value2="//gpp:PrivateID[1]"/>
+    <test parameter="[res4_xpath]" 		condition="string.equals" 	value="[verif_res2(0)]"/>
+
+	<parameter name="[res5_xpath]" 	operation="string.xpath" value="[fichier1_xml]" value2="//gpp:PrivateID[last()]"/>
+	<test parameter="[res5_xpath]" 		condition="string.equals" 	value="[verif_res2(1)]"/>
+
+    <parameter name="[fichier2_xml]" operation="set">
+<![CDATA[<?xml version="1.0"?>
+<IMSSubscription>
+<PrivateID id="5"/>
+<PrivateID id="6"/>
+<PrivateID/>
+</IMSSubscription>]]>
+    </parameter>
+	<parameter name="[res6_xpath]" 	operation="string.xpath" value="[fichier2_xml]" value2="//@id"/>
+    <parameter name="[verif_res3(0)]" operation="set" value='5'/>
+    <parameter name="[verif_res3(1)]" operation="set" value='6'/>
+	<test parameter="[res6_xpath]" 		condition="string.equals" 	value="[verif_res3]"/>
+
+	<parameter name="[res7_xpath]" 	operation="string.xpath" value="[fichier2_xml]" value2="//PrivateID[@*]"/>
+    <parameter name="[verif_res4(0)]" operation="set"><![CDATA[<PrivateID id="5"/>]]></parameter>
+    <parameter name="[verif_res4(1)]" operation="set"><![CDATA[<PrivateID id="6"/>]]></parameter>
+    <test parameter="[res7_xpath]" 		condition="string.equals" 	value="[verif_res4]"/>
+
+	<parameter name="[res8_xpath]" 	operation="string.xpath" value="[fichier2_xml]" value2="//PrivateID[not(@*)]"/>
+    <parameter name="[verif_res5]" operation="set"><![CDATA[<PrivateID/>]]></parameter>
+	<test parameter="[res8_xpath]" 		condition="string.equals" 	value="[verif_res5]"/>
+
+    <parameter name="[fichier3_xml]" operation="set">
+<![CDATA[<IMS>
+    <IMSSubscription>
+    <PrivateID id="5"/>;
+    <PrivateID id="6"/>;
+    <PrivateID/>
+    </IMSSubscription>
+    <IMSSubscription>
+    <PrivateID/>
+    <PrivateID/>
+    </IMSSubscription>
+    </IMS>]]></parameter>
+	<parameter name="[res9_xpath]" 	operation="string.xpath" value="[fichier3_xml]" value2="//*[count(PrivateID)=2]"/>
+    <parameter name="[verif_res6]" operation="set">
+<![CDATA[<IMSSubscription>
+    <PrivateID/>
+    <PrivateID/>
+    </IMSSubscription>]]></parameter>
+	<test parameter="[res9_xpath]" 		condition="string.equals" 	value="[verif_res6]"/>
+                
+    <parameter name="[fichier4_xml]" operation="list.addLast" value="[fichier3_xml]" value2="[fichier2_xml]"/>    
+	<parameter name="[res10_xpath]" operation="string.xpath" value="[fichier4_xml]" value2="//*[string-length(name()) &lt;4]"/>
+	<test parameter="[res10_xpath]" 	condition="string.equals" 	value="[fichier3_xml]"/>
+
+</scenario>

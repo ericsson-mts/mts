@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <if>
+	    <condition>
+	    	<test parameter="[test:indexReg]" condition="list.exists" not="true"/>       	     
+    	</condition>
+        <then>
+	        <parameter name="[test:indexReg]" operation="set" value="0"/>
+        </then>
+    </if>
+
+	<parameter name="[test:indexReg]" operation="number.add" value="[test:indexReg]" value2="1"/>    			
+       	<if>
+	    <condition>
+    		<test parameter="[test:indexReg]" condition="number.greaterThan" value="[RangeNumberUser]"/>       	     
+   	    </condition>
+    	<then>
+	    	<parameter name="[test:indexReg]" operation="set" value="1"/>    				    	
+	    	<parameter name="[test:startCall]" operation="system.semaphorenotify"/>    				    	
+	    </then>
+	</if>
+
+	<parameter name="[localPortSIP]" operation="number.substract" value="65535" value2="[test:indexReg]"/>
+	<parameter name="[listenpoint]" operation="set" value="listenpoint_[localPortSIP]"/>
+	
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="UDP"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[localHostSIP]" localPort="[localPortSIP]" transport="UDP" 
+        listenUDP="true" listenTCP="false" listenSCTP="false" listenTLS="false"/>
+     </then>
+  </if>
+
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="TCP"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[localHostSIP]" localPort="[localPortSIP]" transport="TCP" 
+        listenUDP="false" listenTCP="true" listenSCTP="false" listenTLS="false"/>
+     </then>
+  </if>
+  
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="SCTP"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[localHostSIP]" localPort="[localPortSIP]" transport="SCTP" 
+        listenUDP="false" listenTCP="false" listenSCTP="true" listenTLS="false"/>
+     </then>
+  </if>
+  
+  <if>
+	   <condition>
+	      <test parameter="[transport]" condition="string.equals" value="TLS"/>
+	   </condition>
+	   <then>
+        <createListenpointSIP name="[listenpoint]" localHost="[localHostSIP]" localPort="[localPortSIP]" transport="TLS" 
+        listenUDP="false" listenTCP="false" listenSCTP="false" listenTLS="true"/>
+     </then>
+  </if>
+
+  <parameter name="[userName]" operation="set" value="[userTab([test:indexReg])]"/>    	
+
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
+<![CDATA[
+REGISTER sip:[userName]@[remoteSIP];transport=[transport] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [localHostSIP]:[localPortSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:[userName]@[localHostSIP]:[localPortSIP];transport=[transport]>
+Expires: 3600
+Max-Forwards: 70
+Content-Length: 0
+]]>
+    </sendMessageSIP>
+
+	<parameter name="[lastListenpoint]" operation="set" value="listenpoint.name"/>
+	<log level="info">listen point[lastListenpoint]</log> 
+
+    <receiveMessageSIP name="200 OK" type="REGISTER">
+		<parameter name="[OKListenpoint]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+	</receiveMessageSIP>
+
+	<log level="info">OK listen point[OKListenpoint]</log> 
+</scenario>

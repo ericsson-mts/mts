@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="CORE regression tests">
+
+    <parameter name="[array]" operation="set" value="value 0"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 1"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 2"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 3"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 4"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 5"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 6"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 7"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 8"/>
+	<parameter name="[array]" operation="list.addLast" value="[array]" value2="value 9"/>
+
+    <testcase description="test pause instruction" name="core/000_pause" state="true">
+        <scenario file="000_pause/scenario.xml" name="[for_scenario_name]" routingName="[for_scenario_name]"/>
+    </testcase>
+
+    <testcase description="test goto instruction" name="core/010_goto" state="true">
+        <scenario file="010_goto/scenario.xml" name="goto" routingName="goto"/>
+    </testcase>
+
+    <testcase description="test if then instruction" name="core/020_if_then" state="true">
+        <scenario file="020_if_then/scenario.xml" name="if_then" routingName="if_then"/>
+    </testcase>
+
+
+    <testcase description="test semphores" name="core/030_semaphore" state="true">
+        <scenario file="030_semaphore/scenario_user_1.xml" name="semaphore1" routingName="semaphore1"/>
+        <scenario file="030_semaphore/scenario_user_2.xml" name="semaphore2" routingName="semaphore2"/>
+    </testcase>
+
+    <testcase name="core/070_parameters_add">
+        <scenario file="070_parameters/add.xml" name="add" routingName="add"/>
+    </testcase>
+
+    <testcase name="core/070_parameters_append">
+        <scenario file="070_parameters/append.xml" name="append" routingName="append"/>
+    </testcase>
+
+    <testcase name="core/070_parameters_set">
+        <scenario file="070_parameters/set.xml" name="set" routingName="set"/>
+    </testcase>
+
+    <testcase name="core/070_parameters_addFirst">
+        <scenario file="070_parameters/addFirst.xml" name="set" routingName="set"/>
+    </testcase>
+
+    <testcase name="core/072_parameters_index_read">
+        <scenario file="072_parameters_index_read/scenario.xml" name="append" routingName="append"/>
+    </testcase>
+
+    <testcase name="core/072_parameters_index_for">
+        <scenario file="073_parameters_index_for/scenario.xml" name="append" routingName="append"/>
+    </testcase>
+
+    <testcase name="core/073_while">
+        <scenario file="073_while/scenario.xml" name="while" routingName="while"/>
+    </testcase>
+
+    <testcase description="" name="core/080_exit_default" state="true">
+        <scenario file="080_exit_default/exit.xml" name="exit_default" routingName="exit_default"/>
+    </testcase>
+
+    <testcase name="core/110_stats">
+        <scenario file="110_stats/counter.xml" name="counter" routingName="counter"/>
+        <scenario file="110_stats/flow.xml" name="flow" routingName="flow"/>
+        <scenario file="110_stats/flow_list.xml" name="flow_list" routingName="flow_list"/>
+        <scenario file="110_stats/value.xml" name="value" routingName="value"/>
+        <scenario file="110_stats/percent.xml" name="percent" routingName="percent"/>
+
+    </testcase>
+
+</test>

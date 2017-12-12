@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<master name="master_testas" description="description du master">
+
+		<parameter name="[IPVersion]" operation="set"	value="4" editable="true" />
+    	<parameter name="[TryingDuration]" operation="set" value="0.100" description="Duration (in sec.) between 100 and 180"  		editable="true"/>
+    	<parameter name="[RingingDuration]" operation="set" value="3" description="Duration (in sec.) between 180 and 200"     		editable="true"/>
+    	<parameter name="[CallDurationSec]" operation="set" value="30" description="Duration (in sec.) of the call"           		editable="true"/>    	
+    	<parameter name="[CAPS]" operation="set" value="10" description="Call Attempting per Second"                           		editable="true"/>
+    	<parameter name="[TestDurationDay]" operation="set" value="0" description="Duration (in day) of the test "        		    editable="true"/>
+    	<parameter name="[TestDurationHour]" operation="set" value="0" description="Duration (in hour) of the test "        	    editable="true"/>
+    	<parameter name="[TestDurationMin]" operation="set" value="5" description="Duration (in min.) of the test "         		editable="true"/>    	
+    	<parameter name="[TestDurationSec]" operation="set" value="0" description="Duration (in sec.) of the test "         		editable="true"/>    	
+    	<parameter name="[NumberScenario]" operation="set" value="10" description="Index of the range of the user phone number"  	editable="true"/>
+
+	<!--parameter name="[Host-RMI]" operation="system.ipaddress" value2="[IPVersion]" description="Addresse de l'AS" /-->
+	<parameter name="[Host-RMI]" operation="set" value="127.0.0.1" />
+	<parameter name="[Port-RMI]" operation="file.readProperty" value="master.properties" value2="slave.rmi.port"/>
+    	<parameter name="[Adresse-RMI]" operation="set" value="[Host-RMI(0)]:[Port-RMI]"/>
+    	
+	<parameter name="[localHostMAS]" operation="system.ipaddress" value2="[IPVersion]" description="Addresse de l'AS" />
+	<parameter name="[localPortMAS]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>        
+    	<parameter name="[localMAS]" operation="set" value="[localHostMAS(0)]:[localPortMAS]"/>
+	
+	<parameter name="[remoteHostMAS]" operation="system.ipaddress" value2="[IPVersion]" description="Addresse de l'AS" />
+	<parameter name="[remotePortMAS]" operation="file.readProperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>        
+    	<parameter name="[remoteMAS]" operation="set" value="[remoteHostMAS(0)]:[remotePortMAS]"/>
+
+        <parameter name="[RangeNumberUser]" operation="set" value="5000"/>
+
+        <test name="Slave 10CAPS" runner="load" slave="[Adresse-RMI]" path="../3-sip-load-async/test-async.xml" description="Test AS originating">
+  		<parameter name="[CAPS]" operation="set" value="10" description="Call Attempting per Second"/>    	    	
+    		<parameter name="[RangeIndexUser]" operation="number.multiply" value="[RangeNumberUser]" value2="0" description="Index of the range of the user phone number"/>
+    	</test>
+
+        <test name="Slave 20CAPS" runner="load" slave="[Adresse-RMI]" path="../3-sip-load-async/test-async.xml" description="Test AS originating">
+    		<parameter name="[CAPS]" operation="set" value="20" description="Call Attempting per Second"/>    	
+    		<parameter name="[RangeIndexUser]" operation="number.multiply" value="[RangeNumberUser]" value2="1" description="Index of the range of the user phone number"/>
+    	</test>
+
+        <test name="Slave 30CAPS" runner="load" slave="[Adresse-RMI]" path="../3-sip-load-async/test-async.xml" description="Test AS originating">
+    		<parameter name="[CAPS]" operation="set" value="30" description="Call Attempting per Second"/>    	
+    		<parameter name="[RangeIndexUser]" operation="number.multiply" value="[RangeNumberUser]" value2="1" description="Index of the range of the user phone number"/>
+    	</test>
+
+        <test name="Slave 40CAPS" runner="load" slave="[Adresse-RMI]" path="../3-sip-load-async/test-async.xml" description="Test AS originating">
+    		<parameter name="[CAPS]" operation="set" value="40" description="Call Attempting per Second"/>    	
+    		<parameter name="[RangeIndexUser]" operation="number.multiply" value="[RangeNumberUser]" value2="2" description="Index of the range of the user phone number"/>
+    	</test>
+    
+</master>

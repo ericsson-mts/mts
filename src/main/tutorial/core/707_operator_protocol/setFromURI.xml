@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+
+
+    <!-- test none-opaque url like HTTP-->
+    <parameter name="[http]" operation="set" value="http://bob@atlanta.com:8080/directory/index.php?address=perros&amp;name=alice#address=lannion;name=bobby"/>
+    <parameter name="[https]" operation="set" value="https://bob@atlanta.com:8080/directory/index.php?address=perros&amp;name=alice#address=lannion;name=bobby"/>
+
+    <parameter name="[authority]" operation="setFromURI" value="[http]" value2="authority"/>
+    <test parameter="[authority]" condition="string.equals" value="bob@atlanta.com:8080"/>
+    <parameter name="[fragment]" operation="setFromURI" value="[http]" value2="fragment"/>
+    <test parameter="[fragment]" condition="string.equals" value="address=lannion;name=bobby"/>
+    <parameter name="[host]" operation="setFromURI" value="[http]" value2="host"/>
+    <test parameter="[host]" condition="string.equals" value="atlanta.com"/>
+    <parameter name="[path]" operation="setFromURI" value="[http]" value2="path"/>
+    <test parameter="[path]" condition="string.equals" value="/directory/index.php"/>
+    <parameter name="[port]" operation="setFromURI" value="[http]" value2="port"/>
+    <test parameter="[port]" condition="string.equals" value="8080"/>
+    <parameter name="[query]" operation="setFromURI" value="[http]" value2="query"/>
+    <test parameter="[query]" condition="string.equals" value="address=perros&amp;name=alice"/>
+    <parameter name="[scheme]" operation="setFromURI" value="[http]" value2="scheme"/>
+    <test parameter="[scheme]" condition="string.equals" value="http"/>
+    <parameter name="[scheme]" operation="setFromURI" value="[https]" value2="scheme"/>
+    <test parameter="[scheme]" condition="string.equals" value="https"/>
+    <parameter name="[schemeSpecificPart]" operation="setFromURI" value="[https]" value2="schemeSpecificPart"/>
+    <test parameter="[schemeSpecificPart]" condition="string.equals" value="//bob@atlanta.com:8080/directory/index.php?address=perros&amp;name=alice"/>
+    <parameter name="[user]" operation="setFromURI" value="[http]" value2="user"/>
+    <test parameter="[user]" condition="string.equals" value="bob"/>
+    <parameter name="[absolute]" operation="setFromURI" value="[http]" value2="absolute"/>
+    <test parameter="[absolute]" condition="string.equals" value="absolute"/>
+    <parameter name="[opaque]" operation="setFromURI" value="[http]" value2="opaque"/>
+    <test parameter="[opaque]" condition="list.isEmpty"/>
+
+    <!-- test SIP uri -->
+    <parameter name="[sip]" operation="set" value="sip:bob:alice@biloxi.com:7070;lr;ttl=518s?name=bobby"/>
+    <parameter name="[sips]" operation="set" value="sips:bob:alice@biloxi.com:7070;lr;ttl=518s?name=bobby"/>
+
+	<parameter name="[host]" operation="setFromURI" value="[sip]" value2="host"/>
+    <test parameter="[host]" condition="string.equals" value="biloxi.com"/>
+    <parameter name="[port]" operation="setFromURI" value="[sip]" value2="port"/>
+    <test parameter="[port]" condition="string.equals" value="7070"/>
+    <parameter name="[scheme]" operation="setFromURI" value="[sip]" value2="scheme"/>
+    <test parameter="[scheme]" condition="string.equals" value="sip"/>
+    <parameter name="[scheme]" operation="setFromURI" value="[sips]" value2="scheme"/>
+    <test parameter="[scheme]" condition="string.equals" value="sips"/>
+    <parameter name="[user]" operation="setFromURI" value="[sip]" value2="user"/>    
+    <test parameter="[user]" condition="string.equals" value="bob"/>
+    <parameter name="[phoneNumber]" operation="setFromURI" value="[sip]" value2="phoneNumber"/>    
+    <test parameter="[phoneNumber]" condition="string.equals" value="bob"/>
+    <parameter name="[password]" operation="setFromURI" value="[sip]" value2="password"/>
+    <test parameter="[password]" condition="string.equals" value="alice"/>
+    <parameter name="[name]" operation="setFromURI" value="[sip]" value2="header.name"/>
+    <test parameter="[name]" condition="string.equals" value="bobby"/>
+    <parameter name="[ttl]" operation="setFromURI" value="[sip]" value2="parameter.ttl"/>
+    <test parameter="[ttl]" condition="string.equals" value="518s"/>
+    <!-- deprecated -->
+    <parameter name="[ttl]" operation="setFromURI" value="[sip]" value2="parameter:ttl"/>
+    <test parameter="[ttl]" condition="string.equals" value="518s"/>
+    <parameter name="[lr]" operation="setFromURI" value="[sip]" value2="parameter.lr"/>
+    <test parameter="[lr]" condition="string.equals" value=""/>
+    <parameter name="[lr]" operation="setFromURI" value="[sip]" value2="lr"/>
+    <test parameter="[lr]" condition="string.equals" value="lr"/>
+    <parameter name="[secure]" operation="setFromURI" value="[sip]" value2="secure"/>
+    <test parameter="[secure]" condition="list.isEmpty"/>
+    <parameter name="[secure]" operation="setFromURI" value="[sips]" value2="secure"/>
+    <test parameter="[secure]" condition="string.equals" value="secure"/>
+    <parameter name="[sipURI]" operation="setFromURI" value="[sips]" value2="sipURI"/>
+    <test parameter="[sipURI]" condition="string.equals" value="sipURI"/>
+
+    <!-- test TEL uri -->
+    <parameter name="[tel]" operation="set" value="tel:+358-555-123456;phone-context=+1234"/>
+    <parameter name="[tels]" operation="set" value="tels:+358-555-123456;phone-context=+1234"/>
+
+    <parameter name="[isdnSubAddress]" operation="setFromURI" value="[tel]" value2="isdnSubAddress"/>
+    <test parameter="[isdnSubAddress]" condition="list.isEmpty"/>
+    <parameter name="[phoneContext]" operation="setFromURI" value="[tel]" value2="phoneContext"/>
+    <test parameter="[phoneContext]" condition="string.equals" value="+1234"/>
+    <parameter name="[phoneNumber]" operation="setFromURI" value="[tel]" value2="phoneNumber"/>
+    <test parameter="[phoneNumber]" condition="string.equals" value="358-555-123456"/>
+    <parameter name="[user]" operation="setFromURI" value="[tel]" value2="user"/>
+    <test parameter="[user]" condition="string.equals" value="+358-555-123456"/>
+    <parameter name="[postDial]" operation="setFromURI" value="[tel]" value2="postDial"/>
+    <test parameter="[postDial]" condition="list.isEmpty"/>
+    <parameter name="[scheme]" operation="setFromURI" value="[tel]" value2="scheme"/>
+    <test parameter="[scheme]" condition="string.equals" value="tel"/>
+    <parameter name="[scheme]" operation="setFromURI" value="[tels]" value2="scheme"/>
+    <test parameter="[scheme]" condition="string.equals" value="tels"/>
+    <parameter name="[global]" operation="setFromURI" value="[tel]" value2="global"/>
+    <test parameter="[global]" condition="string.equals" value="global"/>
+    <parameter name="[telURI]" operation="setFromURI" value="[tel]" value2="telURI"/>
+    <test parameter="[telURI]" condition="string.equals" value="telURI"/>
+    
+</scenario>

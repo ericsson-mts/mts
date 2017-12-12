@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+        
+    <openChannelMSRP name="channelMSRP" remoteHost="[remoteHostMSRP]" remotePort="[remotePortMSRP]"/>
+
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    <sendMessageMSRP channel="channelMSRP" destScenario="Bob">
+<![CDATA[
+MSRP [localTransactionID] SEND
+To-Path: msrp://bob.exemple.com:8888/74986;tcp
+From-Path: msrp://alice.exemple.com:7777/564;tcp
+Message-ID: [localMessageID]
+Byte-Range: 1-16/16
+Content-Type: text/plain
+
+Hi, I'm alice!
+-------[localTransactionID]$
+]]>
+    </sendMessageMSRP>
+
+    <receiveMessageMSRP name="Wait 200 OK" channel="channelMSRP" request="false" result="200">
+        <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[statusCode]" operation="protocol.setFromMessage" value="firstline.StatusCode"/>
+        <parameter name="[reasonPhrase]" operation="protocol.setFromMessage" value="firstline.Comment"/>
+    </receiveMessageMSRP>
+
+    <test parameter="[firstline]" condition="string.equals" value="MSRP [localTransactionID] 200 OK"/>
+    <test parameter="[statusCode]" condition="string.equals" value="200"/>
+    <test parameter="[reasonPhrase]" condition="string.equals" value="OK"/>
+
+    <receiveMessageMSRP name="Wait SEND greeting" channel="channelMSRP" type="SEND" request="true">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.Method"/>
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To-Path"/>
+        <parameter name="[toUriHost]" operation="protocol.setFromMessage" value="header.To-Path.host"/>
+        <parameter name="[toUriPort]" operation="protocol.setFromMessage" value="header.To-Path.port"/>
+        <parameter name="[toUriAuthority]" operation="protocol.setFromMessage" value="header.To-Path.authority"/>
+        <parameter name="[toUriSchemeSpecificPart]" operation="protocol.setFromMessage" value="header.To-Path.schemeSpecificPart"/>       
+        <parameter name="[toUriScheme]" operation="protocol.setFromMessage" value="header.To-Path.scheme"/>
+        <parameter name="[toUriPath]" operation="protocol.setFromMessage" value="header.To-Path.path"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From-Path"/>
+        <parameter name="[MessageId]" operation="protocol.setFromMessage" value="header.Message-ID"/>
+        <parameter name="[content]" operation="protocol.setFromMessage" value="content"/>
+        <parameter name="[endLine]" operation="protocol.setFromMessage" value="content.End-line"/>
+    </receiveMessageMSRP>    
+    
+    <test parameter="[method]" condition="string.equals" value="SEND"/>
+    <test parameter="[from]" condition="string.equals" value="msrp://bob.exemple.com:8888/74986;tcp"/>
+    <test parameter="[to]" condition="string.equals" value="msrp://alice.exemple.com:7777/564;tcp"/>
+    <test parameter="[toUriScheme]" condition="string.equals" value="msrp"/>
+    <test parameter="[toUriHost]" condition="string.equals" value="alice.exemple.com"/>
+    <test parameter="[toUriPort]" condition="string.equals" value="7777"/>
+    <test parameter="[toUriAuthority]" condition="string.equals" value="alice.exemple.com:7777"/>
+    <test parameter="[toUriSchemeSpecificPart]" condition="string.equals" value="//alice.exemple.com:7777/564;tcp"/>
+    <test parameter="[toUriPath]" condition="string.equals" value="/564;tcp"/>
+ 
+    <sendMessageMSRP channel="channelMSRP" destScenario="Bob">
+<![CDATA[MSRP [transactionID] 200 OK
+To-Path: [from]
+From-Path: [to]
+-------[transactionID]$
+]]></sendMessageMSRP>
+ 
+    <parameter name="[localTransactionID]" operation="string.random" value="10"/>
+    <parameter name="[localMessageID]" operation="string.random" value="10"/>
+    
+    <sendMessageMSRP channel="channelMSRP" destScenario="Bob">
+<![CDATA[MSRP [localTransactionID] SEND
+To-Path: [from]
+From-Path: [to]
+Message-ID: [localMessageID]
+Byte-Range: 1-106/106
+Success-Report: yes
+Failure-Report: no
+Content-Type: text/html
+
+<html><body>
+<p>Here is that important link...
+<a href="http://www.example.com/foobar">foobar</a>
+</p>
+</body></html>
+-------[localTransactionID]$
+]]></sendMessageMSRP>
+
+    <receiveMessageMSRP name="Wait REPORT" channel="channelMSRP" type="REPORT" request="true">
+        <parameter name="[channel]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[firstline]" operation="protocol.setFromMessage" value="firstline"/>
+        <parameter name="[method]" operation="protocol.setFromMessage" value="firstline.Method"/>
+        <parameter name="[transactionID]" operation="protocol.setFromMessage" value="firstline.Transaction-ID"/>
+        <parameter name="[to]" operation="protocol.setFromMessage" value="header.To-Path"/>
+        <parameter name="[from]" operation="protocol.setFromMessage" value="header.From-Path"/>
+        <parameter name="[MessageId]" operation="protocol.setFromMessage" value="header.Message-ID"/>
+        <parameter name="[reportStatus]" operation="protocol.setFromMessage" value="header.Status"/>
+        <parameter name="[reportNamespace]" operation="protocol.setFromMessage" value="header.Status.Namespace"/>
+        <parameter name="[reportStatusCode]" operation="protocol.setFromMessage" value="header.Status.StatusCode"/>
+        <parameter name="[reportReasonPhrase]" operation="protocol.setFromMessage" value="header.Status.ReasonPhrase"/>
+        <parameter name="[continuationFlag]" operation="protocol.setFromMessage" value="continuationFlag"/>
+    </receiveMessageMSRP>    
+    
+    <test parameter="[method]" condition="string.equals" value="REPORT"/>
+    <test parameter="[from]" condition="string.equals" value="msrp://bob.exemple.com:8888/74986;tcp"/>
+    <test parameter="[to]" condition="string.equals" value="msrp://alice.exemple.com:7777/564;tcp"/>
+    <test parameter="[reportStatus]" condition="string.equals" value="000 200 OK"/>
+    <test parameter="[reportNamespace]" condition="string.equals" value="000"/>
+    <test parameter="[reportStatusCode]" condition="string.equals" value="200"/>
+    <test parameter="[reportReasonPhrase]" condition="string.equals" value="OK"/>
+    <test parameter="[continuationFlag]" condition="string.equals" value="$"/>
+ 
+    <finally>
+        <closeChannelMSRP name="channelMSRP"/>
+    </finally>
+</scenario>

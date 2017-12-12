@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+  	<parameter name="[speedTrans]" operation="set" value="10000" description="number of transaction per second" editable="true" />	
+    <parameter name="[TestDurationSec]" operation="set" value="360000" description="Duration (in sec.) of the test" editable="true" />
+  	<parameter name="[NumberTestcase]" operation="set" value="10" description="number of testcase" editable="true" />
+  	
+    <!-- Parameters for proxy testcases -->
+    <parameter name="[localHostRAD]" operation="system.ipaddress"/>
+    <parameter name="[localHostRAD]" operation="set" value="[localHostRAD(0)]" editable="true" />
+    <parameter name="[localPortRAD]" operation="set" value="10000" editable="true" />
+      
+    <parameter name="[remoteHostRAD]" operation="system.ipaddress"/>     
+    <parameter name="[remoteHostRAD]" operation="set" value="[remoteHostRAD(0)]" editable="true" />
+    <parameter name="[remotePortRAD]" operation="set" value="11000" editable="true" />
+    
+    <parameter name="[speedTestcase]" operation="divide" value="[speedTrans]" value2="[NumberTestcase]"/>	
+  
+  	<!--                       -->
+  	<!-- RUNPROFILE PARAMETERS -->
+  	<!--                       -->    
+  	<runProfile>
+      	<step frequency="[speedTestcase]" time="0"/>
+      	<end delay="[TestDurationSec]"/>
+  	</runProfile>
+
+  	<for from="001" index="[index]" step="1" to="[NumberTestcase]"> 
+
+		<testcase description="load [index]" name="UNIT-[index]" number="1" state="true">
+      <parameter name="[localPortRAD]" operation="number.add" value="[localPortRAD]" value2="[index]"/>
+      
+			<scenario file="client.xml" name="radius-client_[index]" routingName="radius-client_[index]"/>
+			<scenario file="server.xml" name="radius-server_[index]" routingName="radius-server_[index]"/>	
+
+		</testcase>
+
+	</for>
+</test>

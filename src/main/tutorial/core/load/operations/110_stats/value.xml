@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+
+    <stats>
+        <value name="value1" summary="valueShortD1" complete="valueLongD1">
+            <newValue>10</newValue>
+            <newValue>40</newValue>
+            <newValue>0</newValue> 
+            <newValue milliseconds="[timestamp]">10</newValue>
+            <newValue milliseconds="[timestamp]">40</newValue>
+            <newValue milliseconds="[timestamp]">0</newValue> 
+
+        </value>
+        <value name="value2" summary="valueShortD2" complete="valueLongD2">
+        </value>        
+    </stats>
+    
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <value name="value1" summary="valueShortD1" complete="valueLongD1">
+	    <newValue>0</newValue>	
+            <newValue>0</newValue>
+            <newValue>10</newValue>            
+            <newValue milliseconds="[timestamp]">0</newValue>
+            <newValue milliseconds="[timestamp]">10</newValue>
+        </value>                
+        <value name="value2">
+            <newValue>10</newValue>            
+            <newValue milliseconds="[timestamp]">10</newValue>
+        </value>                        
+    </stats>
+
+    <pause name="tempo" seconds="0.1"/>    
+    <parameter name="[timestamp]" operation="system.timestamp" />
+    <parameter name="[timestamp]" operation="number.add" value="[timestamp]" value2="10000"/>
+    
+    <stats>
+        <value name="value1">
+            <newValue>10</newValue>
+            <newValue milliseconds="[timestamp]">40</newValue>
+        </value>                
+        <value name="value2">
+            <newValue>10</newValue>
+            <newValue milliseconds="[timestamp]">40</newValue>
+        </value>                        
+    </stats>
+
+</scenario>

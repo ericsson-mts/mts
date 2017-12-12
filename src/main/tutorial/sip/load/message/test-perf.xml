@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    	<parameter description="Addresse du XMLloader" name="[localHostSIP]" operation="system.ipaddress"/>
+    	<parameter description="Port du XMLloader" name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    	<parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>
+
+   	<parameter description="Addresse de l'AS" name="[remoteHostSIP]" operation="system.ipaddress"/>
+    	<parameter description="Port du XMLloader" name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    	<!--parameter name="[remotePortSIP]" operation="set" value="5060"/-->    	
+    	<parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>
+
+	<parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    	<parameter name="[inviteeName]" operation="set" value="bob"/>
+    	<parameter name="[inviterName]" operation="set" value="alice"/>
+
+	<parameter name="[NumberScenario]" operation="set" value="419"/>	
+	
+  	<for from="000" index="[index]" step="1" to="[NumberScenario]">   
+		<testcase description="load [index]" name="[inviteeName][index]" number="1" state="true">
+		    	<parameter name="[inviteeName]" operation="set" value="[inviteeName][index]"/>
+    			<parameter name="[inviterName]" operation="set" value="[inviterName][index]"/>
+		
+			<scenario file="UAC.xml" name="UAC" routingName="UAC"/>
+			<scenario file="UAS.xml" name="UAS" routingName="UAS"/>
+		</testcase>
+	</for>
+	
+</test>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: 	conf/schemas/scenario.xsd 
+							 	conf/schemas/type_operations_sigtran
+							 	
+	 Related dictionary file:	conf/sigtran/dictionary_m3ua.xml
+	 							conf/sigtran/dictionary_bicc.xml
+	 							
+	 References:				IETF RFC_4666 (M3UA)
+	 							IUT-T Q_1902.3 (BICC)
+-->
+
+
+<!--
+    Document   : bob.xml
+    Created on : 06/08/2009
+    Author     : jbrisseau
+    Description: Receive a BICC-ACM message.
+-->
+
+<scenario>
+
+	<!-- Message encoded value -->
+	<parameter name="[ACM]" value="010001010000002c02000008000000080210001c00000d7e00000d7a0d02000a0d0000000616140129010100" />
+
+	<receiveMessageSIGTRAN name="Wait BICC_ACM">
+		<parameter name="[ACM1]" operation="protocol.setFromMessage" value="message.binary"/>
+	</receiveMessageSIGTRAN>
+	
+	<if>
+		<condition>
+			<test parameter="[ACM1]" condition="binary.equals" value="[ACM]"/>
+		</condition>
+		<else>
+			<log level="ERROR">	Message received :	</log>
+			<log level="ERROR">	"[ACM1]"			</log>
+			<log level="ERROR">	Message expected :	</log>
+			<log level="ERROR">	"[ACM]"			</log>
+			<exit failed="true"/>
+		</else>
+	</if>
+	
+</scenario>

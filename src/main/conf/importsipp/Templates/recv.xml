@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-2" ?>
+<template>
+<receiveMessageSIP listenpoint="_listenpoint[local_port]" timeout="[recv_timeout]">
+<parameter name="[_response]" operation="setFromMessage" value="message.result"/>
+<parameter name="[_request]" operation="setFromMessage" value="message.type"/>
+<or>
+<test parameter="[_response]" condition="number.equals" value="{xpath:./@response}"/>
+<test parameter="[_request]" condition="string.matches" value="{xpath:.[@regexp_match = 'true']/@request}"/>
+<test parameter="[_request]" condition="string.equals" value="{xpath:.[not(@regexp_match) or @regexp_match = 'false']/@request}"/>
+</or>
+<parameter name="[last_Message]" operation="setFromMessage" value="Message" />
+</receiveMessageSIP>
+<goto label="{xpath:.[not(@optional)]/@next}"/>
+</template>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="Load tests">
+
+    <parameter description="number of testcase per second" editable="true" name="[speedTestcase]" operation="set" value="50"/>	
+    <parameter description="Duration (in sec.) of the test" editable="true" name="[TestDurationSec]" operation="set" value="1800000"/>
+    <parameter description="number of testcase" editable="true" name="[NumberTestcase]" operation="set" value="10"/>
+
+    <parameter description="Addresse du XMLloader" name="[localHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[localHostSIP]" operation="set" value="[localHostSIP(0)]"/> 
+    <parameter description="Port du XMLloader" name="[localPortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter name="[localSIP]" operation="set" value="[localHostSIP(0)]:[localPortSIP]"/>
+
+    <parameter description="Addresse de l'AS" name="[remoteHostSIP]" operation="system.ipaddress"/>
+    <parameter name="[remoteHostSIP]" operation="set" value="[remoteHostSIP(0)]"/>
+    <!--parameter name="[remoteHostSIP]" operation="set" value="172.16.21.31" description="Addresse de l'AS" /-->   	   	
+    <parameter description="Port du XMLloader" name="[remotePortSIP]" operation="file.readproperty" value="sip.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortSIP]" operation="set" value="7071"/-->    	
+    <parameter name="[remoteSIP]" operation="set" value="[remoteHostSIP(0)]:[remotePortSIP]"/>
+
+    <parameter name="[domainName]" operation="set" value="devoteam.com"/>
+    <parameter name="[invitee]" operation="set" value="bob"/>
+    <parameter name="[inviter]" operation="set" value="alice"/>
+
+    <!-- transport parameters-->
+    <parameter name="[transportRequest]" operation="set" value="UDP"/>
+    <parameter name="[transportResponse]" operation="set" value="UDP"/>
+
+    <runProfile>
+          <step frequency="10000" time="0"/>
+          <end iteration="50"/>
+    </runProfile>
+    
+    <testcase description="load UA" name="Probe 1" number="1" state="true">
+      <scenario name="default" routingName="default">probe.xml</scenario>
+    </testcase>
+    
+    <testcase description="load UA" name="Probe 2" number="1" state="true">
+        <scenario name="default" routingName="default">probe.xml</scenario>
+    </testcase>
+
+</test>

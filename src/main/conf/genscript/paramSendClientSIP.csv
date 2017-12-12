@@ -1,0 +1,14 @@
+[ViaBranch];string.random,10;REGEX#branch=z9hG4bK[\w]+#z9hG4bK[\w]+#[^z9hG4bK][\w]+#[\w]+
+[ViaBranch];string.random,10;REGEX#branch=[\w]+#=[\w]+#[\w]+
+[CallId];number.random,10000000;REGEX#Call-ID: [\d]+#[\d]+
+[FromTag];string.random,10;REGEX#From: .+#tag=[\w]+#=[\w]+#[\w]+
+[testcase:FromURI];set;PATHKEY#header.From.Address.URI
+[testcase:FromUser];set;PATHKEY#header.From.Address.URI.User
+[testcase:ToURI];set;PATHKEY#header.To.Address.URI
+[testcase:ToUser];set;PATHKEY#header.To.Address.URI.User
+x;set;REGEX#Content-Length: [\d]+#[\d]+
+[receiveToTag];set;PATHKEY#header.To.parameter.tag
+[test:SIPLocalHost];system.ipaddress,eth3;PATHKEY#channel.localHost
+[test:SIPRemoteHost];system.ipaddress,eth3;PATHKEY#channel.remoteHost
+[test:SIPLocalPort];set;PATHKEY#channel.localPort
+[test:SIPRemotePort];set;PATHKEY#channel.remotePort

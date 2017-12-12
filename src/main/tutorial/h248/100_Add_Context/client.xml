@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <!-- send Add request-->
+    <parameter name="[transID]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send request" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Transaction=[transID]{
+ Context=${
+  Topology {                    ;topology
+   ip/1/access/$, ip/1/core/$, Bothway, stream = $,
+   ip/1/access/0123456789, ip/1/core/9876543210, Isolate, Stream = 1234,
+   ROOT, ROOT, Oneway, Stream = *,
+  },
+  Topology {                    ;topology
+   $, $, OnewayExternal,
+   *, *, OnewayBoth,
+  },
+  Priority = 1,                 ;priority
+  Emergency,                    
+  EmergencyOff,                 
+  IEPSCall=ON,                  
+  IEPSCall=OFF,     
+  ContextAttr {   
+   ContextList={
+    1234567890,*,-,$},
+   pkg/param0=0,             ;extensions 
+   pkg/param1>1,             ;extensions 
+   pkg/param2<2,             ;extensions 
+   pkg/param3#3,             ;extensions 
+   pkg/param4=[4,5,6],       ;extensions 
+   pkg/param7={7,8,9}        ;extensions 
+  },
+  Add=ip/1/access/${
+   Media{
+    Stream=1{
+     LocalControl{
+      Mode=IN,
+      tman/sdr=800,
+      ds/dscp=0x00
+     },
+     Local{
+v=0
+c=IN IP4 [localHostH248]/127
+m=video 49232/2 RTP/AVP -
+},
+     Remote{
+v=0
+c=IN IP4 [localHostH248]/127
+m=video 49232/2 RTP/AVP -
+}
+    }
+   }
+  },
+  Add=ip/1/core/${
+   Media{
+    Stream=1{
+     LocalControl{ 
+      Mode=RC,
+      tman/sdr=800,
+      ds/dscp=0x00
+     },
+     Local{
+v=0
+c=IN IP4 [localHostH248]/127
+m=video 49232/2 RTP/AVP -
+}
+    }
+   }
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add response -->
+    <receiveMessageH248 name="Receive response" request="false" type="Add" result="Reply">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+    <test parameter="[transaction]" condition="string.equals" value="[transID]" />
+
+    <!-- send Add acknowledge -->
+    <parameter name="[transID1]" operation="number.add" value="[transID]" value2="1"/>
+    <sendMessageH248 name="Send acknowledge" destScenario="server"
+                     remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportRequest]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] K {[transID]-[transID1]}
+]]>
+    </sendMessageH248>
+
+</scenario>

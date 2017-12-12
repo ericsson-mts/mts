@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- receive Add request-->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- send Add pending -->
+    <sendMessageH248 name="Send pending" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] Pending=[transaction]{}
+]]>
+    </sendMessageH248>
+
+    <!-- send Add error -->
+    <sendMessageH248 name="Send error 422" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248] Reply=[transaction] {Error=422 {Syntax error in the command}}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+    
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- receive Add request-->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- send Add response -->
+    <parameter name="[contextID]" operation="number.random" value="10000000"/>
+    <parameter name="[termID1]" operation="number.random" value="10000000"/>
+    <parameter name="[termID2]" operation="number.random" value="10000000"/>
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+MEGACO/3 [[remoteHostH248]]:[remotePortH248]
+Reply = [transaction]/1/$ {
+ ImmAckRequired,
+ Context=[contextID]{
+  Priority = 1,                 
+  Add=[ip/1/access/[termID1] , ip/1/access/[termID2] ] {
+   Error=422 {Syntax error in the command}
+  }
+ }
+}
+]]>
+    </sendMessageH248>
+
+    <!-- receive Add segment -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="Segment">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+    
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+    <!-- receive Add acknowledge -->
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transaction]" operation="protocol.setFromMessage" value="message.transactionID" />
+    </receiveMessageH248>
+    
+    <test parameter="[text]" condition="string.contains" value="MEGACO/3" />
+
+</scenario>

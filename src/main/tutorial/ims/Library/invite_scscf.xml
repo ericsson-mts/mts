@@ -1,0 +1,18 @@
+<!--verifie si requete INVITER-->
+<if>
+	<condition>
+		<test parameter="[lastSIPMethod]" condition="equals" value="INVITE"/>
+	</condition>
+	<then>
+		<!--Envoi d une reponse 100-->
+<sendResponseSIP name="Answer 100 Trying " providerName="[scenarioName]">
+<![CDATA[SIP/2.0 100 Trying
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+</sendResponseSIP>
+	</then>
+</if>

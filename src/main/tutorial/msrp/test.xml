@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test name="MSRP">
+
+    <parameter description="version of the IP protocol" editable="true" name="[IPVersion]" operation="set" value="ipv4"/>
+    
+    <parameter name="[localHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter description="local address of the MTS host" editable="true" name="[localHostMSRP]" operation="set" value="[localHostMSRP(0)]"/>
+    <parameter name="[localPortMSRP]" operation="file.readProperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <parameter description="local port of the MTS host" editable="true" name="[localPortMSRP]" operation="set" value="[localPortMSRP]"/>
+
+    <parameter name="[remoteHostMSRP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostMSRP]" operation="set" value="172.16.21.32"/-->
+    <parameter description="remote address of the SUT host" editable="true" name="[remoteHostMSRP]" operation="set" value="[remoteHostMSRP(0)]"/>
+    <parameter name="[remotePortMSRP]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortMSRP]" operation="set" value="1234"/-->
+    <parameter description="remote port of the SUT host" editable="true" name="[remotePortMSRP]" operation="set" value="[remotePortMSRP]"/>
+    
+    <parameter name="[serverTlsPort]" operation="file.readproperty" value="msrp.properties" value2="listenpoint.LOCAL_PORT_TLS"/>
+    <parameter editable="true" name="[serverTlsPort]" operation="set" value="[serverTlsPort]"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+    
+     
+    <testcase name="msrp/000_classicSequence_TCP" number="[iterations]" state="true">
+        <parameter name="[transport]" operation="set" value="TCP"/>
+        <scenario file="000_classicSequence/client1.xml" name="Toto" routingName="Toto"/>
+        <scenario file="000_classicSequence/client2.xml" name="MSRP" routingName="MSRP"/>
+    </testcase>
+
+    <testcase name="msrp/001_classicSequence_TLS" number="[iterations]" state="true">
+        <parameter name="[transport]" operation="set" value="TLS"/>
+        <scenario file="000_classicSequence/client1.xml" name="Toto" routingName="Toto"/>
+        <scenario file="000_classicSequence/client2.xml" name="MSRP" routingName="MSRP"/>
+    </testcase>
+    
+    <testcase name="msrp/002_messagesAndparameters" number="[iterations]" state="true">
+        <scenario file="002_parameters/client1.xml" name="Alice" routingName="Alice"/>
+        <scenario file="002_parameters/client2.xml" name="Bob" routingName="Bob"/>
+    </testcase>
+        
+    <testcase name="msrp/003_Chunk" number="[iterations]" state="true">
+    <parameter name="[remotePortMSRP]" operation="set" value="7855"/>    
+        <scenario file="003_chunk/client1.xml" name="Alice" routingName="Alice"/>
+        <scenario file="003_chunk/client2.xml" name="MSRP" routingName="MSRP"/>
+    </testcase>    
+
+    <testcase name="msrp/004_connection" number="[iterations]" state="true">
+        <scenario file="004_connection/client.xml" name="true" routingName="true"/>
+    </testcase>
+
+    <testcase name="msrp/005_passive_client" number="[iterations]" state="true">
+        <parameter name="[transport]" operation="set" value="TCP"/>
+        <scenario file="005_passive_client/client1.xml" name="MSRP" routingName="MSRP"/>
+        <scenario file="005_passive_client/client2.xml" name="TCP" routingName="TCP"/>
+
+    </testcase>
+        
+</test>

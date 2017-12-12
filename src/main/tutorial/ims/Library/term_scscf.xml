@@ -1,0 +1,104 @@
+<!--rajoute term au p charging vector-->
+<parameter name="[lastHeader]" 	operation="addfirst" 		value="[lastHeader]" value2="P-Charging-Vector:[P-Charging-Vector];term-ioi=[domaine]"/>
+<!--recupere la publique identite-->
+<parameter name="[impu]" 		operation="setFromMessage" 	value="header:To:Address:URI"		value2="[lastMessage]"/>
+<!--taille contact impu-->
+<parameter name="[sizecontact[impu]]" 	operation="size" 	value="[contact[impu]]"/>
+<!--verifie l enregistrement du contact-->
+<if>
+	<condition>
+		<test parameter="[contact[impu]]" condition="exists"/>
+	</condition>
+	<then>
+		<!--pour les contact contact-->
+		<parameter name="[index]" 	operation="set" 	value="0"/>
+		<while>
+			<condition>
+			
+				<test parameter="[index]" condition="lowerThan" value="[sizecontact[impu]]"/>
+			</condition>
+			<do>
+				<!--Verifie si l expire n est pas depasse-->
+				<parameter name="[System]" operation="setFromSystem" 	value="Timestamp" 	value2="1970"/>
+				<!--si il n est pas-->
+				<if>
+					<condition>
+						<test parameter="[expire[impu]([index])]" condition="greaterThan" value="[System]"/>
+					</condition>
+					<then>
+						<!--nouveau VIA-->
+						<parameter name="[newBranchId]" 		operation="identifier" 		value="newString" value2="10"/>
+						<parameter name="[index1]" 				operation="findMatches" 	value="[lastHeader]" 	value2="Via.*"/>
+						<parameter name="[lastHeader]" 			operation="removeAt" 		value="[lastHeader]" 	value2="[index1]"/>
+						<parameter name="[Via]" 				operation="set" 			value="Via: SIP/2.0/UDP [Adresse-Tester];branch=z9hG4bK[newBranchId]"/>
+						<parameter name="[lastHeader]" 			operation="addfirst" 		value="[lastHeader]" 	value2="Via:[lastVia]"/>
+						<parameter name="[lastHeader]" 			operation="addfirst" 		value="[lastHeader]" 	value2="[Via]"/>
+						
+						<parameter name="[contactsend]" 		operation="regexmatches" 		value="[contact[impu]([index])]" 	value2="sip[-_:.@0-9a-zA-Z]+"/>
+						<!--nouvelle first line-->
+						<parameter name="[lastFirstline]" 		operation="set" 			value="[lastSIPMethod] [contactsend] SIP/2.0" />
+						<!--ajoute la route-->
+						<parameter name="[lastHeader]" 			operation="addfirst" 		value="[lastHeader]"	value2="Route: [pcscf[impu]([index])]"/>
+						<!--envoi de la requete au contact-->
+<sendRequestSIP name="SCSCF_SIP_request" providerName="[scenarioName]">
+<![CDATA[
+[lastFirstline]
+[lastHeader]
+
+[lastContent]
+]]>
+</sendRequestSIP>
+						<parameter name="[index1]" 				operation="findMatches" 	value="[lastHeader]" 	value2="Route.*"/>
+						<parameter name="[lastHeader]" 			operation="removeAt" 		value="[lastHeader]" 	value2="[index1]"/>
+						<if>
+							<condition>
+								<test parameter="[Viaf[lastCall-ID]]"	condition="exists" />
+							</condition>
+							<then/>
+							<else>
+								<!--cree viaf viafork urif contfork proxfork lastcallid last call id-->
+								<parameter name="[Viafork[lastCall-ID]]" 		operation="create"/>
+								<parameter name="[Viaf[lastCall-ID]]" 		operation="create"/>
+								<parameter name="[Tof[lastCall-ID]]"		operation="create"/>
+								<parameter name="[contfork[lastCall-ID]]" 	operation="create"/>
+								<parameter name="[proxfork[lastCall-ID]]" 	operation="create"/>
+							</else>
+						</if>
+						<!--Recupere le viafork-->
+						<parameter name="[headersend]" 		operation="setFromMessage" 	value="header"/>
+						<parameter name="[index2]" 			operation="findMatches" 	value="[headersend]" value2="Via.*"/>
+						<parameter name="[Viafork]" 		operation="set" 			value="[headersend([index2])]"/>
+						<!--RAJOUTE-->
+						<parameter name="[Viafork[lastCall-ID]]" 	operation="addfirst" 	value="[Viafork[lastCall-ID]]"		value2="[Viafork]"/>
+						<parameter name="[Viaf[lastCall-ID]]" 		operation="addfirst" 	value="[Viaf[lastCall-ID]]"		value2="[Via]"/>
+						<parameter name="[Tof[lastCall-ID]]"		operation="addfirst"	value="[Tof[lastCall-ID]]"       value2="[lastTo]"/>
+						<parameter name="[contfork[lastCall-ID]]" 	operation="addfirst" 	value="[contfork[lastCall-ID]]"	value2="[contactsend]"/>
+						<parameter name="[proxfork[lastCall-ID]]" 	operation="addfirst" 	value="[proxfork[lastCall-ID]]"	value2="Route: [pcscf[impu]([index])]"/>
+						<parameter name="[index]" 					operation="add" 		value="[index]" value2="1"/>
+					</then>
+					<else>
+						<!--supprime le contact si expire depasse-->
+						<parameter name="[contact[impu]]" 	operation="removeAt" 	value="[contact[impu]]" value2="[index]" />
+						<parameter name="[pcscf[impu]]" 	operation="removeat" 	value="[pcscf[impu]]" 	value2="[index]" />
+						<parameter name="[expire[impu]]" 	operation="removeat" 	value="[expire[impu]]" 	value2="[index]" />
+						<parameter name="[sizecontact[impu]]" operation="substract" value="[sizecontact[impu]]" value2="1"/>
+					</else>
+				</if>
+			</do>
+		</while>
+	</then>
+	<else>
+		<!--contact non enregistre-->
+<sendResponseSIP name="Answer 404 Not Found" providerName="[scenarioName]">
+<![CDATA[SIP/2.0 404 Not Found
+Via: [lastVia]
+To: [lastTo]
+From: [lastFrom]
+Call-ID: [lastCall-ID]
+CSeq: [lastCSeq]
+Content-Length: 0]]>
+</sendResponseSIP>
+		<goto  name="loop" label="Begin" state="true"/>
+	</else>
+</if>
+<goto  name="loop" label="Begin" state="true"/>

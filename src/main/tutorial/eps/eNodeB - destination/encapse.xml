@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+<label name="begin"/>
+	
+	<receiveMessageETHERNET name="receive message">
+		<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+		<parameter name="[ethType]" operation="protocol.setFromMessage" value="ethernet.type" />
+		<parameter name="[dstMac]"  operation="protocol.setFromMessage" value="ethernet.dstMac" />
+		<parameter name="[srcMac]"	operation="protocol.setFromMessage" value="ethernet.srcMac" />
+	</receiveMessageETHERNET>
+	<sendMessageGTP name="send gtp-u message" remoteHost="[sgwS1UIP]" remotePort="[gtpuPort]" transport="[gtpuTransportProto]">
+		<headerV1 type="G-PDU:255" tunnelEndpointId="[test:teidsgw]"/>
+		<pdu format="binary">h[rawData]</pdu>
+	</sendMessageGTP>
+		
+<goto name="goto begin" label="begin"/>
+	
+<finally>
+	<removeProbeETHERNET name="capture" />
+</finally>
+
+</scenario>

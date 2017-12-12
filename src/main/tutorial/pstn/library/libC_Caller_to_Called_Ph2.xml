@@ -1,0 +1,208 @@
+<!--
+Function description: RTP dialog (second part after libC_Caller_to_Called_Ph1)
+Please also refer to libC_Caller_to_Called_Ph1 and libC_Caller_to_Called_Ph3
+-->
+<createListenpointRTP name="[scenarioName]" localHost="[caller_ipAddressSdp]" localPort="[caller_portSdp]"/> 
+		
+<parameter name="[headerSeqnum]" operation="set" value="3070"/>
+<parameter name="[headerTimestamp]" operation="set" value="1719108029"/>
+<parameter name="[NB_Packet_RTP_demiCom]" operation="set" value="0"/>
+<parameter name="[NB_Packet_RTP_BothWays]" operation="set" value="0"/>
+	
+
+<!--			  
+<log level="3">Balise Caller_to_Called_Ph2: localHost= [caller_ipAddressSrc]</log>
+<log level="3">Balise Caller_to_Called_Ph2: localPort= [caller_portSdp]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remoteHost=[SDPConnectionAddress0]</log>
+<log level="3">Balise Caller_to_Called_Ph2: remotePort=[SDPMediaPort0]</log>		
+-->
+
+
+<if>
+	<condition>
+      	<test parameter="[RTP_Flow]" condition="equals" value="BOTH_WAYS" />
+	</condition>
+	<then>
+		<!--
+		*******************	If both ways RTC flow is requested ********************
+		-->
+		
+		<!-- attente reception ACK et ouverture du port RTP distant -->
+		<semaphore name="SEM1" action="wait"/>
+
+		<parameter name="[message_received]" operation="set" value="true"/>
+		<parameter name="[Exit_Condition]" operation="set" value="false"/>
+
+		<!-- send first packet -->
+		<sendMessageRTP listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">
+			<packet>	    
+			<header ssrc="0" payloadType="0" seqnum="0" timestamp="0"/>
+			<payload format="text">Packet #2</payload>		
+			</packet>
+		</sendMessageRTP>	
+			
+		<while>
+			<condition>
+				<test parameter="[message_received]" condition="equals" value="true" />
+				<test parameter="[Exit_Condition]" condition="equals" value="false" /> 
+			</condition>
+		<do>
+			<parameter name="[message_received]" operation="set" value="false" />
+	
+			<receiveMessageRTP name="receivePacketRTP1"  type="[PCMx]" failedOnTimeout="false" failedOnReceive="false" timeout="[endRtpDialog_Timer]">
+				<parameter name="[message_received]" operation="set" value="true"/>
+				<parameter name="[at_least_one_RTP_packet]" operation="set" value="true"/>
+				<parameter name="[headerSsrc]" operation="setFromMessage" value="header:ssrc"/>
+				<parameter name="[headerPayloadType]" operation="setFromMessage" value="header:payloadType"/>
+				<parameter name="[headerTimestamp]" operation="setFromMessage" value="header:timestamp"/>
+				<parameter name="[payloadText]" operation="setFromMessage" value="payload:text"/>
+				<parameter name="[payloadBinary]" operation="setFromMessage" value="payload:binary"/>			
+			</receiveMessageRTP>
+
+			<parameter name="[NB_Packet_RTP_demiCom]" operation="number.add" value="[NB_Packet_RTP_demiCom]" value2="1"/>
+	
+			<sendMessageRTP listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">
+				<packet>	    
+				<header ssrc="0" payloadType="0" seqnum="0" timestamp="0"/>
+				<payload format="text">Packet #2</payload>		
+				</packet>
+			</sendMessageRTP>	
+			
+			 <if>
+				<condition>
+					<test parameter="[NB_Packet_RTP_demiCom]" condition="equals" value="[Packet_RTP_demiCom]" />
+				</condition>
+				<then>
+					<parameter name="[Exit_Condition]" operation="set" value="true"/>
+					<log level="INFO"> fin comptage reception packets 1/2 com </log>
+					<!-- attente recetion 1er packet asterisk "vers" caller -->
+					<semaphore name="SEM_OnHook" action="wait"/>
+
+				</then>
+			</if>
+
+		</do>
+		</while>
+		
+		<!-- comptage avec commmunication de bout en bout -->
+		<parameter name="[message_received]" operation="set" value="true"/>
+		<parameter name="[Exit_Condition]" operation="set" value="false"/>
+			
+		<while>
+			<condition>
+				<test parameter="[message_received]" condition="equals" value="true" />
+				<test parameter="[Exit_Condition]" condition="equals" value="false" /> 
+			</condition>
+		<do>
+			<parameter name="[message_received]" operation="set" value="false" />
+	
+			<receiveMessageRTP name="receivePacketRTP1"  type="[PCMx]" failedOnTimeout="false" failedOnReceive="false" timeout="[endRtpDialog_Timer]">
+				<parameter name="[message_received]" operation="set" value="true"/>
+				<parameter name="[at_least_one_RTP_packet]" operation="set" value="true"/>
+				<parameter name="[headerSsrc]" operation="setFromMessage" value="header:ssrc"/>
+				<parameter name="[headerPayloadType]" operation="setFromMessage" value="header:payloadType"/>
+				<parameter name="[headerTimestamp]" operation="setFromMessage" value="header:timestamp"/>
+				<parameter name="[payloadText]" operation="setFromMessage" value="payload:text"/>
+				<parameter name="[payloadBinary]" operation="setFromMessage" value="payload:binary"/>			
+			</receiveMessageRTP>
+
+			<parameter name="[NB_Packet_RTP_BothWays]" operation="number.add" value="[NB_Packet_RTP_BothWays]" value2="1"/>
+	
+			<sendMessageRTP listenpoint="[scenarioName]" remoteHost="[SDPConnectionAddress0]" remotePort="[SDPMediaPort0]">
+				<packet>	    
+				<header ssrc="0" payloadType="0" seqnum="0" timestamp="0"/>
+				<payload format="text">Packet #2</payload>		
+				</packet>
+			</sendMessageRTP>	
+			
+			 <if>
+				<condition>
+					<test parameter="[NB_Packet_RTP_BothWays]" condition="equals" value="[Packet_RTP_BothWays]" />
+				</condition>
+				<then>
+					<parameter name="[Exit_Condition]" operation="set" value="true"/>
+					<log level="INFO"> fin comptage reception packets de bout en bout</log>
+				</then>
+			</if>
+
+		</do>
+		</while>
+		
+		
+	</then>
+	<else>
+		<!--
+		*******************	If only one way for RTC flow ********************
+		-->
+	
+		<pause name="pause"     seconds="0.2"  state="true"/>	
+		<parameter name="[at_least_one_RTP_packet]" operation="set" value="false"/>
+		<parameter name="[message_received]" operation="set" value="true"/>
+
+		<!--
+		Rajout 22012009: sortie boucle reception apres premier paquet RTP recu
+		Contournement emission du bruit de confort emis par le PSTN
+		Suivre variable Exit_Condition
+		-->
+
+		<parameter name="[Exit_Condition]" operation="set" value="false"/>
+
+		<while>
+			<condition>
+				<test parameter="[message_received]" condition="equals" value="true" />
+				<test parameter="[Exit_Condition]" condition="equals" value="false" /> 
+		</condition>
+		<do>
+			<parameter name="[message_received]" operation="set" value="false"/>
+	
+			<receiveMessageRTP name="receivePacketRTP1" failedOnTimeout="false" failedOnReceive="false" timeout="[endRtpDialog_Timer]">
+				<parameter name="[message_received]" operation="set" value="true"/>
+				<parameter name="[at_least_one_RTP_packet]" operation="set" value="true"/>
+				<parameter name="[headerSsrc]" operation="setFromMessage" value="header:ssrc"/>
+				<parameter name="[headerPayloadType]" operation="setFromMessage" value="header:payloadType"/>
+				<parameter name="[headerTimestamp]" operation="setFromMessage" value="header:timestamp"/>
+				<parameter name="[payloadText]" operation="setFromMessage" value="payload:text"/>
+			<parameter name="[payloadBinary]" operation="setFromMessage" value="payload:binary"/>			
+			</receiveMessageRTP>
+
+			<if>
+				<condition>
+					<test parameter="[Exit_after_first_received_packet]" condition="equals" value="true" />
+				</condition>
+				<then>
+					<parameter name="[Exit_Condition]" operation="set" value="true"/>
+				</then>
+			</if>
+
+		</do>
+		</while>
+
+		<if>
+			<condition>
+				<test parameter="[at_least_one_RTP_packet]" condition="equals" value="false" />
+			</condition>
+			<then>
+
+				<!-- SWESWE Phase 2: Possibility to not test reception of RTP packets-->
+
+				<if>
+					<condition>
+						<test parameter="[DO_NOT_TEST_RECEIVED_RTP]" condition="equals" value="true" />
+					</condition>
+					<then>
+					</then>
+					<else>
+						<log level="3"> No RTP packets received => exit with error</log>
+						<exit name="No RTP packets received" failed="true"/>
+					</else>
+				</if>
+
+				<!-- SWESWE Phase 2: FIN Possibility to not test reception of RTP packets-->
+
+			</then><else></else>
+		</if>
+		
+	</else>
+</if>
+
+<removeListenpointRTP name="[scenarioName]" />

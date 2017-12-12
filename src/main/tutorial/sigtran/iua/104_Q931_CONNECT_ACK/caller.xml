@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<!--   
+
+    Reference document : T-REC-Q.931-199805-I!!PDF-E.pdf
+    Message : CONNECT ACKNOWLEDGE(15)
+
+    The following scenarios send the Q931 message with the following elements :
+
+    Chapter : 3.1.4 => Circuit
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+Signal 4.5 n u O (Note 3) 2-3
+
+    Chapter : 3.2.4=> Packet
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+    Chapter : 3.3.5 => Bearer
+Protocol discriminator 4.2 Both M 1
+Call reference 4.3 Both M 2-*
+Message type 4.4 Both M 1
+Display 4.5 n u O (Note 1) (Note 2)
+
+
+-->
+
+<scenario>
+
+    <sendMessageSIGTRAN name="Send SIGTRAN CONNECT ACK" remoteHost="[remoteHostIUA]" remotePort="[remotePortIUA]">
+    
+        <ISDN name="Q931" syntax="../conf/sigtran/q931.xml">
+        
+	    <!-- CONNECT ACK = b0001111 = hF = d15-->
+            <header discriminator="Recommendation Q.931/I.451" callReference="h77f4"  type="CONNECT ACKNOWLEDGE"/>
+      
+            <!-- Display identification = b0101000 = h28 = d40-->
+            <element identifier="Display identification">
+                <field name="Display identification" type="string" value="textZZZ"/>
+            </element>
+     
+            <!-- Signal = b0110100 =h34 =d52-->
+            <!-- ONLY for Circuit message -->            
+            <element identifier="Signal">
+                <field name="Signal value" lengthBit="8" type="integer" value="125"/>
+            </element>
+
+        </ISDN>
+
+        <UA name="IUA" file="iua.xml">
+            <header messageClass="QPTM:Q.921/Q.931 Boundary Primitives Transport" messageType="Data_Request"/>						
+            <parameter tag="Integer_Interface_Identifier">
+                <field name="Interface_Identifier"  value="2"/>
+            </parameter>
+            <parameter tag="DLCI">
+            	    <field name="SAPI" value="0"/>
+	            <field name="Spare_Bit" value="0"/>
+	            <field name="Zero_Bit" value="0"/>
+	            <field name="TEI" value="1"/>
+	            <field name="Un_Bit" value="1"/>
+	            <field name="Spare" value="0"/>
+	    </parameter>
+            <parameter tag="Protocol_Data">
+                <field name="Protocol_Data" value=""/>
+            </parameter>
+        </UA>	
+     
+    </sendMessageSIGTRAN>
+
+</scenario>

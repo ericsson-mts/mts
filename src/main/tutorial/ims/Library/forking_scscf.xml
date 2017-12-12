@@ -1,0 +1,95 @@
+<if>
+	<condition>
+		<test parameter="[lastCSeq]" 				condition="contains" 	value="INVITE"/>
+		<test parameter="[lastResult]" 				condition="matches" 	value="[2,4,5,6][0-9][0-9]"/>
+		<test parameter="[Viafork[lastCall-ID]]" 	condition="exists" 	/>
+	</condition>
+	<then>
+		<!--Recherche l index -->
+		<parameter name="[lVia]" 		operation="set" 	value="[lastVia(0)]" /> 
+		<parameter name="[index]" 		operation="findmatches" 	value="[Viaf[lastCall-ID]]" value2="Via: [lVia]"/> 
+		<parameter name="[sizeindex]" 		operation="size" 	value="[index]"/> 
+		<if>
+			<condition>
+				<test parameter="[sizeindex]" 	condition="equals" 	value="1"/>
+			</condition>
+			<then>
+				<!--Supprime les fork-->
+				<parameter name="[Viafork[lastCall-ID]]" 	operation="removeat" 		value="[Viafork[lastCall-ID]]" 	value2="[index]"/>
+				<parameter name="[Viaf[lastCall-ID]]" 		operation="removeat" 		value="[Viaf[lastCall-ID]]" 	value2="[index]"/>
+				<parameter name="[contfork[lastCall-ID]]" 	operation="removeat" 		value="[contfork[lastCall-ID]]" value2="[index]"/>
+				<parameter name="[proxfork[lastCall-ID]]" 	operation="removeat" 		value="[proxfork[lastCall-ID]]" value2="[index]"/>
+				<parameter name="[Tof[lastCall-ID]]" 		operation="removeat" 			value="[Tof[lastCall-ID]]" value2="[index]"/>
+				<parameter name="[size]" 	operation="size" 			value="[Viaf[lastCall-ID]]"/>
+				<parameter name="[index]" 	operation="set" 			value="0"/>
+				<!-- si reponse 200 OK-->
+				<if>
+					<condition>
+						<test parameter="[lastResult]" 	condition="equals" value="200"/>
+					</condition>
+					<then>
+						<!-- verification de la presence d autre contact et envoi d un CANCEL-->
+						<!-- Recupere le CSeq Number-->
+						<parameter name="[newCSeq]" 	operation="setFromMessage" 	value="header:CSeqNumber" />
+						<while>
+							<condition>
+								<test parameter="[index]" condition="lowerThan" value="[size]"/>
+							</condition>
+							<do>
+								<!--envoi  d une requete CANCEL-->
+<sendRequestSIP name="Send Cancel" providerName="[scenarioName]">
+<![CDATA[CANCEL [contfork[lastCall-ID]([index])] SIP/2.0
+Call-ID: [lastCall-ID]
+CSeq: [newCSeq] CANCEL
+From:[lastFrom]
+To: [Tof[lastCall-ID]([index])]
+[Viaf[lastCall-ID]([index])]
+Max-Forwards: 70
+[proxfork[lastCall-ID]([index])]
+Content-Length: 0
+]]>
+</sendRequestSIP>
+								<!--Rajoute le Via a viafc-->
+								<if>
+									<condition>
+										<test parameter="[Viafc[lastCall-ID]]" condition="exists"/>
+									</condition>
+									<then/>
+									<else>
+										<parameter name="[Viafc[lastCall-ID]]" operation="create"/>
+									</else>
+								</if>
+								<parameter name="[Viafc[lastCall-ID]]" operation="addfirst" value="[Viafc[lastCall-ID]]" value2="[Viaf[lastCall-ID]([index])]"/>
+								<!--incremente l index-->								
+								<parameter name="[index]" 	operation="add" 	value="[index]" value2="1"/>
+							</do>
+						</while>
+						<!--supprime les variables-->
+						<parameter name="[Viafork[lastCall-ID]]" 	operation="unset"/>
+						<parameter name="[Viaf[lastCall-ID]]" 		operation="unset"/>
+						<parameter name="[contfork[lastCall-ID]]" 	operation="unset"/>
+						<parameter name="[proxfork[lastCall-ID]]" 	operation="unset"/>
+						<parameter name="[Tof[lastCall-ID]]" 		operation="unset"/>
+					</then>
+					<else>
+						<if>
+							<condition>
+								<test parameter="[size]"	condition="equals" value="0"/>
+							</condition>
+							<then>
+								<parameter name="[Viafork[lastCall-ID]]" 	operation="unset"/>
+								<parameter name="[Viaf[lastCall-ID]]" 		operation="unset"/>
+								<parameter name="[contfork[lastCall-ID]]" 	operation="unset"/>
+								<parameter name="[proxfork[lastCall-ID]]" 	operation="unset"/>
+								<parameter name="[Tof[lastCall-ID]]" 		operation="unset"/>
+							</then>
+							<else>
+								<goto  name="loop" label="Begin" state="true"/>	
+							</else>
+						</if>	
+					</else>
+				</if>
+			</then>	
+		</if>	
+	</then>
+</if>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" 					operation="set" value="[PortUAC]"/>
+	<parameter name="[testcase:LocalAddressUAC]" 	operation="set" value="[HardAddressUAC]"/>	
+
+	
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+	
+
+  
+	<parameter name="[NewCallID]" 	operation="identifier" 	value="newInteger" 	value2="10000000"/>	 
+	<parameter name="[localTag]" 	operation="identifier" 	value="newString" 	value2="10"/>
+	<parameter name="[NewCseqNumber]" 	operation="set" 		value="1"/>			
+	<parameter name="[newBranchId]" operation="identifier" 	value="newString"	value2="10"/>
+	<parameter name="[clientName]" 	operation="set" 		value="Inviter"/>
+  
+  <sendRequestSIP name="Send INVITE" providerName="[scenarioName]">
+<![CDATA[INVITE sip:[HardAddressUAS] SIP/2.0
+To: "[InviteeName]" <sip:[HardAddressUAS]>
+From: "[InviterName]" <sip:[LocalAddressUAC]>;tag=[localTag]
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Call-ID: [NewCallID]
+CSeq: [NewCseqNumber] INVITE
+Max-Forwards: 70
+Allow: INVITE, ACK, BYE, CANCEL, REFER, MESSAGE, SUBSCRIBE, NOTIFY, PUBLISH
+Contact: "[InviterName]"<sip:[LocalAddressUAC]>
+User-Agent: [UserAgent]
+Route: <sip:[Adresse-Proxy];lr>
+Content-Type: application/sdp
+Content-Length: x
+
+v=0
+o=[clientName] 999 999 IN IP4 [LocalAddressUAC]
+s=-
+c=IN IP4 [LocalAddressUAC]
+t=0 0
+m=audio 45200 RTP/AVP 97
+a=rtpmap:97 amr/8000/1
+a=fmtp:97 mode-set=1;octet-align=1;crc=0
+a=+g.poc.talkburst
+a=maxptime:200
+a=ptime:200
+m=application 25463 udp TBCP
+a=fmtp:TBCP queuing=0;tb_priority=1;timestamp=0
+]]>
+</sendRequestSIP>
+                
+  <receiveResponseSIP name="Wait 100 Trying" method="INVITE" result="100">
+  </receiveResponseSIP>
+
+  <receiveResponseSIP name="Wait 180 Ringing" method="INVITE" result="180">
+    <parameter name="[To]" 				operation="setFromMessage" value="header:To"/>                     
+    <parameter name="[From]" 			operation="setFromMessage" value="header:From"/>                         
+    <parameter name="[CallId]" 			operation="setFromMessage" value="header:Call-Id"/>   
+  </receiveResponseSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait" />
+
+	<parameter name="[NewCseqNumber]" 	operation="set" 		value="2"/>	
+	
+  <sendRequestSIP name="Send Cancel" providerName="[scenarioName]">
+<![CDATA[CANCEL sip:[HardAddressUAS] SIP/2.0
+To: [To]
+From: [From]
+Call-ID: [CallId]
+CSeq: [NewCseqNumber] CANCEL
+Via: SIP/2.0/UDP [LocalAddressUAC];branch=z9hG4bK[newBranchId]
+Contact: "[InviterName]" <sip:[LocalAddressUAC]>
+Route: <sip:[Adresse-Proxy];lr>
+Max-Forwards: 70
+User-Agent: [UserAgent]
+Content-Length: 0
+]]>
+  </sendRequestSIP>
+
+  <receiveResponseSIP name="Wait 487 Request Terminated" method="CANCEL" result="487">
+  </receiveResponseSIP>
+  
+  
+</scenario>

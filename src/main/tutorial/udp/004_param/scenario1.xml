@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!-- -->
+    <createListenpointUDP name="socket1"/>
+	<createListenpointUDP name="socket2" localHost="[remoteHostUDP]" localPort="[remotePort]" />
+   
+   	<parameter name="contents" operation="set" value="h41:1 h2241:1 b01000001:1 d0000065:1 65" />
+    <parameter name="contentsLength" operation="set" value="3" />
+
+    <sendMessageUDP listenpoint="socket1" remoteHost="[remoteHostUDP]" remotePort="[remotePort]">
+        <data format="binary">[contents]</data>
+    </sendMessageUDP>
+
+    <receiveMessageUDP timeout="5">
+        <parameter name="[contents]" operation="protocol.setFromMessage" value="data.text" />
+    </receiveMessageUDP>
+
+    <test parameter="[contents]" condition="string.equals" value="AAAAA"/>
+	
+	<finally>
+		<removeListenpointUDP name="socket1" />
+        <removeListenpointUDP name="socket2" />
+    </finally>
+        
+</scenario>

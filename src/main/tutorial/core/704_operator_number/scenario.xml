@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<parameter name="[number]" operation="set" value="9" />
+
+	<test parameter="[number]" condition="number.equals" value="9" />
+	<test parameter="[number]" condition="number.lowerthan" value="10" />
+	<test parameter="[number]" condition="number.lowerequalthan" value="9" />
+	<test parameter="[number]" condition="number.greaterequalthan" value="9" />
+	<test parameter="[number]" condition="number.greaterthan" value="8" />
+
+	<parameter name="[number]" operation="number.multiply" value="2" value2="2"/>
+	<test parameter="[number]" condition="number.equals" value="4" />
+
+	<parameter name="[number]" operation="number.divide" value="2" value2="2"/>
+	<test parameter="[number]" condition="number.equals" value="1" />
+
+	<parameter name="[number]" operation="number.modulo" value="2" value2="3"/>
+	<test parameter="[number]" condition="number.equals" value="2" />
+
+  <parameter name="[number]" operation="number.add" value="2" value2="2"/>
+	<test parameter="[number]" condition="number.equals" value="4" />
+
+	<parameter name="[number]" operation="number.substract" value="2" value2="2"/>
+	<test parameter="[number]" condition="number.equals" value="0" />
+
+	<parameter name="[number]" operation="number.floor"  value="2.8"/>
+	<test parameter="[number]" condition="number.equals" value="2" />
+
+	<parameter name="[number]" operation="number.round"  value="2.8"/>
+	<test parameter="[number]" condition="number.equals" value="3" />
+
+  <parameter name="[number]" operation="number.random" value="99" />
+	<test parameter="[number]" condition="number.greaterequalthan" value="0" />
+	<test parameter="[number]" condition="number.lowerequalthan" value="99" />
+ 
+  <parameter name="[number]" operation="number.random" value="2000" value2="1000"/>
+	<test parameter="[number]" condition="number.greaterequalthan" value="1000" />
+	<test parameter="[number]" condition="number.lowerequalthan" value="2000 " />
+
+  <parameter name="[number]" operation="number.uid" value="2" />
+
+	<parameter name="[power]" operation="number.power" value="1" value2="5" />
+	<test parameter="[power]" condition="number.equals" value="1" />
+	
+	<parameter name="[power]" operation="number.power" value="0" value2="5" />
+	<test parameter="[power]" condition="number.equals" value="0" />
+	
+	<parameter name="[power]" operation="number.power" value="4" value2="0.5" />
+	<test parameter="[power]" condition="number.equals" value="2" />
+	
+	<parameter name="[power]" operation="number.power" value="0.25" value2="-0.5" />
+	<test parameter="[power]" condition="number.equals" value="2" />
+
+    <!-- test with complete date-->
+    <parameter name="[date]" operation="number.parseDate" value="20/02/11 17:35:56" />
+    <test parameter="[date]" condition="string.equals" value="1298219756000" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/02/2011 17:35:56" />
+
+    <!-- my test on hour -->
+    <parameter name="[date]" operation="number.parseDate" value="20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:12" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:" />
+    <test parameter="[dateInString]" condition="string.contains" value=":00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":12:00:000" />
+   
+    <parameter name="[date]" operation="number.parseDate" value="20:12:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12:56" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":12:56:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20::" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":12:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="::56" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":56:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:12:56" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:56:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:12:56:443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:56:443" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:12:56:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:56:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12:56:443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":12:56:443" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:12::443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:" />
+    <test parameter="[dateInString]" condition="string.contains" value=":443" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20::56:443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:" />
+    <test parameter="[dateInString]" condition="string.contains" value=":56:443" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:12::" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:12:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20::56:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:" />
+    <test parameter="[dateInString]" condition="string.contains" value=":56:000" />
+    
+    <parameter name="[date]" operation="number.parseDate" value="20:::443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:" />
+    <test parameter="[dateInString]" condition="string.contains" value=":443" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12:56:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":12:56:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12::443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":12:" />
+    <test parameter="[dateInString]" condition="string.contains" value=":443" />
+
+    <parameter name="[date]" operation="number.parseDate" value="::56:443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":56:443" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20:::" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":12::" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="12:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="::56:" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":56:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value=":::443" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value=":443" />
+
+    <!-- date now-->
+    <parameter name="[date]" operation="number.parseDate" value="20 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20/02 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/02" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20/ 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="/03 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="/03" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20/02/11 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/02/2011" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20/02/ 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/02/" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20//11 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="/03/11 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="/03/2011 20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="20// 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="20/" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="/03/ 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[dateInString]" condition="string.contains" value="/03/" />
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <parameter name="[date]" operation="number.parseDate" value="//2012 20" />
+    <parameter name="[dateInString]" operation="number.toDate" value="[date]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <!--BUG test parameter="[dateInString]" condition="string.contains" value="/2012" /-->
+    <test parameter="[dateInString]" condition="string.contains" value="20:00:00:000" />
+
+    <!-- end of my test-->
+	<parameter name="[futureDate1]" operation="number.toDate" value="1299900000001" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<test parameter="[futureDate1]" condition="string.equals" value="12/03/2011 04:20:00:001" />
+
+	<parameter name="[futureDate2]" operation="number.parseDate" value="12/03/2011 04:20:00:001" />
+	<test parameter="[futureDate2]" condition="string.equals" value="1299900000001" />
+
+    <!-- test for complete date hour format -->	
+	<parameter name="[dateInNumber]" operation="number.parseDate" value="02/07/2009 17:15:02" />
+	<parameter name="[dateInString]" operation="number.toDate" value="[dateInNumber]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<test parameter="[dateInString]" condition="string.contains" value="17:15:02:000" />
+	
+	<parameter name="[dateInNumber]" operation="number.parseDate" value="02/07/2009 17:15" />
+	<parameter name="[dateInString]" operation="number.toDate" value="[dateInNumber]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<test parameter="[dateInString]" condition="string.contains" value="17:15:00:000" />
+	
+	<parameter name="[dateInNumber]" operation="number.parseDate" value="02/07/2009 17:15:" />
+	<parameter name="[dateInString]" operation="number.toDate" value="[dateInNumber]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<test parameter="[dateInString]" condition="string.contains" value="17:15:00:000" />
+
+	<parameter name="[simpleDateInSeconds]" operation="number.parseDate" value="02/07/2009" />
+	<parameter name="[simpleDateInstring]" operation="number.toDate" value="[simpleDateInSeconds]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<test parameter="[simpleDateInstring]" condition="string.contains" value="00:00:00:000" />
+	
+    <!-- hour completion on the right (with zero) for the minut, second and millisecond -->
+	<parameter name="[hourMinute]" operation="number.parseDate" value="17:15:" />
+	<parameter name="[hourMinuteInDate]" operation="number.toDate" value="[hourMinute]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[hourMinuteInDate]" condition="string.contains" value="17:15:00:000" />
+	<parameter name="[hourMinuteInString]" operation="number.toDate" value="[hourMinute]" value2="HH:mm:ss" />
+	<test parameter="[hourMinuteInString]" condition="string.equals" value="17:15:00" />
+	
+	<parameter name="[Woot]" operation="number.parseDate" value="17::" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <test parameter="[Wooteuh]" condition="string.contains" value="17:" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="HH:mm:ss" />
+	<test parameter="[Wooteuh]" condition="string.contains" value="17:" />
+	
+	<parameter name="[Woot]" operation="number.parseDate" value="17:::15" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="HH:mm:ss:SSS" />
+	<test parameter="[Wooteuh]" condition="string.contains" value="17:" />
+    <test parameter="[Wooteuh]" condition="string.contains" value=":015" />
+
+    <!-- hour completion on the left (with the next occurence) for the minut, second and millisecond -->
+	<parameter name="[Woot]" operation="number.parseDate" value=":45" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <parameter name="[WootCurrent]" operation="system.timestamp" value="1970"/>  
+	<parameter name="[WooteuhCurrent]" operation="number.toDate" value="[WootCurrent]"/>	
+    <parameter name="[WootDelta]" operation="number.substract" value="[Woot]" value2="[WootCurrent]" />  	
+    <test parameter="[WootDelta]" condition="number.greaterThan" value="0" />
+    <test parameter="[WootDelta]" condition="number.lowerThan" value="3600000" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="mm:ss:SSS" />
+	<test parameter="[Wooteuh]" condition="string.equals" value="45:00:000" />
+
+	<parameter name="[Woot]" operation="number.parseDate" value="::45" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <parameter name="[WootCurrent]" operation="system.timestamp" value="1970"/>  	
+	<parameter name="[WooteuhCurrent]" operation="number.toDate" value="[WootCurrent]"/>
+    <parameter name="[WootDelta]" operation="number.substract" value="[Woot]" value2="[WootCurrent]" />  	
+    <test parameter="[WootDelta]" condition="number.greaterThan" value="0" />
+    <test parameter="[WootDelta]" condition="number.lowerThan" value="60000" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="ss:SSS" />
+	<test parameter="[Wooteuh]" condition="string.equals" value="45:000" />
+
+	<parameter name="[Woot]" operation="number.parseDate" value=":::045" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+    <parameter name="[WootCurrent]" operation="system.timestamp" value="1970"/>  	
+	<parameter name="[WooteuhCurrent]" operation="number.toDate" value="[WootCurrent]" value2="dd/MM HH:mm:ss:SSS" />
+    <parameter name="[WootDelta]" operation="number.substract" value="[Woot]" value2="[WootCurrent]" />  	
+    <test parameter="[WootDelta]" condition="number.greaterThan" value="0" />
+    <!--test parameter="[WootDelta]" condition="number.lowerThan" value="1000" /-->
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="SSS" />
+	<test parameter="[Wooteuh]" condition="string.equals" value="045" />
+	
+    <!-- day completion on the left (with the next occurence) for the year, month, day -->	
+	<parameter name="[Woot]" operation="number.parseDate" value="02/07" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM/yyyy HH:mm:ss:SSS" />
+	<parameter name="[Wooteuh]" operation="number.toDate" value="[Woot]" value2="dd/MM HH:mm:ss:SSS" />
+	<test parameter="[Wooteuh]" condition="string.equals" value="02/07 00:00:00:000" />
+	
+	<parameter name="[tobinary]" operation="number.toBinary" value="1234567890" />
+	<test parameter="[tobinary]" condition="binary.equals" value="499602d2" />
+	<parameter name="[tobinary]" operation="number.toBinary" value="128" />
+	<test parameter="[tobinary]" condition="binary.equals" value="80" />
+	<parameter name="[tobinary]" operation="number.toBinary" value="2" />
+	<test parameter="[tobinary]" condition="binary.equals" value="02" />
+	
+	<parameter name="[max]" operation="number.max" value="1234567890" value2="9876543210"/>
+	<test parameter="[max]" condition="number.equals" value="9876543210" />
+	<parameter name="[min]" operation="number.min" value="1234567890" value2="9876543210"/>
+	<test parameter="[min]" condition="number.equals" value="1234567890" />
+</scenario>

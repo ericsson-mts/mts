@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <createListenpointRTSP name="listenpoint1" localHost="0.0.0.0" localPort="6666"/>
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+
+    <sendMessageRTSP name="Send Describe" listenpoint="listenpoint1">
+<![CDATA[DESCRIBE rtspu://[localHostRTSP]:7777/demo/548/sound RTSP/1.0
+CSeq: 1 
+Accept: application/sdp, application/rtsl, application/mheg
+
+]]>
+    </sendMessageRTSP>
+
+<!-- **********************************************************************  -->
+<!-- * RECEIVE 100 DESCRIBE response                                      *  -->
+<!-- **********************************************************************  -->
+    <receiveMessageRTSP name="Wait 200 OK" type="DESCRIBE" result="200"/>
+
+    <parameter name="[testcase:NO_DESCRIBES]" operation="system.semaphorewait" />
+
+    <finally>
+        <removeListenpointRTSP name="listenpoint1"/>
+    </finally>
+
+</scenario>

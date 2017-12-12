@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- call flow for Alcatel-Lucent equipment -->
+<!-- provide from 20090929tos02filt.pcap capture file -->
+
+<scenario>
+
+    <!-- "Add" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Add">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>       
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+!/2 [[remoteHostH248]]:[remotePortH248] P=[transID]{C=817{A=ip/1/access1/14296{M{L{v=0
+c=IN IP4 172.20.168.100
+b=AS:6
+m=audio 22322 RTP/AVP -
+},R{v=0
+c=IN IP4 172.20.196.232
+m=audio 10057 RTP/AVP -
+}}},A=ip/1/core/14297{M{L{v=0
+c=IN IP4 172.20.168.84
+b=AS:6
+m=audio 29378 RTP/AVP -
+}}}}}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Modify" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Modify">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+ !/2 [[remoteHostH248]]:[remotePortH248] P=[transID]{C=819{MF=ip/1/access1/14768{M{L{v=0
+c=IN IP4 172.20.168.100
+b=AS:6
+m=audio 22794 RTP/AVP -
+},R{v=0
+c=IN IP4 172.20.196.245
+m=audio 6000 RTP/AVP -
+}}}}}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+    <!-- "Substract" message -->
+    <receiveMessageH248 name="Receive request" request="true" type="Subtract">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.T.value" />
+    </receiveMessageH248>
+
+    <sendMessageH248 name="Send response" remoteHost="[remoteHostH248]" remotePort="[remotePortH248]" transport="[transportResponse]">
+<![CDATA[
+ !/2 [[remoteHostH248]]:[remotePortH248] P=[transID]{C=817{S=*}}
+]]>
+    </sendMessageH248>
+    
+    <receiveMessageH248 name="Receive acknowledge" request="true" type="TransactionResponseAck">
+        <parameter name="[text]" operation="protocol.setFromMessage" value="message.text" />
+        <parameter name="[transID]" operation="protocol.setFromMessage" value="descr.K.parameters" />
+    </receiveMessageH248>
+
+</scenario>

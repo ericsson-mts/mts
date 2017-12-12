@@ -1,0 +1,125 @@
+<!--tache a effectuer si requete CANCEL-->
+&cancel_pcscf; 
+
+<!--traitement des requetes par le prox -->
+&ack_pcscf;
+&prox_pcscf;	
+
+<!--supprime le header proxy require-->
+<parameter name="[index]" 					operation="findMatches" value="[lastHeader]" value2="Proxy-Require.*"/>
+<parameter name="[lastHeader]"				operation="removeat" 	value="[lastHeader]" value2="[index]"/>
+
+<!--supprime le header security verify -->
+<parameter name="[index]" 					operation="findMatches" value="[lastHeader]" value2="Security-Verify.*"/>
+<parameter name="[lastHeader]" 				operation="removeat" 	value="[lastHeader]" value2="[index]"/>
+
+<!--ajoute du header p visited network ID-->
+<parameter name="[lastHeader]" 				operation="addfirst" 	value="[lastHeader]" value2="[P-Visited-Network-ID]"/>
+
+<!--recherche le header - preferred identity-->
+<parameter name="[P-Preferred-Identity]"	operation="setFromMessage" 		value="Header:P-Preferred-Identity" value2="[lastMessage]"/>
+<if>
+	<condition>
+		<test parameter="[P-Preferred-Identity]" condition="contains" value="sip"/>
+	</condition>
+	<then>
+		<!--supprime le champs P preferred identity-->
+		<parameter name="[index]" 					operation="findMatches" value="[lastHeader]" value2="P-Preferred.*"/>
+		<parameter name="[lastHeader]" 				operation="removeat" 	value="[lastHeader]" value2="[index]"/>
+		
+		<!-- remplace par p preffered identity par p asserted identity-->
+		<parameter name="[lastHeader]" 				operation="addFirst" 	value="[lastHeader]" value2="P-Asserted-Identity: [P-Preferred-Identity]"/>
+	</then>
+	<else>
+		<!-- sinon il cree p asserted identity en mettent le contenu du from-->
+		<parameter name="[lastFromAddressURI]" 		operation="setFromMessage" 	value="header:From:Address:URI" value2="[lastMessage]"/> 
+		<parameter name="[lastHeader]" 				operation="addFirst" 		value="[lastHeader]" value2="P-Asserted-Identity:[lastFromAddressURI]"/>
+	</else>
+</if>
+
+<!--si requete register-->
+&register_pcscf; 
+
+<!--recuperation du header route-->
+<parameter name="[lastRoute]" 		operation="setFromMessage" 			value="header:route" value2="[lastMessage]"/>	
+<if>
+	<condition>
+		<test parameter="[lastRoute]" condition="isempty"/>
+	</condition>	
+	<then/>
+	<else>
+		<!--verifie que la route contient son adressse-->
+		<if>
+			<condition>
+				<test parameter="[lastRoute(0)]" condition="contains" value="[Host-Tester]:[Port-Tester]"/>
+			</condition>	
+			<then>
+				<!--supprime les champs route-->
+				<parameter name="[index]" 		operation="findMatches" 	value="[lastHeader]" 	value2="Route.*"/>
+				<parameter name="[lastHeader]" 	operation="removeAt" 		value="[lastHeader]" 	value2="[index]"/>
+				<parameter name="[nextRoute]" 	operation="removeAt" 		value="[lastRoute]"		value2="0"/>
+				<parameter name="[lastHeader]" 	operation="addfirst" 		value="[lastHeader]"	value2="Route: [nextRoute]"/>
+			</then>
+		</if>
+	</else>
+</if>
+
+<!--si requete INVITE-->
+&invite_pcscf;
+
+<!--si requete SUBSCRIBE-->
+&subscribe_pcscf;
+
+<parameter name="[index]" 				operation="findmatches" 	value="[lastHeader]" value2=".*Charging.*"/>
+<if>
+	<condition>
+		<test parameter="[index]" condition="matches" value="[0-9]+"/>
+	</condition>	
+	<then>
+		<parameter name="[lastHeader]" 	operation="removeat" 	value="[lastHeader]" value2="[index]"/>
+		<if>
+			<condition>
+				<test parameter="[lastSIPMethod]" condition="equals" value="INVITE"/>
+			</condition>
+			<then>
+				<if>
+					<condition>
+						<test parameter="[Viaf[lastCall-ID]]"	condition="exists" />
+					</condition>
+					<then/>
+					<else>
+						<!--cree viaf urif  last call id-->
+						<parameter name="[Viaf[lastCall-ID]]" 		operation="create"/>
+						<parameter name="[URIf[lastCall-ID]]"		operation="create"/>
+					</else>
+				</if>
+				<parameter name="[nextURI]" 			operation="setFromMessage" 	value="firstline:URI"	value2="[lastMessage]"/>
+
+
+	
+				<parameter name="[index]" 				operation="findMatches" 	value="[lastHeader]" 			value2="To.*"/> 
+				<parameter name="[nextTo]" 				operation="set" 			value="[lastHeader([index])]"/>	
+				<!--RAJOUTE-->
+				<parameter name="[Viaf[lastCall-ID]]" 		operation="addfirst" 	value="[Viaf[lastCall-ID]]"		value2="[Via]"/>
+				<parameter name="[URIf[lastCall-ID]]"		operation="addfirst"	value="[URIf[lastCall-ID]]"		value2="[nextURI(0)]"/>
+			</then>
+		</if>
+	</then>
+	<else>
+		<parameter name="[lastHeader]" 	operation="addfirst" 	value="[lastHeader]" value2="[P-Charging-Vector]"/>
+			<if>
+				<condition>
+					<test parameter="[lastSIPMethod]" condition="equals" value="INVITE"/>
+				</condition>
+				<then>
+					<parameter name="[nextURI]" 				operation="setFromMessage" 	value="firstline:URI"	value2="[lastMessage]"/>
+					<parameter name="[nextContact]" 			operation="setFromMessage" 	value="header:Contact:Address:URI"	value2="[lastMessage]"/>
+					<parameter name="[Contact[lastCall-ID]]" 	operation="set" 		value="[nextContact]"/>	
+					<parameter name="[VIA[lastCall-ID]]" 		operation="set" 		value="[Via]"/>	
+					<parameter name="[URI[lastCall-ID]]" 		operation="set" 		value="[nextURI]"/>
+					<parameter name="[ROUTE[lastCall-ID]]" 		operation="set"			value="Route: [nextRoute]"/>
+					<parameter name="[TO[lastCall-ID]]" 		operation="set"			value="To: [lastTo]"/>
+			</then>
+		</if>
+	</else>
+</if>

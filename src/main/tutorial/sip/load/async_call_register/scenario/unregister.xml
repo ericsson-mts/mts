@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+    <if>
+	    <condition>
+	    	<test parameter="[test:indexUnReg]" condition="list.exists" not="true"/>       	     
+    	</condition>
+        <then>
+            <parameter name="[test:startUnReg]" operation="system.semaphorewait" value="[NumberScenario]" value2="0"/>    				    	
+	        <parameter name="[test:indexUnReg]" operation="set" value="0"/>
+        </then>
+    </if>
+
+	<parameter name="[test:indexUnReg]" operation="number.add" value="[test:indexUnReg]" value2="1"/>    			
+       	<if>
+	    <condition>
+    		<test parameter="[test:indexUnReg]" condition="number.greaterThan" value="[RangeNumberUser]"/>       	     
+   	    </condition>
+    	<then>
+	    	<exit failed="false"/>    				    	
+	    </then>
+	</if>
+
+	<parameter name="[localPortSIP]" operation="number.substract" value="65535" value2="[test:indexUnReg]"/>
+	<parameter name="[listenpoint]" operation="set" value="listenpoint_[localPortSIP]"/>
+
+    <parameter name="[userName]" operation="set" value="[userTab([test:indexUnReg])]"/>    	
+
+	<parameter name="[localTag]" operation="string.random" value="10"/>
+	<parameter name="[newCallId]" operation="number.random" value="10000000"/>
+	<parameter name="[newCseq]" operation="number.random" value="10000000"/>
+  	<parameter name="[newBranchId]" operation="string.random" value="10"/>  
+
+	<sendMessageSIP name="Send REGISTER" listenpoint="[listenpoint]" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]" transport="[transport]">
+<![CDATA[
+REGISTER sip:[userName]@[remoteSIP];transport=[transport] SIP/2.0
+To: "[userName]" <sip:[userName]@[domainName]>
+From: "[userName]" <sip:[userName]@[domainName]>;tag=[localTag]
+Call-ID:[newCallId]
+CSeq: [newCseq] REGISTER
+Via: SIP/2.0/[transport] [localHostSIP]:[localPortSIP];branch=z9hG4bK[newBranchId]
+Contact: <sip:[userName]@[localHostSIP]:[localPortSIP]>
+Expires: 0
+Max-Forwards: 70
+Content-Length: 0
+]]>
+        </sendMessageSIP>
+
+    	<!--receiveMessageSIP name="200 OK" type="REGISTER">
+	    </receiveMessageSIP-->
+
+      	<removeListenpointSIP name="[listenpoint]"/>
+
+</scenario>

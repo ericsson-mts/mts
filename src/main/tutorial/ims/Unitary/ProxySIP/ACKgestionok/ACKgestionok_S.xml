@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="[LocalPort]" operation="set" value="[PortUAS]"/>
+
+	<openProviderSIP name="open SIP provider" providerName="[scenarioName]" localPort="[LocalPort(0)]" transport="[LocalTransport]"/>
+	<parameter name="[provider]" 		operation="set" value="[scenarioName]"/>
+
+	
+	
+	<receiveRequestSIP name="Wait INVITE"  method="INVITE">
+		<parameter name="[To]" operation="setFromMessage" value="header:To"/>
+		<parameter name="[From]" operation="setFromMessage" value="header:From"/>
+		<parameter name="[CallId]" operation="setFromMessage" value="header:Call-ID"/>
+		<parameter name="[CSeq]" operation="setFromMessage" value="header:CSeq"/>
+		<parameter name="[localTag]" operation="identifier" value="newString" value2="10"/>
+		<parameter name="[Contact]" operation="setFromMessage" value="header:Contact"/>
+		<parameter name="[Via]" operation="setFromMessage" value="header:Via"/>
+		<parameter name="[Record-Route]" operation="setFromMessage" value="header:Record-Route"/>
+		
+	</receiveRequestSIP>
+
+	<parameter name="[testcase:SEM1]" operation="system.semaphorewait"/>
+	
+<sendResponseSIP name="Send 200 OK">
+<![CDATA[SIP/2.0 200 OK
+To: [To];tag=[localTag]
+From: [From]
+Call-ID: [CallId]
+CSeq: [CSeq]
+Max-Forwards: 10
+Contact: <sip:[HardAddressUAC]>
+User-Agent: [User-Agent]
+Via: [Via]
+Record-Route: [Record-Route]
+Content-Length: 0
+]]>
+</sendResponseSIP>
+
+
+
+
+	<receiveRequestSIP name="Receive ACK" method="ACK">
+	 <parameter name="[ACKVia]" operation="setFromMessage" value="header:Via"/>
+	</receiveRequestSIP>
+	
+	<parameter name="[SizeOfVia]" operation="size" value="[ACKVia]"/>
+
+	<if>
+		<condition>
+			<test parameter="[SizeOfVia]" condition="greaterThan" value="1"/>
+		</condition>
+	<then>
+		<log level="0">Proxy forwards ACK end-to-end over a positive response.</log>
+	</then>
+	<else>
+		<log level="0">Proxy seems to be stateless. If your proxy is at least transaction stateful, it doesn't send the ACK properly over a positive response.</log>
+	</else>
+	</if>
+	
+</scenario>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+
+    <parameter name="[parameter]" operation="set" value="true" />
+    <parameter name="[success_value]" operation="set" value="true" />
+    <parameter name="[failure_value]" operation="set" value="false" />
+
+    <switch parameter="[parameter]">
+        <case equals="[success_value]">
+            <!-- do nothing, success -->
+        </case>
+        <case equals="[failure_value]">
+            <exit failed="true" />
+        </case>
+    </switch>
+
+    <switch parameter="[parameter]">
+        <case equals="value_1">
+            <exit failed="true" />
+        </case>
+        <case equals="value_2">
+            <exit failed="true" />
+        </case>
+        <default>
+            <!-- do nothing, success -->
+        </default>
+    </switch>
+    
+    <switch parameter="[parameter]">
+        <case matches="tr.*">
+            <!-- do nothing, success -->
+        </case>
+        <case matches="fal.*">
+            <exit failed="true" />
+        </case>
+        <default>
+            <exit failed="true" />
+        </default>
+    </switch>
+</scenario>

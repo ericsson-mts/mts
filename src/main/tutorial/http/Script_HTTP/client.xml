@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	<openChannelHTTP name="[nameChannel]" localHost="[clientTarHost]"   remoteURL="http://[clientTarHost]:[clientTarPort]"/>
+	<sendMessageHTTP channel="[nameChannel]">
+		<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[POST /index.php HTTP/1.1
+Host: 192.168.90.50
+Accept-charset: text/html
+Content-Type: text/plain
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+Content-Length: xx
+
+[data]]]>
+		<!--******************** END MESSAGE *********************-->
+	</sendMessageHTTP>
+		
+	<receiveMessageHTTP request="false" timeout="100">
+	</receiveMessageHTTP>
+	<finally>
+		<closeChannelHTTP name="[nameChannel]"/>
+	</finally>	
+	
+</scenario> 

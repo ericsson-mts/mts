@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <createProbeETHERNET name="capture" networkInterface="[localHostETH]" captureFilter="src host [localHostETH]" />
+	<label name="begin"/>
+		<receiveMessageETHERNET name="receive message">
+  			<parameter name="[rawData]" operation="protocol.setFromMessage" value="data.binary" />
+  		</receiveMessageETHERNET>
+		
+		<sendMessageGTP name="send gtp-u message" remoteHost="[localHostETH]" remotePort="2123" transport="UDP">
+			<headerV1 type="G-PDU:255" tunnelEndpointId="1234567890"/>
+			<pdu format="binary">h[rawData]</pdu>
+		</sendMessageGTP>
+  	<goto name="goto begin" label="begin"/>
+
+<finally>
+  <removeProbeETHERNET name="capture"/>
+</finally>
+	
+</scenario>

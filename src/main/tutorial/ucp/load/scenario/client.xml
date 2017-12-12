@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="[connection]" operation="set" value="scenario_[port]" />
+
+    <parameter name="[testcase:sem1]" operation="system.semaphorewait" />
+    <openChannelUCP name="[connection]" remoteHost="[remoteHostUCP]" remotePort="[port]"/>
+
+    <parameter name="[seqNum]" operation="set" value="1" />
+    <sendMessageUCP channel="[connection]">
+        <header name="EnquiryOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="1"/>
+        <attribute name="OAdC" value=""/>
+        <attribute name="OAC" value=""/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="EnquiryOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageUCP>
+
+    <parameter name="[seqNum]" operation="number.add" value="[seqNum]" value2="1"/>
+    <sendMessageUCP channel="[connection]">
+        <header name="CallInputOperation" TRN="[seqNum]" MT="O"/>
+        <attribute name="AdC" value="22"/>
+        <attribute name="OAdC" value="333"/>
+        <attribute name="OAC" value="coucou"/>
+        <attribute name="MT" value="2"/>
+        <attribute name="NMsg" value="123456789"/>
+    </sendMessageUCP>
+
+    <receiveMessageUCP type="CallInputOperation" result="A">
+        <parameter name="malformed" operation="protocol.setFromMessage" value="malformed"/>
+        <test parameter="[malformed]" condition="boolean.equals" value="false"/>
+    </receiveMessageUCP>
+
+</scenario> 

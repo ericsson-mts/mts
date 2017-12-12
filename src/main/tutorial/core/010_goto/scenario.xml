@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<scenario>
+    <pause name="pause_0.1_s" seconds="0.1"       state="true"/>       <!-- pauses for 1s -->
+
+    <parameter name="[aParameter]" operation="set" value="gotoLabel" />
+
+    <goto  name="goto_goto_label" label="[aParameter]" state="true"/> <!-- goto "gotoLabel" label -->
+
+    <pause name="pause_1000_s" seconds="1000"    state="true"/>    <!-- skipped instruction -->
+
+    <label name="gotoLabel"/>                                      <!-- target label -->
+
+    <pause name="pause_0.1_s" seconds="0.1" state="true"/>             <!-- pauses for 1s -->
+</scenario>
