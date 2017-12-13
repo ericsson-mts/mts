@@ -120,7 +120,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         runner.getParameterPool().createSimple("[testcaseIndex]", this._index);
 
         // create and execute parameter operation to init testcase pool
-        List<Element> elementsParameter = (List<Element>) _root.selectNodes("./parameter");
+        List<Element> elementsParameter = (List<Element>)(List<?>) _root.selectNodes("./parameter");
         for (Element element : elementsParameter) {
             OperationParameter operationParameter = new OperationParameter(element);
             operationParameter.executeAndStat(runner);
@@ -144,7 +144,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
         }
 
         // apply replacer on <scenario> (recursive) and parse runprofile
-        for (Element scenario : (List<Element>) _root.selectNodes("./scenario")) {
+        for (Element scenario : (List<Element>)(List<?>) _root.selectNodes("./scenario")) {
             // apply replacer everything on everything or just the scenario element depending on presence of @file or not
             if(scenario.selectNodes("./@file").isEmpty()){
                 XMLTree xmlTree = new XMLTree(scenario, false, Parameter.EXPRESSION, true); // do not duplicate, use the same root
@@ -162,7 +162,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
 
         // fill a map with "scenario name" => "scenario object"
         scenarioByName = new LinkedHashMap<String, ScenarioReference>();
-        for (Element element : (List<Element>) _root.selectNodes("./scenario")) {
+        for (Element element : (List<Element>)(List<?>) _root.selectNodes("./scenario")) {
             ScenarioReference scenario = new ScenarioReference(element, this);
             String name = scenario.getName();
             if (null != name && scenarioByName.containsKey(name)) {
@@ -183,7 +183,7 @@ public class Testcase implements HierarchyMember<Test, ScenarioReference>, Seria
                 parameters = parametersByScenarioName.get(name);
             }
             
-            for (Element parameterElement : (List<Element>) element.selectNodes("./parameter")) {
+            for (Element parameterElement : (List<Element>)(List<?>) element.selectNodes("./parameter")) {
                 parameters.add(new OperationParameter(parameterElement));
             }
         }

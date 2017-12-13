@@ -565,8 +565,8 @@ public class UcpMessage
             att.setName(element.attributeValue("name"));
 
             //check imbricate attribute + extra service(xser) to send
-            imbricateAttributes = element.selectNodes("attribute");
-            xserAttributes = element.selectNodes("xser");
+            imbricateAttributes = (List<Element>)(List<?>)element.selectNodes("attribute");
+            xserAttributes = (List<Element>)(List<?>)element.selectNodes("xser");
             
             if(imbricateAttributes.size() != 0)
             {

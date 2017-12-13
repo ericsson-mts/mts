@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.basic.OperationFunction;
 import com.devoteam.srit.xmlloader.core.operations.functions.FunctionsRegistry;
 import com.devoteam.srit.xmlloader.core.parameters.EditableParameterProvider;
@@ -135,8 +136,11 @@ public class Tester
     
     public void open_openFile(URI path, EditableParameterProvider provider) throws Exception
     {
+        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "before new test");
         this.test = new Test(Cache.getXMLDocument(path, URIFactory.newURI("../conf/schemas/test.xsd")), provider);
         
+        GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "parsed test ", this.test.getDescription());
+
         OperationFunction.importDir("../functions/", URIRegistry.MTS_BIN_HOME);
         
         Config.reset();

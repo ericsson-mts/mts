@@ -53,6 +53,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.tree.DefaultElement;
 import org.dom4j.tree.DefaultElementInterface;
 
@@ -222,7 +223,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
         runner.getParameterPool().createSimple("[testName]", this.getName());
         runner.getParameterPool().createSimple("[testId]", this.getName());
 
-        List<Element> elementsParameter = (List<Element>) _xmlDocument.getDocument().selectNodes("/test/parameter");
+        List<Element> elementsParameter = (List<Element>)(List<?>) _xmlDocument.getDocument().selectNodes("/test/parameter");
         for (Element element : elementsParameter) {
             OperationParameter operationParameter = new OperationParameter(element);
             operationParameter.executeAndStat(runner);
@@ -377,7 +378,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
     }
     
     public List<Element> getEditableParameters() {
-        return (List<Element>) _root.selectNodes("./parameter[@editable='true']");
+        return (List<Element>)(List<?>) _root.selectNodes("./parameter[@editable='true']");
     }
 
     public RunProfile getProfile() throws Exception {

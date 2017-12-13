@@ -325,7 +325,7 @@ public class MsgSmpp extends Msg
                     for(int cptOc = 0; cptOc < occurenceValue; cptOc++)//run through multiple occurence
                     {
                         //get imbricate attribute or attribute in choice for att
-                        imbricateAttributesInScenario = element.selectNodes("attribute");
+                        imbricateAttributesInScenario = (List<Element>)(List<?>) element.selectNodes("attribute");
 
                         Vector vecImbricateAtt = (Vector) vec.get(cptOc);
                         //run through attribute in att,(list of attribute, or attribute and choice)

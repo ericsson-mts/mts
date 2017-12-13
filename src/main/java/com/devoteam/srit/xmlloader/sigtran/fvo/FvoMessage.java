@@ -284,7 +284,7 @@ public class FvoMessage {
         }
 
         //parameters
-        parseParametersFromXml(root.selectNodes("./parameter"));
+        parseParametersFromXml((List<Element>)(List<?>)root.selectNodes("./parameter"));
     }
 
     public void parseParametersFromXml(List<Element> elements) throws Exception {
