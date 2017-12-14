@@ -63,7 +63,7 @@ public class Main {
             }
 
             try (FileWriter writer = new FileWriter(dest)) {
-                Mustache.compiler().compile(new FileReader("src/main/resourceS/xsddoctemplate.html.jmustache")).execute(elementInfoCache, writer);
+                Mustache.compiler().compile(new FileReader("src/main/resources/xsddoctemplate.html.jmustache")).execute(elementInfoCache, writer);
             }
         } catch (Exception e) {
             e.printStackTrace(System.out);
