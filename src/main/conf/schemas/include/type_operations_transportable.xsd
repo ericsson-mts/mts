@@ -1,0 +1,68 @@
+<xs:complexType name="openTransportableChannelType">
+    <xs:complexContent>
+        <xs:extension base="operationType">    
+            <xs:sequence>
+                <xs:element name="transportInfos" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="sctp" type="channelSctpType" minOccurs="0" maxOccurs="1"/>
+                            <!--your alternative transport infos here ... -->
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:extension>
+    </xs:complexContent>
+</xs:complexType>
+
+
+<xs:complexType name="createTransportableListenpointType">
+    <xs:complexContent>
+        <xs:extension base="operationType">
+            <xs:sequence>
+                <xs:element name="transportInfos" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="sctp" type="channelSctpType" minOccurs="0" maxOccurs="1"/>
+                            <!--your alternative transport infos here ... -->
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:extension>
+    </xs:complexContent>
+</xs:complexType>
+
+
+<xs:complexType name="sendTransportableMessageType">
+    <xs:complexContent>
+        <xs:extension base="operationType">    
+            <xs:sequence>
+                <xs:element name="transportInfos" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="sctp" type="messageSctpType" minOccurs="0" maxOccurs="1"/>
+                            <!--your alternative transport infos here ... -->
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:extension>
+    </xs:complexContent>
+</xs:complexType>
+
+<xs:complexType name="receiveTransportableMessageType">
+    <xs:complexContent>
+        <xs:extension base="operationType">    
+            <xs:sequence>
+                <xs:element name="transportInfos" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <!--your alternative transport infos here ... -->
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:extension>
+    </xs:complexContent>
+</xs:complexType>

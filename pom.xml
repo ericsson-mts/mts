@@ -178,6 +178,68 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <mainClass>build.tools.Main</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>scenario</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>src/main/conf/schemas/scenario.xsd</argument>
+                                <argument>target/mts/doc/schemas/scenario.html</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>master</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>src/main/conf/schemas/master.xsd</argument>
+                                <argument>target/mts/doc/schemas/master.html</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>src/main/conf/schemas/test.xsd</argument>
+                                <argument>target/mts/doc/schemas/test.html</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>parameter_operation</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>src/main/conf/schemas/parameter_operation.xsd</argument>
+                                <argument>target/mts/doc/schemas/parameter_operation.html</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>            
             <!-- build izpack installer -->
             <plugin>
                 <groupId>org.codehaus.izpack</groupId>
@@ -190,16 +252,16 @@
                         <version>${izpack.version}</version>
                     </dependency>
                 </dependencies>
-                <configuration>
-                    <izpackBasedir>${target.izpack.dir}</izpackBasedir>
-                </configuration>
                 <executions>
                     <execution>
                         <id>standard-installer</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>izpack</goal>
                         </goals>
+                        <configuration>
+                            <izpackBasedir>${target.izpack.dir}</izpackBasedir>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -320,6 +382,11 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>[3.0.0,)</version>
+        </dependency>
+        <dependency>
+            <groupId>com.samskivert</groupId>
+            <artifactId>jmustache</artifactId>
+            <version>1.14</version>
         </dependency>
         
         <!-- DEPENDENCIES THAT ARE NOT IN PUBLIC REPOS -->        
