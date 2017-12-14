@@ -1,8 +1,14 @@
 language: java
+branches:
+    only:
+        - master
+script:
+    - mvn version:set -DnewVersion=$TRAVIS_BRANCH
+    - mvn install
 deploy:
     provider: releases
     api_key: 
-        secure: "NJ75TWVqorSTYJnLbrNjoS1G1wIxD6hk4vUrdTi+j7nVgLd+vzRJpA11JNZqhpbNdEkhMkchsEF1fbnAEIZav7aP5VBG/C1NCSQBrdO0gp+nQlRlpo4YzjBrlcKxzshwX30pcdiytRzLVsLSpEtWwlyDo9pwmlJD4gYn+BUsQ4mrBTTJDv98jxAiTJ29LPNINTENV9s04T5N63deG0CDce0yB++6Dvm3pp2rUfs3sK+hI1uLJLaGojd5XbP6/hhpM8FGxEFvZIwBCN9XGUQPo1WAsNrR5LMIttQgZo4sJ4IF7IscmKX+fk/G+cMeOtdPM5h+yTBCNNrs+Zy8SSVlOiqFqRJfXF6kl2Yk9bTyy+Ba+9rBm6NVK+4PljcjmSBWBJHXjHkzL0/M3+ZzohTuGh8ee1fKzbZ5OvlX8lHJVA8m9d+A632rx49AVYX6/E1rJKhmRGatNzRD7Wu3K8Hc9wn0RiYa5A1kEPa9YuTFkLWEwtwJvhC32naHv3vpOE+3WHSubgBbEO5xxep4Sc+Nqv2cA6YOuOK8vsvPawYnhfuahq/+brtxzQdUdL4ZGUGLDHUrHlzK/RzZZUDCEskLWE/1qvC3hndsgEk/Doa0atevqiGvKueHWa5hr8hUZ9AjSCt401KvscZQd2Sn1Z6VWwq0UErOJOAzibDKRAIhi0c="
+        secure: "B0KvcAWk4/XThlLFbN8iIllnMJVejlw+7GeqdbttFIbyeeTrsX9FK/P6yr/vSLEd9QfujQCi1MeuNrprYcexhgS8SxdKuy/voe7tTtnXu2oTADk/HXzlGGEwz7+h9SvzDSKNJYYko4TDmSkMae3DmRLI5gTbBkZb2d1jJeUNS5BcRDsKnQ8GLxiYMSE+9hJkEJhvZ8nJbM2eMfomBjNhxMhkD/3g7uX0Zlzgx6OqI1x9hDV3SHFN8vOvJnGXsKxc0bNRA59zCkyedL2Pm4+C/+NJPbBr5dxHOi6rK6ZC6eSDwXC6Xd7AcXoXMji3m2mvq2m9tsBknePxlmnrY1JkbCpVgirr8dhad6jhrn7tbF1uYm40vgYl4Ut4vzP7SYOmq1us4CJ7gsLcIEorr8P03vdiIJer+9xFgv4SzJFGmNds9fAUdtiRU2C66axE2aO34/SAbESsmW8i/mZVAyI8MokVNSjKjTMTcEEsNF0YKamBGJPYXuAnrieTiQqvJSE6BRWmWI9YqA4hFoaIres4vTk+IQGvEgF1bSrr7k1pcCnB79QhI8leqL4NfAClUSrrX6GDgosRC79U6YiGWJyfT/n599VepSKrkvzJfikqDJWFpQuOxwviSAVOJTpX47Na5KFwR8cDtV1Z+jb8zkanC0Cl/IRR8yRdhyjOJvKAGaY="
     file_glob: true
     file: "target/*-standard.jar"
     skip_cleanup: true
