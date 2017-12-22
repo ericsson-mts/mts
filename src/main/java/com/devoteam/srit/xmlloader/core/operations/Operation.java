@@ -104,11 +104,6 @@ public abstract class Operation implements Serializable {
         _xmlTree.replace(_replacer, runner.getParameterPool());
     }
     
-    public void lockAndReplace(ParameterPool parameterPool) throws Exception{
-        _xmlTree.lock();
-        _xmlTree.replace(_replacer, parameterPool);
-    }
-    
     public void unlockAndRestore(){
         try{
             _xmlTree.restore();

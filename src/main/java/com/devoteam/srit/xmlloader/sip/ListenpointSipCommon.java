@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.sip;
 
 import javax.sip.address.Hop;
@@ -33,17 +32,16 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
-
 /**
  *
  * @author gpasquiers
  */
-public class ListenpointSipCommon extends Listenpoint
-{
+public class ListenpointSipCommon extends Listenpoint {
 
-    /** Creates a new instance of Listenpoint */
-    public ListenpointSipCommon(Stack stack) throws Exception
-    {
+    /**
+     * Creates a new instance of Listenpoint
+     */
+    public ListenpointSipCommon(Stack stack) throws Exception {
         super(stack);
         this.transport = null;
     }
@@ -51,71 +49,58 @@ public class ListenpointSipCommon extends Listenpoint
     //---------------------------------------------------------------------
     // methods for the transport
     //---------------------------------------------------------------------
-
-    /** Send a Msg to Connection */
+    /**
+     * Send a Msg to Connection
+     */
     @Override
-    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception
-    {
-		// case where transport is not provided into the sendMessage => take the default transport from the listenpoint
-        if (transport == null)
-        {
-        	transport = this.transport;
+    public synchronized boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception {
+        // case where transport is not provided into the sendMessage => take the default transport from the listenpoint
+        if (transport == null) {
+            transport = this.transport;
         }
-		// case where remote info is not provided => take the transport from the message
-		if ((remoteHost == null) || (remotePort <= 0 || transport == null)) 
-		{        		        	
-    		Hop hop = DefaultRouter.getInstance().getNextHop(msg);
-    		if (hop != null)
-    		{
-				if (remoteHost == null)
-				{
-					remoteHost = hop.getHost();
-				}
-				if (remotePort <= 0)
-				{
-					remotePort = hop.getPort();
-				}
-		    	if (transport == null)
-		    	{
-		    		transport = hop.getTransport();
-		    	}
-    		}
-		}    
-    	// else => take the transport from the config
-    	if (transport == null)
-    	{	
-    		transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
-    	}
+        // case where remote info is not provided => take the transport from the message
+        if ((remoteHost == null) || (remotePort <= 0 || transport == null)) {
+            Hop hop = DefaultRouter.getInstance().getNextHop(msg);
+            if (hop != null) {
+                if (remoteHost == null) {
+                    remoteHost = hop.getHost();
+                }
+                if (remotePort <= 0) {
+                    remotePort = hop.getPort();
+                }
+                if (transport == null) {
+                    transport = hop.getTransport();
+                }
+            }
+        }
+        // else => take the transport from the config
+        if (transport == null) {
+            transport = stack.getConfig().getString("listenpoint.TRANSPORT", StackFactory.PROTOCOL_UDP);
+        }
         // case where transport equals RFC : transport is chosen as recommended in the 3261 RFC
-        if ("rfc".equalsIgnoreCase(transport))
-        {
-        	transport = StackFactory.PROTOCOL_UDP;
-        	if (msg.getLength() > 1300)
-        	{
-        		transport = StackFactory.PROTOCOL_TCP;
-        	}
+        if ("rfc".equalsIgnoreCase(transport)) {
+            transport = StackFactory.PROTOCOL_UDP;
+            if (msg.getLength() > 1300) {
+                transport = StackFactory.PROTOCOL_TCP;
+            }
         }
 
-		return super.sendMessage(msg, remoteHost, remotePort, transport);
+        return super.sendMessage(msg, remoteHost, remotePort, transport);
     }
 
-    
     //---------------------------------------------------------------------
     // methods for the XML display / parsing 
     //---------------------------------------------------------------------
-
-    /** 
-     * Parse the listenpoint from XML element 
+    /**
+     * Parse the listenpoint from XML element
      */
-    public void parseFromXml(Element root, Runner runner) throws Exception
-    {
-    	super.parseFromXml(root, runner);
-    	
-    	// DEPRECATED begin
+    public void parseFromXml(Element root, Runner runner) throws Exception {
+        super.parseFromXml(root, runner);
+
+        // DEPRECATED begin
         this.name = root.attributeValue("name");
-        if (this.name == null)
-        {
-        	this.name = root.attributeValue("providerName");
+        if (this.name == null) {
+            this.name = root.attributeValue("providerName");
         }
         // DEPRECATED end
     }

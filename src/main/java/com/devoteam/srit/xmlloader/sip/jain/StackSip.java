@@ -20,50 +20,47 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.sip.jain;
 
 import java.io.InputStream;
 
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.sip.StackSipCommon;
-
+import gov.nist.javax.sip.parser.StringMsgParser;
 
 /**
  *
  * @author gpasquiers
  */
-public class StackSip extends StackSipCommon
-{
+public class StackSip extends StackSipCommon {
 
-    /** Constructor */
-    public StackSip() throws Exception
-    {
-        super();     
-    }
-        
-    /** Receive a message */
-    @Override
-    public boolean receiveMessage(Msg msg) throws Exception
-    {
-		((MsgSip) msg).completeViaTopmostHeader();
-		return super.receiveMessage(msg);
-    }
-
-    /** 
-     * Read the message data from the stream
-     * Use for TCP/TLS like protocol : to build incoming message  
+    /**
+     * Constructor
      */
-    @Override    
-    public byte[] readMessageFromStream(InputStream  inputStream) throws Exception
-    {
-    	String text = null;
-    	synchronized (inputStream)
-    	{
-    		text = this.reader(inputStream);
-    	}
-    	
-    	return text.getBytes();
-	}
+    public StackSip() throws Exception {
+        super();
+        StringMsgParser.setComputeContentLengthFromMessage(true);
+    }
 
+    /**
+     * Receive a message
+     */
+    @Override
+    public boolean receiveMessage(Msg msg) throws Exception {
+        ((MsgSip) msg).completeViaTopmostHeader();
+        return super.receiveMessage(msg);
+    }
+
+    /**
+     * Read the message data from the stream Use for TCP/TLS like protocol : to
+     * build incoming message
+     */
+    @Override
+    public byte[] readMessageFromStream(InputStream inputStream) throws Exception {
+        String text = null;
+        synchronized (inputStream) {
+            text = this.reader(inputStream);
+        }
+        return text.getBytes();
+    }
 }

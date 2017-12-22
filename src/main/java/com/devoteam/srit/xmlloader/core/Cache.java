@@ -32,56 +32,32 @@ import java.util.HashMap;
  */
 public class Cache {
 
-    static private HashMap<String, XMLDocument> _xmlCache = new HashMap<String, XMLDocument>();
-    static private HashMap<XMLDocument, Scenario> _scenarioCache = new HashMap<XMLDocument, Scenario>();
-    static private boolean _enabled = true;
-
-    static public void enable() {
-        _enabled = true;
-    }
-
-    static public void disable() {
-        _enabled = false;
-    }
+    static private final HashMap<String, XMLDocument> XML_CACHE = new HashMap<String, XMLDocument>();
+    static private final HashMap<XMLDocument, Scenario> SCENARIO_CACHE = new HashMap<XMLDocument, Scenario>();
 
     static public XMLDocument getXMLDocument(URI pathXML, URI pathXSD) throws Exception {
-        XMLDocument xmlDocument = null;
-
-        if (_enabled) {
-            xmlDocument = _xmlCache.get(pathXML.toString());
-        }
-
+        XMLDocument xmlDocument = XML_CACHE.get(pathXML.toString());
         if (null == xmlDocument) {
             xmlDocument = new XMLDocument();
             xmlDocument.setXMLSchema(pathXSD);
             xmlDocument.setXMLFile(pathXML);
             xmlDocument.parse();
-            if (_enabled) {
-                _xmlCache.put(pathXML.toString(), xmlDocument);
-            }
+            XML_CACHE.put(pathXML.toString(), xmlDocument);
         }
-
-
         return xmlDocument;
     }
 
     static public Scenario getScenario(XMLDocument document) throws Exception {
-        Scenario scenario = null;
-
-        scenario = _scenarioCache.get(document);
-
+        Scenario scenario = SCENARIO_CACHE.get(document);
         if (null == scenario) {
             scenario = new Scenario(document);
-            if (_enabled) {
-                _scenarioCache.put(document, scenario);
-            }
+            SCENARIO_CACHE.put(document, scenario);
         }
-
         return scenario;
     }
 
     static public void reset() {
-        _xmlCache.clear();
-        _scenarioCache.clear();
+        XML_CACHE.clear();
+        SCENARIO_CACHE.clear();
     }
 }
