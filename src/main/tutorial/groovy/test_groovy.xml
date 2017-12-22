@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test name="groovy tests">
+ 
+	<!-- load the global tests parameters from a groovy file-->
+	<groovy name="TestParams.groovy"/>
+	
+	<!-- scenario with some valid controls on SDP  -->
+	
+	<testcase name="test_OK" state="true">
+	        <groovy>
+                        testcaseparam="I am a parameter instanciated in testcase"
+                </groovy>
+		<parameter name="[Caller]" operation="set" value="[MTS_Tpo11ID]"/>
+		<parameter name="[Callee]" operation="set" value="[MTS_Tpo12ID]"/>
+		<parameter name="[CalleeDialedNb]" operation="set" value="[[Callee]Nb]"/>
+		<parameter name="[CalleeNb]" operation="set" value="[CalleeDialedNb]"/> <!-- Nb present in "To" -->
+		<parameter name="[CalleeControl]" operation="set" value="control_on_TPOtoTPO_callee"/>
+		<scenario file="scenarioOK.xml" name="alice" />
+	</testcase>
+
+	<!-- scenario with some invalid controls on SDP  -->
+
+	<testcase name="test_KO" state="true">
+		<parameter name="[Caller]" operation="set" value="[MTS_Tpo11ID]"/>
+		<parameter name="[Callee]" operation="set" value="[MTS_Tpo12ID]"/>
+		<parameter name="[CalleeDialedNb]" operation="set" value="[[Callee]Nb]"/>
+		<parameter name="[CalleeNb]" operation="set" value="[CalleeDialedNb]"/> <!-- Nb present in "To" -->
+		<parameter name="[CalleeControl]" operation="set" value="control_on_TPOtoTPO_callee"/>
+		<scenario file="scenarioKO.xml" name="alice" />
+	</testcase>
+
+</test>
