@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<!--
+  this scenario generates a SDP, controls that the SDP is valid, and pass. 
+-->
+
+<!-- 
+	the groovy actions are declared in a <groovy> tag 
+ 	we load some extra groovy library (same as <function> in MTS)
+ -->
+
+	<groovy name="Sdp.groovy;Control.groovy">
+		
+		//we can declare some MTS parameter here :
+		BOB_tel="0296123456"
+		BOBNb="bob_nb"
+		BOBHost="bob_host"
+		BOBID="bob_id"
+		BOBPANI="bob_pani"
+		ALICEProxy="bob_pani"
+		lastPAccessNetworkInfo="bob_pani"
+		lastPAssertedIdentity=""
+		LastSDPMediaFormat="8"
+		lastPrivacy="none"
+		lastFromUri="last_from_uri"
+		lastContactURI="last_contact_uri"
+		lastPAssertedIdentity="last_PAI"
+		LastSDPMediaAttribut="a=fmtp:18 annexb=no|"
+		lastUUI="04746573742022707572706f73652d757569222064752031332d30322d32303135;encoding=hex;content=isdn-uui;purpose=isdn-uui"
+		
+		//generate the sdp by calling a function from the Sdp.groovy library
+		// and set the result into an MTS parameter
+		sdpcaller1=groovy_Sdp.generate_sdp_caller(CallerCodecs)
+
+		//example of logging a parameter value
+		info("GROOVY sdpcaller1= $sdpcaller1")
+
+		//control that the generated sdp if valid
+		groovy_Control.control(CalleeControl)
+	</groovy>
+</scenario>
