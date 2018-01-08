@@ -33,26 +33,11 @@ class TestParams extends MTSScript {
 		 <parameter name="[MTS_PortSIP]"  editable="true" operation="set" value="5060" />
 		 <parameter name="[Remote_PortSIP]"  editable="true" operation="set" value="5060" />
 		 */
-
-		// -------------------------------------
-		// Number parameters examples
-		// -------------------------------------
-		CallerSdpSessionId=groovy_operation.number.random(10000)
-		CallerSdpSessionVersion=CallerSdpSessionId
-		CalleeSdpSessionId=groovy_operation.number.random(10000)
-		CalleeSdpSessionVersion=CalleeSdpSessionId
-		/**
-		 This is equivalent to the following MTS params:
-		 <parameter name="[CallerSdpSessionId]" 		operation="number.random" 	value="10000"/>
-		 <parameter name="[CallerSdpSessionVersion]" 	value="[CallerSdpSessionId]"/>
-		 <parameter name="[CalleeSdpSessionId]" 		operation="number.random" 	value="10000"/>
-		 <parameter name="[CalleeSdpSessionVersion]" 	value="[CalleeSdpSessionId]"/>
-		 */
  
 		// -------------------------------------
 		// other parameters examples
 		// -------------------------------------
-		parameter([name:"FileWave",operation:"file.readwave",value:"../../resources/vb_court.wav",value2:"20"])
+		//parameter([name:"FileWave",operation:"file.readwave",value:"../../resources/vb_court.wav",value2:"20"])
 		/**
 		 This is equivalent to the following MTS params:
 		 <parameter name="FileWave" operation="file.readwave" value="resources/vb_court.wav" value2="20"/>
@@ -77,7 +62,6 @@ class TestParams extends MTSScript {
 			*/
 		
 			LastSDPMediaFormat="8"
-			CallerSdpSessionId=groovy_operation.number.random(10000)
 		}
 
 
