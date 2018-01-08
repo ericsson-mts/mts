@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-import com.devoteam.srit.xmlloader.core.groovy.GroovyParameterOperator
 import com.devoteam.srit.xmlloader.core.groovy.TestParameter;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
@@ -59,8 +58,6 @@ import groovy.lang.Script
  */
 abstract class MTSScript extends Script {
 
-	static GroovyParameterOperator groovy_operation = new GroovyParameterOperator()
-	
 	/**
 	 * this method is called when the groovy script is executed
 	 */
