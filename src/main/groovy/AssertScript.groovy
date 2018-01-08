@@ -34,41 +34,41 @@ abstract class AssertScript extends MTSScript {
      * this method is called when the groovy script is executed
      * here can go any common pre/post action
      */
-	def run() {
-		// declare the failed test counter
-		_counter=0	
-	}
+    def run() {
+        // declare the failed test counter
+        _counter=0	
+    }
 	
-	/**
-	 * reset failed tests counter
-	 *  
-	 * @return
-	 */
-	def initCheck() {
-		_counter=0;
-	}
+    /**
+     * reset failed tests counter
+     *  
+     * @return
+     */
+    def initCheck() {
+        _counter=0;
+    }
 	
-	/**
-	  * evaluate the test assertion but do not fail immediately, only increment failed test counter
-	  **/
-	def testAndCheckLater={cl->
-		try {
-			cl()
-		} catch (PowerAssertionError pae) {
-			_counter++
-			error(pae.getMessage())
-		}
-	}
+    /**
+     * evaluate the test assertion but do not fail immediately, only increment failed test counter
+     **/
+    def testAndCheckLater={cl->
+        try {
+            cl()
+        } catch (PowerAssertionError pae) {
+            _counter++
+            error(pae.getMessage())
+        }
+    }
 	
-	/**
-	  * fail now if the failed test counter if not empty
-	  */
-	def checkResults() {
-		if (_counter>0) {
-			throw new AssertionError("$_counter test(s) failed")
-		}
-		_counter=0;
-	}
+    /**
+     * fail now if the failed test counter if not empty
+     */
+    def checkResults() {
+        if (_counter>0) {
+            throw new AssertionError("$_counter test(s) failed")
+        }
+        _counter=0;
+    }
 
 
 }

@@ -34,15 +34,11 @@ abstract class CustomScript extends MTSScript {
      * this method is called when the groovy script is executed
      * here can go any common pre/post action
      */
-	def run() {
+    def run() {
         runCode()
     }
  
     // Abstract method as placeholder for
     // the actual groovy script code to run.
     abstract def runCode()
-
-
-
-
 }

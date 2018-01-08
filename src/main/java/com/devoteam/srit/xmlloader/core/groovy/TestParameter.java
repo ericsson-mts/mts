@@ -28,35 +28,33 @@ package com.devoteam.srit.xmlloader.core.groovy;
  * <ul>
  * <li>editable</li>
  * </ul>
- * 
+ *
  * @author mickael.jezequel@orange.com
  *
  */
 public class TestParameter {
 
-	Object value;
+    Object value;
 
-	boolean editable;
+    boolean editable;
 
-	/**
-	 * constructor
-	 * 
-	 * @param value
-	 *            the MTS parameter value
-	 * @param editable
-	 *            flag for editable parameters
-	 */
-	public TestParameter(Object value, boolean editable) {
-		this.value = value;
-		this.editable = editable;
-	}
+    /**
+     * constructor
+     *
+     * @param value the MTS parameter value
+     * @param editable flag for editable parameters
+     */
+    public TestParameter(Object value, boolean editable) {
+        this.value = value;
+        this.editable = editable;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public Object getValue() {
+        return value;
+    }
 
-	public boolean isEditable() {
-		return editable;
-	}
+    public boolean isEditable() {
+        return editable;
+    }
 
 }
