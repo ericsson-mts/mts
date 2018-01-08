@@ -297,6 +297,10 @@ public class Scenario implements Serializable {
         {
             ope = new OperationSystem(root);
         }
+        else if (rootName.equals("groovy")) 
+        {
+            ope = new OperationGroovy(root);
+        }
         else if (rootName.equals("test")) 
         {
             ope = new OperationTest(root);

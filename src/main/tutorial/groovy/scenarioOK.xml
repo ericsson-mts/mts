@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+<!--
+  this scenario generates a SDP, controls that the SDP is valid and fails
+-->
+
+	
+	<groovy name="TestParams.groovy;Sdp.groovy;Control.groovy">
+		//declare some MTS parameter
+		MTS_Tpo11_tel="0296123456"
+		BOB_tel="+33399121050"
+		BOBNb="+33399121050"
+		BOBHost="172.20.170.175"
+		BOBID="bob_id"
+		BOBPANI="bob_pani"
+		ALICEProxy="bob_pani"
+		lastPAccessNetworkInfo="bob_pani"
+		lastPAssertedIdentity=+33399121050
+		LastSDPMediaFormat="8"
+		lastPrivacy="none"
+		lastFromUri=getMTSParam("sip:[[Caller]Nb]@[[Caller]_Host];user=phone")
+		lastContactURI=getMTSParam("sip:[[Caller]Nb]@[[Callee]_remoteHost]")
+		lastPAssertedIdentity=getMTSParam("[[Caller]Nb]")
+		LastSDPMediaAttribut="a=fmtp:18 annexb=no|"
+		lastUUI="04746573742022707572706f73652d757569222064752031332d30322d32303135;encoding=hex;content=isdn-uui;purpose=isdn-uui"
+	
+		//pause 0 milliseconds
+		com.devoteam.srit.xmlloader.core.utils.Utils.pauseMilliseconds(0000)
+		
+		//call a function and retrieve the result into an MTS parameter
+		sdpcaller=groovy_Sdp.generate_sdp_caller(CallerCodecs)
+		
+		//do some logging
+		info("GROOVY sdpcaller= $sdpcaller")
+
+		groovy_Control.control(CalleeControl)
+	</groovy>
+
+
+</scenario>

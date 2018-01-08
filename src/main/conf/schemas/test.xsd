@@ -15,6 +15,12 @@
 
     <xs:complexType name="testType">
         <xs:sequence minOccurs="0" maxOccurs="1">
+        	<xs:element name="groovy" type="operationTypeSimple" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,N]</xs:appinfo>
+                    <xs:documentation>To set some groovy parameters at the test level.</xs:documentation>
+                </xs:annotation>
+        	</xs:element>
             <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:appinfo>fixed [0,N]</xs:appinfo>
@@ -97,6 +103,12 @@
     </xs:complexType>
     <xs:complexType name="testcaseType">
         <xs:sequence>
+        	<xs:element name="groovy" type="operationTypeSimple" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:appinfo>fixed [0,N]</xs:appinfo>
+                    <xs:documentation>To set some groovy parameters at the testcase level.</xs:documentation>
+                </xs:annotation>
+        	</xs:element>
             <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:appinfo>fixed [0,N]</xs:appinfo>
