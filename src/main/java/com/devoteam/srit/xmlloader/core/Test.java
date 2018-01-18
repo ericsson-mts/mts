@@ -529,6 +529,10 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
     }
 
     public void generateTestplan() {
+        generateTestplan("../logs/testPlan.csv");
+    }
+    
+    public void generateTestplan(String path) {
         String nameTestCase;
         String description;
         PrintWriter pw = null;
@@ -536,7 +540,7 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
         Boolean statComplete;
         String etatTestcase;
         try {
-            File csvFile = new File("../logs/testPlan.csv");
+            File csvFile = new File(path);
             pw = new PrintWriter(new FileWriter(csvFile, true));
             if (csvFile.length() == 0) {
                 pw.println("Name" + ";" + "Description" + ";" + "Test Status");

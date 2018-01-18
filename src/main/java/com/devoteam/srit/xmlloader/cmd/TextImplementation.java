@@ -65,6 +65,7 @@ public class TextImplementation {
 
         String testFilename = args[0];
         String runnerName = "-seq";
+        String csvReportPath = null;
         if (args.length >= 2) {
             runnerName = args[1];
         }
@@ -95,17 +96,6 @@ public class TextImplementation {
             else if (arg.startsWith("-rand") && "-random".startsWith(arg)) {                
                 runnerName = "-random";
             }
-            else if (arg.startsWith("-testplan")) {
-
-                URI uri = new File(testFilename).toURI();
-                try {
-                    TextTester textTester = new TextTester(uri, "-testplan", parameterEditable);
-                }
-                catch (Exception ex) {
-                    GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "error generate Test plan : path : ", uri.getPath());
-                }
-                System.exit(0);
-            }
             else if (splitted.length == 2 && splitted[0].startsWith("-config") && "-configuration".startsWith(splitted[0])) {
                 try {
                     String nameValue = splitted[1];
@@ -126,6 +116,20 @@ public class TextImplementation {
                     e.printStackTrace();
                     usage("Unable to set the configuration parameters with the -config[uration] option.");
                 }
+            }
+            else if (splitted.length == 2 && splitted[0].startsWith("-csvReport") && "-csvReport".startsWith(splitted[0])) {
+                csvReportPath = splitted[1];
+            }
+            else if (arg.startsWith("-testplan")) {
+
+                URI uri = new File(testFilename).toURI();
+                try {
+                    TextTester textTester = new TextTester(uri, "-testplan", parameterEditable);
+                }
+                catch (Exception ex) {
+                    GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "error generate Test plan : path : ", uri.getPath());
+                }
+                System.exit(0);
             }
             else if (splitted.length == 2 && splitted[0].startsWith("-param") && "-parameter".startsWith(splitted[0])) {
                 try {
@@ -213,7 +217,11 @@ public class TextImplementation {
 
             }
             //Generer un test plan en mode cmd
-            textTester.getRunner().getTest().generateTestplan();
+            if(null != csvReportPath){
+                textTester.getRunner().getTest().generateTestplan(csvReportPath);
+            } else{
+                textTester.getRunner().getTest().generateTestplan();
+            }
             // Return the status to the process
 
             if (textTester.getRunner().getState().isFailed() || textTester.getRunner().getState().isInterrupted()) {
