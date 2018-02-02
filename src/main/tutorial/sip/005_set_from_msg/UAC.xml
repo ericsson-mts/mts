@@ -15,7 +15,7 @@
     
     <parameter name="[timestamp1]" operation="system.timestamp" value="1970"/>
     
-    <sendMessageSIP name="Send INVITE" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+    <parameter name="[text]" operation="list.set">
           <![CDATA[
           
           INVITE tel:[inviteeName1] SIP/2.0
@@ -90,6 +90,23 @@
           </resource-lists>
           
           ------=_Part_0--]]>
+    </parameter>
+
+    <parameter name="[message]" operation="protocol.parseMessage" value="[text]" value2="SIP"/>
+    <test parameter="[message]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[message]" condition="string.contains" value="-=_Part_0"/>
+    <!--test parameter="[message]" condition="string.contains" value="-=_Part_0-"/-->
+
+    
+    <parameter name="[type]" operation="protocol.setFromMessage" value="message.type" value2="[message]"/>
+    <test parameter="[type]" condition="string.equals" value="INVITE"/>
+    <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text" value2="[message]"/>
+    <test parameter="[texttext]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
+    <!--test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/-->
+
+    <sendMessageSIP name="Send INVITE" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
+        [text]
     </sendMessageSIP>
     
     <parameter name="[transID]" operation="protocol.setFromMessage" value="transaction.id"/>
