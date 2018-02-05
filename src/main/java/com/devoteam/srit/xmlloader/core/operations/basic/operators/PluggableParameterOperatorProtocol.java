@@ -25,6 +25,7 @@ package com.devoteam.srit.xmlloader.core.operations.basic.operators;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
+import com.devoteam.srit.xmlloader.core.ScenarioRunner;
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
@@ -82,7 +83,8 @@ public class PluggableParameterOperatorProtocol extends AbstractPluggableParamet
                 Element root = new BaseElement("root");
                 root.addText(text);
                 Msg msg = stack.parseMsgFromXml(context, root, runner);
-                result.add(msg);
+                result.add(msg);	
+                ((ScenarioRunner) runner).setCurrentMsg(msg);
             }
         }
         return result;

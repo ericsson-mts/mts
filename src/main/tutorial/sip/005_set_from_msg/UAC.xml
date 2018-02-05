@@ -95,16 +95,42 @@
     <parameter name="[message]" operation="protocol.parseMessage" value="[text]" value2="SIP"/>
     <test parameter="[message]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
     <test parameter="[message]" condition="string.contains" value="-=_Part_0"/>
-    <!--test parameter="[message]" condition="string.contains" value="-=_Part_0-"/-->
-
+    <test parameter="[message]" condition="string.contains" value="-=_Part_0-"/>
     
-    <parameter name="[type]" operation="protocol.setFromMessage" value="message.type" value2="[message]"/>
-    <test parameter="[type]" condition="string.equals" value="INVITE"/>
     <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text" value2="[message]"/>
     <test parameter="[texttext]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
     <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
-    <!--test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/-->
+    <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
 
+    <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text"/>
+    <test parameter="[texttext]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
+    <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
+    
+    <parameter name="[type]" operation="protocol.setFromMessage" value="message.type" value2="[message]"/>
+    <test parameter="[type]" condition="string.equals" value="INVITE"/>
+
+    <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+    <test parameter="[type]" condition="string.equals" value="INVITE"/>
+    
+    <parameter name="[requestURI]" operation="protocol.setFromMessage" value="firstline.URI" value2="[message]"/>
+    <test parameter="[requestURI]" condition="string.equals" value="tel:1234"/>
+
+    <parameter name="[requestURI]" operation="protocol.setFromMessage" value="firstline.URI"/>
+    <test parameter="[requestURI]" condition="string.equals" value="tel:1234"/>
+
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To" value2="[message]"/>
+    <test parameter="[To]" condition="string.equals" value="&quot;&lt;[inviteeName1] =,;DUPOND&gt;=,;&quot; &lt;tel:[inviteeName1]&gt;"/>
+
+    <parameter name="[To]" operation="protocol.setFromMessage" value="header.To"/>
+    <test parameter="[To]" condition="string.equals" value="&quot;&lt;[inviteeName1] =,;DUPOND&gt;=,;&quot; &lt;tel:[inviteeName1]&gt;"/>
+                                              
+    <parameter name="[Call-ID]" operation="protocol.setFromMessage" value="header.Call-ID" value2="[message]"/>
+    <test parameter="[Call-ID]" condition="string.equals" value="[CallId]"/>
+
+    <parameter name="[Call-ID]" operation="protocol.setFromMessage" value="header.Call-ID"  />
+    <test parameter="[Call-ID]" condition="string.equals" value="[CallId]"/>
+    
     <sendMessageSIP name="Send INVITE" remoteHost="[remoteHostSIP]" remotePort="[remotePortSIP]">
         [text]
     </sendMessageSIP>
