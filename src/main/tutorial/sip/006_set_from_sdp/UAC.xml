@@ -12,9 +12,9 @@
   <parameter name="[newBranchId]" operation="string.random" value="10"/>
   <parameter name="[newBranchIdBYE]" operation="string.random" value="10"/>
 
-  <sendMessageSIP name="Send INVITE">
-<!--******************* BEGIN MESSAGE ********************-->
-<![CDATA[INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0
+  <parameter name="[text]" operation="list.set">
+  <![CDATA[
+INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0
 From: "[clientName]" <sip:[clientName]@[101_DOMAIN_ADDR]>;tag=[localTag]
 To: sip:[inviteeName1]@[101_DOMAIN_ADDR]
 Call-ID:[CallId]
@@ -89,7 +89,39 @@ Content-Disposition: recipient-list
 </list>
 </resource-lists>
 ------=_Part_0--]]>
-                <!--******************** END MESSAGE *********************-->
+  </parameter>            
+
+  <parameter name="[message]" operation="protocol.parseMessage" value="[text]" value2="SIP"/>
+  <test parameter="[message]" condition="string.contains" value="INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0"/>
+  <test parameter="[message]" condition="string.contains" value="-=_Part_0"/>
+  <test parameter="[message]" condition="string.contains" value="-=_Part_0-"/>
+    
+  <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text" value2="[message]"/>
+  <test parameter="[texttext]" condition="string.contains" value="INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0"/>
+  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
+  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
+
+  <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text"/>
+  <test parameter="[texttext]" condition="string.contains" value="INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0"/>
+  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
+  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
+
+  <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address" value2="[message]"/>
+  <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="224.2.17.12"/>
+
+  <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address"/>
+  <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="224.2.17.12"/>
+  
+  <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port" value2="[message]"/>
+  <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
+  <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+
+  <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
+  <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
+  <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+
+  <sendMessageSIP name="Send INVITE">
+  [text]
   </sendMessageSIP>
 
   <receiveMessageSIP name="Wait 100 Trying" request="false" type="INVITE" result="100">

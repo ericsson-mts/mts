@@ -16,8 +16,7 @@
     <parameter name="[timestamp1]" operation="system.timestamp" value="1970"/>
     
     <parameter name="[text]" operation="list.set">
-          <![CDATA[
-          
+          <![CDATA[          
           INVITE tel:[inviteeName1] SIP/2.0
           t: "<[inviteeName1] =,;DUPOND>=,;" <tel:[inviteeName1]>
           From: "<[clientName] ,=;DURANT>,=;" <sip:[clientName]@[103_DOMAIN_ADDR];TesterId=6789>;tag=[testcase:localTag]
@@ -93,17 +92,17 @@
     </parameter>
 
     <parameter name="[message]" operation="protocol.parseMessage" value="[text]" value2="SIP"/>
-    <test parameter="[message]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[message]" condition="string.contains" value="INVITE tel:[inviteeName1] SIP/2.0"/>
     <test parameter="[message]" condition="string.contains" value="-=_Part_0"/>
     <test parameter="[message]" condition="string.contains" value="-=_Part_0-"/>
     
     <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text" value2="[message]"/>
-    <test parameter="[texttext]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[texttext]" condition="string.contains" value="INVITE tel:[inviteeName1] SIP/2.0"/>
     <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
     <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
 
     <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text"/>
-    <test parameter="[texttext]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
+    <test parameter="[texttext]" condition="string.contains" value="INVITE tel:[inviteeName1] SIP/2.0"/>
     <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
     <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
     
