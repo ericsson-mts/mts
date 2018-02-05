@@ -23,12 +23,15 @@
 
 package com.devoteam.srit.xmlloader.core.log;
 
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import java.util.List;
 
 public class GenericLogger
 {
+	/** Maximum number of characters to write into the log */
+    protected static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);	
     
     public void debug(TextEvent.Topic topic, Object... objects)
     {
@@ -107,8 +110,23 @@ public class GenericLogger
                 for(Object object:objects)
                 {
                     if(null != object)
-                    {
-                        message.append(object.toString());
+                    {                       
+                        String logMessage = object.toString();
+                        // cut if log message is too long                        		
+                        if (logMessage.length() > MAX_STRING_LENGTH)
+                        {
+                        	message.append(" {");
+                        	message.append(MAX_STRING_LENGTH);
+                        	message.append(" of ");
+                        	message.append(logMessage.length());
+                        	message.append("} ");
+                        	message.append(logMessage.substring(0, MAX_STRING_LENGTH));
+                        }
+                        else
+                        {
+                        	message.append(logMessage);
+                        }
+
                     }
                 }
 

@@ -279,6 +279,7 @@ public class Parameter {
             add(value);
         }
         else {
+        	
             if (null != value) {
                 array.set(index, value);
             }
@@ -292,7 +293,7 @@ public class Parameter {
     @Override
     public String toString() {
         String res = "";
-        long length = length();
+        int length = length();
 
         if (length > MAX_LIST_SIZE) {
             res += "[" + MAX_LIST_SIZE + " of " + length + "]";
@@ -305,11 +306,11 @@ public class Parameter {
         res += "(";
 
         int i = 0;
-
         while (i < length) {
-            if (array.get(i).toString().length() > MAX_STRING_LENGTH) 
+            int maxLength = ((int) MAX_STRING_LENGTH) / length;
+            if (array.get(i).toString().length() > maxLength) 
             {
-                res += "{" + MAX_STRING_LENGTH + " of " + array.get(i).toString().length() + "}" + array.get(i).toString().substring(0, MAX_STRING_LENGTH) + ",";
+                res += "{" + maxLength + " of " + array.get(i).toString().length() + "}" + array.get(i).toString().substring(0, maxLength) + ",";
             }
             else {
                 res += array.get(i) + "|";
