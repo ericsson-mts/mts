@@ -92,19 +92,21 @@ Content-Disposition: recipient-list
   </parameter>            
 
   <parameter name="[message]" operation="protocol.parseMessage" value="[text]" value2="SIP"/>
-  <test parameter="[message]" condition="string.contains" value="INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0"/>
-  <test parameter="[message]" condition="string.contains" value="-=_Part_0"/>
-  <test parameter="[message]" condition="string.contains" value="-=_Part_0-"/>
+  <test parameter="[message]" condition="string.contains" value="c=IN IP4 224.2.17.12/127"/>
+  <test parameter="[message]" condition="string.contains" value="m=video 49232/2 RTP/AVP 98"/>
+  <test parameter="[message]" condition="string.contains" value="m=audio 49230/3 RTP/AVP 96"/>
+  <test parameter="[message]" condition="string.contains" value="&lt;entry uri=&quot;[inviteeName1]&quot;/&gt;"/>
     
-  <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text" value2="[message]"/>
-  <test parameter="[texttext]" condition="string.contains" value="INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0"/>
-  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
-  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
+  <parameter name="[content]" operation="protocol.setFromMessage" value="content" value2="[message]"/>
+  <test parameter="[content]" condition="string.contains" value="c=IN IP4 224.2.17.12/127"/>
+  <test parameter="[content]" condition="string.contains" value="m=video 49232/2 RTP/AVP 98"/>
+  <test parameter="[content]" condition="string.contains" value="m=audio 49230/3 RTP/AVP 96"/>
+  <test parameter="[content]" condition="string.contains" value="&lt;entry uri=&quot;[inviteeName1]&quot;/&gt;"/>
 
-  <parameter name="[texttext]" operation="protocol.setFromMessage" value="message.text"/>
-  <test parameter="[texttext]" condition="string.contains" value="INVITE sip:[inviteeName1]@[101_DOMAIN_ADDR] SIP/2.0"/>
-  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0"/>
-  <test parameter="[texttext]" condition="string.contains" value="-=_Part_0-"/>
+  <parameter name="[content0]" operation="protocol.setFromMessage" value="content(0)"/>
+  <test parameter="[content0]" condition="string.contains" value="c=IN IP4 224.2.17.12/127"/>
+  <test parameter="[content0]" condition="string.contains" value="m=video 49232/2 RTP/AVP 98"/>
+  <test parameter="[content0]" condition="string.contains" value="m=audio 49230/3 RTP/AVP 96"/>
 
   <parameter name="[SDPConnectionAddress0]" operation="protocol.setFromMessage" value="content(0).Sdp.Connection.Address" value2="[message]"/>
   <test parameter="[SDPConnectionAddress0]" condition="string.equals" value="224.2.17.12"/>
@@ -119,6 +121,12 @@ Content-Disposition: recipient-list
   <parameter name="[SDPMediaPort0]" operation="protocol.setFromMessage" value="content(0).Sdp.Media.Port"/>
   <test parameter="[SDPMediaPort0(0)]" condition="string.equals" value="49232"/>
   <test parameter="[SDPMediaPort0(1)]" condition="string.equals" value="49230"/>
+
+  <parameter name="[content1]" operation="protocol.setFromMessage" value="content(1)"/>  
+  <test parameter="[content1]" condition="string.contains" value="&lt;entry uri=&quot;[inviteeName1]&quot;/&gt;"/>
+
+  <parameter name="[uri]" operation="string.xpath" value="[content1]" value2="//@uri"/>
+  <test parameter="[uri]" condition="string.equals" value="[inviteeName1]"/>
 
   <sendMessageSIP name="Send INVITE">
   [text]
