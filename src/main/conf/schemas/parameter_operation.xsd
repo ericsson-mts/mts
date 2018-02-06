@@ -2970,9 +2970,9 @@
                     </xs:attribute>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="protocol.setFromSDP">
+            <xs:element name="protocol.setFromAddress">
                 <xs:annotation>
-                    <xs:documentation>Reads a field from a SDP block.</xs:documentation>
+                    <xs:documentation>Reads a field from a SIP address.</xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
                     <xs:attribute name="name" type="xs:string" use="required">
@@ -2982,32 +2982,39 @@
                     </xs:attribute>
                     <xs:attribute name="value" type="xs:string" use="required">
                         <xs:annotation>
-                            <xs:documentation>The SDP block to analyse.</xs:documentation>
+                            <xs:documentation>The SIP address to analyse.</xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                     <xs:attribute name="value2" type="xs:string" use="required">
                         <xs:annotation>
-                            <xs:documentation>Path keyword to choose the part to retrieve.  
-                                for line o = origin [:address | :addressType | :networkType | :sessionId | :sessionVersion | :userName]  
-                                for line b = bandwidth [:type | :value] 
-                                fro line c = connection [:address | :addressType | :networkType] 
-                                for line i = information 
-                                for line k = key [:value | :method] 
-                                for line p = phone 
-                                for line e = email 
-                                for line m = media [:port |:type |:protocol |:information |:key [:key keyword] | :format | :portCount | :connection [:connection keyword] | :bandwith [:bandwidth path] | :mimeParameters | :mimesTypes | :attribut [:XXXXX]]  
-                                for line s = sessionName 
-                                for line v = version 
-                                for line u = uri 
-                                for line t = time [:start | :stop] 
-                                for line z = zoneAdjustment 
-                                for line r = repeatTime: duration | interval | offset 
-                                for line a = attribut: | [:XXXX]
-                            </xs:documentation>
+                            <xs:documentation>Path keyword to choose the part to retrieve. 
+                                for SIP address = {displayName | uri | uri:[setFromURI keyword] | parameter:[XXXXX]}</xs:documentation>
                         </xs:annotation>
                     </xs:attribute>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="protocol.parseMessage">
+                <xs:annotation>
+                    <xs:documentation>Parse a message in order to execute "setFromMessage" operation (only available for text encoding protocol).</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>A parameter for the result.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="value" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The text of the message to parse</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="value2" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation>The protocol acronym (eg SIP HTTP ...)</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>			
         </xs:sequence>
     </xs:complexType>
 </xs:schema>
