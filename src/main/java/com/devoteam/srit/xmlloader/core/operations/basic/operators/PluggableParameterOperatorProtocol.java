@@ -26,26 +26,14 @@ package com.devoteam.srit.xmlloader.core.operations.basic.operators;
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.ScenarioRunner;
-import com.devoteam.srit.xmlloader.core.exception.ParameterException;
 import com.devoteam.srit.xmlloader.core.pluggable.PluggableName;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.XPath;
-import org.dom4j.io.SAXReader;
 import org.dom4j.tree.BaseElement;
-import org.dom4j.xpath.DefaultXPath;
 
 /**
  *
