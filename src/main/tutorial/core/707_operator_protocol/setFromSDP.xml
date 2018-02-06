@@ -120,9 +120,9 @@ c=IN IP4 224.2.17.12/127
     <!-- BUG : return always empty ? -->
     <test parameter="[SDPMediaMimeParameters0]" condition="list.isEmpty"/>
     <parameter name="[SDPMediaMimeTypes0]" operation="protocol.setFromSDP" value="[sdp]" value2="media.mimeTypes"/>
-    <!-- BUG : return always empty ? -->
-    <test parameter="[SDPMediaMimeTypes0]" condition="list.isEmpty"/>
-
+    <test parameter="[SDPMediaMimeTypes0(0)]" condition="string.equals" value="video/RTP/AVP"/>
+    <test parameter="[SDPMediaMimeTypes0(1)]" condition="string.equals" value="audio/RTP/AVP"/>
+    
     <!-- test SessionName:xxx -->
     <parameter name="[SDPSessionName]" operation="protocol.setFromSDP" value="[sdp]" value2="sessionName"/>
     <test parameter="[SDPSessionName]" condition="string.contains" value="SDP Seminar"/>

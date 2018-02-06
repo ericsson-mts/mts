@@ -40,10 +40,6 @@ import org.dom4j.Element;
 public abstract class Operation implements Serializable {
 
     /**
-     * Maximum number of characters to write into the log
-     */
-    private static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);
-    /**
      * Name of the operation
      */
     protected String _name;
@@ -87,12 +83,7 @@ public abstract class Operation implements Serializable {
     
     @Override
     public String toString() {
-        String string = _xmlTree.toString();
-        if (string.length() > MAX_STRING_LENGTH) 
-        {
-            string = "{" + MAX_STRING_LENGTH + " of " + string.length() + "} " + string.substring(0, MAX_STRING_LENGTH);
-        }
-        return string;
+        return _xmlTree.toString();
     }
 
     public String getName() {

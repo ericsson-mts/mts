@@ -59,9 +59,6 @@ import org.dom4j.Element;
  */
 public abstract class Msg extends MsgLight implements Removable
 {
-	/** Maximum number of characters to write into the log */
-    protected static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);
-
     // path information
     protected TransactionId transactionId;
     protected boolean isTransactionIdSet;
@@ -639,12 +636,6 @@ public abstract class Msg extends MsgLight implements Removable
         catch (Exception e)
         {
             GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while performing toString on Msg : ");
-        }
-
-		// cut if message is too long
-        if (ret.length() > MAX_STRING_LENGTH)
-        {
-        	ret = " {" + MAX_STRING_LENGTH + " of " + ret.length() + "} " + ret.substring(0, MAX_STRING_LENGTH);
         }
 
         ret += "\n";

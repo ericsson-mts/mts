@@ -6,6 +6,7 @@
     <receiveMessageSIP name="Wait INVITE" request="true" type="INVITE">
     
     <parameter name="[message]" operation="protocol.setFromMessage" value="message"/>
+    <test parameter="[message]" condition="string.contains" value="SIP/2.0"/>
     
     <parameter name="[listenpoint]" operation="protocol.setFromMessage" value="listenpoint"/>
     <test parameter="[listenpoint]" condition="string.contains" value="0.0.0.0"/>
@@ -45,6 +46,7 @@
     <parameter name="[text]" operation="protocol.setFromMessage" value="message.text"/>  
     <test parameter="[text]" condition="string.contains" value="INVITE tel:1234 SIP/2.0"/>
     <test parameter="[text]" condition="string.contains" value="------=_Part_0"/>
+    <test parameter="[text]" condition="string.contains" value="------=_Part_0--"/>
     
     <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>  
     <test parameter="[binary]" condition="binary.contains" value="494e5649"/>
