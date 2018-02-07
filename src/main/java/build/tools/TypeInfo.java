@@ -5,15 +5,10 @@
  */
 package build.tools;
 
-import static build.tools.Main.xpath;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  *
@@ -28,25 +23,11 @@ public class TypeInfo {
     Map<String, ElementInfo> elements;
     boolean resolved;
 
-    public TypeInfo(Node node) throws XPathExpressionException {
+    public TypeInfo() {
         resolved = false;
-
-        name = (String) xpath.evaluate("./@*[local-name() = 'name']", node, XPathConstants.STRING);
-
-        extendedTypeName = (String) xpath.evaluate(".//*[local-name() = 'extension']/@*[local-name() = 'base']", node, XPathConstants.STRING);
-
-        elementsNames = new LinkedList<>();
-        NodeList elementsNodes = (NodeList) xpath.evaluate(".//*[local-name() = 'element']", node, XPathConstants.NODESET);
-        for (int i = 0; i < elementsNodes.getLength(); i++) {
-            elementsNames.add((String) xpath.evaluate("./@*[local-name() = 'name']", elementsNodes.item(i), XPathConstants.STRING));
-        }
-
         attributes = new LinkedHashMap<>();
-        NodeList attributesNodes = (NodeList) xpath.evaluate(".//*[local-name() = 'attribute']", node, XPathConstants.NODESET);
-        for (int i = 0; i < attributesNodes.getLength(); i++) {
-            AttributeInfo info = new AttributeInfo(attributesNodes.item(i));
-            attributes.put(info.name, info);
-        }
+        elements = new LinkedHashMap<>();
+        elementsNames = new LinkedList<>();
     }
 
     public void resolve(Map<String, ElementInfo> elementsCache, Map<String, TypeInfo> typesCache) {
