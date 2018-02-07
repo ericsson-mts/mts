@@ -4733,7 +4733,7 @@
             .table {
                 background-color: white;
                 color: #363636;
-                margin-bottom: 1.5rem;
+                /*margin-bottom: 1.5rem;*/
             }
 
             .table td,
@@ -10675,12 +10675,11 @@
 
         {{#entrySet}}
         <nav class="panel" id="{{value.name}}">
-            <p class="panel-heading">{{value.name}}</p>
-
-            {{#value.type.attributes.entrySet}}
+            <p class="panel-heading"><b>{{value.name}}</b>{{#value.documentation}}<br/><small><small><i>{{.}}</i></small></small><br/>{{/value.documentation}}</p>
+            {{#value.attributes.entrySet}}
             {{#-first}}<div class="panel-block"><table class="table is-hoverable"><tbody>{{/-first}}
-                        <tr><td><code>{{value.name}}</code></td><td><small><i>{{value.appinfo}}</i></small></td><td><small style="white-space:pre-wrap">{{value.documentation}}</small></td>{{#-last}}</tbody></table></div>{{/-last}}
-            {{/value.type.attributes.entrySet}}
+                        <tr><td><code>{{value.name}}</code></td><td><small><i>{{#value.appinfo}}{{.}}{{/value.appinfo}}</i></small></td><td><small style="white-space:pre-wrap">{{#value.documentation}}{{.}}{{/value.documentation}}</small></td>{{#-last}}</tbody></table></div>{{/-last}}
+            {{/value.attributes.entrySet}}
             {{#value.type.elements.entrySet}}{{#-first}}<div class="panel-block"><div class="tags">{{/-first}}
             <a href="#{{value.name}}"><span class="tag is-link">{{value.name}}</span></a>&nbsp;
             {{#-last}}</div></div>{{/-last}}{{/value.type.elements.entrySet}}
