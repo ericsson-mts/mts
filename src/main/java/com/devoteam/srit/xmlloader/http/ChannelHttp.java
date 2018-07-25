@@ -137,13 +137,10 @@ public abstract class ChannelHttp extends Channel
     @Override
     public String getTransport() 
     { 
-    //@aleroux
     	if (secure) {
         	return StackFactory.PROTOCOL_TLS;
     	}else {
     		return StackFactory.PROTOCOL_TCP;
     	}
-    //
     }
-
 }
