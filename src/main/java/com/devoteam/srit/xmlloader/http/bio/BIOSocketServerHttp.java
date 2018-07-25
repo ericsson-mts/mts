@@ -22,7 +22,7 @@
  */
 
 package com.devoteam.srit.xmlloader.http.bio;
-import org.apache.http.impl.DefaultHttpServerConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -31,8 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.http.MsgHttp;
 import com.devoteam.srit.xmlloader.http.SocketServerHttp;
 
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
+import org.apache.hc.core5.http.ClassicHttpRequest;
 /**
  *
  * @author sngom
@@ -40,7 +39,7 @@ import org.apache.http.HttpRequest;
 
 public class BIOSocketServerHttp extends SocketServerHttp implements Runnable
 {        
-    public BIOSocketServerHttp(DefaultHttpServerConnection aDefaultHttpServerConnection, BIOChannelHttp connHttp)
+    public BIOSocketServerHttp(DefaultBHttpServerConnection aDefaultHttpServerConnection, BIOChannelHttp connHttp)
     {
         this.defaultHttpServerConnection = aDefaultHttpServerConnection;
         this.connHttp = connHttp;
@@ -56,12 +55,14 @@ public class BIOSocketServerHttp extends SocketServerHttp implements Runnable
             {
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ServerSocketHttp waiting for header");
                 
-                HttpRequest request = defaultHttpServerConnection.receiveRequestHeader();
+                ClassicHttpRequest request = defaultHttpServerConnection.receiveRequestHeader();
                 
-                if(request instanceof HttpEntityEnclosingRequest)
+                String method = request.getMethod().toLowerCase();
+                
+                if(!method.equals("get") && !method.equals("head"))
                 {
                     GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "ServerSocketHttp receiving entity");
-                    defaultHttpServerConnection.receiveRequestEntity((HttpEntityEnclosingRequest)request);
+                    defaultHttpServerConnection.receiveRequestEntity(request);
                 }
                 
                 Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_HTTP);

@@ -23,7 +23,10 @@
 
 package com.devoteam.srit.xmlloader.http.bio;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
-import org.apache.http.impl.DefaultHttpServerConnection;
+
+import org.apache.hc.core5.http.config.H1Config;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
@@ -35,8 +38,6 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.http.SocketServerListener;
 import com.devoteam.srit.xmlloader.http.StackHttp;
 import java.net.InetSocketAddress;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.BasicHttpParams;
 
 /**
  *
@@ -89,9 +90,17 @@ public class BIOSocketServerListener extends SocketServerListener implements Run
                 Socket socket = serverSocket.accept();
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerListener secure=", secure, "got a connection");
                 
-                DefaultHttpServerConnection serverConnection = new DefaultHttpServerConnection();
-                HttpParams params = new BasicHttpParams();
-                serverConnection.bind(socket, params);
+                H1Config h1c = H1Config.custom()
+                		.build();
+                
+                DefaultBHttpServerConnection serverConnection = null;
+                
+                if (secure) {
+                	serverConnection = new DefaultBHttpServerConnection("https", h1c);
+                }else {
+                	serverConnection = new DefaultBHttpServerConnection("http", h1c);
+                }
+                serverConnection.bind(socket);
                 
                 InetSocketAddress remoteInetSocketAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
                 InetSocketAddress localInetSocketAddress = (InetSocketAddress) socket.getLocalSocketAddress();

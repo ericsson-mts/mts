@@ -34,9 +34,9 @@ import java.net.Socket;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.apache.http.impl.DefaultHttpClientConnection;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+
+import org.apache.hc.core5.http.config.H1Config;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 
 /**
  *
@@ -74,11 +74,10 @@ public class BIOChannelHttp extends ChannelHttp
         }
         else
         {
-            
             String host = this.getRemoteHost();
             int port = this.getRemotePort();
             
-            DefaultHttpClientConnection defaultHttpClientConnection = new DefaultHttpClientConnection();
+            DefaultBHttpClientConnection defaultBHttpClientConnection = new DefaultBHttpClientConnection(null);
             
             Socket socket;
             
@@ -144,10 +143,9 @@ public class BIOChannelHttp extends ChannelHttp
             this.localPort = socket.getLocalPort();
 
 
-            HttpParams params = new BasicHttpParams();
-            defaultHttpClientConnection.bind(socket, params);
+            defaultBHttpClientConnection.bind(socket);
             
-            this.socketClientHttp = new BIOSocketClientHttp(defaultHttpClientConnection, this);
+            this.socketClientHttp = new BIOSocketClientHttp(defaultBHttpClientConnection, this);
             
             ThreadPool.reserve().start((BIOSocketClientHttp)socketClientHttp);
         }

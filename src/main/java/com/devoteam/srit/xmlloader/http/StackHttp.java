@@ -25,7 +25,6 @@ package com.devoteam.srit.xmlloader.http;
 
 import org.dom4j.Element;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.hybridnio.IOReactor;
@@ -39,8 +38,6 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.http.bio.BIOChannelHttp;
 import com.devoteam.srit.xmlloader.http.bio.BIOSocketServerListener;
 import com.devoteam.srit.xmlloader.http.nio.NIOChannelHttp;
@@ -133,7 +130,7 @@ public class StackHttp extends Stack
         StackHttp.context = SSLContext.getInstance(certificateSSLVersion);
         StackHttp.context.init(keyManagers, trustAllCerts, null);
 
-        socketServerListeners = new LinkedList();
+        socketServerListeners = new LinkedList<SocketServerListener>();
         
         // Read Http server port
         String listPorts = getConfig().getString("listenpoint.LOCAL_PORT", "");

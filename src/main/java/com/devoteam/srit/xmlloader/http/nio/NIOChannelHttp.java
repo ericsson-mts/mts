@@ -31,8 +31,9 @@ import com.devoteam.srit.xmlloader.http.ChannelHttp;
 import com.devoteam.srit.xmlloader.http.StackHttp;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import org.apache.http.impl.DefaultHttpClientConnection;
-import org.apache.http.params.BasicHttpParams;
+
+import org.apache.hc.core5.http.config.H1Config;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 
 /**
  *
@@ -75,7 +76,10 @@ public class NIOChannelHttp extends ChannelHttp
             String host = this.getRemoteHost();
             int port = this.getRemotePort();
             
-            DefaultHttpClientConnection defaultHttpClientConnection = new DefaultHttpClientConnection();
+            H1Config h1c = H1Config.custom()
+            		.build();
+            
+            DefaultBHttpClientConnection defaultHttpClientConnection = new DefaultBHttpClientConnection(h1c);
 
             //
             // Bind the socket to the local address
@@ -94,7 +98,6 @@ public class NIOChannelHttp extends ChannelHttp
             if(secure) StackHttp.ioReactor.openTLS(localsocketAddress, remoteAddress, (HybridSocket) socket, StackHttp.context);
             else StackHttp.ioReactor.openTCP(localsocketAddress, remoteAddress, (HybridSocket) socket);
 
-            defaultHttpClientConnection.bind(socket, new BasicHttpParams());
             ((NIOSocketClientHttp)this.socketClientHttp).init(defaultHttpClientConnection, this);
             
     		// read all properties for the TCP socket 
