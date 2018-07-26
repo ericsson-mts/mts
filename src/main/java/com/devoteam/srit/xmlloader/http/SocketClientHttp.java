@@ -23,14 +23,14 @@
 
 package com.devoteam.srit.xmlloader.http;
 
-import org.apache.http.impl.DefaultHttpClientConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
+
+import org.apache.hc.core5.http.ClassicHttpRequest;
 
 /**
  *
@@ -39,7 +39,7 @@ import org.apache.http.HttpRequest;
 public class SocketClientHttp
 {
     protected LinkedBlockingQueue<MsgHttp> requestsSent;
-    protected DefaultHttpClientConnection clientConnection;
+    protected DefaultBHttpClientConnection clientConnection;
 
     protected ChannelHttp connHttp;
 
@@ -50,7 +50,7 @@ public class SocketClientHttp
     /** Creates a new instance of SocketClientReceiver */
     public SocketClientHttp()
     {
-        this.requestsSent = new LinkedBlockingQueue();
+        this.requestsSent = new LinkedBlockingQueue<MsgHttp>();
     }
 
     /**
@@ -73,7 +73,8 @@ public class SocketClientHttp
             try
             {
                 this.connHttp.close();
-                Thread.currentThread().interrupted();
+                Thread.currentThread();
+				Thread.interrupted();
                 this.connHttp.open();
                 isReconnected = true;
                 while(!this.requestsSent.isEmpty())
@@ -93,25 +94,25 @@ public class SocketClientHttp
 
     public void sendMessage(MsgHttp msg) throws Exception
     {
+
         this.requestsSent.offer(msg);
 
         try
         {
-            if (msg.getMessage() instanceof HttpEntityEnclosingRequest)
-            {
-                HttpEntityEnclosingRequest httpEntityEnclosingRequest = (HttpEntityEnclosingRequest) msg.getMessage();
-                clientConnection.sendRequestHeader(httpEntityEnclosingRequest);
-                clientConnection.sendRequestEntity(httpEntityEnclosingRequest);
-                if (httpEntityEnclosingRequest.getEntity() == null)
-                {
-                    clientConnection.flush();
+                ClassicHttpRequest classicHttpRequest = (ClassicHttpRequest) msg.getMessage();
+                clientConnection.sendRequestHeader(classicHttpRequest);
+                String method = classicHttpRequest.getMethod().toLowerCase();
+                if (!method.equals("get") && !method.equals("head")){
+                	clientConnection.sendRequestEntity(classicHttpRequest);
+                	if (classicHttpRequest.getEntity() == null)
+                	{
+                		clientConnection.flush();
+                	}
                 }
-            }
-            else
-            {
-                clientConnection.sendRequestHeader((HttpRequest) msg.getMessage());
-                clientConnection.flush();
-            }
+                else 
+                {
+                	clientConnection.flush();
+                }
         }
         catch(Exception e)
         {

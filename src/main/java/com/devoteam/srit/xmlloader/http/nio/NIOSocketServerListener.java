@@ -40,8 +40,7 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.SelectionKey;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.impl.DefaultHttpServerConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
 /**
  *
  * @author sngom
@@ -148,7 +147,8 @@ public class NIOSocketServerListener extends SocketServerListener implements IOH
 
             NIOChannelHttp channelHTTP = new NIOChannelHttp(connectionName, localHost, localPort, remoteHost, remotePort, StackFactory.PROTOCOL_HTTP, secure);
 
-            DefaultHttpServerConnection serverConnection = new DefaultHttpServerConnection();
+
+            DefaultBHttpServerConnection serverConnection = new DefaultBHttpServerConnection(localPort, null);
 
             socketServerHttp.init(serverConnection, channelHTTP);
 
@@ -157,7 +157,7 @@ public class NIOSocketServerListener extends SocketServerListener implements IOH
             if(socketChannel instanceof SSLSocketChannel) StackHttp.ioReactor.openTLS((SSLSocketChannel)socketChannel, socket);
             else                                          StackHttp.ioReactor.openTCP(socketChannel, socket);
 
-            serverConnection.bind(socket, new BasicHttpParams());
+            serverConnection.bind(socket);
         }
         catch(Exception e)
         {

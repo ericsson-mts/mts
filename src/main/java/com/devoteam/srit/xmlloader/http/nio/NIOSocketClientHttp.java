@@ -25,7 +25,7 @@ package com.devoteam.srit.xmlloader.http.nio;
 
 import com.devoteam.srit.xmlloader.core.hybridnio.HybridSocket;
 
-import org.apache.http.impl.DefaultHttpClientConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -36,7 +36,7 @@ import com.devoteam.srit.xmlloader.http.ChannelHttp;
 import com.devoteam.srit.xmlloader.http.MsgHttp;
 import com.devoteam.srit.xmlloader.http.SocketClientHttp;
 
-import org.apache.http.HttpResponse;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 
 /**
  *
@@ -50,7 +50,7 @@ public class NIOSocketClientHttp extends SocketClientHttp implements HybridSocke
     public NIOSocketClientHttp()
     {}
 
-    public void init(DefaultHttpClientConnection aClientConnection, ChannelHttp connHttp)
+    public void init(DefaultBHttpClientConnection aClientConnection, ChannelHttp connHttp)
     {
         init = true;
         this.clientConnection = aClientConnection;
@@ -66,7 +66,7 @@ public class NIOSocketClientHttp extends SocketClientHttp implements HybridSocke
         {
             if(clientConnection.isOpen())
             {
-                HttpResponse response = clientConnection.receiveResponseHeader();
+                ClassicHttpResponse response = clientConnection.receiveResponseHeader();
                 clientConnection.receiveResponseEntity(response);
 
                 Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_HTTP);

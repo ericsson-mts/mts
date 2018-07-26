@@ -24,7 +24,7 @@
 package com.devoteam.srit.xmlloader.http.bio;
 import java.net.SocketException;
 
-import org.apache.http.impl.DefaultHttpClientConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -33,8 +33,8 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.http.MsgHttp;
 import com.devoteam.srit.xmlloader.http.SocketClientHttp;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NoHttpResponseException;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.NoHttpResponseException;
 
 /**
  *
@@ -44,7 +44,7 @@ public class BIOSocketClientHttp extends SocketClientHttp implements Runnable
 {
 
     /** Creates a new instance of SocketClientReceiver */
-    public BIOSocketClientHttp(DefaultHttpClientConnection aClientConnection, BIOChannelHttp connHttp)
+    public BIOSocketClientHttp(DefaultBHttpClientConnection aClientConnection, BIOChannelHttp connHttp)
     {
         this.clientConnection = aClientConnection;
         this.connHttp = connHttp;
@@ -56,7 +56,7 @@ public class BIOSocketClientHttp extends SocketClientHttp implements Runnable
         {
             while (!Thread.interrupted() && clientConnection.isOpen())
             {
-                HttpResponse response = clientConnection.receiveResponseHeader();
+                ClassicHttpResponse response = clientConnection.receiveResponseHeader();
                 clientConnection.receiveResponseEntity(response);
 
                 Stack stack = StackFactory.getStack(StackFactory.PROTOCOL_HTTP);

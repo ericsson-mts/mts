@@ -45,16 +45,17 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.http.Header;
-import org.apache.http.HttpMessage;
-import org.apache.http.message.BasicHttpEntityEnclosingRequest;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpVersion;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpMessage;
+import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
+import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -95,13 +96,13 @@ public class MsgHttp extends Msg
         // Get the entity
         //
         HttpEntity entity;
-        if (message instanceof HttpResponse)
+        if (message instanceof ClassicHttpResponse)
         {
-            entity = ((HttpResponse) message).getEntity();
+            entity = ((ClassicHttpResponse) message).getEntity();
         }
-        else if (message instanceof HttpEntityEnclosingRequest)
+        else if (message instanceof ClassicHttpRequest)
         {
-            entity = ((HttpEntityEnclosingRequest) message).getEntity();
+            entity = ((ClassicHttpRequest) message).getEntity();
         }
         else
         {
@@ -115,7 +116,7 @@ public class MsgHttp extends Msg
         {
             if (this.ignoreContents)
             {
-                entity.consumeContent();
+                entity.getContent();
                 messageContent = "";
             }
             else
@@ -203,7 +204,7 @@ public class MsgHttp extends Msg
         {
             if (message instanceof HttpRequest)
             {
-                type = ((HttpRequest) message).getRequestLine().getMethod();
+                type = ((HttpRequest) message).getMethod();
             }
         }
         return type;
@@ -223,7 +224,7 @@ public class MsgHttp extends Msg
     {
         if (message instanceof HttpResponse)
         {
-            return Integer.toString(((HttpResponse) message).getStatusLine().getStatusCode());
+            return Integer.toString(((HttpResponse) message).getCode());
         }
         else
         {
@@ -240,7 +241,7 @@ public class MsgHttp extends Msg
     private String getTextMessage()
     {
         // get the first line
-    	String ret = getFirstLine();            
+    	String ret = getFirstLine();
         ret += "\r\n";
 
         // get the headers list
@@ -256,20 +257,24 @@ public class MsgHttp extends Msg
         {
         	ret += messageContent;
         }
-        
         return ret;
     }
 
     private String getFirstLine()
     {
-        if (this.message instanceof HttpResponse)
+    	if (this.message instanceof HttpResponse)
         {
-            return ((HttpResponse) message).getStatusLine().toString();
+            return ((HttpResponse) message).getVersion() + " " + ((HttpResponse) message).getCode() + " " + ((HttpResponse) message).getReasonPhrase();
         }
         else
         {
-            return ((HttpRequest) message).getRequestLine().toString();
-        }
+        	// if authority isn't set, the execution won't succeed 
+        	if (((HttpRequest) message).getAuthority()!=null){
+        		return type + " " + ((HttpRequest) message).getScheme() +"://" + ((HttpRequest) message).getAuthority().toString() + " " + ((HttpRequest) message).getVersion();
+        	}else {
+        		return type + " " + ((HttpRequest) message).getPath() + " " + ((HttpRequest) message).getVersion();
+        	}
+        }	
     }
 
     
@@ -332,8 +337,8 @@ public class MsgHttp extends Msg
 
     	String text = root.getText();
     	
-        BasicHttpResponse responseMessage = null;
-        BasicHttpEntityEnclosingRequest requestMessage = null;
+    	BasicClassicHttpResponse responseMessage = null;
+        BasicClassicHttpRequest requestMessage = null;
 
         HttpMessage currentMessage = null;
 
@@ -387,6 +392,7 @@ public class MsgHttp extends Msg
             String[] parts = line.split(" ");
 
             HttpVersion httpVersion = HttpVersion.HTTP_1_1;
+            
             if (parts[0].endsWith("HTTP/1.0"))
             {
                 httpVersion = HttpVersion.HTTP_1_0;
@@ -398,8 +404,9 @@ public class MsgHttp extends Msg
                 phrase = parts[2];
             }
 
-            responseMessage = new BasicHttpResponse(httpVersion, Integer.parseInt(parts[1]), phrase);
+            responseMessage = new BasicClassicHttpResponse(Integer.parseInt(parts[1]), phrase);
             currentMessage = responseMessage;
+            currentMessage.setVersion(httpVersion);
         } // Message is a request
         else
         {
@@ -411,8 +418,10 @@ public class MsgHttp extends Msg
                 httpVersion = HttpVersion.HTTP_1_0;
             }
 
-            requestMessage = new BasicHttpEntityEnclosingRequest(parts[0], parts[1], httpVersion);
+            requestMessage = new BasicClassicHttpRequest(parts[0], parts[1]);
+            requestMessage.setPath(parts[1]);
             currentMessage = requestMessage;
+            currentMessage.setVersion(httpVersion);
         }
 
         //
@@ -471,10 +480,10 @@ public class MsgHttp extends Msg
             //
             if (null != requestMessage)
             {
-                if (requestMessage.getRequestLine().getMethod().toLowerCase().equals("get") ||
-                		requestMessage.getRequestLine().getMethod().toLowerCase().equals("head"))
+                if (requestMessage.getMethod().toLowerCase().equals("get") ||
+                		requestMessage.getMethod().toLowerCase().equals("head"))
                 {
-                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Request ", requestMessage.getRequestLine().getMethod(), " is not allowed to contain an entity");
+                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Request ", requestMessage.getMethod(), " is not allowed to contain an entity");
                 }
             }
 
@@ -588,11 +597,13 @@ public class MsgHttp extends Msg
             //---------------------------------------------------------------------- firstline -
             if (message instanceof HttpRequest)
             {
-            	var.add(((HttpRequest) message).getRequestLine().toString());
+            	
+            	var.add(getType() + " " + ((HttpRequest) message).getScheme() +"://" + ((HttpRequest) message).getAuthority().toString() + " " + ((HttpRequest) message).getVersion());
             }
-            else
+            else 
             {
-            	var.add(((HttpResponse) message).getStatusLine().toString());
+            	var.add(((HttpResponse) message).getVersion() + " " + ((HttpResponse) message).getCode() + " " + ((HttpResponse) message).getReasonPhrase());
+            
             }
         }
         else if (params.length > 1 && params[0].equalsIgnoreCase("firstline"))
@@ -600,14 +611,14 @@ public class MsgHttp extends Msg
             //---------------------------------------------------------------------- firstline:Version -
             if (params[1].equalsIgnoreCase("version"))
             {
-            	var.add(message.getProtocolVersion().toString());
+            	var.add(message.getVersion().toString());
             }
             //---------------------------------------------------------------------- firstline:Method -
             else if (params[1].equalsIgnoreCase("method"))
             {
                 if (message instanceof HttpRequest)
                 {
-                	var.add(((HttpRequest) message).getRequestLine().getMethod());
+                	var.add(((HttpRequest) message).getMethod());
                 }
             }
             //---------------------------------------------------------------------- firstline:URI -
@@ -615,21 +626,23 @@ public class MsgHttp extends Msg
             {
                 if (message instanceof HttpRequest)
                 {
-                	var.add(((HttpRequest) message).getRequestLine().getUri());
+                	
+                	var.add(((HttpRequest) message).getScheme() + "://" + ((HttpRequest) message).getAuthority().toString());
+                	
                 }
             }
             else if (params[1].equalsIgnoreCase("reasonPhrase"))
             {
                 if (message instanceof HttpResponse)
                 {
-                	var.add(((HttpResponse) message).getStatusLine().getReasonPhrase());
+                	var.add(((HttpResponse) message).getReasonPhrase());
                 }
             }
             else if (params[1].equalsIgnoreCase("statuscode"))
             {
                 if (message instanceof HttpResponse)
                 {
-                	var.add(Integer.toString(((HttpResponse) message).getStatusLine().getStatusCode()));
+                	var.add(Integer.toString(((HttpResponse) message).getCode()));
                 }
             }
             else
