@@ -1,0 +1,247 @@
+package com.devoteam.srit.xmlloader.http2.util;
+
+
+import java.io.IOException;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+import java.nio.channels.SelectionKey;
+
+import org.apache.hc.core5.io.ShutdownType;
+import org.apache.hc.core5.reactor.Command;
+import org.apache.hc.core5.reactor.IOEventHandler;
+import org.apache.hc.core5.reactor.IOSession;
+import org.slf4j.Logger;
+
+public class LoggingIOSession implements IOSession {
+
+    private final Logger log;
+    private final Wire wirelog;
+    private final IOSession session;
+    private final ByteChannel channel;
+
+    public LoggingIOSession(final IOSession session, final Logger log, final Logger wirelog) {
+        super();
+        this.session = session;
+        this.log = log;
+        this.wirelog = wirelog != null ? new Wire(wirelog, session.getId()) : null;
+        this.channel = wirelog != null ? new LoggingByteChannel() : session.channel();
+    }
+
+    public LoggingIOSession(final IOSession session, final Logger log) {
+        this(session, log, null);
+    }
+
+    @Override
+    public String getId() {
+        return session.getId();
+    }
+
+    @Override
+    public void addLast(final Command command) {
+        this.session.addLast(command);
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(command.getClass().getSimpleName() + " added last");
+        }
+    }
+
+    @Override
+    public void addFirst(final Command command) {
+        this.session.addFirst(command);
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(command.getClass().getSimpleName() + " added first");
+        }
+    }
+
+    @Override
+    public Command getCommand() {
+        return this.session.getCommand();
+    }
+
+    @Override
+    public ByteChannel channel() {
+        return this.channel;
+    }
+
+    @Override
+    public SocketAddress getLocalAddress() {
+        return this.session.getLocalAddress();
+    }
+
+    @Override
+    public SocketAddress getRemoteAddress() {
+        return this.session.getRemoteAddress();
+    }
+
+    @Override
+    public int getEventMask() {
+        return this.session.getEventMask();
+    }
+
+    private static String formatOps(final int ops) {
+        final StringBuilder buffer = new StringBuilder(6);
+        buffer.append('[');
+        if ((ops & SelectionKey.OP_READ) > 0) {
+            buffer.append('r');
+        }
+        if ((ops & SelectionKey.OP_WRITE) > 0) {
+            buffer.append('w');
+        }
+        if ((ops & SelectionKey.OP_ACCEPT) > 0) {
+            buffer.append('a');
+        }
+        if ((ops & SelectionKey.OP_CONNECT) > 0) {
+            buffer.append('c');
+        }
+        buffer.append(']');
+        return buffer.toString();
+    }
+
+    @Override
+    public void setEventMask(final int ops) {
+        this.session.setEventMask(ops);
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(this.session + " Event mask set " + formatOps(ops));
+        }
+    }
+
+    @Override
+    public void setEvent(final int op) {
+        this.session.setEvent(op);
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(this.session + " Event set " + formatOps(op));
+        }
+    }
+
+    @Override
+    public void clearEvent(final int op) {
+        this.session.clearEvent(op);
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(this.session + " Event cleared " + formatOps(op));
+        }
+    }
+
+    @Override
+    public void close() {
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(this.session + " Close");
+        }
+        this.session.close();
+    }
+
+    @Override
+    public int getStatus() {
+        return this.session.getStatus();
+    }
+
+    @Override
+    public boolean isClosed() {
+        return this.session.isClosed();
+    }
+
+    @Override
+    public void shutdown(final ShutdownType shutdownType) {
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(this.session + " Shutdown " + shutdownType);
+        }
+        this.session.shutdown(shutdownType);
+    }
+
+    @Override
+    public int getSocketTimeout() {
+        return this.session.getSocketTimeout();
+    }
+
+    @Override
+    public void setSocketTimeout(final int timeout) {
+        if (this.log.isDebugEnabled()) {
+            this.log.debug(this.session + " Set timeout " + timeout);
+        }
+        this.session.setSocketTimeout(timeout);
+    }
+
+    @Override
+    public void updateReadTime() {
+        this.session.updateReadTime();
+    }
+
+    @Override
+    public void updateWriteTime() {
+        this.session.updateWriteTime();
+    }
+
+    @Override
+    public long getLastReadTime() {
+        return this.session.getLastReadTime();
+    }
+
+    @Override
+    public long getLastWriteTime() {
+        return this.session.getLastWriteTime();
+    }
+
+    @Override
+    public IOEventHandler getHandler() {
+        return this.session.getHandler();
+    }
+
+    @Override
+    public void setHandler(final IOEventHandler handler) {
+        this.session.setHandler(handler);
+    }
+
+    @Override
+    public String toString() {
+        return this.session.toString();
+    }
+
+    class LoggingByteChannel implements ByteChannel {
+
+        @Override
+        public int read(final ByteBuffer dst) throws IOException {
+            final int bytesRead = session.channel().read(dst);
+            if (log.isDebugEnabled()) {
+                log.debug(session + " " + bytesRead + " bytes read");
+            }
+            if (bytesRead > 0 && wirelog.isEnabled()) {
+                final ByteBuffer b = dst.duplicate();
+                final int p = b.position();
+                b.limit(p);
+                b.position(p - bytesRead);
+                wirelog.input(b);
+            }
+            return bytesRead;
+        }
+
+        @Override
+        public int write(final ByteBuffer src) throws IOException {
+            final int byteWritten = session.channel().write(src);
+            if (log.isDebugEnabled()) {
+                log.debug(session + " " + byteWritten + " bytes written");
+            }
+            if (byteWritten > 0 && wirelog.isEnabled()) {
+                final ByteBuffer b = src.duplicate();
+                final int p = b.position();
+                b.limit(p);
+                b.position(p - byteWritten);
+                wirelog.output(b);
+            }
+            return byteWritten;
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (log.isDebugEnabled()) {
+                log.debug(session + " Channel close");
+            }
+            session.channel().close();
+        }
+
+        @Override
+        public boolean isOpen() {
+            return session.channel().isOpen();
+        }
+
+    }
+
+}
