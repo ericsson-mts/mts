@@ -54,6 +54,17 @@ import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.http2.util.ClientSessionEndpoint;
 
 
+/**
+ * About this class : different things are needed in order to have a proper http2 channel 
+ * This class should extends Channel in order to be used with StackHttp2
+ * The entity can't be recovered after being sent in a request, a entity can be send in a response
+ * StackHttp2 should install the SSLContext
+ * The transaction id of the message should be replaced by the stream id
+ * The register method need to be improved in order to set different response
+ */
+
+
+
 public class Http2Channel{
 
     protected Http2Client client;
@@ -201,9 +212,7 @@ public class Http2Channel{
     	return scheme.toString();
     }
 
-    /**
-     *  The channel will send
-     */
+    
     public void register(String path, HttpResponse response) {
     	server.register(path, new Supplier<AsyncServerExchangeHandler>() {
 

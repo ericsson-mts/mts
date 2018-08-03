@@ -60,7 +60,7 @@ import org.dom4j.tree.DefaultElement;
 
 /**
  *
- * @author gpasquiers
+ * Need a new syntaxe for HTTP2
  */
 public class StackHttp2 extends Stack
 {
