@@ -143,5 +143,4 @@ public abstract class ChannelHttp extends Channel
     		return StackFactory.PROTOCOL_TCP;
     	}
     }
-
 }
