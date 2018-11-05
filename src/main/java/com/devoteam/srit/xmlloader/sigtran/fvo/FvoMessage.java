@@ -515,7 +515,7 @@ public class FvoMessage {
     	messageToString.append("layer=\"");
         messageToString.append(this._dictionary.get_layer());
         messageToString.append("\"");
-        messageToString.append("/>\n");
+        messageToString.append(">\n");
         
         if (_name != null) 
         {
