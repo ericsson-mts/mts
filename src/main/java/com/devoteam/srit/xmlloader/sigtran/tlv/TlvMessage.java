@@ -424,7 +424,7 @@ public class TlvMessage {
     	messageToString.append("layer=\"");
         messageToString.append(this._dictionary.getLayer());
         messageToString.append("\"");
-        messageToString.append("/>\n");
+        messageToString.append(">\n");
         
         messageToString.append("   <header");
         messageToString.append(" version=\"" + getVersion() + "\"");
