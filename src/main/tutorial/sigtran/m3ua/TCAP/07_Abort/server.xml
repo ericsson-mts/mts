@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Receive a MAP message
+-->
+
+<scenario>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000044020000080000006600060008000000650210002b000000010000000203020001090103070b044302000804430100080b67094904000009994a010200" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+    
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="Abort:7">
+      <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+      <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+      <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+      <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
+    	<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    </receiveMessageSIGTRAN>
+    
+    <parameter name="[abort]" operation="protocol.setFromMessage" value="tcap.abort"/>
+    <test parameter="[abort]" condition="list.size" value="0"/>
+    <parameter name="[otid]" operation="protocol.setFromMessage" value="tcap.abort.otid"/>    
+    <test parameter="[otid]" condition="list.size" value="0"/>
+    <parameter name="[dtid]" operation="protocol.setFromMessage" value="tcap.abort.dtid"/>    
+    <test parameter="[dtid]" condition="list.size" value="1"/>
+    <test parameter="[dtid]" condition="binary.equals" value="00000999"/>   
+     
+    <parameter name="[reason]" operation="protocol.setFromMessage" value="tcap.abort.reason"/>    
+    <test parameter="[reason]" condition="list.size" value="0"/>    
+    <parameter name="[ExternalPDU]" operation="protocol.setFromMessage" value="tcap.abort.reason.u_abortCause.DialogueOC.ExternalPDU"/>
+    <test parameter="[ExternalPDU]" condition="list.size" value="0"/>
+    <parameter name="[p_abortCause]" operation="protocol.setFromMessage" value="tcap.abort.reason.p_abortCause"/>    
+    <test parameter="[p_abortCause]" condition="list.size" value="1"/>
+    <test parameter="[p_abortCause]" condition="string.equals" value="badlyFormattedTransactionPortion:2"/>
+     
+    <!-- DOES NOT WORK why ? -->     
+    <!--parameter name="[direct_reference]" operation="protocol.setFromMessage" value="tcap.abort.reason.u_abortCause.DialogueOC.ExternalPDU.ExternalPDUSequenceType.direct_reference"/>    
+    <test parameter="[direct_reference]" condition="list.size" value="1"/>
+    <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>    
+    <parameter name="[direct_reference]" operation="protocol.setFromMessage" value="tcap.ExternalPDUSequenceType.direct_reference"/>    
+    <test parameter="[direct_reference]" condition="list.size" value="1"/>
+    <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>
+    <parameter name="[single_ASN1_type]" operation="protocol.setFromMessage" value="tcap.abort.reason.u_abortCause.ExternalPDU.single_ASN1_type"/>
+    <test parameter="[single_ASN1_type]" condition="list.size" value="0"/>                                     
+    <parameter name="[DialoguePDU]" operation="protocol.setFromMessage" value="tcap.abort.reason.u_abortCause.ExternalPDU.single_ASN1_type.DialoguePDU"/>    
+    <test parameter="[DialoguePDU]" condition="list.size" value="0"/>
+    <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.protocol_version"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.single_ASN1_type.DialoguePDU.dialogueRequest.protocol_version"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[protocol_version]" operation="protocol.setFromMessage" value="tcap.abort.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.protocol_version"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/>
+    <parameter name="[application_context_name]" operation="protocol.setFromMessage" value="tcap.abort.dialoguePortion.DialogueOC.ExternalPDU.ExternalPDUSequenceType.encoding.single_ASN1_type.DialoguePDU.dialogueRequest.AARQ_apduSequenceType.application_context_name"/>    
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/-->
+            
+    <!-- control log dialoguePortion -->
+    <parameter name="[xml]" operation="protocol.setFromMessage" value="tcap.xml"/>
+    <parameter name="[abort]" operation="string.xpath" value="[xml]" value2="//abort.A7.Sequence"/>
+    <test parameter="[abort]" condition="list.size" value="1"/>
+    <parameter name="[otid]" operation="string.xpath" value="[abort]" value2="//otid.BoxedType/Bytes.A8/text()"/>
+    <test parameter="[otid]" condition="list.size" value="0"/>    
+    <parameter name="[dtid]" operation="string.xpath" value="[abort]" value2="//dtid.BoxedType/Bytes.A9/text()"/>
+    <test parameter="[dtid]" condition="list.size" value="1"/>
+    <test parameter="[dtid]" condition="binary.equals" value="00000999"/>  
+    
+    <parameter name="[reason]" operation="string.xpath" value="[abort]" value2="//reason.Choice"/>    
+    <test parameter="[reason]" condition="list.size" value="1"/>    
+    <parameter name="[p_abortCause]" operation="string.xpath" value="[reason]" value2="//p_abortCause.BoxedType/Long.A10/text()"/>    
+    <test parameter="[p_abortCause]" condition="list.size" value="1"/>
+    <test parameter="[p_abortCause]" condition="string.equals" value="badlyFormattedTransactionPortion:2"/>
+    
+    <!-- DOES NOT WORK why ? -->
+    <!--parameter name="[dialoguePortion]" operation="string.xpath" value="[abort]" value2="//dialoguePortion.BoxedType"/>
+    <test parameter="[dialoguePortion]" condition="list.size" value="1"/>
+    <parameter name="[externalPDU]" operation="string.xpath" value="[dialoguePortion]" value2="//ExternalPDU.A11.BoxedType"/>
+    <test parameter="[externalPDU]" condition="list.size" value="1"/>
+    <parameter name="[direct_reference]" operation="string.xpath" value="[externalPDU]" value2="//direct_reference/ObjectIdentifier/text()"/>
+    <test parameter="[direct_reference]" condition="list.size" value="1"/>
+    <test parameter="[direct_reference]" condition="string.equals" value="dialogue-as-id:0.0.17.773.1.1.1"/>
+    <parameter name="[single_ASN1_type]" operation="string.xpath" value="[externalPDU]" value2="//single_ASN1_type.C0.BoxedType"/>
+    <test parameter="[single_ASN1_type]" condition="list.size" value="1"/>
+    <parameter name="[dialoguePDU]" operation="string.xpath" value="[single_ASN1_type]" value2="//DialoguePDU.C0.Choice"/>
+    <test parameter="[dialoguePDU]" condition="list.size" value="1"/>
+    <parameter name="[dialogueRequest]" operation="string.xpath" value="[dialoguePDU]" value2="//dialogueRequest.A0.BoxedType"/>
+    <test parameter="[dialogueRequest]" condition="list.size" value="1"/>
+    <parameter name="[protocol_version]" operation="string.xpath" value="[dialogueRequest]" value2="//protocol_version.C0d/BitString/@value"/>
+    <test parameter="[protocol_version]" condition="list.size" value="1"/>
+    <test parameter="[protocol_version]" condition="string.equals" value="Version1:80"/>
+    <parameter name="[application_context_name]" operation="string.xpath" value="[dialogueRequest]" value2="//application_context_name.C1.BoxedType/ObjectIdentifier.C1/ObjectIdentifier/text()"/>
+    <test parameter="[application_context_name]" condition="list.size" value="1"/>
+    <test parameter="[application_context_name]" condition="string.equals" value="shortMsgRelayContext-v2:0.4.0.0.1.0.21.2"/-->
+        
+    <!-- Message encoded value -->
+    <if>
+    	<condition>
+    		<test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    	</condition>
+    	<else>
+    		<log level="ERROR">	Message received :	</log>
+    		<log level="ERROR">	"[data1]"			</log>
+    		<log level="ERROR">	Message expected :	</log>
+    		<log level="ERROR">	"[data]"			</log>
+    	</else>
+    </if>
+
+    <parameter name="[result ]" operation="binary.difference" value="[data1]" value2="[data]"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+        	
+</scenario>

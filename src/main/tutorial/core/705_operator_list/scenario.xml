@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
+
+      <!-- test log manually -->
+      <parameter name="[string]" operation="set" value="1234567890" value2="5"/>
+      <parameter name="[maxList(0)]" operation="set" value="1234567890" value2="5"/>
+      <parameter name="[maxList(1)]" operation="set" value="1234567890" value2="10"/>
+      <parameter name="[maxList(2)]" operation="set" value="1234567890" value2="15"/>
+      <parameter name="[maxList(3)]" operation="set" value="1234567890" value2="20"/>
+      <parameter name="[maxList(4)]" operation="set" value="1234567890" value2="25"/>
+      <parameter name="[maxList(5)]" operation="set" value="1234567890" value2="0"/>
+      <parameter name="[maxList(6)]" operation="set" value="1234567890" value2="25"/>          
+      <parameter name="[maxList(7)]" operation="set" value="1234567890" value2="20"/>
+      <parameter name="[maxList(8)]" operation="set" value="1234567890" value2="15"/>
+      <parameter name="[maxList(9)]" operation="set" value="1234567890" value2="10"/>   
+      <parameter name="[maxList(10)]" operation="set" value="1234567890" value2="5"/>    
+      <test parameter="[maxList(0)]" condition="string.equals" value="12345678901234567890123456789012345678901234567890"/>
+      <test parameter="[maxList(1)]" condition="string.equals" value="[maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(2)]" condition="string.equals" value="[maxList(0)][maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(3)]" condition="string.equals" value="[maxList(0)][maxList(0)][maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(4)]" condition="string.equals" value="[maxList(0)][maxList(0)][maxList(0)][maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(5)]" condition="string.equals" value=""/>
+      <test parameter="[maxList(6)]" condition="string.equals" value="[maxList(4)]"/>
+      <test parameter="[maxList(7)]" condition="string.equals" value="[maxList(3)]"/>
+      <test parameter="[maxList(8)]" condition="string.equals" value="[maxList(2)]"/>
+      <test parameter="[maxList(9)]" condition="string.equals" value="[maxList(1)]"/>
+      <test parameter="[maxList(10)]" condition="string.equals" value="[maxList(0)]"/>
+      
+      <parameter name="[string]" operation="set" value="1234567890" value2="5"/>
+      <!--parameter name="[maxList]" operation="list.remove"/-->
+      <parameter name="[maxList]" operation="list.create"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string]"  />
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string]"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string][string]"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string][string][string]"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string][string][string][string]"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2=""/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string][string][string][string]"/>          
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string][string][string]"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string][string]"/>
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string][string]"/>   
+      <parameter name="[maxList]" operation="list.addLast" value="[maxList]" value2="[string]"/>
+      <test parameter="[maxList(0)]" condition="string.equals" value="12345678901234567890123456789012345678901234567890"/>
+      <test parameter="[maxList(1)]" condition="string.equals" value="[maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(2)]" condition="string.equals" value="[maxList(0)][maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(3)]" condition="string.equals" value="[maxList(0)][maxList(0)][maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(4)]" condition="string.equals" value="[maxList(0)][maxList(0)][maxList(0)][maxList(0)][maxList(0)]"/>
+      <test parameter="[maxList(5)]" condition="string.equals" value=""/>
+      <test parameter="[maxList(6)]" condition="string.equals" value="[maxList(4)]"/>
+      <test parameter="[maxList(7)]" condition="string.equals" value="[maxList(3)]"/>
+      <test parameter="[maxList(8)]" condition="string.equals" value="[maxList(2)]"/>
+      <test parameter="[maxList(9)]" condition="string.equals" value="[maxList(1)]"/>
+      <test parameter="[maxList(10)]" condition="string.equals" value="[maxList(0)]"/>      
       
       <!-- trip for importSIPP module -->
       <parameter name="[sipplist]" operation="list.create"/>    

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+
+<!--
+    Document   : server.xml
+    Created on : 10/07/2014
+    Author     : fhenry
+    Description: Send a MAP message
+-->
+
+<scenario>
+
+    <!-- Message encoded value -->
+    <parameter name="[data]" value="010001010000009c0200000800000066000600080000006502100082000000010000000203020001090103070b044302000804430100086265604804000000014904000009996b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010002012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f030000" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>			
+    
+    <sendMessageSIGTRAN name="Send DATA1" remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]">
+    
+    <!-- TCAP LAYER -->
+    <ASN dictionary="tcap/dictionary_TCAP.xml">
+      <TCMessage.Choice>
+        <continue1.A5.Sequence>
+           <otid.BoxedType><Bytes.A8>00000001</Bytes.A8></otid.BoxedType>
+           <dtid.BoxedType><Bytes.A9>00000999</Bytes.A9></dtid.BoxedType>
+           <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
+                 <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8.Sequence>
+                       <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
+                       <!--indirect_reference>3538583001</indirect_reference-->
+                       <!--data_value_descriptor.BoxedType><Bytes>bb2c99444642</Bytes></data_value_descriptor.BoxedType-->
+                       <encoding.Choice>
+                          <single_ASN1_type.C0.BoxedType>
+                              <DialoguePDU.Choice>
+                              <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
+                                    <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
+                                    <application_context_name.BoxedType>
+                                       <direct_reference><ObjectIdentifier>shortMsgRelayContext-v2:0.4.0.0.1.0.21.2</ObjectIdentifier></direct_reference>
+                                    </application_context_name.BoxedType>
+                                    <!--Collection>
+                                       <user_information>040b0ee80b24cfc24d5cf44182</user_information>
+                                       <user_information>0404e60be5ae</user_information>
+                                       <user_information>0409db4fba980c312c21d8</user_information>
+                                    </Collection-->
+                              </AARQ_apduSequenceType.A0></dialogueRequest.A0.BoxedType>
+                           </DialoguePDU.Choice>
+                          </single_ASN1_type.C0.BoxedType>
+                       </encoding.Choice>
+                    </ExternalPDUSequenceType.U8.Sequence></ExternalPDU.A11.BoxedType>
+              </DialogueOC.A11.BoxedType></dialoguePortion.BoxedType>
+           <components.BoxedType>
+              <Collection>
+                 <Component.A12.Choice>
+                    <invoke.C1.Sequence>
+                       <invokeID.BoxedType><Integer>0</Integer></invokeID.BoxedType>
+                       <!--linkedID.C0.BoxedType><Integer>0</Integer></linkedID.C0.BoxedType-->
+                       <opCode.Choice>
+                          <localValue>46</localValue>
+                          <!--globalValue><ObjectIdentifier>0.1.2119.60.102.77.32.121</ObjectIdentifier></globalValue-->
+                       </opCode.Choice>
+                       <parameter>30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03</parameter>
+                    </invoke.C1.Sequence>
+                    <!--returnResultLast.C2.Sequence>
+                       <invokeID.BoxedType><Integer>2</Integer></invokeID.BoxedType>
+                       <resultretres.Sequence>
+                          <opCode.Choice>
+                             <localValue>2263518261</localValue>
+                             <globalValue><ObjectIdentifier>0.1.264.70</ObjectIdentifier></globalValue>
+                          </opCode.Choice>
+                          <parameter>5b76c56d19</parameter>
+                       </resultretres.Sequence>
+                    </returnResultLast.C2.Sequence-->
+                    <!--returnError.C3.Sequence>
+                       <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+                       <errorCode.Choice>
+                          <localValue>2894334287</localValue>
+                          <globalValue><ObjectIdentifier>0.1.269.107.2.96</ObjectIdentifier></globalValue>
+                       </errorCode.Choice>
+                       <parameter>2f9ca533733b398cb3</parameter>
+                    </returnError.C3.Sequence-->
+                    <!--reject.C4.Sequence>
+                       <invokeIDRej.Choice>
+                          <derivable.BoxedType><Integer>1</Integer></derivable.BoxedType>
+                          <not_derivable></not_derivable>
+                       </invokeIDRej.Choice>
+                       <problem.Choice>
+                          <generalProblem.C0.BoxedType><Long>462573347</Long></generalProblem.C0.BoxedType>
+                          <invokeProblem.C1.BoxedType><Long>3531995322</Long></invokeProblem.C1.BoxedType>
+                          <returnResultProblem.C2.BoxedType><Long>1186241478</Long></returnResultProblem.C2.BoxedType>
+                          <returnErrorProblem.C3.BoxedType><Long>758246614</Long></returnErrorProblem.C3.BoxedType>
+                       </problem.Choice>
+                    </reject.C4.Sequence-->
+                    <!--returnResultNotLast.C7.Sequence>
+                       <invokeID.BoxedType><Integer>1</Integer></invokeID.BoxedType>
+                       <resultretres.Sequence>
+                          <opCode.Choice>
+                             <localValue>1009007527</localValue>
+                             <globalValue><ObjectIdentifier>0.1.2</ObjectIdentifier></globalValue>
+                          </opCode.Choice>
+                          <parameter>d68e406ce144b0</parameter>
+                       </resultretres.Sequence>
+                    </returnResultNotLast.C7.Sequence-->
+                 </Component.A12.Choice>
+              </Collection>
+           </components.BoxedType>
+        </continue1.A5.Sequence>
+      </TCMessage.Choice>
+    </ASN>
+    
+    <!-- SCCP LAYER  -->
+    <SS7 name="sccp" file="sccp.xml">
+    	<header>
+          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
+      </header>
+    	<parameter name="Protocol_Class" type="F" littleEndian="false">
+    		<field value="0" lengthBit="4" />
+    		<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+    	</parameter>
+    	<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+    		<field name="Address_Indicator" value="67" length="1" />
+    		<field name="Signalling_Point_Code" value="2" length="2" />
+    		<field name="Subsystem_Number" value="8" length="1" />	
+    	</parameter>
+    	<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+    		<field name="Address_Indicator" value="67" length="1" />
+    		<field name="Signalling_Point_Code" value="1" length="2" />
+    		<field name="Subsystem_Number" value="8" length="1" />
+    	</parameter>
+    	<parameter id="15" name="Data" type="V" littleEndian="false">
+    		<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
+    	</parameter>
+    </SS7>
+    
+    <UA name="m3ua" file="m3ua.xml">
+        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+    		
+        <parameter tag="Network_Appearence">
+            <field name="Network_Appearence"  format="Integer" value="102"/>
+        </parameter>
+    
+    
+        <parameter tag="Routing_Context">
+            <field name="Routing_Context" format="Integer"  value="101"/>
+        </parameter>
+    
+        <parameter tag="Protocol_Data">
+            <field value="1" name="Originating_Point_Code"/>
+            <field value="2" name="Destination_Point_Code" />
+            <field value="SCCP"	name="SI"/>
+            <field value="2"	name="NI"/>
+            <field value="0"	name="MP"/>
+            <field value="1"	name="SLS"/>
+            <field name="DATA"	format="fvo"/>
+        </parameter>
+    
+        <!--parameter tag="Correlation_Id">
+            <field name="Correlation_Id" format="Integer"  value="12783"/>
+        </parameter-->
+    </UA>
+    </sendMessageSIGTRAN>
+    
+    <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+    <test parameter="[data1]" condition="binary.equals" value="[data]"/>
+    
+    	<!-- Message encoded value -->
+    <parameter name="[data]" value="0100010100000074020000080000006600060008000000650210005b000000020000000103020001090103070b044301000804430200083b64394904000000016b2a2828060700118605010101a01d611b80020780a109060704000001001502a203020100a305a1030201006c05a20302010100" />
+    <parameter name="[length]" operation="string.length" value="[data]"/>
+                            
+</scenario>

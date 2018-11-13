@@ -195,12 +195,26 @@ public class Dictionary
     
     public Application getApplicationById(int code)
     {
-        return applicationById.get(Integer.toString(code));
+        if (applicationById != null)
+        {
+            return applicationById.get(Integer.toString(code));
+        }
+        else
+        {
+            return null;
+        }
     }
     
     public Application getApplicationByName(String name)
     {
-        return applicationByName.get(name);
+        if (applicationByName != null)
+        {   
+            return applicationByName.get(name);
+        }
+        else
+        {
+            return null;
+        }
     }
     
     public Application getApplication(String key)

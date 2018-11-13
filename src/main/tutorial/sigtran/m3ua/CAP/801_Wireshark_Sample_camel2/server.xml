@@ -623,48 +623,50 @@
     <!-- TCAP LAYER -->
     <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage>
-        <Continue>
-          <otid><Bytes>047b</Bytes></otid>
-          <dtid><Bytes>07000401</Bytes></dtid>
-          <dialoguePortion>
-            <DialogueOC>
-              <ExternalPDU>
-                <ExternalPDUSequenceType>
+        <continue1.A5.Sequence>
+          <otid.BoxedType><Bytes>047b</Bytes></otid.BoxedType>
+          <dtid.BoxedType><Bytes>07000401</Bytes></dtid.BoxedType>
+          <dialoguePortion.BoxedType>
+            <DialogueOC.A11.BoxedType>
+              <ExternalPDU.A11.BoxedType>
+                <ExternalPDUSequenceType.U8.Sequence>
                   <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                   <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
-                  <encoding>
-                    <single_ASN1_type>
-                      <DialoguePDU>
-                        <dialogueResponse>
-                          <AARE_apduSequenceType>
-                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
-                            <application_context_name>
+                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
+                  <encoding.Choice>
+                    <single_ASN1_type.C0.BoxedType>
+                      <DialoguePDU.Choice>
+                        <dialogueResponse.A1.BoxedType>
+                          <AARE_apduSequenceType.A1.Sequence>
+                            <protocol_version.C0d><BitString value="Version1:80" trailing="7"/></protocol_version.C0d>
+                            <application_context_name.C1.BoxedType>
                               <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                            </application_context_name>
-                            <result><Associate_result><Long>0</Long></Associate_result></result>
-                            <result_source_diagnostic>
-                              <Associate_source_diagnostic>
-                                <dialogue_service_user>
-                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
-                                </dialogue_service_user>
-                              </Associate_source_diagnostic>
-                            </result_source_diagnostic>
+                            </application_context_name.C1.BoxedType>
+                            <result.C2.BoxedType>
+                              <Associate_result.C2.BoxedType><Long>0</Long></Associate_result.C2.BoxedType>
+                            </result.C2.BoxedType>
+                            <result_source_diagnostic.C3.BoxedType>
+                              <Associate_source_diagnostic.C3.Choice>
+                                <dialogue_service_user.C1.BoxedType>
+                                  <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
+                                </dialogue_service_user.C1.BoxedType>
+                              </Associate_source_diagnostic.C3.Choice>
+                            </result_source_diagnostic.C3.BoxedType>
                             <!--Collection>
-                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
-                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
-                              <user_information>0403d079a4</user_information>
+                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
+                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
+                              <user_information.C30>0403d079a4</user_information.C30>
                             </Collection-->
-                          </AARE_apduSequenceType>
-                        </dialogueResponse>
-                      </DialoguePDU>
-                    </single_ASN1_type>
-                  </encoding>
-                </ExternalPDUSequenceType>
-              </ExternalPDU>
-            </DialogueOC>
-          </dialoguePortion>
-        </Continue>
+                          </AARE_apduSequenceType.A1.Sequence>
+                        </dialogueResponse.A1.BoxedType>
+                      </DialoguePDU.Choice>
+                    </single_ASN1_type.C0.BoxedType>
+                  </encoding.Choice>
+                </ExternalPDUSequenceType.U8.Sequence>
+              </ExternalPDU.A11.BoxedType>
+            </DialogueOC.A11.BoxedType>
+          </dialoguePortion.BoxedType>
+        </continue1.A5.Sequence>
       </TCMessage>
     </ASN>
     
@@ -687,10 +689,10 @@
   			<field name="Signalling_Point_Code" value="2" length="2" />
   			<field name="Subsystem_Number" value="8" length="1" />
   		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false">
-  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false"/>
+  			<!--field value="" format="binary" length="88" />
+        <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" />
+  		</parameter-->
   	</SS7>
 
     <UA name="m3ua" file="m3ua.xml">
@@ -712,9 +714,9 @@
             <field name="DATA"	format="fvo"/>
         </parameter>
 	
-        <!--parameter tag="Correlation_Id">
+        <parameter tag="Correlation_Id">
             <field name="Correlation_Id" format="Integer"  value="12783"/>
-        </parameter-->
+        </parameter>
     </UA>
     </sendMessageSIGTRAN>
 
@@ -901,48 +903,50 @@
     <!-- TCAP LAYER -->
     <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage>
-        <Continue>
-          <otid><Bytes>047b</Bytes></otid>
-          <dtid><Bytes>07000401</Bytes></dtid>
-          <dialoguePortion>
-            <DialogueOC>
-              <ExternalPDU>
-                <ExternalPDUSequenceType>
+        <continue1.A5.Sequence>
+          <otid.BoxedType><Bytes>047b</Bytes></otid.BoxedType>
+          <dtid.BoxedType><Bytes>07000401</Bytes></dtid.BoxedType>
+          <dialoguePortion.BoxedType>
+            <DialogueOC.A11.BoxedType>
+              <ExternalPDU.A11.BoxedType>
+                <ExternalPDUSequenceType.U8.Sequence>
                   <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                   <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
-                  <encoding>
-                    <single_ASN1_type>
-                      <DialoguePDU>
-                        <dialogueResponse>
-                          <AARE_apduSequenceType>
-                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
-                            <application_context_name>
+                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
+                  <encoding.Choice>
+                    <single_ASN1_type.C0.BoxedType>
+                      <DialoguePDU.Choice>
+                        <dialogueResponse.A1.BoxedType>
+                          <AARE_apduSequenceType.A1.Sequence>
+                            <protocol_version.C0d><BitString value="Version1:80" trailing="7"/></protocol_version.C0d>
+                            <application_context_name.C1.BoxedType>
                               <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                            </application_context_name>
-                            <result><Associate_result><Long>0</Long></Associate_result></result>
-                            <result_source_diagnostic>
-                              <Associate_source_diagnostic>
-                                <dialogue_service_user>
-                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
-                                </dialogue_service_user>
-                              </Associate_source_diagnostic>
-                            </result_source_diagnostic>
+                            </application_context_name.C1.BoxedType>
+                            <result.C2.BoxedType>
+                              <Associate_result.C2.BoxedType><Long>0</Long></Associate_result.C2.BoxedType>
+                            </result.C2.BoxedType>
+                            <result_source_diagnostic.C3.BoxedType>
+                              <Associate_source_diagnostic.C3.Choice>
+                                <dialogue_service_user.C1.BoxedType>
+                                  <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
+                                </dialogue_service_user.C1.BoxedType>
+                              </Associate_source_diagnostic.C3.Choice>
+                            </result_source_diagnostic.C3.BoxedType>
                             <!--Collection>
-                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
-                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
-                              <user_information>0403d079a4</user_information>
+                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
+                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
+                              <user_information.C30>0403d079a4</user_information.C30>
                             </Collection-->
-                          </AARE_apduSequenceType>
-                        </dialogueResponse>
-                      </DialoguePDU>
-                    </single_ASN1_type>
-                  </encoding>
-                </ExternalPDUSequenceType>
-              </ExternalPDU>
-            </DialogueOC>
-          </dialoguePortion>
-        </Continue>
+                          </AARE_apduSequenceType.A1.Sequence>
+                        </dialogueResponse.A1.BoxedType>
+                      </DialoguePDU.Choice>
+                    </single_ASN1_type.C0.BoxedType>
+                  </encoding.Choice>
+                </ExternalPDUSequenceType.U8.Sequence>
+              </ExternalPDU.A11.BoxedType>
+            </DialogueOC.A11.BoxedType>
+          </dialoguePortion.BoxedType>
+        </continue1.A5.Sequence>    
       </TCMessage>
     </ASN>
     
@@ -965,10 +969,10 @@
   			<field name="Signalling_Point_Code" value="2" length="2" />
   			<field name="Subsystem_Number" value="8" length="1" />
   		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false">
-  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false"/>
+  			<!--field value="" format="binary" length="88" />
+        <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" />
+  		</parameter-->
   	</SS7>
 
     <UA name="m3ua" file="m3ua.xml">
@@ -990,9 +994,9 @@
             <field name="DATA"	format="fvo"/>
         </parameter>
 	
-        <!--parameter tag="Correlation_Id">
+        <parameter tag="Correlation_Id">
             <field name="Correlation_Id" format="Integer"  value="12783"/>
-        </parameter-->
+        </parameter>
     </UA>
     </sendMessageSIGTRAN>
 
@@ -1164,48 +1168,50 @@
     <!-- TCAP LAYER -->
     <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage>
-        <Continue>
-          <otid><Bytes>047b</Bytes></otid>
-          <dtid><Bytes>07000401</Bytes></dtid>
-          <dialoguePortion>
-            <DialogueOC>
-              <ExternalPDU>
-                <ExternalPDUSequenceType>
+        <continue1.A5.Sequence>
+          <otid.BoxedType><Bytes>047b</Bytes></otid.BoxedType>
+          <dtid.BoxedType><Bytes>07000401</Bytes></dtid.BoxedType>
+          <dialoguePortion.BoxedType>
+            <DialogueOC.A11.BoxedType>
+              <ExternalPDU.A11.BoxedType>
+                <ExternalPDUSequenceType.U8.Sequence>
                   <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
                   <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor><Bytes>0402aa40</Bytes></data_value_descriptor-->
-                  <encoding>
-                    <single_ASN1_type>
-                      <DialoguePDU>
-                        <dialogueResponse>
-                          <AARE_apduSequenceType>
-                            <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
-                            <application_context_name>
+                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
+                  <encoding.Choice>
+                    <single_ASN1_type.C0.BoxedType>
+                      <DialoguePDU.Choice>
+                        <dialogueResponse.A1.BoxedType>
+                          <AARE_apduSequenceType.A1.Sequence>
+                            <protocol_version.C0d><BitString value="Version1:80" trailing="7"/></protocol_version.C0d>
+                            <application_context_name.C1.BoxedType>
                               <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                            </application_context_name>
-                            <result><Associate_result><Long>0</Long></Associate_result></result>
-                            <result_source_diagnostic>
-                              <Associate_source_diagnostic>
-                                <dialogue_service_user>
-                                  <DialogueServiceUser><Long>0</Long></DialogueServiceUser>
-                                </dialogue_service_user>
-                              </Associate_source_diagnostic>
-                            </result_source_diagnostic>
+                            </application_context_name.C1.BoxedType>
+                            <result.C2.BoxedType>
+                              <Associate_result.C2.BoxedType><Long>0</Long></Associate_result.C2.BoxedType>
+                            </result.C2.BoxedType>
+                            <result_source_diagnostic.C3.BoxedType>
+                              <Associate_source_diagnostic.C3.Choice>
+                                <dialogue_service_user.C1.BoxedType>
+                                  <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
+                                </dialogue_service_user.C1.BoxedType>
+                              </Associate_source_diagnostic.C3.Choice>
+                            </result_source_diagnostic.C3.BoxedType>
                             <!--Collection>
-                              <user_information>040ca70f5e0f024d3b3c34b26588</user_information>
-                              <user_information>04120aef3699f398f0a04000761bab86be69191c</user_information>
-                              <user_information>0403d079a4</user_information>
+                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
+                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
+                              <user_information.C30>0403d079a4</user_information.C30>
                             </Collection-->
-                          </AARE_apduSequenceType>
-                        </dialogueResponse>
-                      </DialoguePDU>
-                    </single_ASN1_type>
-                  </encoding>
-                </ExternalPDUSequenceType>
-              </ExternalPDU>
-            </DialogueOC>
-          </dialoguePortion>
-        </Continue>
+                          </AARE_apduSequenceType.A1.Sequence>
+                        </dialogueResponse.A1.BoxedType>
+                      </DialoguePDU.Choice>
+                    </single_ASN1_type.C0.BoxedType>
+                  </encoding.Choice>
+                </ExternalPDUSequenceType.U8.Sequence>
+              </ExternalPDU.A11.BoxedType>
+            </DialogueOC.A11.BoxedType>
+          </dialoguePortion.BoxedType>
+        </continue1.A5.Sequence>
       </TCMessage>
     </ASN>
     
@@ -1228,10 +1234,10 @@
   			<field name="Signalling_Point_Code" value="2" length="2" />
   			<field name="Subsystem_Number" value="8" length="1" />
   		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false">
-  			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-        <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-  		</parameter>
+  		<parameter id="15" name="Data" type="V" littleEndian="false"/>
+  			<!--field value="" format="binary" length="88" />
+        <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" />
+  		</parameter-->
   	</SS7>
 
     <UA name="m3ua" file="m3ua.xml">
@@ -1253,9 +1259,9 @@
             <field name="DATA"	format="fvo"/>
         </parameter>
 	
-        <!--parameter tag="Correlation_Id">
+        <parameter tag="Correlation_Id">
             <field name="Correlation_Id" format="Integer"  value="12783"/>
-        </parameter-->
+        </parameter>
     </UA>
     </sendMessageSIGTRAN>
 

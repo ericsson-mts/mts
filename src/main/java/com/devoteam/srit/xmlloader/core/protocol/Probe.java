@@ -313,16 +313,12 @@ public class Probe
 	
 	        PTCPSocket socket = sockets.get(socketID);
 	
-	        boolean newData = true;
 	        if(null == socket)
 	        {
 	            socket = new PTCPSocket(packet, this);
 	        }
-	        else
-	        {
-	            newData = socket.addPacket(packet);
-	        }
-	        
+	
+	        boolean newData = socket.addPacket(packet);	        
 	        if(newData)
 	        {
 	            sockets.remove(socketID);

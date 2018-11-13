@@ -1,0 +1,252 @@
+
+
+-- **************************************************************
+--
+-- PDU definitions for S1AP.
+--
+-- **************************************************************
+
+S1AP-PDU-Contents { 
+itu-t (0) identified-organization (4) etsi (0) mobileDomain (0) 
+eps-Access (21) modules (3) s1ap (1) version1 (1) s1ap-PDU-Contents (1) }
+
+-- FH ajout
+DEFINITIONS AUTOMATIC TAGS ::= 
+
+BEGIN
+
+-- **************************************************************
+--
+-- IE parameter types from other modules.
+--
+-- **************************************************************
+
+
+IMPORTS
+
+-- FH modif
+-- remove from S1AP-Containers because of CLASS clause
+    --PrivateIE-Container{},
+    --ProtocolExtensionContainer{},
+    --ProtocolIE-Container{},
+    --ProtocolIE-ContainerList{},
+    --ProtocolIE-ContainerPair{},
+    --ProtocolIE-ContainerPairList{},
+    --ProtocolIE-SingleContainer{},
+    --S1AP-PRIVATE-IES,
+    --S1AP-PROTOCOL-EXTENSION,
+    --S1AP-PROTOCOL-IES,
+    --S1AP-PROTOCOL-IES-PAIR    
+--FROM S1AP-Containers
+
+    id-uEaggregateMaximumBitrate,
+    id-Cause,
+    id-CellAccessMode,
+    id-cdma2000HORequiredIndication,
+    id-cdma2000HOStatus,
+    id-cdma2000OneXSRVCCInfo,
+    id-cdma2000OneXRAND,
+    id-cdma2000PDU,
+    id-cdma2000RATType,
+    id-cdma2000SectorID,
+    id-EUTRANRoundTripDelayEstimationInfo,
+    id-CNDomain,
+    id-ConcurrentWarningMessageIndicator,
+    id-CriticalityDiagnostics,
+    id-CSFallbackIndicator,
+    id-CSG-Id,
+    id-CSG-IdList,
+    id-CSGMembershipStatus,
+    id-Data-Forwarding-Not-Possible,
+    id-DefaultPagingDRX,
+    id-Direct-Forwarding-Path-Availability,
+    id-Global-ENB-ID,
+    id-EUTRAN-CGI,
+    id-eNBname,
+    id-eNB-StatusTransfer-TransparentContainer,
+    id-eNB-UE-S1AP-ID,
+    id-GERANtoLTEHOInformationRes,
+    id-GUMMEI-ID,
+    id-HandoverRestrictionList,
+    id-HandoverType,
+    id-InitialContextSetup,
+    id-Inter-SystemInformationTransferTypeEDT,
+    id-Inter-SystemInformationTransferTypeMDT,
+    id-LPPa-PDU,
+    id-NAS-DownlinkCount,
+    id-ManagementBasedMDTAllowed,
+    id-MMEname,
+    id-MME-UE-S1AP-ID,
+    id-MSClassmark2,
+    id-MSClassmark3,
+    id-NAS-PDU,
+    id-NASSecurityParametersfromE-UTRAN,
+    id-NASSecurityParameterstoE-UTRAN,
+    id-OverloadResponse,
+    id-pagingDRX,
+    id-PagingPriority,
+    id-RelativeMMECapacity,
+    id-RequestType,
+    id-Routing-ID,
+    id-E-RABAdmittedItem,
+    id-E-RABAdmittedList,
+    id-E-RABDataForwardingItem,
+    id-E-RABFailedToModifyList,
+    id-E-RABFailedToReleaseList,
+    id-E-RABFailedToSetupItemHOReqAck,
+    id-E-RABFailedToSetupListBearerSURes,
+    id-E-RABFailedToSetupListCtxtSURes,
+    id-E-RABFailedToSetupListHOReqAck,
+    id-E-RABFailedToBeReleasedList,
+    id-E-RABModify,
+    id-E-RABModifyItemBearerModRes,
+    id-E-RABModifyListBearerModRes,
+    id-E-RABRelease,
+    id-E-RABReleaseItemBearerRelComp,
+    id-E-RABReleaseItemHOCmd,
+    id-E-RABReleaseListBearerRelComp,
+    id-E-RABReleaseIndication,
+    id-E-RABSetup,
+    id-E-RABSetupItemBearerSURes,
+    id-E-RABSetupItemCtxtSURes,
+    id-E-RABSetupListBearerSURes,
+    id-E-RABSetupListCtxtSURes,
+    id-E-RABSubjecttoDataForwardingList,
+    id-E-RABToBeModifiedItemBearerModReq,
+    id-E-RABToBeModifiedListBearerModReq,
+    id-E-RABToBeReleasedList,
+    id-E-RABReleasedList,
+    id-E-RABToBeSetupItemBearerSUReq,
+    id-E-RABToBeSetupItemCtxtSUReq,
+    id-E-RABToBeSetupItemHOReq,
+    id-E-RABToBeSetupListBearerSUReq,
+    id-E-RABToBeSetupListCtxtSUReq,
+    id-E-RABToBeSetupListHOReq,
+    id-E-RABToBeSwitchedDLItem,
+    id-E-RABToBeSwitchedDLList,
+    id-E-RABToBeSwitchedULList,
+    id-E-RABToBeSwitchedULItem,
+    id-E-RABtoReleaseListHOCmd,
+    id-SecurityKey,
+    id-SecurityContext,
+    id-ServedGUMMEIs,
+    id-SONConfigurationTransferECT,
+    id-SONConfigurationTransferMCT,
+    id-Source-ToTarget-TransparentContainer,
+    id-Source-ToTarget-TransparentContainer-Secondary,
+    id-SourceMME-UE-S1AP-ID,
+    id-SRVCCOperationPossible,
+    id-SRVCCHOIndication,
+    id-SubscriberProfileIDforRFP,
+    id-SupportedTAs,
+    id-S-TMSI,
+    id-TAI,
+    id-TAIItem,
+    id-TAIList,
+    id-Target-ToSource-TransparentContainer,
+    id-Target-ToSource-TransparentContainer-Secondary,
+    id-TargetID,
+    id-TimeToWait,
+    id-TraceActivation,
+    id-TrafficLoadReductionIndication,
+    id-E-UTRAN-Trace-ID,
+    id-UEIdentityIndexValue,
+    id-UEPagingID,
+    id-UERadioCapability,
+    id-UTRANtoLTEHOInformationRes,
+    id-UE-associatedLogicalS1-ConnectionListResAck,
+    id-UE-associatedLogicalS1-ConnectionItem,
+    id-UESecurityCapabilities,
+    id-UE-S1AP-IDs,
+    id-ResetType,
+    id-MessageIdentifier,
+    id-SerialNumber,
+    id-WarningAreaList,
+    id-RepetitionPeriod,
+    id-NumberofBroadcastRequest,
+    id-WarningType,
+    id-WarningSecurityInfo,
+    id-DataCodingScheme,
+    id-WarningMessageContents,
+    id-BroadcastCompletedAreaList,
+    id-BroadcastCancelledAreaList,
+    id-RRC-Establishment-Cause,
+    id-TraceCollectionEntityIPAddress,
+    s1ap-maxnoofTAIs,
+    s1ap-maxNrOfErrors,
+    s1ap-maxNrOfE-RABs,
+    s1ap-maxNrOfIndividualS1ConnectionsToReset,
+    s1ap-maxnoofEmergencyAreaID,
+    s1ap-maxnoofCellID,
+    s1ap-maxnoofTAIforWarning,
+    s1ap-maxnoofCellinTAI,
+    s1ap-maxnoofCellinEAI,
+    id-ExtendedRepetitionPeriod,
+    id-PS-ServiceNotAvailable,
+    id-RegisteredLAI,
+    id-GUMMEIList,
+    id-SourceMME-GUMMEI,
+    id-MME-UE-S1AP-ID-2,
+    id-GW-TransportLayerAddress,
+    id-RelayNode-Indicator,
+    id-Correlation-ID,
+    id-MMERelaySupportIndicator,
+    id-GWContextReleaseIndication,
+    id-PrivacyIndicator
+-- FH modif
+--S1ap-FROM S1AP-Constants;
+FROM S1AP-Constants;
+
+-- **************************************************************
+--
+-- Common Container Lists
+--
+-- **************************************************************
+
+-- FH modif
+--E-RAB-IE-ContainerList            { S1AP-PROTOCOL-IES      : IEsSetParam }    ::= ProtocolIE-ContainerList     { 1, s1ap-maxNrOfE-RABs,   {IEsSetParam} }
+--E-RAB-IE-ContainerList            { S1AP-PROTOCOL-IES      : IEsSetParam }    ::= ProtocolIE-ContainerList     { 1, s1ap-maxNrOfE-RABs,   {IEsSetParam} }
+--E-RAB-IE-ContainerPairList        { S1AP-PROTOCOL-IES-PAIR : IEsSetParam }    ::= ProtocolIE-ContainerPairList { 1, s1ap-maxNrOfE-RABs,   {IEsSetParam} }
+--ProtocolError-IE-ContainerList    { S1AP-PROTOCOL-IES      : IEsSetParam }    ::= ProtocolIE-ContainerList     { 1, s1ap-maxNrOfE-RABs,   {IEsSetParam} }
+
+
+-- **************************************************************
+--
+-- INITIAL UE MESSAGE
+--
+-- **************************************************************
+
+InitialUEMessage ::= SEQUENCE {
+  --FH modif
+	--protocolIEs                     ProtocolIE-Container       {{InitialUEMessage-IEs}},
+  protocolIEs                     InitialUEMessage-IEs
+  -- FH modif
+	--...
+}
+
+--FH modif
+--InitialUEMessageIEs S1AP-PROTOCOL-IES ::= {
+--  { ID id-eNB-UE-S1AP-ID				CRITICALITY reject	TYPE ENB-UE-S1AP-ID					PRESENCE mandatory} |
+--	{ ID id-NAS-PDU						CRITICALITY reject	TYPE NAS-PDU						PRESENCE mandatory} |
+--	{ ID id-TAI							CRITICALITY reject	TYPE TAI							PRESENCE mandatory} |
+--	{ ID id-EUTRAN-CGI					CRITICALITY ignore	TYPE EUTRAN-CGI						PRESENCE mandatory} |
+--	{ ID id-RRC-Establishment-Cause		CRITICALITY ignore	TYPE RRC-Establishment-Cause		PRESENCE mandatory} |
+--	{ ID id-S-TMSI						CRITICALITY reject	TYPE S-TMSI							PRESENCE optional} |
+--	{ ID id-CSG-Id						CRITICALITY reject	TYPE CSG-Id							PRESENCE optional} |
+--	{ ID id-GUMMEI-ID					CRITICALITY reject	TYPE GUMMEI							PRESENCE optional},
+--	...
+--}
+InitialUEMessageIEs ::= SEQUENCE {
+	id-eNB-UE-S1AP-ID				ENB-UE-S1AP-ID,
+	id-NAS-PDU						NAS-PDU,
+	id-TAI							TAI,
+	id-EUTRAN-CGI					EUTRAN-CGI,
+	id-RRC-Establishment-Cause		RRC-Establishment-Cause,
+	id-S-TMSI						S-TMSI OPTIONAL,
+	id-CSG-Id						CSG-Id OPTIONAL,
+	id-GUMMEI-ID					GUMMEI OPTIONAL
+  --FH modif
+	--...
+}
+
+END

@@ -31,8 +31,28 @@ import java.util.List;
 public class GenericLogger
 {
 	/** Maximum number of characters to write into the log */
-    protected static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);	
+    private static int maxStringLength = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);	
+
+    /** Maximum number of records to write into the log */
+    private static int maxListSize = Config.getConfigByName("tester.properties").getInteger("logs.MAX_LIST_SIZE", 100);
     
+    
+    public static void init()
+    {
+    	maxStringLength = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);
+    	maxListSize = Config.getConfigByName("tester.properties").getInteger("logs.MAX_LIST_SIZE", 100);
+    }
+
+    public static int getMaxStringLength()
+    {
+    	return maxStringLength;
+    }
+
+    public static int getMaxListSize()
+    {
+    	return maxListSize;
+    }
+
     public void debug(TextEvent.Topic topic, Object... objects)
     {
         print(null, topic, TextEvent.DEBUG, null, objects);
@@ -113,14 +133,19 @@ public class GenericLogger
                     {                       
                         String logMessage = object.toString();
                         // cut if log message is too long                        		
-                        if (logMessage.length() > MAX_STRING_LENGTH)
+                        if (logMessage.length() > maxStringLength)
                         {
                         	message.append(" {");
-                        	message.append(MAX_STRING_LENGTH);
-                        	message.append(" of ");
+                        	message.append(maxStringLength);
+                        	message.append("/");
                         	message.append(logMessage.length());
                         	message.append("} ");
-                        	message.append(logMessage.substring(0, MAX_STRING_LENGTH));
+                        	message.append(logMessage.substring(0, maxStringLength));
+                        	message.append("\n     ..........\n");
+                        	if (logMessage.length() > 500)
+                        	{
+                        		message.append(logMessage.substring(logMessage.length() - 500));
+                        	}
                         }
                         else
                         {

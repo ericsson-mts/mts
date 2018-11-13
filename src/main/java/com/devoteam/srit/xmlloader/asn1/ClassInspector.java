@@ -69,14 +69,14 @@ public class ClassInspector
         {
             e.printStackTrace();
         }
-        LinkedList<Class> correctClasses = new LinkedList<Class>();
         
+        LinkedList<Class> correctClasses = new LinkedList<Class>();        
         for(String aclass:classes)
         {
-            if(!aclass.toLowerCase().startsWith(packageName)) continue;
+            if(!aclass.toLowerCase().startsWith(packageName.toLowerCase())) continue;
             try
             {
-                Class theClass = ClassLoader.getSystemClassLoader().loadClass(aclass.substring(0, aclass.length() - 6).replace("\\", ".").replace("/", "."));
+                Class theClass = ClassLoader.getSystemClassLoader().loadClass(aclass.substring(0, aclass.length() - 6));
                 theClass.asSubclass(Object.class);
                 if(!Modifier.isAbstract(theClass.getModifiers()) && !Modifier.isInterface(theClass.getModifiers()))
                 {
@@ -103,9 +103,11 @@ public class ClassInspector
                 while (fileNames.hasMoreElements())
                 {
                     entry = fileNames.nextElement();
-                    if (entry.getName().endsWith(".class"))
+                    String name = entry.getName();
+                    if (name.endsWith(".class"))
                     {
-                        files.add(entry.getName());
+                    	name = name.replace('/', '.');
+                        files.add(name);
                     }
                 }
             }

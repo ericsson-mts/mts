@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.exception.ParameterException;
+import com.devoteam.srit.xmlloader.core.log.GenericLogger;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 import com.devoteam.srit.xmlloader.core.coding.text.Header;
@@ -50,14 +51,10 @@ import org.dom4j.tree.DefaultText;
  * @author gpasquiers
  */
 public class Parameter {
-
+    
     public static String EXPRESSION = "\\[[^\\]\\[]+\\]";
     public static Pattern pattern = Pattern.compile(EXPRESSION);
     private static Matcher matcher = pattern.matcher("");
-    /** Maximum number of characters to write into the log */
-    private static int MAX_STRING_LENGTH = Config.getConfigByName("tester.properties").getInteger("logs.MAX_STRING_LENGTH", 1000);
-    /** Maximum number of records to write into the log */
-    private static int MAX_LIST_SIZE = Config.getConfigByName("tester.properties").getInteger("logs.MAX_LIST_SIZE", 100);
 
     private Vector<Object> array;
     private long version;
@@ -291,40 +288,129 @@ public class Parameter {
     }
 
     @Override
-    public String toString() {
-        String res = "";
-        int length = length();
+    public String toString() 
+    {
+    	// number of line at the end of the list to log
+    	int NUMBER_LINE_END = 2;
+    	
+        StringBuffer strBuff = new StringBuffer();        
 
-        if (length > MAX_LIST_SIZE) {
-            res += "[" + MAX_LIST_SIZE + " of " + length + "]";
-            length = MAX_LIST_SIZE;
+        int numberLineBefore = length();			// number of line before ...
+        int numberLine = length();			// number total ...
+        if (length() > GenericLogger.getMaxListSize()) 
+        {
+        	strBuff.append('[');
+        	strBuff.append(GenericLogger.getMaxListSize());
+        	strBuff.append('/');
+        	strBuff.append(length());
+        	strBuff.append(']');
+        	numberLineBefore = GenericLogger.getMaxListSize() - NUMBER_LINE_END;
+        	numberLine = GenericLogger.getMaxListSize();
         }
-        else {
-            res += "[" + length + "]";
+        else 
+        {
+        	strBuff.append('[');
+        	strBuff.append(length());
+        	strBuff.append(']');
         }
+        // length of the header [n] or [p/n]
+        int lengthHeader = strBuff.length();
+        
+        strBuff.append('[');
+        if (length() > 1)
+        {
+        	strBuff.append('\n');
+        }
+        
+        int maxLength = (int) (GenericLogger.getMaxStringLength() - lengthHeader - 12);
+	    if (numberLine > 0)
+	    {
+	    	maxLength= maxLength / numberLine;
+	    }
 
-        res += "(";
-
-        int i = 0;
-        while (i < length) {
-            int maxLength = ((int) MAX_STRING_LENGTH) / length;
-            if (array.get(i).toString().length() > maxLength) 
+        for (int i = 0; i < numberLineBefore; i++) 
+        {
+        	toStringForLogging(strBuff, i, maxLength);
+            if ((i < numberLineBefore - 1) ) 
             {
-                res += "{" + maxLength + " of " + array.get(i).toString().length() + "}" + array.get(i).toString().substring(0, maxLength) + ",";
+            	strBuff.append(",\n");
             }
-            else {
-                res += array.get(i) + "|";
+        }
+             
+        if (length() > GenericLogger.getMaxListSize()) 
+        {
+        	strBuff.append(",\n...,\n");	        
+            for (int i = length() - NUMBER_LINE_END; i < length(); i++) 
+            {
+            	toStringForLogging(strBuff, i, maxLength);
+                if (i < length() - 1) 
+                {
+                	strBuff.append(",\n");
+                }
             }
-            i++;
         }
-
-        if (i > 0) {
-            res = res.substring(0, res.length() - 1);
+        
+        if (length() > 1)
+        {
+        	strBuff.append('\n');
         }
-
-        return res + ")";
+        strBuff.append(']');
+        return strBuff.toString();
     }
 
+    public void toStringForLogging(StringBuffer strBuff, int index, int maxLength) 
+    {
+    	String value = this.array.get(index).toString();
+    	
+    	// calculate the header length (M) [P/N]
+	    int lengthHeader = 0;
+    	if (length() > 1)
+    	{
+    		lengthHeader++;
+    		lengthHeader += new Integer(index).toString().length();
+    		lengthHeader++;
+    	}
+	    if (value.length() > maxLength) 
+	    {
+	    	lengthHeader++;
+	    	lengthHeader += new Integer(maxLength).toString().length();
+	        lengthHeader++;
+	        lengthHeader += new Integer(value.length()).toString().length();
+	        lengthHeader++;
+	    }
+	    // for the ... at the end of the line
+	    lengthHeader += 3;
+	    // for the ,\n at the end of the line
+	    lengthHeader += 2;
+	    
+	    // substract the length of the header
+	    maxLength = maxLength - lengthHeader;
+	    if (maxLength < 0)
+	    {
+	    	maxLength= 0;
+	    }
+    	if (length() > 1)
+    	{
+    		strBuff.append('(');
+    		strBuff.append(index);
+    		strBuff.append(')');
+    	}        	      	
+	    if (value.length() > maxLength) 
+	    {
+	        strBuff.append('{');
+	        strBuff.append(maxLength);
+	        strBuff.append('/');
+	        strBuff.append(value.length());
+	        strBuff.append('}');
+	        strBuff.append(value.substring(0, maxLength));
+	        strBuff.append("...");
+	    }
+	    else
+	    {
+	    	strBuff.append(value);
+	    }	    
+    }
+    
     public Vector<Object> getArray() {
         return array;
     }

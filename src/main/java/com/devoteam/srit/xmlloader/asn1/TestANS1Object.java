@@ -59,6 +59,7 @@ public class TestANS1Object
 {
 
 	// default java package 
+	// FH modifprivate static String JAVA_PACKAGE = "com.devoteam.srit.xmlloader.sigtran.ap";
 	private static String JAVA_PACKAGE = "com.devoteam.srit.xmlloader.sigtran.ap";
 			
 	// destination directory for resulting files
@@ -67,7 +68,7 @@ public class TestANS1Object
 	private static int maxIterations = 5;
 	// rules list
 	//private static String listRules = "BER,DER,PER";
-	private static String[] tabRules = {"XML","BER","DER"};
+	private static String[] tabRules = {"XML", "BER", "DER", "PER"};
 	
 	// error counters
 	private static int[] tabError = {0,0,0,0,0};
@@ -175,10 +176,10 @@ public class TestANS1Object
         	String packageName = name;
         	
         	// dans les .jar le séparateur est / au lieu de .
-        	packageName = packageName.replaceAll("\\.", "/");        	
+        	//packageName = packageName.replaceAll("\\.", "/");        	
 			// inspect the classes for the given package        	
 	    	List<Class> listClasses = ClassInspector.find(packageName);
-        	packageName = packageName.replaceAll("/", "\\.");        	
+        	//packageName = packageName.replaceAll("/", "\\.");        	
 	    	
 	    	// build the hashmap to find the high level classes
 	    	Map<String, Class> mapClasses = new HashMap<String, Class>();
@@ -264,6 +265,11 @@ public class TestANS1Object
         {
         	dictionaryFile = "cap/dictionary_CAP.xml";
         }
+        else if (packageName.endsWith(".S1AP."))
+        {
+        	dictionaryFile = "S1AP/dictionary_S1AP.xml";
+        }
+        
         
         boolean error = false;
         for (int i = 0; i < tabRules.length; i++)

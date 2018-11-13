@@ -13,6 +13,7 @@ diameter.RecCER_SendCEA
 
     <function name="diameter.openChannel_SendCER_RecCEA">
         <input>
+            <parameter name="[destScenario]" type="string" default="server"/>        
         </input>
 
         <do>
@@ -68,7 +69,7 @@ diameter.RecCER_SendCEA
                       -->
                       
                       <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
-                      <sendMessageDIAMETER name="Send Request RFC3588 CER" channel="channel_client" destScenario="server">
+                      <sendMessageDIAMETER name="Send Request RFC3588 CER" channel="channel_client" destScenario="[destScenario]">
                           <header request="true" command="Capabilities-Exchange" applicationId="0" proxiable="false" error="false" retransmit="false"/>
                   
                           <!-- The Origin-Host AVP identifies the endpoint that originated the Diameter message. -->

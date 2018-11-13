@@ -13,92 +13,92 @@
 
 <dictionary layer="CAP" className="com.devoteam.srit.xmlloader.sigtran.ap.cap.Component">
 
-    <!-- 0=initialDP --> 
+    <!-- IDP=initialDP:0 --> 
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.InitialDPArg"
         condition="localValue=0"
     />
     
-    <!-- 16=assistRequestInstructions -->
+    <!-- ARI=assistRequestInstructions:16 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.AssistRequestInstructionsArg"
         condition="localValue=16"
     />    
-    <!-- 17=establishTemporaryConnection -->
+    <!-- ETC=establishTemporaryConnection:17 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.EstablishTemporaryConnectionArg"
         condition="localValue=17"
     />	
-    <!-- 18=disconnectForwardConnection -->
+    <!-- DFC=disconnectForwardConnection:18 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.DisconnectForwardConnectionWithArgumentArg"
         condition="localValue=18"
     />
     
-    <!-- 20=connect -->
+    <!-- CON=connect:20 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ConnectArg"
         condition="localValue=20"
     />
     
-    <!-- 22=releaseCall -->
+    <!-- RC=releaseCall:22 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ReleaseCallArg"
         condition="localValue=22"
     />
-    <!-- 23=requestReportBCSMEvent -->
+    <!-- RRBE=requestReportBCSMEvent:23 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.RequestReportBCSMEventArg"
         condition="localValue=23"
     />
-    <!-- 24=eventReportBCSM -->
+    <!-- ERB=eventReportBCSM:24 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.EventReportBCSMArg"
         condition="localValue=24"
     />
     
-    <!-- 35=applyCharging -->
+    <!-- AC=applyCharging:35 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ApplyChargingArg"
         condition="localValue=35"
     />
 	
-    <!-- 36=applyChargingReport -->
+    <!-- ACR=applyChargingReport:36 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.ApplyChargingReportArg"
         condition="localValue=36"
     />
         
-    <!-- 47=playAnnouncement -->
+    <!-- PA=playAnnouncement:47 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.PlayAnnouncementArg"
         condition="localValue=47"
     />
-	  <!-- 48=promptAndCollectUserInformation -->
+	  <!-- PCUI=promptAndCollectUserInformation:48 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.PromptAndCollectUserInformationArg"
         condition="localValue=48"
     />
-	  <!-- 49=specializedResourceReport -->
+	  <!-- SRR=specializedResourceReport:49 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.SpecializedResourceReportArg"
         condition="localValue=49"
     />
         
-    <!-- 53=Cancel -->
+    <!-- CAN=Cancel:53 -->
     <embedded 
         initial="invokeparameter" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.CancelArg"
@@ -2124,5 +2124,38 @@
         <!--.............-->
     </element>
 
+    <!-- alertingPattern => TS 29.002-C50 chapter 17.7.8 page 447 -->    
+    <element name="alertingPattern" coding="V" description="Alerting Pattern">
+    		<field name="value1" type="Integer" length="1" description="Ignore pattern"/>
+    		<field name="value2" type="Integer" length="1" description="Ignore pattern"/>        
+        <field name="Spare" type="Integer" lengthBit="4" description="Unused value"/>
+        <field name="typePattern" type="EnumLong" lengthBit="2" description="Type of pattern">
+            <enum name="level" value="b00"/>
+            <enum name="categorie" value="b01"/>
+            <enum name="categorie" value="b10"/>
+            <enum name="reserved" value="b11"/>
+        </field>
+        <field name="patternValue" type="EnumLong" lengthBit="2" description="Pattern value for level or categorie defined in GSM 02.07">
+            <enum name="pattern-0" value="0" description="alertingLevel-0 or categorieLevel-0"/>
+            <enum name="pattern-1" value="1" description="alertingLevel-1 or categorieLevel-1"/>
+            <enum name="pattern-2" value="2" description="alertingLevel-2 or categorieLevel-2"/>
+            <enum name="pattern-3" value="3" description="alertingLevel-3 or categorieLevel-3"/>
+        </field>
+    </element>
+
+
+        <!-- carrier => TS 29.078-920 chapter 5.1 page 34 -->    
+    <element name="carrier" coding="V" description="Carrier information for North America (na) only.">
+        <field name="SelectedCIC" type="EnumLong" lengthBit="8" description="Selected carrier identification code (CIC)">
+            <enum name="No indication" value="b00000000"/>
+            <enum name="pre subscribed and not input by calling party" value="b00000001"/>            
+            <enum name="pre subscribed and input by calling party" value="b00000010"/>
+            <enum name="pre subscribed, no indication of whether input by calling party (undetermined)" value="b00000011"/>            
+            <enum name="not pre subscribed and input by calling party" value="b00000100"/>
+            <enum name="spare" value="b00000101-b11111110"/>
+            <enum name="reserved" value="b11111111"/>
+        </field>
+        <field name="carrierID" type="EnumLong" length="3" description="Carrier identifier"/>        
+    </element>
 
 </dictionary>

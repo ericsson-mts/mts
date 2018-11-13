@@ -467,10 +467,18 @@ public class MsgDiamCommon extends Msg
         }
         String name = label + ":" + Long.toString(code);
         ret += " code=\"" + name + "\"";
-
+        
+        AVP[] tavp = null;				// list of the sub-AVPs  
         // display the AVP value;
         try
         {
+            // process the "Grouped" AVP : display recursively the list of sub-AVPs
+	        if (typeDico != null && typeDico.equalsIgnoreCase("grouped"))
+	        {
+	            AVP_Grouped gavp = new AVP_Grouped(avp);
+	            tavp = gavp.queryAVPs();
+	        }
+        	
         	String value = getAVPValue(avp, avpDef, applicationId, typeDico, typeBase);
         	// if there are non printable characters
         	if (!Utils.hasPrintableChar(value))
@@ -518,24 +526,21 @@ public class MsgDiamCommon extends Msg
         }
         ret += " m=\"" + avp.isMandatory() + "\"";
         ret += " p=\"" + avp.isPrivate() + "\"";
-        
-        // managed the "Grouped" AVP : display recursively the list of sub-AVPs
-        if (typeDico != null && typeDico.equalsIgnoreCase("grouped"))
+
+        // process the "Grouped" AVP : display recursively the list of sub-AVPs
+        if (tavp != null)
         {
             ret += ">\n";
-            AVP_Grouped gavp = new AVP_Grouped(avp);
-            AVP[] tavp = gavp.queryAVPs();
             for(int i = 0; i < tavp.length; i++)
             {
-                ret += avpToXml(tavp[i], indent+1, applicationId);
+                ret += avpToXml(tavp[i], indent + 1, applicationId);
             }
             ret += Utils.indent(indent) + "</avp>\n";
         }
         else
         {
-            ret += "/>\n";
+        	ret += "/>\n";
         }
-        
         return ret ;
     }
 

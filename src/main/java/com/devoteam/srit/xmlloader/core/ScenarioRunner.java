@@ -24,6 +24,7 @@
 package com.devoteam.srit.xmlloader.core;
 
 import com.devoteam.srit.xmlloader.core.exception.InterruptedExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GenericLogger;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextListenerKey;
@@ -107,7 +108,7 @@ public class ScenarioRunner extends Runner
     /** Creates a new instance of ScenarioRunner */
     public ScenarioRunner(TestcaseRunner aTestcaseRunner, ScenarioReference scenario) {
         super(scenario.getName());
-
+    	
         defaultHierarchyMember = new DefaultHierarchyMember<TestcaseRunner, Object>();
         defaultNotificationSender = new DefaultNotificationSender<Notification<String, RunnerState>>();
 
@@ -155,6 +156,10 @@ public class ScenarioRunner extends Runner
         	
         	if (_scenario.getState())
         	{
+        		
+                /** initialize logger to take logging parameter into account */
+            	GenericLogger.init();
+
 	            assertIsNotInterrupting();
 	            GlobalLogger.instance().getSessionLogger().debug(this, TextEvent.Topic.CORE, "ScenarioRunner started");
 	            getState().setFlag(RunnerState.F_STARTED, true);
