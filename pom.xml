@@ -230,7 +230,7 @@
                 <executions>
                     <execution>
                         <id>scenario</id>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -243,7 +243,7 @@
                     </execution>
                     <execution>
                         <id>master</id>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -256,7 +256,7 @@
                     </execution>
                     <execution>
                         <id>test</id>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -269,7 +269,7 @@
                     </execution>
                     <execution>
                         <id>parameter_operation</id>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>java</goal>
                         </goals>
@@ -277,6 +277,32 @@
                             <arguments>
                                 <argument>src/main/conf/schemas/parameter_operation.xsd</argument>
                                 <argument>target/mts/doc/schemas/parameter_operation.html</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test_condition</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>src/main/conf/schemas/test_condition.xsd</argument>
+                                <argument>target/mts/doc/schemas/test_condition.html</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>scenario_protocol</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>src/main/conf/schemas/scenario_protocol.xsd</argument>
+                                <argument>target/mts/doc/schemas/scenario_protocol.html</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -326,10 +352,15 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.1.4</version>
-        </dependency>
+      		<groupId>org.apache.httpcomponents.core5</groupId>
+      		<artifactId>httpcore5</artifactId>
+      		<version>5.0-beta2</version>
+    	</dependency>
+        <dependency>
+      		<groupId>org.apache.httpcomponents.core5</groupId>
+      		<artifactId>httpcore5-h2</artifactId>
+      		<version>5.0-beta2</version>
+    	</dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>

@@ -22,16 +22,13 @@
  */
 
 package com.devoteam.srit.xmlloader.http.test;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.HttpVersion;
-import org.apache.http.HttpException;
+import org.apache.hc.core5.http.HttpException;
 import java.io.*;
 
 public class HttpLoaderClient extends Thread
 {
     
+	
     private static HttpLoaderServer http;
     
     //private Properties properties;
@@ -41,8 +38,8 @@ public class HttpLoaderClient extends Thread
     private static Long beginThreadRequest, endThreadRequest,timeThreadRequest;
     
     private static Long beginThreadResponse, endThreadResponse, timeThreadResponse;
-    
-    private HttpParams params = new BasicHttpParams();
+
+	
     
     /** Creates a new instance of TestHttpLoader */
     public HttpLoaderClient()
@@ -72,15 +69,12 @@ public class HttpLoaderClient extends Thread
     {
         
         Long beginThreadResponse = System.currentTimeMillis(); // top chrono des reponses
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setHttpElementCharset(params, "ISO-8859-15");
-        HttpProtocolParams.setContentCharset(params, "text");
-        HttpProtocolParams.setUserAgent(params, "XmlLoader");
-        HttpProtocolParams.setUseExpectContinue(params, true);
+        
+        
         
         try
         {
-            http.receiveResponse("GET","D:/XMLloader/testPileHttp/src/test/HttpLoader/",params,5000000);
+            http.receiveResponse("GET","D:/XMLloader/testPileHttp/src/test/HttpLoader/",5000000);
             Long endThreadResponse = System.currentTimeMillis();
             timeThreadResponse = endThreadResponse - beginThreadResponse; // calcul de la durée du processus de reception des msg
             Long totalTime = timeThreadRequest + timeThreadResponse; // calcul de la durée du programme
@@ -99,13 +93,7 @@ public class HttpLoaderClient extends Thread
     {
         // Create a HTTP message object corresponding to the string message
         
-        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setHttpElementCharset(params, "ISO-8859-15");
-        HttpProtocolParams.setContentCharset(params, "text");
-        HttpProtocolParams.setUserAgent(params, "XmlLoader");
-        HttpProtocolParams.setUseExpectContinue(params, true);
-        
-        http.sendRequest("GET", "D:/XMLloader/testPileHttp/src/test/HttpLoader/"+i, params);
+        http.sendRequest("GET", "D:/XMLloader/testPileHttp/src/test/HttpLoader/"+i);
         
     }
 }

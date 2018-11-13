@@ -535,13 +535,13 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
     public void generateTestplan(String path) {
         String nameTestCase;
         String description;
-        PrintWriter pw = null;
         Boolean statFailed;
         Boolean statComplete;
         String etatTestcase;
-        try {
-            File csvFile = new File(path);
-            pw = new PrintWriter(new FileWriter(csvFile, true));
+        
+        File csvFile = new File(path);
+        csvFile.getParentFile().mkdirs();
+        try(PrintWriter pw = new PrintWriter(new FileWriter(csvFile, true))) {
             if (csvFile.length() == 0) {
                 pw.println("Name" + ";" + "Description" + ";" + "Test Status");
             }
@@ -573,12 +573,10 @@ public class Test implements Serializable, HierarchyMember<Object, Testcase> {
                 }
                 pw.println("            " + nameTestCase + ";" + description + ";" + etatTestcase);
             }
-            pw.flush();
-            pw.close();
         }
         catch (IOException ex) {
-            GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "error generate Test plan " );
-            pw.close();
+            GlobalLogger.instance().getApplicationLogger().error(Topic.CORE, ex, "error generating Test plan " );
+            ex.printStackTrace();
         }
     }
 }

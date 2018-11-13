@@ -5,11 +5,8 @@
  */
 package build.tools;
 
-import static build.tools.Main.xpath;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import org.w3c.dom.Node;
 
 /**
  *
@@ -21,27 +18,35 @@ public class ElementInfo {
     String documentation;
     String appinfo;
     String typeName;
+
+    Map<String, AttributeInfo> attributes;
     TypeInfo type;
 
-    public ElementInfo(Node node) throws XPathExpressionException {
-        name = (String) xpath.evaluate("./@*[local-name() = 'name']", node, XPathConstants.STRING);
-        typeName = (String) xpath.evaluate("./@*[local-name() = 'type']", node, XPathConstants.STRING);
-        appinfo = (String) xpath.evaluate(".//*[local-name() = 'appinfo']", node, XPathConstants.STRING);
-        documentation = (String) xpath.evaluate(".//*[local-name() = 'documentation']", node, XPathConstants.STRING);
+    public ElementInfo() {
+        attributes = new LinkedHashMap<>();
     }
 
     public void resolveComplexType(Map<String, TypeInfo> cache) {
-        type = cache.get(typeName);
-    }
-
+        if (null != typeName) {
+            type = cache.get(typeName);
+            if (null != type) {
+                for (Map.Entry<String, AttributeInfo> entry : type.attributes.entrySet()) {
+                    if (!attributes.containsKey(entry.getKey())) {
+                        attributes.put(entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+        }
+    }    
+    
     @Override
     public String toString() {
         StringBuilder string = new StringBuilder();
         string.append(name + " (" + typeName + ";" + appinfo + ";" + documentation + ")\n");
+        for (AttributeInfo ai : attributes.values()) {
+            string.append("    @ " + ai.name + " (" + ai.typeName + ";" + ai.appinfo + ";" + ai.documentation + ")\n");
+        }
         if (null != type) {
-            for (AttributeInfo ai : type.attributes.values()) {
-                string.append("    @ " + ai.name + " (" + ai.typeName + ";" + ai.appinfo + ";" + ai.documentation + ")\n");
-            }
             for (ElementInfo ei : type.elements.values()) {
                 string.append("    - " + ei.name + "\n");
             }

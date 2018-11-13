@@ -25,49 +25,53 @@ package com.devoteam.srit.xmlloader.http.test;
 import java.net.Socket;
 import java.io.*;
 import java.net.*;
-import org.apache.http.ConnectionReuseStrategy;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.impl.DefaultHttpResponseFactory;
-import org.apache.http.HttpRequest;
-import org.apache.http.impl.DefaultConnectionReuseStrategy;
-import org.apache.http.impl.DefaultHttpClientConnection;
-import org.apache.http.ConnectionClosedException;
-import org.apache.http.HttpServerConnection;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.impl.DefaultHttpServerConnection;
-import org.apache.http.HttpException;
-import org.apache.http.HttpStatus;
-import org.apache.http.message.BasicHttpRequest;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.BasicHttpProcessor;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpService;
-import org.apache.http.protocol.RequestConnControl;
-import org.apache.http.protocol.RequestContent;
-import org.apache.http.protocol.RequestTargetHost;
-import org.apache.http.protocol.RequestUserAgent;
-import org.apache.http.protocol.ResponseDate;
-import org.apache.http.protocol.ResponseServer;
-import org.apache.http.protocol.ResponseContent;
-import org.apache.http.protocol.ResponseConnControl;
-import org.apache.http.protocol.HttpRequestHandlerRegistry;
-import org.apache.http.protocol.HttpRequestHandler;
+import org.apache.hc.core5.http.ConnectionReuseStrategy;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpResponseInterceptor;
+import org.apache.hc.core5.http.impl.io.DefaultClassicHttpResponseFactory;
+import org.apache.hc.core5.http.config.H1Config;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.hc.core5.http.HttpRequestMapper;
+import org.apache.hc.core5.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
+import org.apache.hc.core5.http.io.HttpServerConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.http.ProtocolVersion;
+import org.apache.hc.core5.http.message.BasicHttpRequest;
+import org.apache.hc.core5.http.protocol.DefaultHttpProcessor;
+import org.apache.hc.core5.http.protocol.BasicHttpContext;
+import org.apache.hc.core5.http.protocol.HttpCoreContext;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.http.impl.io.HttpService;
+import org.apache.hc.core5.http.protocol.RequestConnControl;
+import org.apache.hc.core5.http.protocol.RequestContent;
+import org.apache.hc.core5.http.protocol.RequestHandlerRegistry;
+import org.apache.hc.core5.http.protocol.RequestTargetHost;
+import org.apache.hc.core5.http.protocol.RequestUserAgent;
+import org.apache.hc.core5.http.protocol.ResponseDate;
+import org.apache.hc.core5.http.protocol.ResponseServer;
+import org.apache.hc.core5.http.protocol.ResponseContent;
+import org.apache.hc.core5.http.protocol.ResponseConnControl;
 
 
 public class HttpLoaderServer extends Thread
 {
-    
-    private HttpParams params = new BasicHttpParams();
-    
+	
+	
+	private H1Config h1c;
     private  HttpContext context = new BasicHttpContext(null);
-    private  BasicHttpProcessor httpproc = new BasicHttpProcessor();
-    private  DefaultHttpClientConnection Clientconn = new DefaultHttpClientConnection();
-    private DefaultHttpServerConnection Serverconn = new DefaultHttpServerConnection();
+    private  DefaultBHttpClientConnection Clientconn = new DefaultBHttpClientConnection(h1c);
+    private DefaultBHttpServerConnection Serverconn = new DefaultBHttpServerConnection("H1Config",h1c);
     private  ConnectionReuseStrategy connStrategy = new DefaultConnectionReuseStrategy();
     private int port;
     private String hostname;
@@ -77,6 +81,8 @@ public class HttpLoaderServer extends Thread
     {
         this.port=port;
         this.hostname=hostname;
+        this.h1c= H1Config.custom()
+    			.build();
         try
         {
             Thread server = new RequestListenerServerThread(port);
@@ -88,23 +94,20 @@ public class HttpLoaderServer extends Thread
     }
     
     
-    public void sendRequest(String method, String uri,HttpParams params)throws IOException
+    public void sendRequest(String method, String uri)throws IOException
     {
-        // Required protocol interceptors
-        httpproc.addInterceptor(new RequestContent());
-        httpproc.addInterceptor(new RequestTargetHost());
-        // Recommended protocol interceptors
-        httpproc.addInterceptor(new RequestConnControl());
-        httpproc.addInterceptor(new RequestUserAgent());
+        // Required protocol interceptors & recommended protocol interceptors
+    	HttpRequestInterceptor[] requestInterceptors = {new RequestContent(), new RequestTargetHost(), new RequestConnControl(),new RequestUserAgent()};
         
-        context.setAttribute(ExecutionContext.HTTP_CONNECTION, Clientconn);
-        context.setAttribute(ExecutionContext.HTTP_TARGET_HOST, hostname);
+        context.setProtocolVersion(new ProtocolVersion("HTTP",1,1));
+        context.setAttribute("http.connection", Clientconn);
+        context.setAttribute("http.target_host", hostname);
         try
         {
             testConnection();
             BasicHttpRequest br = new BasicHttpRequest(method, uri);
-            context.setAttribute(ExecutionContext.HTTP_REQUEST, br);
-            br.setParams(params);
+            br.setVersion(new ProtocolVersion("HTTP",1,1));
+            context.setAttribute(HttpCoreContext.HTTP_REQUEST, br);
             //myclass.doSendRequest(br, Clientconn, context);
         }
         catch(Exception e)
@@ -115,17 +118,16 @@ public class HttpLoaderServer extends Thread
     
     public void testConnection()throws IOException
     {
-        HttpParams params = new BasicHttpParams();
         if (!Clientconn.isOpen())
         {
             HttpHost host = new HttpHost(hostname, port);
             Socket socket = new Socket(host.getHostName(), host.getPort());
-            Clientconn.bind(socket, params);
+            Clientconn.bind(socket);
         }
     }
     
     
-    public void receiveResponse(String method,String uri, HttpParams params,int numberRequest)throws HttpException, IOException
+    public void receiveResponse(String method, String uri, int numberRequest)throws HttpException, IOException
     {
         HttpResponse response;
         try
@@ -147,13 +149,10 @@ public class HttpLoaderServer extends Thread
     {
         
         private final ServerSocket serversocket;
-        private final HttpParams params;
         public RequestListenerServerThread(int port) throws IOException
         {
             this.serversocket = new ServerSocket(port);
-            this.params = new BasicHttpParams();
         }
-        
         public void run()
         {
             System.out.println("Listening on port " + serversocket.getLocalPort());
@@ -163,26 +162,21 @@ public class HttpLoaderServer extends Thread
                 {
                     // Set up HTTP connection
                     Socket socket = this.serversocket.accept();
-                    Serverconn.bind(socket, this.params);
+                    Serverconn.bind(socket);
                     System.out.println("Incoming connection from " + socket.getInetAddress());
                     // Set up the HTTP protocol processor
-                    BasicHttpProcessor httpproc = new BasicHttpProcessor();
-                    httpproc.addInterceptor(new ResponseDate());
-                    httpproc.addInterceptor(new ResponseServer());
-                    httpproc.addInterceptor(new ResponseContent());
-                    httpproc.addInterceptor(new ResponseConnControl());
+                    HttpResponseInterceptor[] responseInterceptors = {new ResponseDate(),new ResponseServer(),new ResponseContent(),new ResponseConnControl()};
+                    DefaultHttpProcessor httpproc = new DefaultHttpProcessor(responseInterceptors);
                     
                     // Set up request handlers
-                    HttpRequestHandlerRegistry reqistry = new HttpRequestHandlerRegistry();
-                    reqistry.register("*", new HttpFileHandler());
+                    RequestHandlerRegistry<HttpRequestHandler> reqistry = new RequestHandlerRegistry();
+                    reqistry.register(hostname,"*", new HttpFileHandler());
                     
                     // Set up the HTTP service
                     HttpService httpService = new HttpService(
                             httpproc,
-                            new DefaultConnectionReuseStrategy(),
-                            new DefaultHttpResponseFactory());
-                    httpService.setParams(this.params);
-                    httpService.setHandlerResolver(reqistry);
+                            reqistry, new DefaultConnectionReuseStrategy(),
+                            new DefaultClassicHttpResponseFactory());
                     
                     // Start Server thread
                     Thread t = new ServerThread(httpService, Serverconn);
@@ -212,7 +206,7 @@ public class HttpLoaderServer extends Thread
         }
         
         public void handle(final HttpRequest request,
-                final HttpResponse response,
+                final ClassicHttpResponse response,
                 final HttpContext context)throws HttpException, IOException
         {
             receiveRequest(request,context,response);
@@ -220,24 +214,33 @@ public class HttpLoaderServer extends Thread
         
         
         public void receiveRequest( HttpRequest request,
-                HttpContext context, HttpResponse response
+                HttpContext context, ClassicHttpResponse response
                 )throws HttpException, IOException
         {
-            String method = request.getRequestLine().getMethod().toUpperCase();
-            String target = request.getRequestLine().getUri();
+            String method = request.getMethod().toUpperCase();
+            String target = request.getPath();
             sendResponse(response,context,request);
         }
         
         
-        public void sendResponse( HttpResponse response,HttpContext context, HttpRequest request)throws HttpException, IOException
+        public void sendResponse( ClassicHttpResponse response,HttpContext context, HttpRequest request)throws HttpException, IOException
         {
-            
-            response.setStatusCode(HttpStatus.SC_OK);
+
+            response.setCode(HttpStatus.SC_OK);
             File file = new File("D:/XMLloader/testPileHttp/test/fileTestHttp.txt");
             //FileEntity body = new FileEntity(file, "text/html");
             HttpEntity body = new StringEntity("");
             response.setEntity(body);
         }
+
+		@Override
+		public void handle(ClassicHttpRequest request, ClassicHttpResponse response, HttpContext context)
+				throws HttpException, IOException {
+			receiveRequest(request,context,response);
+			
+		}
+
+		
     }
     
     
@@ -277,12 +280,7 @@ public class HttpLoaderServer extends Thread
             }
             finally
             {
-                try
-                {
-                    this.conn.shutdown();
-                }
-                catch (IOException ignore)
-                {}
+                this.conn.shutdown(null);
             }
         }
         

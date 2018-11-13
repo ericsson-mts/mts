@@ -23,6 +23,9 @@
 
 package com.devoteam.srit.xmlloader.http;
 
+import org.apache.hc.core5.http.HttpMessage;
+import org.apache.hc.core5.http.HttpRequest;
+
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -123,6 +126,7 @@ public abstract class ChannelHttp extends Channel
         }
         else
         {
+        	
             throw new ExecutionException("Can't send message using this connection: " + this);
         }
         this.nbOpens = 0;
@@ -132,7 +136,11 @@ public abstract class ChannelHttp extends Channel
     /** Get the transport protocol */
     @Override
     public String getTransport() 
-    {
-    	return StackFactory.PROTOCOL_TCP;
+    { 
+    	if (secure) {
+        	return StackFactory.PROTOCOL_TLS;
+    	}else {
+    		return StackFactory.PROTOCOL_TCP;
+    	}
     }
 }

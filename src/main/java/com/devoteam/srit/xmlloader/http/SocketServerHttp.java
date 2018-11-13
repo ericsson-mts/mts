@@ -23,7 +23,8 @@
 
 package com.devoteam.srit.xmlloader.http;
 
-import org.apache.http.impl.DefaultHttpServerConnection;
+import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
+
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
@@ -32,9 +33,8 @@ import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
+
+import org.apache.hc.core5.http.ClassicHttpResponse;
 
 
 /***
@@ -43,7 +43,7 @@ import org.apache.http.HttpResponse;
  */
 public class SocketServerHttp
 {
-    protected DefaultHttpServerConnection defaultHttpServerConnection;
+    protected DefaultBHttpServerConnection defaultHttpServerConnection;
     
     protected LinkedList<MsgHttp> messagesReceived;
     
@@ -59,7 +59,7 @@ public class SocketServerHttp
     }
 
     public synchronized void sendMessage(MsgHttp msgHttp) throws ExecutionException
-    {
+    {    	
         GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerHttp: sendMessage() ", msgHttp);
         try
         {
@@ -133,7 +133,7 @@ public class SocketServerHttp
 
         synchronized(this)
         {
-            HttpResponse response = (HttpResponse) msgHttp.getMessage();
+            ClassicHttpResponse response = (ClassicHttpResponse) msgHttp.getMessage();
             defaultHttpServerConnection.sendResponseHeader(response);
             defaultHttpServerConnection.sendResponseEntity(response);
             defaultHttpServerConnection.flush();
