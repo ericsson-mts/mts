@@ -3,7 +3,11 @@
 <!-- name="Send 3GPP Ro Credit-Control request (CCR)"-->
 <scenario>
 
-    <call name="diameter.openChannel_SendCER_RecCEA"/>
+    <call name="diameter.openChannel_SendCER_RecCEA">
+      <input>
+        <parameter name="[destScenario]" value="OCF"/>
+      </input>
+    </call>
     
 <!--
 From 3GPP TS 32.299 V7.5.0 :
@@ -422,7 +426,7 @@ Credit-Control-Request ::= < Diameter Header: 272, REQ, PXY >
 
           <!-- The Auth-Application-Id AVP is used in order to advertise support of the Authentication and Authorization portion of an application. -->
           <!--avp code="Auth-Application-Id:258" mandatory="true" type="Unsigned32" value="4"/-->
-          <avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="4"/>
+          <avp code="Acct-Application-Id:259" mandatory="true" type="Unsigned32" value="Diameter Credit Control Application:4"/>
 
           <!-- The Service-Context-Id AVP contains a unique identifier of the Diameter Credit Control service specific document that applies to the request. -->
           <avp code="Service-Context-Id:461" mandatory="true" type="UTF8String" value="ToBeCompleted"/>

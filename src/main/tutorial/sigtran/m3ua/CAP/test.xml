@@ -22,38 +22,47 @@
     <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the SUT host" editable="true"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
     <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
+
+    <parameter name="[M3UA_OPC]" operation="set" value="12345" description="originating point code" editable="true" />
+    <parameter name="[M3UA_DPC]" operation="set" value="543211" description="destination point code" editable="true"/>
+    
+    <parameter name="[SCCP_OSSN]" operation="set" value="8" description="originating service subsystem number" editable="true" />
+    <parameter name="[SCCP_DSSN]" operation="set" value="8" description="destination service subsystem number" editable="true"/>    
     
     <parameter name="[transport]" operation="set" value="TCP" editable="true"/>
     <parameter name="[pause]" operation="set" value="0.0" editable="true"/>
 
-    <parameter name="[smsText]" operation="set" value="ssssss"/>
-    <parameter name="[smsAlphabet]" operation="set" value="Default alphabet {SCGSM}:0"/>
-    <!--parameter name="[smsAlphabet]" operation="set" value="8 bit data {UTF-8}:1"/-->
-    <!--parameter name="[smsAlphabet]" operation="set" value="UCS2 (16bit) {UFT-16BE}:2"/-->
-    <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
-    <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
-
     <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
     
     
-    <testcase name="001_InitialDP" description="test sigtran CAP/1=InitialDP message" number="[iterations]" state="true">
-        <scenario name="client" file="001_InitialDP/client.xml" routingName="client" state="[localClient]"/>
-        <scenario name="server" file="001_InitialDP/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    <testcase name="000_IDP_InitialDetectionPoint" description="test sigtran CAP/1=IDP=InitialDP message" number="[iterations]" state="true">
+        <scenario name="client" file="000_IDP_InitialDetectionPoint/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="000_IDP_InitialDetectionPoint/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
 
-    <testcase name="016_ARI" description="test sigtran CAP/16=AssistRequestInstructions message" number="[iterations]" state="true">
-        <scenario name="client" file="016_ARI/client.xml" routingName="client" state="[localClient]"/>
-        <scenario name="server" file="016_ARI/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    <testcase name="016_ARI_AssistRequestInstructions" description="test sigtran CAP/16=ARI=AssistRequestInstructions message" number="[iterations]" state="true">
+        <scenario name="client" file="016_ARI_AssistRequestInstructions/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="016_ARI_AssistRequestInstructions/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
     
-    <testcase name="017_ETC" description="test sigtran CAP/17=EstablishTemporaryConnection message" number="[iterations]" state="true">
-        <scenario name="client" file="017_ETC/client.xml" routingName="client" state="[localClient]"/>
-        <scenario name="server" file="017_ETC/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    <testcase name="017_ETC_EstablishTemporaryConnection" description="test sigtran CAP/17=ETC=EstablishTemporaryConnection message" number="[iterations]" state="true">
+        <scenario name="client" file="017_ETC_EstablishTemporaryConnection/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="017_ETC_EstablishTemporaryConnection/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    </testcase>
+
+    <testcase name="020_CON_Connect" description="test sigtran CAP/20=CON=Connect message" number="[iterations]" state="true">
+        <scenario name="client" file="020_CON_Connect/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="020_CON_Connect/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    </testcase>
+
+    <testcase name="023_RRBE_RequestReportBSCMEvent" description="test sigtran CAP/23=RRBE=RequestReportBSCMEvent message" number="[iterations]" state="true">
+        <scenario name="client" file="023_RRBE_RequestReportBSCMEvent/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="023_RRBE_RequestReportBSCMEvent/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
     
-    <testcase name="053_Cancel" description="test sigtran CAP/Cancel message" number="[iterations]" state="true">
-        <scenario name="client" file="053_Cancel/client.xml" routingName="client" state="[localClient]"/>
-        <scenario name="server" file="053_Cancel/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.M3UA" state="[remoteServer]"/>
+    <testcase name="053_CAN_Cancel" description="test sigtran CAP/53=CAN=Cancel message" number="[iterations]" state="true">
+        <scenario name="client" file="053_CAN_Cancel/client.xml" routingName="client" state="[localClient]"/>
+        <scenario name="server" file="053_CAN_Cancel/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
       
     <testcase name="801_Wireshark_Sample_camel2" description="test sigtran wireshark capture CAP" number="[iterations]" state="true">
