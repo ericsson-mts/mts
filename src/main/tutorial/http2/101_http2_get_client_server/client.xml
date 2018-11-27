@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="nameChannel" operation="number.uid" value="toto"/>
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[proxyHTTP]"/>    	
+        	
+    <sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
+<![CDATA[GET http://[remoteHTTP] HTTP/1.1
+Host: [proxyHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP2>
+		
+	<receiveMessageHTTP2 name="Send 200 OK" request="false" type="GET" result="200">
+		  <parameter name="[contentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>  
+	</receiveMessageHTTP2>
+  
+  <test parameter="[contentLength]" condition="string.equals" value="0"/>
+   <finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
+</scenario> 
+

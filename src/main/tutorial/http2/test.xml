@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="HTTP regression tests" name="HTTP">
+
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
+    <parameter name="[localHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]" description="local address of the MTS host" editable="true"/>	
+    <!--parameter name="[localPortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+    <parameter name="[localPortHTTP]" operation="set" value="8080"/>
+    <parameter name="[localPortHTTP]" operation="set" value="[localPortHTTP(0)]" description="local port of the MTS host" editable="true"/>
+    <parameter name="[localHTTP]" operation="set" value="[localHostHTTP]:[localPortHTTP]"/>	
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
+    
+    <parameter name="[remoteHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostHTTP]" operation="set" value="172.16.21.32"/-->
+    <parameter name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]" description="remote address of the SUT host" editable="true"/>
+    <!--parameter name="[remotePortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+    <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
+    <parameter name="[remotePortHTTP]" operation="set" value="[remotePortHTTP(0)]" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[remoteHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortHTTP]"/>
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
+    
+    <!--parameter name="[remotePortSecHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT_TLS"/-->
+    <parameter name="[remotePortSecHTTP]" operation="set" value="4430"/>
+    <parameter name="[remotePortSecHTTP]" operation="set" value="[remotePortSecHTTP(0)]" description="remote secure HTTPS port of the SUT host" editable="true"/>
+    <parameter name="[remoteSecHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortSecHTTP]"/>
+    
+    <parameter name="[proxyHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[proxyHostHTTP]" operation="set" value="172.16.86.100"/-->
+    <parameter name="[proxyHostHTTP]" operation="set" value="[proxyHostHTTP(0)]" description="remote address of the PROXY host" editable="true" />
+    <!--parameter name="[proxyPortHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT"/-->	
+    <parameter name="[proxyPortHTTP]" operation="set" value="8080"/>
+    <parameter name="[proxyPortHTTP]" operation="set" value="[proxyPortHTTP(0)]" description="remote port of the PROXY host" editable="true" />
+    <parameter name="[proxyHTTP]" operation="set" value="[proxyHostHTTP]:[proxyPortHTTP]"/>
+    
+    <!--parameter name="[remotePortSecHTTP]" operation="file.readproperty" value="http.properties" value2="listenpoint.LOCAL_PORT_TLS"/-->
+    <parameter name="[proxyPortSecHTTP]" operation="set" value="4430"/>			
+    <parameter name="[proxyPortSecHTTP]" operation="set" value="[remotePortSecHTTP(0)]" description="remote secure HTTPS port of the PROXY host" editable="true" />
+    <parameter name="[proxySecHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortSecHTTP]"/>
+    	
+    <parameter name="[clientTarHost]" value="127.0.0.1"/>
+    <parameter name="[clientTarPort]" value="8081"/>
+    
+    <parameter name="[proxyTarHost]" value="192.168.90.50"/>
+    <parameter name="[proxyTarPort]" value="80"/>
+    
+    <parameter name="[data]" operation="file.readbinary" value="250.txt"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+
+    <testcase name="101_http2_get" state="true" number="[iterations]" description="http2" >
+        <scenario file="101_http2_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="101_http2_get_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+
+</test>
