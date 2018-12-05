@@ -9,6 +9,7 @@ import org.dom4j.tree.DefaultElement;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
+import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -22,6 +23,8 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
  */
 public class StackHttp2 extends Stack {
 
+	private String listenpointName = null;
+	
 	/** Constructor */
 	public StackHttp2() throws Exception {
 		super();
@@ -38,7 +41,7 @@ public class StackHttp2 extends Stack {
 		// part to don't have regression
 		if (channelName == null || channelName.equalsIgnoreCase("")) {
 			channelName = root.attributeValue("connectionName");
-		}
+		}		
 		
 		String localHost = root.attributeValue("localHost");
         String localPort = root.attributeValue("localPort");
@@ -100,6 +103,17 @@ public class StackHttp2 extends Stack {
         }
 
 	}
+	
+	 /** Creates a Listenpoint specific to each Stack */
+	@Override
+	public Listenpoint parseListenpointFromXml(Element root, Runner runner) throws Exception 
+    {
+    	System.out.println("StackHttp2.parseListenpointFromXml()");
+		System.out.println("root = " + root.asXML());
+
+		listenpointName = root.attributeValue("name");
+	    return super.parseListenpointFromXml(root, runner);
+    }
 
 	/** Creates a specific Msg */
 	@Override
@@ -129,6 +143,18 @@ public class StackHttp2 extends Stack {
         	remoteUrl = root.attributeValue("server");
         }
 
+        if (listenpointName != null)
+        {       
+	        Listenpoint listenpoint = getListenpoint(listenpointName);
+	        if (listenpoint == null && listenpointName != null)
+	        {
+	            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
+	        }
+	        
+	        msg.setListenpoint(listenpoint);
+	        System.out.println("msg.setListenpoint(listenpoint); listenpoint = " + listenpoint);
+        }
+        
         //
         // If the message is not a request, it is a response.
         // The channel to use will be obtained from the
@@ -152,7 +178,7 @@ public class StackHttp2 extends Stack {
 		            defaultElement.addAttribute("remoteURL", remoteUrl);
 		            defaultElement.addAttribute("name", remoteUrl);
 		            channel = (ChannelHttp2) this.parseChannelFromXml(defaultElement, runner, StackFactory.PROTOCOL_HTTP2);
-		            openChannel(channel);
+		            openChannel(channel);System.out.println("openChannel(channel) ");
 	                channel = (ChannelHttp2) getChannel(remoteUrl);
             	}
             }
@@ -161,9 +187,9 @@ public class StackHttp2 extends Stack {
                 throw new ExecutionException("The channel named " + channelName + " does not exist");
             }
             //Set transactionId in message for a request
-            //TransactionId transactionId = new TransactionId(UUID.randomUUID().toString());
-			//msg.setTransactionId(transactionId);
-            msg.setChannel(channel);
+            TransactionId transactionId1 = new TransactionId(UUID.randomUUID().toString());
+			msg.setTransactionId(transactionId1);
+            msg.setChannel(channel);         
         }
         else
         {        	
@@ -175,6 +201,7 @@ public class StackHttp2 extends Stack {
             {
                 throw new ExecutionException("You can not specify the \"remoteURL\" attribute while sending a response (provided by the HTTP2 protocol).");
             }
+            
         }      
         return msg;
 	}

@@ -60,6 +60,7 @@ import org.apache.hc.core5.http.protocol.RequestTargetHost;
 import org.apache.hc.core5.http.protocol.RequestUserAgent;
 import org.apache.hc.core5.http.protocol.ResponseDate;
 import org.apache.hc.core5.http.protocol.ResponseServer;
+import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.http.protocol.ResponseContent;
 import org.apache.hc.core5.http.protocol.ResponseConnControl;
 
@@ -280,7 +281,7 @@ public class HttpLoaderServer extends Thread
             }
             finally
             {
-                this.conn.shutdown(null);
+                this.conn.close(CloseMode.GRACEFUL);
             }
         }
         

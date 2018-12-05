@@ -23,14 +23,10 @@
 
 package com.devoteam.srit.xmlloader.http2;
 
-import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpConnection;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.Message;
@@ -40,8 +36,6 @@ import org.apache.hc.core5.http.nio.BasicResponseConsumer;
 import org.apache.hc.core5.http.nio.entity.StringAsyncEntityConsumer;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
-import org.apache.hc.core5.http2.frame.RawFrame;
-import org.apache.hc.core5.http2.impl.nio.Http2StreamListener;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.H2RequesterBootstrap;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
@@ -51,7 +45,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 
 /**
  *
@@ -65,7 +58,6 @@ public class ChannelHttp2 extends Channel {
 	protected boolean secure;
 	private AsyncClientEndpoint clientEndpoint;
 	private HttpHost target;
-	private String uri = "/test";
 	private FutureCallback<Message<HttpResponse, String>> callback;
 
 	/** Creates a new instance of Channel */
@@ -93,56 +85,18 @@ public class ChannelHttp2 extends Channel {
 		String hostname = this.getRemoteHost();
 		int port = this.getRemotePort();
 
-		IOReactorConfig ioReactorConfig = IOReactorConfig.custom().setSoTimeout(5, TimeUnit.SECONDS).build();
+		IOReactorConfig ioReactorConfig = IOReactorConfig.custom().setSoTimeout(15, TimeUnit.SECONDS).build();
 
 		H2Config h2Config = H2Config.custom().setPushEnabled(false).setMaxConcurrentStreams(100).build();
 
 		requester = H2RequesterBootstrap.bootstrap().setIOReactorConfig(ioReactorConfig)
 				.setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2).setH2Config(h2Config)
-				.setStreamListener(new Http2StreamListener() {
-
-					@Override
-					public void onHeaderInput(final HttpConnection connection, final int streamId,
-							final List<? extends Header> headers) {
-						for (int i = 0; i < headers.size(); i++) {
-							System.out.println("Client : " + connection + " (" + streamId + ") << " + headers.get(i));
-						}
-					}
-
-					@Override
-					public void onHeaderOutput(final HttpConnection connection, final int streamId,
-							final List<? extends Header> headers) {
-						for (int i = 0; i < headers.size(); i++) {
-							System.out.println("Client : " + connection + " (" + streamId + ") >> " + headers.get(i));
-						}
-					}
-
-					@Override
-					public void onFrameInput(final HttpConnection connection, final int streamId,
-							final RawFrame frame) {
-					}
-
-					@Override
-					public void onFrameOutput(final HttpConnection connection, final int streamId,
-							final RawFrame frame) {
-					}
-
-					@Override
-					public void onInputFlowControl(final HttpConnection connection, final int streamId, final int delta,
-							final int actualSize) {
-					}
-
-					@Override
-					public void onOutputFlowControl(final HttpConnection connection, final int streamId,
-							final int delta, final int actualSize) {
-					}
-
-				}).create();
+				.create();
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				System.out.println("HTTP requester shutting down");
+				System.out.println("HTTP2 requester shutting down");
 				requester.close(CloseMode.GRACEFUL);
 			}
 		});
@@ -169,65 +123,56 @@ public class ChannelHttp2 extends Channel {
 	@Override
 	public boolean sendMessage(Msg msg) throws Exception {
 		System.out.println("ChannelHttp2.sendMessage()");
-		String[] requestUris = new String[] {"/httpbin/ip", "/httpbin2/ip2", "/httpbin3/ip3"};
-		
-		for (final String requestUri: requestUris) {
-			//Set transactionId in message for a request
-			TransactionId transactionId = new TransactionId(UUID.randomUUID().toString());
-			System.out.println(requestUri + " transactionId : " + transactionId);
-			msg.setTransactionId(transactionId);
-			clientEndpoint.execute(new Http2RequestProducer("GET", target, requestUri, msg),
-					new BasicResponseConsumer<>(new StringAsyncEntityConsumer()),  new FutureCallback<Message<HttpResponse, String>>() {
-				@Override
-				public void completed(final Message<HttpResponse, String> message) {
-					HttpResponse response = message.getHead();
-					String body = message.getBody();
-	
-					try {
-						MsgHttp2 msgResponse = new MsgHttp2(stack, response);
-						msgResponse.setMessageContent(body);
-						msgResponse.setTransactionId( transactionId);
-						msgResponse.setChannel(msg.getChannel());
-						System.out.println(requestUri + " msgResponse.getTransactionId() : " + msgResponse.getTransactionId());
-						receiveMessage(msgResponse);
-					} catch (Exception e) {
-						e.printStackTrace();
+
+		// Set transactionId in message for a request
+
+		clientEndpoint.execute(new Http2RequestProducer("GET", target, "/httpbin/ip", msg),
+				new BasicResponseConsumer<>(new StringAsyncEntityConsumer()),
+				new FutureCallback<Message<HttpResponse, String>>() {
+					@Override
+					public void completed(final Message<HttpResponse, String> message) {
+						HttpResponse response = message.getHead();
+						String body = message.getBody();
+
+						try {
+							MsgHttp2 msgResponse = new MsgHttp2(stack, response);
+							msgResponse.setMessageContent(body);
+							msgResponse.setTransactionId(msg.getTransactionId());
+							msgResponse.setChannel(msg.getChannel());
+
+							System.out.println("/httpbin/ip" + " msgResponse.getTransactionId() : "
+									+ msgResponse.getTransactionId());
+							receiveMessage(msgResponse);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+						System.out.println("completed->" + response.getCode());
+						System.out.println(body);
+						nbOpens--;
 					}
-	
-					System.out.println("completed->" + response.getCode());
-					System.out.println(body);
-					nbOpens--;
-				}
-	
-				@Override
-				public void failed(final Exception ex) {
-					System.out.println("failed->" + ex);
-					nbOpens--;
-				}
-	
-				@Override
-				public void cancelled() {
-					System.out.println("cancelled-> cancelled");
-					nbOpens--;
-				}
-	
-			});
-		}
+
+					@Override
+					public void failed(final Exception ex) {
+						System.out.println("failed->" + ex);
+						nbOpens--;
+					}
+
+					@Override
+					public void cancelled() {
+						System.out.println("cancelled-> cancelled");
+						nbOpens--;
+					}
+
+				});
+
 		this.nbOpens = 0;
 		return true;
-	}
-
-	/** receive a Msg from Channel */
-	@Override
-	public boolean receiveMessage(Msg msg) throws Exception {
-		System.out.println("ChannelHttp2.receiveMessage()");
-		return super.receiveMessage(msg);
 	}
 
 	/** Get the transport protocol */
 	@Override
 	public String getTransport() {
-		System.out.println("ChannelHttp2.getTransport()");
 		if (secure) {
 			return StackFactory.PROTOCOL_TLS;
 		} else {

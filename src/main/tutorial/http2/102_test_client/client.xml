@@ -2,10 +2,12 @@
 
 <scenario>
 	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
-	<openChannelHTTP2 name="myConnection" remoteURL="http://localhost:8080"/>    	
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="myConnection" remoteURL="http://127.0.0.1:8080"/>    	
         	
     <sendMessageHTTP2 name="Send HTTP:GET" channel="myConnection">
-<![CDATA[GET http://localhost:8080 HTTP/1.1
+<![CDATA[GET http://localhost:8080/test1 HTTP/2.0
 Host: localhost
 Accept-charset: text/html
 Content-Type: text/html
@@ -14,10 +16,29 @@ User-Agent: XMLLoader
 ]]>
 	</sendMessageHTTP2>
 
-    
+    <sendMessageHTTP2 name="Send HTTP:GET" channel="myConnection">
+<![CDATA[GET http://localhost:8080/test2 HTTP/2.0
+Host: localhost
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP2>
+	
+	<sendMessageHTTP2 name="Send HTTP:GET" channel="myConnection">
+<![CDATA[GET http://localhost:8080/test3 HTTP/2.0
+Host: localhost
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP2>
+	
     <for index="[index1]" from="0" to="2" step="1">
         <log level="2">index value : [index1]</log>
-        <receiveMessageHTTP2 name="Send 200 OK">
+        <receiveMessageHTTP2 name="Send GET 200 OK">
 		</receiveMessageHTTP2>
     </for>
 

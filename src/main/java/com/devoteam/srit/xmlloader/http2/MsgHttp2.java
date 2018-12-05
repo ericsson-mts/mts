@@ -23,17 +23,36 @@
 
 package com.devoteam.srit.xmlloader.http2;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
+import gp.utils.arrays.DefaultArray;
+import gp.utils.arrays.SupArray;
+
+import java.io.InputStream;
+
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpMessage;
 import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
 import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
 import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
+import org.apache.hc.core5.http.nio.AsyncServerRequestHandler.ResponseTrigger;
+import org.apache.hc.core5.http.protocol.HttpContext;
 import org.dom4j.Element;
 
 /**
@@ -43,7 +62,11 @@ import org.dom4j.Element;
 public class MsgHttp2 extends Msg {
 	private HttpMessage message;
 	private String messageContent;
-
+	private boolean ignoreContents ;
+	private ResponseTrigger responseTrigger;
+	private HttpContext context = null;
+	private String type = null;
+	
 	/** Creates a new instance */
 	public MsgHttp2(Stack stack) {
 		super(stack);
@@ -52,7 +75,59 @@ public class MsgHttp2 extends Msg {
 	/** Creates a new instance */
 	public MsgHttp2(Stack stack, HttpMessage aMessage) throws Exception {
 		this(stack);
+		
+		this.ignoreContents = Config.getConfigByName("http2.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
 		message = aMessage;
+		
+		 //
+        // Get the entity
+        //
+        HttpEntity entity;
+        if (message instanceof ClassicHttpResponse)
+        {
+            entity = ((ClassicHttpResponse) message).getEntity();
+        }
+        else if (message instanceof ClassicHttpRequest)
+        {
+            entity = ((ClassicHttpRequest) message).getEntity();
+        }
+        else
+        {
+            entity = null;
+        }
+
+        //
+        // Convert the entity to a String
+        //
+        if (null != entity && (entity.getContentLength() != -1 || entity.isChunked()))
+        {
+            if (this.ignoreContents)
+            {
+                entity.getContent();
+                messageContent = "";
+            }
+            else
+            {
+                InputStream inputStream = entity.getContent();
+                int l;
+                byte[] tmp = new byte[2048];
+                SupArray array = new SupArray();
+
+                while ((l = inputStream.read(tmp)) != -1)
+                {
+                    byte[] bytes = new byte[l];
+                    for(int i=0; i<l; i++) bytes[i] = tmp[i];
+                    array.addLast(new DefaultArray(bytes));
+
+                }
+                inputStream.close();
+                messageContent = new String(array.getBytes());
+            }
+        }
+        else
+        {
+            messageContent = null;
+        }
 	}
 
 	@Override
@@ -65,79 +140,133 @@ public class MsgHttp2 extends Msg {
 		}
 	}
 
+	 /** 
+     * Get the result of the message (null if request)
+     * Used for message filtering with "result" attribute and for statistic counters 
+     */
 	@Override
-	public String getResult() throws Exception {
-		System.out.println("MsgHttp2.getResult()");
-		return "mon resultat";
-	}
+    public String getResult()
+    {
+        if (message instanceof HttpResponse)
+        {
+            return Integer.toString(((HttpResponse) message).getCode());
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    /** Return the transport of the message*/
+    public String getTransport() 
+    {
+    	return StackFactory.PROTOCOL_TCP;
+    }
 
-	@Override
-	public void decode(byte[] data) throws Exception {
-		System.out.println("MsgHttp2.decode()");
-	}
+    private String getTextMessage()
+    {
+        // get the first line
+    	String ret = getFirstLine();
+        ret += "\r\n";
 
-	@Override
-	public String toXml() throws Exception {
-		System.out.println("MsgHttp2.toXml()");
-		return "mon message";
-	}
+        // get the headers list
+        Header[] header = message.getAllHeaders();
+        for (int i = 0; i < header.length; i++)
+        {
+            ret += header[i] + "\r\n";
+        }
+        ret += "\r\n";
+        
+        // get the message content
+        if (messageContent != null)
+        {
+        	ret += messageContent;
+        }
+        return ret;
+    }
 
-	@Override
-	public byte[] encode() throws Exception {
-		System.out.println("MsgHttp2.encode()");
-		return "msg http2".getBytes();
-	}
+    private String getFirstLine()
+    {
+    	if (this.message instanceof HttpResponse)
+        {
+            return ((HttpResponse) message).getVersion() + " " + ((HttpResponse) message).getCode() + " " + ((HttpResponse) message).getReasonPhrase();
+        }
+        else
+        {
+        	// if authority isn't set, the execution won't succeed 
+        	if (((HttpRequest) message).getAuthority()!=null){
+        		return type + " " + ((HttpRequest) message).getScheme() +"://" + ((HttpRequest) message).getAuthority().toString() + " " + ((HttpRequest) message).getVersion();
+        	}else {
+        		return type + " " + ((HttpRequest) message).getPath() + " " + ((HttpRequest) message).getVersion();
+        	}
+        }	
+    }
 
-	@Override
-	public void parseFromXml(ParseFromXmlContext request, Element root, Runner runner) throws Exception {
-		System.out.println("MsgHttp2.parseFromXml()");
-		super.parseFromXml(request, root, runner);
+    
+	//-------------------------------------------------
+	// methods for the encoding / decoding of the message
+	//-------------------------------------------------
 
-		message = getHttpMessage(request, root);
-	}
+    /** 
+     * encode the message to binary data 
+     */    
+    @Override
+    public byte[] encode() throws Exception
+    {
+    	return getTextMessage().getBytes();
+    }
 
-	/**
-	 * Get the type of the message Used for message filtering with "type" attribute
-	 * and for statistic counters
-	 */
-	@Override
-	public String getType() {
-		if (null == type) {
-			if (message instanceof HttpRequest) {
-				type = ((HttpRequest) message).getMethod();
-			}
-		}
-		return type;
-	}
+    /** 
+     * decode the message from binary data 
+     */
+    @Override
+    public void decode(byte[] data) throws Exception
+    {
+    	// nothing to do : we use external Tomcat HTTP stack to transport messages
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public HttpMessage getMessage() {
-		return message;
-	}
+    
+    //---------------------------------------------------------------------
+    // methods for the XML display / parsing of the message
+    //---------------------------------------------------------------------
 
-	public void setMessage(HttpMessage message) {
-		this.message = message;
-	}
+    /** Returns a short description of the message. Used for logging as INFO level */
+    /** This methods HAS TO be quick to execute for performance reason */
+    @Override
+    public String toShortString() throws Exception 
+    {
+    	String ret = super.toShortString();
+  		ret += "\n";
+  		ret += getFirstLine();
+		ret += "\n";
+   		ret += "<MESSAGE transactionId =\"" + getTransactionId() + "\">";
+    	return ret;
+    }
 
-	public String getMessageContent() {
-		return messageContent;
-	}
+    /** 
+     * Convert the message to XML document 
+     */
+    @Override
+    public String toXml() throws Exception 
+    {
+		return getTextMessage();
+    }
+    
+    /** 
+     * Parse the message from XML element 
+     */
+    @Override
+    public void parseFromXml(ParseFromXmlContext request1, Element root, Runner runner) throws Exception
+    {
+    	super.parseFromXml(request1,root,runner);
 
-	public void setMessageContent(String messageContent) {
-		this.messageContent = messageContent;
-	}
-
-	private HttpMessage getHttpMessage(ParseFromXmlContext request1, Element root) throws ExecutionException {
-		String text = root.getText();
+    	String text = root.getText();
     	
     	BasicClassicHttpResponse responseMessage = null;
         BasicClassicHttpRequest requestMessage = null;
 
         HttpMessage currentMessage = null;
-        
+
         int endOfLine;
         String line;
 
@@ -261,6 +390,325 @@ public class MsgHttp2 extends Msg {
             }
         }
 
-        return currentMessage;
+        //
+        // Register parsed message into the class variable
+        //
+        message = currentMessage;
+
+        //
+        // Set entity into the message
+        //
+        if (datas.length() > 0)
+        {
+            //
+            // Check if we are allowed to have an entity in this message
+            //
+            if (null != requestMessage)
+            {
+                if (requestMessage.getMethod().toLowerCase().equals("get") ||
+                		requestMessage.getMethod().toLowerCase().equals("head"))
+                {
+                	GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Request ", requestMessage.getMethod(), " is not allowed to contain an entity");
+                }
+            }
+
+            if (null != responseMessage || null != requestMessage)
+            {
+                messageContent = datas;
+            }
+
+            //
+            // Set the Content-Length header if the transfer-encoding is not "chunked"
+            //
+            Header[] contentEncoding = currentMessage.getHeaders("Content-Encoding");
+            Header[] transferEncoding = currentMessage.getHeaders("Transfer-Encoding");
+            Header[] contentType = currentMessage.getHeaders("Content-Type");
+            Header[] contentLength = currentMessage.getHeaders("Content-Length");
+
+            if (contentType.length > 0 && contentType[0].getValue().toLowerCase().contains("multipart"))
+            {
+                // do nothing, we should not add a CRLF at the end of the data when multipart
+            }
+
+            /**
+             * Do not add CRLF at the end of the content in case Content-Encoding is GZIP
+             * This is a (bad) patch :/
+             * 
+             * @Todo Must be re-think and fixed. 
+             *       We should not add CRLF except in case of chunked feature (at least)
+             *       But if I try to delete this additional CRLF, most of tutorials tests does not
+             *       work anymore.   
+             */
+            else if (contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip") )
+            {
+                messageContent += "\r\n"; // it seems necessary to end the data by a CRLF (???)
+            }
+
+            if(transferEncoding.length == 0 || !transferEncoding[0].getValue().contains("chunked"))
+            {
+            	if (contentLength.length == 0)
+            	{
+	                if (null != messageContent)
+	                {
+	                    currentMessage.addHeader("Content-Length", Integer.toString(messageContent.length()));
+	                }
+	                else
+	                {
+	                    currentMessage.addHeader("Content-Length", Integer.toString(0));
+	                }
+            	}
+            }
+            else
+            {
+                messageContent += "\r\n"; // when chunked, there must be a double CRLF after the last chunk size
+            }
+        }
+        else
+        {
+        	messageContent = datas;
+        	if (contentLengthPresent)
+        	{
+        		currentMessage.addHeader("Content-Length", Integer.toString(0));
+        	}
+        }
+
+        HttpEntity entity = new ByteArrayEntity(messageContent.getBytes());
+
+        if (null != responseMessage)
+        {
+        	responseMessage.setEntity(entity);
+        }
+        else if (null != requestMessage)
+        {
+        	requestMessage.setEntity(entity);
+        }
+        else
+        {
+            entity = null;
+        }
+        
+    }
+
+    //------------------------------------------------------
+    // method for the "setFromMessage" <parameter> operation
+    //------------------------------------------------------
+
+    /** 
+     * Get a parameter from the message 
+     */
+    public Parameter getParameter(String path) throws Exception
+    {
+        Parameter var = super.getParameter(path);
+        if (var != null)
+        {
+            return var;
+        }
+
+        var = new Parameter();
+        path = path.trim();
+        String[] params = Utils.splitPath(path);
+        
+        if (params.length > 1 && params[0].equalsIgnoreCase("header"))
+        {
+            //------------------------------------------------------------------------ header:xxx -
+            Header[] listhead = getMessage().getHeaders(params[1]);
+            for (int i = 0; i < listhead.length; i++)
+            {
+            	var.add(listhead[i].getValue());
+            }
+        }
+        else if (params.length == 1 && params[0].equalsIgnoreCase("firstline"))
+        {
+            //---------------------------------------------------------------------- firstline -
+            if (message instanceof HttpRequest)
+            {
+            	
+            	var.add(getType() + " " + ((HttpRequest) message).getScheme() +"://" + ((HttpRequest) message).getAuthority().toString() + " " + ((HttpRequest) message).getVersion());
+            }
+            else 
+            {
+            	var.add(((HttpResponse) message).getVersion() + " " + ((HttpResponse) message).getCode() + " " + ((HttpResponse) message).getReasonPhrase());
+            
+            }
+        }
+        else if (params.length > 1 && params[0].equalsIgnoreCase("firstline"))
+        {
+            //---------------------------------------------------------------------- firstline:Version -
+            if (params[1].equalsIgnoreCase("version"))
+            {
+            	var.add(message.getVersion().toString());
+            }
+            //---------------------------------------------------------------------- firstline:Method -
+            else if (params[1].equalsIgnoreCase("method"))
+            {
+                if (message instanceof HttpRequest)
+                {
+                	var.add(((HttpRequest) message).getMethod());
+                }
+            }
+            //---------------------------------------------------------------------- firstline:URI -
+            else if (params[1].equalsIgnoreCase("uri"))
+            {
+                if (message instanceof HttpRequest)
+                {
+                	
+                	var.add(((HttpRequest) message).getScheme() + "://" + ((HttpRequest) message).getAuthority().toString());
+                	
+                }
+            }
+            else if (params[1].equalsIgnoreCase("reasonPhrase"))
+            {
+                if (message instanceof HttpResponse)
+                {
+                	var.add(((HttpResponse) message).getReasonPhrase());
+                }
+            }
+            else if (params[1].equalsIgnoreCase("statuscode"))
+            {
+                if (message instanceof HttpResponse)
+                {
+                	var.add(Integer.toString(((HttpResponse) message).getCode()));
+                }
+            }
+            else
+            {
+            	Parameter.throwBadPathKeywordException(path);
+            }
+        }
+        else if (params.length >= 1 && params[0].equalsIgnoreCase("content"))
+        {
+        	if (params.length == 1)
+        	{
+        		var.add(getMessageContent());
+        	}
+        	else if ((params.length > 1) && (params[1].equalsIgnoreCase("xml")))
+          	{
+        		if ((params.length > 3) && (params[2].equalsIgnoreCase("xpath")))
+        		{
+		            String strXpath = params[3];
+		            for (int i = 4; i < params.length; i++)
+		            {
+		            	strXpath += "." + params[i];
+		            }
+		    		var.applyXPath(getMessageContent(), strXpath, true);
+        		}
+                else
+                {
+                	Parameter.throwBadPathKeywordException(path);
+                }
+          	}
+        	// not documented features
+	        else if (path.equalsIgnoreCase("content:xml:operation"))
+	        {
+	            //
+	            // Read name of method
+	            //
+	            String content = messageContent;
+	
+	            //
+	            // Read and delete the 3 first tags
+	            //
+	            for (int i = 0; i < 3; i++)
+	            {
+	                content = content.substring(content.indexOf(">") + 1);
+	            }
+	
+	            //
+	            // Read the first tag of the remaining content
+	            //
+	            String tag = content.substring(content.indexOf("<"), content.indexOf(">"));
+	
+	            //
+	            // Read tag name
+	            //
+	            String name = tag.substring(1);
+	            name.trim();
+	            int endOfName;
+	            name = name.replace("\r", "");
+	            endOfName = name.indexOf(" ");
+	            if (endOfName == -1 || name.indexOf("\n") != -1 && name.indexOf("\n") < endOfName)
+	            {
+	                endOfName = name.indexOf("\n");
+	            }
+	
+	            if (endOfName == -1)
+	            {
+	                endOfName = name.length();
+	            }
+	
+	            name = name.substring(0, endOfName);
+	
+	            //
+	            // Remove namespace
+	            //
+	            if (name.indexOf(":") != -1)
+	            {
+	                name = name.substring(name.indexOf(":") + 1);
+	            }
+	
+	            var.add(name);
+	        }
+	        else
+	        {
+	        	Parameter.throwBadPathKeywordException(path);
+	        }
+        }
+        else
+        {
+        	Parameter.throwBadPathKeywordException(path);
+        }
+        
+        return var;
+    }
+
+	/**
+	 * Get the type of the message Used for message filtering with "type" attribute
+	 * and for statistic counters
+	 */
+	@Override
+	public String getType() {
+		if (null == type) {
+			if (message instanceof HttpRequest) {
+				type = ((HttpRequest) message).getMethod();
+			}
+		}
+		return type;
 	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public HttpMessage getMessage() {
+		return message;
+	}
+
+	public void setMessage(HttpMessage message) {
+		this.message = message;
+	}
+
+	public String getMessageContent() {
+		return messageContent;
+	}
+
+	public void setMessageContent(String messageContent) {
+		this.messageContent = messageContent;
+	}
+
+	public ResponseTrigger getResponseTrigger() {
+		return responseTrigger;
+	}
+
+	public void setResponseTrigger(ResponseTrigger responseTrigger) {
+		this.responseTrigger = responseTrigger;
+	}
+
+	public HttpContext getContext() {
+		return context;
+	}
+
+	public void setContext(HttpContext context) {
+		this.context = context;
+	}
+
 }
