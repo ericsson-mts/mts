@@ -11,10 +11,10 @@ import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
-import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 /**
@@ -33,9 +33,6 @@ public class StackHttp2 extends Stack {
 	/** Creates a Channel specific to each Stack */
 	@Override
 	public Channel parseChannelFromXml(Element root, Runner runner, String protocol) throws Exception {	
-		System.out.println("StackHttp2.parseChannelFromXml()");
-		System.out.println("root = " + root.asXML());
-
 		String channelName = root.attributeValue("name");
 
 		// part to don't have regression
@@ -90,9 +87,7 @@ public class StackHttp2 extends Stack {
         		remotePort = getConfig().getString("client.DEFAULT_HTTP_PORT", "80");
         	}
         }
-
-        System.out.println("localHost = " + localHost + ", localPort = " + localPort + ", remoteHost = " + remoteHost + ", remotePort = " + remotePort);
-        
+     
         if (existsChannel(channelName))
         {
             return getChannel(channelName);
@@ -108,9 +103,6 @@ public class StackHttp2 extends Stack {
 	@Override
 	public Listenpoint parseListenpointFromXml(Element root, Runner runner) throws Exception 
     {
-    	System.out.println("StackHttp2.parseListenpointFromXml()");
-		System.out.println("root = " + root.asXML());
-
 		listenpointName = root.attributeValue("name");
 	    return super.parseListenpointFromXml(root, runner);
     }
@@ -119,8 +111,6 @@ public class StackHttp2 extends Stack {
 	@Override
 	public Msg parseMsgFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception {
 		System.out.println("StackHttp2.parseMsgFromXml()");
-		
-		System.out.println("context = " + context.toString());
 		System.out.println("root = " + root.asXML());
 		System.out.println("runner = " + runner.getName());
 		
@@ -152,7 +142,6 @@ public class StackHttp2 extends Stack {
 	        }
 	        
 	        msg.setListenpoint(listenpoint);
-	        System.out.println("msg.setListenpoint(listenpoint); listenpoint = " + listenpoint);
         }
         
         //
@@ -178,7 +167,7 @@ public class StackHttp2 extends Stack {
 		            defaultElement.addAttribute("remoteURL", remoteUrl);
 		            defaultElement.addAttribute("name", remoteUrl);
 		            channel = (ChannelHttp2) this.parseChannelFromXml(defaultElement, runner, StackFactory.PROTOCOL_HTTP2);
-		            openChannel(channel);System.out.println("openChannel(channel) ");
+		            openChannel(channel);
 	                channel = (ChannelHttp2) getChannel(remoteUrl);
             	}
             }
@@ -204,14 +193,6 @@ public class StackHttp2 extends Stack {
             
         }      
         return msg;
-	}
-
-
-	/** Receive a message */
-	@Override
-	public boolean receiveMessage(Msg msg) throws Exception {
-		System.out.println("StackHttp2.receiveMessage()");
-		return super.receiveMessage(msg);
 	}
 
 }

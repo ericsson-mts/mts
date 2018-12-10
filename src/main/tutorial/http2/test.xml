@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<test description="HTTP regression tests" name="HTTP">
+<test description="HTTP2 regression tests" name="HTTP2">
 
     <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
     
@@ -48,14 +48,43 @@
 
     <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
 
-    <!-- testcase name="101_http2_get" state="true" number="[iterations]" description="http2" >
+	<testcase name="100_http2_post" state="true" number="[iterations]" description="http2" >
+        <scenario file="100_http2_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="100_http2_post_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="101_http2_get" state="true" number="[iterations]" description="http2" >
         <scenario file="101_http2_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
         <scenario file="101_http2_get_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
-    </testcase-->
+    </testcase>
     
-    <testcase name="102_test_client" state="true" number="[iterations]" description="http2_test_client" >
-        <scenario file="102_test_client/client.xml" name="client" state="[localClient]" routingName="client"/>
-        <scenario file="102_test_client/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+     <testcase name="105_http2_post_gzip" state="true" number="[iterations]" description="http2" >
+        <scenario file="105_http2_post_client_server_gzip/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="105_http2_post_client_server_gzip/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+ 
+ 	<testcase name="110_big_file" state="true" number="[iterations]" description="http2" >
+        <scenario file="110_http2_big_file/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="110_http2_big_file/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="200_https_post" state="true" number="[iterations]" description="http2" >
+        <scenario file="200_https_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="200_https_post_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
     </testcase>
 
+    <testcase name="201_https_get" state="true" number="[iterations]" description="http2" >
+        <scenario file="201_https_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="201_https_get_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+  
+    <testcase name="801_setFromMessage" state="true" number="[iterations]" description="http2" >
+        <scenario file="801_setFromMessage/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="801_setFromMessage/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+
+    <testcase name="802_setFromMsg_other" state="true" number="[iterations]" description="http2" >
+        <scenario file="802_setFromMsg_other/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="802_setFromMsg_other/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
 </test>

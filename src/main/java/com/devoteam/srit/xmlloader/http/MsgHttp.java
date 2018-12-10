@@ -23,12 +23,27 @@
 
 package com.devoteam.srit.xmlloader.http;
 
+import java.io.InputStream;
+
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpMessage;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.HttpVersion;
+import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
+import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
+import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
+import org.dom4j.Element;
+
 import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
@@ -36,34 +51,9 @@ import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLLoaderEntityResolver;
 
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.List;
-
-import org.apache.hc.core5.http.ClassicHttpRequest;
-import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpMessage;
-import org.apache.hc.core5.http.message.BasicClassicHttpRequest;
-import org.apache.hc.core5.http.message.BasicClassicHttpResponse;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.HttpEntity;
-import org.apache.hc.core5.http.HttpRequest;
-import org.apache.hc.core5.http.HttpVersion;
-import org.apache.hc.core5.http.io.entity.ByteArrayEntity;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.XPath;
-import org.dom4j.io.SAXReader;
-import org.dom4j.tree.DefaultAttribute;
-import org.dom4j.tree.DefaultElement;
-import org.dom4j.tree.DefaultText;
 
 /**
  *
@@ -89,7 +79,7 @@ public class MsgHttp extends Msg
     {
         this(stack);
         
-        this.ignoreContents = Config.getConfigByName("http.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
+        this.ignoreContents = getConfig();
         this.message = aMessage;
 
         //
@@ -155,6 +145,45 @@ public class MsgHttp extends Msg
         return messageContent;
     }
 
+    public void setMessage(HttpMessage message) {
+		this.message = message;
+	}
+
+	public void setMessageContent(String messageContent) {
+		this.messageContent = messageContent;
+	}
+
+	public boolean getConfig() {
+    	return Config.getConfigByName("http.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
+    }
+    
+    public HttpVersion retrieveHttpVersion(String[] parts, boolean response) throws ParsingException {
+    	
+    	 HttpVersion httpVersion = HttpVersion.HTTP_1_1;
+    	 // Message is a response
+        if (response)
+        {         
+            if (parts[0].endsWith("HTTP/1.0"))
+            {
+                httpVersion = HttpVersion.HTTP_1_0;
+            }
+            else if(parts[0].endsWith("HTTP/2.0")) {
+            	throw new ParsingException("Bad HTTP Version in message (should be HTTP/1.x) : \"version:" + parts[0]);
+            }
+        } // Message is a request
+        else
+        {
+            if ((parts.length == 3) &&(parts[2].endsWith("HTTP/1.0")))
+            {
+                httpVersion = HttpVersion.HTTP_1_0;
+            }
+            else if ( (parts.length == 3) && (parts[2].endsWith("HTTP/2.0")) ) {
+            	throw new ParsingException("Bad HTTP Version in message (should be HTTP/1.x) : \"version:" + parts[2]);
+            }
+        }    	
+    	return httpVersion;
+    }
+    
     @Override
     public void setTransactionId(TransactionId transactionId)
     {
@@ -391,13 +420,8 @@ public class MsgHttp extends Msg
         {
             String[] parts = line.split(" ");
 
-            HttpVersion httpVersion = HttpVersion.HTTP_1_1;
-            
-            if (parts[0].endsWith("HTTP/1.0"))
-            {
-                httpVersion = HttpVersion.HTTP_1_0;
-            }
-
+            HttpVersion httpVersion = retrieveHttpVersion(parts, true); 
+        
             String phrase = "";
             if (parts.length > 2)
             {
@@ -411,13 +435,8 @@ public class MsgHttp extends Msg
         else
         {
             String[] parts = line.split(" ");
-            HttpVersion httpVersion = HttpVersion.HTTP_1_1;
-            
-            if ((parts.length == 3) &&(parts[2].endsWith("HTTP/1.0")))
-            {
-                httpVersion = HttpVersion.HTTP_1_0;
-            }
-
+            HttpVersion httpVersion = retrieveHttpVersion(parts, false); 
+           
             requestMessage = new BasicClassicHttpRequest(parts[0], parts[1]);
             requestMessage.setPath(parts[1]);
             currentMessage = requestMessage;

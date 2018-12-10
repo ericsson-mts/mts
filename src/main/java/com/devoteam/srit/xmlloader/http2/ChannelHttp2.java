@@ -28,19 +28,25 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.Message;
 import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncRequester;
 import org.apache.hc.core5.http.nio.AsyncClientEndpoint;
+import org.apache.hc.core5.http.nio.BasicRequestProducer;
 import org.apache.hc.core5.http.nio.BasicResponseConsumer;
+import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityProducer;
 import org.apache.hc.core5.http.nio.entity.StringAsyncEntityConsumer;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
+import org.apache.hc.core5.http2.impl.DefaultH2RequestConverter;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.H2RequesterBootstrap;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 import org.apache.hc.core5.util.Timeout;
 
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
@@ -54,12 +60,12 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 public class ChannelHttp2 extends Channel {
 
 	private HttpAsyncRequester requester = null;
-	protected int nbOpens = 0;
 	protected boolean secure;
 	private AsyncClientEndpoint clientEndpoint;
 	private HttpHost target;
 	private FutureCallback<Message<HttpResponse, String>> callback;
-
+	final DefaultH2RequestConverter converter = new DefaultH2RequestConverter();
+	
 	/** Creates a new instance of Channel */
 	public ChannelHttp2(Stack stack) throws Exception {
 		super(stack);
@@ -77,17 +83,12 @@ public class ChannelHttp2 extends Channel {
 
 	@Override
 	public boolean open() throws Exception {
-		nbOpens++;
-		if (nbOpens > 3) {
-			throw new Exception("HTTP2 Channel already failed to open more than 3 times");
-		}
-
 		String hostname = this.getRemoteHost();
 		int port = this.getRemotePort();
 
 		IOReactorConfig ioReactorConfig = IOReactorConfig.custom().setSoTimeout(15, TimeUnit.SECONDS).build();
 
-		H2Config h2Config = H2Config.custom().setPushEnabled(false).setMaxConcurrentStreams(100).build();
+		H2Config h2Config = H2Config.custom().setPushEnabled(false).setMaxConcurrentStreams(1000).build();
 
 		requester = H2RequesterBootstrap.bootstrap().setIOReactorConfig(ioReactorConfig)
 				.setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2).setH2Config(h2Config)
@@ -104,7 +105,7 @@ public class ChannelHttp2 extends Channel {
 		requester.start();
 
 		target = new HttpHost(hostname, port);
-		Future<AsyncClientEndpoint> future = requester.connect(target, Timeout.ofSeconds(500));
+		Future<AsyncClientEndpoint> future = requester.connect(target, Timeout.ofSeconds(50));
 		clientEndpoint = future.get();
 
 		return true;
@@ -121,13 +122,18 @@ public class ChannelHttp2 extends Channel {
 
 	/** Send a Msg to Channel */
 	@Override
-	public boolean sendMessage(Msg msg) throws Exception {
-		System.out.println("ChannelHttp2.sendMessage()");
+	public boolean sendMessage(Msg msg) throws Exception {		
+		MsgHttp2 msgHttp2 = (MsgHttp2) msg;
+		HttpRequest msgRequest = (HttpRequest) msgHttp2.getMessage();
+		//String type = msgHttp2.getType();
+		
+		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Channel: sendMessage() ", msg);
+		
+		BasicAsyncEntityProducer entityProducer = new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes());
+		BasicRequestProducer requestProducer = new BasicRequestProducer(msgRequest, entityProducer);
 
-		// Set transactionId in message for a request
-
-		clientEndpoint.execute(new Http2RequestProducer("GET", target, "/httpbin/ip", msg),
-				new BasicResponseConsumer<>(new StringAsyncEntityConsumer()),
+		clientEndpoint.execute(requestProducer,		
+				new BasicResponseConsumer<>(new StringAsyncEntityConsumer() ),
 				new FutureCallback<Message<HttpResponse, String>>() {
 					@Override
 					public void completed(final Message<HttpResponse, String> message) {
@@ -137,36 +143,37 @@ public class ChannelHttp2 extends Channel {
 						try {
 							MsgHttp2 msgResponse = new MsgHttp2(stack, response);
 							msgResponse.setMessageContent(body);
+							// Set transactionId in message for a request
 							msgResponse.setTransactionId(msg.getTransactionId());
 							msgResponse.setChannel(msg.getChannel());
 
-							System.out.println("/httpbin/ip" + " msgResponse.getTransactionId() : "
-									+ msgResponse.getTransactionId());
+							GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() ", msgResponse);
 							receiveMessage(msgResponse);
-						} catch (Exception e) {
-							e.printStackTrace();
+						} catch (Exception e) {							
+							GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() ", e);
 						}
 
-						System.out.println("completed->" + response.getCode());
-						System.out.println(body);
-						nbOpens--;
+						entityProducer.releaseResources();
+						requestProducer.releaseResources();
 					}
 
 					@Override
 					public void failed(final Exception ex) {
-						System.out.println("failed->" + ex);
-						nbOpens--;
+						GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() ", ex);
+						entityProducer.releaseResources();
+						requestProducer.releaseResources();
+						
 					}
 
 					@Override
 					public void cancelled() {
-						System.out.println("cancelled-> cancelled");
-						nbOpens--;
+						GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage(): Canceled");
+						entityProducer.releaseResources();
+						requestProducer.releaseResources();
 					}
 
 				});
 
-		this.nbOpens = 0;
 		return true;
 	}
 
