@@ -55,7 +55,7 @@ some content
 ]]>
     </sendMessageHTTP2>
 
-  	<!-- receiveMessageHTTP2 name="Send 200 OK" request="false" type="POST" result="200">
+  	<receiveMessageHTTP2 name="Send 200 OK" request="false" result="200">
     		<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
     		<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	
     		<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
@@ -64,17 +64,17 @@ some content
     		<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  			
     		<parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
     		<parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
-  	</receiveMessageHTTP2-->
+  	</receiveMessageHTTP2>
 
     <!-- perform test -->
-    <!-- test parameter="[Firstline]" condition="string.equals" value="HTTP/2.0 200 OK"/>           
+    <test parameter="[Firstline]" condition="string.equals" value="HTTP/2.0 200 OK"/>           
     <test parameter="[Version]" condition="string.equals" value="HTTP/2.0"/>                       
     <test parameter="[Uri]" condition="list.isEmpty"/>            
     <test parameter="[Method]" condition="list.isEmpty"/>            
     <test parameter="[StatusCode]" condition="string.equals" value="200"/>
     <test parameter="[ReasonPhrase]" condition="string.equals" value="OK"/>            
     <test parameter="[ContentLength]" condition="string.equals" value="14"/>
-    <test parameter="[Content]" condition="string.contains" value="host message"/-->
+    <test parameter="[Content]" condition="string.contains" value="host message"/>
 
 	<finally>
 			<closeChannelHTTP2 name="[nameChannel]"/>

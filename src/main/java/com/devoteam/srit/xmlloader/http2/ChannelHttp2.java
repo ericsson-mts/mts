@@ -26,6 +26,9 @@ package com.devoteam.srit.xmlloader.http2;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
+
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequest;
@@ -39,10 +42,13 @@ import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityProducer;
 import org.apache.hc.core5.http.nio.entity.StringAsyncEntityConsumer;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
-import org.apache.hc.core5.http2.impl.DefaultH2RequestConverter;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.H2RequesterBootstrap;
+import org.apache.hc.core5.http2.ssl.H2ClientTlsStrategy;
 import org.apache.hc.core5.io.CloseMode;
+import org.apache.hc.core5.net.NamedEndpoint;
 import org.apache.hc.core5.reactor.IOReactorConfig;
+import org.apache.hc.core5.reactor.ssl.SSLSessionVerifier;
+import org.apache.hc.core5.reactor.ssl.TlsDetails;
 import org.apache.hc.core5.util.Timeout;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -51,6 +57,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Config;
 
 /**
  *
@@ -60,11 +67,9 @@ import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 public class ChannelHttp2 extends Channel {
 
 	private HttpAsyncRequester requester = null;
-	protected boolean secure;
+	private boolean secure;
 	private AsyncClientEndpoint clientEndpoint;
 	private HttpHost target;
-	private FutureCallback<Message<HttpResponse, String>> callback;
-	final DefaultH2RequestConverter converter = new DefaultH2RequestConverter();
 	
 	/** Creates a new instance of Channel */
 	public ChannelHttp2(Stack stack) throws Exception {
@@ -75,6 +80,7 @@ public class ChannelHttp2 extends Channel {
 	public ChannelHttp2(String name, String localHost, String localPort, String remoteHost, String remotePort,
 			String aProtocol, boolean secure) throws Exception {
 		super(name, localHost, localPort, remoteHost, remotePort, aProtocol);
+		this.secure = secure;		
 	}
 
 	// ---------------------------------------------------------------------
@@ -86,14 +92,21 @@ public class ChannelHttp2 extends Channel {
 		String hostname = this.getRemoteHost();
 		int port = this.getRemotePort();
 
-		IOReactorConfig ioReactorConfig = IOReactorConfig.custom().setSoTimeout(15, TimeUnit.SECONDS).build();
+		int timeout = Integer.parseInt(Config.getConfigByName("http2.properties").getString("SOCKET_TIMEOUT", "30"));
+		IOReactorConfig ioReactorConfig = IOReactorConfig.custom().setSoTimeout(timeout, TimeUnit.SECONDS).build();
 
 		H2Config h2Config = H2Config.custom().setPushEnabled(false).setMaxConcurrentStreams(1000).build();
-
 		requester = H2RequesterBootstrap.bootstrap().setIOReactorConfig(ioReactorConfig)
 				.setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2).setH2Config(h2Config)
+				.setTlsStrategy(secure ? new H2ClientTlsStrategy(StackHttp2.createClientSSLContext(), new SSLSessionVerifier() {
+                    @Override
+                    public TlsDetails verify(final NamedEndpoint endpoint, final SSLEngine sslEngine) throws SSLException {
+                    	System.out.println("TlsStrategy verify");
+                        return null;
+                    }
+                }) : null)
 				.create();
-
+		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
@@ -104,8 +117,14 @@ public class ChannelHttp2 extends Channel {
 
 		requester.start();
 
-		target = new HttpHost(hostname, port);
-		Future<AsyncClientEndpoint> future = requester.connect(target, Timeout.ofSeconds(50));
+		if(secure) {
+			target = new HttpHost(hostname, port, "https");
+		}
+		else {
+			target = new HttpHost(hostname, port);
+		}
+		
+		Future<AsyncClientEndpoint> future = requester.connect(target, Timeout.ofSeconds(timeout));
 		clientEndpoint = future.get();
 
 		return true;
@@ -125,16 +144,19 @@ public class ChannelHttp2 extends Channel {
 	public boolean sendMessage(Msg msg) throws Exception {		
 		MsgHttp2 msgHttp2 = (MsgHttp2) msg;
 		HttpRequest msgRequest = (HttpRequest) msgHttp2.getMessage();
-		//String type = msgHttp2.getType();
-		
+
+		if(msgRequest.getScheme() == null) {
+			msgRequest.setScheme(Config.getConfigByName("http2.properties").getString("client.DEFAULT_PROTOCOL"));
+		}
+	
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Channel: sendMessage() ", msg);
 		
 		BasicAsyncEntityProducer entityProducer = new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes());
 		BasicRequestProducer requestProducer = new BasicRequestProducer(msgRequest, entityProducer);
-
+		
 		clientEndpoint.execute(requestProducer,		
 				new BasicResponseConsumer<>(new StringAsyncEntityConsumer() ),
-				new FutureCallback<Message<HttpResponse, String>>() {
+				new FutureCallback<Message<HttpResponse, String>>() {          	
 					@Override
 					public void completed(final Message<HttpResponse, String> message) {
 						HttpResponse response = message.getHead();
@@ -147,10 +169,10 @@ public class ChannelHttp2 extends Channel {
 							msgResponse.setTransactionId(msg.getTransactionId());
 							msgResponse.setChannel(msg.getChannel());
 
-							GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() ", msgResponse);
+							GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() completed, ", msgResponse);
 							receiveMessage(msgResponse);
 						} catch (Exception e) {							
-							GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() ", e);
+							GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() completed Exception, ", e);
 						}
 
 						entityProducer.releaseResources();
@@ -159,7 +181,8 @@ public class ChannelHttp2 extends Channel {
 
 					@Override
 					public void failed(final Exception ex) {
-						GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() ", ex);
+						GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage() failed, ", ex);
+						ex.printStackTrace();
 						entityProducer.releaseResources();
 						requestProducer.releaseResources();
 						
@@ -167,7 +190,7 @@ public class ChannelHttp2 extends Channel {
 
 					@Override
 					public void cancelled() {
-						GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage(): Canceled");
+						GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, "Channel: receiveMessage(): Canceled ");
 						entityProducer.releaseResources();
 						requestProducer.releaseResources();
 					}
@@ -186,13 +209,4 @@ public class ChannelHttp2 extends Channel {
 			return StackFactory.PROTOCOL_TCP;
 		}
 	}
-
-	public FutureCallback<Message<HttpResponse, String>> getCallback() {
-		return callback;
-	}
-
-	public void setCallback(FutureCallback<Message<HttpResponse, String>> callback) {
-		this.callback = callback;
-	}
-
 }

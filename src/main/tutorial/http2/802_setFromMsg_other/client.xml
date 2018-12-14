@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-
-    <sendMessageHTTP name="Send POST" remoteURL="http://[remoteHTTP]">
+	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP]"/>    
+	
+    <sendMessageHTTP2 name="Send POST" channel="[nameChannel]">
 <![CDATA[
-POST / HTTP/1.1
+POST / HTTP/2.0
 User-Agent: MTS : Mutilprotocol Test Suite
 Host: [remoteHTTP]
 Accept: */*
@@ -21,9 +26,9 @@ Content-Type: application/srgs+xml
     </one-of>
   </rule>
 </grammar>]]>
-    </sendMessageHTTP>
+    </sendMessageHTTP2>
     
-    <receiveMessageHTTP name="Send 200 OK" request="false" type="POST" result="200"/>
+    <receiveMessageHTTP2 name="Send 200 OK" request="false" result="200"/>
     
     <!-- perform test -->
     <parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
@@ -81,4 +86,7 @@ Content-Type: application/srgs+xml
     <parameter name="[DescriptionText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/TerminationCause/Description/text()"/>
     <test parameter="[DescriptionText]" condition="string.equals" value="normal call clearing"/>
     
+    <finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
 </scenario> 

@@ -12,12 +12,12 @@
       	<parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/> 
       	<parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
     	<parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
-    	<!--  parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+    	<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
     	<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
     	<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		
     	<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	  		
     	<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
-    	<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/-->  	  				      		
+    	<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  				      		
     	<parameter name="[Host]" operation="protocol.setFromMessage" value="header.Host"/>
     	<parameter name="[AcceptCharset]" operation="protocol.setFromMessage" value="header.Accept-charset"/>
     	<parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
@@ -32,12 +32,12 @@
     <test parameter="[protocol]" condition="string.equals" value="HTTP2"/>
     <test parameter="[request]" condition="string.equals" value="true"/>
     <test parameter="[type]" condition="string.equals" value="POST"/>
-    <!--  test parameter="[Firstline]" condition="string.equals" value="POST http://[remoteHTTP] HTTP/2.0"/>
+    <test parameter="[Firstline]" condition="string.equals" value="POST http://[remoteHTTP] HTTP/2.0"/>
     <test parameter="[Method]" condition="string.equals" value="POST"/>            
     <test parameter="[Uri]" condition="string.equals" value="http://[remoteHTTP]"/>
     <test parameter="[Version]" condition="string.equals" value="HTTP/2.0"/>
     <test parameter="[StatusCode]" condition="list.isEmpty"/>
-    <test parameter="[ReasonPhrase]" condition="list.isEmpty"/-->            	    
+    <test parameter="[ReasonPhrase]" condition="list.isEmpty"/>            	    
     <test parameter="[Host]" condition="string.equals" value="[remoteHTTP]"/>
     <test parameter="[AcceptCharset]" condition="string.equals" value="text/html"/>
     <test parameter="[ContentType]" condition="string.equals" value="text/html"/>
@@ -65,12 +65,12 @@ host message
   		<parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/> 
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
     	<parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
-    	<!-- parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
+    	<parameter name="[Firstline]" operation="protocol.setFromMessage" value="firstline"/>  	  	
     	<parameter name="[Method]" operation="protocol.setFromMessage" value="firstline.method"/>  	  		
     	<parameter name="[Uri]" operation="protocol.setFromMessage" value="firstline.uri"/>  	  		
     	<parameter name="[Version]" operation="protocol.setFromMessage" value="firstline.version"/>  	  		
     	<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	
-    	<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/-->  	  				      		
+    	<parameter name="[ReasonPhrase]" operation="protocol.setFromMessage" value="firstline.reasonPhrase"/>  	  				      		
     	<parameter name="[Host]" operation="protocol.setFromMessage" value="header.Host"/>
     	<parameter name="[AcceptCharset]" operation="protocol.setFromMessage" value="header.Accept-charset"/>
     	<parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
@@ -81,24 +81,24 @@ host message
     </receiveMessageHTTP2>
 
     <!-- perform test -->	
-    <!-- test parameter="[request]" condition="string.equals" value="true"/>
+    <test parameter="[request]" condition="string.equals" value="true"/>
     <test parameter="[type]" condition="string.equals" value="POST"/>
-    <test parameter="[protocol]" condition="string.equals" value="HTTP2"/-->
-    <!--  test parameter="[Firstline]" condition="string.equals" value="POST http://[remoteHTTP] HTTP/2.0"/>
+    <test parameter="[protocol]" condition="string.equals" value="HTTP2"/>
+    <test parameter="[Firstline]" condition="string.equals" value="POST http://[remoteHTTP] HTTP/2.0"/>
     <test parameter="[Version]" condition="string.equals" value="HTTP/2.0"/>
     <test parameter="[Method]" condition="string.equals" value="POST"/>            
     <test parameter="[Uri]" condition="string.equals" value="http://[remoteHTTP]"/>
     <test parameter="[StatusCode]" condition="list.isEmpty"/>
-    <test parameter="[ReasonPhrase]" condition="list.isEmpty"/-->            	    
-    <!-- test parameter="[Host]" condition="string.equals" value="[remoteHTTP]"/>
+    <test parameter="[ReasonPhrase]" condition="list.isEmpty"/>            	    
+    <test parameter="[Host]" condition="string.equals" value="[remoteHTTP]"/>
     <test parameter="[AcceptCharset]" condition="string.equals" value="text/html"/>
     <test parameter="[ContentType]" condition="string.equals" value="text/html"/>
     <test parameter="[ContentEncoding]" condition="string.equals" value="utf-8;iso-8859"/>
     <test parameter="[UserAgent]" condition="string.equals" value="XMLLoader"/>
     <test parameter="[ContentLength]" condition="string.equals" value="14"/>
-    <test parameter="[Content]" condition="string.contains" value="some content"/-->
+    <test parameter="[Content]" condition="string.contains" value="some content"/>
 
-    <!--  sendMessageHTTP2 name="Send POST 200 OK" transactionId="[transaction_id]">
+    <sendMessageHTTP2 name="Send POST 200 OK" transactionId="[transaction_id]">
 <![CDATA[
 HTTP/2.0 200 OK
 Accept-charset:text/html
@@ -108,7 +108,7 @@ User-Agent:XMLLoader
 
 host message
 ]]>
-    </sendMessageHTTP2-->
+    </sendMessageHTTP2>
     
 	<finally>		
 		<removeListenpointHTTP2 name="[nameListenpoint]" />

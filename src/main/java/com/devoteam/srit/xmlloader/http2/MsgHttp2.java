@@ -55,7 +55,6 @@ public class MsgHttp2 extends MsgHttp {
 
     @Override
     public HttpVersion retrieveHttpVersion(String[] parts, boolean response) throws ParsingException {
-
     	HttpVersion httpVersion = HttpVersion.HTTP_2_0; 	
 
     	// Message is a response
