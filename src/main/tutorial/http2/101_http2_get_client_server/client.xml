@@ -4,10 +4,10 @@
 	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
 	<semaphore name="SEM1" action="wait" />
 	
-	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP]"/>    	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP_2]"/>    	
         	
     <sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
-<![CDATA[GET http://[remoteHTTP]/test1?aaa=bbb HTTP/2.0
+<![CDATA[GET http://[remoteHTTP_2]/test1?aaa=bbb HTTP/2.0
 Host: [remoteHostHTTP]
 Accept-charset: text/html
 Content-Type: text/html
@@ -17,7 +17,7 @@ User-Agent: XMLLoader
 	</sendMessageHTTP2>
 
     <sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
-<![CDATA[GET http://[remoteHTTP]/test2 HTTP/2.0
+<![CDATA[GET http://[remoteHTTP_2]/test2 HTTP/2.0
 Host: [remoteHostHTTP]
 Accept-charset: text/html
 Content-Type: text/html
@@ -27,7 +27,7 @@ User-Agent: XMLLoader
 	</sendMessageHTTP2>
 	
 	<sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
-<![CDATA[GET http://[remoteHTTP]/test3 HTTP/2.0
+<![CDATA[GET http://[remoteHTTP_2]/test3 HTTP/2.0
 Host: [remoteHostHTTP]
 Accept-charset: text/html
 Content-Type: text/html

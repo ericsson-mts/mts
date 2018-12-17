@@ -165,7 +165,8 @@ public class ChannelHttp2 extends Channel {
 						try {
 							MsgHttp2 msgResponse = new MsgHttp2(stack, response);
 							msgResponse.setMessageContent(body);
-							// Set transactionId in message for a request
+							// Set transactionId in message for a request							
+							msgResponse.setTransaction(msg.getTransaction());
 							msgResponse.setTransactionId(msg.getTransactionId());
 							msgResponse.setChannel(msg.getChannel());
 

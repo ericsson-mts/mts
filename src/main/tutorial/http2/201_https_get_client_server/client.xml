@@ -5,11 +5,11 @@
 	
 	<semaphore name="SEM1" action="wait" />
 	
-	<openChannelHTTP2 name="[nameChannel]" remoteURL="https://[remoteSecHTTP]"/>
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="https://[remoteSecHTTP_2]"/>
 	
 	<sendMessageHTTP2 name="Send GET" channel="[nameChannel]">
 <![CDATA[
-GET https://[remoteSecHTTP] HTTP/2.0
+GET https://[remoteSecHTTP_2] HTTP/2.0
 Host: [remoteHostHTTP]
 Accept-charset: text/html
 Content-Type: text/html
@@ -19,7 +19,7 @@ User-Agent: XMLLoader
 	</sendMessageHTTP2>
 	
 	<sendMessageHTTP2 name="Send GET" channel="[nameChannel]">
-<![CDATA[GET http://[remoteSecHTTP]/test2 HTTP/2.0
+<![CDATA[GET http://[remoteSecHTTP_2]/test2 HTTP/2.0
 Host: [remoteHostHTTP]
 Accept-charset: text/html
 Content-Type: text/html
@@ -29,7 +29,7 @@ User-Agent: XMLLoader
 	</sendMessageHTTP2>
 	
 	<sendMessageHTTP2 name="Send GET" channel="[nameChannel]">
-<![CDATA[GET http://[remoteSecHTTP]/test3 HTTP/2.0
+<![CDATA[GET http://[remoteSecHTTP_2]/test3 HTTP/2.0
 Host: [remoteHostHTTP]
 Accept-charset: text/html
 Content-Type: text/html

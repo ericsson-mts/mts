@@ -62,6 +62,7 @@ import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 
@@ -70,6 +71,7 @@ public class ListenpointHttp2 extends Listenpoint {
 	private HttpAsyncServer server = null;
 	private URIAuthority authority = null;
 	private boolean secure = false;
+	private ListenpointHttp2 listenpoint = this;
 	
 	/** Creates a new instance of Listenpoint */
 	public ListenpointHttp2(Stack stack) throws Exception {
@@ -148,10 +150,9 @@ public class ListenpointHttp2 extends Listenpoint {
 			@Override
 			public void run() {
 				System.out.println("HTTP2 server shutting down");
-				shutdown();
+				remove();
 			}
 		});
-
 		server.start();
 		server.listen(new InetSocketAddress(portToUse));
 
@@ -160,13 +161,14 @@ public class ListenpointHttp2 extends Listenpoint {
 
 	@Override
 	public boolean sendMessage(Msg msg, String remoteHost, int remotePort, String transport) throws Exception {
-		MsgHttp2 beginMsg = (MsgHttp2) msg.getTransaction().getBeginMsg();
-		msg.setListenpoint(beginMsg.getListenpoint());
+		MsgHttp2 beginMsg = (MsgHttp2) msg.getTransaction().getBeginMsg();		
 
 		MsgHttp2 msgHttp2 = (MsgHttp2) msg;
-		HttpResponse msgResponse = (HttpResponse) msgHttp2.getMessage();
 		msgHttp2.setType(beginMsg.getType());
-
+		msgHttp2.setChannel(beginMsg.getChannel());
+		msgHttp2.setListenpoint(beginMsg.getListenpoint());
+		HttpResponse msgResponse = (HttpResponse) msgHttp2.getMessage();
+		
 		beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse,
 				new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes())), beginMsg.getContext());
 
@@ -193,9 +195,11 @@ public class ListenpointHttp2 extends Listenpoint {
 		return str;
 	}
 
-	public void shutdown() {
-		System.out.println("ListenpointHttp2.close()");
+	public boolean remove() {
+		System.out.println("ListenpointHttp2.close() ");
 		server.close(CloseMode.GRACEFUL);
+		
+		return true;
 	}
 
 	// ------------------------------------------------------
@@ -251,12 +255,18 @@ public class ListenpointHttp2 extends Listenpoint {
 				if(authority != null) {
 					requestMessage.getHead().setAuthority(authority);
 				}
+			
+				MsgHttp2 msg = new MsgHttp2(stack, requestMessage.getHead());		
 				
-				MsgHttp2 msg = new MsgHttp2(stack, requestMessage.getHead());
 				TransactionId transactionId = new TransactionId(UUID.randomUUID().toString());
+				Trans transaction = new Trans(stack, msg);
+				msg.setTransaction(transaction);
 				msg.setTransactionId(transactionId);
 				msg.setResponseTrigger(responseTrigger);
 				msg.setContext(context);
+				msg.setChannel(transaction.getBeginMsg().getChannel());
+				msg.setListenpoint(listenpoint);
+				
 				if(body != null) {
 					msg.setMessageContent(new String(body));
 				}				

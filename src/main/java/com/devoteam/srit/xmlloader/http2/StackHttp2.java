@@ -23,6 +23,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
@@ -33,7 +34,6 @@ import com.devoteam.srit.xmlloader.core.utils.Utils;
  */
 public class StackHttp2 extends Stack {
 
-	private String listenpointName = null;
 	private static String keystorePath; 
 	private static String keystorePassword;	
 	private static String truststorePath; 
@@ -85,7 +85,6 @@ public class StackHttp2 extends Stack {
 			}
 
 			listenpoints.put(listenpoint.getName(), listenpoint);
-			listenpointName = listenpoint.getName();
 
 			if (listenpoints.size() % 1000 == 999)
 			{
@@ -190,17 +189,6 @@ public class StackHttp2 extends Stack {
 			remoteUrl = root.attributeValue("server");
 		}
 
-		if (listenpointName != null)
-		{       
-			Listenpoint listenpoint = getListenpoint(listenpointName);
-			if (listenpoint == null && listenpointName != null)
-			{
-				throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
-			}
-
-			msg.setListenpoint(listenpoint);
-		}
-
 		//
 		// If the message is not a request, it is a response.
 		// The channel to use will be obtained from the
@@ -238,7 +226,14 @@ public class StackHttp2 extends Stack {
 			msg.setChannel(channel);         
 		}
 		else
-		{        	
+		{
+			TransactionId transactionId = new TransactionId(root.attributeValue("transactionId"));
+			Trans transaction = getInTransaction(transactionId);	
+			msg.setTransactionId(transactionId);
+			msg.setTransaction(transaction);
+			msg.setChannel(transaction.getBeginMsg().getChannel());
+			msg.setListenpoint(transaction.getBeginMsg().getListenpoint());
+			
 			if (channelName != null)
 			{
 				throw new ExecutionException("You can not specify the \"channel\" attribute while sending a response (provided by the HTTP2 protocol).");
@@ -252,43 +247,6 @@ public class StackHttp2 extends Stack {
 		return msg;
 	}
 
-	/** Remove a listenpoint */
-	@Override
-	public boolean removeListenpoint(String name) throws Exception
-	{
-		if (listenpointName != null)
-		{       
-			ListenpointHttp2 listenpoint = (ListenpointHttp2) getListenpoint(listenpointName);
-			if (listenpoint != null )
-			{
-				listenpoint.shutdown();
-			}
-		}	
-		return super.removeListenpoint(name);
-	}
-
-	/** reset the instance of this stack */
-	public void reset()
-	{
-
-		if (listenpointName != null)
-		{       
-			ListenpointHttp2 listenpoint;
-			try {
-				listenpoint = (ListenpointHttp2) getListenpoint(listenpointName);
-
-				if (listenpoint != null )
-				{
-					listenpoint.shutdown();
-				}
-			} catch (Exception e) {
-				GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, e, "Error while getting Listenpoint: " + listenpointName);
-			}
-		}	
-		super.reset();
-	}
-	
-	
 	public static SSLContext createServerSSLContext() throws Exception {
         final URL keyStoreURL = new File(keystorePath).toURI().toURL();
         return SSLContextBuilder.create()
