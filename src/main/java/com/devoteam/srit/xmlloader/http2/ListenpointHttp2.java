@@ -99,6 +99,7 @@ public class ListenpointHttp2 extends Listenpoint {
 
 		server = H2ServerBootstrap.bootstrap().setIOReactorConfig(config)
 				.setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
+				.setCanonicalHostName("localhost")
 				.setTlsStrategy(secure ? new BasicServerTlsStrategy(StackHttp2.createServerSSLContext(),SecureAllPortsStrategy.INSTANCE) : null)
 				.setStreamListener(new Http2StreamListener() {
 					@Override
@@ -165,7 +166,6 @@ public class ListenpointHttp2 extends Listenpoint {
 
 		MsgHttp2 msgHttp2 = (MsgHttp2) msg;
 		msgHttp2.setType(beginMsg.getType());
-		msgHttp2.setChannel(beginMsg.getChannel());
 		msgHttp2.setListenpoint(beginMsg.getListenpoint());
 		HttpResponse msgResponse = (HttpResponse) msgHttp2.getMessage();
 		
@@ -240,7 +240,7 @@ public class ListenpointHttp2 extends Listenpoint {
 				final EntityDetails entityDetails, final HttpContext context) throws HttpException {	
 			AsyncEntityConsumer dataConsumer = new BasicAsyncEntityConsumer();
 			dataConsumerMap.put(request,dataConsumer);
-
+			
 			return new BasicRequestConsumer<>(entityDetails != null ? dataConsumer : null);
 		}
 
@@ -264,7 +264,6 @@ public class ListenpointHttp2 extends Listenpoint {
 				msg.setTransactionId(transactionId);
 				msg.setResponseTrigger(responseTrigger);
 				msg.setContext(context);
-				msg.setChannel(transaction.getBeginMsg().getChannel());
 				msg.setListenpoint(listenpoint);
 				
 				if(body != null) {
