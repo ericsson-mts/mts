@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP]"/>    
+	
+    <sendMessageHTTP2 name="Send POST" channel="[nameChannel]">
+<![CDATA[
+POST / HTTP/2.0
+User-Agent: MTS : Mutilprotocol Test Suite
+Host: [remoteHTTP]
+Accept: */*
+Cache-Control: max-stale=0
+Content-Length: auto
+Content-Type: application/srgs+xml
+
+<?xml version="1.0"?>
+<grammar mode="voice" root="cities" xml:lang="en-GB" xmlns:voxpilot="http://www.w3.org/2001/06/grammar" version="1.0">
+  <rule id="cities">
+    <one-of>
+      <item>chicago</item>
+      <item>san francisco</item>
+    </one-of>
+  </rule>
+</grammar>]]>
+    </sendMessageHTTP2>
+    
+    <receiveMessageHTTP2 name="Send 200 OK" request="false" result="200"/>
+    
+    <!-- perform test -->
+    <parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+    <test parameter="[Content]" condition="string.contains" value="INBOUND"/>
+    <test parameter="[Content]" condition="string.contains" value="e164"/>
+    <test parameter="[Content]" condition="string.contains" value="uri"/>
+    <test parameter="[Content]" condition="string.contains" value="user"/>
+    <test parameter="[Content]" condition="string.contains" value="normal call clearing"/>
+    
+    <parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+    <test parameter="[ContentType]" condition="string.equals" value="application/x-www-form-urlencoded"/>
+    <parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    <test parameter="[ContentLength]" condition="string.equals" value="978"/>
+    
+    <!-- see tutorial XPATH http://www.w3schools.com/xpath/xpath_syntax.asp -->
+    
+    <parameter name="[messageIdText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/@messageId"/>
+    <test parameter="[messageIdText]" condition="number.equals" value="0"/>
+    <parameter name="[randomText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/@random"/>
+    <test parameter="[randomText]" condition="number.equals" value="166835783"/>
+    <parameter name="[componentIdText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/@componentId"/>
+    <test parameter="[componentIdText]" condition="number.equals" value="1"/>
+    <parameter name="[TimestampText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/Timestamp/text()"/>
+    <test parameter="[TimestampText]" condition="string.equals" value="2013-07-05T13:05:50Z"/>
+    <parameter name="[RoleText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/Role/text()"/>
+    <test parameter="[RoleText]" condition="string.equals" value="source"/>
+    <parameter name="[TransactionIdText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/TransactionId/text()"/>
+    <test parameter="[TransactionIdText]" condition="number.equals" value="15"/>
+    <parameter name="[CallIdText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/CallId/text()"/>
+    <test parameter="[CallIdText]" condition="number.equals" value="06285759"/>
+    <parameter name="[typeText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/SourceInfo/@type"/>
+    <test parameter="[typeText]" condition="string.equals" value="uri"/>
+    <parameter name="[SourceInfoText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/SourceInfo/text()"/>
+    <test parameter="[SourceInfoText]" condition="string.equals" value="user"/>
+    <parameter name="[typeText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/DestinationInfo/@type"/>
+    <test parameter="[typeText]" condition="string.equals" value="e164"/>
+    <parameter name="[DestinationInfoText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/DestinationInfo/text()"/>
+    <test parameter="[DestinationInfoText]" condition="number.equals" value="102"/>
+    <parameter name="[CallTypeText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/CallType/text()"/>
+    <test parameter="[CallTypeText]" condition="string.equals" value="INBOUND"/>
+    <parameter name="[ServiceText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/Service/text()"/>
+    <test parameter="[ServiceText]" condition="list.isEmpty" />
+    <parameter name="[AmountText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/Amount/text()"/>
+    <test parameter="[AmountText]" condition="number.equals" value="38"/>
+    <parameter name="[IncrementText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/Increment/text()"/>
+    <test parameter="[IncrementText]" condition="number.equals" value="1"/>
+    <parameter name="[UnitText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/Unit/text()"/>
+    <test parameter="[UnitText]" condition="string.equals" value="s"/>
+    <parameter name="[StartTimeText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/StartTime/text()"/>
+    <test parameter="[StartTimeText]" condition="string.equals" value="2013-07-05T13:05:12.423Z"/>
+    <parameter name="[EndTimeText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/EndTime/text()"/>
+    <test parameter="[EndTimeText]" condition="string.equals" value="2013-07-05T13:05:50.058Z"/>
+    <parameter name="[TCCodeText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/TerminationCause/TCCode/text()"/>
+    <test parameter="[TCCodeText]" condition="string.equals" value="1016"/>
+    <parameter name="[DescriptionText]" operation="protocol.setFromMessage" value="content.xml.xpath./Message/UsageIndication/UsageDetail/TerminationCause/Description/text()"/>
+    <test parameter="[DescriptionText]" condition="string.equals" value="normal call clearing"/>
+    
+    <finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
+</scenario> 

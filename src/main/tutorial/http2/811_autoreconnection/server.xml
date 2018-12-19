@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="nameListenpoint" operation="number.uid" value="[nameListenpoint]"/>
+    
+    <createListenpointHTTP2 name="[nameListenpoint]" localHost="[localHostHTTP]" localPort="[localPortHTTP]"/>
+    
+    <semaphore name="SEM1" action="notify" />
+    
+    <receiveMessageHTTP2 request="true" type="GET">
+    		<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+		    <parameter name="[connection_name]" operation="protocol.setFromMessage" value="channel.name"/>
+    </receiveMessageHTTP2>
+
+    <closeChannelHTTP2 name="[connection_name]" />
+  
+    <sendMessageHTTP2 transactionId="[transaction_id]">
+<![CDATA[
+HTTP/2.0 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+]]>
+    </sendMessageHTTP2>
+	
+    <closeChannelHTTP2 name="[connection_name]" />
+
+  	<receiveMessageHTTP2 request="true" type="GET">
+    		<parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+    		<parameter name="[connection_name]" operation="protocol.setFromMessage" value="message.transactionId"/>
+  	</receiveMessageHTTP2>
+      
+	 <sendMessageHTTP2 transactionId="[transaction_id]">
+<![CDATA[
+HTTP/2.0 200 OK
+Accept-charset:text/html
+Content-Type:text/html
+Content-Encoding:utf-8
+User-Agent:XMLLoader
+]]>
+    </sendMessageHTTP2>
+    
+    <finally>		
+		<removeListenpointHTTP2 name="[nameListenpoint]" />
+	</finally>
+</scenario>

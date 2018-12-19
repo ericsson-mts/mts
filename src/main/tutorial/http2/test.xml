@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<test description="HTTP2 regression tests" name="HTTP2">
+
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
+    <parameter name="[localHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostHTTP]" operation="set" value="[localHostHTTP(0)]" description="local address of the MTS host" editable="true"/>	
+    
+    <parameter name="[localPortHTTP]" operation="set" value="8080"/>
+    <parameter name="[localPortHTTP]" operation="set" value="[localPortHTTP(0)]" description="local port of the MTS host" editable="true"/>
+    
+    <parameter name="[localPortHTTP_2]" operation="set" value="8083"/>
+    <parameter name="[localPortHTTP_2]" operation="set" value="[localPortHTTP_2(0)]" description="local port of the MTS host" editable="true"/>
+    
+    <parameter name="[localHTTP]" operation="set" value="[localHostHTTP]:[localPortHTTP]"/>	
+    <parameter name="[localHTTP_2]" operation="set" value="[localHostHTTP]:[localPortHTTP_2]"/>	
+    
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />   
+    <parameter name="[localPortSecHTTP]" operation="set" value="4430"/>
+    <parameter name="[localPortSecHTTP]" operation="set" value="[localPortSecHTTP(0)]" description="local secure HTTPS port of the MTS host" editable="true"/>
+    
+    <parameter name="[localPortSecHTTP_2]" operation="set" value="4433"/>
+    <parameter name="[localPortSecHTTP_2]" operation="set" value="[localPortSecHTTP_2(0)]" description="local secure HTTPS port of the MTS host" editable="true"/>
+    
+    <parameter name="[localSecHTTP]" operation="set" value="[localHostHTTP]:[localPortSecHTTP]"/>
+    <parameter name="[localSecHTTP_2]" operation="set" value="[localHostHTTP]:[localPortSecHTTP_2]"/>
+       
+    <parameter name="[remoteHostHTTP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[remoteHostHTTP]" operation="set" value="[remoteHostHTTP(0)]" description="remote address of the SUT host" editable="true"/>
+    
+    <parameter name="[remotePortHTTP]" operation="set" value="8080"/>
+    <parameter name="[remotePortHTTP]" operation="set" value="[remotePortHTTP(0)]" description="remote port of the SUT host" editable="true"/>
+    
+    <parameter name="[remotePortHTTP_2]" operation="set" value="8083"/>
+    <parameter name="[remotePortHTTP_2]" operation="set" value="[remotePortHTTP_2(0)]" description="remote port of the SUT host" editable="true"/>
+    
+    <parameter name="[remoteHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortHTTP]"/>
+    <parameter name="[remoteHTTP_2]" operation="set" value="[remoteHostHTTP]:[remotePortHTTP_2]"/>
+    
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
+   
+    <parameter name="[remotePortSecHTTP]" operation="set" value="4430"/>
+    <parameter name="[remotePortSecHTTP]" operation="set" value="[remotePortSecHTTP(0)]" description="remote secure HTTPS port of the SUT host" editable="true"/>
+    
+    <parameter name="[remotePortSecHTTP_2]" operation="set" value="4433"/>
+    <parameter name="[remotePortSecHTTP_2]" operation="set" value="[remotePortSecHTTP_2(0)]" description="remote secure HTTPS port of the SUT host" editable="true"/>
+    
+    <parameter name="[remoteSecHTTP]" operation="set" value="[remoteHostHTTP]:[remotePortSecHTTP]"/>
+    <parameter name="[remoteSecHTTP_2]" operation="set" value="[remoteHostHTTP]:[remotePortSecHTTP_2]"/>
+    
+    <parameter name="[data]" operation="file.readbinary" value="250.txt"/>
+
+    <parameter name="[iterations]" operation="set" value="1" description=" iterations number" editable="true"/>
+
+	<testcase name="100_http2_post" state="true" number="[iterations]" description="http2" >
+        <scenario file="100_http2_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="100_http2_post_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="101_http2_get" state="true" number="[iterations]" description="http2" >
+        <scenario file="101_http2_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="101_http2_get_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+     <testcase name="105_http2_post_gzip" state="true" number="[iterations]" description="http2" >
+        <scenario file="105_http2_post_client_server_gzip/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="105_http2_post_client_server_gzip/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+ 
+ 	<testcase name="110_big_file" state="true" number="[iterations]" description="http2" >
+        <scenario file="110_http2_big_file/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="110_http2_big_file/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="200_https_post" state="true" number="[iterations]" description="http2" >
+        <scenario file="200_https_post_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="200_https_post_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+
+    <testcase name="201_https_get" state="true" number="[iterations]" description="http2" >
+        <scenario file="201_https_get_client_server/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="201_https_get_client_server/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+  
+    <testcase name="801_setFromMessage" state="true" number="[iterations]" description="http2" >
+        <scenario file="801_setFromMessage/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="801_setFromMessage/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+
+    <testcase name="802_setFromMsg_other" state="true" number="[iterations]" description="http2" >
+        <scenario file="802_setFromMsg_other/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="802_setFromMsg_other/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="811_autoreconnection" state="true" number="[iterations]" description="http2" >
+        <scenario file="811_autoreconnection/client.xml" name="client" state="[localClient]" routingName="client"/>
+        <scenario file="811_autoreconnection/server.xml" name="HTTP2" state="[remoteServer]" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="996_https_client" state="false" description="http2" >
+        <scenario file="996_https_client/client.xml" name="client" routingName="client"/>
+    </testcase>
+
+    <testcase name="997_https_server" state="false" description="http2" >
+        <scenario file="997_https_server/server.xml" name="HTTP2" routingName="HTTP2"/>
+    </testcase>
+    
+    <testcase name="998_http2_client" state="false" description="http" >
+        <scenario file="998_http2_client/client.xml" name="client" routingName="client"/>
+    </testcase>
+
+    <testcase name="999_http2_server" state="false" description="http2" >
+        <scenario file="999_http2_server/server.xml" name="HTTP2" routingName="HTTP2"/>
+    </testcase>
+</test>

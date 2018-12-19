@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <scenario>
-    
+    <parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
     <function name="sendReceive_HTTP:GET">
         <input>
             <parameter name="[function:filename]" type="string" default="index.html"/>
         </input>
     
         <do>
-        
-        	<sendMessageHTTP name="Send HTTP:GET" remoteURL="http://[proxyHTTP]">
+        	<openChannelHTTP name="[nameChannel]" remoteURL="http://[proxyHTTP]"/>    	
+        	<sendMessageHTTP name="Send HTTP:GET" channel="[nameChannel]">
 <![CDATA[
 GET /[filename] HTTP/1.1
 Accept: image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, application/xaml+xml, application/x-ms-xbap, application/x-ms-application, */*
@@ -120,5 +120,8 @@ Host: [remoteHTTP]
         <output/>
     </call> 
     
+     <finally>
+			<closeChannelHTTP name="[nameChannel]"/>
+	</finally>	
 </scenario>
  

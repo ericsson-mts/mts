@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+
+<scenario>
+
+	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="https://[remoteSecHTTP]"/>    
+	
+	<sendMessageHTTP2 name="Send POST" channel="[nameChannel]">
+		<!--******************* BEGIN MESSAGE ********************-->
+<![CDATA[
+POST https://[remoteSecHTTP] HTTP/2.0
+Host: [remoteHostHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+Content-Length: 3
+
+un
+]]>
+		<!--******************** END MESSAGE *********************-->
+	</sendMessageHTTP2>
+		
+	<receiveMessageHTTP2 name="Send 200 OK" request="false" result="200">
+	</receiveMessageHTTP2>
+  
+  	<finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
+	
+</scenario> 

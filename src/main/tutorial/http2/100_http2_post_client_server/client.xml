@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP]"/>    	
+	
+    <sendMessageHTTP2 name="Send POST"  channel="[nameChannel]">
+<![CDATA[POST http://[remoteHTTP]/createPOST HTTP/2.0
+Host: [remoteHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+User-Agent: XMLLoader
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 9
+
+say=Hello]]>
+    </sendMessageHTTP2>
+
+    <receiveMessageHTTP2 name="Send POST 200 OK" request="false" result="200">
+    	<parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+    </receiveMessageHTTP2>
+
+	<test parameter="[Content]" condition="string.contains" value="host message"/>
+	
+	<finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
+</scenario> 

@@ -82,6 +82,7 @@ public class StackFactory
     public static final String PROTOCOL_H225CS = "H225CS";
     public final static String STACK_CLASS_H225CS = "com.devoteam.srit.xmlloader.h323.h225cs.StackH225cs";
     public final static String PROTOCOL_ETHERNET = "ETHERNET";
+    public final static String PROTOCOL_HTTP2 = "HTTP2";
     
     private static HashMap<String, Stack> listStack = new HashMap<String, Stack>();
 

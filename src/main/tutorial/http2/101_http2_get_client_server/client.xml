@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+	<parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP_2]"/>    	
+        	
+    <sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
+<![CDATA[GET http://[remoteHTTP_2]/test1?aaa=bbb HTTP/2.0
+Host: [remoteHostHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP2>
+
+    <sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
+<![CDATA[GET http://[remoteHTTP_2]/test2 HTTP/2.0
+Host: [remoteHostHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP2>
+	
+	<sendMessageHTTP2 name="Send HTTP:GET" channel="[nameChannel]">
+<![CDATA[GET http://[remoteHTTP_2]/test3 HTTP/2.0
+Host: [remoteHostHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: utf-8;iso-8859
+User-Agent: XMLLoader
+]]>
+	</sendMessageHTTP2>
+	
+	<receiveMessageHTTP2 name="Send GET 200 OK" result="200">
+		<parameter name="[StatusCode]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	 
+	</receiveMessageHTTP2>
+		
+	<test parameter="[StatusCode]" condition="string.equals" value="200"/>
+		
+	<receiveMessageHTTP2 name="Send GET 404 Not Found" result="404">
+		<parameter name="[StatusCode2]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	 
+	</receiveMessageHTTP2>
+		
+	<test parameter="[StatusCode2]" condition="string.equals" value="404"/>
+	
+	
+	<receiveMessageHTTP2 name="Send GET 400 Bad Request" result="400">
+		<parameter name="[StatusCode3]" operation="protocol.setFromMessage" value="firstline.statuscode"/>  	 
+	</receiveMessageHTTP2>
+		
+	<test parameter="[StatusCode3]" condition="string.equals" value="400"/>
+
+   <finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
+</scenario> 
+

@@ -145,12 +145,14 @@ public class OperationSendMessage extends Operation {
             unlockAndRestore();
         }
 
-        // process the "listenpoint" attribute
-        Listenpoint listenpoint = stack.getListenpoint(listenpointName);
-        if (listenpointName != null && listenpoint == null) {
-            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
+        if(null == msg.getListenpoint()){
+	        // process the "listenpoint" attribute
+	        Listenpoint listenpoint = stack.getListenpoint(listenpointName);
+	        if (listenpointName != null && listenpoint == null) {
+	            throw new ExecutionException("The listenpoint <name=" + listenpointName + "> does not exist");
+	        }
+	        msg.setListenpoint(listenpoint);
         }
-        msg.setListenpoint(listenpoint);
 
         // process the "channel" attribute
         if (null != channelName) {

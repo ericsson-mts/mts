@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    <parameter name="nameListenpoint" operation="number.uid" value="[nameListenpoint]"/>
+    
+    <createListenpointHTTP2 name="[nameListenpoint]" localHost="[localHostHTTP]" localPort="[localPortHTTP]"/>
+  
+  	<semaphore name="SEM1" action="notify" />
+  	
+    <receiveMessageHTTP2 name="Wait POST" request="true"  type="POST">
+        <parameter name="[transaction_id]" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveMessageHTTP2>
+    
+    <!-- perform test -->
+    <parameter name="[Content]" operation="protocol.setFromMessage" value="content"/>
+    <test parameter="[Content]" condition="string.contains" value="chicago"/>
+    <test parameter="[Content]" condition="string.contains" value="san francisco"/>
+    <parameter name="[ContentLength]" operation="protocol.setFromMessage" value="header.Content-Length"/>
+    <test parameter="[ContentLength]" condition="string.equals" value="271"/>
+    <parameter name="[ContentType]" operation="protocol.setFromMessage" value="header.Content-Type"/>
+    <test parameter="[ContentType]" condition="string.equals" value="application/srgs+xml"/>
+
+    <!-- see tutorial XPATH http://www.w3schools.com/xpath/xpath_syntax.asp -->
+    <parameter name="[eltGrammarRef]" operation="set">
+<![CDATA[<grammar xmlns:voxpilot="http://www.w3.org/2001/06/grammar" mode="voice" root="cities" xml:lang="en-GB" version="1.0">
+  <rule id="cities">
+    <one-of>
+      <item>chicago</item>
+      <item>san francisco</item>
+    </one-of>
+  </rule>
+</grammar>]]></parameter>
+    <!-- Selects all nodes with the name "nodename" -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xml.xpath.grammar"/>
+    <test parameter="[eltGrammar]" condition="list.isEmpty"/>
+    <!-- Selects from the root node -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xml.xpath./grammar"/>
+    <test parameter="[eltGrammar]" condition="string.equals" value="[eltGrammarRef]"/>
+    <!-- Selects nodes in the document from the current node that match the selection no matter where they are --> 
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar"/>
+    <test parameter="[eltGrammar]" condition="string.equals" value="[eltGrammarRef]"/>
+    <!-- Selects the current node -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xml.xpath../grammar"/>
+    <test parameter="[eltGrammar]" condition="list.isEmpty"/>
+    <!-- Selects the parent of the current node -->
+    <parameter name="[eltGrammar]" operation="protocol.setFromMessage" value="content.xml.xpath.../grammar"/>
+    <test parameter="[eltGrammar]" condition="string.equals" value="[eltGrammarRef]"/>
+    <!-- Selects attributes -->
+    <parameter name="[eltGrammarAttrMode]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/@mode"/>
+    <test parameter="[eltGrammarAttrMode]" condition="string.equals" value="voice"/>
+    <parameter name="[eltGrammarAttrRoot]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/@root"/>
+    <test parameter="[eltGrammarAttrRoot]" condition="string.equals" value="cities"/>
+    <!-- parameter name="[eltGrammarAttrXml:lang]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/@xml:lang"/>
+    <test parameter="[eltGrammarAttrXml:lang]" condition="string.equals" value="en-GB"/-->
+    <!-- parameter name="[eltGrammarAttrXmlns:voxpilot]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/@xmlns:voxpilot"/>
+    <test parameter="[eltGrammarAttrxmlns:voxpilot]" condition="string.equals" value="http://www.w3.org/2001/06/grammar"/-->
+    <parameter name="[eltGrammarAttrVersion]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/@version"/>
+    <test parameter="[eltGrammarAttrVersion]" condition="string.equals" value="1.0"/>
+    <parameter name="[eltGrammarAttrBidon]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/@bidon"/>
+    <test parameter="[eltGrammarAttrBidon]" condition="list.isEmpty"/>
+    <!-- Selects content as text -->
+    <parameter name="[eltGrammarText]" operation="protocol.setFromMessage" value="content.xml.xpath.//grammar/text()"/>
+    <parameter name="[eltGrammarText]" operation="string.trim" value="[eltGrammarText]"/>
+    <test parameter="[eltGrammarText]" condition="string.equals" value=""/>
+    
+    <parameter name="[eltRuleRef]" operation="set">
+<![CDATA[<rule id="cities">
+    <one-of>
+      <item>chicago</item>
+      <item>san francisco</item>
+    </one-of>
+  </rule>]]></parameter>
+    <!-- Selects all nodes with the name "nodename" -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath.rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects from the root node -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath./rule"/>
+    <test parameter="[eltRule]" condition="list.isEmpty"/>
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath./grammar/rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects nodes in the document from the current node that match the selection no matter where they are --> 
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath.//rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath./grammar//rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects the current node -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath../rule"/>
+    <test parameter="[eltRule]" condition="string.equals" value="[eltRuleRef]"/>
+    <!-- Selects the parent of the current node -->
+    <parameter name="[eltRule]" operation="protocol.setFromMessage" value="content.xml.xpath.../rule"/>
+    <test parameter="[eltRule]" condition="list.isEmpty"/>
+    <!-- Selects attributes -->
+    <parameter name="[eltRuleAttrId]" operation="protocol.setFromMessage" value="content.xml.xpath.//rule/@id"/>
+    <test parameter="[eltRuleAttrId]" condition="string.equals" value="cities"/>
+    <parameter name="[eltRuleAttrBidon]" operation="protocol.setFromMessage" value="content.xml.xpath.//rule/@bidon"/>
+    <test parameter="[eltRuleAttrBidon]" condition="list.isEmpty"/>
+    <!-- Selects content as text -->
+    <parameter name="[eltRuleText]" operation="protocol.setFromMessage" value="content.xml.xpath.//rule/text()"/>
+    <parameter name="[eltRuleText]" operation="string.trim" value="[eltRuleText]"/>
+    <test parameter="[eltRuleText]" condition="string.equals" value=""/>
+    
+    <parameter name="[eltItemRef0]" operation="set">
+<![CDATA[<item>chicago</item>]]></parameter>
+    <parameter name="[eltItemRef1]" operation="set">
+<![CDATA[<item>san francisco</item>]]></parameter>
+    <!-- Selects all nodes with the name "nodename" -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath.item"/>
+    <!-- SURPRISING -->
+    <!--test parameter="[eltItem]" condition="string.equals" value="[eltItemRef]"/-->
+    <!-- Selects from the root node -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath./item"/>
+    <test parameter="[eltItem]" condition="list.isEmpty"/>
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath./grammar/rule/one-of/item"/>
+    <test parameter="[eltItem(0)]" condition="string.equals" value="[eltItemRef0]"/>
+    <test parameter="[eltItem(1)]" condition="string.equals" value="[eltItemRef1]"/>
+    <!-- Selects nodes in the document from the current node that match the selection no matter where they are --> 
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath.//item"/>
+    <test parameter="[eltItem(0)]" condition="string.equals" value="[eltItemRef0]"/>
+    <test parameter="[eltItem(1)]" condition="string.equals" value="[eltItemRef1]"/>
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath./grammar//item"/>
+    <test parameter="[eltItem(0)]" condition="string.equals" value="[eltItemRef0]"/>
+    <test parameter="[eltItem(1)]" condition="string.equals" value="[eltItemRef1]"/>
+    <!-- Selects the current node -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath../item"/>
+    <test parameter="[eltItem]" condition="list.isEmpty"/>
+    <!-- Selects the parent of the current node -->
+    <parameter name="[eltItem]" operation="protocol.setFromMessage" value="content.xml.xpath.../item"/>
+    <test parameter="[eltItem]" condition="list.isEmpty"/>
+    <!-- Selects attributes -->
+    <parameter name="[eltItemAttrBidon]" operation="protocol.setFromMessage" value="content.xml.xpath.//item/@bidon"/>
+    <test parameter="[eltItemAttrBidon]" condition="list.isEmpty"/>  
+    <!-- Selects content as text -->
+    <parameter name="[eltItemText]" operation="protocol.setFromMessage" value="content.xml.xpath./grammar//item/text()"/>
+    <parameter name="[eltItemText]" operation="string.trim" value="[eltItemText]"/>
+    <test parameter="[eltItemText(0)]" condition="string.equals" value="chicago"/>
+    <test parameter="[eltItemText(1)]" condition="string.equals" value="san francisco"/>
+
+    <sendMessageHTTP2 name="Send POST 200 OK" transactionId="[transaction_id]">
+<![CDATA[
+HTTP/2.0 200 OK
+User-Agent: voxpilot-browser/3.7
+Accept: */*
+Cache-Control: max-stale=0
+Content-Length: auto
+Content-Type: application/x-www-form-urlencoded
+
+osprequest=
+<Message messageId='0' random='166835783'>
+    <UsageIndication componentId='1'>
+        <Timestamp>2013-07-05T13:05:50Z</Timestamp>
+        <Role>source</Role>
+        <TransactionId>15</TransactionId>
+        <CallId>06285759</CallId>
+        <SourceInfo type='uri'>user</SourceInfo>
+        <DestinationInfo type='e164'>102</DestinationInfo>
+        <!--voxpilot.com:CallType>INBOUND</voxpilot.com:CallType-->
+        <voxpilot.com:CallType>INBOUND</voxpilot.com:CallType>
+        <UsageDetail>
+            <Service/>
+            <Amount>38</Amount>
+            <Increment>1</Increment>
+            <Unit>s</Unit>
+            <StartTime>2013-07-05T13:05:12.423Z</StartTime>
+            <EndTime>2013-07-05T13:05:50.058Z</EndTime>
+            <TerminationCause>
+                <TCCode>1016</TCCode>
+                <Description>normal call clearing</Description>
+            </TerminationCause>
+        </UsageDetail>
+    </UsageIndication>
+</Message>&param="1"
+]]>
+    </sendMessageHTTP2>
+    
+    <finally>		
+		<removeListenpointHTTP2 name="[nameListenpoint]" />
+	</finally>
+</scenario>

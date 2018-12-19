@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+
+    <!--parameter name="[string]" operation="set" value="Http content part"/-->
+    <parameter name="[testcase:string]" operation="string.random" value="10000"/>
+    <parameter name="[binary]" operation="string.tobinary" value="[string]" value2="ISO-8859-15"/>
+    <parameter name="[testcase:compressed]" operation="binary.compress" value="[binary]" value2="gzip"/>
+    <parameter name="[content]" operation="binary.toString" value="[testcase:compressed]" value2="ISO-8859-15"/>
+    <parameter name="[uncompressed]" operation="binary.uncompress" value="[testcase:compressed]" value2="gzip"/>
+    <parameter name="[string2]" operation="binary.toString" value="[uncompressed]" value2="ISO-8859-1"/>
+    
+    <parameter name="nameChannel" operation="number.uid" value="[nameChannel]"/>
+	
+	<semaphore name="SEM1" action="wait" />
+	
+	<openChannelHTTP2 name="[nameChannel]" remoteURL="http://[remoteHTTP]"/>  
+	
+    <sendMessageHTTP2 name="Send POST" channel="[nameChannel]">
+<![CDATA[POST http://[remoteHTTP] HTTP/2.0
+Host: [proxyHTTP]
+Accept-charset: text/html
+Content-Type: text/html
+Content-Encoding: gzip
+User-Agent: XMLLoader
+Content-Length: x
+
+[content]]]>
+
+</sendMessageHTTP2>
+
+    <receiveMessageHTTP2 name="Send 200 OK" request="false" result="200">
+    </receiveMessageHTTP2>
+
+<finally>
+			<closeChannelHTTP2 name="[nameChannel]"/>
+	</finally>	
+	
+</scenario> 
