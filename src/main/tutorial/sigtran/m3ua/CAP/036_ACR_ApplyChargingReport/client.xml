@@ -79,7 +79,70 @@
               <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
            </opCode.Choice>
            <invokeparameter>
-              <ApplyChargingReportArg.BoxedType><CallResult.BoxedType><Bytes>7d52f04f3e671dbfdf</Bytes></CallResult.BoxedType></ApplyChargingReportArg.BoxedType>
+              <ApplyChargingReportArg.BoxedType>
+                <CallResult.BoxedType>
+                <!--Bytes>7d52f04f3e671dbfdf</Bytes-->
+                <CAMEL_CallResult.Choice><timeDurationChargingResult.C0.Sequence>
+                         <partyToCharge.C0.Choice><receivingSideID.C1.BoxedType><Bytes>06
+                                  <field name="LegType" value="6" type="EnumLong" length="1"/>
+                               </Bytes></receivingSideID.C1.BoxedType></partyToCharge.C0.Choice>
+                         <timeInformation.C1.Choice>
+                            <timeIfNoTariffSwitch.C0.BoxedType><Integer>0</Integer></timeIfNoTariffSwitch.C0.BoxedType>
+                            <timeIfTariffSwitch.C1.Sequence>
+                               <timeSinceTariffSwitch.C0>2</timeSinceTariffSwitch.C0>
+                               <tariffSwitchInterval.C1>2</tariffSwitchInterval.C1>
+                            </timeIfTariffSwitch.C1.Sequence>
+                         </timeInformation.C1.Choice>
+                         <legActive.C2d>false:0</legActive.C2d>
+                         <callLegReleasedAtTcpExpiry.C3></callLegReleasedAtTcpExpiry.C3>
+                         <extensions.C4.BoxedType>
+                            <Collection>
+                               <ExtensionField.Sequence>
+                                  <type.Choice>
+                                     <local>1087466306</local>
+                                     <global><ObjectIdentifier>0.1.258.93.3.103.3.56.118.126</ObjectIdentifier></global>
+                                  </type.Choice>
+                                  <criticality.nulld.Enum>
+                                     <EnumType>abort.1</EnumType>
+                                  </criticality.nulld.Enum>
+                                  <NullObject.C1></NullObject.C1>
+                               </ExtensionField.Sequence>
+                               <ExtensionField.Sequence>
+                                  <type.Choice>
+                                     <local>1249932232</local>
+                                     <global><ObjectIdentifier>0.1.229</ObjectIdentifier></global>
+                                  </type.Choice>
+                                  <criticality.nulld.Enum>
+                                     <EnumType>abort.1</EnumType>
+                                  </criticality.nulld.Enum>
+                                  <NullObject.C1></NullObject.C1>
+                               </ExtensionField.Sequence>
+                               <ExtensionField.Sequence>
+                                  <type.Choice>
+                                     <local>788626000</local>
+                                     <global><ObjectIdentifier>0.1.234.68.122.126.101.89.128</ObjectIdentifier></global>
+                                  </type.Choice>
+                                  <criticality.nulld.Enum>
+                                     <EnumType>abort.1</EnumType>
+                                  </criticality.nulld.Enum>
+                                  <NullObject.C1></NullObject.C1>
+                               </ExtensionField.Sequence>
+                            </Collection>
+                         </extensions.C4.BoxedType>
+                         <aChChargingAddress.C5d.Choice>
+                            <legID.C2.Choice>
+                               <sendingSideID.C0.BoxedType><Bytes>02
+                                     <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
+                                  </Bytes></sendingSideID.C0.BoxedType>
+                               <receivingSideID.C1.BoxedType><Bytes>02
+                                     <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
+                                  </Bytes></receivingSideID.C1.BoxedType>
+                            </legID.C2.Choice>
+                            <srfConnection.C50.BoxedType><Integer>1</Integer></srfConnection.C50.BoxedType>
+                         </aChChargingAddress.C5d.Choice>
+                      </timeDurationChargingResult.C0.Sequence></CAMEL_CallResult.Choice>
+                </CallResult.BoxedType>
+           </ApplyChargingReportArg.BoxedType>
            </invokeparameter>
         </invoke.C1.Sequence>
       </Component.Choice>
