@@ -206,6 +206,14 @@
         initial="com.devoteam.srit.xmlloader.sigtran.ap.cap.CallResult" 
         replace="com.devoteam.srit.xmlloader.sigtran.ap.cap.CAMEL_CallResult"
     />
+      
+
+    <!-- 1=UnknownSubscriberParam ERROR -->
+    <!--embedded 
+        initial="errorparameter" 
+        replace="com.devoteam.srit.xmlloader.sigtran.ap.map.UnknownSubscriberParam"
+        condition="localValue=1"
+    /--> 
 
         <!-- Operation code local value => camel.asn1 line 138 -->
     <element name="opCode.localValue" coding="V" description="Operation code local value">
@@ -1045,7 +1053,7 @@
     
     <!-- Calling Party Number => ITU Q.763 V12/1999 chapter 3.10 page 24-25 -->    
     <element name="CallingPartyNumber" coding="V" description="Calling Party Number">
-    	 <field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
             <enum name="even number of address signals" value="0"/>
             <enum name="odd number of address signals" value="1"/>
         </field>
@@ -2245,7 +2253,7 @@
         </field>
         <field name="carrierID" type="EnumLong" length="3" description="Carrier identifier"/>        
     </element>
-    
+
     <!-- highLayerCompatibility => Q931-188805-I chapter 4.5.17 page 97 -->    
     <element name="highLayerCompatibility" coding="V" description="High Layer Compatibility">
     	 <field name="extension" type="EnumLong" lengthBit="1" description="extension">
@@ -2358,6 +2366,5 @@
             <enum name="Reserved" value="b0100010-b11111111"/>        
         </field>                                
     </element>
-    
 
 </dictionary>
