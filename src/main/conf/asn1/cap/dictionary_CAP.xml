@@ -1561,7 +1561,17 @@
 
     <!-- Time And Timezone => 3GPP TS 29.078 V9.2.0 chapter 5.1 page 45 -->
     <element name="TimeAndTimezone" coding="V" description="Time and Timezone" comment="">        
-        <field name="value" type="number_bcd" length="8" description="Time and Timezone"/>
+        <!--field name="value" type="number_bcd" length="8" description="DateTime TimeZone in the format [YYYYMMDDhhmmssZZ] where YYYY=years MM=months DD=days hh=hours mm=minuts ss=seconds ZZ=hours"/-->
+        <field name="date" type="number_bcd" length="4" description="Date in the format [YYYYMMDD] where YYYY=years MM=months DD=days"/>
+        <field name="time" type="number_bcd" length="3" description="Time in the format [hhmmss] where hh=hours mm=minuts ss=seconds"/>
+        <field name="timezone" type="number_bcd" length="1" description="Timezone in the format [ZZ] where ZZ=hours"/>
+        <!--field name="year" type="number_bcd" length="2" description="Year in the format [YYYY]"/-->
+        <!--field name="month" type="number_bcd" length="1" description="Month in the format [MM]"/-->
+        <!--field name="day" type="number_bcd" length="1" description="Day in the format [DD]"/-->
+        <!--field name="hour" type="number_bcd" length="1" description="Hour in the format [hh]"/-->
+        <!--field name="minut" type="number_bcd" length="1" description="Minut in the format [mm]"/-->
+        <!--field name="second" type="number_bcd" length="1" description="Second in the format [ss]"/-->
+        <!--field name="timezone" type="number_bcd" length="1" description="Timezone in ZZ where ZZ=hours"/-->
     </element>  
 
     <!-- Leg Type => 3GPP TS 29.078 V9.2.0 chapter 5.1 page 41 -->
