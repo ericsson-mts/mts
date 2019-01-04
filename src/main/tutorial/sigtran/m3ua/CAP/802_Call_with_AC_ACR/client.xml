@@ -197,8 +197,8 @@
                     <field name="VideotelephonyHighLayerCI" value="Capability set of subsequent channel of H.221:2" lengthBit="7" description="High layer characteristics identification"/>
 		  </Bytes></highLayerCompatibility.C23.BoxedType>
                 <!--additionalCallingPartyNumber.C25.BoxedType><Digits.BoxedType><Bytes>06831068871020f3</Bytes></Digits.BoxedType></additionalCallingPartyNumber.C25.BoxedType-->
-      		  <additionalCallingPartyNumber.C25.BoxedType><Bytes>84133368871020f3
-                    <field name="Number Qualifior Indicator" value="additional calling party number:6" type="EnumLong" length="1"/>
+      		  <additionalCallingPartyNumber.C25.BoxedType><Digits><Bytes>06831068871020f3
+                    <field name="Number qualifier" value="additional calling party number:6" type="EnumLong" length="1"/>
             	      <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
             	      <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7"/>
                     <field name="Number Incomplete (NI)" value="number complete:0" type="EnumLong" lengthBit="1"/>
@@ -206,8 +206,7 @@
                     <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2"/>
                     <field name="Screening" value="user provided, not verified:0" type="EnumLong" lengthBit="2"/>
                     <field name="digits" value="867801023" type="Number_BCD" length="10"/>
-                </Bytes></additionalCallingPartyNumber.C25.BoxedType>
-                <!--bearerCapability.C27.Choice><bearerCap.C0>8090a3</bearerCap.C0></bearerCapability.C27.Choice-->
+                </Bytes></Digits></additionalCallingPartyNumber.C25.BoxedType>
                 <bearerCapability.C27.Choice><bearerCap.C0>8090a3
                     <field name="ext1" value="last octet:1" type="EnumLong" lengthBit="1"/>
                     <field name="Coding standard" value="ITU-T standardized coding:0" type="EnumLong" lengthBit="2"/>
@@ -445,12 +444,17 @@
                 </ext_basicServiceCode.C53.Choice-->
                 <!--callReferenceNumber.C54.BoxedType><Bytes>e741</Bytes></callReferenceNumber.C54.BoxedType-->
                 <mscAddress.C55.BoxedType><AddressString.BoxedType><Bytes>913307002733f0
-                         <!--field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
-                         <field name="nature of address" value="abbreviated number:6" type="EnumLong" lengthBit="3" />
-                         <field name="numbering plan" value="reserved for extension:15" type="EnumLong" lengthBit="4" />
-                         <field name="digits" value="1390067116" type="Number_BCD" length="5" /-->
+                         <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="33700072330" type="Number_BCD" length="6" />
                       </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
-                <calledPartyBCDNumber.C56.BoxedType><Bytes>81338207670962f5</Bytes></calledPartyBCDNumber.C56.BoxedType>
+                <calledPartyBCDNumber.C56.BoxedType><Bytes>81338207670962f5
+                         <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                         <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                         <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                         <field name="digits" value="3328707690265" type="Number_BCD" length="6" />
+                     </Bytes></calledPartyBCDNumber.C56.BoxedType>
                 <timeAndTimezone.C57.BoxedType><Bytes>0281013261641500</Bytes></timeAndTimezone.C57.BoxedType>
                 <!--callForwardingSS_Pending.C58></callForwardingSS_Pending.C58-->
                 <!--initialDPArgExtension.C59.Sequence>

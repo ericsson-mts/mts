@@ -5,7 +5,7 @@
     
     <parameter name="[localHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]"/>
-    <!--parameter name="[localHostM3UA]" operation="set" value="164.48.85.81"/-->
+    <!--parameter name="[localHostM3UA]" operation="set" value="10.34.18.36"/-->
     <parameter name="[localHostM3UA]" operation="set" value="[localHostM3UA(0)]" description="local address of the MTS host" editable="true"/>
     <parameter name="[localPortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[localPortM3UA]" operation="number.random" value="10000" value2="65535" />    
@@ -15,19 +15,20 @@
     
     <parameter name="[remoteHostM3UA]" operation="system.ipaddress" value2="[IPVersion]"/>
     <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]"/>
-    <!--parameter name="[remoteHostM3UA]" operation="set" value="164.48.85.83"/-->
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="10.34.18.248"/-->
+    <!--parameter name="[remoteHostM3UA]" operation="set" value="10.34.18.36"/-->
     <parameter name="[remoteHostM3UA]" operation="set" value="[remoteHostM3UA(0)]" description="remote address of the SUT host" editable="true"/>
-    <!--parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/-->
+    <parameter name="[remotePortM3UA]" operation="file.readProperty" value="sigtran.properties" value2="listenpoint.LOCAL_PORT"/>
     <parameter name="[remotePortM3UA]" operation="set" value="2905"/>
     <parameter name="[remotePortM3UA]" operation="set" value="[remotePortM3UA]" description="remote port of the SUT host" editable="true"/>
     <parameter name="[remoteM3UA]" operation="set" value="[remoteHostM3UA]:[remotePortM3UA]"/>
     <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/>
 
-    <parameter name="[M3UA_OPC]" operation="set" value="12345" description="originating point code" editable="true" />
-    <parameter name="[M3UA_DPC]" operation="set" value="543211" description="destination point code" editable="true"/>
+    <parameter name="[M3UA_OPC]" operation="set" value="7250" description="originating point code" editable="true" />
+    <parameter name="[M3UA_DPC]" operation="set" value="7236" description="destination point code" editable="true"/>
     
-    <parameter name="[SCCP_OSSN]" operation="set" value="8" description="originating service subsystem number" editable="true" />
-    <parameter name="[SCCP_DSSN]" operation="set" value="8" description="destination service subsystem number" editable="true"/>    
+    <parameter name="[SCCP_OSSN]" operation="set" value="146" description="originating service subsystem number" editable="true" />
+    <parameter name="[SCCP_DSSN]" operation="set" value="146" description="destination service subsystem number" editable="true"/>    
     
     <parameter name="[transport]" operation="set" value="TCP" editable="true"/>
     <parameter name="[pause]" operation="set" value="0.0" editable="true"/>
@@ -97,14 +98,20 @@
         <scenario name="server" file="801_Wireshark_Sample_camel2/server.xml" routingName="initialDP:0,eventReportBCSM:24,SIGTRAN.M3UA" state="[remoteServer]"/>
     </testcase>
     
-    <!--testcase name="810_dico" description="test sigtran dictionary processing" number="[iterations]" state="true">
-        <scenario name="client" file="810_dico/client.xml" routingName="client" state="[localClient]"/>
-        <scenario name="server" file="810_dico/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA" state="[remoteServer]"/>
-    </testcase-->
-    
-    <!--testcase name="811_set_from_msg" description="test sigtran dictionary processing" number="[iterations]" state="true">
-        <scenario name="client" file="811_set_from_msg/client.xml" routingName="client" state="[localClient]" />
-        <scenario name="server" file="811_set_from_msg/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.M3UA" state="[remoteServer]"/>
-    </testcase-->
+    <testcase name="802_Call_with_AC_ACR" description="test sigtran dictionary processing" number="[iterations]" state="true">
+        <parameter name="[remoteHostM3UA]" operation="set" value="10.34.18.248"/>
+        <scenario name="client" file="802_Call_with_AC_ACR/client.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[localClient]"/>
+        <!--scenario name="server" file="802_Call_with_AC_ACR/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/-->
+    </testcase>
+    		
+    <testcase name="803_Menu_IVR" description="test sigtran dictionary processing" number="[iterations]" state="true">
+        <scenario name="client" file="803_Menu_IVR/client.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[localClient]"/>
+        <!--scenario name="server" file="803_Menu_IVR/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/-->
+    </testcase>
+
+    <testcase name="804_SRF_Call" description="test sigtran dictionary processing" number="[iterations]" state="true">
+        <scenario name="client" file="804_SRF_Call/client.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[localClient]"/>
+        <!--scenario name="server" file="804_SRF_Call/server.xml" routingName="SIGTRAN.CAP,SIGTRAN.MAP,SIGTRAN.TCAP,SIGTRAN.M3UA" state="[remoteServer]"/-->
+    </testcase>
 
 </test>
