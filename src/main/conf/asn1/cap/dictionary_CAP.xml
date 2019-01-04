@@ -1123,9 +1123,31 @@
         </field>
     </element>
 
+    <!-- Generic Number => ITU Q.763 V12/1999 chapter 3.26 page 35 -->
+    <!--element name="AdditionalCallingPartyNumber" coding="V" description="Calling Party Number"-->
+    <!--element name="Digits" coding="V" description="Generic Number">
+        <field name="Number qualifier indicator" type="EnumLong" length="1" description="Number qualifier indicator">
+            <enum name="reserved (dialled digits) (national use)" value="b00000000"/>
+            <enum name="additional called number (national use)" value="b00000001"/>
+            <enum name="reserved (supplemental user provided calling number failed network screening) (national use)" value="b00000010"/>
+            <enum name="reserved (supplemental user provided calling number not screened)(national use)" value="b00000011"/>
+            <enum name="reserved (redirecting terminating number) (national use)" value="b00000100"/>
+            <enum name="additional connected number" value="b00000101"/>
+            <enum name="additional calling party number" value="b00000110"/>
+            <enum name="reserved for additional original called number" value="b00000110"/>
+            <enum name="reserved for additional redirecting number" value="b00001000"/>
+            <enum name="reserved for additional redirection number" value="b00001001"/>
+            <enum name="reserved (used in 1992 version)" value="b00001010"/>
+            <enum name="spare" value="b00001011-b01111111"/>
+            <enum name="reserved for national use" value="b10000000-b11111110"/>
+            <enum name="reserved for expansion" value="b111111111"/>
+        </field>
+        <CallingPartyNumber name="CallingPartyNumber" coding="V" description="Calling Party Number"/>
+    </element-->
+
     <!-- Location Number => ITU Q.763 V12/1999 chapter 3.30 page 38 -->    
     <element name="LocationNumber" coding="V" description="Location number">
-    		<field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
+        <field name="Odd/even (O/E)" type="EnumLong" lengthBit="1" description="Odd/even indicator (O/E)">
             <enum name="even number of address signals" value="0"/>
             <enum name="odd number of address signals" value="1"/>
         </field>
@@ -2277,8 +2299,8 @@
             <enum name="Reserved" value="b10-b11"/>            
         </field>        
     	<field name="extension" type="EnumLong" lengthBit="1" description="extension">
-            <enum name="extension" value="0"/>
-            <enum name="no extension" value="1"/>
+            <enum name="extension" value="b0"/>
+            <enum name="no extension" value="b1"/>
         </field>    
         <field name="HighLayerCI" type="EnumLong" lengthBit="7" description="High layer characteristics identification">
             <enum name="Reserved" value="b0000000"/>        
@@ -2316,8 +2338,8 @@
             <enum name="Reserved" value="b1111111"/>         
         </field>        
     	<field name="extension" type="EnumLong" lengthBit="1" description="extension">
-            <enum name="extension" value="0"/>
-            <enum name="no extension" value="1"/>
+            <enum name="extension" value="b0"/>
+            <enum name="no extension" value="b1"/>
         </field>    
         <field name="ExtendedHighLayerCI" type="EnumLong" lengthBit="7" description="High layer characteristics identification">
             <enum name="Reserved" value="b0000000"/>        
@@ -2354,8 +2376,8 @@
             <enum name="Reserved" value="b1111111"/>         
         </field>        
     	<field name="extension" type="EnumLong" lengthBit="1" description="extension">
-            <enum name="extension" value="0"/>
-            <enum name="no extension" value="1"/>
+            <enum name="extension" value="b0"/>
+            <enum name="no extension" value="b1"/>
         </field>    
         <field name="VideotelephonyHighLayerCI" type="EnumLong" lengthBit="7" description="High layer characteristics identification">
             <enum name="Reserved" value="b0000000"/>        
