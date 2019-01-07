@@ -17,47 +17,40 @@
                                        
     <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-	 <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
-	 <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.M3UA"/>
+        <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
+        <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.M3UA"/>
     </receiveMessageSIGTRAN>
         
-    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
-    
+    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">    
         <UA name="m3ua" file="m3ua.xml">
-            <header version="1" reserved="0" messageClass="3" messageType="4"/>
-    				
+            <header version="1" reserved="0" messageClass="ASP_State_Maintenance_Messages" messageType="ASP_Up_Acknowledgement"/>    				
             <parameter tag="17" >
                 <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
             </parameter>
-    	
             <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
+                <field name="INFO_String" format="String" value="ASPUP_ACK"/>
             </parameter>
         </UA>
-        
     </sendMessageSIGTRAN>
 
     <receiveMessageSIGTRAN name="Wait ASPAC1" request="true" type="ASP_Active:4_1">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-	 <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
-	 <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.M3UA"/>
+        <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
+        <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.M3UA"/>
     </receiveMessageSIGTRAN>
     
     <sendMessageSIGTRAN	name="Send ASPAC1" channel="[channelName]">
     	<UA name="m3ua" file="m3ua.xml">
         <header messageClass="ASP_Traffic_Maintenance_Messages" messageType="ASP_Active_Acknowledgement"/>
-    
     		<parameter tag="Traffic_Mode_Type">
             <field name="Traffic_Mode_Type" value="2"/>
         </parameter>
-    
     		<parameter tag="Routing_Context">
     			<field name="Routing_Context" value="7864455"/>
     			<field name="Routing_Context" value="75788"/>
     		</parameter>
-    
     		<parameter tag="INFO_String" format="string">
-          <field name="INFO_String" value="ASPAC"/>
+          <field name="INFO_String" value="ASPAC_ACK"/>
         </parameter>
     	</UA>
     </sendMessageSIGTRAN>
