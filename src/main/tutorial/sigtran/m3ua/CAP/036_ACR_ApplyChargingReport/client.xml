@@ -222,16 +222,18 @@
         			<field value="0" lengthBit="4" />
         			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
         		</parameter>
-        		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
-        			<field name="Address_Indicator" value="67" length="1" />
-        			<field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
-        			<field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" />	
-        		</parameter>
-        		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
-        			<field name="Address_Indicator" value="67" length="1" />
-        			<field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
-        			<field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" />
-        		</parameter>
+          	<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
+          	    <!--field name="Address_Indicator" value="18" format="integer" length="1" />
+          	    <field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
+          	    <field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" /-->	
+                <field name="Global_Title" value="1292001104[SCCP_DGT]" format="binary" length="11"/>
+          	</parameter>	
+          	<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">
+          	    <!--field name="Address_Indicator" value="18" format="integer" length="1" />
+          	    <field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
+          	    <field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" /-->
+        	      <field name="Global_Title" value="1292001104[SCCP_OGT]" format="binary" length="11" />
+          	</parameter>
         		<parameter id="15" name="Data" type="V" littleEndian="false"/>
         			<!--field value="" format="binary" length="88" />
               <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /> 

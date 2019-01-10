@@ -73,18 +73,21 @@
             <parameter name="[function:channelName]" value="channel"/>        
             <parameter name="[function:eventTypeBCSM]" value="oAnswer.7"/>
             <parameter name="[function:legType]" value="02"/>            
-            <parameter name="[function:oDisconnectSpecificInfo_causeValue]" value="Class 001 normal event : Normal call clearing:16"/>                        
+            <!--parameter name="[function:oDisconnectSpecificInfo_causeValue]" value="Class 001 normal event : Normal call clearing:16"/-->            
         </input>
         <output>
             <!--parameter name="[function:res]" /-->
         </output>
     </call>
 
+        <!--function file="024_ERB_EventReportBSCM/client.xml" /-->
+        
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>        
             <parameter name="[function:eventTypeBCSM]" value="oAnswer.7"/>
-            <parameter name="[function:legType]" value="02"/>                                    
+            <parameter name="[function:legType]" value="02"/>            
+            <parameter name="[function:oDisconnectSpecificInfo_causeValue]" value="Class 001 normal event : Normal call clearing:16"/>            
         </input>
         <output>
             <!--parameter name="[function:res]" /-->
@@ -1242,18 +1245,16 @@
         			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
         		</parameter>
           	<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
-          	    <!--field name="Address_Indicator" value="18" format="integer" length="1" /-->
-          	    <!--field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" /-->
-          	    <!--field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" /-->	
-        	      <field name="Global_Title" value="1292001104330700273305" format="binary" length="11"/>
-        	      <!--field name="Global_Title_01" value="17" format="integer" length="2"/>
-        	      <field name="Global_Title_02" value="4" format="integer" length="1"/-->
+          	    <!--field name="Address_Indicator" value="18" format="integer" length="1" />
+          	    <field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
+          	    <field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" /-->	
+                <field name="Global_Title" value="1292001104[SCCP_DGT]" format="binary" length="11"/>
           	</parameter>	
           	<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">
-          	    <!--field name="Address_Indicator" value="18" format="integer" length="1" /-->
-          	    <!--field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" /-->
-          	    <!--field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" /-->
-        	    <field name="Global_Title" value="1292001104330700275300" format="binary" length="11" />
+          	    <!--field name="Address_Indicator" value="18" format="integer" length="1" />
+          	    <field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
+          	    <field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" /-->
+        	      <field name="Global_Title" value="1292001104[SCCP_OGT]" format="binary" length="11" />
           	</parameter>
         		<parameter id="15" name="Data" type="V" littleEndian="false"/>
         			<!--field value="" format="binary" length="88" />
