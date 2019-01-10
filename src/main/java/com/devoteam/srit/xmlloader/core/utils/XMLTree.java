@@ -115,10 +115,12 @@ public class XMLTree implements Serializable {
         for (Element e : elementsOrder) {
             List<Element> newNodesList = replacer.replace(e, parameterPool);
 
+            /* FH remove for SIGTRAN reason work with DIAMETER
             if (newNodesList.isEmpty()) {
                 Element element = new DefaultElement("removedElement");
                 newNodesList.add(element);
             }
+            */
 
             elementsMap.put(e, newNodesList);
 
