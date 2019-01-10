@@ -11,27 +11,15 @@
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
-        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-    </receiveMessageSIGTRAN>
-        
-    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
+
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Answer_M3UA_session" >
+        <output>
+            <parameter name="[channelName]" value="[function:channelName]"/>        
+        </output>
+    </call>
     
-        <UA name="m3ua" file="m3ua.xml">
-            <header version="1" reserved="0" messageClass="3" messageType="4"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-        
-    </sendMessageSIGTRAN>
-    
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="applyCharging:35">
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="applyCharging:35">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>

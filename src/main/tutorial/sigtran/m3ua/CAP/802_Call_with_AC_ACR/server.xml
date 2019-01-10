@@ -11,47 +11,16 @@
 
 <scenario>
 
-    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
-                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
-                                       transport="[transport]"/>
-                                       
-    <sendMessageSIGTRAN	name="Send ASPUP" channel="channel">	   
-        <UA name="m3ua" file="m3ua.xml">
-            <header 	version="1" reserved="0" messageClass="ASP_State_Maintenance_Messages" messageType="ASP_Up"/>    			
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
-            </parameter>
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-    </sendMessageSIGTRAN>
-        
-    <receiveMessageSIGTRAN name="Wait ASPUP_ACK" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
-
-    <sendMessageSIGTRAN	name="Send ASPAC" channel="channel">
-        <UA name="m3ua" file="m3ua.xml">
-            <header 	version="1" reserved="0" messageClass="ASP_Traffic_Maintenance_Messages" messageType="ASP_Active"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPAC"/>
-            </parameter>
-        </UA>
-    </sendMessageSIGTRAN>
-        
-    <receiveMessageSIGTRAN name="Wait ASPAC_ACK" request="false" type="ASP_Active:4_1" result="ASP_Active_Acknowledgement:4_3">
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Establish_M3UA_session" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>        
+        </input>
+    </call>
     
     <pause seconds="[pause]"/>
  
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="initialDP:0">
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="true" type="initialDP:0">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -62,7 +31,7 @@
         <parameter name="[destTransID]" operation="protocol.setFromMessage" value="tcap.begin.dtid"/>        
     </receiveMessageSIGTRAN>
                             
-    <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
+    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
         
     <!-- AP LAYER -->
     <ASN dictionary="cap/dictionary_CAP.xml">

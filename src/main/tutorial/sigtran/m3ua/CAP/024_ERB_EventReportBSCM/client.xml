@@ -11,30 +11,12 @@
 
 <scenario>
 
-    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
-                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
-                                       transport="[transport]"/>
-                                       
-    <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
-   
-        <UA name="m3ua" file="m3ua.xml">
-            <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-    </sendMessageSIGTRAN>
-        
-    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
-    
-    <pause seconds="[pause]"/>
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Establish_M3UA_session" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>        
+        </input>
+    </call>
 	
     <if>
       <condition>
