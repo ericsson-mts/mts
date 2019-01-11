@@ -11,15 +11,11 @@
 
 <scenario>
 
-    <function file="library/M3UA_manage_session.xml" />
-    <call name="Answer_M3UA_session" >
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Answer_M3UA_session">
         <output>
-            <parameter name="[channelName]" value="[function:channelName]"/>
+            <parameter name="[test:channelName]" value="[lastChannelName]"/>        
         </output>
-    </call>
-
-    <function file="library/AP_transaction_session.xml" />                                              
-    <call name="Manage_identifier">
     </call>
 
     <function file="000_IDP_InitialDetectionPoint/client.xml" />
@@ -63,7 +59,7 @@
         <input>
             <parameter name="[function:channelName]" value="[channelName]"/>        
             <parameter name="[function:eventTypeBCSM]" value="oAnswer.7"/>
-            <parameter name="[function:legType]" value="02"/>
+            <parameter name="[function:legType]" value="leg2 LegType:2"/>
         </input>
         <output>
             <!--parameter name="[function:res]" /-->
@@ -89,7 +85,7 @@
     <call name="Send_036_ACR_ApplyChargingReport" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>        
-            <parameter name="[function:legType]" value="1"/>
+            <parameter name="[function:legType]" value="leg1 LegType:1"/>
             <parameter name="[function:timeIfNoTariffSwitch]" value="10"/>            
         </input>
         <output>
@@ -97,23 +93,12 @@
         </output>
     </call>     
 
-    <function file="024_ERB_EventReportBSCM/client.xml" />  
-    <call name="Send_024_ERB_EventReportBSCM" >
-        <input>
-            <parameter name="[function:channelName]" value="[channelName]"/>        
-            <parameter name="[function:eventTypeBCSM]" value="oDisconnect.9"/>
-            <parameter name="[function:legType]" value="02"/>
-        </input>
-        <output>
-            <!--parameter name="[function:res]" /-->
-        </output>
-    </call>
-    
+    <function file="024_ERB_EventReportBSCM/client.xml" />      
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>        
             <parameter name="[function:eventTypeBCSM]" value="oDisconnect.9"/>
-            <parameter name="[function:legType]" value="02"/>            
+            <parameter name="[function:legType]" value="leg2 LegType2:2"/>            
             <parameter name="[function:oDisconnectSpecificInfo_causeValue]" value="Class 001 normal event : Normal call clearing:16"/>            
         </input>
         <output>
