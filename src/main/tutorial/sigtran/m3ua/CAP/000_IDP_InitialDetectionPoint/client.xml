@@ -17,37 +17,7 @@
             <parameter name="[function:channelName]" value="channel"/>        
         </input>
     </call>
-    	
-    <if>
-      <condition>
-          <test parameter="[testcase:origTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:origTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
-
-    <if>
-      <condition>
-          <test parameter="[testcase:destTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:destTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
-
-    <if>
-      <condition>
-          <test parameter="[testcase:invokeID]" condition="list.exists"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:invokeID]" operation="number.add" value="[testcase:invokeID]" value2="1"/>
-      </then>      
-      <else>
-          <parameter name="[testcase:invokeID]" operation="set" value="0"/>
-      </else>
-    </if>    
-       
+    	       
     <!--function file="000_IDP_InitialDetectionPoint/client.xml" /-->
            
 	  <call name="Send_000_IDP_InitialDetectionPoint" >
@@ -70,6 +40,9 @@
         <parameter name="[function:vlr_number]" type="number"/>
       </input>
       <do>
+      
+        <call name="Manage_identifier">
+        </call>
       
         <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
     

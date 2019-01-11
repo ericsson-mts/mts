@@ -10,7 +10,46 @@
 -->
 
 <scenario>
+
+
+    <function name="Manage_identifier">
+      <input/>       
+      <do>
+
+          <if>
+            <condition>
+                <test parameter="[testcase:origTransID]" condition="list.exists" not="true"/>
+            </condition>
+            <then>
+                <parameter name="[testcase:origTransID]" operation="binary.random" value="4"/>
+            </then>
+          </if>    
       
+          <if>
+            <condition>
+                <test parameter="[testcase:destTransID]" condition="list.exists" not="true"/>
+            </condition>
+            <then>
+                <parameter name="[testcase:destTransID]" operation="binary.random" value="4"/>
+            </then>
+          </if>    
+      
+          <if>
+            <condition>
+                <test parameter="[testcase:invokeID]" condition="list.exists"/>
+            </condition>
+            <then>
+                <parameter name="[testcase:invokeID]" operation="number.add" value="[testcase:invokeID]" value2="1"/>
+            </then>      
+            <else>
+                <parameter name="[testcase:invokeID]" operation="set" value="0"/>
+            </else>
+          </if> 
+      </do>      
+      <output/>
+    </function>
+    
+    
     <function name="Establish_M3UA_session">
       <input>
         <parameter name="[function:channelName]" type="string"/>       

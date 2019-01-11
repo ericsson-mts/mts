@@ -11,45 +11,15 @@
 
 <scenario>
 
-    <function file="library/M3UA_manage_session.xml" />    
+    <function file="library/M3UA_manage_session.xml" />
+        
     <call name="Establish_M3UA_session" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>        
         </input>
     </call>
-	
-    <if>
-      <condition>
-          <test parameter="[testcase:origTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:origTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
-
-    <if>
-      <condition>
-          <test parameter="[testcase:destTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:destTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
-
-    <if>
-      <condition>
-          <test parameter="[testcase:invokeID]" condition="list.exists"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:invokeID]" operation="number.add" value="[testcase:invokeID]" value2="1"/>
-      </then>      
-      <else>
-          <parameter name="[testcase:invokeID]" operation="set" value="0"/>
-      </else>
-    </if>    
-  
-    <!--function file="024_ERB_EventReportBSCM/client.xml" /-->
-        
+	     
+    <!--function file="024_ERB_EventReportBSCM/client.xml" /-->        
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>        
@@ -62,12 +32,11 @@
         </output>
     </call>
 
-        <!--function file="024_ERB_EventReportBSCM/client.xml" /-->
-        
+    <!--function file="024_ERB_EventReportBSCM/client.xml" /-->        
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>        
-            <parameter name="[function:eventTypeBCSM]" value="oAnswer.7"/>
+            <parameter name="[function:eventTypeBCSM]" value="oDisconnect.9"/>
             <parameter name="[function:legType]" value="02"/>            
             <parameter name="[function:oDisconnectSpecificInfo_causeValue]" value="Class 001 normal event : Normal call clearing:16"/>            
         </input>
@@ -84,6 +53,9 @@
         <parameter name="[function:oDisconnectSpecificInfo_causeValue]" type="string" default=""/>
       </input>
       <do>
+
+          <call name="Manage_identifier">
+          </call>
 
           <if>
             <condition>
