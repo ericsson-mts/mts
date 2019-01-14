@@ -15,6 +15,11 @@ Run :
     ./startCmd.sh|bat <install_dir>/CAP/test.xml 802_Call_with_AC_ACR  
 
 Restriction :
+    An exception is displayed on the standard output. The exception is not significant : the job is done. 
+
+
+Version : 
+	14/01/2019 => release 01
     
 
 
