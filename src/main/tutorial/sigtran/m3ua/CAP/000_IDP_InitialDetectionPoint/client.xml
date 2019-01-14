@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_begin SYSTEM "../library/TCAP_begin.xml">  
+]>
 
 <!--
-    Document   : server.xml
+    Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
     Description: Send a MAP message
@@ -493,87 +498,12 @@
           </Component.Choice>
         </ASN>
         
-        <!-- TCAP LAYER -->
-        <ASN dictionary="tcap/dictionary_TCAP.xml">
-          <TCMessage.Choice>
-            <begin.A2.Sequence>
-               <!--otid.BoxedType><Bytes.A8>[origTransID]</Bytes.A8></otid.BoxedType-->
-               <otid.BoxedType><Bytes.A8>890001ff</Bytes.A8></otid.BoxedType>
-               <dialoguePortion.BoxedType><DialogueOC.A11.BoxedType>
-                     <ExternalPDU.A11.BoxedType><ExternalPDUSequenceType.U8>
-                           <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
-                           <!--indirect_reference>135135546236608288</indirect_reference-->
-                           <!--data_value_descriptor.BoxedType><Bytes>040d64f86f057d306aba7055bc9634</Bytes></data_value_descriptor.BoxedType-->
-                           <encoding.Choice>
-                              <single_ASN1_type.C0.BoxedType>
-                               <DialoguePDU.Choice>
-                                  <dialogueRequest.A0.BoxedType><AARQ_apduSequenceType.A0>
-                                        <protocol_version><BitString value="Version1:80" trailing="7"/></protocol_version>
-                                        <application_context_name.BoxedType>
-                                           <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                                        </application_context_name.BoxedType>
-                                        <!--Collection>
-                                           <user_information>040b0ee80b24cfc24d5cf44182</user_information>
-                                           <user_information>0404e60be5ae</user_information>
-                                           <user_information>0409db4fba980c312c21d8</user_information>
-                                        </Collection-->
-                                  </AARQ_apduSequenceType.A0></dialogueRequest.A0.BoxedType>
-                               </DialoguePDU.Choice>
-                              </single_ASN1_type.C0.BoxedType>
-                           </encoding.Choice>
-                      </ExternalPDUSequenceType.U8></ExternalPDU.A11.BoxedType>
-                </DialogueOC.A11.BoxedType></dialoguePortion.BoxedType>
-            </begin.A2.Sequence>
-          </TCMessage.Choice>
-        </ASN>
+        &TCAP_begin;        
+        
+        &SCCP_client;
     
-        <!-- SCCP LAYER  -->
-        <SS7 name="sccp" file="sccp.xml">
-      	<header>
-              <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
-          	</header>
-      	<parameter name="Protocol_Class" type="F" littleEndian="false">
-      	    <field value="0" lengthBit="4" />
-      	    <field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-      	</parameter>
-      	<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
-      	    <!--field name="Address_Indicator" value="18" format="integer" length="1" />
-      	    <field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
-      	    <field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" /-->	
-            <field name="Global_Title" value="1292001104[SCCP_DGT]" format="binary" length="11"/>
-      	</parameter>	
-      	<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">
-      	    <!--field name="Address_Indicator" value="18" format="integer" length="1" />
-      	    <field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
-      	    <field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" /-->
-    	      <field name="Global_Title" value="1292001104[SCCP_OGT]" format="binary" length="11" />
-      	</parameter>
-      	<parameter id="15" name="Data" type="V" littleEndian="false">
-      	    <field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
-      	</parameter>
-        </SS7>
-    
-        <UA name="m3ua" file="m3ua.xml">
-            <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>				
-            <!--parameter tag="Network_Appearence">
-                <field name="Network_Appearence"  format="Integer" value="102"/>
-            </parameter-->
-            <!--parameter tag="Routing_Context">
-                <field name="Routing_Context" format="Integer"  value="101"/>
-            </parameter-->
-            <parameter tag="Protocol_Data">
-                <field name="Originating_Point_Code" value="[M3UA_OPC]"/>
-                <field name="Destination_Point_Code" value="[M3UA_DPC]"/>
-                <field name="SI" value="SCCP"/>
-                <field name="NI" value="3"/>
-                <field name="MP" value="1"/>
-                <field name="SLS" value="8"/>
-                <field name="DATA"	format="fvo"/>
-            </parameter>
-            <!--parameter tag="Correlation_Id">
-                <field name="Correlation_Id" format="Integer"  value="12783"/>
-            </parameter-->
-        </UA>
+        &M3UA_client;
+
         </sendMessageSIGTRAN>
     
     

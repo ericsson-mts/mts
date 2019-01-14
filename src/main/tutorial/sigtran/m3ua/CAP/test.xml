@@ -30,7 +30,9 @@
     <parameter name="[SCCP_OSSN]" operation="set" value="146" description="originating service subsystem number" editable="true" />
     <parameter name="[SCCP_DSSN]" operation="set" value="146" description="destination service subsystem number" editable="true"/>
     <!-- For Global Title party number revert digits like number BCD -->    
+    <!--parameter name="[SCCP_OGT]" operation="set" value="337000723500" description="originating global title" editable="true" /-->    
     <parameter name="[SCCP_OGT]" operation="set" value="330700275300" description="originating global title (number BCD)" editable="true" />
+    <!--parameter name="[SCCP_DGT]" operation="set" value="337000723350" description="destination global title" editable="true"/-->    
     <parameter name="[SCCP_DGT]" operation="set" value="330700273305" description="destination global title (number BCD)" editable="true"/>    
     
     <parameter name="[transport]" operation="set" value="TCP" editable="true"/>
@@ -43,7 +45,7 @@
     <parameter name="[smsBinary]" operation="string.toBinary" value="[smsText]" value2="[smsAlphabet]"/>
     <parameter name="[smsTextLength]" operation="string.length" value="[smsText]"/>
 
-    <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
+    <parameter name="[iterations]" operation="set" value="1000000000" description="iterations number" editable="true"/>
     
     
     <testcase name="000_IDP_InitialDetectionPoint" description="test sigtran CAP/1=IDP=InitialDP message" number="[iterations]" state="true">
