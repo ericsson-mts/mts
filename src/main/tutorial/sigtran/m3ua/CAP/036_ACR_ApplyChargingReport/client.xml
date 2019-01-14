@@ -28,7 +28,13 @@
     
     <call name="Send_036_ACR_ApplyChargingReport" >
         <input>
-            <parameter name="[function:channelName]" value="channel"/>        
+            <parameter name="[function:channelName]" value="channel"/>
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/> 
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                                                                                                                         
             <parameter name="[function:legType]" value="1"/>
             <parameter name="[function:timeIfNoTariffSwitch]" value="1000"/>            
         </input>
@@ -39,7 +45,13 @@
 
     <function name="Send_036_ACR_ApplyChargingReport">
       <input>
-        <parameter name="[function:channelName]" type="string"/>       
+        <parameter name="[function:channelName]" type="string"/>                
+        <parameter name="[function:m3uaOpc]" type="number"/>      
+        <parameter name="[function:m3uaDpc]" type="number"/> 
+        <parameter name="[function:sccpOssn]" type="number"/>        
+        <parameter name="[function:sccpDssn]" type="number"/>                                                                          
+        <parameter name="[function:sccpOgt]" type="number"/>        
+        <parameter name="[function:sccpDgt]" type="number"/>                                                                                                                      
         <parameter name="[function:legType]" type="number" />
         <parameter name="[function:timeIfNoTariffSwitch]" type="number"/>
       </input>
@@ -49,7 +61,9 @@
           <call name="Manage_identifier">
           </call>
       
-          <parameter name="[invokeID]" operation="number.add" value="[invokeID]" value2="1"/>
+          <parameter name="[sccpOssnBinary]" operation="number.toBinary" value="[function:sccpOssn]"/>
+          <parameter name="[sccpDssnBinary]" operation="number.toBinary" value="[function:sccpDssn]"/>        
+        
           <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
           
               <!-- AP LAYER -->

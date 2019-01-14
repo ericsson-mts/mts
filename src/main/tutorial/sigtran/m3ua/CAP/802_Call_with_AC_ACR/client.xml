@@ -22,7 +22,13 @@
     
     <call name="Send_000_IDP_InitialDetectionPoint" >
         <input>
-            <parameter name="[function:channelName]" value="[channelName]"/>        
+            <parameter name="[function:channelName]" value="[channelName]"/>
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/> 
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                                                                                                                                             
             <parameter name="[function:callingPartyNumber]" value="33867801023"/>
             <parameter name="[function:calledPartyBCDNumber]" value="3328707690265"/>
             <parameter name="[function:vlr_number]" value="33771092331"/>
@@ -39,8 +45,8 @@
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
         <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>         
-        <parameter name="[origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>
-        <parameter name="[destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>                
+        <parameter name="[testcase:origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>
+        <parameter name="[testcase:destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>                
     </receiveMessageSIGTRAN>
 
     <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="requestReportBCSMEvent:23">
@@ -50,14 +56,20 @@
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
         <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>         
-        <parameter name="[origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>
-        <parameter name="[destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>                
+        <parameter name="[testcase:origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>
+        <parameter name="[testcase:destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>                
     </receiveMessageSIGTRAN>
 
     <function file="024_ERB_EventReportBSCM/client.xml" />  
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
-            <parameter name="[function:channelName]" value="[channelName]"/>        
+            <parameter name="[function:channelName]" value="[channelName]"/>
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/> 
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                                                                                                                                             
             <parameter name="[function:eventTypeBCSM]" value="oAnswer.7"/>
             <parameter name="[function:legType]" value="leg2 LegType:2"/>
         </input>
@@ -66,7 +78,7 @@
         </output>
     </call>
     
-   <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="noteInternalHandover:35">
+   <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="applyCharging:35">
        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
  	     <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
        <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.CAP"/>
@@ -74,17 +86,22 @@
        <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
        <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
        <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>         
-       <parameter name="[origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>
-       <parameter name="[destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>                
+       <parameter name="[testcase:origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>
+       <parameter name="[testcase:destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>                
     </receiveMessageSIGTRAN>
         
 	   <pause seconds="0.1"/>
 
-    <function file="036_ACR_ApplyChargingReport/client.xml" />
-    
+    <function file="036_ACR_ApplyChargingReport/client.xml" />  
     <call name="Send_036_ACR_ApplyChargingReport" >
         <input>
-            <parameter name="[function:channelName]" value="channel"/>        
+            <parameter name="[function:channelName]" value="[channelName]"/>
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                                                                                                                                              
             <parameter name="[function:legType]" value="leg1 LegType:1"/>
             <parameter name="[function:timeIfNoTariffSwitch]" value="10"/>            
         </input>
@@ -96,7 +113,13 @@
     <function file="024_ERB_EventReportBSCM/client.xml" />      
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
-            <parameter name="[function:channelName]" value="channel"/>        
+            <parameter name="[function:channelName]" value="[channelName]"/>        
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                                                                                                                                                                                                                                                         
             <parameter name="[function:eventTypeBCSM]" value="oDisconnect.9"/>
             <parameter name="[function:legType]" value="leg2 LegType2:2"/>            
             <parameter name="[function:oDisconnectSpecificInfo_causeValue]" value="Class 001 normal event : Normal call clearing:16"/>            
@@ -105,7 +128,19 @@
             <!--parameter name="[function:res]" /-->
         </output>
     </call>
-                
+
+    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="cancel:53">
+       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+ 	     <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
+       <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.CAP"/>
+       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+       <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>
+       <parameter name="[invokeID]" operation="protocol.setFromMessage" value="asn.Component.invoke.invokeID"/>         
+       <parameter name="[testcase:origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>
+       <parameter name="[testcase:destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>                
+    </receiveMessageSIGTRAN>
+
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->
     <pause name="wait a while" seconds="0.1"/>

@@ -28,7 +28,13 @@
            
 	  <call name="Send_000_IDP_InitialDetectionPoint" >
         <input>
-            <parameter name="[function:channelName]" value="channel"/>        
+            <parameter name="[function:channelName]" value="channel"/>         
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                           
             <parameter name="[function:callingPartyNumber]" value="33867801023"/>
             <parameter name="[function:calledPartyBCDNumber]" value="3328707690265"/>
             <parameter name="[function:vlr_number]" value="33771092331"/>
@@ -40,7 +46,13 @@
 
     <function name="Send_000_IDP_InitialDetectionPoint">
       <input>
-        <parameter name="[function:channelName]" type="string"/>       
+        <parameter name="[function:channelName]" type="string"/>      
+        <parameter name="[function:m3uaOpc]" type="number"/>      
+        <parameter name="[function:m3uaDpc]" type="number"/>
+        <parameter name="[function:sccpOssn]" type="number"/>        
+        <parameter name="[function:sccpDssn]" type="number"/>                                                                          
+        <parameter name="[function:sccpOgt]" type="number"/>        
+        <parameter name="[function:sccpDgt]" type="number"/>                                                                  
         <parameter name="[function:callingPartyNumber]" type="number" />
         <parameter name="[function:calledPartyBCDNumber]" type="number"/>
         <parameter name="[function:vlr_number]" type="number"/>
@@ -51,6 +63,9 @@
         <call name="Manage_identifier">
         </call>
       
+        <parameter name="[sccpOssnBinary]" operation="number.toBinary" value="[function:sccpOssn]"/>
+        <parameter name="[sccpDssnBinary]" operation="number.toBinary" value="[function:sccpDssn]"/>        
+              
         <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
     
             <!-- AP LAYER -->

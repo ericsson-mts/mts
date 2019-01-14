@@ -1,6 +1,8 @@
         <!-- M3UA LAYER  -->
         <UA name="m3ua" file="m3ua.xml">
-            <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>				
+        
+            <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
+            				
             <!--parameter tag="Network_Appearence">
                 <field name="Network_Appearence"  format="Integer" value="102"/>
             </parameter-->
@@ -8,8 +10,8 @@
                 <field name="Routing_Context" format="Integer"  value="101"/>
             </parameter-->
             <parameter tag="Protocol_Data">
-                <field name="Originating_Point_Code" value="[M3UA_OPC]"/>
-                <field name="Destination_Point_Code" value="[M3UA_DPC]"/>
+                <field name="Originating_Point_Code" value="[function:m3uaOpc]"/>
+                <field name="Destination_Point_Code" value="[function:m3uaDpc]"/>
                 <field name="SI" value="SCCP"/>
                 <field name="NI" value="3"/>
                 <field name="MP" value="1"/>
@@ -19,4 +21,5 @@
             <!--parameter tag="Correlation_Id">
                 <field name="Correlation_Id" format="Integer"  value="12783"/>
             </parameter-->
+            
         </UA>
