@@ -2,15 +2,14 @@
     <ASN dictionary="tcap/dictionary_TCAP.xml">
       <TCMessage.Choice>
         <continue1.A5.Sequence>
-          <otid.BoxedType><Bytes>[origTransID]</Bytes></otid.BoxedType>
+          <!--otid.BoxedType><Bytes>[origTransID]</Bytes></otid.BoxedType-->
+          <otid.BoxedType><Bytes.A8>890001ff</Bytes.A8></otid.BoxedType>
           <dtid.BoxedType><Bytes>[destTransID]</Bytes></dtid.BoxedType>
-          <dialoguePortion.BoxedType>
+          <!--dialoguePortion.BoxedType>
             <DialogueOC.A11.BoxedType>
               <ExternalPDU.A11.BoxedType>
                 <ExternalPDUSequenceType.U8.Sequence>
                   <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
-                  <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
                   <encoding.Choice>
                     <single_ASN1_type.C0.BoxedType>
                       <DialoguePDU.Choice>
@@ -30,11 +29,6 @@
                                 </dialogue_service_user.C1.BoxedType>
                               </Associate_source_diagnostic.C3.Choice>
                             </result_source_diagnostic.C3.BoxedType>
-                            <!--Collection>
-                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
-                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
-                              <user_information.C30>0403d079a4</user_information.C30>
-                            </Collection-->
                           </AARE_apduSequenceType.A1.Sequence>
                         </dialogueResponse.A1.BoxedType>
                       </DialoguePDU.Choice>
@@ -43,7 +37,7 @@
                 </ExternalPDUSequenceType.U8.Sequence>
               </ExternalPDU.A11.BoxedType>
             </DialogueOC.A11.BoxedType>
-          </dialoguePortion.BoxedType>
+          </dialoguePortion.BoxedType-->
         </continue1.A5.Sequence>
       </TCMessage.Choice>
     </ASN>
