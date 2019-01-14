@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-<!DOCTYPE scenario [
-	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
-	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
-  <!ENTITY TCAP_continue SYSTEM "../library/TCAP_continue.xml">  
-]>
-
-
 <!--
     Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
@@ -30,61 +30,61 @@
 	
     <sendMessageSIGTRAN name="Send DATA1" channel="channel">
     
-    <!-- AP LAYER -->
-    <ASN dictionary="cap/dictionary_CAP.xml">
-      <Component.Choice>
-        <invoke.C1.Sequence>
-           <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-           <opCode.Choice>
-              <localValue.BoxedType><Long>assistRequestInstructions:16</Long></localValue.BoxedType>
-              <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
-           </opCode.Choice>
-           <invokeparameter>
-             <AssistRequestInstructionsArg.Sequence>
-                <CorrelationID.BoxedType><Digits.BoxedType><Bytes>318b1fb76417a1b129</Bytes></Digits.BoxedType></CorrelationID.BoxedType>
-                <iPSSPCapabilities.C2.BoxedType><Bytes>00</Bytes></iPSSPCapabilities.C2.BoxedType>
-                <extensions.C3.BoxedType>
-                   <Collection>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>1502922874</local>
-                            <global><ObjectIdentifier>0.1.286</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>abort.1</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>738316075</local>
-                            <global><ObjectIdentifier>0.1.278.48.84.45.112.12.30.28.75.4</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>ignore.0</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>2269359275</local>
-                            <global><ObjectIdentifier>0.1.2100.91.27.82.42.8.80</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>abort.1</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                   </Collection>
-                </extensions.C3.BoxedType>
-             </AssistRequestInstructionsArg.Sequence>
-           </invokeparameter>
-        </invoke.C1.Sequence>
-      </Component.Choice>
-    </ASN>
+        <!-- AP LAYER -->
+        <ASN dictionary="cap/dictionary_CAP.xml">
+          <Component.Choice>
+            <invoke.C1.Sequence>
+               <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+               <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+               <opCode.Choice>
+                  <localValue.BoxedType><Long>assistRequestInstructions:16</Long></localValue.BoxedType>
+                  <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+               </opCode.Choice>
+               <invokeparameter>
+                 <AssistRequestInstructionsArg.Sequence>
+                    <CorrelationID.BoxedType><Digits.BoxedType><Bytes>318b1fb76417a1b129</Bytes></Digits.BoxedType></CorrelationID.BoxedType>
+                    <iPSSPCapabilities.C2.BoxedType><Bytes>00</Bytes></iPSSPCapabilities.C2.BoxedType>
+                    <extensions.C3.BoxedType>
+                       <Collection>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>1502922874</local>
+                                <global><ObjectIdentifier>0.1.286</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>abort.1</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>738316075</local>
+                                <global><ObjectIdentifier>0.1.278.48.84.45.112.12.30.28.75.4</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>ignore.0</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>2269359275</local>
+                                <global><ObjectIdentifier>0.1.2100.91.27.82.42.8.80</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>abort.1</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                       </Collection>
+                    </extensions.C3.BoxedType>
+                 </AssistRequestInstructionsArg.Sequence>
+               </invokeparameter>
+            </invoke.C1.Sequence>
+          </Component.Choice>
+        </ASN>
     
-        &TCAP_continue;        
+        &TCAP_continue_client;        
         
         &SCCP_client;
     

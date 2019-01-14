@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-<!DOCTYPE scenario [
-	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
-	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
-  <!ENTITY TCAP_begin SYSTEM "../library/TCAP_begin.xml">  
-]>
-
 <!--
     Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_begin_client SYSTEM "../library/TCAP_begin_client.xml">  
+]>
 
 <scenario>
                                                                 
@@ -52,457 +53,457 @@
       
         <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
     
-        <!-- AP LAYER -->
-        <ASN dictionary="cap/dictionary_CAP.xml">
-          <Component.Choice>
-            <invoke.C1.Sequence>
-               <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-               <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-               <opCode.Choice>
-                  <localValue.BoxedType><Long>initialDP:0</Long></localValue.BoxedType>
-                  <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
-               </opCode.Choice>
-               <invokeparameter>
-                 <InitialDPArg.Sequence>
-                    <serviceKey.C0.BoxedType><Integer>20</Integer></serviceKey.C0.BoxedType>
-    	              <!--calledPartyNumber.C2.BoxedType><Bytes>20ce6198116880
-              	        <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                        <field name="Nature of address" value="spare:32" type="EnumLong" lengthBit="7"/>
-                        <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1"/>
-                        <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
-                        <field name="spare" value="14" type="Integer" lengthBit="4"/>
-                        <field name="digits" value="33660650767" type="Number_BCD" length="10"/>
-                    </Bytes></calledPartyNumber.C2.BoxedType-->
-          		      <callingPartyNumber.C3.BoxedType><Bytes>84133368871020f3
-                	      <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
-                	      <field name="Nature of address" value="international number:4" type="EnumLong" lengthBit="7"/>
-                        <field name="Number Incomplete (NI)" value="complete:0" type="EnumLong" lengthBit="1"/>
-                        <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
-                        <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2"/>
-                        <field name="Screening" value="network provided:3" type="EnumLong" lengthBit="2"/>
-                        <field name="digits" value="[function:callingPartyNumber]" type="Number_BCD"/>
-                    </Bytes></callingPartyNumber.C3.BoxedType>
-                    <callingPartysCategory.C5.BoxedType><Bytes>0a
-                        <field name="category" value="ordinary calling subscriber:10" type="EnumLong" length="1"/>
-                    </Bytes></callingPartysCategory.C5.BoxedType>
-                    <!--cGEncountered.C7.Enum>
-                       <EnumType>manualCGencountered.1</EnumType>
-                    </cGEncountered.C7.Enum-->
-                    <!--iPSSPCapabilities.C8.BoxedType><Bytes>4a9eb2</Bytes></iPSSPCapabilities.C8.BoxedType-->
-                    <locationNumber.C10.BoxedType><Bytes>83131644070801
-                          <field name="Odd/even (O/E)" value="even number of address signals:1" type="EnumLong" lengthBit="1" />
-                          <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7" />
-                          <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1" />
-                          <field name="Numbering plan" value="ISDN (Telephony) numbering plan ITU-T E.164:1" type="EnumLong" lengthBit="3" />
-                          <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2" />
-                          <field name="Screening" value="network provided:3" type="EnumLong" lengthBit="2" />
-                          <field name="digits" value="614470801" type="Number_BCD" length="5" />
-                       </Bytes></locationNumber.C10.BoxedType>
-                    <!--originalCalledPartyID.C12.BoxedType><Bytes>aeca66355274f6
-                        <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
-                        <field name="Nature of address" value="spare:46" type="EnumLong" lengthBit="7"/>
-                        <field name="spare1" value="1" type="Integer" lengthBit="1"/>
-                        <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
-                        <field name="Address presentation restricted" value="address not available (national use):2" type="EnumLong" lengthBit="2"/>
-                        <field name="spare2" value="2" type="Integer" lengthBit="2"/>
-                        <field name="digits" value="665325476" type="Number_BCD" length="9"/>
-                    </Bytes></originalCalledPartyID.C12.BoxedType-->
-                    <!--extensions.C15.BoxedType>
-                       <Collection>
-                          <ExtensionField.Sequence>
-                             <type.Choice>
-                                <local>839762299</local>
-                                <global><ObjectIdentifier>0.1.278.94</ObjectIdentifier></global>
-                             </type.Choice>
-                             <criticality.nulld.Enum>
-                                <EnumType>ignore.0</EnumType>
-                             </criticality.nulld.Enum>
-                             <NullObject.C1></NullObject.C1>
-                          </ExtensionField.Sequence>
-                          <ExtensionField.Sequence>
-                             <type.Choice>
-                                <local>1966449437</local>
-                                <global><ObjectIdentifier>0.1.269.34.16.8.27.58.109</ObjectIdentifier></global>
-                             </type.Choice>
-                             <criticality.nulld.Enum>
-                                <EnumType>ignore.0</EnumType>
-                             </criticality.nulld.Enum>
-                             <NullObject.C1></NullObject.C1>
-                          </ExtensionField.Sequence>
-                          <ExtensionField.Sequence>
-                             <type.Choice>
-                                <local>2237460674</local>
-                                <global><ObjectIdentifier>0.1.2118.114.44.106.20.21.126.17</ObjectIdentifier></global>
-                             </type.Choice>
-                             <criticality.nulld.Enum>
-                                <EnumType>ignore.0</EnumType>
-                             </criticality.nulld.Enum>
-                             <NullObject.C1></NullObject.C1>
-                          </ExtensionField.Sequence>
-                       </Collection>
-                    </extensions.C15.BoxedType-->
-                    <!--highLayerCompatibility.C23.BoxedType><Bytes>1975</Bytes></highLayerCompatibility.C23.BoxedType-->
-                    <highLayerCompatibility.C23.BoxedType><Bytes>1975
-                        <field name="extension" value="extension:0" lengthBit="1" type="EnumLong" description="extension"/>
-                        <field name="CodingStandard" value="ITU-T standardized coding, as described below:0" lengthBit="2" description="Coding standard"/>
-                        <field name="Interpretation" value="First (primary or only) high layer characteristics identification (in octet 4) to be used in the call:4" lengthBit="3" description="Interpretation"/>
-                        <field name="PresentationMethod" value="High layer protocol profile (without specification of attributes):1" lengthBit="2" description="Presentation Method"/>
-                        <field name="extension" value="extension:0" lengthBit="1" description="extension"/>
-                        <field name="HighLayerCI" value="Videotelephony:96" lengthBit="7" description="High layer characteristics identification"/>
-                        <field name="extension" value="extension:0" lengthBit="1" description="extension"/>
-                        <field name="ExtendedHighLayerCI" value="Facsimile service Group 4, Classes II ad III:68" lengthBit="7" description="High layer characteristics identification"/>
-                        <field name="extension" value="no extension:1" lengthBit="1" description="extension"/>
-                        <field name="VideotelephonyHighLayerCI" value="Capability set of subsequent channel of H.221:2" lengthBit="7" description="High layer characteristics identification"/>
-    		              </Bytes></highLayerCompatibility.C23.BoxedType>
-                    <!--additionalCallingPartyNumber.C25.BoxedType><Digits.BoxedType><Bytes>06831068871020f3</Bytes></Digits.BoxedType></additionalCallingPartyNumber.C25.BoxedType-->
-          		      <additionalCallingPartyNumber.C25.BoxedType><Digits><Bytes>06831068871020f3
-                        <field name="Number qualifier" value="additional calling party number:6" type="EnumLong" length="1"/>
-                	      <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
-                	      <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7"/>
-                        <field name="Number Incomplete (NI)" value="number complete:0" type="EnumLong" lengthBit="1"/>
-                        <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
-                        <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2"/>
-                        <field name="Screening" value="user provided, not verified:0" type="EnumLong" lengthBit="2"/>
-                        <field name="digits" value="867801023" type="Number_BCD" length="10"/>
-                    </Bytes></Digits></additionalCallingPartyNumber.C25.BoxedType>
-                    <bearerCapability.C27.Choice><bearerCap.C0>8090a3
-                        <field name="ext1" value="last octet:1" type="EnumLong" lengthBit="1"/>
-                        <field name="Coding standard" value="ITU-T standardized coding:0" type="EnumLong" lengthBit="2"/>
-                        <field name="Information transfer capability" value="Speech:0" type="EnumLong" lengthBit="5"/>
-                        <field name="ext2" value="last octet:1" type="EnumLong" lengthBit="1"/>
-                        <field name="Transfer mode" value="Circuit mode:0" type="EnumLong" lengthBit="2"/>
-                        <field name="Information transfer rate" value="64 kbit/s:16" type="EnumLong" lengthBit="5"/>
-                        <field name="ext3" value="last octet:1" type="EnumLong" lengthBit="1"/>
-                        <field name="Layer identifier" value="Layer 1 identifier:1" type="EnumLong" lengthBit="2"/>
-                        <field name="User information layer 1 protocol" value="Recommendation G.711 A-law:3" type="EnumLong" lengthBit="5"/>
-                    </bearerCap.C0></bearerCapability.C27.Choice>
-                    <eventTypeBCSM.C28.Enum>
-                       <EnumType>collectedInfo.2</EnumType>
-                    </eventTypeBCSM.C28.Enum>
-                    <!--redirectingPartyID.C29.BoxedType><Bytes>72ca51891105f3
-                        <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                        <field name="Nature of address" value="reserved for national use:114" type="EnumLong" lengthBit="7"/>
-                        <field name="spare1" value="1" type="Integer" lengthBit="1"/>
-                        <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
-                        <field name="Address presentation restricted" value="address not available (national use):2" type="EnumLong" lengthBit="2"/>
-                        <field name="spare2" value="2" type="Integer" lengthBit="2"/>
-                        <field name="digits" value="159811503" type="Number_BCD" length="9"/>
-                    </Bytes></redirectingPartyID.C29.BoxedType-->
-                    <!--redirectionInformation.C30.BoxedType><Bytes>52a4
-                        <field name="Redirecting reason" value="spare:5" type="EnumLong" lengthBit="4"/>
-                        <field name="spare1" value="0" type="Integer" lengthBit="1"/>
-                        <field name="Redirecting indicator" value="call rerouted, all redirection information presentation restricted (national use):2" type="EnumLong" lengthBit="3"/>
-                        <field name="Original redirection reason" value="spare:10" type="EnumLong" lengthBit="4"/>
-                        <field name="spare2" value="0" type="Integer" lengthBit="1"/>
-                        <field name="Redirection counter" value="4" type="Integer" lengthBit="3"/>
-                    </Bytes></redirectionInformation.C30.BoxedType-->
-                    <!--cause.C17.BoxedType><Bytes>26c60e
-                        <field name="ext1" value="continue:0" type="EnumLong" lengthBit="1"/>
-                        <field name="Coding standard" value="ISO/IEC Standard (see Note):1" type="EnumLong" lengthBit="2"/>
-                        <field name="Spare" value="0" type="Integer" lengthBit="1"/>
-                        <field name="Location" value="spare:6" type="EnumLong" lengthBit="4"/>
-                        <field name="ext3" value="last octet:1" type="EnumLong" lengthBit="1"/>
-                        <field name="Cause value" value="Class 100 service or option not implemented : Only restricted digital information bearer capability is available:70" type="EnumLong" lengthBit="7"/>
-                        <field name="Diagnostics" value="0e" type="Binary" length="1"/>
-                    </Bytes></cause.C17.BoxedType-->
-                    <!--serviceInteractionIndicatorsTwo.C32.Sequence>
-                       <forwardServiceInteractionInd.C0.Sequence>
-                          <conferenceTreatmentIndicator.C1>883d</conferenceTreatmentIndicator.C1>
-                          <callDiversionTreatmentIndicator.C2>40d4c1</callDiversionTreatmentIndicator.C2>
-                          <callingPartyRestrictionIndicator.C4>b5aa09</callingPartyRestrictionIndicator.C4>
-                       </forwardServiceInteractionInd.C0.Sequence>
-                       <backwardServiceInteractionInd.C1.Sequence>
-                          <conferenceTreatmentIndicator.C1>cd41</conferenceTreatmentIndicator.C1>
-                          <callCompletionTreatmentIndicator.C2>dbaf</callCompletionTreatmentIndicator.C2>
-                       </backwardServiceInteractionInd.C1.Sequence>
-                       <bothwayThroughConnectionInd.C2.Enum>
-                          <EnumType>bothwayPathRequired.0</EnumType>
-                       </bothwayThroughConnectionInd.C2.Enum>
-                       <connectedNumberTreatmentInd.C4.Enum>
-                          <EnumType>presentCalledINNumber.2</EnumType>
-                       </connectedNumberTreatmentInd.C4.Enum>
-                       <nonCUGCall.C13></nonCUGCall.C13>
-                       <holdTreatmentIndicator.C50>2e0e</holdTreatmentIndicator.C50>
-                       <cwTreatmentIndicator.C51>e22794</cwTreatmentIndicator.C51>
-                       <ectTreatmentIndicator.C52>91b8</ectTreatmentIndicator.C52>
-                    </serviceInteractionIndicatorsTwo.C32.Sequence-->
-                    <!--carrier.C37.BoxedType><Bytes>85ebc3</Bytes></carrier.C37.BoxedType-->
-                    <!--cug_Index.C45.BoxedType><Integer>2</Integer></cug_Index.C45.BoxedType-->
-                    <!--cug_Interlock.C46.BoxedType><Bytes>a99fdb23</Bytes></cug_Interlock.C46.BoxedType-->
-                    <!--cug_OutgoingAccess.C47></cug_OutgoingAccess.C47-->
-                    <!--iMSI.C50.BoxedType><TBCD_STRING.BoxedType><Bytes>02289699999999f9
-                             <field name="digits" value="20826" type="Number_BCD" lengthBit="36" />
-                          </Bytes></TBCD_STRING.BoxedType></iMSI.C50.BoxedType-->
-                    <iMSI.C50.BoxedType><TBCD_STRING.BoxedType><Bytes>02289699999999f9
-                         <field name="digits" value="208269999999999" type="Number_BCD" length="8"/>
-                    </Bytes></TBCD_STRING.BoxedType></iMSI.C50.BoxedType>
-                    <!--subscriberState.C51.Choice>
-                       <assumedIdle.C0></assumedIdle.C0>
-                       <camelBusy.C1></camelBusy.C1>
-                       <netDetNotReachable.Enum>
-                          <EnumType>imsiDetached.1</EnumType>
-                       </netDetNotReachable.Enum>
-                       <notProvidedFromVLR.C2></notProvidedFromVLR.C2>
-                    </subscriberState.C51.Choice-->
-                    <locationInformation.C52.Sequence>
-                       <!--ageOfLocationInformation.BoxedType><Integer>[1-32766] minuts:1</Integer></ageOfLocationInformation.BoxedType-->
-                       <!--geographicalInformation.C0.BoxedType><Bytes>e34cda3c15ded961
-                             <field name="TypeOfShape" value="Reserved for future use:14" type="EnumLong" lengthBit="4" />
-                             <field name="spare" value="3" type="Integer" lengthBit="4" />
-                             <field name="DegreesOfLatitude" value="5036604" type="Integer" length="3" />
-                             <field name="DegreesOfLongitude" value="1433305" type="Integer" length="3" />
-                             <field name="UncertaintyCode" value="97" type="Integer" length="1" />
-                          </Bytes></geographicalInformation.C0.BoxedType-->
-                       <vlr_number.C1.BoxedType><AddressString.BoxedType><Bytes>913377012933f1
-                                <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                                <field name="nature of address" value="International Number:1" type="EnumLong" lengthBit="3" />
-                                <field name="numbering plan" value="ISDN/Telephony Numbering (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
-                                <field name="digits" value="[function:vlr_number]" type="Number_BCD"/>
-                             </Bytes></AddressString.BoxedType></vlr_number.C1.BoxedType>
-                       <!--locationNumber.C2.BoxedType><Bytes>07b257956138f8
-                             <field name="Odd/even" value="even number of address signals:0" type="EnumLong" lengthBit="1" />
-                             <field name="Nature of address" value="network routing number in network-specific number format (national use):7" type="EnumLong" lengthBit="7" />
-                             <field name="Internal Network Number" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1" />
-                             <field name="Numbering plan" value="Data numbering plan (ITU-T Recommendation X.121):3" type="EnumLong" lengthBit="3" />
-                             <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2" />
-                             <field name="Screening" value="reserved:2" type="EnumLong" lengthBit="2" />
-                             <field name="digits" value="755916838" type="Number_BCD" lengthBit="36" />
-                          </Bytes></locationNumber.C2.BoxedType-->
-                       <!--cellGlobalIdOrServiceAreaIdOrLAI.C3.Choice>
-                          <cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType><Bytes>91f3683756068e
-                                <field name="MMC" value="193,86" type="NumberMMC" length="3" />
-                                <field name="LAC" value="14166" type="Integer" length="2" />
-                                <field name="CI_SAC" value="1678" type="Integer" length="2" />
-                             </Bytes></cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType>
-                          <laiFixedLength.C1.BoxedType><Bytes>61278178b5
-                                <field name="MMC" value="167,182" type="NumberMMC" length="3" />
-                                <field name="LAC" value="30901" type="Integer" length="2" />
-                             </Bytes></laiFixedLength.C1.BoxedType>
-                       </cellGlobalIdOrServiceAreaIdOrLAI.C3.Choice-->
-                       <!--extensionContainer.C4.Sequence>
-                          <privateExtensionList.C0.BoxedType>
-                             <Collection>
-                                <PrivateExtension.Sequence>
-                                   <extId><ObjectIdentifier>0.1.261.37.41.10.113.73.25.22.44</ObjectIdentifier></extId>
-                                   <extType>1cd01e577cac</extType>
-                                </PrivateExtension.Sequence>
-                                <PrivateExtension.Sequence>
-                                   <extId><ObjectIdentifier>0.1.276</ObjectIdentifier></extId>
-                                   <extType>cbc5ea958c</extType>
-                                </PrivateExtension.Sequence>
-                                <PrivateExtension.Sequence>
-                                   <extId><ObjectIdentifier>0.1.272</ObjectIdentifier></extId>
-                                   <extType>2e930303</extType>
-                                </PrivateExtension.Sequence>
-                             </Collection>
-                          </privateExtensionList.C0.BoxedType>
-                          <pcs_Extensions.C1.Sequence>
-                             
-                          </pcs_Extensions.C1.Sequence>
-                       </extensionContainer.C4.Sequence-->
-                       <!--selectedLSA_Id.C5.BoxedType><Bytes>6a8ffd
-                             <field name="LSA type" value="PLMN significant number:0" type="EnumLong" lengthBit="1" />
-                             <field name="Identifier" value="6983677" type="Integer" lengthBit="23" />
-                          </Bytes></selectedLSA_Id.C5.BoxedType-->
-                       <!--msc_Number.C6.BoxedType><AddressString.BoxedType><Bytes>510156642503
-                                <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
-                                <field name="nature of address" value="reserved:5" type="EnumLong" lengthBit="3" />
-                                <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
-                                <field name="digits" value="1065465230" type="Number_BCD" length="5" />
-                             </Bytes></AddressString.BoxedType></msc_Number.C6.BoxedType-->
-                       <!--geodeticInformation.C7.BoxedType><Bytes>ab030054e8ec1d148e41
-                             <field name="spare" value="10" type="Integer" lengthBit="4" />
-                             <field name="LPRI" value="location not available (Note):2" type="EnumLong" lengthBit="2" />
-                             <field name="screnning" value="network provided:3" type="EnumLong" lengthBit="2" />
-                             <field name="ext" value="0" type="Integer" lengthBit="1" />
-                             <field name="TypeOfShape" value="ellipse on the ellipsoid:3" type="EnumLong" lengthBit="7" />
-                             <field name="DegreesOfLatitude" value="21736" type="Integer" length="3" />
-                             <field name="DegreesOfLongitude" value="15473940" type="Integer" length="3" />
-                             <field name="UncertaintyCode" value="142" type="Integer" length="1" />
-                             <field name="Confidence" value="65" type="Integer" length="1" />
-                          </Bytes></geodeticInformation.C7.BoxedType-->
-                       <!--currentLocationRetrieved.C8></currentLocationRetrieved.C8-->
-                       <!--sai_Present.C9></sai_Present.C9-->
-                       <!--locationInformationEPS.C10.Sequence>
-                          <e_utranCellGlobalIdentity.C0.BoxedType><Bytes>f920</Bytes></e_utranCellGlobalIdentity.C0.BoxedType>
-                          <trackingAreaIdentity.C1.BoxedType><Bytes>f0d3f6</Bytes></trackingAreaIdentity.C1.BoxedType>
-                          <extensionContainer.C2.Sequence>
-                             <privateExtensionList.C0.BoxedType>
-                                <Collection>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.249.92.122</ObjectIdentifier></extId>
-                                      <extType>fa</extType>
-                                   </PrivateExtension.Sequence>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.2122.36.75.55.54</ObjectIdentifier></extId>
-                                      <extType>8a7c</extType>
-                                   </PrivateExtension.Sequence>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.2114.56.45.100.101.93</ObjectIdentifier></extId>
-                                      <extType>e0f48fa6e93f8e</extType>
-                                   </PrivateExtension.Sequence>
-                                </Collection>
-                             </privateExtensionList.C0.BoxedType>
-                             <pcs_Extensions.C1.Sequence>
-                                
-                             </pcs_Extensions.C1.Sequence>
-                          </extensionContainer.C2.Sequence>
-                          <geographicalInformation.C3.BoxedType><Bytes>bef42a7dc2b66779
-                                <field name="TypeOfShape" value="Reserved for future use:11" type="EnumLong" lengthBit="4" />
-                                <field name="spare" value="14" type="Integer" lengthBit="4" />
-                                <field name="DegreesOfLatitude" value="16001661" type="Integer" length="3" />
-                                <field name="DegreesOfLongitude" value="12760679" type="Integer" length="3" />
-                                <field name="UncertaintyCode" value="121" type="Integer" length="1" />
-                             </Bytes></geographicalInformation.C3.BoxedType>
-                          <geodeticInformation.C4.BoxedType><Bytes>6d0c579456c8f9afc879
-                                <field name="spare" value="6" type="Integer" lengthBit="4" />
-                                <field name="LPRI" value="spare:3" type="EnumLong" lengthBit="2" />
-                                <field name="screnning" value="user provided, verified and passed:1" type="EnumLong" lengthBit="2" />
-                                <field name="ext" value="0" type="Integer" lengthBit="1" />
-                                <field name="TypeOfShape" value="spare:12" type="EnumLong" lengthBit="7" />
-                                <field name="DegreesOfLatitude" value="5739606" type="Integer" length="3" />
-                                <field name="DegreesOfLongitude" value="13171119" type="Integer" length="3" />
-                                <field name="UncertaintyCode" value="200" type="Integer" length="1" />
-                                <field name="Confidence" value="121" type="Integer" length="1" />
-                             </Bytes></geodeticInformation.C4.BoxedType>
-                          <currentLocationRetrieved.C5></currentLocationRetrieved.C5>
-                          <ageOfLocationInformation.C6.BoxedType><Integer>2 minuts:2</Integer></ageOfLocationInformation.C6.BoxedType>
-                          <mme_Name.C7.BoxedType><Bytes>0fa5e03f8b7da445ae</Bytes></mme_Name.C7.BoxedType>
-                       </locationInformationEPS.C10.Sequence-->
-                       <!--userCSGInformation.C11.Sequence>
-                          <csg_Id.C0.BoxedType><BitString><BitString value="4ef6a1110f19" trailing="0"/></BitString></csg_Id.C0.BoxedType>
-                          <extensionContainer.C1.Sequence>
-                             <privateExtensionList.C0.BoxedType>
-                                <Collection>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.253</ObjectIdentifier></extId>
-                                      <extType>4b2f18</extType>
-                                   </PrivateExtension.Sequence>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.243.26.67.115.104.103.41.78.44</ObjectIdentifier></extId>
-                                      <extType>95dd234a71142d03</extType>
-                                   </PrivateExtension.Sequence>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.2101.77.60.68</ObjectIdentifier></extId>
-                                      <extType>4049e704c4eeb7744b</extType>
-                                   </PrivateExtension.Sequence>
-                                </Collection>
-                             </privateExtensionList.C0.BoxedType>
-                             <pcs_Extensions.C1.Sequence>
-                                
-                             </pcs_Extensions.C1.Sequence>
-                          </extensionContainer.C1.Sequence>
-                          <accessMode.C2>d601a094bf37aeed6a</accessMode.C2>
-                          <cmi.C3>ff773b6253</cmi.C3>
-                       </userCSGInformation.C11.Sequence-->
-                    </locationInformation.C52.Sequence>
-                    <!--ext_basicServiceCode.C53.Choice>
-                       <ext_BearerService.C2.BoxedType><Bytes>c503</Bytes></ext_BearerService.C2.BoxedType>
-                       <ext_Teleservice.C3.BoxedType><Bytes>9731c2</Bytes></ext_Teleservice.C3.BoxedType>
-                    </ext_basicServiceCode.C53.Choice-->
-                    <!--callReferenceNumber.C54.BoxedType><Bytes>e741</Bytes></callReferenceNumber.C54.BoxedType-->
-                    <mscAddress.C55.BoxedType><AddressString.BoxedType><Bytes>913307002733f0
-                             <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                             <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
-                             <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
-                             <field name="digits" value="33700072330" type="Number_BCD" length="6" />
-                          </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
-                    <calledPartyBCDNumber.C56.BoxedType><Bytes>81338207670962f5
-                             <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                             <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
-                             <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
-                             <field name="digits" value="[function:calledPartyBCDNumber]" type="Number_BCD"/>
-                         </Bytes></calledPartyBCDNumber.C56.BoxedType>
-                    <timeAndTimezone.C57.BoxedType><Bytes>0281013261641500
-                             <field name="date" value="20181023" type="Number_BCD" length="4" />
-                             <field name="time" value="164651" type="Number_BCD" length="3" />
-                             <field name="timezone" value="00" type="Number_BCD" length="1" />
-                         </Bytes></timeAndTimezone.C57.BoxedType>
-                    <!--callForwardingSS_Pending.C58></callForwardingSS_Pending.C58-->
-                    <!--initialDPArgExtension.C59.Sequence>
-                       <gmscAddress.C0.BoxedType><AddressString.BoxedType><Bytes>b574916337f0
-                                <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
-                                <field name="nature of address" value="network specific number:3" type="EnumLong" lengthBit="3" />
-                                <field name="numbering plan" value="spare:5" type="EnumLong" lengthBit="4" />
-                                <field name="digits" value="471936730" type="Number_BCD" lengthBit="36" />
-                             </Bytes></AddressString.BoxedType></gmscAddress.C0.BoxedType>
-                       <forwardingDestinationNumber.C1.BoxedType><Bytes>fcc8c2e1ff</Bytes></forwardingDestinationNumber.C1.BoxedType>
-                       <ms_Classmark2.C2.BoxedType><Bytes>cd4118
-                             <field name="spare1" value="1" type="Integer" lengthBit="1" />
-                             <field name="Revision level" value="Used by mobile stations supporting R99 or later versions of the protocol:2" type="EnumLong" lengthBit="2" />
-                             <field name="ES IND" value="ES IND option is not implemented in the MS:0" type="EnumLong" lengthBit="1" />
-                             <field name="A5/1 algorithm supported " value="not available (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
-                             <field name="RF Power Capability" value="reserved:5" type="EnumLong" lengthBit="3" />
-                             <field name="spare2" value="0" type="Integer" lengthBit="1" />
-                             <field name="PS capability" value="present (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
-                             <field name="SS Screening Indicator" value="default value of phase 1:0" type="EnumLong" lengthBit="2" />
-                             <field name="SM capability" value="does not support:0" type="EnumLong" lengthBit="1" />
-                             <field name="VBS notification reception" value="no notification wanted:0" type="EnumLong" lengthBit="1" />
-                             <field name="VGCS notification reception" value="no notification wanted:0" type="EnumLong" lengthBit="1" />
-                             <field name="FC Frequency Capability" value="support the E-GSM or R-GSM band (GSM900 only):1" type="EnumLong" lengthBit="1" />
-                             <field name="CM3" value="does not support:0" type="EnumLong" lengthBit="1" />
-                             <field name="spare3" value="0" type="Integer" lengthBit="1" />
-                             <field name="LCS VA capability" value="request notification not supported:0" type="EnumLong" lengthBit="1" />
-                             <field name="UCS2 treatment" value="no preference for the default alphabet :1" type="EnumLong" lengthBit="1" />
-                             <field name="SoLSA" value="supports (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
-                             <field name="CM Service Prompt (CMSP)" value="not supported:0" type="EnumLong" lengthBit="1" />
-                             <field name="A5/3 algorithm supported" value="not available:0" type="EnumLong" lengthBit="1" />
-                             <field name="A5/2 algorithm supported" value="not available:0" type="EnumLong" lengthBit="1" />
-                          </Bytes></ms_Classmark2.C2.BoxedType>
-                       <iMEI.C3.BoxedType><TBCD_STRING.BoxedType><Bytes>07426869
-                                <field name="digits" value="70248696" type="Number_BCD" length="4" />
-                             </Bytes></TBCD_STRING.BoxedType></iMEI.C3.BoxedType>
-                       <supportedCamelPhases.C4.BoxedType><BitString><BitString value="96" trailing="0"/></BitString></supportedCamelPhases.C4.BoxedType>
-                       <offeredCamel4Functionalities.C5.BoxedType><BitString><BitString value="5f5788d6e2a5dbbff571d817e48e9cb22c5b48b9" trailing="0"/></BitString></offeredCamel4Functionalities.C5.BoxedType>
-                       <bearerCapability2.C6.Choice><bearerCap.C0>c68348f65eeef7</bearerCap.C0></bearerCapability2.C6.Choice>
-                       <ext_basicServiceCode2.C7.Choice>
-                          <ext_BearerService.C2.BoxedType><Bytes>61ea</Bytes></ext_BearerService.C2.BoxedType>
-                          <ext_Teleservice.C3.BoxedType><Bytes>8a553a679825956e5db6</Bytes></ext_Teleservice.C3.BoxedType>
-                       </ext_basicServiceCode2.C7.Choice>
-                       <highLayerCompatibility2.C8.BoxedType><Bytes>e4ff6d3aa58888</Bytes></highLayerCompatibility2.C8.BoxedType>
-                       <lowLayerCompatibility.C9.BoxedType><Bytes>56696fbe7ea135</Bytes></lowLayerCompatibility.C9.BoxedType>
-                       <lowLayerCompatibility2.C10.BoxedType><Bytes>468c7bd9</Bytes></lowLayerCompatibility2.C10.BoxedType>
-                       <enhancedDialledServicesAllowed.C11></enhancedDialledServicesAllowed.C11>
-                       <uu_Data.C12.Sequence>
-                          <uuIndicator.C0.BoxedType><Bytes>a1b20cd7f09bf69515</Bytes></uuIndicator.C0.BoxedType>
-                          <uui.C1.BoxedType><Bytes>d7482121662697e9</Bytes></uui.C1.BoxedType>
-                          <uusCFInteraction.C2></uusCFInteraction.C2>
-                          <extensionContainer.C3.Sequence>
-                             <privateExtensionList.C0.BoxedType>
-                                <Collection>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.297.12.58.62.36.54.90.82.94.5</ObjectIdentifier></extId>
-                                      <extType>8596e0276a733e5cc1c9</extType>
-                                   </PrivateExtension.Sequence>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.278.63.72.10.115.36.112</ObjectIdentifier></extId>
-                                      <extType>fac0e42b</extType>
-                                   </PrivateExtension.Sequence>
-                                   <PrivateExtension.Sequence>
-                                      <extId><ObjectIdentifier>0.1.261</ObjectIdentifier></extId>
-                                      <extType>f480e23f5cae</extType>
-                                   </PrivateExtension.Sequence>
-                                </Collection>
-                             </privateExtensionList.C0.BoxedType>
-                             <pcs_Extensions.C1.Sequence>
-                                
-                             </pcs_Extensions.C1.Sequence>
-                          </extensionContainer.C3.Sequence>
-                       </uu_Data.C12.Sequence>
-                       <collectInformationAllowed.C13></collectInformationAllowed.C13>
-                       <releaseCallArgExtensionAllowed.C14></releaseCallArgExtensionAllowed.C14>
-                    </initialDPArgExtension.C59.Sequence-->
-                 </InitialDPArg.Sequence>
-               </invokeparameter>
-            </invoke.C1.Sequence>
-          </Component.Choice>
-        </ASN>
+            <!-- AP LAYER -->
+            <ASN dictionary="cap/dictionary_CAP.xml">
+              <Component.Choice>
+                <invoke.C1.Sequence>
+                   <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+                   <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+                   <opCode.Choice>
+                      <localValue.BoxedType><Long>initialDP:0</Long></localValue.BoxedType>
+                      <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+                   </opCode.Choice>
+                   <invokeparameter>
+                     <InitialDPArg.Sequence>
+                        <serviceKey.C0.BoxedType><Integer>20</Integer></serviceKey.C0.BoxedType>
+        	              <!--calledPartyNumber.C2.BoxedType><Bytes>20ce6198116880
+                  	        <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                            <field name="Nature of address" value="spare:32" type="EnumLong" lengthBit="7"/>
+                            <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1"/>
+                            <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
+                            <field name="spare" value="14" type="Integer" lengthBit="4"/>
+                            <field name="digits" value="33660650767" type="Number_BCD" length="10"/>
+                        </Bytes></calledPartyNumber.C2.BoxedType-->
+              		      <callingPartyNumber.C3.BoxedType><Bytes>84133368871020f3
+                    	      <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
+                    	      <field name="Nature of address" value="international number:4" type="EnumLong" lengthBit="7"/>
+                            <field name="Number Incomplete (NI)" value="complete:0" type="EnumLong" lengthBit="1"/>
+                            <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
+                            <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2"/>
+                            <field name="Screening" value="network provided:3" type="EnumLong" lengthBit="2"/>
+                            <field name="digits" value="[function:callingPartyNumber]" type="Number_BCD"/>
+                        </Bytes></callingPartyNumber.C3.BoxedType>
+                        <callingPartysCategory.C5.BoxedType><Bytes>0a
+                            <field name="category" value="ordinary calling subscriber:10" type="EnumLong" length="1"/>
+                        </Bytes></callingPartysCategory.C5.BoxedType>
+                        <!--cGEncountered.C7.Enum>
+                           <EnumType>manualCGencountered.1</EnumType>
+                        </cGEncountered.C7.Enum-->
+                        <!--iPSSPCapabilities.C8.BoxedType><Bytes>4a9eb2</Bytes></iPSSPCapabilities.C8.BoxedType-->
+                        <locationNumber.C10.BoxedType><Bytes>83131644070801
+                              <field name="Odd/even (O/E)" value="even number of address signals:1" type="EnumLong" lengthBit="1" />
+                              <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7" />
+                              <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1" />
+                              <field name="Numbering plan" value="ISDN (Telephony) numbering plan ITU-T E.164:1" type="EnumLong" lengthBit="3" />
+                              <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2" />
+                              <field name="Screening" value="network provided:3" type="EnumLong" lengthBit="2" />
+                              <field name="digits" value="614470801" type="Number_BCD" length="5" />
+                           </Bytes></locationNumber.C10.BoxedType>
+                        <!--originalCalledPartyID.C12.BoxedType><Bytes>aeca66355274f6
+                            <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
+                            <field name="Nature of address" value="spare:46" type="EnumLong" lengthBit="7"/>
+                            <field name="spare1" value="1" type="Integer" lengthBit="1"/>
+                            <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
+                            <field name="Address presentation restricted" value="address not available (national use):2" type="EnumLong" lengthBit="2"/>
+                            <field name="spare2" value="2" type="Integer" lengthBit="2"/>
+                            <field name="digits" value="665325476" type="Number_BCD" length="9"/>
+                        </Bytes></originalCalledPartyID.C12.BoxedType-->
+                        <!--extensions.C15.BoxedType>
+                           <Collection>
+                              <ExtensionField.Sequence>
+                                 <type.Choice>
+                                    <local>839762299</local>
+                                    <global><ObjectIdentifier>0.1.278.94</ObjectIdentifier></global>
+                                 </type.Choice>
+                                 <criticality.nulld.Enum>
+                                    <EnumType>ignore.0</EnumType>
+                                 </criticality.nulld.Enum>
+                                 <NullObject.C1></NullObject.C1>
+                              </ExtensionField.Sequence>
+                              <ExtensionField.Sequence>
+                                 <type.Choice>
+                                    <local>1966449437</local>
+                                    <global><ObjectIdentifier>0.1.269.34.16.8.27.58.109</ObjectIdentifier></global>
+                                 </type.Choice>
+                                 <criticality.nulld.Enum>
+                                    <EnumType>ignore.0</EnumType>
+                                 </criticality.nulld.Enum>
+                                 <NullObject.C1></NullObject.C1>
+                              </ExtensionField.Sequence>
+                              <ExtensionField.Sequence>
+                                 <type.Choice>
+                                    <local>2237460674</local>
+                                    <global><ObjectIdentifier>0.1.2118.114.44.106.20.21.126.17</ObjectIdentifier></global>
+                                 </type.Choice>
+                                 <criticality.nulld.Enum>
+                                    <EnumType>ignore.0</EnumType>
+                                 </criticality.nulld.Enum>
+                                 <NullObject.C1></NullObject.C1>
+                              </ExtensionField.Sequence>
+                           </Collection>
+                        </extensions.C15.BoxedType-->
+                        <!--highLayerCompatibility.C23.BoxedType><Bytes>1975</Bytes></highLayerCompatibility.C23.BoxedType-->
+                        <highLayerCompatibility.C23.BoxedType><Bytes>1975
+                            <field name="extension" value="extension:0" lengthBit="1" type="EnumLong" description="extension"/>
+                            <field name="CodingStandard" value="ITU-T standardized coding, as described below:0" lengthBit="2" description="Coding standard"/>
+                            <field name="Interpretation" value="First (primary or only) high layer characteristics identification (in octet 4) to be used in the call:4" lengthBit="3" description="Interpretation"/>
+                            <field name="PresentationMethod" value="High layer protocol profile (without specification of attributes):1" lengthBit="2" description="Presentation Method"/>
+                            <field name="extension" value="extension:0" lengthBit="1" description="extension"/>
+                            <field name="HighLayerCI" value="Videotelephony:96" lengthBit="7" description="High layer characteristics identification"/>
+                            <field name="extension" value="extension:0" lengthBit="1" description="extension"/>
+                            <field name="ExtendedHighLayerCI" value="Facsimile service Group 4, Classes II ad III:68" lengthBit="7" description="High layer characteristics identification"/>
+                            <field name="extension" value="no extension:1" lengthBit="1" description="extension"/>
+                            <field name="VideotelephonyHighLayerCI" value="Capability set of subsequent channel of H.221:2" lengthBit="7" description="High layer characteristics identification"/>
+        		              </Bytes></highLayerCompatibility.C23.BoxedType>
+                        <!--additionalCallingPartyNumber.C25.BoxedType><Digits.BoxedType><Bytes>06831068871020f3</Bytes></Digits.BoxedType></additionalCallingPartyNumber.C25.BoxedType-->
+              		      <additionalCallingPartyNumber.C25.BoxedType><Digits><Bytes>06831068871020f3
+                            <field name="Number qualifier" value="additional calling party number:6" type="EnumLong" length="1"/>
+                    	      <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
+                    	      <field name="Nature of address" value="national (significant) number:3" type="EnumLong" lengthBit="7"/>
+                            <field name="Number Incomplete (NI)" value="number complete:0" type="EnumLong" lengthBit="1"/>
+                            <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
+                            <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2"/>
+                            <field name="Screening" value="user provided, not verified:0" type="EnumLong" lengthBit="2"/>
+                            <field name="digits" value="867801023" type="Number_BCD" length="10"/>
+                        </Bytes></Digits></additionalCallingPartyNumber.C25.BoxedType>
+                        <bearerCapability.C27.Choice><bearerCap.C0>8090a3
+                            <field name="ext1" value="last octet:1" type="EnumLong" lengthBit="1"/>
+                            <field name="Coding standard" value="ITU-T standardized coding:0" type="EnumLong" lengthBit="2"/>
+                            <field name="Information transfer capability" value="Speech:0" type="EnumLong" lengthBit="5"/>
+                            <field name="ext2" value="last octet:1" type="EnumLong" lengthBit="1"/>
+                            <field name="Transfer mode" value="Circuit mode:0" type="EnumLong" lengthBit="2"/>
+                            <field name="Information transfer rate" value="64 kbit/s:16" type="EnumLong" lengthBit="5"/>
+                            <field name="ext3" value="last octet:1" type="EnumLong" lengthBit="1"/>
+                            <field name="Layer identifier" value="Layer 1 identifier:1" type="EnumLong" lengthBit="2"/>
+                            <field name="User information layer 1 protocol" value="Recommendation G.711 A-law:3" type="EnumLong" lengthBit="5"/>
+                        </bearerCap.C0></bearerCapability.C27.Choice>
+                        <eventTypeBCSM.C28.Enum>
+                           <EnumType>collectedInfo.2</EnumType>
+                        </eventTypeBCSM.C28.Enum>
+                        <!--redirectingPartyID.C29.BoxedType><Bytes>72ca51891105f3
+                            <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                            <field name="Nature of address" value="reserved for national use:114" type="EnumLong" lengthBit="7"/>
+                            <field name="spare1" value="1" type="Integer" lengthBit="1"/>
+                            <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
+                            <field name="Address presentation restricted" value="address not available (national use):2" type="EnumLong" lengthBit="2"/>
+                            <field name="spare2" value="2" type="Integer" lengthBit="2"/>
+                            <field name="digits" value="159811503" type="Number_BCD" length="9"/>
+                        </Bytes></redirectingPartyID.C29.BoxedType-->
+                        <!--redirectionInformation.C30.BoxedType><Bytes>52a4
+                            <field name="Redirecting reason" value="spare:5" type="EnumLong" lengthBit="4"/>
+                            <field name="spare1" value="0" type="Integer" lengthBit="1"/>
+                            <field name="Redirecting indicator" value="call rerouted, all redirection information presentation restricted (national use):2" type="EnumLong" lengthBit="3"/>
+                            <field name="Original redirection reason" value="spare:10" type="EnumLong" lengthBit="4"/>
+                            <field name="spare2" value="0" type="Integer" lengthBit="1"/>
+                            <field name="Redirection counter" value="4" type="Integer" lengthBit="3"/>
+                        </Bytes></redirectionInformation.C30.BoxedType-->
+                        <!--cause.C17.BoxedType><Bytes>26c60e
+                            <field name="ext1" value="continue:0" type="EnumLong" lengthBit="1"/>
+                            <field name="Coding standard" value="ISO/IEC Standard (see Note):1" type="EnumLong" lengthBit="2"/>
+                            <field name="Spare" value="0" type="Integer" lengthBit="1"/>
+                            <field name="Location" value="spare:6" type="EnumLong" lengthBit="4"/>
+                            <field name="ext3" value="last octet:1" type="EnumLong" lengthBit="1"/>
+                            <field name="Cause value" value="Class 100 service or option not implemented : Only restricted digital information bearer capability is available:70" type="EnumLong" lengthBit="7"/>
+                            <field name="Diagnostics" value="0e" type="Binary" length="1"/>
+                        </Bytes></cause.C17.BoxedType-->
+                        <!--serviceInteractionIndicatorsTwo.C32.Sequence>
+                           <forwardServiceInteractionInd.C0.Sequence>
+                              <conferenceTreatmentIndicator.C1>883d</conferenceTreatmentIndicator.C1>
+                              <callDiversionTreatmentIndicator.C2>40d4c1</callDiversionTreatmentIndicator.C2>
+                              <callingPartyRestrictionIndicator.C4>b5aa09</callingPartyRestrictionIndicator.C4>
+                           </forwardServiceInteractionInd.C0.Sequence>
+                           <backwardServiceInteractionInd.C1.Sequence>
+                              <conferenceTreatmentIndicator.C1>cd41</conferenceTreatmentIndicator.C1>
+                              <callCompletionTreatmentIndicator.C2>dbaf</callCompletionTreatmentIndicator.C2>
+                           </backwardServiceInteractionInd.C1.Sequence>
+                           <bothwayThroughConnectionInd.C2.Enum>
+                              <EnumType>bothwayPathRequired.0</EnumType>
+                           </bothwayThroughConnectionInd.C2.Enum>
+                           <connectedNumberTreatmentInd.C4.Enum>
+                              <EnumType>presentCalledINNumber.2</EnumType>
+                           </connectedNumberTreatmentInd.C4.Enum>
+                           <nonCUGCall.C13></nonCUGCall.C13>
+                           <holdTreatmentIndicator.C50>2e0e</holdTreatmentIndicator.C50>
+                           <cwTreatmentIndicator.C51>e22794</cwTreatmentIndicator.C51>
+                           <ectTreatmentIndicator.C52>91b8</ectTreatmentIndicator.C52>
+                        </serviceInteractionIndicatorsTwo.C32.Sequence-->
+                        <!--carrier.C37.BoxedType><Bytes>85ebc3</Bytes></carrier.C37.BoxedType-->
+                        <!--cug_Index.C45.BoxedType><Integer>2</Integer></cug_Index.C45.BoxedType-->
+                        <!--cug_Interlock.C46.BoxedType><Bytes>a99fdb23</Bytes></cug_Interlock.C46.BoxedType-->
+                        <!--cug_OutgoingAccess.C47></cug_OutgoingAccess.C47-->
+                        <!--iMSI.C50.BoxedType><TBCD_STRING.BoxedType><Bytes>02289699999999f9
+                                 <field name="digits" value="20826" type="Number_BCD" lengthBit="36" />
+                              </Bytes></TBCD_STRING.BoxedType></iMSI.C50.BoxedType-->
+                        <iMSI.C50.BoxedType><TBCD_STRING.BoxedType><Bytes>02289699999999f9
+                             <field name="digits" value="208269999999999" type="Number_BCD" length="8"/>
+                        </Bytes></TBCD_STRING.BoxedType></iMSI.C50.BoxedType>
+                        <!--subscriberState.C51.Choice>
+                           <assumedIdle.C0></assumedIdle.C0>
+                           <camelBusy.C1></camelBusy.C1>
+                           <netDetNotReachable.Enum>
+                              <EnumType>imsiDetached.1</EnumType>
+                           </netDetNotReachable.Enum>
+                           <notProvidedFromVLR.C2></notProvidedFromVLR.C2>
+                        </subscriberState.C51.Choice-->
+                        <locationInformation.C52.Sequence>
+                           <!--ageOfLocationInformation.BoxedType><Integer>[1-32766] minuts:1</Integer></ageOfLocationInformation.BoxedType-->
+                           <!--geographicalInformation.C0.BoxedType><Bytes>e34cda3c15ded961
+                                 <field name="TypeOfShape" value="Reserved for future use:14" type="EnumLong" lengthBit="4" />
+                                 <field name="spare" value="3" type="Integer" lengthBit="4" />
+                                 <field name="DegreesOfLatitude" value="5036604" type="Integer" length="3" />
+                                 <field name="DegreesOfLongitude" value="1433305" type="Integer" length="3" />
+                                 <field name="UncertaintyCode" value="97" type="Integer" length="1" />
+                              </Bytes></geographicalInformation.C0.BoxedType-->
+                           <vlr_number.C1.BoxedType><AddressString.BoxedType><Bytes>913377012933f1
+                                    <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                                    <field name="nature of address" value="International Number:1" type="EnumLong" lengthBit="3" />
+                                    <field name="numbering plan" value="ISDN/Telephony Numbering (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                                    <field name="digits" value="[function:vlr_number]" type="Number_BCD"/>
+                                 </Bytes></AddressString.BoxedType></vlr_number.C1.BoxedType>
+                           <!--locationNumber.C2.BoxedType><Bytes>07b257956138f8
+                                 <field name="Odd/even" value="even number of address signals:0" type="EnumLong" lengthBit="1" />
+                                 <field name="Nature of address" value="network routing number in network-specific number format (national use):7" type="EnumLong" lengthBit="7" />
+                                 <field name="Internal Network Number" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1" />
+                                 <field name="Numbering plan" value="Data numbering plan (ITU-T Recommendation X.121):3" type="EnumLong" lengthBit="3" />
+                                 <field name="Address presentation restricted" value="presentation allowed:0" type="EnumLong" lengthBit="2" />
+                                 <field name="Screening" value="reserved:2" type="EnumLong" lengthBit="2" />
+                                 <field name="digits" value="755916838" type="Number_BCD" lengthBit="36" />
+                              </Bytes></locationNumber.C2.BoxedType-->
+                           <!--cellGlobalIdOrServiceAreaIdOrLAI.C3.Choice>
+                              <cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType><Bytes>91f3683756068e
+                                    <field name="MMC" value="193,86" type="NumberMMC" length="3" />
+                                    <field name="LAC" value="14166" type="Integer" length="2" />
+                                    <field name="CI_SAC" value="1678" type="Integer" length="2" />
+                                 </Bytes></cellGlobalIdOrServiceAreaIdFixedLength.C0.BoxedType>
+                              <laiFixedLength.C1.BoxedType><Bytes>61278178b5
+                                    <field name="MMC" value="167,182" type="NumberMMC" length="3" />
+                                    <field name="LAC" value="30901" type="Integer" length="2" />
+                                 </Bytes></laiFixedLength.C1.BoxedType>
+                           </cellGlobalIdOrServiceAreaIdOrLAI.C3.Choice-->
+                           <!--extensionContainer.C4.Sequence>
+                              <privateExtensionList.C0.BoxedType>
+                                 <Collection>
+                                    <PrivateExtension.Sequence>
+                                       <extId><ObjectIdentifier>0.1.261.37.41.10.113.73.25.22.44</ObjectIdentifier></extId>
+                                       <extType>1cd01e577cac</extType>
+                                    </PrivateExtension.Sequence>
+                                    <PrivateExtension.Sequence>
+                                       <extId><ObjectIdentifier>0.1.276</ObjectIdentifier></extId>
+                                       <extType>cbc5ea958c</extType>
+                                    </PrivateExtension.Sequence>
+                                    <PrivateExtension.Sequence>
+                                       <extId><ObjectIdentifier>0.1.272</ObjectIdentifier></extId>
+                                       <extType>2e930303</extType>
+                                    </PrivateExtension.Sequence>
+                                 </Collection>
+                              </privateExtensionList.C0.BoxedType>
+                              <pcs_Extensions.C1.Sequence>
+                                 
+                              </pcs_Extensions.C1.Sequence>
+                           </extensionContainer.C4.Sequence-->
+                           <!--selectedLSA_Id.C5.BoxedType><Bytes>6a8ffd
+                                 <field name="LSA type" value="PLMN significant number:0" type="EnumLong" lengthBit="1" />
+                                 <field name="Identifier" value="6983677" type="Integer" lengthBit="23" />
+                              </Bytes></selectedLSA_Id.C5.BoxedType-->
+                           <!--msc_Number.C6.BoxedType><AddressString.BoxedType><Bytes>510156642503
+                                    <field name="extension" value="extension:0" type="EnumLong" lengthBit="1" />
+                                    <field name="nature of address" value="reserved:5" type="EnumLong" lengthBit="3" />
+                                    <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                                    <field name="digits" value="1065465230" type="Number_BCD" length="5" />
+                                 </Bytes></AddressString.BoxedType></msc_Number.C6.BoxedType-->
+                           <!--geodeticInformation.C7.BoxedType><Bytes>ab030054e8ec1d148e41
+                                 <field name="spare" value="10" type="Integer" lengthBit="4" />
+                                 <field name="LPRI" value="location not available (Note):2" type="EnumLong" lengthBit="2" />
+                                 <field name="screnning" value="network provided:3" type="EnumLong" lengthBit="2" />
+                                 <field name="ext" value="0" type="Integer" lengthBit="1" />
+                                 <field name="TypeOfShape" value="ellipse on the ellipsoid:3" type="EnumLong" lengthBit="7" />
+                                 <field name="DegreesOfLatitude" value="21736" type="Integer" length="3" />
+                                 <field name="DegreesOfLongitude" value="15473940" type="Integer" length="3" />
+                                 <field name="UncertaintyCode" value="142" type="Integer" length="1" />
+                                 <field name="Confidence" value="65" type="Integer" length="1" />
+                              </Bytes></geodeticInformation.C7.BoxedType-->
+                           <!--currentLocationRetrieved.C8></currentLocationRetrieved.C8-->
+                           <!--sai_Present.C9></sai_Present.C9-->
+                           <!--locationInformationEPS.C10.Sequence>
+                              <e_utranCellGlobalIdentity.C0.BoxedType><Bytes>f920</Bytes></e_utranCellGlobalIdentity.C0.BoxedType>
+                              <trackingAreaIdentity.C1.BoxedType><Bytes>f0d3f6</Bytes></trackingAreaIdentity.C1.BoxedType>
+                              <extensionContainer.C2.Sequence>
+                                 <privateExtensionList.C0.BoxedType>
+                                    <Collection>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.249.92.122</ObjectIdentifier></extId>
+                                          <extType>fa</extType>
+                                       </PrivateExtension.Sequence>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.2122.36.75.55.54</ObjectIdentifier></extId>
+                                          <extType>8a7c</extType>
+                                       </PrivateExtension.Sequence>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.2114.56.45.100.101.93</ObjectIdentifier></extId>
+                                          <extType>e0f48fa6e93f8e</extType>
+                                       </PrivateExtension.Sequence>
+                                    </Collection>
+                                 </privateExtensionList.C0.BoxedType>
+                                 <pcs_Extensions.C1.Sequence>
+                                    
+                                 </pcs_Extensions.C1.Sequence>
+                              </extensionContainer.C2.Sequence>
+                              <geographicalInformation.C3.BoxedType><Bytes>bef42a7dc2b66779
+                                    <field name="TypeOfShape" value="Reserved for future use:11" type="EnumLong" lengthBit="4" />
+                                    <field name="spare" value="14" type="Integer" lengthBit="4" />
+                                    <field name="DegreesOfLatitude" value="16001661" type="Integer" length="3" />
+                                    <field name="DegreesOfLongitude" value="12760679" type="Integer" length="3" />
+                                    <field name="UncertaintyCode" value="121" type="Integer" length="1" />
+                                 </Bytes></geographicalInformation.C3.BoxedType>
+                              <geodeticInformation.C4.BoxedType><Bytes>6d0c579456c8f9afc879
+                                    <field name="spare" value="6" type="Integer" lengthBit="4" />
+                                    <field name="LPRI" value="spare:3" type="EnumLong" lengthBit="2" />
+                                    <field name="screnning" value="user provided, verified and passed:1" type="EnumLong" lengthBit="2" />
+                                    <field name="ext" value="0" type="Integer" lengthBit="1" />
+                                    <field name="TypeOfShape" value="spare:12" type="EnumLong" lengthBit="7" />
+                                    <field name="DegreesOfLatitude" value="5739606" type="Integer" length="3" />
+                                    <field name="DegreesOfLongitude" value="13171119" type="Integer" length="3" />
+                                    <field name="UncertaintyCode" value="200" type="Integer" length="1" />
+                                    <field name="Confidence" value="121" type="Integer" length="1" />
+                                 </Bytes></geodeticInformation.C4.BoxedType>
+                              <currentLocationRetrieved.C5></currentLocationRetrieved.C5>
+                              <ageOfLocationInformation.C6.BoxedType><Integer>2 minuts:2</Integer></ageOfLocationInformation.C6.BoxedType>
+                              <mme_Name.C7.BoxedType><Bytes>0fa5e03f8b7da445ae</Bytes></mme_Name.C7.BoxedType>
+                           </locationInformationEPS.C10.Sequence-->
+                           <!--userCSGInformation.C11.Sequence>
+                              <csg_Id.C0.BoxedType><BitString><BitString value="4ef6a1110f19" trailing="0"/></BitString></csg_Id.C0.BoxedType>
+                              <extensionContainer.C1.Sequence>
+                                 <privateExtensionList.C0.BoxedType>
+                                    <Collection>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.253</ObjectIdentifier></extId>
+                                          <extType>4b2f18</extType>
+                                       </PrivateExtension.Sequence>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.243.26.67.115.104.103.41.78.44</ObjectIdentifier></extId>
+                                          <extType>95dd234a71142d03</extType>
+                                       </PrivateExtension.Sequence>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.2101.77.60.68</ObjectIdentifier></extId>
+                                          <extType>4049e704c4eeb7744b</extType>
+                                       </PrivateExtension.Sequence>
+                                    </Collection>
+                                 </privateExtensionList.C0.BoxedType>
+                                 <pcs_Extensions.C1.Sequence>
+                                    
+                                 </pcs_Extensions.C1.Sequence>
+                              </extensionContainer.C1.Sequence>
+                              <accessMode.C2>d601a094bf37aeed6a</accessMode.C2>
+                              <cmi.C3>ff773b6253</cmi.C3>
+                           </userCSGInformation.C11.Sequence-->
+                        </locationInformation.C52.Sequence>
+                        <!--ext_basicServiceCode.C53.Choice>
+                           <ext_BearerService.C2.BoxedType><Bytes>c503</Bytes></ext_BearerService.C2.BoxedType>
+                           <ext_Teleservice.C3.BoxedType><Bytes>9731c2</Bytes></ext_Teleservice.C3.BoxedType>
+                        </ext_basicServiceCode.C53.Choice-->
+                        <!--callReferenceNumber.C54.BoxedType><Bytes>e741</Bytes></callReferenceNumber.C54.BoxedType-->
+                        <mscAddress.C55.BoxedType><AddressString.BoxedType><Bytes>913307002733f0
+                                 <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                                 <field name="nature of address" value="international number:1" type="EnumLong" lengthBit="3" />
+                                 <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                                 <field name="digits" value="33700072330" type="Number_BCD" length="6" />
+                              </Bytes></AddressString.BoxedType></mscAddress.C55.BoxedType>
+                        <calledPartyBCDNumber.C56.BoxedType><Bytes>81338207670962f5
+                                 <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                                 <field name="nature of address" value="unknown:0" type="EnumLong" lengthBit="3" />
+                                 <field name="numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="4" />
+                                 <field name="digits" value="[function:calledPartyBCDNumber]" type="Number_BCD"/>
+                             </Bytes></calledPartyBCDNumber.C56.BoxedType>
+                        <timeAndTimezone.C57.BoxedType><Bytes>0281013261641500
+                                 <field name="date" value="20181023" type="Number_BCD" length="4" />
+                                 <field name="time" value="164651" type="Number_BCD" length="3" />
+                                 <field name="timezone" value="00" type="Number_BCD" length="1" />
+                             </Bytes></timeAndTimezone.C57.BoxedType>
+                        <!--callForwardingSS_Pending.C58></callForwardingSS_Pending.C58-->
+                        <!--initialDPArgExtension.C59.Sequence>
+                           <gmscAddress.C0.BoxedType><AddressString.BoxedType><Bytes>b574916337f0
+                                    <field name="extension" value="no extension:1" type="EnumLong" lengthBit="1" />
+                                    <field name="nature of address" value="network specific number:3" type="EnumLong" lengthBit="3" />
+                                    <field name="numbering plan" value="spare:5" type="EnumLong" lengthBit="4" />
+                                    <field name="digits" value="471936730" type="Number_BCD" lengthBit="36" />
+                                 </Bytes></AddressString.BoxedType></gmscAddress.C0.BoxedType>
+                           <forwardingDestinationNumber.C1.BoxedType><Bytes>fcc8c2e1ff</Bytes></forwardingDestinationNumber.C1.BoxedType>
+                           <ms_Classmark2.C2.BoxedType><Bytes>cd4118
+                                 <field name="spare1" value="1" type="Integer" lengthBit="1" />
+                                 <field name="Revision level" value="Used by mobile stations supporting R99 or later versions of the protocol:2" type="EnumLong" lengthBit="2" />
+                                 <field name="ES IND" value="ES IND option is not implemented in the MS:0" type="EnumLong" lengthBit="1" />
+                                 <field name="A5/1 algorithm supported " value="not available (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                                 <field name="RF Power Capability" value="reserved:5" type="EnumLong" lengthBit="3" />
+                                 <field name="spare2" value="0" type="Integer" lengthBit="1" />
+                                 <field name="PS capability" value="present (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                                 <field name="SS Screening Indicator" value="default value of phase 1:0" type="EnumLong" lengthBit="2" />
+                                 <field name="SM capability" value="does not support:0" type="EnumLong" lengthBit="1" />
+                                 <field name="VBS notification reception" value="no notification wanted:0" type="EnumLong" lengthBit="1" />
+                                 <field name="VGCS notification reception" value="no notification wanted:0" type="EnumLong" lengthBit="1" />
+                                 <field name="FC Frequency Capability" value="support the E-GSM or R-GSM band (GSM900 only):1" type="EnumLong" lengthBit="1" />
+                                 <field name="CM3" value="does not support:0" type="EnumLong" lengthBit="1" />
+                                 <field name="spare3" value="0" type="Integer" lengthBit="1" />
+                                 <field name="LCS VA capability" value="request notification not supported:0" type="EnumLong" lengthBit="1" />
+                                 <field name="UCS2 treatment" value="no preference for the default alphabet :1" type="EnumLong" lengthBit="1" />
+                                 <field name="SoLSA" value="supports (if A/Gb mode supported):1" type="EnumLong" lengthBit="1" />
+                                 <field name="CM Service Prompt (CMSP)" value="not supported:0" type="EnumLong" lengthBit="1" />
+                                 <field name="A5/3 algorithm supported" value="not available:0" type="EnumLong" lengthBit="1" />
+                                 <field name="A5/2 algorithm supported" value="not available:0" type="EnumLong" lengthBit="1" />
+                              </Bytes></ms_Classmark2.C2.BoxedType>
+                           <iMEI.C3.BoxedType><TBCD_STRING.BoxedType><Bytes>07426869
+                                    <field name="digits" value="70248696" type="Number_BCD" length="4" />
+                                 </Bytes></TBCD_STRING.BoxedType></iMEI.C3.BoxedType>
+                           <supportedCamelPhases.C4.BoxedType><BitString><BitString value="96" trailing="0"/></BitString></supportedCamelPhases.C4.BoxedType>
+                           <offeredCamel4Functionalities.C5.BoxedType><BitString><BitString value="5f5788d6e2a5dbbff571d817e48e9cb22c5b48b9" trailing="0"/></BitString></offeredCamel4Functionalities.C5.BoxedType>
+                           <bearerCapability2.C6.Choice><bearerCap.C0>c68348f65eeef7</bearerCap.C0></bearerCapability2.C6.Choice>
+                           <ext_basicServiceCode2.C7.Choice>
+                              <ext_BearerService.C2.BoxedType><Bytes>61ea</Bytes></ext_BearerService.C2.BoxedType>
+                              <ext_Teleservice.C3.BoxedType><Bytes>8a553a679825956e5db6</Bytes></ext_Teleservice.C3.BoxedType>
+                           </ext_basicServiceCode2.C7.Choice>
+                           <highLayerCompatibility2.C8.BoxedType><Bytes>e4ff6d3aa58888</Bytes></highLayerCompatibility2.C8.BoxedType>
+                           <lowLayerCompatibility.C9.BoxedType><Bytes>56696fbe7ea135</Bytes></lowLayerCompatibility.C9.BoxedType>
+                           <lowLayerCompatibility2.C10.BoxedType><Bytes>468c7bd9</Bytes></lowLayerCompatibility2.C10.BoxedType>
+                           <enhancedDialledServicesAllowed.C11></enhancedDialledServicesAllowed.C11>
+                           <uu_Data.C12.Sequence>
+                              <uuIndicator.C0.BoxedType><Bytes>a1b20cd7f09bf69515</Bytes></uuIndicator.C0.BoxedType>
+                              <uui.C1.BoxedType><Bytes>d7482121662697e9</Bytes></uui.C1.BoxedType>
+                              <uusCFInteraction.C2></uusCFInteraction.C2>
+                              <extensionContainer.C3.Sequence>
+                                 <privateExtensionList.C0.BoxedType>
+                                    <Collection>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.297.12.58.62.36.54.90.82.94.5</ObjectIdentifier></extId>
+                                          <extType>8596e0276a733e5cc1c9</extType>
+                                       </PrivateExtension.Sequence>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.278.63.72.10.115.36.112</ObjectIdentifier></extId>
+                                          <extType>fac0e42b</extType>
+                                       </PrivateExtension.Sequence>
+                                       <PrivateExtension.Sequence>
+                                          <extId><ObjectIdentifier>0.1.261</ObjectIdentifier></extId>
+                                          <extType>f480e23f5cae</extType>
+                                       </PrivateExtension.Sequence>
+                                    </Collection>
+                                 </privateExtensionList.C0.BoxedType>
+                                 <pcs_Extensions.C1.Sequence>
+                                    
+                                 </pcs_Extensions.C1.Sequence>
+                              </extensionContainer.C3.Sequence>
+                           </uu_Data.C12.Sequence>
+                           <collectInformationAllowed.C13></collectInformationAllowed.C13>
+                           <releaseCallArgExtensionAllowed.C14></releaseCallArgExtensionAllowed.C14>
+                        </initialDPArgExtension.C59.Sequence-->
+                     </InitialDPArg.Sequence>
+                   </invokeparameter>
+                </invoke.C1.Sequence>
+              </Component.Choice>
+            </ASN>
+            
+            &TCAP_begin_client;        
+            
+            &SCCP_client;
         
-        &TCAP_begin;        
-        
-        &SCCP_client;
-    
-        &M3UA_client;
+            &M3UA_client;
 
         </sendMessageSIGTRAN>
     

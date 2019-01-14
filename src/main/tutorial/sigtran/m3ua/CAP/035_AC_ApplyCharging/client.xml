@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-<!DOCTYPE scenario [
-	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
-	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
-  <!ENTITY TCAP_continue SYSTEM "../library/TCAP_continue.xml">  
-]>
-
 <!--
     Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
@@ -29,75 +30,75 @@
   
     <sendMessageSIGTRAN name="Send DATA1" channel="channel">
     
-    <!-- AP LAYER -->
-    <ASN dictionary="cap/dictionary_CAP.xml">
-      <Component.Choice>
-        <invoke.C1.Sequence>
-           <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-           <opCode.Choice>
-              <localValue.BoxedType><Long>applyCharging:35</Long></localValue.BoxedType>
-              <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
-           </opCode.Choice>
-           <invokeparameter>
-             <ApplyChargingArg.Sequence>
-                <aChBillingChargingCharacteristics.C0.BoxedType><Bytes>595d9f63d9510b82</Bytes></aChBillingChargingCharacteristics.C0.BoxedType>
-                <partyToCharge.C2d.Choice><sendingSideID.C0.BoxedType><Bytes>55
-                         <field name="LegType" value="85" type="EnumLong" length="1"/>
-                      </Bytes></sendingSideID.C0.BoxedType></partyToCharge.C2d.Choice>
-                <extensions.C3.BoxedType>
-                   <Collection>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>2363256286</local>
-                            <global><ObjectIdentifier>0.1.252.23.30.45.117.29.42.34</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>abort.1</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>2495129583</local>
-                            <global><ObjectIdentifier>0.1.216.103.42.44.81.68.114.30</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>abort.1</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>2327068540</local>
-                            <global><ObjectIdentifier>0.1.267.51.60.63</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>abort.1</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                   </Collection>
-                </extensions.C3.BoxedType>
-                <aChChargingAddress.C50d.Choice>
-                   <legID.C2.Choice>
-                      <sendingSideID.C0.BoxedType><Bytes>02
-                            <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
-                         </Bytes></sendingSideID.C0.BoxedType>
-                      <receivingSideID.C1.BoxedType><Bytes>a7
-                            <field name="LegType" value="167" type="EnumLong" length="1"/>
-                         </Bytes></receivingSideID.C1.BoxedType>
-                   </legID.C2.Choice>
-                   <srfConnection.C50.BoxedType><Integer>0</Integer></srfConnection.C50.BoxedType>
-                </aChChargingAddress.C50d.Choice>
-                <iTXcharging.C64>false:0</iTXcharging.C64>
-             </ApplyChargingArg.Sequence>
-           </invokeparameter>
-        </invoke.C1.Sequence>
-      </Component.Choice>
-    </ASN>
+        <!-- AP LAYER -->
+        <ASN dictionary="cap/dictionary_CAP.xml">
+          <Component.Choice>
+            <invoke.C1.Sequence>
+               <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+               <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+               <opCode.Choice>
+                  <localValue.BoxedType><Long>applyCharging:35</Long></localValue.BoxedType>
+                  <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+               </opCode.Choice>
+               <invokeparameter>
+                 <ApplyChargingArg.Sequence>
+                    <aChBillingChargingCharacteristics.C0.BoxedType><Bytes>595d9f63d9510b82</Bytes></aChBillingChargingCharacteristics.C0.BoxedType>
+                    <partyToCharge.C2d.Choice><sendingSideID.C0.BoxedType><Bytes>55
+                             <field name="LegType" value="85" type="EnumLong" length="1"/>
+                          </Bytes></sendingSideID.C0.BoxedType></partyToCharge.C2d.Choice>
+                    <extensions.C3.BoxedType>
+                       <Collection>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>2363256286</local>
+                                <global><ObjectIdentifier>0.1.252.23.30.45.117.29.42.34</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>abort.1</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>2495129583</local>
+                                <global><ObjectIdentifier>0.1.216.103.42.44.81.68.114.30</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>abort.1</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                          <ExtensionField.Sequence>
+                             <type.Choice>
+                                <local>2327068540</local>
+                                <global><ObjectIdentifier>0.1.267.51.60.63</ObjectIdentifier></global>
+                             </type.Choice>
+                             <criticality.nulld.Enum>
+                                <EnumType>abort.1</EnumType>
+                             </criticality.nulld.Enum>
+                             <NullObject.C1></NullObject.C1>
+                          </ExtensionField.Sequence>
+                       </Collection>
+                    </extensions.C3.BoxedType>
+                    <aChChargingAddress.C50d.Choice>
+                       <legID.C2.Choice>
+                          <sendingSideID.C0.BoxedType><Bytes>02
+                                <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
+                             </Bytes></sendingSideID.C0.BoxedType>
+                          <receivingSideID.C1.BoxedType><Bytes>a7
+                                <field name="LegType" value="167" type="EnumLong" length="1"/>
+                             </Bytes></receivingSideID.C1.BoxedType>
+                       </legID.C2.Choice>
+                       <srfConnection.C50.BoxedType><Integer>0</Integer></srfConnection.C50.BoxedType>
+                    </aChChargingAddress.C50d.Choice>
+                    <iTXcharging.C64>false:0</iTXcharging.C64>
+                 </ApplyChargingArg.Sequence>
+               </invokeparameter>
+            </invoke.C1.Sequence>
+          </Component.Choice>
+        </ASN>
     
-        &TCAP_continue;        
+        &TCAP_continue_client;        
         
         &SCCP_client;
     

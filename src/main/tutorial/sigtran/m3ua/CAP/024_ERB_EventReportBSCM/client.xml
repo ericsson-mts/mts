@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-<!DOCTYPE scenario [
-	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
-	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
-  <!ENTITY TCAP_continue SYSTEM "../library/TCAP_continue.xml">  
-]>
-
 <!--
     Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
@@ -1152,7 +1153,7 @@
             </Component.Choice>
           </ASN>
           
-          &TCAP_continue;        
+          &TCAP_continue_client;        
           
           &SCCP_client;
       

@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-<!DOCTYPE scenario [
-	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
-	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
-  <!ENTITY TCAP_continue SYSTEM "../library/TCAP_continue.xml">  
-]>
-
 <!--
     Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
@@ -29,35 +30,35 @@
   
     <sendMessageSIGTRAN name="Send DATA1" channel="channel">
     
-    <!-- AP LAYER -->
-    <ASN dictionary="cap/dictionary_CAP.xml">
-      <Component.Choice>
-        <invoke.C1.Sequence>
-           <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-           <opCode.Choice>
-              <localValue.BoxedType><Long>cancel:53</Long></localValue.BoxedType>
-              <!--globalValue><ObjectIdentifier>0.1.224.86.58.51</ObjectIdentifier></globalValue-->
-           </opCode.Choice>
-           <invokeparameter>
-             <CancelArg.Choice>
-                <!--invokeID.C0.BoxedType><Integer>2</Integer></invokeID.C0.BoxedType-->
-                <!--allRequests.C1></allRequests.C1-->
-                <callSegmentToCancel.C2.Sequence>
-                   <invokeID.C0.BoxedType><Integer>0</Integer></invokeID.C0.BoxedType>
-                   <callSegmentID.C1.BoxedType><Integer>2</Integer></callSegmentID.C1.BoxedType>
-                </callSegmentToCancel.C2.Sequence>
-             </CancelArg.Choice>
-           </invokeparameter>
-        </invoke.C1.Sequence>
-      </Component.Choice>
-    </ASN>
+        <!-- AP LAYER -->
+        <ASN dictionary="cap/dictionary_CAP.xml">
+          <Component.Choice>
+            <invoke.C1.Sequence>
+               <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+               <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+               <opCode.Choice>
+                  <localValue.BoxedType><Long>cancel:53</Long></localValue.BoxedType>
+                  <!--globalValue><ObjectIdentifier>0.1.224.86.58.51</ObjectIdentifier></globalValue-->
+               </opCode.Choice>
+               <invokeparameter>
+                 <CancelArg.Choice>
+                    <!--invokeID.C0.BoxedType><Integer>2</Integer></invokeID.C0.BoxedType-->
+                    <!--allRequests.C1></allRequests.C1-->
+                    <callSegmentToCancel.C2.Sequence>
+                       <invokeID.C0.BoxedType><Integer>0</Integer></invokeID.C0.BoxedType>
+                       <callSegmentID.C1.BoxedType><Integer>2</Integer></callSegmentID.C1.BoxedType>
+                    </callSegmentToCancel.C2.Sequence>
+                 </CancelArg.Choice>
+               </invokeparameter>
+            </invoke.C1.Sequence>
+          </Component.Choice>
+        </ASN>
+        
+        &TCAP_continue_client;        
+        
+        &SCCP_client;
     
-          &TCAP_continue;        
-          
-          &SCCP_client;
-      
-          &M3UA_client;
+        &M3UA_client;
     
     </sendMessageSIGTRAN>
             
