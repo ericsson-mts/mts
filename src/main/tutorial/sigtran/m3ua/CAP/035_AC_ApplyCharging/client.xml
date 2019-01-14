@@ -24,91 +24,129 @@
         </input>
     </call>
 	
-    <function file="library/AP_transaction_session.xml" />    
-    <call name="Manage_identifier">
+    <!--function file="035_AC_ApplyCharging/client.xml" /-->
+    <call name="035_AC_ApplyCharging" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>         
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                           
+        </input>
+        <output>
+            <!--parameter name="[function:res]" /-->
+        </output>
     </call>
-  
-    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
-    
-        <!-- AP LAYER -->
-        <ASN dictionary="cap/dictionary_CAP.xml">
-          <Component.Choice>
-            <invoke.C1.Sequence>
-               <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-               <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-               <opCode.Choice>
-                  <localValue.BoxedType><Long>applyCharging:35</Long></localValue.BoxedType>
-                  <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
-               </opCode.Choice>
-               <invokeparameter>
-                 <ApplyChargingArg.Sequence>
-                    <aChBillingChargingCharacteristics.C0.BoxedType><Bytes>595d9f63d9510b82</Bytes></aChBillingChargingCharacteristics.C0.BoxedType>
-                    <partyToCharge.C2d.Choice><sendingSideID.C0.BoxedType><Bytes>55
-                             <field name="LegType" value="85" type="EnumLong" length="1"/>
-                          </Bytes></sendingSideID.C0.BoxedType></partyToCharge.C2d.Choice>
-                    <extensions.C3.BoxedType>
-                       <Collection>
-                          <ExtensionField.Sequence>
-                             <type.Choice>
-                                <local>2363256286</local>
-                                <global><ObjectIdentifier>0.1.252.23.30.45.117.29.42.34</ObjectIdentifier></global>
-                             </type.Choice>
-                             <criticality.nulld.Enum>
-                                <EnumType>abort.1</EnumType>
-                             </criticality.nulld.Enum>
-                             <NullObject.C1></NullObject.C1>
-                          </ExtensionField.Sequence>
-                          <ExtensionField.Sequence>
-                             <type.Choice>
-                                <local>2495129583</local>
-                                <global><ObjectIdentifier>0.1.216.103.42.44.81.68.114.30</ObjectIdentifier></global>
-                             </type.Choice>
-                             <criticality.nulld.Enum>
-                                <EnumType>abort.1</EnumType>
-                             </criticality.nulld.Enum>
-                             <NullObject.C1></NullObject.C1>
-                          </ExtensionField.Sequence>
-                          <ExtensionField.Sequence>
-                             <type.Choice>
-                                <local>2327068540</local>
-                                <global><ObjectIdentifier>0.1.267.51.60.63</ObjectIdentifier></global>
-                             </type.Choice>
-                             <criticality.nulld.Enum>
-                                <EnumType>abort.1</EnumType>
-                             </criticality.nulld.Enum>
-                             <NullObject.C1></NullObject.C1>
-                          </ExtensionField.Sequence>
-                       </Collection>
-                    </extensions.C3.BoxedType>
-                    <aChChargingAddress.C50d.Choice>
-                       <legID.C2.Choice>
-                          <sendingSideID.C0.BoxedType><Bytes>02
-                                <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
-                             </Bytes></sendingSideID.C0.BoxedType>
-                          <receivingSideID.C1.BoxedType><Bytes>a7
-                                <field name="LegType" value="167" type="EnumLong" length="1"/>
-                             </Bytes></receivingSideID.C1.BoxedType>
-                       </legID.C2.Choice>
-                       <srfConnection.C50.BoxedType><Integer>0</Integer></srfConnection.C50.BoxedType>
-                    </aChChargingAddress.C50d.Choice>
-                    <iTXcharging.C64>false:0</iTXcharging.C64>
-                 </ApplyChargingArg.Sequence>
-               </invokeparameter>
-            </invoke.C1.Sequence>
-          </Component.Choice>
-        </ASN>
-    
-        &TCAP_continue_client;        
+
+    <function name="035_AC_ApplyCharging">
+      <input>
+        <parameter name="[function:channelName]" type="string"/>      
+        <parameter name="[function:m3uaOpc]" type="number"/>      
+        <parameter name="[function:m3uaDpc]" type="number"/>
+        <parameter name="[function:sccpOssn]" type="number"/>        
+        <parameter name="[function:sccpDssn]" type="number"/>                                                                          
+        <parameter name="[function:sccpOgt]" type="number"/>        
+        <parameter name="[function:sccpDgt]" type="number"/>                                                                  
+      </input>
+      <do>
+
+          <function file="library/AP_transaction_session.xml" />    
+          <call name="Manage_identifier">
+          </call>
         
-        &SCCP_client;
-    
-        &M3UA_client;
+          <parameter name="[sccpOssnBinary]" operation="number.toBinary" value="[function:sccpOssn]"/>
+          <parameter name="[sccpDssnBinary]" operation="number.toBinary" value="[function:sccpDssn]"/>        
 
-    </sendMessageSIGTRAN>
+          <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
+          
+              <!-- AP LAYER -->
+              <ASN dictionary="cap/dictionary_CAP.xml">
+                <Component.Choice>
+                  <invoke.C1.Sequence>
+                     <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+                     <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+                     <opCode.Choice>
+                        <localValue.BoxedType><Long>applyCharging:35</Long></localValue.BoxedType>
+                        <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+                     </opCode.Choice>
+                     <invokeparameter>
+                       <ApplyChargingArg.Sequence>
+                          <aChBillingChargingCharacteristics.C0.BoxedType><Bytes>595d9f63d9510b82</Bytes></aChBillingChargingCharacteristics.C0.BoxedType>
+                          <partyToCharge.C2d.Choice><sendingSideID.C0.BoxedType><Bytes>55
+                                   <field name="LegType" value="85" type="EnumLong" length="1"/>
+                                </Bytes></sendingSideID.C0.BoxedType></partyToCharge.C2d.Choice>
+                          <extensions.C3.BoxedType>
+                             <Collection>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>2363256286</local>
+                                      <global><ObjectIdentifier>0.1.252.23.30.45.117.29.42.34</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>abort.1</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>2495129583</local>
+                                      <global><ObjectIdentifier>0.1.216.103.42.44.81.68.114.30</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>abort.1</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>2327068540</local>
+                                      <global><ObjectIdentifier>0.1.267.51.60.63</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>abort.1</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                             </Collection>
+                          </extensions.C3.BoxedType>
+                          <aChChargingAddress.C50d.Choice>
+                             <legID.C2.Choice>
+                                <sendingSideID.C0.BoxedType><Bytes>02
+                                      <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
+                                   </Bytes></sendingSideID.C0.BoxedType>
+                                <receivingSideID.C1.BoxedType><Bytes>a7
+                                      <field name="LegType" value="167" type="EnumLong" length="1"/>
+                                   </Bytes></receivingSideID.C1.BoxedType>
+                             </legID.C2.Choice>
+                             <srfConnection.C50.BoxedType><Integer>0</Integer></srfConnection.C50.BoxedType>
+                          </aChChargingAddress.C50d.Choice>
+                          <iTXcharging.C64>false:0</iTXcharging.C64>
+                       </ApplyChargingArg.Sequence>
+                     </invokeparameter>
+                  </invoke.C1.Sequence>
+                </Component.Choice>
+              </ASN>
+          
+              &TCAP_continue_client;        
+              
+              &SCCP_client;
+          
+              &M3UA_client;
+      
+          </sendMessageSIGTRAN>
+      
+          <receiveMessageSIGTRAN name="Wait DATA1" channel="[function:channelName]" request="false" type="applyCharging:35" result="RESULT">
+              <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+          </receiveMessageSIGTRAN>
 
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="applyCharging:35" result="RESULT">
-        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
+      </do>      
+      <output>
+          <!--parameter name="[function:res]" /-->
+      </output>
+    </function>
+            
             
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->

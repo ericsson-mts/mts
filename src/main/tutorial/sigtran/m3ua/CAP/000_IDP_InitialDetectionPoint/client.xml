@@ -25,8 +25,7 @@
     </call>
     	       
     <!--function file="000_IDP_InitialDetectionPoint/client.xml" /-->
-           
-	  <call name="Send_000_IDP_InitialDetectionPoint" >
+    <call name="Send_000_IDP_InitialDetectionPoint" >
         <input>
             <parameter name="[function:channelName]" value="channel"/>         
             <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
@@ -523,7 +522,7 @@
         </sendMessageSIGTRAN>
     
     
-        <!--receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="initialDP:0" result="RESULT">
+        <!--receiveMessageSIGTRAN name="Wait DATA1" channel="[function:channelName]" request="false" type="initialDP:0" result="RESULT">
             <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
         </receiveMessageSIGTRAN-->
 
