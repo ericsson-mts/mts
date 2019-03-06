@@ -6,32 +6,25 @@
     Document   : server.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Receive a MAP message
+    Description: Receive a CAP message
 -->
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_server SYSTEM "../library/M3UA_server.xml">
+	<!ENTITY SCCP_server SYSTEM "../library/SCCP_server.xml">    
+  <!ENTITY TCAP_continue_server SYSTEM "../library/TCAP_continue_server.xml">  
+]>
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
-        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-    </receiveMessageSIGTRAN>
-        
-    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
-    
-        <UA name="m3ua" file="m3ua.xml">
-            <header version="1" reserved="0" messageClass="3" messageType="4"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-        
-    </sendMessageSIGTRAN>
-    
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="establishTemporaryConnection:17">
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Answer_M3UA_session">
+        <output>
+            <parameter name="[test:channelName]" value="[lastChannelName]"/>        
+        </output>
+    </call>
+     
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="establishTemporaryConnection:17">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>

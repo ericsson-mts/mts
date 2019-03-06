@@ -6,32 +6,19 @@
     Document   : server.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Receive a MAP message
+    Description: Receive a CAP message
 -->
 
 <scenario>
 
-    <receiveMessageSIGTRAN name="Wait ASPUP1" request="true" type="ASP_Up:3_1">
-        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
-    </receiveMessageSIGTRAN>
-        
-    <sendMessageSIGTRAN	name="Send ASPUP1" destScenario="client" channel="[channelName]">
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Answer_M3UA_session">
+        <output>
+            <parameter name="[test:channelName]" value="[lastChannelName]"/>        
+        </output>
+    </call>
     
-        <UA name="m3ua" file="m3ua.xml">
-            <header version="1" reserved="0" messageClass="3" messageType="4"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="19" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-        
-    </sendMessageSIGTRAN>
-    
-    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="initialDP:0">    
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="initialDP:0">    
       <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
       <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
       <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -335,10 +322,10 @@
     <test parameter="[mscAddressDigits]" condition="string.equals" value="2207750007"/>
 
     <parameter name="[timeAndTimezone]" operation="string.xpath" value="[InitialDPArg]" value2="//timeAndTimezone.C57.BoxedType/Bytes"/>
-    <test parameter="[timeAndTimezone]" condition="list.size" value="1"/>    
+    <!--test parameter="[timeAndTimezone]" condition="list.size" value="1"/-->    
     <parameter name="[timeAndTimezoneValue]" operation="string.xpath" value="[timeAndTimezone]" value2="//field[@name='value']/attribute::value"/>
-    <test parameter="[timeAndTimezoneValue]" condition="list.size" value="1"/>
-    <test parameter="[timeAndTimezoneValue]" condition="string.equals" value="2005112413105600"/>
+    <!--test parameter="[timeAndTimezoneValue]" condition="list.size" value="1"/>
+    <test parameter="[timeAndTimezoneValue]" condition="string.equals" value="2005112413105600"/-->
 
     <parameter name="[gmscAddress]" operation="string.xpath" value="[InitialDPArg]" value2="//initialDPArgExtension.C59.Sequence/gmscAddress.C0.BoxedType/AddressString.BoxedType/Bytes"/>
     <test parameter="[gmscAddress]" condition="list.size" value="1"/>    

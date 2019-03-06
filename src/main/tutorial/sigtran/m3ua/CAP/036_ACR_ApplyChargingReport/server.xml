@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-
 <!--
     Document   : server.xml
     Created on : 10/07/2014
@@ -24,7 +23,7 @@
         </output>
     </call>
     
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="connect:20">
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="applyChargingReport:36">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -44,7 +43,7 @@
                <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
                <resultretres>
                   <opCode.Choice>
-                     <localValue.BoxedType><Long>connect:20</Long></localValue.BoxedType>
+                     <localValue.BoxedType><Long>applyChargingReport:36</Long></localValue.BoxedType>
                      <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
                   </opCode.Choice>
                   <!--returnparameter/-->
@@ -58,7 +57,7 @@
         &SCCP_server;
         
         &M3UA_server;
-
+    
     </sendMessageSIGTRAN>
 
 </scenario>

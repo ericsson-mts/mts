@@ -23,8 +23,8 @@
             <parameter name="[test:channelName]" value="[lastChannelName]"/>        
         </output>
     </call>
-    
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="connect:20">
+         
+    <receiveMessageSIGTRAN name="Wait DATA1" channel="[channelName]" request="true" type="continue:31">
         <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
         <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
         <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
@@ -44,7 +44,7 @@
                <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
                <resultretres>
                   <opCode.Choice>
-                     <localValue.BoxedType><Long>connect:20</Long></localValue.BoxedType>
+                     <localValue.BoxedType><Long>continue:31</Long></localValue.BoxedType>
                      <!--globalValue><ObjectIdentifier>0.1.227.111</ObjectIdentifier></globalValue-->
                   </opCode.Choice>
                   <!--returnparameter/-->
@@ -52,13 +52,13 @@
             </returnResultLast.C2.Sequence>
           </Component.Choice>
         </ASN>
-    
+
         &TCAP_continue_server;       
             
         &SCCP_server;
         
         &M3UA_server;
-
+    
     </sendMessageSIGTRAN>
 
 </scenario>

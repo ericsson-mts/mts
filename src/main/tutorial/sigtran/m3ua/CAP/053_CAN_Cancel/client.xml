@@ -1,202 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-
 <!--
-    Document   : server.xml
+    Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
-    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
-                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
-                                       transport="[transport]"/>
-                                       
-    <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
-   
-        <UA name="m3ua" file="m3ua.xml">
-            <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-    </sendMessageSIGTRAN>
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Establish_M3UA_session" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>        
+        </input>
+    </call>
+	
+    <!--function file="053_CAN_Cancel/client.xml" /-->
+    <call name="053_CAN_Cancel" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>         
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                           
+        </input>
+        <output>
+            <!--parameter name="[function:res]" /-->
+        </output>
+    </call>
+
+    <function name="053_CAN_Cancel">
+      <input>
+        <parameter name="[function:channelName]" type="string"/>      
+        <parameter name="[function:m3uaOpc]" type="number"/>      
+        <parameter name="[function:m3uaDpc]" type="number"/>
+        <parameter name="[function:sccpOssn]" type="number"/>        
+        <parameter name="[function:sccpDssn]" type="number"/>                                                                          
+        <parameter name="[function:sccpOgt]" type="number"/>        
+        <parameter name="[function:sccpDgt]" type="number"/>                                                                  
+      </input>
+      <do>
+
+          <function file="library/AP_transaction_session.xml" />    
+          <call name="Manage_identifier">
+          </call>
+
+          <parameter name="[sccpOssnBinary]" operation="number.toBinary" value="[function:sccpOssn]"/>
+          <parameter name="[sccpDssnBinary]" operation="number.toBinary" value="[function:sccpDssn]"/>        
         
-    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
-    
-    <pause seconds="[pause]"/>
-	
-    <if>
-      <condition>
-          <test parameter="[testcase:origTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:origTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
+          <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
+          
+              <!-- AP LAYER -->
+              <ASN dictionary="cap/dictionary_CAP.xml">
+                <Component.Choice>
+                  <invoke.C1.Sequence>
+                     <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+                     <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+                     <opCode.Choice>
+                        <localValue.BoxedType><Long>cancel:53</Long></localValue.BoxedType>
+                        <!--globalValue><ObjectIdentifier>0.1.224.86.58.51</ObjectIdentifier></globalValue-->
+                     </opCode.Choice>
+                     <invokeparameter>
+                       <CancelArg.Choice>
+                          <!--invokeID.C0.BoxedType><Integer>2</Integer></invokeID.C0.BoxedType-->
+                          <!--allRequests.C1></allRequests.C1-->
+                          <callSegmentToCancel.C2.Sequence>
+                             <invokeID.C0.BoxedType><Integer>0</Integer></invokeID.C0.BoxedType>
+                             <callSegmentID.C1.BoxedType><Integer>2</Integer></callSegmentID.C1.BoxedType>
+                          </callSegmentToCancel.C2.Sequence>
+                       </CancelArg.Choice>
+                     </invokeparameter>
+                  </invoke.C1.Sequence>
+                </Component.Choice>
+              </ASN>
+              
+              &TCAP_continue_client;        
+              
+              &SCCP_client;
+          
+              &M3UA_client;
+          
+          </sendMessageSIGTRAN>
+                  
+          <!--receiveMessageSIGTRAN name="Wait DATA1" channel="[function:channelName]" request="false" type="cancel:53" result="RESULT">
+          </receiveMessageSIGTRAN-->
 
-    <if>
-      <condition>
-          <test parameter="[testcase:destTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:destTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
-
-    <if>
-      <condition>
-          <test parameter="[testcase:invokeID]" condition="list.exists"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:invokeID]" operation="number.add" value="[testcase:invokeID]" value2="1"/>
-      </then>      
-      <else>
-          <parameter name="[testcase:invokeID]" operation="set" value="1"/>
-      </else>
-    </if>    
-  
-    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
-    
-    <!-- AP LAYER -->
-    <ASN dictionary="cap/dictionary_CAP.xml">
-      <Component.Choice>
-        <invoke.C1.Sequence>
-           <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-           <opCode.Choice>
-              <localValue.BoxedType><Long>cancel:53</Long></localValue.BoxedType>
-              <!--globalValue><ObjectIdentifier>0.1.224.86.58.51</ObjectIdentifier></globalValue-->
-           </opCode.Choice>
-           <invokeparameter>
-             <CancelArg.Choice>
-                <!--invokeID.C0.BoxedType><Integer>2</Integer></invokeID.C0.BoxedType-->
-                <!--allRequests.C1></allRequests.C1-->
-                <callSegmentToCancel.C2.Sequence>
-                   <invokeID.C0.BoxedType><Integer>0</Integer></invokeID.C0.BoxedType>
-                   <callSegmentID.C1.BoxedType><Integer>2</Integer></callSegmentID.C1.BoxedType>
-                </callSegmentToCancel.C2.Sequence>
-             </CancelArg.Choice>
-           </invokeparameter>
-        </invoke.C1.Sequence>
-      </Component.Choice>
-    </ASN>
-    
-    <!-- TCAP LAYER -->
-    <ASN dictionary="tcap/dictionary_TCAP.xml">
-      <TCMessage.Choice>
-        <continue1.A5.Sequence>
-          <otid.BoxedType><Bytes>[origTransID]</Bytes></otid.BoxedType>
-          <dtid.BoxedType><Bytes>[destTransID]</Bytes></dtid.BoxedType>
-          <dialoguePortion.BoxedType>
-            <DialogueOC.A11.BoxedType>
-              <ExternalPDU.A11.BoxedType>
-                <ExternalPDUSequenceType.U8.Sequence>
-                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
-                  <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
-                  <encoding.Choice>
-                    <single_ASN1_type.C0.BoxedType>
-                      <DialoguePDU.Choice>
-                        <dialogueResponse.A1.BoxedType>
-                          <AARE_apduSequenceType.A1.Sequence>
-                            <protocol_version.C0d><BitString value="Version1:80" trailing="7"/></protocol_version.C0d>
-                            <application_context_name.C1.BoxedType>
-                              <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                            </application_context_name.C1.BoxedType>
-                            <result.C2.BoxedType>
-                              <Associate_result.C2.BoxedType><Long>0</Long></Associate_result.C2.BoxedType>
-                            </result.C2.BoxedType>
-                            <result_source_diagnostic.C3.BoxedType>
-                              <Associate_source_diagnostic.C3.Choice>
-                                <dialogue_service_user.C1.BoxedType>
-                                  <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
-                                </dialogue_service_user.C1.BoxedType>
-                              </Associate_source_diagnostic.C3.Choice>
-                            </result_source_diagnostic.C3.BoxedType>
-                            <!--Collection>
-                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
-                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
-                              <user_information.C30>0403d079a4</user_information.C30>
-                            </Collection-->
-                          </AARE_apduSequenceType.A1.Sequence>
-                        </dialogueResponse.A1.BoxedType>
-                      </DialoguePDU.Choice>
-                    </single_ASN1_type.C0.BoxedType>
-                  </encoding.Choice>
-                </ExternalPDUSequenceType.U8.Sequence>
-              </ExternalPDU.A11.BoxedType>
-            </DialogueOC.A11.BoxedType>
-          </dialoguePortion.BoxedType>
-        </continue1.A5.Sequence>
-      </TCMessage.Choice>
-    </ASN>
-    
-	  <!-- SCCP LAYER  -->
-  	<SS7 name="sccp" file="sccp.xml">
-  		<header>
-          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
-      </header>
-  		<parameter name="Protocol_Class" type="F" littleEndian="false">
-  			<field value="0" lengthBit="4" />
-  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-  		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
-  			<field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" />	
-  		</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
-  			<field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" />
-  		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false"/>
-  			<!--field value="" format="binary" length="88" />
-        <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" />
-  		</parameter-->
-  	</SS7>
-
-    <UA name="m3ua" file="m3ua.xml">
-        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
-				
-        <parameter tag="Network_Appearence">
-            <field name="Network_Appearence"  format="Integer" value="102"/>
-        </parameter>
-
-
-        <parameter tag="Routing_Context">
-            <field name="Routing_Context" format="Integer"  value="101"/>
-        </parameter>
-
-        <parameter tag="Protocol_Data">
-            <field value="[M3UA_OPC]" name="Originating_Point_Code"/>
-            <field value="[M3UA_DPC]" name="Destination_Point_Code" />
-            <field value="SCCP"	name="SI"/>
-            <field value="2"	name="NI"/>
-            <field value="0"	name="MP"/>
-            <field value="1"	name="SLS"/>
-            <field name="DATA"	format="fvo"/>   
-        </parameter>
-	
-        <parameter tag="Correlation_Id">
-            <field name="Correlation_Id" format="Integer"  value="12783"/>
-        </parameter>
-    </UA>
-    </sendMessageSIGTRAN>
-            
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="cancel:53" result="RESULT">
-    </receiveMessageSIGTRAN>
+      </do>      
+      <output>
+          <!--parameter name="[function:res]" /-->
+      </output>
+    </function>
 	    
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->

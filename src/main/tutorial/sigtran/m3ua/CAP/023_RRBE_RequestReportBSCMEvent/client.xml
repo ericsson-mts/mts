@@ -1,541 +1,445 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-
 <!--
-    Document   : server.xml
+    Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
-    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
-                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
-                                       transport="[transport]"/>
-                                       
-    <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
-   
-        <UA name="m3ua" file="m3ua.xml">
-            <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-    </sendMessageSIGTRAN>
-        
-    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
-    
-    <pause seconds="[pause]"/>
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Establish_M3UA_session" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>        
+        </input>
+    </call>
 	
-    <if>
-      <condition>
-          <test parameter="[testcase:origTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:origTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
+    <!--function file="023_RRBE_RequestReportBSCMEvent/client.xml" /-->
+    <call name="023_RRBE_RequestReportBSCMEvent" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>         
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                           
+        </input>
+        <output>
+            <!--parameter name="[function:res]" /-->
+        </output>
+    </call>
 
-    <if>
-      <condition>
-          <test parameter="[testcase:destTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:destTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
-
-    <if>
-      <condition>
-          <test parameter="[testcase:invokeID]" condition="list.exists"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:invokeID]" operation="number.add" value="[testcase:invokeID]" value2="1"/>
-      </then>      
-      <else>
-          <parameter name="[testcase:invokeID]" operation="set" value="1"/>
-      </else>
-    </if>    
+    <function name="023_RRBE_RequestReportBSCMEvent">
+      <input>
+        <parameter name="[function:channelName]" type="string"/>      
+        <parameter name="[function:m3uaOpc]" type="number"/>      
+        <parameter name="[function:m3uaDpc]" type="number"/>
+        <parameter name="[function:sccpOssn]" type="number"/>        
+        <parameter name="[function:sccpDssn]" type="number"/>                                                                          
+        <parameter name="[function:sccpOgt]" type="number"/>        
+        <parameter name="[function:sccpDgt]" type="number"/>                                                                  
+      </input>
+      <do>
   
-    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
-    
-    <!-- AP LAYER -->
-    <ASN dictionary="cap/dictionary_CAP.xml">
-      <Component.Choice>
-        <invoke.C1.Sequence>
-           <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-           <opCode.Choice>
-              <localValue.BoxedType><Long>requestReportBCSMEvent:23</Long></localValue.BoxedType>
-              <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
-           </opCode.Choice>
-           <invokeparameter>
-             <RequestReportBCSMEventArg.Sequence>
-                
-                <Collection>
-                   <bcsmEvents.C0.Sequence>
-                      <eventTypeBCSM.C0.Enum>
-                         <EnumType>oTermSeized.19</EnumType>
-                      </eventTypeBCSM.C0.Enum>
-                      <monitorMode.C1.Enum>
-                         <EnumType>transparent.2</EnumType>
-                      </monitorMode.C1.Enum>
-                      <legID.C2.Choice>
-                         <sendingSideID.C0.BoxedType><Bytes>01
-                               <field name="LegType" value="leg1 LegType:1" type="EnumLong" length="1"/>
-                            </Bytes></sendingSideID.C0.BoxedType>
-                         <receivingSideID.C1.BoxedType><Bytes>6d
-                               <field name="LegType" value="109" type="EnumLong" length="1"/>
-                            </Bytes></receivingSideID.C1.BoxedType>
-                      </legID.C2.Choice>
-                      <dpSpecificCriteria.C30.Choice>
-                         <applicationTimer.C1.BoxedType><Integer>1</Integer></applicationTimer.C1.BoxedType>
-                         <midCallControlInfo.C2.Sequence>
-                            <minimumNumberOfDigits.C0d>1</minimumNumberOfDigits.C0d>
-                            <maximumNumberOfDigits.C1d>0</maximumNumberOfDigits.C1d>
-                            <endOfReplyDigit.C2>4cf7</endOfReplyDigit.C2>
-                            <cancelDigit.C3>2d7b93</cancelDigit.C3>
-                            <startDigit.C4>aa35</startDigit.C4>
-                            <interDigitTimeout.C6d>1</interDigitTimeout.C6d>
-                         </midCallControlInfo.C2.Sequence>
-                         <dpSpecificCriteriaAlt.C3.Sequence>
-                            <changeOfPositionControlInfo.C0.BoxedType>
-                               <Collection>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>2182716098dd48
-                                           <field name="MMC" value="122,178" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="24728" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="56648" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>01745182810866
-                                           <field name="MMC" value="104,157" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="33409" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="2150" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>11f121f46b
-                                           <field name="MMC" value="111,12" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="62571" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>41f632d0490e17
-                                           <field name="MMC" value="146,23" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="53321" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="3607" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>42f3425ffce924
-                                           <field name="MMC" value="243,24" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="24572" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="59684" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>013702e9b1
-                                           <field name="MMC" value="107,203" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="59825" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>510801ea2d0d7b
-                                           <field name="MMC" value="158,100" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="59949" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="3451" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>32374150d5c222
-                                           <field name="MMC" value="237,143" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="20693" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="49698" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>121111a83a
-                                           <field name="MMC" value="211,111" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="43066" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                               </Collection>
-                            </changeOfPositionControlInfo.C0.BoxedType>
-                            <numberOfDigits.C1.BoxedType><Integer>0</Integer></numberOfDigits.C1.BoxedType>
-                            <interDigitTimeout.C2>1</interDigitTimeout.C2>
-                         </dpSpecificCriteriaAlt.C3.Sequence>
-                      </dpSpecificCriteria.C30.Choice>
-                      <automaticRearm.C50></automaticRearm.C50>
-                   </bcsmEvents.C0.Sequence>
-                   <bcsmEvents.C0.Sequence>
-                      <eventTypeBCSM.C0.Enum>
-                         <EnumType>tChangeOfPosition.51</EnumType>
-                      </eventTypeBCSM.C0.Enum>
-                      <monitorMode.C1.Enum>
-                         <EnumType>notifyAndContinue.1</EnumType>
-                      </monitorMode.C1.Enum>
-                      <legID.C2.Choice>
-                         <sendingSideID.C0.BoxedType><Bytes>6a
-                               <field name="LegType" value="106" type="EnumLong" length="1"/>
-                            </Bytes></sendingSideID.C0.BoxedType>
-                         <receivingSideID.C1.BoxedType><Bytes>02
-                               <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
-                            </Bytes></receivingSideID.C1.BoxedType>
-                      </legID.C2.Choice>
-                      <dpSpecificCriteria.C30.Choice>
-                         <applicationTimer.C1.BoxedType><Integer>1</Integer></applicationTimer.C1.BoxedType>
-                         <midCallControlInfo.C2.Sequence>
-                            <minimumNumberOfDigits.C0d>1</minimumNumberOfDigits.C0d>
-                            <maximumNumberOfDigits.C1d>1</maximumNumberOfDigits.C1d>
-                            <endOfReplyDigit.C2>88c28bc0889f</endOfReplyDigit.C2>
-                            <cancelDigit.C3>bbbbb5</cancelDigit.C3>
-                            <startDigit.C4>aa679ab5b5cea0</startDigit.C4>
-                            <interDigitTimeout.C6d>2</interDigitTimeout.C6d>
-                         </midCallControlInfo.C2.Sequence>
-                         <dpSpecificCriteriaAlt.C3.Sequence>
-                            <changeOfPositionControlInfo.C0.BoxedType>
-                               <Collection>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>126311f432d437
-                                           <field name="MMC" value="213,116" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="62514" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="54327" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>814002d5fd0fe5
-                                           <field name="MMC" value="180,204" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="54781" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="4069" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>32f05868b1
-                                           <field name="MMC" value="230,85" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="26801" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>11f0261050c4bd
-                                           <field name="MMC" value="110,62" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="4176" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="50365" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>7138914b696048
-                                           <field name="MMC" value="178,193" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="19305" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="24648" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>42f6486f35
-                                           <field name="MMC" value="246,84" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="28469" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>514561f59f0531
-                                           <field name="MMC" value="155,164" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="62879" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="1329" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>513781d883db64
-                                           <field name="MMC" value="157,183" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="55427" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="56164" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>213811a282
-                                           <field name="MMC" value="128,113" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="41602" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                               </Collection>
-                            </changeOfPositionControlInfo.C0.BoxedType>
-                            <numberOfDigits.C1.BoxedType><Integer>1</Integer></numberOfDigits.C1.BoxedType>
-                            <interDigitTimeout.C2>0</interDigitTimeout.C2>
-                         </dpSpecificCriteriaAlt.C3.Sequence>
-                      </dpSpecificCriteria.C30.Choice>
-                      <automaticRearm.C50></automaticRearm.C50>
-                   </bcsmEvents.C0.Sequence>
-                   <bcsmEvents.C0.Sequence>
-                      <eventTypeBCSM.C0.Enum>
-                         <EnumType>callAccepted.27</EnumType>
-                      </eventTypeBCSM.C0.Enum>
-                      <monitorMode.C1.Enum>
-                         <EnumType>notifyAndContinue.1</EnumType>
-                      </monitorMode.C1.Enum>
-                      <legID.C2.Choice>
-                         <sendingSideID.C0.BoxedType><Bytes>a3
-                               <field name="LegType" value="163" type="EnumLong" length="1"/>
-                            </Bytes></sendingSideID.C0.BoxedType>
-                         <receivingSideID.C1.BoxedType><Bytes>5f
-                               <field name="LegType" value="95" type="EnumLong" length="1"/>
-                            </Bytes></receivingSideID.C1.BoxedType>
-                      </legID.C2.Choice>
-                      <dpSpecificCriteria.C30.Choice>
-                         <applicationTimer.C1.BoxedType><Integer>2</Integer></applicationTimer.C1.BoxedType>
-                         <midCallControlInfo.C2.Sequence>
-                            <minimumNumberOfDigits.C0d>2</minimumNumberOfDigits.C0d>
-                            <maximumNumberOfDigits.C1d>0</maximumNumberOfDigits.C1d>
-                            <endOfReplyDigit.C2>df3b696fc8cd0eab6e</endOfReplyDigit.C2>
-                            <cancelDigit.C3>7119d2ec63eeec</cancelDigit.C3>
-                            <startDigit.C4>8a67aee389b8</startDigit.C4>
-                            <interDigitTimeout.C6d>2</interDigitTimeout.C6d>
-                         </midCallControlInfo.C2.Sequence>
-                         <dpSpecificCriteriaAlt.C3.Sequence>
-                            <changeOfPositionControlInfo.C0.BoxedType>
-                               <Collection>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>91f777613806b0
-                                           <field name="MMC" value="197,77" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="24888" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="1712" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>8153610994aa13
-                                           <field name="MMC" value="183,165" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="2452" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="43539" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>9121125565
-                                           <field name="MMC" value="191,212" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="21861" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>02450114d7128f
-                                           <field name="MMC" value="205,104" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="5335" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="4751" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>32f367e90204df
-                                           <field name="MMC" value="233,76" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="59650" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="1247" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>02848180f7
-                                           <field name="MMC" value="204,188" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="33015" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                                  <ChangeOfLocation.Choice>
-                                     <cellGlobalId.C0.BoxedType><Bytes>3204010d74be81
-                                           <field name="MMC" value="234,100" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="3444" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="48769" type="Integer" length="2"/>
-                                        </Bytes></cellGlobalId.C0.BoxedType>
-                                     <serviceAreaId.C1.BoxedType><Bytes>8150019ecf6875
-                                           <field name="MMC" value="180,105" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="40655" type="Integer" length="2"/>
-                                           <field name="CI_SAC" value="26741" type="Integer" length="2"/>
-                                        </Bytes></serviceAreaId.C1.BoxedType>
-                                     <locationAreaId.C2.BoxedType><Bytes>21f6611ff4
-                                           <field name="MMC" value="126,16" type="NumberMMC" length="3"/>
-                                           <field name="LAC" value="8180" type="Integer" length="2"/>
-                                        </Bytes></locationAreaId.C2.BoxedType>
-                                     <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
-                                     <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
-                                     <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
-                                     <changeOfLocationAlt.C6.Sequence>
-                                        
-                                     </changeOfLocationAlt.C6.Sequence>
-                                  </ChangeOfLocation.Choice>
-                               </Collection>
-                            </changeOfPositionControlInfo.C0.BoxedType>
-                            <numberOfDigits.C1.BoxedType><Integer>1</Integer></numberOfDigits.C1.BoxedType>
-                            <interDigitTimeout.C2>0</interDigitTimeout.C2>
-                         </dpSpecificCriteriaAlt.C3.Sequence>
-                      </dpSpecificCriteria.C30.Choice>
-                      <automaticRearm.C50></automaticRearm.C50>
-                   </bcsmEvents.C0.Sequence>
-                </Collection>
-             
-                <extensions.C2.BoxedType>
-                   <Collection>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>1824546458</local>
-                            <global><ObjectIdentifier>0.1.2104.98.38.9</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>ignore.0</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>169464497</local>
-                            <global><ObjectIdentifier>0.1.2126</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>ignore.0</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>1244360942</local>
-                            <global><ObjectIdentifier>0.1.278.69.39</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>ignore.0</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                   </Collection>
-                </extensions.C2.BoxedType>
-             </RequestReportBCSMEventArg.Sequence>
-           </invokeparameter>
-        </invoke.C1.Sequence>
-      </Component.Choice>
-    </ASN>
-    
-    <!-- TCAP LAYER -->
-    <ASN dictionary="tcap/dictionary_TCAP.xml">
-      <TCMessage.Choice>
-        <continue1.A5.Sequence>
-          <otid.BoxedType><Bytes>[origTransID]</Bytes></otid.BoxedType>
-          <dtid.BoxedType><Bytes>[destTransID]</Bytes></dtid.BoxedType>
-          <dialoguePortion.BoxedType>
-            <DialogueOC.A11.BoxedType>
-              <ExternalPDU.A11.BoxedType>
-                <ExternalPDUSequenceType.U8.Sequence>
-                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
-                  <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
-                  <encoding.Choice>
-                    <single_ASN1_type.C0.BoxedType>
-                      <DialoguePDU.Choice>
-                        <dialogueResponse.A1.BoxedType>
-                          <AARE_apduSequenceType.A1.Sequence>
-                            <protocol_version.C0d><BitString value="Version1:80" trailing="7"/></protocol_version.C0d>
-                            <application_context_name.C1.BoxedType>
-                              <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                            </application_context_name.C1.BoxedType>
-                            <result.C2.BoxedType>
-                              <Associate_result.C2.BoxedType><Long>0</Long></Associate_result.C2.BoxedType>
-                            </result.C2.BoxedType>
-                            <result_source_diagnostic.C3.BoxedType>
-                              <Associate_source_diagnostic.C3.Choice>
-                                <dialogue_service_user.C1.BoxedType>
-                                  <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
-                                </dialogue_service_user.C1.BoxedType>
-                              </Associate_source_diagnostic.C3.Choice>
-                            </result_source_diagnostic.C3.BoxedType>
-                            <!--Collection>
-                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
-                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
-                              <user_information.C30>0403d079a4</user_information.C30>
-                            </Collection-->
-                          </AARE_apduSequenceType.A1.Sequence>
-                        </dialogueResponse.A1.BoxedType>
-                      </DialoguePDU.Choice>
-                    </single_ASN1_type.C0.BoxedType>
-                  </encoding.Choice>
-                </ExternalPDUSequenceType.U8.Sequence>
-              </ExternalPDU.A11.BoxedType>
-            </DialogueOC.A11.BoxedType>
-          </dialoguePortion.BoxedType>
-        </continue1.A5.Sequence>
-      </TCMessage.Choice>
-    </ASN>
-    
-	  <!-- SCCP LAYER  -->
-  	<SS7 name="sccp" file="sccp.xml">
-  		<header>
-          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
-      </header>
-  		<parameter name="Protocol_Class" type="F" littleEndian="false">
-  			<field value="0" lengthBit="4" />
-  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-  		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
-  			<field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" />	
-  		</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
-  			<field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" />
-  		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false"/>
-  			<!--field value="" format="binary" length="88" />
-        <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /> 
-  		</parameter-->
-  	</SS7>
+          <function file="library/AP_transaction_session.xml" />    
+          <call name="Manage_identifier">
+          </call>
+        
+          <parameter name="[sccpOssnBinary]" operation="number.toBinary" value="[function:sccpOssn]"/>
+          <parameter name="[sccpDssnBinary]" operation="number.toBinary" value="[function:sccpDssn]"/>        
 
-    <UA name="m3ua" file="m3ua.xml">
-        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
-				
-        <parameter tag="Network_Appearence">
-            <field name="Network_Appearence"  format="Integer" value="102"/>
-        </parameter>
+          <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
+          
+              <!-- AP LAYER -->
+              <ASN dictionary="cap/dictionary_CAP.xml">
+                <Component.Choice>
+                  <invoke.C1.Sequence>
+                     <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+                     <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+                     <opCode.Choice>
+                        <localValue.BoxedType><Long>requestReportBCSMEvent:23</Long></localValue.BoxedType>
+                        <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+                     </opCode.Choice>
+                     <invokeparameter>
+                       <RequestReportBCSMEventArg.Sequence>
+                          
+                          <Collection>
+                             <bcsmEvents.C0.Sequence>
+                                <eventTypeBCSM.C0.Enum>
+                                   <EnumType>oTermSeized.19</EnumType>
+                                </eventTypeBCSM.C0.Enum>
+                                <monitorMode.C1.Enum>
+                                   <EnumType>transparent.2</EnumType>
+                                </monitorMode.C1.Enum>
+                                <legID.C2.Choice>
+                                   <sendingSideID.C0.BoxedType><Bytes>01
+                                         <field name="LegType" value="leg1 LegType:1" type="EnumLong" length="1"/>
+                                      </Bytes></sendingSideID.C0.BoxedType>
+                                   <receivingSideID.C1.BoxedType><Bytes>6d
+                                         <field name="LegType" value="109" type="EnumLong" length="1"/>
+                                      </Bytes></receivingSideID.C1.BoxedType>
+                                </legID.C2.Choice>
+                                <dpSpecificCriteria.C30.Choice>
+                                   <applicationTimer.C1.BoxedType><Integer>1</Integer></applicationTimer.C1.BoxedType>
+                                   <midCallControlInfo.C2.Sequence>
+                                      <minimumNumberOfDigits.C0d>1</minimumNumberOfDigits.C0d>
+                                      <maximumNumberOfDigits.C1d>0</maximumNumberOfDigits.C1d>
+                                      <endOfReplyDigit.C2>4cf7</endOfReplyDigit.C2>
+                                      <cancelDigit.C3>2d7b93</cancelDigit.C3>
+                                      <startDigit.C4>aa35</startDigit.C4>
+                                      <interDigitTimeout.C6d>1</interDigitTimeout.C6d>
+                                   </midCallControlInfo.C2.Sequence>
+                                   <dpSpecificCriteriaAlt.C3.Sequence>
+                                      <changeOfPositionControlInfo.C0.BoxedType>
+                                         <Collection>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>2182716098dd48
+                                                     <field name="MMC" value="122,178" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="24728" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="56648" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>01745182810866
+                                                     <field name="MMC" value="104,157" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="33409" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="2150" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>11f121f46b
+                                                     <field name="MMC" value="111,12" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="62571" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>41f632d0490e17
+                                                     <field name="MMC" value="146,23" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="53321" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="3607" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>42f3425ffce924
+                                                     <field name="MMC" value="243,24" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="24572" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="59684" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>013702e9b1
+                                                     <field name="MMC" value="107,203" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="59825" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>510801ea2d0d7b
+                                                     <field name="MMC" value="158,100" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="59949" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="3451" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>32374150d5c222
+                                                     <field name="MMC" value="237,143" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="20693" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="49698" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>121111a83a
+                                                     <field name="MMC" value="211,111" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="43066" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                         </Collection>
+                                      </changeOfPositionControlInfo.C0.BoxedType>
+                                      <numberOfDigits.C1.BoxedType><Integer>0</Integer></numberOfDigits.C1.BoxedType>
+                                      <interDigitTimeout.C2>1</interDigitTimeout.C2>
+                                   </dpSpecificCriteriaAlt.C3.Sequence>
+                                </dpSpecificCriteria.C30.Choice>
+                                <automaticRearm.C50></automaticRearm.C50>
+                             </bcsmEvents.C0.Sequence>
+                             <bcsmEvents.C0.Sequence>
+                                <eventTypeBCSM.C0.Enum>
+                                   <EnumType>tChangeOfPosition.51</EnumType>
+                                </eventTypeBCSM.C0.Enum>
+                                <monitorMode.C1.Enum>
+                                   <EnumType>notifyAndContinue.1</EnumType>
+                                </monitorMode.C1.Enum>
+                                <legID.C2.Choice>
+                                   <sendingSideID.C0.BoxedType><Bytes>6a
+                                         <field name="LegType" value="106" type="EnumLong" length="1"/>
+                                      </Bytes></sendingSideID.C0.BoxedType>
+                                   <receivingSideID.C1.BoxedType><Bytes>02
+                                         <field name="LegType" value="leg2 LegType:2" type="EnumLong" length="1"/>
+                                      </Bytes></receivingSideID.C1.BoxedType>
+                                </legID.C2.Choice>
+                                <dpSpecificCriteria.C30.Choice>
+                                   <applicationTimer.C1.BoxedType><Integer>1</Integer></applicationTimer.C1.BoxedType>
+                                   <midCallControlInfo.C2.Sequence>
+                                      <minimumNumberOfDigits.C0d>1</minimumNumberOfDigits.C0d>
+                                      <maximumNumberOfDigits.C1d>1</maximumNumberOfDigits.C1d>
+                                      <endOfReplyDigit.C2>88c28bc0889f</endOfReplyDigit.C2>
+                                      <cancelDigit.C3>bbbbb5</cancelDigit.C3>
+                                      <startDigit.C4>aa679ab5b5cea0</startDigit.C4>
+                                      <interDigitTimeout.C6d>2</interDigitTimeout.C6d>
+                                   </midCallControlInfo.C2.Sequence>
+                                   <dpSpecificCriteriaAlt.C3.Sequence>
+                                      <changeOfPositionControlInfo.C0.BoxedType>
+                                         <Collection>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>126311f432d437
+                                                     <field name="MMC" value="213,116" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="62514" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="54327" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>814002d5fd0fe5
+                                                     <field name="MMC" value="180,204" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="54781" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="4069" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>32f05868b1
+                                                     <field name="MMC" value="230,85" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="26801" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>11f0261050c4bd
+                                                     <field name="MMC" value="110,62" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="4176" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="50365" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>7138914b696048
+                                                     <field name="MMC" value="178,193" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="19305" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="24648" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>42f6486f35
+                                                     <field name="MMC" value="246,84" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="28469" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>514561f59f0531
+                                                     <field name="MMC" value="155,164" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="62879" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="1329" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>513781d883db64
+                                                     <field name="MMC" value="157,183" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="55427" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="56164" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>213811a282
+                                                     <field name="MMC" value="128,113" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="41602" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                         </Collection>
+                                      </changeOfPositionControlInfo.C0.BoxedType>
+                                      <numberOfDigits.C1.BoxedType><Integer>1</Integer></numberOfDigits.C1.BoxedType>
+                                      <interDigitTimeout.C2>0</interDigitTimeout.C2>
+                                   </dpSpecificCriteriaAlt.C3.Sequence>
+                                </dpSpecificCriteria.C30.Choice>
+                                <automaticRearm.C50></automaticRearm.C50>
+                             </bcsmEvents.C0.Sequence>
+                             <bcsmEvents.C0.Sequence>
+                                <eventTypeBCSM.C0.Enum>
+                                   <EnumType>callAccepted.27</EnumType>
+                                </eventTypeBCSM.C0.Enum>
+                                <monitorMode.C1.Enum>
+                                   <EnumType>notifyAndContinue.1</EnumType>
+                                </monitorMode.C1.Enum>
+                                <legID.C2.Choice>
+                                   <sendingSideID.C0.BoxedType><Bytes>a3
+                                         <field name="LegType" value="163" type="EnumLong" length="1"/>
+                                      </Bytes></sendingSideID.C0.BoxedType>
+                                   <receivingSideID.C1.BoxedType><Bytes>5f
+                                         <field name="LegType" value="95" type="EnumLong" length="1"/>
+                                      </Bytes></receivingSideID.C1.BoxedType>
+                                </legID.C2.Choice>
+                                <dpSpecificCriteria.C30.Choice>
+                                   <applicationTimer.C1.BoxedType><Integer>2</Integer></applicationTimer.C1.BoxedType>
+                                   <midCallControlInfo.C2.Sequence>
+                                      <minimumNumberOfDigits.C0d>2</minimumNumberOfDigits.C0d>
+                                      <maximumNumberOfDigits.C1d>0</maximumNumberOfDigits.C1d>
+                                      <endOfReplyDigit.C2>df3b696fc8cd0eab6e</endOfReplyDigit.C2>
+                                      <cancelDigit.C3>7119d2ec63eeec</cancelDigit.C3>
+                                      <startDigit.C4>8a67aee389b8</startDigit.C4>
+                                      <interDigitTimeout.C6d>2</interDigitTimeout.C6d>
+                                   </midCallControlInfo.C2.Sequence>
+                                   <dpSpecificCriteriaAlt.C3.Sequence>
+                                      <changeOfPositionControlInfo.C0.BoxedType>
+                                         <Collection>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>91f777613806b0
+                                                     <field name="MMC" value="197,77" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="24888" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="1712" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>8153610994aa13
+                                                     <field name="MMC" value="183,165" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="2452" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="43539" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>9121125565
+                                                     <field name="MMC" value="191,212" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="21861" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>02450114d7128f
+                                                     <field name="MMC" value="205,104" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="5335" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="4751" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>32f367e90204df
+                                                     <field name="MMC" value="233,76" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="59650" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="1247" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>02848180f7
+                                                     <field name="MMC" value="204,188" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="33015" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                            <ChangeOfLocation.Choice>
+                                               <cellGlobalId.C0.BoxedType><Bytes>3204010d74be81
+                                                     <field name="MMC" value="234,100" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="3444" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="48769" type="Integer" length="2"/>
+                                                  </Bytes></cellGlobalId.C0.BoxedType>
+                                               <serviceAreaId.C1.BoxedType><Bytes>8150019ecf6875
+                                                     <field name="MMC" value="180,105" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="40655" type="Integer" length="2"/>
+                                                     <field name="CI_SAC" value="26741" type="Integer" length="2"/>
+                                                  </Bytes></serviceAreaId.C1.BoxedType>
+                                               <locationAreaId.C2.BoxedType><Bytes>21f6611ff4
+                                                     <field name="MMC" value="126,16" type="NumberMMC" length="3"/>
+                                                     <field name="LAC" value="8180" type="Integer" length="2"/>
+                                                  </Bytes></locationAreaId.C2.BoxedType>
+                                               <inter_SystemHandOver.C3></inter_SystemHandOver.C3>
+                                               <inter_PLMNHandOver.C4></inter_PLMNHandOver.C4>
+                                               <inter_MSCHandOver.C5></inter_MSCHandOver.C5>
+                                               <changeOfLocationAlt.C6.Sequence>
+                                                  
+                                               </changeOfLocationAlt.C6.Sequence>
+                                            </ChangeOfLocation.Choice>
+                                         </Collection>
+                                      </changeOfPositionControlInfo.C0.BoxedType>
+                                      <numberOfDigits.C1.BoxedType><Integer>1</Integer></numberOfDigits.C1.BoxedType>
+                                      <interDigitTimeout.C2>0</interDigitTimeout.C2>
+                                   </dpSpecificCriteriaAlt.C3.Sequence>
+                                </dpSpecificCriteria.C30.Choice>
+                                <automaticRearm.C50></automaticRearm.C50>
+                             </bcsmEvents.C0.Sequence>
+                          </Collection>
+                       
+                          <extensions.C2.BoxedType>
+                             <Collection>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>1824546458</local>
+                                      <global><ObjectIdentifier>0.1.2104.98.38.9</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>ignore.0</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>169464497</local>
+                                      <global><ObjectIdentifier>0.1.2126</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>ignore.0</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>1244360942</local>
+                                      <global><ObjectIdentifier>0.1.278.69.39</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>ignore.0</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                             </Collection>
+                          </extensions.C2.BoxedType>
+                       </RequestReportBCSMEventArg.Sequence>
+                     </invokeparameter>
+                  </invoke.C1.Sequence>
+                </Component.Choice>
+              </ASN>
+          
+              &TCAP_continue_client;        
+              
+              &SCCP_client;
+          
+              &M3UA_client;
+              
+          </sendMessageSIGTRAN>
+      
+          <!--receiveMessageSIGTRAN name="Wait DATA1" channel="[function:channelName]" request="false" type="requestReportBCSMEvent:23" result="RESULT">
+              <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+          </receiveMessageSIGTRAN-->
 
-
-        <parameter tag="Routing_Context">
-            <field name="Routing_Context" format="Integer"  value="101"/>
-        </parameter>
-
-        <parameter tag="Protocol_Data">
-            <field value="[M3UA_OPC]" name="Originating_Point_Code"/>
-            <field value="[M3UA_OPC]" name="Destination_Point_Code" />
-            <field value="SCCP"	name="SI"/>
-            <field value="2"	name="NI"/>
-            <field value="0"	name="MP"/>
-            <field value="1"	name="SLS"/>
-            <field name="DATA"	format="fvo"/>
-        </parameter>
-	
-        <parameter tag="Correlation_Id">
-            <field name="Correlation_Id" format="Integer"  value="12783"/>
-        </parameter>
-    </UA>
-    </sendMessageSIGTRAN>
-
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="requestReportBCSMEvent:23" result="RESULT">
-        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
+      </do>      
+      <output>
+          <!--parameter name="[function:res]" /-->
+      </output>
+    </function>
             
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->

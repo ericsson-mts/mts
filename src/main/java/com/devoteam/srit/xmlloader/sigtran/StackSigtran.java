@@ -38,6 +38,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
@@ -179,6 +180,19 @@ public class StackSigtran extends Stack
         MsgSigtran msg = new MsgSigtran(this, ppid);
         msg.decode(array.getBytes());
         return msg;
+    }
+
+    
+    /** 
+     * Returns the XML Element Replacer to replace the "[parameter]" string 
+     * in the XML document by the parameter values.
+     * By Default it is a generic replacer for text protocol : it duplicates 
+     * the current line for each value of the parameter 
+     */
+    @Override
+    public XMLElementReplacer getElementReplacer() 
+    {
+        return XMLElementAVPParser.instance();
     }
 
 }

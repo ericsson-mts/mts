@@ -1,351 +1,255 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
 
-
 <!--
-    Document   : server.xml
+    Document   : client.xml
     Created on : 10/07/2014
     Author     : fhenry
-    Description: Send a MAP message
+    Description: Send a CAP message
 -->
+
+
+<!DOCTYPE scenario [
+	<!ENTITY M3UA_client SYSTEM "../library/M3UA_client.xml">
+	<!ENTITY SCCP_client SYSTEM "../library/SCCP_client.xml">    
+  <!ENTITY TCAP_continue_client SYSTEM "../library/TCAP_continue_client.xml">  
+]>
 
 <scenario>
 
-    <openChannelSIGTRAN name="channel" localHost="[localHostM3UA]" localPort="[localPortM3UA]" 
-                                       remoteHost="[remoteHostM3UA]" remotePort="[remotePortM3UA]"
-                                       transport="[transport]"/>
-                                       
-    <sendMessageSIGTRAN	name="Send ASPUP1" channel="channel">	
-   
-        <UA name="m3ua" file="m3ua.xml">
-            <header 	version="1" reserved="0" messageClass="3" messageType="1"/>
-    				
-            <parameter tag="17" >
-                <field name="ASP_Identifier" format="Integer" value="755787" length="4"/>
-            </parameter>
-    	
-            <parameter tag="INFO_String">
-                <field name="INFO_String" format="String" value="ASPUP"/>
-            </parameter>
-        </UA>
-    </sendMessageSIGTRAN>
-        
-    <receiveMessageSIGTRAN name="Wait ASPUPACK1" request="false" type="ASP_Up:3_1" result="ASP_Up_Acknowledgement:3_4">
-        <parameter name="[binary]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
-    
-    <pause seconds="[pause]"/>
+    <function file="library/M3UA_manage_session.xml" />    
+    <call name="Establish_M3UA_session" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>        
+        </input>
+    </call>
 	
-    <if>
-      <condition>
-          <test parameter="[testcase:origTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:origTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
+    <!--function file="020_CON_Connect/client.xml" /-->
+    <call name="020_CON_Connect" >
+        <input>
+            <parameter name="[function:channelName]" value="channel"/>         
+            <parameter name="[function:m3uaOpc]" value="[M3UA_OPC]"/>        
+            <parameter name="[function:m3uaDpc]" value="[M3UA_DPC]"/>
+            <parameter name="[function:sccpOssn]" value="[SCCP_OSSN]"/>
+            <parameter name="[function:sccpDssn]" value="[SCCP_DSSN]"/>                    
+            <parameter name="[function:sccpOgt]" value="[SCCP_OGT]"/>        
+            <parameter name="[function:sccpDgt]" value="[SCCP_DGT]"/>                                           
+        </input>
+        <output>
+            <!--parameter name="[function:res]" /-->
+        </output>
+    </call>
 
-    <if>
-      <condition>
-          <test parameter="[testcase:destTransID]" condition="list.exists" not="true"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:destTransID]" operation="binary.random" value="4"/>
-      </then>
-    </if>    
+    <function name="020_CON_Connect">
+      <input>
+        <parameter name="[function:channelName]" type="string"/>      
+        <parameter name="[function:m3uaOpc]" type="number"/>      
+        <parameter name="[function:m3uaDpc]" type="number"/>
+        <parameter name="[function:sccpOssn]" type="number"/>        
+        <parameter name="[function:sccpDssn]" type="number"/>                                                                          
+        <parameter name="[function:sccpOgt]" type="number"/>        
+        <parameter name="[function:sccpDgt]" type="number"/>                                                                  
+      </input>
+      <do>
+  
+          <function file="library/AP_transaction_session.xml" />    
+          <call name="Manage_identifier">
+          </call>
+      
+          <parameter name="[sccpOssnBinary]" operation="number.toBinary" value="[function:sccpOssn]"/>
+          <parameter name="[sccpDssnBinary]" operation="number.toBinary" value="[function:sccpDssn]"/>        
 
-    <if>
-      <condition>
-          <test parameter="[testcase:invokeID]" condition="list.exists"/>
-      </condition>
-      <then>
-          <parameter name="[testcase:invokeID]" operation="number.add" value="[testcase:invokeID]" value2="1"/>
-      </then>      
-      <else>
-          <parameter name="[testcase:invokeID]" operation="set" value="1"/>
-      </else>
-    </if>    
+          <sendMessageSIGTRAN name="Send DATA1" channel="[function:channelName]">
+          
+              <!-- AP LAYER -->
+              <ASN dictionary="cap/dictionary_CAP.xml">
+                <Component.Choice>
+                  <invoke.C1.Sequence>
+                     <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
+                     <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
+                     <opCode.Choice>
+                        <localValue.BoxedType><Long>connect:20</Long></localValue.BoxedType>
+                        <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
+                     </opCode.Choice>
+                     <invokeparameter>
+                       <ConnectArg.Sequence>
+                          <destinationRoutingAddress.C0.BoxedType>
+                             <Collection>
+                                <CalledPartyNumber.BoxedType><Bytes>faca3199538652
+                                      <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                                      <field name="Nature of address" value="reserved for national use:122" type="EnumLong" lengthBit="7"/>
+                                      <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1"/>
+                                      <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
+                                      <field name="spare" value="10" type="Integer" lengthBit="4"/>
+                                      <field name="digits" value="1399356825" type="Number_BCD" length="10"/>
+                                   </Bytes></CalledPartyNumber.BoxedType>
+                                <CalledPartyNumber.BoxedType><Bytes>8715019051
+                                      <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                                      <field name="Nature of address" value="network routing number in network-specific number format (national use):7" type="EnumLong" lengthBit="7"/>
+                                      <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1"/>
+                                      <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
+                                      <field name="spare" value="5" type="Integer" lengthBit="4"/>
+                                      <field name="digits" value="1009154006" type="Number_BCD" length="10"/>
+                                   </Bytes></CalledPartyNumber.BoxedType>
+                                <!--CalledPartyNumber.BoxedType><Bytes>78e96153
+                                      <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                                      <field name="Nature of address" value="reserved for national use:120" type="EnumLong" lengthBit="7"/>
+                                      <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1"/>
+                                      <field name="Numbering plan" value="reserved for national use:6" type="EnumLong" lengthBit="3"/>
+                                      <field name="spare" value="9" type="Integer" lengthBit="4"/>
+                                      <field name="digits" value="16359480" type="Number_BCD" length="8"/>
+                                   </Bytes></CalledPartyNumber.BoxedType-->
+                             </Collection>
+                          </destinationRoutingAddress.C0.BoxedType>
+                          <alertingPattern.C1.BoxedType><Bytes>3cff0a    
+                            		<field name="value1" value="60" type="Integer" length="1"/>
+                            		<field name="value2" value="255" type="Integer" length="1"/>        
+                                <field name="Spare" value="0" type="Integer" lengthBit="4"/>
+                                <field name="typePattern" value="categorie:2" type="EnumLong" lengthBit="2"/>
+                                <field name="patternValue" value="pattern-2:2" type="EnumLong" lengthBit="2"/>
+                          </Bytes></alertingPattern.C1.BoxedType>
+                          <originalCalledPartyID.C6.BoxedType><Bytes>11c50137498542
+                                <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                                <field name="Nature of address" value="spare:17" type="EnumLong" lengthBit="7"/>
+                                <field name="spare1" value="1" type="Integer" lengthBit="1"/>
+                                <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
+                                <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2"/>
+                                <field name="spare2" value="1" type="Integer" lengthBit="2"/>
+                                <field name="digits" value="1073945824" type="Number_BCD" length="10"/>
+                             </Bytes></originalCalledPartyID.C6.BoxedType>
+                          <extensions.C10.BoxedType>
+                             <Collection>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>887745463</local>
+                                      <!--global><ObjectIdentifier>0.1.25.55.49.43.58.37.18.44.99</ObjectIdentifier></global-->
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>ignore.0</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                                <!--ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>2709611340</local>
+                                      <global><ObjectIdentifier>0.1.283.40.64.115.53.23.98</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>abort.1</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence>
+                                <ExtensionField.Sequence>
+                                   <type.Choice>
+                                      <local>3905052634</local>
+                                      <global><ObjectIdentifier>0.1.294.43.67.55</ObjectIdentifier></global>
+                                   </type.Choice>
+                                   <criticality.nulld.Enum>
+                                      <EnumType>ignore.0</EnumType>
+                                   </criticality.nulld.Enum>
+                                   <NullObject.C1></NullObject.C1>
+                                </ExtensionField.Sequence-->
+                             </Collection>
+                          </extensions.C10.BoxedType>
+                          <carrier.C11.BoxedType><Bytes>a55361dec9567c
+                              <field name="SelectedCIC" value="not pre subscribed and input by calling party:4" type="EnumLong" lengthBit="8"/>
+                              <field name="carrierID" value="1234567" type="EnumLong" length="3"/>                        
+                          </Bytes></carrier.C11.BoxedType>
+                          <callingPartysCategory.C28.BoxedType><Bytes>0f
+                                <field name="category" value="payphone:15" type="EnumLong" length="1"/>
+                             </Bytes></callingPartysCategory.C28.BoxedType>
+                          <redirectingPartyID.C29.BoxedType><Bytes>f1547123846140
+                                <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
+                                <field name="Nature of address" value="reserved for national use:113" type="EnumLong" lengthBit="7"/>
+                                <field name="spare1" value="0" type="Integer" lengthBit="1"/>
+                                <field name="Numbering plan" value="private numbering plan:5" type="EnumLong" lengthBit="3"/>
+                                <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2"/>
+                                <field name="spare2" value="0" type="Integer" lengthBit="2"/>
+                                <field name="digits" value="1732481604" type="Number_BCD" length="10"/>
+                             </Bytes></redirectingPartyID.C29.BoxedType>
+                          <redirectionInformation.C30.BoxedType><Bytes>d3df
+                                <field name="Redirecting reason" value="spare:13" type="EnumLong" lengthBit="4"/>
+                                <field name="spare1" value="0" type="Integer" lengthBit="1"/>
+                                <field name="Redirecting indicator" value="call diverted:3" type="EnumLong" lengthBit="3"/>
+                                <field name="Original redirection reason" value="spare:13" type="EnumLong" lengthBit="4"/>
+                                <field name="spare2" value="1" type="Integer" lengthBit="1"/>
+                                <field name="Redirection counter" value="7" type="Integer" lengthBit="3"/>
+                             </Bytes></redirectionInformation.C30.BoxedType>
+                          <genericNumbers.C14.BoxedType>
+                             <Collection>
+                                <GenericNumber.BoxedType><Bytes>340ba85c</Bytes></GenericNumber.BoxedType>
+                                <!--GenericNumber.BoxedType><Bytes>b0399141</Bytes></GenericNumber.BoxedType-->
+                                <GenericNumber.BoxedType><Bytes>e5f58d</Bytes></GenericNumber.BoxedType>
+                             </Collection>
+                          </genericNumbers.C14.BoxedType>
+                          <serviceInteractionIndicatorsTwo.C15.Sequence>
+                             <forwardServiceInteractionInd.C0.Sequence>
+                                <conferenceTreatmentIndicator.C1>2b01ce</conferenceTreatmentIndicator.C1>
+                                <callDiversionTreatmentIndicator.C2>e44778</callDiversionTreatmentIndicator.C2>
+                                <callingPartyRestrictionIndicator.C4>f41368</callingPartyRestrictionIndicator.C4>
+                             </forwardServiceInteractionInd.C0.Sequence>
+                             <backwardServiceInteractionInd.C1.Sequence>
+                                <conferenceTreatmentIndicator.C1>dc</conferenceTreatmentIndicator.C1>
+                                <callCompletionTreatmentIndicator.C2>9a2d</callCompletionTreatmentIndicator.C2>
+                             </backwardServiceInteractionInd.C1.Sequence>
+                             <bothwayThroughConnectionInd.C2.Enum>
+                                <EnumType>bothwayPathNotRequired.1</EnumType>
+                             </bothwayThroughConnectionInd.C2.Enum>
+                             <connectedNumberTreatmentInd.C4.Enum>
+                                <EnumType>presentCalledINNumber.2</EnumType>
+                             </connectedNumberTreatmentInd.C4.Enum>
+                             <nonCUGCall.C13></nonCUGCall.C13>
+                             <holdTreatmentIndicator.C50>f6fcab</holdTreatmentIndicator.C50>
+                             <cwTreatmentIndicator.C51>fc3434</cwTreatmentIndicator.C51>
+                             <ectTreatmentIndicator.C52>287c6a56</ectTreatmentIndicator.C52>
+                          </serviceInteractionIndicatorsTwo.C15.Sequence>
+                          <chargeNumber.C19.BoxedType><LocationNumber.BoxedType><Bytes>90197191897827
+                                   <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
+                                   <field name="Nature of address" value="spare:16" type="EnumLong" lengthBit="7"/>
+                                   <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1"/>
+                                   <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
+                                   <field name="Address presentation restricted" value="address not available (national use):2" type="EnumLong" lengthBit="2"/>
+                                   <field name="Screening" value="user provided, verified and passed:1" type="EnumLong" lengthBit="2"/>
+                                   <field name="digits" value="171998877" type="Number_BCD" length="10"/>
+                                </Bytes></LocationNumber.BoxedType></chargeNumber.C19.BoxedType>
+                          <legToBeConnected.C21.Choice>
+                             <sendingSideID.C0.BoxedType><Bytes>01
+                                   <field name="LegType" value="leg1 LegType:1" type="EnumLong" length="1"/>
+                                </Bytes></sendingSideID.C0.BoxedType>
+                             <receivingSideID.C1.BoxedType><Bytes>01
+                                   <field name="LegType" value="leg1 LegType:1" type="EnumLong" length="1"/>
+                                </Bytes></receivingSideID.C1.BoxedType>
+                          </legToBeConnected.C21.Choice>
+                          <cug_Interlock.C31.BoxedType><Bytes>bf65ef</Bytes></cug_Interlock.C31.BoxedType>
+                          <cug_OutgoingAccess.C32></cug_OutgoingAccess.C32>
+                          <suppressionOfAnnouncement.C55.Null> </suppressionOfAnnouncement.C55.Null>
+                          <oCSIApplicable.C56.Null> </oCSIApplicable.C56.Null>
+                          <naOliInfo.C57.BoxedType><Bytes>ef3b1631</Bytes></naOliInfo.C57.BoxedType>
+                          <bor_InterrogationRequested.C58></bor_InterrogationRequested.C58>
+                          <suppress_N_CSI.C59></suppress_N_CSI.C59>
+                       </ConnectArg.Sequence>
+                     </invokeparameter>
+                  </invoke.C1.Sequence>
+                </Component.Choice>
+              </ASN>
+              
+              &TCAP_continue_client;        
+              
+              &SCCP_client;
+          
+              &M3UA_client;
+              
+          </sendMessageSIGTRAN>
+      
+          <!--receiveMessageSIGTRAN name="Wait DATA1" channel="[function:channelName]" request="false" type="connect:20" result="RESULT">
+              <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
+          </receiveMessageSIGTRAN-->
 
-    <sendMessageSIGTRAN name="Send DATA1" channel="channel">
-    
-    <!-- AP LAYER -->
-    <ASN dictionary="cap/dictionary_CAP.xml">
-      <Component.Choice>
-        <invoke.C1.Sequence>
-           <invokeID.BoxedType><Integer>[invokeID]</Integer></invokeID.BoxedType>
-           <!--linkedID.C0.BoxedType><Integer>634421171</Integer></linkedID.C0.BoxedType-->
-           <opCode.Choice>
-              <localValue.BoxedType><Long>connect:20</Long></localValue.BoxedType>
-              <!--globalValue><ObjectIdentifier>0.1.2112.84.58.65.40</ObjectIdentifier></globalValue-->
-           </opCode.Choice>
-           <invokeparameter>
-             <ConnectArg.Sequence>
-                <destinationRoutingAddress.C0.BoxedType>
-                   <Collection>
-                      <CalledPartyNumber.BoxedType><Bytes>faca3199538652
-                            <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                            <field name="Nature of address" value="reserved for national use:122" type="EnumLong" lengthBit="7"/>
-                            <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1"/>
-                            <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
-                            <field name="spare" value="10" type="Integer" lengthBit="4"/>
-                            <field name="digits" value="1399356825" type="Number_BCD" length="10"/>
-                         </Bytes></CalledPartyNumber.BoxedType>
-                      <CalledPartyNumber.BoxedType><Bytes>8715019051
-                            <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                            <field name="Nature of address" value="network routing number in network-specific number format (national use):7" type="EnumLong" lengthBit="7"/>
-                            <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1"/>
-                            <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
-                            <field name="spare" value="5" type="Integer" lengthBit="4"/>
-                            <field name="digits" value="1009154006" type="Number_BCD" length="10"/>
-                         </Bytes></CalledPartyNumber.BoxedType>
-                      <!--CalledPartyNumber.BoxedType><Bytes>78e96153
-                            <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                            <field name="Nature of address" value="reserved for national use:120" type="EnumLong" lengthBit="7"/>
-                            <field name="Internal Network Number (INN)" value="routing to internal number not allowed:1" type="EnumLong" lengthBit="1"/>
-                            <field name="Numbering plan" value="reserved for national use:6" type="EnumLong" lengthBit="3"/>
-                            <field name="spare" value="9" type="Integer" lengthBit="4"/>
-                            <field name="digits" value="16359480" type="Number_BCD" length="8"/>
-                         </Bytes></CalledPartyNumber.BoxedType-->
-                   </Collection>
-                </destinationRoutingAddress.C0.BoxedType>
-                <alertingPattern.C1.BoxedType><Bytes>3cff0a    
-                  		<field name="value1" value="60" type="Integer" length="1"/>
-                  		<field name="value2" value="255" type="Integer" length="1"/>        
-                      <field name="Spare" value="0" type="Integer" lengthBit="4"/>
-                      <field name="typePattern" value="categorie:2" type="EnumLong" lengthBit="2"/>
-                      <field name="patternValue" value="pattern-2:2" type="EnumLong" lengthBit="2"/>
-                </Bytes></alertingPattern.C1.BoxedType>
-                <originalCalledPartyID.C6.BoxedType><Bytes>11c50137498542
-                      <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                      <field name="Nature of address" value="spare:17" type="EnumLong" lengthBit="7"/>
-                      <field name="spare1" value="1" type="Integer" lengthBit="1"/>
-                      <field name="Numbering plan" value="Telex numbering plan (ITU-T Recommendation F.69):4" type="EnumLong" lengthBit="3"/>
-                      <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2"/>
-                      <field name="spare2" value="1" type="Integer" lengthBit="2"/>
-                      <field name="digits" value="1073945824" type="Number_BCD" length="10"/>
-                   </Bytes></originalCalledPartyID.C6.BoxedType>
-                <extensions.C10.BoxedType>
-                   <Collection>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>887745463</local>
-                            <!--global><ObjectIdentifier>0.1.25.55.49.43.58.37.18.44.99</ObjectIdentifier></global-->
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>ignore.0</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <!--ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>2709611340</local>
-                            <global><ObjectIdentifier>0.1.283.40.64.115.53.23.98</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>abort.1</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence>
-                      <ExtensionField.Sequence>
-                         <type.Choice>
-                            <local>3905052634</local>
-                            <global><ObjectIdentifier>0.1.294.43.67.55</ObjectIdentifier></global>
-                         </type.Choice>
-                         <criticality.nulld.Enum>
-                            <EnumType>ignore.0</EnumType>
-                         </criticality.nulld.Enum>
-                         <NullObject.C1></NullObject.C1>
-                      </ExtensionField.Sequence-->
-                   </Collection>
-                </extensions.C10.BoxedType>
-                <carrier.C11.BoxedType><Bytes>a55361dec9567c
-                    <field name="SelectedCIC" value="not pre subscribed and input by calling party:4" type="EnumLong" lengthBit="8"/>
-                    <field name="carrierID" value="1234567" type="EnumLong" length="3"/>                        
-                </Bytes></carrier.C11.BoxedType>
-                <callingPartysCategory.C28.BoxedType><Bytes>0f
-                      <field name="category" value="payphone:15" type="EnumLong" length="1"/>
-                   </Bytes></callingPartysCategory.C28.BoxedType>
-                <redirectingPartyID.C29.BoxedType><Bytes>f1547123846140
-                      <field name="Odd/even (O/E)" value="even number of address signals:0" type="EnumLong" lengthBit="1"/>
-                      <field name="Nature of address" value="reserved for national use:113" type="EnumLong" lengthBit="7"/>
-                      <field name="spare1" value="0" type="Integer" lengthBit="1"/>
-                      <field name="Numbering plan" value="private numbering plan:5" type="EnumLong" lengthBit="3"/>
-                      <field name="Address presentation restricted" value="presentation restricted:1" type="EnumLong" lengthBit="2"/>
-                      <field name="spare2" value="0" type="Integer" lengthBit="2"/>
-                      <field name="digits" value="1732481604" type="Number_BCD" length="10"/>
-                   </Bytes></redirectingPartyID.C29.BoxedType>
-                <redirectionInformation.C30.BoxedType><Bytes>d3df
-                      <field name="Redirecting reason" value="spare:13" type="EnumLong" lengthBit="4"/>
-                      <field name="spare1" value="0" type="Integer" lengthBit="1"/>
-                      <field name="Redirecting indicator" value="call diverted:3" type="EnumLong" lengthBit="3"/>
-                      <field name="Original redirection reason" value="spare:13" type="EnumLong" lengthBit="4"/>
-                      <field name="spare2" value="1" type="Integer" lengthBit="1"/>
-                      <field name="Redirection counter" value="7" type="Integer" lengthBit="3"/>
-                   </Bytes></redirectionInformation.C30.BoxedType>
-                <genericNumbers.C14.BoxedType>
-                   <Collection>
-                      <GenericNumber.BoxedType><Bytes>340ba85c</Bytes></GenericNumber.BoxedType>
-                      <!--GenericNumber.BoxedType><Bytes>b0399141</Bytes></GenericNumber.BoxedType-->
-                      <GenericNumber.BoxedType><Bytes>e5f58d</Bytes></GenericNumber.BoxedType>
-                   </Collection>
-                </genericNumbers.C14.BoxedType>
-                <serviceInteractionIndicatorsTwo.C15.Sequence>
-                   <forwardServiceInteractionInd.C0.Sequence>
-                      <conferenceTreatmentIndicator.C1>2b01ce</conferenceTreatmentIndicator.C1>
-                      <callDiversionTreatmentIndicator.C2>e44778</callDiversionTreatmentIndicator.C2>
-                      <callingPartyRestrictionIndicator.C4>f41368</callingPartyRestrictionIndicator.C4>
-                   </forwardServiceInteractionInd.C0.Sequence>
-                   <backwardServiceInteractionInd.C1.Sequence>
-                      <conferenceTreatmentIndicator.C1>dc</conferenceTreatmentIndicator.C1>
-                      <callCompletionTreatmentIndicator.C2>9a2d</callCompletionTreatmentIndicator.C2>
-                   </backwardServiceInteractionInd.C1.Sequence>
-                   <bothwayThroughConnectionInd.C2.Enum>
-                      <EnumType>bothwayPathNotRequired.1</EnumType>
-                   </bothwayThroughConnectionInd.C2.Enum>
-                   <connectedNumberTreatmentInd.C4.Enum>
-                      <EnumType>presentCalledINNumber.2</EnumType>
-                   </connectedNumberTreatmentInd.C4.Enum>
-                   <nonCUGCall.C13></nonCUGCall.C13>
-                   <holdTreatmentIndicator.C50>f6fcab</holdTreatmentIndicator.C50>
-                   <cwTreatmentIndicator.C51>fc3434</cwTreatmentIndicator.C51>
-                   <ectTreatmentIndicator.C52>287c6a56</ectTreatmentIndicator.C52>
-                </serviceInteractionIndicatorsTwo.C15.Sequence>
-                <chargeNumber.C19.BoxedType><LocationNumber.BoxedType><Bytes>90197191897827
-                         <field name="Odd/even (O/E)" value="odd number of address signals:1" type="EnumLong" lengthBit="1"/>
-                         <field name="Nature of address" value="spare:16" type="EnumLong" lengthBit="7"/>
-                         <field name="Internal Network Number (INN)" value="routing to internal number allowed:0" type="EnumLong" lengthBit="1"/>
-                         <field name="Numbering plan" value="ISDN/Telephony Numbering Plan (Rec ITU-T E.164):1" type="EnumLong" lengthBit="3"/>
-                         <field name="Address presentation restricted" value="address not available (national use):2" type="EnumLong" lengthBit="2"/>
-                         <field name="Screening" value="user provided, verified and passed:1" type="EnumLong" lengthBit="2"/>
-                         <field name="digits" value="171998877" type="Number_BCD" length="10"/>
-                      </Bytes></LocationNumber.BoxedType></chargeNumber.C19.BoxedType>
-                <legToBeConnected.C21.Choice>
-                   <sendingSideID.C0.BoxedType><Bytes>01
-                         <field name="LegType" value="leg1 LegType:1" type="EnumLong" length="1"/>
-                      </Bytes></sendingSideID.C0.BoxedType>
-                   <receivingSideID.C1.BoxedType><Bytes>01
-                         <field name="LegType" value="leg1 LegType:1" type="EnumLong" length="1"/>
-                      </Bytes></receivingSideID.C1.BoxedType>
-                </legToBeConnected.C21.Choice>
-                <cug_Interlock.C31.BoxedType><Bytes>bf65ef</Bytes></cug_Interlock.C31.BoxedType>
-                <cug_OutgoingAccess.C32></cug_OutgoingAccess.C32>
-                <suppressionOfAnnouncement.C55.Null> </suppressionOfAnnouncement.C55.Null>
-                <oCSIApplicable.C56.Null> </oCSIApplicable.C56.Null>
-                <naOliInfo.C57.BoxedType><Bytes>ef3b1631</Bytes></naOliInfo.C57.BoxedType>
-                <bor_InterrogationRequested.C58></bor_InterrogationRequested.C58>
-                <suppress_N_CSI.C59></suppress_N_CSI.C59>
-             </ConnectArg.Sequence>
-           </invokeparameter>
-        </invoke.C1.Sequence>
-      </Component.Choice>
-    </ASN>
-    
-    <!-- TCAP LAYER -->
-    <ASN dictionary="tcap/dictionary_TCAP.xml">
-      <TCMessage.Choice>
-        <continue1.A5.Sequence>
-          <otid.BoxedType><Bytes>[origTransID]</Bytes></otid.BoxedType>
-          <dtid.BoxedType><Bytes>[destTransID]</Bytes></dtid.BoxedType>
-          <dialoguePortion.BoxedType>
-            <DialogueOC.A11.BoxedType>
-              <ExternalPDU.A11.BoxedType>
-                <ExternalPDUSequenceType.U8.Sequence>
-                  <direct_reference><ObjectIdentifier>dialogue-as-id:0.0.17.773.1.1.1</ObjectIdentifier></direct_reference>
-                  <!--indirect_reference>856649051904125184</indirect_reference-->
-                  <!--data_value_descriptor.BoxedType><Bytes>0402aa40</Bytes></data_value_descriptor.BoxedType-->
-                  <encoding.Choice>
-                    <single_ASN1_type.C0.BoxedType>
-                      <DialoguePDU.Choice>
-                        <dialogueResponse.A1.BoxedType>
-                          <AARE_apduSequenceType.A1.Sequence>
-                            <protocol_version.C0d><BitString value="Version1:80" trailing="7"/></protocol_version.C0d>
-                            <application_context_name.C1.BoxedType>
-                              <ObjectIdentifier><ObjectIdentifier>CAP-v2-gsmSSF-to-gsmSCF-AC:0.4.0.0.1.0.50.1</ObjectIdentifier></ObjectIdentifier>
-                            </application_context_name.C1.BoxedType>
-                            <result.C2.BoxedType>
-                              <Associate_result.C2.BoxedType><Long>0</Long></Associate_result.C2.BoxedType>
-                            </result.C2.BoxedType>
-                            <result_source_diagnostic.C3.BoxedType>
-                              <Associate_source_diagnostic.C3.Choice>
-                                <dialogue_service_user.C1.BoxedType>
-                                  <Dialogue_service_user.C1.BoxedType><Long>0</Long></Dialogue_service_user.C1.BoxedType>
-                                </dialogue_service_user.C1.BoxedType>
-                              </Associate_source_diagnostic.C3.Choice>
-                            </result_source_diagnostic.C3.BoxedType>
-                            <!--Collection>
-                              <user_information.C30>040ca70f5e0f024d3b3c34b26588</user_information.C30>
-                              <user_information.C30>04120aef3699f398f0a04000761bab86be69191c</user_information.C30>
-                              <user_information.C30>0403d079a4</user_information.C30>
-                            </Collection-->
-                          </AARE_apduSequenceType.A1.Sequence>
-                        </dialogueResponse.A1.BoxedType>
-                      </DialoguePDU.Choice>
-                    </single_ASN1_type.C0.BoxedType>
-                  </encoding.Choice>
-                </ExternalPDUSequenceType.U8.Sequence>
-              </ExternalPDU.A11.BoxedType>
-            </DialogueOC.A11.BoxedType>
-          </dialoguePortion.BoxedType>
-        </continue1.A5.Sequence>
-      </TCMessage.Choice>
-    </ASN>
-    
-	  <!-- SCCP LAYER  -->
-  	<SS7 name="sccp" file="sccp.xml">
-  		<header>
-          <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
-      </header>
-  		<parameter name="Protocol_Class" type="F" littleEndian="false">
-  			<field value="0" lengthBit="4" />
-  			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-  		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="[M3UA_DPC]" length="2" />
-  			<field name="Subsystem_Number" value="[SCCP_DSSN]" length="1" />	
-  		</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
-  			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="[M3UA_OPC]" length="2" />
-  			<field name="Subsystem_Number" value="[SCCP_OSSN]" length="1" />
-  		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false"/>
-  			<!--field value="" format="binary" length="88" />
-        <field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" />
-  		</parameter-->
-  	</SS7>
-
-    <UA name="m3ua" file="m3ua.xml">
-        <header	messageClass="Transfer_Messages" messageType="Payload_Data"/>
-				
-        <parameter tag="Network_Appearence">
-            <field name="Network_Appearence"  format="Integer" value="102"/>
-        </parameter>
-
-
-        <parameter tag="Routing_Context">
-            <field name="Routing_Context" format="Integer"  value="101"/>
-        </parameter>
-
-        <parameter tag="Protocol_Data">
-            <field value="[M3UA_OPC]" name="Originating_Point_Code"/>
-            <field value="[M3UA_DPC]" name="Destination_Point_Code" />
-            <field value="SCCP"	name="SI"/>
-            <field value="2"	name="NI"/>
-            <field value="0"	name="MP"/>
-            <field value="1"	name="SLS"/>
-            <field name="DATA"	format="fvo"/>
-        </parameter>
-	
-        <parameter tag="Correlation_Id">
-            <field name="Correlation_Id" format="Integer"  value="12783"/>
-        </parameter>
-    </UA>
-    </sendMessageSIGTRAN>
-
-    <receiveMessageSIGTRAN name="Wait DATA1" channel="channel" request="false" type="connect:20" result="RESULT">
-        <parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
-    </receiveMessageSIGTRAN>
+      </do>      
+      <output>
+          <!--parameter name="[function:res]" /-->
+      </output>
+    </function>
             
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->

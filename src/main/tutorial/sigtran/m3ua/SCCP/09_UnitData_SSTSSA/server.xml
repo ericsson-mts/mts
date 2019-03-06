@@ -12,7 +12,7 @@
 <scenario>
 
   	<!-- Message encoded value -->
-  	<parameter name="[data]" value="010001010000002c021000210000045600000a4303020000090003050702c20102c20105038e430a01000000" />
+  	<parameter name="[data]" value="0100010100000030021000250000045600000a4303020000090003070b04c201010104c201020105038e430a01000000" />
   
   	<receiveMessageSIGTRAN name="Wait DATA1">
   		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
@@ -40,14 +40,14 @@
       			<field value="0" lengthBit="4" />
       			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
       		</parameter>
-      		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+      		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
       			<field name="Address_Indicator" value="194" length="1" />
-      			<!--field name="Signalling_Point_Code" value="257" length="2" /-->
+      			<field name="Signalling_Point_Code" value="257" length="2" />
       			<field name="Subsystem_Number" value="1" length="1" />	
       		</parameter>
-      		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+      		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">
       			<field name="Address_Indicator" value="194" length="1" />
-      			<!--field name="Signalling_Point_Code" value="258" length="2" /-->
+      			<field name="Signalling_Point_Code" value="258" length="2" />
       			<field name="Subsystem_Number" value="1" length="1" />
       		</parameter>
       		<parameter id="15" name="Data" type="V" littleEndian="false">
@@ -79,7 +79,7 @@
     </sendMessageSIGTRAN>
     
     <!-- TO BE MOVE TO CLIENT SCENARIO : PB OF ROUTING -->
-  	<parameter name="[data]" value="010001010000002c021000210000045600000a4303020005090003050702c20102c20105018e560400000000" />
+  	<parameter name="[data]" value="0100010100000030021000250000045600000a4303020005090003070b04c201010104c201020105018e560400000000" />
   
   	<receiveMessageSIGTRAN name="Wait DATA1">
   		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
