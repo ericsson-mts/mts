@@ -108,7 +108,7 @@ public class FvoMessage {
                     parameter.add(this.getReserved());
                 }
                 else if (params[1].equalsIgnoreCase("messageClass")) {
-                    parameter.add(this.getMessageClass());
+                    parameter.add(this._messageClass;
                 }
                 else */ 
                 if (params[1].equalsIgnoreCase("messageType")) {
