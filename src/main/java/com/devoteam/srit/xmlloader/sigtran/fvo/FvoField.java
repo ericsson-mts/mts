@@ -23,8 +23,10 @@
 
 package com.devoteam.srit.xmlloader.sigtran.fvo;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 
 import gp.utils.arrays.Array;
@@ -222,6 +224,40 @@ public class FvoField {
         _littleEndian = value;
     }
 
+    /**
+     * Get a parameter from the field
+     *
+     * @param path		: The path of the parameter requested
+     * @return			: The parameter requested
+     * @throws Exception
+     */
+    public Parameter getParameter(String path) throws Exception {
+
+        Parameter parameter = new Parameter();
+        String[] params = Utils.splitPath(path);
+
+        if (params[0].equalsIgnoreCase("name")) {
+            parameter.add(this._name);
+        }
+        else if (params[0].equalsIgnoreCase("format")) {
+            parameter.add(this._format);
+        }
+        else if (params[0].equalsIgnoreCase("value")) {
+            parameter.add(this._value);
+        }
+        else if (params[0].equalsIgnoreCase("lengthBit")) {
+            parameter.add(this._lengthBit);
+        }        
+        else if (params[0].equalsIgnoreCase("littleEndian")) {
+            parameter.add(this._littleEndian);
+        }       
+        else {
+            parameter = null;
+        }
+
+        return parameter;
+    }
+    
     public void parseElement(Element root) throws Exception {
         String name = root.attributeValue("name");
         if(name == null)

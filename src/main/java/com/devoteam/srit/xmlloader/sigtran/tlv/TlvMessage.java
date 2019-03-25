@@ -184,7 +184,6 @@ public class TlvMessage {
         return null;
     }
 
-    //TODO MEP
     /**
      * Get a parameter from the message
      *

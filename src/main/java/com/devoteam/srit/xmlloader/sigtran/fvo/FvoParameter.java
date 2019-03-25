@@ -27,15 +27,19 @@ import java.util.List;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -138,6 +142,20 @@ public class FvoParameter {
         _fields = fields;
     }
 
+    public FvoField getFvoField(String name) {
+		Iterator<FvoField> iterParam = _fields.iterator();
+		FvoField param = null;
+		while (iterParam.hasNext())
+		{
+			param = (FvoField) iterParam.next();
+			if (name.equalsIgnoreCase(param.getName()))
+			{
+				return param;
+			}
+		}
+        return null;
+    }
+    
     public String getName() {
         return _name;
     }
@@ -154,6 +172,57 @@ public class FvoParameter {
         _type = type;
     }
 
+    /**
+     * Get a parameter from the message
+     *
+     * @param path		: The path of the parameter requested
+     * @return			: The parameter requested
+     * @throws Exception
+     */
+    public Parameter getParameter(String path) throws Exception {
+
+        Parameter parameter = new Parameter();
+        String[] params = Utils.splitPath(path);
+
+        if (params[0].equalsIgnoreCase("name")) {
+            parameter.add(this.getName());
+        }
+        else if (params[0].equalsIgnoreCase("id")) {
+            parameter.add(this._id);
+        }
+        else if (params[0].equalsIgnoreCase("length")) {
+            parameter.add(this._messageLength);
+        }
+        else if (params[0].equalsIgnoreCase("type")) {
+            parameter.add(this._type);
+        }
+        else if (params[0].equalsIgnoreCase("longParameter")) {
+            parameter.add(this._longParameter);
+        }
+        else if (params[0].equalsIgnoreCase("littleEndian")) {
+            parameter.add(this._littleEndian);
+        }        
+        else if ((params[0].equalsIgnoreCase("field")) && (params.length >= 2)) {
+            FvoField tlvField = this.getFvoField(params[1]);
+            if (tlvField != null)
+            {
+	            if (path.contains(":")) {
+	                path = path.substring(path.indexOf(":") + 1);
+	                parameter = tlvField.getParameter(path.substring(path.indexOf(":") + 1));
+	            }
+	            else {
+	                path = path.substring(path.indexOf(".") + 1);
+	                parameter = tlvField.getParameter(path.substring(path.indexOf(".") + 1));
+	            }
+            }
+        }
+        else {
+            parameter = null;
+        }
+
+        return parameter;
+    }
+    
     public void parseElement(Element root) throws Exception {           
         //Create the FvoParameter
         String id = root.attributeValue("id");
