@@ -55,6 +55,58 @@
     </receiveMessageSIGTRAN>
     
     <test parameter="[binary]" condition="binary.equals" value="[reference]"/>
+ 
+ 
+    <parameter name="[version]" operation="protocol.setFromMessage" value="ua.header.version"/>    
+    <test parameter="[version]" condition="number.equals" value="1"/>
+    <parameter name="[reserved]" operation="protocol.setFromMessage" value="ua.header.reserved"/>    
+    <test parameter="[reserved]" condition="number.equals" value="0"/>
+    <parameter name="[messageClass]" operation="protocol.setFromMessage" value="ua.header.messageClass"/>    
+    <test parameter="[messageClass]" condition="number.equals" value="3"/>   <!-- ASP_State_Maintenance_Messages -->
+    <parameter name="[messageType]" operation="protocol.setFromMessage" value="ua.header.messageType"/>    
+    <test parameter="[messageType]" condition="number.equals" value="4"/>   <!-- ASP_UP -->
+    <parameter name="[messageLength]" operation="protocol.setFromMessage" value="ua.header.messageLength"/>    
+    <test parameter="[messageLength]" condition="number.equals" value="28"/>
+  
+    <parameter name="[aspIdentifierName]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.name"/>    
+    <test parameter="[aspIdentifierName]" condition="string.equals" value="ASP_Identifier"/>
+    <parameter name="[aspIdentifierTag]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.tag"/>
+    <test parameter="[aspIdentifierTag]" condition="number.equals" value="17"/>    
+    <parameter name="[aspIdentifierLength]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.length"/>    
+    <test parameter="[aspIdentifierLength]" condition="number.equals" value="8"/>
+    <parameter name="[aspIdentifierFormat]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.format"/>    
+    <test parameter="[aspIdentifierFormat]" condition="string.equals" value="grouped"/>
     
+    <parameter name="[aspIdentifier1Name]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.field.ASP_Identifier.name"/>    
+    <test parameter="[aspIdentifier1Name]" condition="string.equals" value="ASP_Identifier"/>
+    <parameter name="[aspIdentifier1Length]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.field.ASP_Identifier.length"/>    
+    <test parameter="[aspIdentifier1Length]" condition="number.equals" value="4"/>
+    <parameter name="[aspIdentifier1Format]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.field.ASP_Identifier.format"/>    
+    <test parameter="[aspIdentifier1Format]" condition="string.equals" value="integer"/>
+    <parameter name="[aspIdentifier1Value]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.field.ASP_Identifier.value"/>    
+    <test parameter="[aspIdentifier1Value]" condition="number.equals" value="19"/>
+    <parameter name="[aspIdentifier1LengthBit]" operation="protocol.setFromMessage" value="ua.parameter.ASP_Identifier.field.ASP_Identifier.lengthbit"/>    
+    <test parameter="[aspIdentifier1LengthBit]" condition="number.equals" value="0"/>
+
+    <parameter name="[infoStringName]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.name"/>    
+    <test parameter="[infoStringName]" condition="string.equals" value="INFO_String"/>
+    <parameter name="[infoStringTag]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.tag"/>
+    <test parameter="[infoStringTag]" condition="number.equals" value="4"/>    
+    <parameter name="[infoStringLength]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.length"/>    
+    <test parameter="[infoStringLength]" condition="number.equals" value="9"/>
+    <parameter name="[infoStringFormat]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.format"/>    
+    <test parameter="[infoStringFormat]" condition="string.equals" value="grouped"/>
+    
+    <parameter name="[infoStringName]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.field.INFO_String.name"/>    
+    <test parameter="[infoStringName]" condition="string.equals" value="INFO_String"/>
+    <parameter name="[infoStringLength]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.field.INFO_String.length"/>    
+    <test parameter="[infoStringLength]" condition="number.equals" value="5"/>
+    <parameter name="[infoStringFormat]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.field.INFO_String.format"/>    
+    <test parameter="[infoStringFormat]" condition="string.equals" value="STRING"/>
+    <parameter name="[infoStringValue]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.field.INFO_String.value"/>    
+    <test parameter="[infoStringValue]" condition="string.equals" value="ASPUP"/>
+    <parameter name="[infoStringLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.INFO_String.field.INFO_String.lengthbit"/>    
+    <test parameter="[infoStringLengthBit]" condition="number.equals" value="0"/>
+        
 </scenario>
 	
