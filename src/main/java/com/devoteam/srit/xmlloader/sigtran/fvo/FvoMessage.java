@@ -100,25 +100,9 @@ public class FvoMessage {
         if (params[0].equalsIgnoreCase("header")) {
             if (params.length == 2) {
                 parameter = new Parameter();
-                /*
-                if (params[1].equalsIgnoreCase("version")) {
-                    parameter.add(this.getVersion());
-                }
-                else if (params[1].equalsIgnoreCase("reserved")) {
-                    parameter.add(this.getReserved());
-                }
-                else if (params[1].equalsIgnoreCase("messageClass")) {
-                    parameter.add(this._messageClass;
-                }
-                else */ 
                 if (params[1].equalsIgnoreCase("messageType")) {
                     parameter.add(this.getMessageType());
                 }
-                /*
-                else if (params[1].equalsIgnoreCase("messageLength")) {
-                    parameter.add(this.getMessageLength());
-                }
-                */
                 else {
                     Parameter.throwBadPathKeywordException(path);
                 }

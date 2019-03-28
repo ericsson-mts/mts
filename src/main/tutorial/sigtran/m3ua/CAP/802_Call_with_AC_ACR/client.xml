@@ -18,8 +18,7 @@
         </output>
     </call>
 
-    <function file="000_IDP_InitialDetectionPoint/client.xml" />
-    
+    <function file="000_IDP_InitialDetectionPoint/client.xml" />    
     <call name="Send_000_IDP_InitialDetectionPoint" >
         <input>
             <parameter name="[function:channelName]" value="[channelName]"/>
@@ -77,7 +76,7 @@
             <!--parameter name="[function:res]" /-->
         </output>
     </call>
-    
+        
    <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="applyCharging:35">
        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
  	     <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
@@ -89,9 +88,7 @@
        <parameter name="[testcase:origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>
        <parameter name="[testcase:destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>                
     </receiveMessageSIGTRAN>
-        
-    <pause seconds="0.1"/>
-
+      
     <function file="036_ACR_ApplyChargingReport/client.xml" />    
     <call name="Send_036_ACR_ApplyChargingReport" >
         <input>
@@ -110,6 +107,8 @@
         </output>
     </call>
 
+    <pause seconds="[pause]"/>
+    
     <function file="024_ERB_EventReportBSCM/client.xml" />      
     <call name="Send_024_ERB_EventReportBSCM" >
         <input>
@@ -128,7 +127,18 @@
             <!--parameter name="[function:res]" /-->
         </output>
     </call>
-                
+      
+     <receiveMessageSIGTRAN name="Wait DATA1" request="true" type="cancel:53">
+        <parameter name="[protocol]" operation="protocol.setFromMessage" value="message.protocol"/>
+        <test parameter="[protocol]" condition="string.equals" value="SIGTRAN.CAP"/>
+        <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+        <parameter name="[request]" operation="protocol.setFromMessage" value="message.request"/>
+        <parameter name="[type]" operation="protocol.setFromMessage" value="message.type"/>
+        <parameter name="[result]" operation="protocol.setFromMessage" value="message.result"/>         
+        <parameter name="[testcase:origTransID]" operation="protocol.setFromMessage" value="tcap.continue1.dtid"/>
+        <parameter name="[testcase:destTransID]" operation="protocol.setFromMessage" value="tcap.continue1.otid"/>                
+    </receiveMessageSIGTRAN>
+                    
     <!-- remove pb of TIME_WAIT state -->
     <!--closeChannelSIGTRAN name="channel"/-->
                 
