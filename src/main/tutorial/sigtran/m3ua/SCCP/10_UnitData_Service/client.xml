@@ -57,20 +57,20 @@
 		<header>
         	        <field name="Message_Type" length="1" value="10" /> <!-- code for UnitData Service is 10 -->
          	</header>
-		<parameter name="Return_cause" type="F" littleEndian="false">
+		<parameter name="Return_cause" type="F" >
 			<field value="11" length="1" /> <!-- See sccp.xml for more informations about return causes -->
 		</parameter>
-		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
+		<parameter id="3" name="Called_Party_Address" type="V" >
 			<field name="Address_Indicator" value="67" length="1" />
-			<field name="Signalling_Point_Code" value="257" length="2" />
+			<field name="Signalling_Point_Code" value="257" length="2" littleEndian="true" />
 			<field name="Subsystem_Number" value="7" length="1" />	
 		</parameter>
-		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
+		<parameter id="4" type="V" name="Calling_Party_Address" >
 			<field name="Address_Indicator" value="67" length="1" />
-			<field name="Signalling_Point_Code" value="258" length="2" />
+			<field name="Signalling_Point_Code" value="258" length="2" littleEndian="true" />
 			<field name="Subsystem_Number" value="7" length="1" />
 		</parameter>
-		<parameter id="15" name="Data" type="V" littleEndian="false">
+		<parameter id="15" name="Data" type="V" >
 			<field value="0123456789" format="binary" length="5" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
 		</parameter>
 	</SS7>
