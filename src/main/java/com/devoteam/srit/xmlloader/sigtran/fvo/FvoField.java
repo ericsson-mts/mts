@@ -307,6 +307,11 @@ public class FvoField {
                 _lengthBit += Integer.decode(lengthBit);
             }
         }
+        
+        String littleEndian = root.attributeValue("littleEndian");
+        if (littleEndian != null) {
+            setLittleEndian(Utils.parseBoolean(littleEndian, "littleEndian"));
+        }        
     }
 
     public void parseArray(Array array, int offsetBit) throws ExecutionException, Exception {
@@ -330,7 +335,7 @@ public class FvoField {
             _value = String.valueOf(buff.getValue());
         }
         else if(FvoField.formatBinary.equalsIgnoreCase(_format)){
-        	_lengthBit = array.length * 8;
+        	_lengthBit = array.length * 8 - offsetBit;
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
             for(int i=0; i < _lengthBit; i++){
@@ -339,7 +344,7 @@ public class FvoField {
             _value = Array.toHexString(buff);
         }
         else if(FvoField.formatString.equalsIgnoreCase(_format)){
-        	_lengthBit = array.length * 8;
+        	_lengthBit = array.length * 8 - offsetBit;
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
             for(int i=0; i < _lengthBit; i++){
@@ -366,6 +371,9 @@ public class FvoField {
                 str += " format=\"" + _format + "\"";
             }
         }
+        if (_littleEndian) {
+            str += " littleEndian=\"" + _littleEndian + "\"";
+        }        
         str += " />";
         return str;
     }

@@ -233,9 +233,9 @@ public class FvoParameter {
         if (id != null) {
             setId(Integer.decode(id));
         }
-        if (id != null) {
-            setId(Integer.decode(id));
-        }
+        //if (id != null) {
+        //    setId(Integer.decode(id));
+        //}
         
         String type = root.attributeValue("type");
         if (type != null) {
