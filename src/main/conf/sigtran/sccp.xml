@@ -9,7 +9,7 @@
 
 <dictionary layer="SCCP">
 
-    <header	id="0" length="1" littleEndian="true">
+    <header	id="0" length="1" >
         <field name="Message_Type"	length="1" />
     </header>
 
@@ -157,37 +157,37 @@
 		<parameter id="0"	name="End_of_optional_parameters">
 			<field		name="End_of_optional_parameters"	length="1" />
 		</parameter>
-		<parameter id="1"	name="Destination_local_reference"	littleEndian="true">
-			<field		name="Destination_local_reference"	length="3"/>
+		<parameter id="1"	name="Destination_local_reference">
+			<field		name="Destination_local_reference"	length="3" littleEndian="true"/>
 		</parameter>
 		
-		<parameter id="2"	name="Source_local_reference" 		littleEndian="true">
-			<field		name="Source_local_reference"		length="3"/>
+		<parameter id="2"	name="Source_local_reference" >
+			<field		name="Source_local_reference"		length="3" littleEndian="true"/>
 		</parameter>
     <!-- for CAP test : use Global_Title -->
-		<!--parameter id="3"	name="Called_Party_Address"	littleEndian="false">
+		<parameter id="3"	name="Called_Party_Address"	>
 			<field 		name="Address_Indicator"		length="1" />      
 			<field		name="Subsystem_Number"			length="1" />
 			<field		name="Global_Title" format="binary"	length="9" />
-		</parameter-->
-    <!-- for SCCP test : use Signaling_Point_Code -->
-		<parameter id="3"	name="Called_Party_Address"	littleEndian="false">
-			<field 		name="Address_Indicator"		length="1" />
-			<field 		name="Signalling_Point_Code"  length="2"/>
-			<field		name="Subsystem_Number"			length="1" />
 		</parameter>
+    <!-- for SCCP test : use Signaling_Point_Code -->
+		<!--parameter id="3"	name="Called_Party_Address"	>
+			<field 		name="Address_Indicator"		length="1" />
+			<field 		name="Signalling_Point_Code"  length="2" littleEndian="true"/>
+			<field		name="Subsystem_Number"			length="1" />
+		</parameter-->
     <!-- for CAP test : use Global_Title -->    
-		<!--parameter id="4"	name="Calling_Party_Address" 	littleEndian="false">
+		<parameter id="4"	name="Calling_Party_Address" >
 			<field		name="Address_Indicator"		length="1" />
 			<field		name="Subsystem_Number"			length="1" />
 			<field		name="Global_Title"	format="binary" 	length="9" />
-		</parameter-->
+		</parameter>
     <!-- for SCCP test : use Signaling_Point_Code -->    
-		<parameter id="4"	name="Calling_Party_Address" 	littleEndian="false">
+		<!--parameter id="4"	name="Calling_Party_Address" >
 			<field		name="Address_Indicator"		length="1" />
-			<field		name="Signalling_Point_Code"		length="2"/>
+			<field		name="Signalling_Point_Code"		length="2" littleEndian="true"/>
 			<field		name="Subsystem_Number"			length="1" />
-		</parameter>    
+		</parameter-->    
 		<parameter id="5"	name="Protocol_Class">
 			<field 		name="Protocol_Class"			lengthBit="4"/>
 			<field 		name="Special_Option"			lengthBit="4"/>
@@ -224,7 +224,7 @@
 		<parameter id="14"	name="Refusal_cause">
 			<field 		name="Refusal_cause"			length="1"/>
 		</parameter>
-		<parameter id="15"	name="Data" 				littleEndian="false">
+		<parameter id="15"	name="Data" >
 			<field		name="Data"				format="binary" />
 		</parameter>
 		<parameter id="16"	name="Segmentation" >
@@ -237,11 +237,11 @@
 		<parameter id="17"	name="Hop_Counter" >
 			<field		name="Hop_Counter"			length="1" /> <!-- value must be between 1 and 15, looks like TTL in IP -->
 		</parameter>
-		<parameter id="18"	name="Importance"	littleEndian="false">
+		<parameter id="18"	name="Importance"	>
 			<field 		name="Importance"				lengthBit="3" /> <!-- value between 0 and 7, 7 is most important and 0 is least -->
 			<field		name="Spare"					lengthBit="5" /> 
 		</parameter>
-		<parameter id="19"	name="Long_Data" 			littleEndian="false" longParameter="true">
+		<parameter id="19"	name="Long_Data" longParameter="true">
 			<field		name="Data_Length"			length="2" />
 			<field		name="Long_Data"			length="3" /> <!-- length can be up to 3954 OCTETS -->
 		</parameter>
