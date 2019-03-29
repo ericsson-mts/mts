@@ -3,23 +3,23 @@
       	<header>
               <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
           	</header>
-      	<parameter name="Protocol_Class" type="F" littleEndian="false">
+      	<parameter name="Protocol_Class" type="F" >
       	    <field value="0" lengthBit="4" />
       	    <field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
       	</parameter>
-      	<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
+      	<parameter id="3" name="Called_Party_Address" type="V" >
       	    <field name="Address_Indicator" value="18" format="integer" length="1" />
-      	    <!--field name="Signalling_Point_Code" value="[function:m3uaDpc]" length="2" /-->
+      	    <!--field name="Signalling_Point_Code" value="[function:m3uaDpc]" length="2" littleEndian="true" /-->
       	    <field name="Subsystem_Number" value="[function:sccpDssn]" length="1" />	
             <field name="Global_Title" value="001104[function:sccpDgt]" format="binary" length="9"/>
       	</parameter>	
-      	<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">
+      	<parameter id="4" type="V" name="Calling_Party_Address" >
       	    <field name="Address_Indicator" value="18" format="integer" length="1" />
-      	    <!--field name="Signalling_Point_Code" value="[function:m3uaOpc]" length="2" /-->
+      	    <!--field name="Signalling_Point_Code" value="[function:m3uaOpc]" length="2" littleEndian="true" /-->
       	    <field name="Subsystem_Number" value="[function:sccpOssn]" length="1" />
     	      <field name="Global_Title" value="001104[function:sccpOgt]" format="binary" length="9" />
       	</parameter>
-      	<parameter id="15" name="Data" type="V" littleEndian="false">
+      	<parameter id="15" name="Data" type="V" >
       	    <field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
       	</parameter>
         </SS7>
