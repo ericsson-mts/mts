@@ -143,23 +143,23 @@
   		<header>
           <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
       </header>
-  		<parameter name="Protocol_Class" type="F" >
+  		<parameter name="Protocol_Class" type="F" littleEndian="false">
   			<field value="8" lengthBit="4" />
   			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
   		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" >
+  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="true">
   			<field name="Address_Indicator" value="82" length="1" />
-  			<!--field name="Signalling_Point_Code" value="1" length="2" littleEndian="true" /-->
+  			<!--field name="Signalling_Point_Code" value="1" length="2" /-->
   			<field name="Subsystem_Number" value="145" length="1" />
         <field name="Global_Title" value="00482016a9882861" format="binary" length="8" />	
   		</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" >
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="true">
   			<field name="Address_Indicator" value="18" length="1" />
-  			<!--field name="Signalling_Point_Code" value="2" length="2" littleEndian="true" /-->
+  			<!--field name="Signalling_Point_Code" value="2" length="2" /-->
   			<field name="Subsystem_Number" value="6" length="1" />
         <field name="Global_Title" value="00482016a9800004" format="binary" length="8" />
   		</parameter>
-  		<parameter id="15" name="Data" type="V" >
+  		<parameter id="15" name="Data" type="V" littleEndian="false">
   			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
         <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
   		</parameter>

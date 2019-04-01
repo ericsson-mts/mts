@@ -121,18 +121,19 @@
       <header>
             <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
       </header>
-  		<parameter name="Protocol_Class" type="F" >
-  			<field value="8" lengthBit="4" />
-  			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
-      </parameter>
-      <parameter id="3" name="Called_Party_Address" type="V" >
-		    <field name="Global_Title" value="1208001104338609006604" format="binary" length="9" />			
-    	</parameter>
-  		<parameter id="4" type="V" name="Calling_Party_Address" >  			
-			   <field name="Global_Title" value="1207001104338609106704" format="binary" length="9" />
+		<parameter name="Protocol_Class" type="F" littleEndian="false">
+    			<field value="8" lengthBit="4" />
+    			<field value="0" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
+    		</parameter>
+    		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
+			<field name="Global_Title" value="1208001104338609006604" format="binary" length="9" />			
+    		</parameter>
+
+  		<parameter id="4" type="V" name="Calling_Party_Address" littleEndian="false">  			
+			<field name="Global_Title" value="1207001104338609106704" format="binary" length="9" />
   		</parameter>
 
-    	<parameter id="15" name="Data" type="V" >
+    	<parameter id="15" name="Data" type="V" littleEndian="false">
     	  <!--field value="64484904111220016b2a2828060700118605010101a01d611b80020780a109060704000001001c03a203020100a305a1030201006c80a210020101300b02014630063004a10280000000" format="binary" length="74" /-->
           <field value="64464904111220016b2a2828060700118605010101a01d611b80020780a109060704000001001c03a203020100a305a1030201006c12a210020101300b02014630063004a1028000" format="binary" length="74" />
     	</parameter>
