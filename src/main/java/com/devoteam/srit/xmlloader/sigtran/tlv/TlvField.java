@@ -505,10 +505,8 @@ public class TlvField {
         if (_lengthBit != 0) {
             str += " lengthBit=\"" + _lengthBit + "\"";
         }
-        if (_format != null) {
-            if (!_format.equalsIgnoreCase("integer")) {
-                str += " format=\"" + _format + "\"";
-            }
+        if (_format != null) {            	
+        	str += " format=\"" + _format + "\"";
         }
         str += " />";
         return str;
