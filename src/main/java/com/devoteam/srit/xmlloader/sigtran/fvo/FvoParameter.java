@@ -273,8 +273,10 @@ public class FvoParameter {
         }
     }
 
-    public void parseArray(Array array) throws Exception {
-        if(!"F".equalsIgnoreCase(_type)){
+    public void parseArray(Array array) throws Exception 
+    {
+        if(!"F".equalsIgnoreCase(_type))
+        {
             _messageLength = array.length;
         }
 
@@ -292,33 +294,18 @@ public class FvoParameter {
                     offsetBit += field.getLengthBit();
                     _fields.addLast(field);
                 }
-                //else{
-                //    break;
-                //}
             }
-
-            // if there is still undecoded data at the end of the parameter
-            if (offsetBit < array.length * 8)
-            {
-            	FvoField field = new FvoField(_msg);
-            	field.setFormat("binary");
-            	field.setName("Unknown : undefined in dictionary");
-            	field.parseArray(array, offsetBit);
-            	getFields().add(field);
-            }            
         }
-        else 
+        
+        // if there is still undecoded data at the end of the parameter
+        if (offsetBit < array.length * 8)
         {
-            // create a list of integer08 fields
-            // TODO : shoud create a binary format field with all data
-            for (int i = 0; i < array.length; i++) {
-                FvoField field = new FvoField(_msg);
-                field.setLength(1);
-                field.setName("undefined");
-                getFields().add(field);
-                field.setValue(Integer.toString(array.get(i) & 0xff));
-            }
-        }
+        	FvoField field = new FvoField(_msg);
+        	field.setFormat("binary");
+        	field.setName("Unknown : undefined in dictionary");
+        	field.parseArray(array, offsetBit);
+        	getFields().add(field);
+        }            
     }
 
     @Override
