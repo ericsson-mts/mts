@@ -42,29 +42,40 @@
   <!--parameter name="[messageLength]" operation="protocol.setFromMessage" value="ss7.header.messageLength"/>    
   <test parameter="[messageLength]" condition="number.equals" value="28"/-->
 
-  <parameter name="[protocolClassName]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.name"/>    
-  <test parameter="[protocolClassName]" condition="string.equals" value="Protocol_class"/>
-  <parameter name="[protocolClassId]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.id"/>
-  <test parameter="[protocolClassId]" condition="number.equals" value="0"/>    
-  <parameter name="[protocolClassLength]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.length"/>    
+  <parameter name="[protocolClassName]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.name"/>    
+  <test parameter="[protocolClassName]" condition="string.equals" value="Protocol_Class"/>
+  <parameter name="[protocolClassId]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.id"/>
+  <test parameter="[protocolClassId]" condition="number.equals" value="5"/>    
+  <parameter name="[protocolClassLength]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.length"/>    
   <test parameter="[protocolClassLength]" condition="number.equals" value="1"/>
-  <parameter name="[protocolClassType]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.type"/>    
+  <parameter name="[protocolClassType]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.type"/>    
   <test parameter="[protocolClassType]" condition="string.equals" value="F"/>
-  <parameter name="[protocolClassLong]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.longParameter"/>    
+  <parameter name="[protocolClassLong]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.longParameter"/>    
   <test parameter="[protocolClassLong]" condition="boolean.equals" value="false"/>
-  <parameter name="[protocolClassEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.littleEndian"/>    
+  <parameter name="[protocolClassEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.littleEndian"/>    
   <test parameter="[protocolClassEndian]" condition="boolean.equals" value="false"/>
   
-  <parameter name="[undefinedName]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.field.undefined.name"/>    
-  <test parameter="[undefinedName]" condition="string.equals" value="undefined"/>
-  <parameter name="[undefinedFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.field.undefined.format"/>    
-  <test parameter="[undefinedFormat]" condition="list.isEmpty"/>
-  <parameter name="[undefinedValue]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.field.undefined.value"/>    
-  <test parameter="[undefinedValue]" condition="number.equals" value="0"/>
-  <parameter name="[undefinedLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.field.undefined.lengthbit"/>    
-  <test parameter="[undefinedLengthBit]" condition="number.equals" value="8"/>
-  <parameter name="[undefinedLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_class.field.undefined.littleEndian"/>    
-  <test parameter="[undefinedLittleEndian]" condition="boolean.equals" value="False"/>    
+  <parameter name="[protocolClass1Name]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.name"/>    
+  <test parameter="[protocolClass1Name]" condition="string.equals" value="Protocol_Class"/>
+  <parameter name="[protocolClass1Format]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.format"/>    
+  <test parameter="[protocolClass1Format]" condition="string.equals" value="integer"/>
+  <parameter name="[protocolClass1Value]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.value"/>    
+  <test parameter="[protocolClass1Value]" condition="number.equals" value="0"/>
+  <parameter name="[protocolClass1LengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.lengthbit"/>    
+  <test parameter="[protocolClass1LengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[protocolClass1LittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.littleEndian"/>    
+  <test parameter="[protocolClass1LittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[specialOption1Name]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.name"/>    
+  <test parameter="[specialOption1Name]" condition="string.equals" value="Special_Option"/>
+  <parameter name="[specialOption1Format]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.format"/>    
+  <test parameter="[specialOption1Format]" condition="string.equals" value="integer"/>
+  <parameter name="[specialOption1Value]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.value"/>    
+  <test parameter="[specialOption1Value]" condition="number.equals" value="0"/>
+  <parameter name="[specialOption1LengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.lengthbit"/>    
+  <test parameter="[specialOption1LengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[specialOption1LittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.littleEndian"/>    
+  <test parameter="[specialOption1LittleEndian]" condition="boolean.equals" value="False"/>    
 
   <parameter name="[CalledPAName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.name"/>    
   <test parameter="[CalledPAName]" condition="string.equals" value="Called_Party_Address"/>
