@@ -301,7 +301,7 @@ public class FvoParameter {
         if (offsetBit < array.length * 8)
         {
         	FvoField field = new FvoField(_msg);
-        	field.setFormat("binary");
+        	field.setFormat(FvoField.formatBinary);
         	field.setName("Unknown : undefined in dictionary");
         	field.parseArray(array, offsetBit);
         	getFields().add(field);
