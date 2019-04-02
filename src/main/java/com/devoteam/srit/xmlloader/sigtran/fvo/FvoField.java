@@ -156,7 +156,7 @@ public class FvoField {
             {
             	// copy the binary as identical
             	for (int i = 0; i < len; i = i + 8) {
-            		target.setBits(i, 8, value.getBits(i, 8));
+            		target.setBits(i + offsetBit, 8, value.getBits(i, 8));
             	}
         	}
 

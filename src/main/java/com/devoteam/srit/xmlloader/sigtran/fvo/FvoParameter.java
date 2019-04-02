@@ -298,20 +298,17 @@ public class FvoParameter {
             }
 
             // if there is still undecoded data at the end of the parameter
-            while (offsetBit < array.length * 8) {
-                // TODO : should create and handle a binary field with the rest of the data
-                //        for now we create a list of 1 bit integers
-                FvoField field = new FvoField(_msg);
-                field.setLengthBit(0, 1);
-                field.setFormat("integer");
-                field.setName("unknown");
-                field.parseArray(array, offsetBit);
-
-                getFields().add(field);
-                offsetBit++;
-            }
+            if (offsetBit < array.length * 8)
+            {
+            	FvoField field = new FvoField(_msg);
+            	field.setFormat("binary");
+            	field.setName("Unknown : undefined in dictionary");
+            	field.parseArray(array, offsetBit);
+            	getFields().add(field);
+            }            
         }
-        else {
+        else 
+        {
             // create a list of integer08 fields
             // TODO : shoud create a binary format field with all data
             for (int i = 0; i < array.length; i++) {

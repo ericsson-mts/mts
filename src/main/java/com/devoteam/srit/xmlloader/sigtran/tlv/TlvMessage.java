@@ -104,7 +104,8 @@ public class TlvMessage {
             int offset = 0;
             while(offset < _messageData.length){
                 TlvParameter parameter = new TlvParameter(_msg, _dictionary);
-                parameter.parseArray(_messageData.subArray(offset));
+                Array subArray = _messageData.subArray(offset);
+                parameter.parseArray(subArray);
                 _parameters.add(parameter);
                 offset += parameter.getLength();
                 // handle padding; go to next multiple of 4 if not already
