@@ -363,9 +363,12 @@ public class FvoField {
         if (_value != null) {
             str += " value=\"" + _value + "\"";
         }
-        if (_lengthBit != 0) {
+        if (_lengthBit % 8 != 0) {
             str += " lengthBit=\"" + _lengthBit + "\"";
         }
+        else {
+            str += " length=\"" + (_lengthBit / 8) + "\"";
+        }        
         if (_format != null) {
             if (!_format.equalsIgnoreCase("integer")) {
                 str += " format=\"" + _format + "\"";
