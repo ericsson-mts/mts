@@ -34,6 +34,78 @@
         <parameter name="[origTransID]" operation="protocol.setFromMessage" value="tcap.begin.otid"/>
         <parameter name="[destTransID]" operation="protocol.setFromMessage" value="tcap.begin.dtid"/>        
     </receiveMessageSIGTRAN>
+  
+    <!-- test M3UA mlayer -->
+    <parameter name="[version]" operation="protocol.setFromMessage" value="ua.header.version"/>    
+    <test parameter="[version]" condition="number.equals" value="1"/>
+    <parameter name="[reserved]" operation="protocol.setFromMessage" value="ua.header.reserved"/>    
+    <test parameter="[reserved]" condition="number.equals" value="0"/>
+    <parameter name="[messageClass]" operation="protocol.setFromMessage" value="ua.header.messageClass"/>    
+    <test parameter="[messageClass]" condition="number.equals" value="1"/>   <!-- Transfert_Messages -->
+    <parameter name="[messageType]" operation="protocol.setFromMessage" value="ua.header.messageType"/>    
+    <test parameter="[messageType]" condition="number.equals" value="1"/>   <!-- ASP_UP -->
+    <parameter name="[messageLength]" operation="protocol.setFromMessage" value="ua.header.messageLength"/>    
+    <test parameter="[messageLength]" condition="number.equals" value="240"/>
+    <parameter name="[networkAppearence1Value]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.value"/>    
+    <test parameter="[networkAppearence1Value]" condition="number.equals" value="102"/>
+    <parameter name="[routingContext1Value]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.value"/>    
+    <test parameter="[routingContext1Value]" condition="number.equals" value="101"/>
+    <parameter name="[originatingPointCodeValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Originating_Point_Code.value"/>    
+    <test parameter="[originatingPointCodeValue]" condition="number.equals" value="[M3UA_OPC]"/>
+    <parameter name="[destinationPointCodeValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Destination_Point_Code.value"/>    
+    <test parameter="[destinationPointCodeValue]" condition="number.equals" value="[M3UA_DPC]"/>
+    <parameter name="[siValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SI.value"/>    
+    <test parameter="[siValue]" condition="string.equals" value="SCCP"/>
+    <parameter name="[niValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.NI.value"/>    
+    <test parameter="[niValue]" condition="number.equals" value="3"/>
+    <parameter name="[mpValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.MP.value"/>    
+    <test parameter="[mpValue]" condition="number.equals" value="1"/>
+    <parameter name="[slsValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SLS.value"/>    
+    <test parameter="[slsValue]" condition="number.equals" value="8"/>
+    <parameter name="[correlationId1Value]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.field.Correlation_Id.value"/>    
+    <test parameter="[correlationId1Value]" condition="number.equals" value="12783"/>
+
+    <!-- test M3UA mlayer -->
+    <parameter name="[messageType]" operation="protocol.setFromMessage" value="ss7.header.messageType"/>    
+    <test parameter="[messageType]" condition="number.equals" value="9"/>   <!-- UnitData -->
+    <parameter name="[protocolClass1Value]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.value"/>    
+    <test parameter="[protocolClass1Value]" condition="number.equals" value="0"/>
+    <parameter name="[specialOption1Value]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.value"/>    
+    <test parameter="[specialOption1Value]" condition="number.equals" value="1"/>
+    
+    <parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.value"/>    
+    <test parameter="[addressIndicatorValue]" condition="number.equals" value="18"/>
+    <parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.value"/>    
+    <test parameter="[addressIndicatorValue]" condition="number.equals" value="18"/>  
+
+    <!-- without GT definition in the sccp.xml config file -->
+    <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.value"/>
+    <test parameter="[signallingPointCodeValue]" condition="number.equals" value="146"/>
+    <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.value"/>    
+    <test parameter="[subsystemNumberValue]" condition="number.equals" value="17"/> 
+    <parameter name="[unknownValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Unknown_undefined_in_dictionary.value"/>    
+    <test parameter="[unknownValue]" condition="binary.equals" value="40337000723350"/>     
+    <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.value"/>
+    <test parameter="[signallingPointCodeValue]" condition="number.equals" value="146"/>    
+    <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.value"/>    
+    <test parameter="[subsystemNumberValue]" condition="number.equals" value="17"/>
+    <parameter name="[unknownValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Unknown_undefined_in_dictionary.value"/>    
+    <test parameter="[unknownValue]" condition="binary.equals" value="40337000723500f5"/>
+    
+    <!-- with GT definition in the sccp.xml config file -->
+    <!--parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.value"/>         
+    <test parameter="[signallingPointCodeValue]" condition="list.isEmpty"/>
+    <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.value"/>      
+    <test parameter="[subsystemNumberValue]" condition="number.equals" value="146"/>
+    <parameter name="[globalTitleValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.value"/>      
+    <test parameter="[globalTitleValue]" condition="string.equals" value="001104330700273305"/>    
+    <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.value"/>    
+    <test parameter="[signallingPointCodeValue]" condition="list.isEmpty"/>
+    <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.value"/>    
+    <test parameter="[subsystemNumberValue]" condition="number.equals" value="146"/>    
+    <parameter name="[globalTitleValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.value"/>      
+    <test parameter="[globalTitleValue]" condition="string.equals" value="0011043307002753005"/-->    
+    
                             
     <sendMessageSIGTRAN name="Send DATA1" channel="[channelName]">
         

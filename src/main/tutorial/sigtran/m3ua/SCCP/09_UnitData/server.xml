@@ -31,16 +31,8 @@
 		</else>
 	</if>  
     
-  <!--parameter name="[version]" operation="protocol.setFromMessage" value="ss7.header.version"/>    
-  <test parameter="[version]" condition="number.equals" value="1"/>
-  <parameter name="[reserved]" operation="protocol.setFromMessage" value="ss7.header.reserved"/>    
-  <test parameter="[reserved]" condition="number.equals" value="0"/>
-  <parameter name="[messageClass]" operation="protocol.setFromMessage" value="ss7.header.messageClass"/>    
-  <test parameter="[messageClass]" condition="number.equals" value="3"/-->   <!-- ASP_State_Maintenance_Messages -->
   <parameter name="[messageType]" operation="protocol.setFromMessage" value="ss7.header.messageType"/>    
   <test parameter="[messageType]" condition="number.equals" value="9"/>   <!-- UnitData -->
-  <!--parameter name="[messageLength]" operation="protocol.setFromMessage" value="ss7.header.messageLength"/>    
-  <test parameter="[messageLength]" condition="number.equals" value="28"/-->
 
   <parameter name="[protocolClassName]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.name"/>    
   <test parameter="[protocolClassName]" condition="string.equals" value="Protocol_Class"/>

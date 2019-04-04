@@ -302,7 +302,7 @@ public class FvoParameter {
         {
         	FvoField field = new FvoField(_msg);
         	field.setFormat(FvoField.formatBinary);
-        	field.setName("Unknown : undefined in dictionary");
+        	field.setName("Unknown_undefined_in_dictionary");
         	field.parseArray(array, offsetBit);
         	getFields().add(field);
         }            
