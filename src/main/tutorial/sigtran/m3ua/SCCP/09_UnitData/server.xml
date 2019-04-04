@@ -12,7 +12,7 @@
 <scenario>
 
 	<!-- Message encoded value -->
-	<parameter name="[data]" value="01000101000000ac0200000800000002000600080077ddd00210008c00000d7a0000100203030004090003070b044301010704430201076c626a48042f3b46026b3a2838060700118605010101a02d602b80020780a109060704000001001302be1a2818060704000001010101a00da00b80099656051124006913f66c26a12402010102013b301c04010f040eaa180da682dd6c31192d36bbdd468007917267415827f200130008000031ef" />
+	<parameter name="[data]" value="01000101000000b80200000800000002000600080077ddd00210009500000d7a0000100203030004090003071404430201070d53803eb10011403366600567f76c626a48042f3b46026b3a2838060700118605010101a02d602b80020780a109060704000001001302be1a2818060704000001010101a00da00b80099656051124006913f66c26a12402010102013b301c04010f040eaa180da682dd6c31192d36bbdd468007917267415827f200000000130008000031ef" />
 
 	<receiveMessageSIGTRAN name="Wait DATA1">
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
@@ -82,7 +82,7 @@
   <parameter name="[CalledPAEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.littleEndian"/>    
   <test parameter="[CalledPAEndian]" condition="boolean.equals" value="false"/>
   
-  <parameter name="[addressIndicatorName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.name"/>    
+  <!--parameter name="[addressIndicatorName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.name"/>    
   <test parameter="[addressIndicatorName]" condition="string.equals" value="Address_Indicator"/>
   <parameter name="[addressIndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.format"/>    
   <test parameter="[addressIndicatorFormat]" condition="string.equals" value="integer"/>
@@ -91,19 +91,64 @@
   <parameter name="[addressIndicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.lengthbit"/>    
   <test parameter="[addressIndicatorLengthBit]" condition="number.equals" value="8"/>
   <parameter name="[addressIndicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.littleEndian"/>    
-  <test parameter="[addressIndicatorLittleEndian]" condition="boolean.equals" value="False"/>    
+  <test parameter="[addressIndicatorLittleEndian]" condition="boolean.equals" value="False"/-->    
+
+  <parameter name="[AI_nationalUseFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_national_use.format"/>    
+  <test parameter="[AI_nationalUseFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_nationalUseValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_national_use.value"/>    
+  <test parameter="[AI_nationalUseValue]" condition="number.equals" value="0"/>
+  <parameter name="[AI_nationalUseLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_national_use.lengthbit"/>    
+  <test parameter="[AI_nationalUseLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_nationalUseLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_national_use.littleEndian"/>    
+  <test parameter="[AI_nationalUseLittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[AI_Routing_IndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_routing_indicator.format"/>    
+  <test parameter="[AI_Routing_IndicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_Routing_IndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_routing_indicator.value"/>    
+  <test parameter="[AI_Routing_IndicatorValue]" condition="number.equals" value="1"/>
+  <parameter name="[AI_Routing_IndicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_routing_indicator.lengthbit"/>    
+  <test parameter="[AI_Routing_IndicatorLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_Routing_IndicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_routing_indicator.littleEndian"/>    
+  <test parameter="[AI_Routing_IndicatorLittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[AI_GTindicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_GT_indicator.format"/>    
+  <test parameter="[AI_GTindicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_GTindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_GT_indicator.value"/>    
+  <test parameter="[AI_GTindicatorValue]" condition="number.equals" value="0"/>
+  <parameter name="[AI_GTindicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_GT_indicator.lengthbit"/>    
+  <test parameter="[AI_GTindicatorLengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[AI_GTindicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_GT_indicator.littleEndian"/>    
+  <test parameter="[AI_GTindicatorLittleEndian]" condition="boolean.equals" value="False"/>        
+
+  <parameter name="[AI_SSNIndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_SSN_indicator.format"/>    
+  <test parameter="[AI_SSNIndicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_SSNIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_SSN_indicator.value"/>    
+  <test parameter="[AI_SSNIndicatorValue]" condition="number.equals" value="1"/>
+  <parameter name="[AI_SSNIndicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_SSN_indicator.lengthbit"/>    
+  <test parameter="[AI_SSNIndicatorLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_SSNIndicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_SSN_indicator.littleEndian"/>    
+  <test parameter="[AI_SSNIndicatorLittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[AI_PCindicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_PC_indicator.format"/>    
+  <test parameter="[AI_PCindicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_PCindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_PC_indicator.value"/>    
+  <test parameter="[AI_PCindicatorValue]" condition="number.equals" value="1"/>
+  <parameter name="[AI_PCindicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_PC_indicator.lengthbit"/>    
+  <test parameter="[AI_PCindicatorLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_PCindicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_PC_indicator.littleEndian"/>    
+  <test parameter="[AI_PCindicatorLittleEndian]" condition="boolean.equals" value="False"/>    
 
   <parameter name="[signallingPointCodeName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.name"/>    
   <test parameter="[signallingPointCodeName]" condition="string.equals" value="Signalling_Point_Code"/>
   <parameter name="[signallingPointCodeFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.format"/>    
   <test parameter="[signallingPointCodeFormat]" condition="string.equals" value="integer"/>
   <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.value"/>    
-  <test parameter="[signallingPointCodeValue]" condition="number.equals" value="257"/>
+  <test parameter="[signallingPointCodeValue]" condition="number.equals" value="258"/>
   <parameter name="[signallingPointCodeLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.lengthbit"/>    
   <test parameter="[signallingPointCodeLengthBit]" condition="number.equals" value="16"/>
   <parameter name="[signallingPointCodeLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.littleEndian"/>    
   <test parameter="[signallingPointCodeLittleEndian]" condition="boolean.equals" value="True"/> 
-
+    
   <parameter name="[subsystemNumberName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.name"/>    
   <test parameter="[subsystemNumberName]" condition="string.equals" value="Subsystem_Number"/>
   <parameter name="[subsystemNumberFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.format"/>    
@@ -115,12 +160,23 @@
   <parameter name="[subsystemNumberLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.littleEndian"/>    
   <test parameter="[subsystemNumberLittleEndian]" condition="boolean.equals" value="False"/> 
 
+  <!--parameter name="[globalTitleName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.name"/>    
+  <test parameter="[globalTitleName]" condition="string.equals" value="Global_Title"/>
+  <parameter name="[globalTitleFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.format"/>    
+  <test parameter="[globalTitleFormat]" condition="string.equals" value="digit"/>
+  <parameter name="[globalTitleValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.value"/>    
+  <test parameter="[globalTitleValue]" condition="number.equals" value="00110433296480700"/>
+  <parameter name="[globalTitleLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.lengthbit"/>    
+  <test parameter="[globalTitleLengthBit]" condition="number.equals" value="72"/>
+  <parameter name="[globalTitleLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.littleEndian"/>    
+  <test parameter="[globalTitleLittleEndian]" condition="boolean.equals" value="False"/-->
+  
   <parameter name="[CallingPAName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.name"/>    
   <test parameter="[CallingPAName]" condition="string.equals" value="Calling_Party_Address"/>
   <parameter name="[CallingPAId]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.id"/>
   <test parameter="[CallingPAId]" condition="number.equals" value="4"/>    
   <parameter name="[CallingPALength]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.length"/>    
-  <test parameter="[CallingPALength]" condition="number.equals" value="4"/>
+  <test parameter="[CallingPALength]" condition="number.equals" value="13"/>
   <parameter name="[CallingPAType]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.type"/>    
   <test parameter="[CallingPAType]" condition="string.equals" value="V"/>
   <parameter name="[CallingPALong]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.longParameter"/>    
@@ -128,23 +184,68 @@
   <parameter name="[CallingPAEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.littleEndian"/>    
   <test parameter="[CallingPAEndian]" condition="boolean.equals" value="false"/>
   
-  <parameter name="[addressIndicatorName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.name"/>    
+  <!--parameter name="[addressIndicatorName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.name"/>    
   <test parameter="[addressIndicatorName]" condition="string.equals" value="Address_Indicator"/>
   <parameter name="[addressIndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.format"/>    
   <test parameter="[addressIndicatorFormat]" condition="string.equals" value="integer"/>
   <parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.value"/>    
-  <test parameter="[addressIndicatorValue]" condition="number.equals" value="67"/>
+  <test parameter="[addressIndicatorValue]" condition="number.equals" value="82"/>
   <parameter name="[addressIndicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.lengthbit"/>    
   <test parameter="[addressIndicatorLengthBit]" condition="number.equals" value="8"/>
   <parameter name="[addressIndicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.littleEndian"/>    
-  <test parameter="[addressIndicatorLittleEndian]" condition="boolean.equals" value="False"/>    
+  <test parameter="[addressIndicatorLittleEndian]" condition="boolean.equals" value="False"/-->    
+
+  <parameter name="[AI_nationalUseFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_national_use.format"/>    
+  <test parameter="[AI_nationalUseFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_nationalUseValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_national_use.value"/>    
+  <test parameter="[AI_nationalUseValue]" condition="number.equals" value="0"/>
+  <parameter name="[AI_nationalUseLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_national_use.lengthbit"/>    
+  <test parameter="[AI_nationalUseLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_nationalUseLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_national_use.littleEndian"/>    
+  <test parameter="[AI_nationalUseLittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[AI_Routing_IndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_routing_indicator.format"/>    
+  <test parameter="[AI_Routing_IndicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_Routing_IndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_routing_indicator.value"/>    
+  <test parameter="[AI_Routing_IndicatorValue]" condition="number.equals" value="1"/>
+  <parameter name="[AI_Routing_IndicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_routing_indicator.lengthbit"/>    
+  <test parameter="[AI_Routing_IndicatorLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_Routing_IndicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_routing_indicator.littleEndian"/>    
+  <test parameter="[AI_Routing_IndicatorLittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[AI_GTindicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.format"/>    
+  <test parameter="[AI_GTindicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_GTindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.value"/>    
+  <test parameter="[AI_GTindicatorValue]" condition="number.equals" value="4"/>
+  <parameter name="[AI_GTindicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.lengthbit"/>    
+  <test parameter="[AI_GTindicatorLengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[AI_GTindicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.littleEndian"/>    
+  <test parameter="[AI_GTindicatorLittleEndian]" condition="boolean.equals" value="False"/>        
+
+  <parameter name="[AI_SSNIndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_SSN_indicator.format"/>    
+  <test parameter="[AI_SSNIndicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_SSNIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_SSN_indicator.value"/>    
+  <test parameter="[AI_SSNIndicatorValue]" condition="number.equals" value="1"/>
+  <parameter name="[AI_SSNIndicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_SSN_indicator.lengthbit"/>    
+  <test parameter="[AI_SSNIndicatorLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_SSNIndicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_SSN_indicator.littleEndian"/>    
+  <test parameter="[AI_SSNIndicatorLittleEndian]" condition="boolean.equals" value="False"/>    
+
+  <parameter name="[AI_PCindicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_PC_indicator.format"/>    
+  <test parameter="[AI_PCindicatorFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[AI_PCindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_PC_indicator.value"/>    
+  <test parameter="[AI_PCindicatorValue]" condition="number.equals" value="1"/>
+  <parameter name="[AI_PCindicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_PC_indicator.lengthbit"/>    
+  <test parameter="[AI_PCindicatorLengthBit]" condition="number.equals" value="1"/>
+  <parameter name="[AI_PCindicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_PC_indicator.littleEndian"/>    
+  <test parameter="[AI_PCindicatorLittleEndian]" condition="boolean.equals" value="False"/>    
 
   <parameter name="[signallingPointCodeName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.name"/>    
   <test parameter="[signallingPointCodeName]" condition="string.equals" value="Signalling_Point_Code"/>
   <parameter name="[signallingPointCodeFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.format"/>    
   <test parameter="[signallingPointCodeFormat]" condition="string.equals" value="integer"/>
   <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.value"/>    
-  <test parameter="[signallingPointCodeValue]" condition="number.equals" value="258"/>
+  <test parameter="[signallingPointCodeValue]" condition="number.equals" value="16000"/>
   <parameter name="[signallingPointCodeLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.lengthbit"/>    
   <test parameter="[signallingPointCodeLengthBit]" condition="number.equals" value="16"/>
   <parameter name="[signallingPointCodeLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.littleEndian"/>    
@@ -155,12 +256,24 @@
   <parameter name="[subsystemNumberFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.format"/>    
   <test parameter="[subsystemNumberFormat]" condition="string.equals" value="integer"/>
   <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.value"/>    
-  <test parameter="[subsystemNumberValue]" condition="number.equals" value="7"/>
+  <test parameter="[subsystemNumberValue]" condition="number.equals" value="177"/>
   <parameter name="[subsystemNumberLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.lengthbit"/>    
   <test parameter="[subsystemNumberLengthBit]" condition="number.equals" value="8"/>
   <parameter name="[subsystemNumberLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.littleEndian"/>    
   <test parameter="[subsystemNumberLittleEndian]" condition="boolean.equals" value="False"/> 
-      
+  
+  <parameter name="[globalTitleName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.name"/>    
+  <test parameter="[globalTitleName]" condition="string.equals" value="Global_Title"/>
+  <parameter name="[globalTitleFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.format"/>    
+  <test parameter="[globalTitleFormat]" condition="string.equals" value="digit"/>
+  <parameter name="[globalTitleValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.value"/>    
+  <test parameter="[globalTitleValue]" condition="number.equals" value="00110433660650767"/>
+  <parameter name="[globalTitleLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.lengthbit"/>    
+  <test parameter="[globalTitleLengthBit]" condition="number.equals" value="72"/>
+  <parameter name="[globalTitleLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.littleEndian"/>    
+  <test parameter="[globalTitleLittleEndian]" condition="boolean.equals" value="False"/>
+  
+   
   <parameter name="[dataName]" operation="protocol.setFromMessage" value="ss7.parameter.Data.name"/>    
   <test parameter="[dataName]" condition="string.equals" value="Data"/>
   <parameter name="[dataId]" operation="protocol.setFromMessage" value="ss7.parameter.Data.id"/>

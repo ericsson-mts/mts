@@ -8,14 +8,24 @@
       	    <field name="Special_Option" value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
       	</parameter>
       	<parameter id="3" name="Called_Party_Address" type="V" >
-      	    <field name="Address_Indicator" value="18" format="integer" length="1" />
-      	    <!--field name="Signalling_Point_Code" value="[function:m3uaDpc]" length="2" littleEndian="true" /-->
+      	    <!--field name="Address_Indicator" value="83" format="integer" length="1" /-->
+            <field name="AI_national_use"	value="0" lengthBit="1"/>
+            <field name="AI_routing_indicator" value="1" lengthBit="1"/>        
+            <field name="AI_GT_indicator"	value="4" lengthBit="4"/>      
+            <field name="AI_SSN_indicator" value="1"	lengthBit="1"/>      
+            <field name="AI_PC_indicator"	value="1" lengthBit="1"/>                              
+      	    <field name="Signalling_Point_Code" value="[function:m3uaDpc]" length="2" littleEndian="true" />
       	    <field name="Subsystem_Number" value="[function:sccpDssn]" length="1" />	
             <field name="Global_Title" value="001104[function:sccpDgt]" format="digit" />
       	</parameter>	
       	<parameter id="4" type="V" name="Calling_Party_Address" >
-      	    <field name="Address_Indicator" value="18" format="integer" length="1" />
-      	    <!--field name="Signalling_Point_Code" value="[function:m3uaOpc]" length="2" littleEndian="true" /-->
+      	    <!--field name="Address_Indicator" value="83" format="integer" length="1" /-->
+            <field name="AI_national_use"	value="0" lengthBit="1"/>
+            <field name="AI_routing_indicator" value="1" lengthBit="1"/>        
+            <field name="AI_GT_indicator"	value="4" lengthBit="4"/>      
+            <field name="AI_SSN_indicator" value="1"	lengthBit="1"/>      
+            <field name="AI_PC_indicator"	value="1" lengthBit="1"/>                                    
+      	    <field name="Signalling_Point_Code" value="[function:m3uaOpc]" length="2" littleEndian="true" />
       	    <field name="Subsystem_Number" value="[function:sccpOssn]" length="1" />
     	      <field name="Global_Title" value="001104[function:sccpOgt]" format="digit" />
       	</parameter>

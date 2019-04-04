@@ -62,14 +62,26 @@
 			<field name="Special_Option" value="0" lengthBit="4" />
 		</parameter>
 		<parameter id="3" name="Called_Party_Address" type="V" >
-			<field name="Address_Indicator" value="67" length="1" />
-			<field name="Signalling_Point_Code" value="257" length="2" littleEndian="true" />
-			<field name="Subsystem_Number" value="7" length="1" />	
-		</parameter>
-		<parameter id="4" type="V" name="Calling_Party_Address" >
-			<field name="Address_Indicator" value="67" length="1" />
+			<!--field name="Address_Indicator" value="67" length="1" /-->
+      <field name="AI_national_use"	value="0" lengthBit="1"/>
+      <field name="AI_routing_indicator" value="1" lengthBit="1"/>        
+      <field name="AI_GT_indicator"	value="0" lengthBit="4"/>      
+      <field name="AI_SSN_indicator" value="1"	lengthBit="1"/>      
+      <field name="AI_PC_indicator"	value="1" lengthBit="1"/>            
 			<field name="Signalling_Point_Code" value="258" length="2" littleEndian="true" />
 			<field name="Subsystem_Number" value="7" length="1" />
+      <!--field name="Global_Title" value="00110433296480700" format="digit" /-->      	
+		</parameter>
+		<parameter id="4" type="V" name="Calling_Party_Address" >
+			<!--field name="Address_Indicator" value="83" length="1" /-->
+      <field name="AI_national_use"	value="0" lengthBit="1"/>
+      <field name="AI_routing_indicator" value="1" lengthBit="1"/>        
+      <field name="AI_GT_indicator"	value="4" lengthBit="4"/>      
+      <field name="AI_SSN_indicator" value="1"	lengthBit="1"/>      
+      <field name="AI_PC_indicator"	value="1" lengthBit="1"/>                  
+			<field name="Signalling_Point_Code" value="16000" length="2" littleEndian="true" />
+			<field name="Subsystem_Number" value="177" length="1" />
+      <field name="Global_Title" value="00110433660650767" format="digit" />      
 		</parameter>
 		<parameter id="15" name="Data" type="V" >                                                                                                                                                                                                                               
 			<field value="46561220f4dc6240d65c141c60e0008861a080808005b406d40140e001859060e02000008000c8407d58141860e02000008080808005b005d00190696aa088240096c86f366485244080804080dc0c382080f020705518b06541bb368c98b46cddbb6201e0894ee6821ae44f" format="binary" length="108" littleEndian="true" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->

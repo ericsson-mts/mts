@@ -45,7 +45,7 @@
     <parameter name="[messageType]" operation="protocol.setFromMessage" value="ua.header.messageType"/>    
     <test parameter="[messageType]" condition="number.equals" value="1"/>   <!-- ASP_UP -->
     <parameter name="[messageLength]" operation="protocol.setFromMessage" value="ua.header.messageLength"/>    
-    <test parameter="[messageLength]" condition="number.equals" value="240"/>
+    <test parameter="[messageLength]" condition="number.equals" value="244"/>
     <parameter name="[networkAppearence1Value]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.value"/>    
     <test parameter="[networkAppearence1Value]" condition="number.equals" value="102"/>
     <parameter name="[routingContext1Value]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.value"/>    
@@ -73,38 +73,44 @@
     <parameter name="[specialOption1Value]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Special_Option.value"/>    
     <test parameter="[specialOption1Value]" condition="number.equals" value="1"/>
     
-    <parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.value"/>    
-    <test parameter="[addressIndicatorValue]" condition="number.equals" value="18"/>
-    <parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.value"/>    
-    <test parameter="[addressIndicatorValue]" condition="number.equals" value="18"/>  
-
-    <!-- without GT definition in the sccp.xml config file -->
-    <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.value"/>
-    <test parameter="[signallingPointCodeValue]" condition="number.equals" value="146"/>
-    <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.value"/>    
-    <test parameter="[subsystemNumberValue]" condition="number.equals" value="17"/> 
-    <parameter name="[unknownValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Unknown_undefined_in_dictionary.value"/>    
-    <test parameter="[unknownValue]" condition="binary.equals" value="40337000723350"/>     
-    <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.value"/>
-    <test parameter="[signallingPointCodeValue]" condition="number.equals" value="146"/>    
-    <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.value"/>    
-    <test parameter="[subsystemNumberValue]" condition="number.equals" value="17"/>
-    <parameter name="[unknownValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Unknown_undefined_in_dictionary.value"/>    
-    <test parameter="[unknownValue]" condition="binary.equals" value="40337000723500f5"/>
+    <!--parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.value"/>    
+    <test parameter="[addressIndicatorValue]" condition="number.equals" value="18"/-->
+    <parameter name="[AI_nationalUseValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_national_use.value"/>    
+    <test parameter="[AI_nationalUseValue]" condition="number.equals" value="0"/>
+    <parameter name="[AI_Routing_IndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_routing_indicator.value"/>    
+    <test parameter="[AI_Routing_IndicatorValue]" condition="number.equals" value="1"/>
+    <parameter name="[AI_GTindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_GT_indicator.value"/>    
+    <test parameter="[AI_GTindicatorValue]" condition="number.equals" value="4"/>
+    <parameter name="[AI_SSNIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_SSN_indicator.value"/>    
+    <test parameter="[AI_SSNIndicatorValue]" condition="number.equals" value="1"/>
+    <parameter name="[AI_PCindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.AI_PC_indicator.value"/>    
+    <test parameter="[AI_PCindicatorValue]" condition="number.equals" value="1"/>
     
-    <!-- with GT definition in the sccp.xml config file -->
-    <!--parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.value"/>         
-    <test parameter="[signallingPointCodeValue]" condition="list.isEmpty"/>
+    <!--parameter name="[addressIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.value"/>    
+    <test parameter="[addressIndicatorValue]" condition="number.equals" value="18"/-->  
+    <parameter name="[AI_nationalUseValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_national_use.value"/>    
+    <test parameter="[AI_nationalUseValue]" condition="number.equals" value="0"/>
+    <parameter name="[AI_Routing_IndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_routing_indicator.value"/>    
+    <test parameter="[AI_Routing_IndicatorValue]" condition="number.equals" value="1"/>
+    <parameter name="[AI_GTindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.value"/>    
+    <test parameter="[AI_GTindicatorValue]" condition="number.equals" value="4"/>
+    <parameter name="[AI_SSNIndicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_SSN_indicator.value"/>    
+    <test parameter="[AI_SSNIndicatorValue]" condition="number.equals" value="1"/>
+    <parameter name="[AI_PCindicatorValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_PC_indicator.value"/>    
+    <test parameter="[AI_PCindicatorValue]" condition="number.equals" value="1"/>
+  
+    <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Signalling_Point_Code.value"/>         
+    <test parameter="[signallingPointCodeValue]" condition="number.equals" value="[M3UA_DPC]"/>
     <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Subsystem_Number.value"/>      
-    <test parameter="[subsystemNumberValue]" condition="number.equals" value="146"/>
+    <test parameter="[subsystemNumberValue]" condition="number.equals" value="[SCCP_DSSN]"/>
     <parameter name="[globalTitleValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.value"/>      
-    <test parameter="[globalTitleValue]" condition="string.equals" value="001104330700273305"/>    
+    <test parameter="[globalTitleValue]" condition="string.equals" value="001104[SCCP_DGT]"/>    
     <parameter name="[signallingPointCodeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Signalling_Point_Code.value"/>    
-    <test parameter="[signallingPointCodeValue]" condition="list.isEmpty"/>
+    <test parameter="[signallingPointCodeValue]" condition="number.equals" value="[M3UA_OPC]"/>
     <parameter name="[subsystemNumberValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.value"/>    
-    <test parameter="[subsystemNumberValue]" condition="number.equals" value="146"/>    
+    <test parameter="[subsystemNumberValue]" condition="number.equals" value="[SCCP_OSSN]"/>    
     <parameter name="[globalTitleValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.value"/>      
-    <test parameter="[globalTitleValue]" condition="string.equals" value="0011043307002753005"/-->    
+    <test parameter="[globalTitleValue]" condition="string.equals" value="001104[SCCP_OGT]"/>    
     
     <!-- couche asn1 TCAP -->
     <parameter name="[data]" value="6281f04804000000016b1e281c060700118605010101a011600f80020780a1090607040000010032016c81c7a181c40201010201003081bb800100820365037783026ceb85023aaa87010188034a9eb28a042f6371208c02a21a9702197599032acf4bbb058003d758af9c01079d021c309e03c7efba9103cf646bbf2032a00e8102883d820340d4c18403b5aa09a1088102cd418202dbaf8201008401028d009f32022e0e9f3303e227949f340291b89f250385ebc39f2d01029f2e04a99fdb239f2f009f3203558600bf33028000bf35048202c5039f3602e7419f37066f31096017619f38035a199a9f39035592389f3a00" />    			

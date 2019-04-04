@@ -172,22 +172,34 @@
 		</parameter-->
     <!-- for SCCP test : use Signaling_Point_Code -->
 		<parameter id="3"	name="Called_Party_Address"	>
-			<field 		name="Address_Indicator"		length="1" />
+			<!--field 		name="Address_Indicator"		length="1"/-->
+      <field 		name="AI_national_use"		lengthBit="1"/>
+      <field 		name="AI_routing_indicator"		lengthBit="1"/>        
+      <field 		name="AI_GT_indicator"		lengthBit="4"/>      
+      <field 		name="AI_SSN_indicator"		lengthBit="1"/>      
+      <field 		name="AI_PC_indicator"		lengthBit="1"/>      
 			<field 		name="Signalling_Point_Code"  length="2" littleEndian="true"/>
 			<field		name="Subsystem_Number"			length="1" />
+      <field		name="Global_Title"	format="digit"/>      
 		</parameter>
     <!-- for CAP test : use Global_Title -->    
-		<!--parameter id="4"	name="Calling_Party_Address" >
-			<field		name="Address_Indicator"		length="1" />
+		<parameter id="4"	name="Calling_Party_Address" >
+			<!--field		name="Address_Indicator"		length="1" /-->
+      <field 		name="AI_national_use"		lengthBit="1"/>
+      <field 		name="AI_routing_indicator"		lengthBit="1"/>        
+      <field 		name="AI_GT_indicator"		lengthBit="4"/>      
+      <field 		name="AI_SSN_indicator"		lengthBit="1"/>      
+      <field 		name="AI_PC_indicator"		lengthBit="1"/>       
+      <field		name="Signalling_Point_Code"		length="2" littleEndian="true"/>      
 			<field		name="Subsystem_Number"			length="1" />
 			<field		name="Global_Title"	format="digit"/>
-		</parameter-->
+		</parameter>
     <!-- for SCCP test : use Signaling_Point_Code -->    
-		<parameter id="4"	name="Calling_Party_Address" >
+		<!--parameter id="4"	name="Calling_Party_Address" >
 			<field		name="Address_Indicator"		length="1" />
 			<field		name="Signalling_Point_Code"		length="2" littleEndian="true"/>
 			<field		name="Subsystem_Number"			length="1" />
-		</parameter>    
+		</parameter-->    
 		<parameter id="5"	name="Protocol_Class">
 			<field 		name="Protocol_Class"			lengthBit="4"/>
 			<field 		name="Special_Option"			lengthBit="4"/>
@@ -249,6 +261,30 @@
 	
 	<enumerations>
 	
+		<enumeration	name="AI_routing_indicator">
+			<value		code="0"		name="route on SSN"/>
+			<value		code="1"		name="route on GT"/>
+		</enumeration>
+
+		<enumeration	name="AI_GT_indicator">
+			<value		code="0"		name="not included"/>
+			<value		code="1"		name="nature of address indicator only"/>
+			<value		code="2"		name="translation type only"/>
+			<value		code="3"		name="translation type, numbering plan and encoding scheme"/>
+			<value		code="4"		name="translation type, numbering plan, encoding scheme and nature of address indicator"/>
+			<value		code="5"		name="spare international"/>
+			<value		code="6"		name="spare international"/>
+			<value		code="7"		name="spare international"/>
+			<value		code="8"		name="spare national"/>
+			<value		code="9"		name="spare national"/>
+			<value		code="10"		name="spare national"/>
+			<value		code="11"		name="spare national"/>
+			<value		code="12"		name="spare national"/>
+			<value		code="13"		name="spare national"/>
+			<value		code="14"		name="spare national"/>
+			<value		code="15"		name="reserved for extension"/>                  
+		</enumeration>
+              
 		<enumeration	name="M">
 			<value		code="0"		name="no more data"/>
 			<value		code="1"		name="more data"/>
