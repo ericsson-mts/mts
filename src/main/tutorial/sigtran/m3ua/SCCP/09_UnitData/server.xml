@@ -12,14 +12,14 @@
 <scenario>
 
 	<!-- Message encoded value -->
-	<parameter name="[data]" value="01000101000000b80200000800000002000600080077ddd00210009500000d7a0000100203030004090003071404430201070d53803eb10011403366600567f76c626a48042f3b46026b3a2838060700118605010101a02d602b80020780a109060704000001001302be1a2818060704000001010101a00da00b80099656051124006913f66c26a12402010102013b301c04010f040eaa180da682dd6c31192d36bbdd468007917267415827f200000000130008000031ef" />
+	<parameter name="[data]" value="01000101000000b80200000800000002000600080077ddd00210009500000d7a0000100203030004090003071404430201070d53803eb10011043366600567f76c626a48042f3b46026b3a2838060700118605010101a02d602b80020780a109060704000001001302be1a2818060704000001010101a00da00b80099656051124006913f66c26a12402010102013b301c04010f040eaa180da682dd6c31192d36bbdd468007917267415827f200000000130008000031ef" />
 
 	<receiveMessageSIGTRAN name="Wait DATA1">
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
 	</receiveMessageSIGTRAN>
 	
 	<if>
-		<condition>
+		<condition>                                                             
 			<test parameter="[data1]" condition="binary.equals" value="[data]"/>
 		</condition>
 		<else>
@@ -44,8 +44,9 @@
   <test parameter="[protocolClassType]" condition="string.equals" value="F"/>
   <parameter name="[protocolClassLong]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.longParameter"/>    
   <test parameter="[protocolClassLong]" condition="boolean.equals" value="false"/>
-  <parameter name="[protocolClassEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.littleEndian"/>    
-  <test parameter="[protocolClassEndian]" condition="boolean.equals" value="false"/>
+  <!-- deprecated -->  
+  <parameter name="[protocolClassLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.littleEndian"/>    
+  <test parameter="[protocolClassLittleEndian]" condition="boolean.equals" value="false"/>
   
   <parameter name="[protocolClass1Name]" operation="protocol.setFromMessage" value="ss7.parameter.Protocol_Class.field.Protocol_Class.name"/>    
   <test parameter="[protocolClass1Name]" condition="string.equals" value="Protocol_Class"/>
@@ -79,8 +80,9 @@
   <test parameter="[CalledPAType]" condition="string.equals" value="V"/>
   <parameter name="[CalledPALong]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.longParameter"/>    
   <test parameter="[CalledPALong]" condition="boolean.equals" value="false"/>
-  <parameter name="[CalledPAEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.littleEndian"/>    
-  <test parameter="[CalledPAEndian]" condition="boolean.equals" value="false"/>
+  <!-- deprecated -->  
+  <parameter name="[CalledPALittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.littleEndian"/>    
+  <test parameter="[CalledPALittleEndian]" condition="boolean.equals" value="false"/>
   
   <!--parameter name="[addressIndicatorName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Address_Indicator.name"/>    
   <test parameter="[addressIndicatorName]" condition="string.equals" value="Address_Indicator"/>
@@ -170,7 +172,62 @@
   <test parameter="[globalTitleLengthBit]" condition="number.equals" value="72"/>
   <parameter name="[globalTitleLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.Global_Title.littleEndian"/>    
   <test parameter="[globalTitleLittleEndian]" condition="boolean.equals" value="False"/-->
+
+  <!--parameter name="[GT_TranslationTypeName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Translation_Type.name"/>    
+  <test parameter="[GT_TranslationTypeName]" condition="string.equals" value="GT_Translation_Type"/>
+  <parameter name="[GT_TranslationTypeFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Translation_Type.format"/>    
+  <test parameter="[GT_TranslationTypeFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_TranslationTypeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Translation_Type.value"/>    
+  <test parameter="[GT_TranslationTypeValue]" condition="number.equals" value="0"/>
+  <parameter name="[GT_TranslationTypeLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Translation_Type.lengthbit"/>    
+  <test parameter="[GT_TranslationTypeLengthBit]" condition="number.equals" value="8"/>
+  <parameter name="[GT_TranslationTypeLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Translation_Type.littleEndian"/>    
+  <test parameter="[GT_TranslationTypeLittleEndian]" condition="boolean.equals" value="False"/>
+
+  <parameter name="[GT_numberingPlanName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Numbering_Plan.name"/>    
+  <test parameter="[GT_numberingPlanName]" condition="string.equals" value="GT_Numbering_Plan"/>
+  <parameter name="[GT_numberingPlanFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Numbering_Plan.format"/>    
+  <test parameter="[GT_numberingPlanFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_numberingPlanValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Numbering_Plan.value"/>    
+  <test parameter="[GT_numberingPlanValue]" condition="number.equals" value="1"/>
+  <parameter name="[GT_numberingPlanLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Numbering_Plan.lengthbit"/>    
+  <test parameter="[GT_numberingPlanLengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[GT_numberingPlanLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Numbering_Plan.littleEndian"/>    
+  <test parameter="[GT_numberingPlanLittleEndian]" condition="boolean.equals" value="False"/>
   
+  <parameter name="[GT_encodingSchemeName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Encoding_Scheme.name"/>    
+  <test parameter="[GT_encodingSchemeName]" condition="string.equals" value="GT_Encoding_Scheme"/>
+  <parameter name="[GT_encodingSchemeFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Encoding_Scheme.format"/>    
+  <test parameter="[GT_encodingSchemeFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_encodingSchemeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Encoding_Scheme.value"/>    
+  <test parameter="[GT_encodingSchemeValue]" condition="number.equals" value="1"/>
+  <parameter name="[GT_encodingSchemeLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Encoding_Scheme.lengthbit"/>    
+  <test parameter="[GT_encodingSchemeLengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[GT_encodingSchemeLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Encoding_Scheme.littleEndian"/>    
+  <test parameter="[GT_encodingSchemeLittleEndian]" condition="boolean.equals" value="False"/>
+
+  <parameter name="[GT_natureOfAddressName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Nature_of_Address.name"/>    
+  <test parameter="[GT_natureOfAddressName]" condition="string.equals" value="GT_Nature_of_Address"/>
+  <parameter name="[GT_natureOfAddressFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Nature_of_Address.format"/>    
+  <test parameter="[GT_numberingPlanFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_natureOfAddressValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Nature_of_Address.value"/>    
+  <test parameter="[GT_natureOfAddressValue]" condition="number.equals" value="4"/>
+  <parameter name="[GT_natureOfAddressLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Nature_of_Address.lengthbit"/>    
+  <test parameter="[GT_natureOfAddressLengthBit]" condition="number.equals" value="8"/>
+  <parameter name="[GT_natureOfAddressLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Nature_of_Address.littleEndian"/>    
+  <test parameter="[GT_natureOfAddressLittleEndian]" condition="boolean.equals" value="False"/>
+  
+  <parameter name="[GT_digitsName]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Digits.name"/>    
+  <test parameter="[GT_digitsName]" condition="string.equals" value="GT_Digits"/>
+  <parameter name="[GT_digitsFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Digits.format"/>    
+  <test parameter="[GT_digitsFormat]" condition="string.equals" value="digit"/>
+  <parameter name="[GT_digitsValue]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Digits.value"/>    
+  <test parameter="[GT_digitsValue]" condition="number.equals" value="33296480700"/>
+  <parameter name="[GT_digitsLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Digits.lengthbit"/>    
+  <test parameter="[GT_digitsLengthBit]" condition="number.equals" value="48"/>
+  <parameter name="[GT_digitsLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Called_Party_Address.field.GT_Digits.littleEndian"/>    
+  <test parameter="[GT_digitsLittleEndian]" condition="boolean.equals" value="False"/--> 
+    
   <parameter name="[CallingPAName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.name"/>    
   <test parameter="[CallingPAName]" condition="string.equals" value="Calling_Party_Address"/>
   <parameter name="[CallingPAId]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.id"/>
@@ -181,8 +238,9 @@
   <test parameter="[CallingPAType]" condition="string.equals" value="V"/>
   <parameter name="[CallingPALong]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.longParameter"/>    
   <test parameter="[CallingPALong]" condition="boolean.equals" value="false"/>
-  <parameter name="[CallingPAEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.littleEndian"/>    
-  <test parameter="[CallingPAEndian]" condition="boolean.equals" value="false"/>
+  <!-- deprecated -->  
+  <parameter name="[CallingPAMLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.littleEndian"/>    
+  <test parameter="[CallingPALittleEndian]" condition="boolean.equals" value="false"/>
   
   <!--parameter name="[addressIndicatorName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Address_Indicator.name"/>    
   <test parameter="[addressIndicatorName]" condition="string.equals" value="Address_Indicator"/>
@@ -220,7 +278,7 @@
   <parameter name="[AI_GTindicatorLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.lengthbit"/>    
   <test parameter="[AI_GTindicatorLengthBit]" condition="number.equals" value="4"/>
   <parameter name="[AI_GTindicatorLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_GT_indicator.littleEndian"/>    
-  <test parameter="[AI_GTindicatorLittleEndian]" condition="boolean.equals" value="False"/>        
+  <test parameter="[AI_GTindicatorLittleEndian]" condition="boolean.equals" value="False"/>
 
   <parameter name="[AI_SSNIndicatorFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.AI_SSN_indicator.format"/>    
   <test parameter="[AI_SSNIndicatorFormat]" condition="string.equals" value="integer"/>
@@ -262,7 +320,7 @@
   <parameter name="[subsystemNumberLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Subsystem_Number.littleEndian"/>    
   <test parameter="[subsystemNumberLittleEndian]" condition="boolean.equals" value="False"/> 
   
-  <parameter name="[globalTitleName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.name"/>    
+  <!--parameter name="[globalTitleName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.name"/>    
   <test parameter="[globalTitleName]" condition="string.equals" value="Global_Title"/>
   <parameter name="[globalTitleFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.format"/>    
   <test parameter="[globalTitleFormat]" condition="string.equals" value="digit"/>
@@ -271,8 +329,62 @@
   <parameter name="[globalTitleLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.lengthbit"/>    
   <test parameter="[globalTitleLengthBit]" condition="number.equals" value="72"/>
   <parameter name="[globalTitleLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.Global_Title.littleEndian"/>    
-  <test parameter="[globalTitleLittleEndian]" condition="boolean.equals" value="False"/>
+  <test parameter="[globalTitleLittleEndian]" condition="boolean.equals" value="False"/-->
   
+  <parameter name="[GT_TranslationTypeName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Translation_Type.name"/>    
+  <test parameter="[GT_TranslationTypeName]" condition="string.equals" value="GT_Translation_Type"/>
+  <parameter name="[GT_TranslationTypeFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Translation_Type.format"/>    
+  <test parameter="[GT_TranslationTypeFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_TranslationTypeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Translation_Type.value"/>    
+  <test parameter="[GT_TranslationTypeValue]" condition="number.equals" value="0"/>
+  <parameter name="[GT_TranslationTypeLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Translation_Type.lengthbit"/>    
+  <test parameter="[GT_TranslationTypeLengthBit]" condition="number.equals" value="8"/>
+  <parameter name="[GT_TranslationTypeLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Translation_Type.littleEndian"/>    
+  <test parameter="[GT_TranslationTypeLittleEndian]" condition="boolean.equals" value="False"/>
+
+  <parameter name="[GT_numberingPlanName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Numbering_Plan.name"/>    
+  <test parameter="[GT_numberingPlanName]" condition="string.equals" value="GT_Numbering_Plan"/>
+  <parameter name="[GT_numberingPlanFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Numbering_Plan.format"/>    
+  <test parameter="[GT_numberingPlanFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_numberingPlanValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Numbering_Plan.value"/>    
+  <test parameter="[GT_numberingPlanValue]" condition="number.equals" value="1"/>
+  <parameter name="[GT_numberingPlanLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Numbering_Plan.lengthbit"/>    
+  <test parameter="[GT_numberingPlanLengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[GT_numberingPlanLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Numbering_Plan.littleEndian"/>    
+  <test parameter="[GT_numberingPlanLittleEndian]" condition="boolean.equals" value="False"/>
+  
+  <parameter name="[GT_encodingSchemeName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Encoding_Scheme.name"/>    
+  <test parameter="[GT_encodingSchemeName]" condition="string.equals" value="GT_Encoding_Scheme"/>
+  <parameter name="[GT_encodingSchemeFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Encoding_Scheme.format"/>    
+  <test parameter="[GT_encodingSchemeFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_encodingSchemeValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Encoding_Scheme.value"/>    
+  <test parameter="[GT_encodingSchemeValue]" condition="number.equals" value="1"/>
+  <parameter name="[GT_encodingSchemeLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Encoding_Scheme.lengthbit"/>    
+  <test parameter="[GT_encodingSchemeLengthBit]" condition="number.equals" value="4"/>
+  <parameter name="[GT_encodingSchemeLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Encoding_Scheme.littleEndian"/>    
+  <test parameter="[GT_encodingSchemeLittleEndian]" condition="boolean.equals" value="False"/>
+
+  <parameter name="[GT_natureOfAddressName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Nature_of_Address.name"/>    
+  <test parameter="[GT_natureOfAddressName]" condition="string.equals" value="GT_Nature_of_Address"/>
+  <parameter name="[GT_natureOfAddressFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Nature_of_Address.format"/>    
+  <test parameter="[GT_numberingPlanFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[GT_natureOfAddressValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Nature_of_Address.value"/>    
+  <test parameter="[GT_natureOfAddressValue]" condition="number.equals" value="4"/>
+  <parameter name="[GT_natureOfAddressLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Nature_of_Address.lengthbit"/>    
+  <test parameter="[GT_natureOfAddressLengthBit]" condition="number.equals" value="8"/>
+  <parameter name="[GT_natureOfAddressLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Nature_of_Address.littleEndian"/>    
+  <test parameter="[GT_natureOfAddressLittleEndian]" condition="boolean.equals" value="False"/>
+  
+  <parameter name="[GT_digitsName]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Digits.name"/>    
+  <test parameter="[GT_digitsName]" condition="string.equals" value="GT_Digits"/>
+  <parameter name="[GT_digitsFormat]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Digits.format"/>    
+  <test parameter="[GT_digitsFormat]" condition="string.equals" value="digit"/>
+  <parameter name="[GT_digitsValue]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Digits.value"/>    
+  <test parameter="[GT_digitsValue]" condition="number.equals" value="33660650767"/>
+  <parameter name="[GT_digitsLengthBit]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Digits.lengthbit"/>    
+  <test parameter="[GT_digitsLengthBit]" condition="number.equals" value="48"/>
+  <parameter name="[GT_digitsLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Calling_Party_Address.field.GT_Digits.littleEndian"/>    
+  <test parameter="[GT_digitsLittleEndian]" condition="boolean.equals" value="False"/>  
    
   <parameter name="[dataName]" operation="protocol.setFromMessage" value="ss7.parameter.Data.name"/>    
   <test parameter="[dataName]" condition="string.equals" value="Data"/>
@@ -284,8 +396,9 @@
   <test parameter="[dataType]" condition="string.equals" value="V"/>
   <parameter name="[dataLong]" operation="protocol.setFromMessage" value="ss7.parameter.Data.longParameter"/>    
   <test parameter="[dataLong]" condition="boolean.equals" value="false"/>
-  <parameter name="[dataEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Data.littleEndian"/>    
-  <test parameter="[dataEndian]" condition="boolean.equals" value="false"/>
+    <!-- deprecated -->
+  <parameter name="[dataLittleEndian]" operation="protocol.setFromMessage" value="ss7.parameter.Data.littleEndian"/>    
+  <test parameter="[dataLittleEndian]" condition="boolean.equals" value="false"/>
   
   <parameter name="[dataName]" operation="protocol.setFromMessage" value="ss7.parameter.Data.field.Data.name"/>    
   <test parameter="[dataName]" condition="string.equals" value="Data"/>

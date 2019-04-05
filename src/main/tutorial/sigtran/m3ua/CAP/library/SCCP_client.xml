@@ -16,7 +16,12 @@
             <field name="AI_PC_indicator"	value="1" lengthBit="1"/>                              
       	    <field name="Signalling_Point_Code" value="[function:m3uaDpc]" length="2" littleEndian="true" />
       	    <field name="Subsystem_Number" value="[function:sccpDssn]" length="1" />	
-            <field name="Global_Title" value="001104[function:sccpDgt]" format="digit" />
+            <!--field name="Global_Title" value="001140[function:sccpDgt]" format="digit" /-->
+            <field name="GT_Translation_Type" value="0" length="1"/>
+            <field name="GT_Numbering_Plan" value="1" lengthBit="4"/>
+            <field name="GT_Encoding_Scheme" value="1" lengthBit="4"/>      
+            <field name="GT_Nature_of_Address" value="4" length="1"/>        
+            <field name="GT_Digits" value="[function:sccpDgt]" format="digit"/>            	                        
       	</parameter>	
       	<parameter id="4" type="V" name="Calling_Party_Address" >
       	    <!--field name="Address_Indicator" value="83" format="integer" length="1" /-->
@@ -27,7 +32,12 @@
             <field name="AI_PC_indicator"	value="1" lengthBit="1"/>                                    
       	    <field name="Signalling_Point_Code" value="[function:m3uaOpc]" length="2" littleEndian="true" />
       	    <field name="Subsystem_Number" value="[function:sccpOssn]" length="1" />
-    	      <field name="Global_Title" value="001104[function:sccpOgt]" format="digit" />
+    	      <!--field name="Global_Title" value="001140[function:sccpOgt]" format="digit" /-->
+            <field name="GT_Translation_Type" value="0" length="1"/>
+            <field name="GT_Numbering_Plan" value="1" lengthBit="4"/>
+            <field name="GT_Encoding_Scheme" value="1" lengthBit="4"/>      
+            <field name="GT_Nature_of_Address" value="4" length="1"/>        
+            <field name="GT_Digits" value="[function:sccpOgt]" format="digit"/>            	                                    
       	</parameter>
       	<parameter id="15" name="Data" type="V" >
       	    <field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
