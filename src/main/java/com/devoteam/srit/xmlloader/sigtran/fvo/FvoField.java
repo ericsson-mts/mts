@@ -196,18 +196,28 @@ public class FvoField {
     }
 
     public int getLengthBit() {
-        if(formatBinary.equalsIgnoreCase(_format)){
-            return (_value.length() / 2) * 8;
+    	if(formatBinary.equalsIgnoreCase(_format)){
+    		if (_value != null)
+    			return (_value.length() / 2) * 8;
+    		else
+    			return 0;
         }
         else if(formatDigit.equalsIgnoreCase(_format)){
-            return ((_value.length() + 1) / 2) * 8;
+    		if (_value != null)
+    			return ((_value.length() + 1) / 2) * 8;
+    		else
+    			return 0;
         }
         else if(formatString.equalsIgnoreCase(_format)){
-            return _value.length() * 8;
+    		if (_value != null)
+    			return _value.length() * 8;
+    		else
+    			return 0;        	
         }
-        else{
-            return _lengthBit;
-        }
+    	else
+    	{
+    		return _lengthBit;
+    	}
     }
 
     public void setLength(int bytes) {

@@ -233,9 +233,6 @@ public class FvoParameter {
         if (id != null) {
             setId(Integer.decode(id));
         }
-        //if (id != null) {
-        //    setId(Integer.decode(id));
-        //}
         
         String type = root.attributeValue("type");
         if (type != null) {
@@ -288,7 +285,7 @@ public class FvoParameter {
             LinkedList<FvoField> fieldsToParse = _fields;
             _fields = new LinkedList<FvoField>();
             for(FvoField field:fieldsToParse){
-                //if(offsetBit + field.getLengthBit() <= array.length * 8)
+                if (offsetBit + field.getLengthBit() <= array.length * 8)
                 {
                     field.parseArray(array, offsetBit);
                     offsetBit += field.getLengthBit();
