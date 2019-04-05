@@ -27,15 +27,19 @@ import java.util.List;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -138,6 +142,20 @@ public class FvoParameter {
         _fields = fields;
     }
 
+    public FvoField getFvoField(String name) {
+		Iterator<FvoField> iterParam = _fields.iterator();
+		FvoField param = null;
+		while (iterParam.hasNext())
+		{
+			param = (FvoField) iterParam.next();
+			if (name.equalsIgnoreCase(param.getName()))
+			{
+				return param;
+			}
+		}
+        return null;
+    }
+    
     public String getName() {
         return _name;
     }
@@ -154,15 +172,63 @@ public class FvoParameter {
         _type = type;
     }
 
+    /**
+     * Get a parameter from the message
+     *
+     * @param path		: The path of the parameter requested
+     * @return			: The parameter requested
+     * @throws Exception
+     */
+    public Parameter getParameter(String path) throws Exception {
+
+        Parameter parameter = new Parameter();
+        String[] params = Utils.splitPath(path);
+
+        if (params[0].equalsIgnoreCase("name")) {
+            parameter.add(this.getName());
+        }
+        else if (params[0].equalsIgnoreCase("id")) {
+            parameter.add(this._id);
+        }
+        else if (params[0].equalsIgnoreCase("length")) {
+            parameter.add(this._messageLength);
+        }
+        else if (params[0].equalsIgnoreCase("type")) {
+            parameter.add(this._type);
+        }
+        else if (params[0].equalsIgnoreCase("longParameter")) {
+            parameter.add(this._longParameter);
+        }
+        else if (params[0].equalsIgnoreCase("littleEndian")) {
+            parameter.add(this._littleEndian);
+        }        
+        else if ((params[0].equalsIgnoreCase("field")) && (params.length >= 2)) {
+            FvoField tlvField = this.getFvoField(params[1]);
+            if (tlvField != null)
+            {
+	            if (path.contains(":")) {
+	                path = path.substring(path.indexOf(":") + 1);
+	                parameter = tlvField.getParameter(path.substring(path.indexOf(":") + 1));
+	            }
+	            else {
+	                path = path.substring(path.indexOf(".") + 1);
+	                parameter = tlvField.getParameter(path.substring(path.indexOf(".") + 1));
+	            }
+            }
+        }
+        else {
+            parameter = null;
+        }
+
+        return parameter;
+    }
+    
     public void parseElement(Element root) throws Exception {           
         //Create the FvoParameter
         String id = root.attributeValue("id");
         if (id != null) {
         	String name = root.attributeValue("name");
             setName(name);
-        }
-        if (id != null) {
-            setId(Integer.decode(id));
         }
         if (id != null) {
             setId(Integer.decode(id));
@@ -204,8 +270,10 @@ public class FvoParameter {
         }
     }
 
-    public void parseArray(Array array) throws Exception {
-        if(!"F".equalsIgnoreCase(_type)){
+    public void parseArray(Array array) throws Exception 
+    {
+        if(!"F".equalsIgnoreCase(_type))
+        {
             _messageLength = array.length;
         }
 
@@ -217,42 +285,24 @@ public class FvoParameter {
             LinkedList<FvoField> fieldsToParse = _fields;
             _fields = new LinkedList<FvoField>();
             for(FvoField field:fieldsToParse){
-                //if(offsetBit + field.getLengthBit() <= array.length * 8)
+                if (offsetBit + field.getLengthBit() <= array.length * 8)
                 {
                     field.parseArray(array, offsetBit);
                     offsetBit += field.getLengthBit();
                     _fields.addLast(field);
                 }
-                //else{
-                //    break;
-                //}
-            }
-
-            // if there is still undecoded data at the end of the parameter
-            while (offsetBit < array.length * 8) {
-                // TODO : should create and handle a binary field with the rest of the data
-                //        for now we create a list of 1 bit integers
-                FvoField field = new FvoField(_msg);
-                field.setLengthBit(0, 1);
-                field.setFormat("integer");
-                field.setName("unknown");
-                field.parseArray(array, offsetBit);
-
-                getFields().add(field);
-                offsetBit++;
             }
         }
-        else {
-            // create a list of integer08 fields
-            // TODO : shoud create a binary format field with all data
-            for (int i = 0; i < array.length; i++) {
-                FvoField field = new FvoField(_msg);
-                field.setLength(1);
-                field.setName("undefined");
-                getFields().add(field);
-                field.setValue(Integer.toString(array.get(i) & 0xff));
-            }
-        }
+        
+        // if there is still undecoded data at the end of the parameter
+        if (offsetBit < array.length * 8)
+        {
+        	FvoField field = new FvoField(_msg);
+        	field.setFormat(FvoField.formatBinary);
+        	field.setName("Unknown_undefined_in_dictionary");
+        	field.parseArray(array, offsetBit);
+        	getFields().add(field);
+        }            
     }
 
     @Override

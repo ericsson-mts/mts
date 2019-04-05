@@ -23,8 +23,10 @@
 
 package com.devoteam.srit.xmlloader.sigtran.fvo;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 
 import gp.utils.arrays.Array;
@@ -56,6 +58,8 @@ public class FvoField {
     static public final String formatString = "string";
     // - binary
     static public final String formatBinary = "binary";
+    // - digit
+    static public final String formatDigit = "digit";
 
     public FvoField(Msg msg) {
         _msg = msg;
@@ -154,14 +158,35 @@ public class FvoField {
             {
             	// copy the binary as identical
             	for (int i = 0; i < len; i = i + 8) {
-            		target.setBits(i, 8, value.getBits(i, 8));
+            		target.setBits(i + offsetBit, 8, value.getBits(i, 8));
             	}
         	}
 
             _lengthBit = len;
         }
-    }
+        else if(FvoField.formatDigit.equalsIgnoreCase(_format)) {
+            Array value = convertDigitToBinary(_value);
+            int len = value.length * 8;
+            if (_littleEndian)
+        	{
+            	// perform littleEndian converting
+            	for (int i = 0; i < len; i++) {
+            		target.setBit(toLittleEndianIndexBit(offsetBit, _lengthBit - i - 1, _lengthBit, _littleEndian), value.getBit(i));
+            	}
+        	}
+            else
+            {
+            	// copy the binary as identical
+            	for (int i = 0; i < len; i = i + 8) {
+            		target.setBits(i + offsetBit, 8, value.getBits(i, 8));
+            	}
+        	}
 
+            _lengthBit = len;
+        }
+        
+    }
+    
     public void setFormat(String format) {
         _format = format;
     }
@@ -171,15 +196,28 @@ public class FvoField {
     }
 
     public int getLengthBit() {
-        if(formatBinary.equalsIgnoreCase(_format)){
-            return (_value.length() / 2) * 8;
+    	if(formatBinary.equalsIgnoreCase(_format)){
+    		if (_value != null)
+    			return (_value.length() / 2) * 8;
+    		else
+    			return 0;
+        }
+        else if(formatDigit.equalsIgnoreCase(_format)){
+    		if (_value != null)
+    			return ((_value.length() + 1) / 2) * 8;
+    		else
+    			return 0;
         }
         else if(formatString.equalsIgnoreCase(_format)){
-            return _value.length() * 8;
+    		if (_value != null)
+    			return _value.length() * 8;
+    		else
+    			return 0;        	
         }
-        else{
-            return _lengthBit;
-        }
+    	else
+    	{
+    		return _lengthBit;
+    	}
     }
 
     public void setLength(int bytes) {
@@ -190,6 +228,9 @@ public class FvoField {
         if(formatBinary.equalsIgnoreCase(_format)){
             throw new RuntimeException("can not set length on binary format field");
         }
+        else if(formatBinary.equalsIgnoreCase(_format)){
+            throw new RuntimeException("can not set length on binary format field");
+        }        
         else if(formatString.equalsIgnoreCase(_format)){
             throw new RuntimeException("can not set length on string format field");
         }
@@ -222,6 +263,40 @@ public class FvoField {
         _littleEndian = value;
     }
 
+    /**
+     * Get a parameter from the field
+     *
+     * @param path		: The path of the parameter requested
+     * @return			: The parameter requested
+     * @throws Exception
+     */
+    public Parameter getParameter(String path) throws Exception {
+
+        Parameter parameter = new Parameter();
+        String[] params = Utils.splitPath(path);
+
+        if (params[0].equalsIgnoreCase("name")) {
+            parameter.add(this._name);
+        }
+        else if (params[0].equalsIgnoreCase("format")) {
+            parameter.add(this._format);
+        }
+        else if (params[0].equalsIgnoreCase("value")) {
+            parameter.add(this._value);
+        }
+        else if (params[0].equalsIgnoreCase("lengthBit")) {
+            parameter.add(this._lengthBit);
+        }        
+        else if (params[0].equalsIgnoreCase("littleEndian")) {
+            parameter.add(this._littleEndian);
+        }       
+        else {
+            parameter = null;
+        }
+
+        return parameter;
+    }
+    
     public void parseElement(Element root) throws Exception {
         String name = root.attributeValue("name");
         if(name == null)
@@ -247,11 +322,13 @@ public class FvoField {
         // field info should already have been completed from dicionary, using constructor that clones
         // test for errors (value is mandatory attribute)
         if (format != null &&
-                !format.equalsIgnoreCase(FvoField.formatBinary) &&
-                !format.equalsIgnoreCase(FvoField.formatInteger) &&
-                !format.equalsIgnoreCase(FvoField.formatString)) {
+           !format.equalsIgnoreCase(FvoField.formatDigit) &&
+           !format.equalsIgnoreCase(FvoField.formatBinary) &&
+           !format.equalsIgnoreCase(FvoField.formatInteger) &&
+           !format.equalsIgnoreCase(FvoField.formatString)) {
             throw new ExecutionException("The format of a FvoField must be one of " +
                     FvoField.formatBinary + ", " +
+                    FvoField.formatDigit + ", " +
                     FvoField.formatInteger + ", " +
                     FvoField.formatString + ". Error in XML :\n" + root.asXML());
         }
@@ -271,6 +348,11 @@ public class FvoField {
                 _lengthBit += Integer.decode(lengthBit);
             }
         }
+        
+        String littleEndian = root.attributeValue("littleEndian");
+        if (littleEndian != null) {
+            setLittleEndian(Utils.parseBoolean(littleEndian, "littleEndian"));
+        }        
     }
 
     public void parseArray(Array array, int offsetBit) throws ExecutionException, Exception {
@@ -287,26 +369,36 @@ public class FvoField {
         // parse the value depending on the type integer // string // binary
         if(FvoField.formatInteger.equalsIgnoreCase(_format)){
             Integer32Array buff = new Integer32Array(0);
-            for(int i=0; i < _lengthBit; i++){
+            for (int i = 0; i < _lengthBit; i++){
                 buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
             }
 
             _value = String.valueOf(buff.getValue());
         }
         else if(FvoField.formatBinary.equalsIgnoreCase(_format)){
-        	_lengthBit = array.length * 8;
+        	_lengthBit = array.length * 8 - offsetBit;
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
-            for(int i=0; i < _lengthBit; i++){
+            for (int i = 0; i < _lengthBit; i++){
                 buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
             }
             _value = Array.toHexString(buff);
         }
-        else if(FvoField.formatString.equalsIgnoreCase(_format)){
-        	_lengthBit = array.length * 8;
+        else if(FvoField.formatDigit.equalsIgnoreCase(_format)){
+        	_lengthBit = array.length * 8 - offsetBit;
             // offset and length should be multiple of 8
             DefaultArray buff = new DefaultArray(_lengthBit/8);
-            for(int i=0; i < _lengthBit; i++){
+            for (int i = 0; i < _lengthBit; i++){
+                buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
+            }
+            _value = convertBinaryToDigit(buff);
+            //_value = Array.toHexString(buff);
+        }
+        else if(FvoField.formatString.equalsIgnoreCase(_format)){
+        	_lengthBit = array.length * 8 - offsetBit;
+            // offset and length should be multiple of 8
+            DefaultArray buff = new DefaultArray(_lengthBit/8);
+            for (int i = 0; i < _lengthBit; i++){
                 buff.setBit((buff.length * 8) - _lengthBit + i, array.getBit(toLittleEndianIndexBit(offsetBit, i, _lengthBit, _littleEndian)));
             }
             _value = new String(buff.getBytes());
@@ -322,15 +414,59 @@ public class FvoField {
         if (_value != null) {
             str += " value=\"" + _value + "\"";
         }
-        if (_lengthBit != 0) {
+        if (_lengthBit % 8 != 0) {
             str += " lengthBit=\"" + _lengthBit + "\"";
         }
+        else {
+            str += " length=\"" + (_lengthBit / 8) + "\"";
+        }        
         if (_format != null) {
             if (!_format.equalsIgnoreCase("integer")) {
                 str += " format=\"" + _format + "\"";
             }
         }
+        if (_littleEndian) {
+            str += " littleEndian=\"" + _littleEndian + "\"";
+        }        
         str += " />";
         return str;
     }
+    
+    private String convertBinaryToDigit(Array array) 
+    {
+		String string = Array.toHexString(array);
+		byte[] bytes = string.getBytes();  
+		for (int i = 0; i < bytes.length; i+=2)
+		{
+			byte temp = bytes[i];
+			bytes[i] = bytes[i + 1];
+			bytes[i + 1] = temp;
+		}
+		String resultString = new String(bytes);
+		if (resultString.endsWith("f"))
+		{
+			resultString = resultString.substring(0, resultString.length() - 1);
+		}
+		return resultString;
+    }
+
+    private Array convertDigitToBinary(String string) 
+    {
+    	if (string.length() % 2 != 0)
+    	{
+    		string = string + 'f';
+    	}
+		//Array array = Array.fromHexString(string);
+		byte[] bytes = string.getBytes();  
+		for (int i = 0; i < bytes.length; i+=2)
+		{
+			byte temp = bytes[i];
+			bytes[i] = bytes[i + 1];
+			bytes[i + 1] = temp;
+		}
+		String resultString = new String(bytes);
+		Array resultArray = Array.fromHexString(resultString);
+		return resultArray;
+    }
+
 }

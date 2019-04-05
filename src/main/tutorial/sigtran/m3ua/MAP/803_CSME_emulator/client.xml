@@ -37,7 +37,7 @@
     <pause seconds="[pause]"/>
 
     <!-- Message encoded value -->
-  	<parameter name="[data]" value="010001010000007c000600080000006402100069000000070000000203020001090103070b044302000804430700084962474804000000016b1e281c060700118605010101a011600f80020780a1090607040000010014036c1fa11d02010102012d30158007913316325476f98101ff8207913316111111f1000000" />
+  	<parameter name="[data]" value="010001010000007c000600080000006402100069000000070000000203020001090103070b044300020804430007084962474804000000016b1e281c060700118605010101a011600f80020780a1090607040000010014036c1fa11d02010102012d30158007913316325476f98101ff8207913316111111f1000000" />
     <parameter name="[length]" operation="string.length" value="[data]"/>			
 
     <sendMessageSIGTRAN name="Send DATA1" channel="channel">
@@ -132,23 +132,23 @@
   		<header>
           <field name="Message_Type" length="1" value="9" /> <!-- code for UnitData is 9 -->
       </header>
-  		<parameter name="Protocol_Class" type="F" littleEndian="false">
+  		<parameter name="Protocol_Class" type="F" >
   			<field value="0" lengthBit="4" />
   			<field value="1" lengthBit="4" /> <!-- values 0 and 1 is for connectionless class protocol, values 2 and 3 are for connection-oriented-protocol -->
   		</parameter>
-  		<parameter id="3" name="Called_Party_Address" type="V" littleEndian="false">
+  		<parameter id="3" name="Called_Party_Address" type="V" >
   			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="512" length="2" />
+  			<field name="Signalling_Point_Code" value="512" length="2" littleEndian="true" />
   			<field name="Subsystem_Number" value="8" length="1" />
         <!--field name="Global_Title" value="1206001204689511223358" format="binary" length="9" /-->
   		</parameter>
-  		<parameter   id="4" type="V" name="Calling_Party_Address" littleEndian="false">
+  		<parameter   id="4" type="V" name="Calling_Party_Address" >
   			<field name="Address_Indicator" value="67" length="1" />
-  			<field name="Signalling_Point_Code" value="1792" length="2" />
+  			<field name="Signalling_Point_Code" value="1792" length="2" littleEndian="true" />
   			<field name="Subsystem_Number" value="8" length="1" />
         <!--field name="Global_Title" value="12910012046895111486" format="binary" length="9" /-->
   		</parameter>
-  		<parameter id="15" name="Data" type="V" littleEndian="false">
+  		<parameter id="15" name="Data" type="V" >
   			<field value="" format="binary" length="88" />  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
         <!--field value="625a4804000000016b1e281c060700118605010101a011600f80020780a1090607040000010015026c32a13002010102012e30288407913366600567f98207913366317071f3041411080b913366600567f70000a906f3f97c3e9f03" format="binary" length="92" /-->  <!-- HERE DATA OF UPPER LAYER (e.g TCAP) IN HEX STRING FORMAT -->
   		</parameter>

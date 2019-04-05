@@ -644,11 +644,11 @@ public class MsgSigtran extends Msg
                 {
                     if (path.contains(":")) 
                     {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
+                        var = _fvoMessage.getParameter(path.substring(path.indexOf(":") + 1));
                     }
                     else 
                     {
-                        // var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
+                        var = _fvoMessage.getParameter(path.substring(path.indexOf(".") + 1));
                     }
                 }
             }

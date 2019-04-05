@@ -194,8 +194,8 @@ public class FvoDictionary {
             FvoField field = parseField((Element) listFields.get(i));
 
             // inherit littleEndian status from parameter
-            field.setLittleEndian(parameter.isLittleEndian());
-
+            //field.setLittleEndian(parameter.isLittleEndian());
+            
             parameter.getFields().add(field);
         }
         return parameter;
@@ -213,6 +213,7 @@ public class FvoDictionary {
         String fieldFormat = fieldNode.attributeValue("format");
         String fieldLengthBit = fieldNode.attributeValue("lengthBit");
         String fieldLength = fieldNode.attributeValue("length");
+        String fieldLittleEndian = fieldNode.attributeValue("littleEndian");
         String fieldValue = fieldNode.attributeValue("enumerationId");
         FvoField field = new FvoField(null);
         if (fieldLengthBit != null) {
@@ -231,6 +232,14 @@ public class FvoDictionary {
                 throw new ExecutionException("a field fieldLength must be an Integer\n" + fieldNode.asXML().replace("	", ""));
             }
         }
+        if (fieldLittleEndian != null) {
+            try {
+                field.setLittleEndian(Utils.parseBoolean(fieldLittleEndian, "littleEndian"));
+            }
+            catch (Exception e) {
+                throw new ExecutionException("a field fieldLittleEndian must be a Boolean\n" + fieldNode.asXML().replace("	", ""));
+            }
+        }        
         if (fieldFormat != null) {
             field.setFormat(fieldFormat);
         }

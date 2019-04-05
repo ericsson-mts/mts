@@ -127,8 +127,10 @@
     <!-- BUG : return always empty ? -->
     <test parameter="[SDPMediaMimeParameters0]" condition="list.isEmpty"/>
     <parameter name="[SDPMediaMimeTypes0]" operation="protocol.setFromSdp" value="[local]" value2="Media:MimeTypes"/>
-    <!-- BUG : return always empty ? -->
-    <test parameter="[SDPMediaMimeTypes0]" condition="list.isEmpty"/>
+    <test parameter="[SDPMediaMimeTypes0(0)]" condition="string.equals" value="video/RTP/AVP"/>
+    <test parameter="[SDPMediaMimeTypes0(1)]" condition="string.equals" value="audio/RTP/AVP"/>
+    <test parameter="[SDPMediaMimeTypes0(2)]" condition="string.equals" value="video/RTP/AVP"/>
+    <test parameter="[SDPMediaMimeTypes0(3)]" condition="string.equals" value="audio/RTP/AVP"/>
 
     <!-- test SessionName:xxx -->
     <parameter name="[SDPSessionName]" operation="protocol.setFromSdp" value="[local]" value2="SessionName"/>

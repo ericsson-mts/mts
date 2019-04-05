@@ -28,11 +28,14 @@ import java.util.List;
 
 import org.dom4j.Element;
 
+import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.sigtran.MsgSigtran;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvField;
+import com.devoteam.srit.xmlloader.sigtran.tlv.TlvParameter;
 
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -80,6 +83,52 @@ public class FvoMessage {
         byte b = a.get(i1);
         a.set(i1, a.get(i2));
         a.set(i2, b);
+    }
+
+    /**
+     * Get a parameter from the message
+     *
+     * @param path		: The path of the parameter requested
+     * @return			: The parameter requested
+     * @throws Exception
+     */
+    public Parameter getParameter(String path) throws Exception {
+
+        Parameter parameter = null;
+        String[] params = Utils.splitPath(path);
+
+        if (params[0].equalsIgnoreCase("header")) {
+            if (params.length == 2) {
+                parameter = new Parameter();
+                if (params[1].equalsIgnoreCase("messageType")) {
+                    parameter.add(this.getMessageType());
+                }
+                else {
+                    Parameter.throwBadPathKeywordException(path);
+                }
+            }
+        }
+        else if (params[0].equalsIgnoreCase("parameter")) {
+            if (params.length > 2) {
+                //get attribute given
+                FvoParameter fvoParameter = this.getFvoParameter(params[1]);
+                if(null != fvoParameter){
+                    if (path.contains(":")) {
+                        path = path.substring(path.indexOf(":") + 1);
+                        parameter = fvoParameter.getParameter(path.substring(path.indexOf(":") + 1));
+                    }
+                    else {
+                        path = path.substring(path.indexOf(".") + 1);
+                        parameter = fvoParameter.getParameter(path.substring(path.indexOf(".") + 1));
+                    }
+                }
+            }
+        }
+        else {
+            Parameter.throwBadPathKeywordException(path);
+        }
+
+        return parameter;
     }
 
     public Array encode() throws Exception {
@@ -200,14 +249,6 @@ public class FvoMessage {
         return supArray;
     }
 
-    public LinkedList<FvoParameter> getFparameters() {
-        return _fparameters;
-    }
-
-    public void setFparameters(LinkedList<FvoParameter> fparameters) {
-        this._fparameters = fparameters;
-    }
-
     public int getMessageType() {
         return _messageType;
     }
@@ -224,10 +265,46 @@ public class FvoMessage {
         this._name = name;
     }
 
+    public LinkedList<FvoParameter> getFparameters() {
+        return _fparameters;
+    }
+
+    public FvoParameter getFparameter(String name) {
+		Iterator<FvoParameter> iterParam = _fparameters.iterator();
+		FvoParameter param = null;
+		while (iterParam.hasNext())
+		{
+			param = (FvoParameter) iterParam.next();
+			if (name.equalsIgnoreCase(param.getName()))
+			{
+				return param;
+			}
+		}
+        return null;
+    }
+
+    public void setFparameters(LinkedList<FvoParameter> fparameters) {
+        this._fparameters = fparameters;
+    }
+
     public LinkedList<FvoParameter> getOparameters() {
         return _oparameters;
     }
 
+    public FvoParameter getOparameter(String name) {
+		Iterator<FvoParameter> iterParam = _oparameters.iterator();
+		FvoParameter param = null;
+		while (iterParam.hasNext())
+		{
+			param = (FvoParameter) iterParam.next();
+			if (name.equalsIgnoreCase(param.getName()))
+			{
+				return param;
+			}
+		}
+        return null;
+    }
+    
     public void setOparameters(LinkedList<FvoParameter> oparameters) {
         this._oparameters = oparameters;
     }
@@ -253,11 +330,20 @@ public class FvoMessage {
     public void setVparameters(LinkedList<FvoParameter> vparameters) {
         this._vparameters = vparameters;
     }
-
-    public FvoDictionary getDictionary() {
-        return _dictionary;
+    
+    public FvoParameter getFvoParameter(String name) {
+    	FvoParameter fvoParameter = getFparameter(name);
+    	if (fvoParameter == null)
+    	{
+    		fvoParameter = getOparameter(name);
+    	}
+    	if (fvoParameter == null)
+    	{
+    		fvoParameter = getVparameter(name);
+    	}
+    	return fvoParameter;
     }
-
+    
     public void parseElement(Element root) throws Exception {
         Element header = (Element) root.selectSingleNode("./header");
         Attribute messageTypeValue = (Attribute) root.selectSingleNode("./header/field[@name='Message_Type']/@value");

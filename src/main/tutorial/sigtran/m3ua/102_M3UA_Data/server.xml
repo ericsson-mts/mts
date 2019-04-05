@@ -12,7 +12,7 @@
 <scenario>
 
 	<!-- Message encoded value -->
-	<parameter name="[data]" value="01000101000000380200000800000002000600080077ddd00210001800000d7a00001002030300040d4659004854010a00130008000031ef" />
+	<parameter name="[data]" value="01000101000000380200000800000002000600080077ddd00210001800000d7a00001002030300040d0059460154480a00130008000031ef" />
 
 	<receiveMessageSIGTRAN name="Wait DATA1" request="true" type="Reset_request:13">
 		<parameter name="[data1]" operation="protocol.setFromMessage" value="message.binary"/>
@@ -30,5 +30,162 @@
 			<exit failed="true"/>
 		</else>
 	</if>
+        
+  <parameter name="[version]" operation="protocol.setFromMessage" value="ua.header.version"/>    
+  <test parameter="[version]" condition="number.equals" value="1"/>
+  <parameter name="[reserved]" operation="protocol.setFromMessage" value="ua.header.reserved"/>    
+  <test parameter="[reserved]" condition="number.equals" value="0"/>
+  <parameter name="[messageClass]" operation="protocol.setFromMessage" value="ua.header.messageClass"/>    
+  <test parameter="[messageClass]" condition="number.equals" value="1"/>   <!-- Transfert_Messages -->
+  <parameter name="[messageType]" operation="protocol.setFromMessage" value="ua.header.messageType"/>    
+  <test parameter="[messageType]" condition="number.equals" value="1"/>   <!-- ASP_UP -->
+  <parameter name="[messageLength]" operation="protocol.setFromMessage" value="ua.header.messageLength"/>    
+  <test parameter="[messageLength]" condition="number.equals" value="56"/>
+
+  <parameter name="networkAppearenceName]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.name"/>    
+  <test parameter="[networkAppearenceName]" condition="string.equals" value="Network_Appearence"/>
+  <parameter name="[networkAppearenceTag]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.tag"/>
+  <test parameter="[networkAppearenceTag]" condition="number.equals" value="512"/>    
+  <parameter name="[networkAppearenceLength]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.length"/>    
+  <test parameter="[networkAppearenceLength]" condition="number.equals" value="8"/>
+  <parameter name="[networkAppearenceFormat]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.format"/>    
+  <test parameter="[networkAppearenceFormat]" condition="string.equals" value="grouped"/>
   
+  <parameter name="[networkAppearence1Name]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.name"/>    
+  <test parameter="[networkAppearence1Name]" condition="string.equals" value="Network_Appearence"/>
+  <parameter name="[networkAppearence1Length]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.length"/>    
+  <test parameter="[networkAppearence1Length]" condition="number.equals" value="4"/>
+  <parameter name="[networkAppearence1Format]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.format"/>    
+  <test parameter="[networkAppearence1Format]" condition="string.equals" value="integer"/>
+  <parameter name="[networkAppearence1Value]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.value"/>    
+  <test parameter="[networkAppearence1Value]" condition="number.equals" value="2"/>
+  <parameter name="[networkAppearence1LengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Network_Appearence.field.Network_Appearence.lengthbit"/>    
+  <test parameter="[networkAppearence1LengthBit]" condition="number.equals" value="0"/>
+
+  <parameter name="[routingContextName]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.name"/>    
+  <test parameter="[routingContextName]" condition="string.equals" value="Routing_Context"/>
+  <parameter name="[routingContextTag]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.tag"/>
+  <test parameter="[routingContextTag]" condition="number.equals" value="6"/>    
+  <parameter name="[routingContextLength]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.length"/>    
+  <test parameter="[routingContextLength]" condition="number.equals" value="8"/>
+  <parameter name="[routingContextFormat]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.format"/>    
+  <test parameter="[routingContextFormat]" condition="string.equals" value="grouped"/>
+  
+  <parameter name="[routingContext1Name]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.name"/>    
+  <test parameter="[routingContext1Name]" condition="string.equals" value="Routing_Context"/>
+  <parameter name="[routingContext1Length]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.length"/>    
+  <test parameter="[routingContext1Length]" condition="number.equals" value="4"/>
+  <parameter name="[routingContext1Format]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.format"/>    
+  <test parameter="[routingContext1Format]" condition="string.equals" value="integer"/>
+  <parameter name="[routingContext1Value]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.value"/>    
+  <test parameter="[routingContext1Value]" condition="number.equals" value="7855568"/>
+  <parameter name="[routingContext1LengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Routing_Context.field.Routing_Context.lengthbit"/>    
+  <test parameter="[routingContext1LengthBit]" condition="number.equals" value="0"/>
+
+  <parameter name="[protocolDataName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.name"/>    
+  <test parameter="[protocolDataName]" condition="string.equals" value="Protocol_Data"/>
+  <parameter name="[protocolDataTag]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.tag"/>
+  <test parameter="[protocolDataTag]" condition="number.equals" value="528"/>    
+  <parameter name="[protocolDataLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.length"/>    
+  <test parameter="[protocolDataLength]" condition="number.equals" value="24"/>
+  <parameter name="[protocolDataFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.format"/>    
+  <test parameter="[protocolDataFormat]" condition="string.equals" value="grouped"/>
+  
+  <parameter name="[originatingPointCodeName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Originating_Point_Code.name"/>    
+  <test parameter="[originatingPointCodeName]" condition="string.equals" value="Originating_Point_Code"/>
+  <parameter name="[originatingPointCodeLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Originating_Point_Code.length"/>    
+  <test parameter="[originatingPointCodeLength]" condition="number.equals" value="4"/>
+  <parameter name="[originatingPointCodeFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Originating_Point_Code.format"/>    
+  <test parameter="[originatingPointCodeFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[originatingPointCodeValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Originating_Point_Code.value"/>    
+  <test parameter="[originatingPointCodeValue]" condition="number.equals" value="3450"/>
+  <parameter name="[originatingPointCodeLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Originating_Point_Code.lengthbit"/>    
+  <test parameter="[originatingPointCodeLengthBit]" condition="number.equals" value="0"/>
+
+  <parameter name="[destinationPointCodeName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Destination_Point_Code.name"/>    
+  <test parameter="[destinationPointCodeName]" condition="string.equals" value="Destination_Point_Code"/>
+  <parameter name="[destinationPointCodeLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Destination_Point_Code.length"/>    
+  <test parameter="[destinationPointCodeLength]" condition="number.equals" value="4"/>
+  <parameter name="[destinationPointCodeFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Destination_Point_Code.format"/>    
+  <test parameter="[destinationPointCodeFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[destinationPointCodeValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Destination_Point_Code.value"/>    
+  <test parameter="[destinationPointCodeValue]" condition="number.equals" value="4098"/>
+  <parameter name="[destinationPointCodeLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.Destination_Point_Code.lengthbit"/>    
+  <test parameter="[destinationPointCodeLengthBit]" condition="number.equals" value="0"/>
+
+  <parameter name="[siName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SI.name"/>    
+  <test parameter="[siName]" condition="string.equals" value="SI"/>
+  <parameter name="[siLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SI.length"/>    
+  <test parameter="[siLength]" condition="number.equals" value="1"/>
+  <parameter name="[siFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SI.format"/>    
+  <test parameter="[siFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[siValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SI.value"/>    
+  <test parameter="[siValue]" condition="string.equals" value="SCCP"/>
+  <parameter name="[siLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SI.lengthbit"/>    
+  <test parameter="[siLengthBit]" condition="number.equals" value="0"/>
+
+  <parameter name="[niName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.NI.name"/>    
+  <test parameter="[niName]" condition="string.equals" value="NI"/>
+  <parameter name="[niLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.NI.length"/>    
+  <test parameter="[niLength]" condition="number.equals" value="1"/>
+  <parameter name="[niFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.NI.format"/>    
+  <test parameter="[niFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[niValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.NI.value"/>    
+  <test parameter="[niValue]" condition="number.equals" value="3"/>
+  <parameter name="[niLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.NI.lengthbit"/>    
+  <test parameter="[niLengthBit]" condition="number.equals" value="0"/>
+
+  <parameter name="[mpName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.MP.name"/>    
+  <test parameter="[mpName]" condition="string.equals" value="MP"/>
+  <parameter name="[mpLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.MP.length"/>    
+  <test parameter="[mpLength]" condition="number.equals" value="1"/>
+  <parameter name="[mpFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.MP.format"/>    
+  <test parameter="[mpFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[mpValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.MP.value"/>    
+  <test parameter="[mpValue]" condition="number.equals" value="0"/>
+  <parameter name="[mpLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.MP.lengthbit"/>    
+  <test parameter="[mpLengthBit]" condition="number.equals" value="0"/>   
+
+  <parameter name="[slsName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SLS.name"/>    
+  <test parameter="[slsName]" condition="string.equals" value="SLS"/>
+  <parameter name="[slsLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SLS.length"/>    
+  <test parameter="[slsLength]" condition="number.equals" value="1"/>
+  <parameter name="[slsFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SLS.format"/>    
+  <test parameter="[slsFormat]" condition="string.equals" value="integer"/>
+  <parameter name="[slsValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SLS.value"/>    
+  <test parameter="[slsValue]" condition="number.equals" value="4"/>
+  <parameter name="[slsLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.SLS.lengthbit"/>    
+  <test parameter="[slsLengthBit]" condition="number.equals" value="0"/>   
+
+  <parameter name="[fvoName]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.fvo.name"/>    
+  <test parameter="[fvoName]" condition="string.equals" value="fvo"/>
+  <parameter name="[fvoLength]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.fvo.length"/>    
+  <test parameter="[fvoLength]" condition="number.equals" value="8"/>
+  <parameter name="[fvoFormat]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.fvo.format"/>    
+  <test parameter="[fvoFormat]" condition="string.equals" value="fvo"/>
+  <parameter name="[fvoValue]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.fvo.value"/>    
+  <test parameter="[fvoValue]" condition="list.isEmpty"/>
+  <parameter name="[fvoLengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Protocol_Data.field.fvo.lengthbit"/>    
+  <test parameter="[fvoLengthBit]" condition="number.equals" value="0"/>   
+
+  <parameter name="[correlationIdName]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.name"/>    
+  <test parameter="[correlationIdName]" condition="string.equals" value="Correlation_Id"/>
+  <parameter name="[correlationIdTag]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.tag"/>
+  <test parameter="[correlationIdTag]" condition="number.equals" value="19"/>    
+  <parameter name="[correlationIdLength]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.length"/>    
+  <test parameter="[correlationIdLength]" condition="number.equals" value="8"/>
+  <parameter name="[correlationIdFormat]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.format"/>    
+  <test parameter="[correlationIdFormat]" condition="string.equals" value="grouped"/>
+  
+  <parameter name="[correlationId1Name]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.field.Correlation_Id.name"/>    
+  <test parameter="[correlationId1Name]" condition="string.equals" value="Correlation_Id"/>
+  <parameter name="[correlationId1Length]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.field.Correlation_Id.length"/>    
+  <test parameter="[correlationId1Length]" condition="number.equals" value="4"/>
+  <parameter name="[correlationId1Format]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.field.Correlation_Id.format"/>    
+  <test parameter="[correlationId1Format]" condition="string.equals" value="integer"/>
+  <parameter name="[correlationId1Value]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.field.Correlation_Id.value"/>    
+  <test parameter="[correlationId1Value]" condition="number.equals" value="12783"/>
+  <parameter name="[correlationId1LengthBit]" operation="protocol.setFromMessage" value="ua.parameter.Correlation_Id.field.Correlation_Id.lengthbit"/>    
+  <test parameter="[correlationId1LengthBit]" condition="number.equals" value="0"/>
+
 </scenario>

@@ -9,7 +9,7 @@
 
 <dictionary layer="SCCP">
 
-    <header	id="0" length="1" littleEndian="true">
+    <header	id="0" length="1" >
         <field name="Message_Type"	length="1" />
     </header>
 
@@ -72,7 +72,7 @@
 			<parameter	name="Credit"				type="F"	length="1"	/>
 		</message>
 		<message typeCode="9" typeName="UnitData">
-			<parameter	name="Protocol_class"			type="F"	length="1"	/>
+			<parameter	name="Protocol_Class"			type="F"	length="1"	/>
 			<parameter	name="Called_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Calling_Party_Address"		type="V"	length="3"	/>
 			<parameter	name="Data"				type="V"	length="2"	/>
@@ -131,7 +131,7 @@
 			<parameter	name="End_of_optional_parameters"	type="O"	length="1"	/>
 		</message>
 		<message typeCode="19" typeName="Long_UnitData">
-			<parameter	name="Protocol_class"			type="F"	length="1"	/>
+			<parameter	name="Protocol_Class"			type="F"	length="1"	/>
 			<parameter	name="Hop_counter"			type="F"	length="1"	/>
 			<parameter	name="Called_party_address"		type="V"	length="3"	longParameter="true"/>
 			<parameter	name="Calling_party_address"		type="V"	length="3"	longParameter="true"/>
@@ -157,27 +157,47 @@
 		<parameter id="0"	name="End_of_optional_parameters">
 			<field		name="End_of_optional_parameters"	length="1" />
 		</parameter>
-		<parameter id="1"	name="Destination_local_reference"	littleEndian="true">
-			<field		name="Destination_local_reference"	length="3"/>
+		<parameter id="1"	name="Destination_local_reference">
+			<field		name="Destination_local_reference"	length="3" littleEndian="true"/>
 		</parameter>
 		
-		<parameter id="2"	name="Source_local_reference" 		littleEndian="true">
-			<field		name="Source_local_reference"		length="3"/>
+		<parameter id="2"	name="Source_local_reference" >
+			<field		name="Source_local_reference"		length="3" littleEndian="true"/>
 		</parameter>
-		<parameter id="3"	name="Called_Party_Address"	littleEndian="false">
-			<field 		name="Address_Indicator"		length="1" />
-			<field 		name="Signalling_Point_Code"  length="2" />
+    <!-- for SCCP test : use Signaling_Point_Code -->
+		<parameter id="3"	name="Called_Party_Address"	>
+			<!--field 		name="Address_Indicator"		length="1"/-->
+      <field 		name="AI_national_use"		lengthBit="1"/>
+      <field 		name="AI_routing_indicator"		lengthBit="1"/>        
+      <field 		name="AI_GT_indicator"		lengthBit="4"/>      
+      <field 		name="AI_SSN_indicator"		lengthBit="1"/>      
+      <field 		name="AI_PC_indicator"		lengthBit="1"/>      
+			<field 		name="Signalling_Point_Code"  length="2" littleEndian="true"/>
 			<field		name="Subsystem_Number"			length="1" />
-                     <!-- Do not forget to set length according to needs as GT has a variable length depending on Address_Indicator value. Please refer to ITU-T document Q.713 section 3.4.2.3 -->
-			<!--field		name="Global_Title" format="binary"	length="11" /-->
-		</parameter>
-		<parameter id="4"	name="Calling_Party_Address" 	littleEndian="false">
-			<field		name="Address_Indicator"		length="1" />
-			<field		name="Signalling_Point_Code"		length="2" />
+      <!--field		name="Global_Title"	format="digit"/--> 
+      <field		name="GT_Translation_Type" length="1"/>
+      <field		name="GT_Numbering_Plan" lengthBit="4"/>
+      <field		name="GT_Encoding_Scheme" lengthBit="4"/>      
+      <field		name="GT_Nature_of_Address" length="1"/>        
+      <field		name="GT_Digits" format="digit"/>      
+		</parameter>           
+    <!-- for CAP test : use Global_Title -->    
+		<parameter id="4"	name="Calling_Party_Address" >
+			<!--field		name="Address_Indicator"		length="1" /-->
+      <field 		name="AI_national_use"		lengthBit="1"/>
+      <field 		name="AI_routing_indicator"		lengthBit="1"/>        
+      <field 		name="AI_GT_indicator"		lengthBit="4"/>      
+      <field 		name="AI_SSN_indicator"		lengthBit="1"/>      
+      <field 		name="AI_PC_indicator"		lengthBit="1"/>       
+      <field		name="Signalling_Point_Code"		length="2" littleEndian="true"/>      
 			<field		name="Subsystem_Number"			length="1" />
-                     <!-- Do not forget to set length according to needs as GT has a variable length depending on Address_Indicator value. Please refer to ITU-T document Q.713 section 3.4.2.3 -->
-			<!--field		name="Global_Title"	format="binary" 	length="11" /-->
-		</parameter>
+			<!--field		name="Global_Title"	format="digit"/-->
+      <field		name="GT_Translation_Type" length="1"/>
+      <field		name="GT_Numbering_Plan" lengthBit="4"/>
+      <field		name="GT_Encoding_Scheme" lengthBit="4"/>      
+      <field		name="GT_Nature_of_Address" length="1"/>        
+      <field		name="GT_Digits" format="digit"/>      
+		</parameter>   
 		<parameter id="5"	name="Protocol_Class">
 			<field 		name="Protocol_Class"			lengthBit="4"/>
 			<field 		name="Special_Option"			lengthBit="4"/>
@@ -214,7 +234,7 @@
 		<parameter id="14"	name="Refusal_cause">
 			<field 		name="Refusal_cause"			length="1"/>
 		</parameter>
-		<parameter id="15"	name="Data" 				littleEndian="false">
+		<parameter id="15"	name="Data" >
 			<field		name="Data"				format="binary" />
 		</parameter>
 		<parameter id="16"	name="Segmentation" >
@@ -227,18 +247,18 @@
 		<parameter id="17"	name="Hop_Counter" >
 			<field		name="Hop_Counter"			length="1" /> <!-- value must be between 1 and 15, looks like TTL in IP -->
 		</parameter>
-		<parameter id="18"	name="Importance"	littleEndian="false">
+		<parameter id="18"	name="Importance"	>
 			<field 		name="Importance"				lengthBit="3" /> <!-- value between 0 and 7, 7 is most important and 0 is least -->
 			<field		name="Spare"					lengthBit="5" /> 
 		</parameter>
-		<parameter id="19"	name="Long_Data" 			littleEndian="false" longParameter="true">
+		<parameter id="19"	name="Long_Data" longParameter="true">
 			<field		name="Data_Length"			length="2" />
 			<field		name="Long_Data"			length="3" /> <!-- length can be up to 3954 OCTETS -->
 		</parameter>
 	</parameters>
 	
 	<enumerations>
-	
+	             
 		<enumeration	name="M">
 			<value		code="0"		name="no more data"/>
 			<value		code="1"		name="more data"/>
@@ -323,6 +343,132 @@
 			<value		code="3"		name="service class mismatch" />
 			<value		code="4"		name="unqualified" />
 		</enumeration>
-	</enumerations>
+
+		<enumeration	name="Subsystem_Number">
+			<value		code="0"		name="SSN not known/not used"/>
+			<value		code="1"		name="SCCP management"/>
+			<value		code="2"		name="reserved for ITU-T allocation"/>
+			<value		code="3"		name="ISDN user part"/>
+			<value		code="4"		name="operation, maintenance and administration part (OMAP)"/>
+			<value		code="5"		name="mobile application part (MAP)"/>
+			<value		code="6"		name="home location register (HLR)"/>
+			<value		code="7"		name="visitor location register (VLR)"/>
+			<value		code="8"		name="mobile switching centre (MSC)"/>
+			<value		code="9"		name="equipment identifier centre (EIC)"/>
+			<value		code="10"		name="authentication centre (AUC)"/>
+			<value		code="11"		name="ISDN supplementary services"/>
+			<value		code="12"		name="reserved for international use"/>
+			<value		code="13"		name="broadband ISDN edge-to-edge applications"/>
+			<value		code="14"		name="TC test responder"/>
+			<value		code="15"		name="reserved for international use"/>
+      <!-- until -->
+      <value		code="31"		name="reserved for national networks"/>
+      <!-- until -->                        
+      <value		code="254"		name="reserved for national networks"/>
+      <value		code="255"		name="reserved for expansion of national and international SSN."/>
+		</enumeration>
+	
+		<enumeration	name="AI_routing_indicator">
+			<value		code="0"		name="route on SSN"/>
+			<value		code="1"		name="route on GT"/>
+		</enumeration>
+
+		<enumeration	name="AI_GT_indicator">
+			<value		code="0"		name="not included"/>
+			<value		code="1"		name="nature of address indicator only"/>
+			<value		code="2"		name="translation type only"/>
+			<value		code="3"		name="translation type, numbering plan and encoding scheme"/>
+			<value		code="4"		name="translation type, numbering plan, encoding scheme and nature of address indicator"/>
+			<value		code="5"		name="spare international"/>
+			<value		code="6"		name="spare international"/>
+			<value		code="7"		name="spare international"/>
+			<value		code="8"		name="spare national"/>
+			<value		code="9"		name="spare national"/>
+			<value		code="10"		name="spare national"/>
+			<value		code="11"		name="spare national"/>
+			<value		code="12"		name="spare national"/>
+			<value		code="13"		name="spare national"/>
+			<value		code="14"		name="spare national"/>
+			<value		code="15"		name="reserved for extension"/>                  
+		</enumeration>
+    
+		<enumeration	name="GT_Numbering_Plan">
+			<value		code="0"		name="unknown"/>
+			<value		code="1"		name="ISDN/telephony numbering plan"/>
+			<value		code="2"		name="generic numbering plan"/>
+			<value		code="3"		name="data numbering plan"/>
+			<value		code="4"		name="telex numbering plan"/>
+			<value		code="5"		name="maritime mobile numbering plan"/>
+			<value		code="6"		name="land mobile numbering plan"/>
+			<value		code="7"		name="ISDN/mobile numbering plan"/>
+			<value		code="8"		name="spare"/>
+			<value		code="9"		name="spare"/>
+			<value		code="10"		name="spare"/>
+			<value		code="11"		name="spare"/>
+			<value		code="12"		name="spare"/>
+			<value		code="13"		name="spare"/>
+			<value		code="14"		name="private network or network-specific numbering plan"/>
+			<value		code="15"		name="reserved"/>                  
+		</enumeration>
+
+		<enumeration	name="GT_Encoding_Scheme">
+			<value		code="0"		name="unknown"/>
+			<value		code="1"		name="BCD, odd number of digits"/>
+			<value		code="2"		name="BCD, even number of digits"/>
+			<value		code="3"		name="national specific"/>
+			<value		code="4"		name="spare"/>
+			<value		code="5"		name="spare"/>
+			<value		code="6"		name="spare"/>
+			<value		code="7"		name="spare"/>
+			<value		code="8"		name="spare"/>
+			<value		code="9"		name="spare"/>
+			<value		code="10"		name="spare"/>
+			<value		code="11"		name="spare"/>
+			<value		code="12"		name="spare"/>
+			<value		code="13"		name="spare"/>
+			<value		code="14"		name="private network or network-specific numbering plan"/>
+			<value		code="15"		name="reserved"/>                  
+		</enumeration>
+ 
+		<enumeration	name="GT_Nature_of_Address">
+			<value		code="0"		name="unknown"/>
+			<value		code="1"		name="international services"/>
+			<!-- until -->
+			<value		code="63"		name="international services"/>
+			<value		code="64"		name="spare"/>
+      <!-- until -->
+			<value		code="127"		name="spare"/>
+			<value		code="128"		name="national network specific"/>
+			<value		code="254"		name="national network specific"/>
+			<value		code="255"		name="reserved for expansion"/>                  
+		</enumeration>
+
+    <enumeration	name="Protocol_Class">
+			<value		code="0"		name="class 0 connection-oriented"/>
+			<value		code="1"		name="class 1 connection-oriented"/>
+      <value		code="2"		name="class 2 connectionless"/>
+      <value		code="3"		name="class 3 connectionless"/>      
+		</enumeration> 
+            
+    <enumeration	name="Special_Option">
+			<value		code="0"		name="no special options"/>
+			<value		code="1"		name="spare"/>
+      <value		code="2"		name="spare"/>
+			<value		code="3"		name="spare"/>
+			<value		code="4"		name="spare"/>
+      <value		code="5"		name="spare"/>
+      <value		code="6"		name="spare"/>
+      <value		code="7"		name="spare"/>
+      <value		code="8"		name="return message on error"/>      
+			<value		code="9"		name="spare"/>
+      <value		code="10"		name="spare"/>
+			<value		code="11"		name="spare"/>
+			<value		code="12"		name="spare"/>
+      <value		code="13"		name="spare"/>
+      <value		code="14"		name="spare"/>
+      <value		code="15"		name="spare"/>
+  </enumeration>
+                
+  </enumerations>
 	
 </dictionary>			
