@@ -1,4 +1,7 @@
-# MTS: Multiprotocol Test Tool ![build status](https://travis-ci.org/ericsson-mts/mts.svg?branch=master)
+# MTS: Multiprotocol Test Tool 
+![build status](https://travis-ci.org/ericsson-mts/mts.svg?branch=master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.ericsson.mts%3Amts-asn1&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.ericsson.mts%3Amts-asn1)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.ericsson.mts%3Amts-asn1&metric=bugs)](https://sonarcloud.io/dashboard?id=com.ericsson.mts%3Amts-asn1)
 
 MTS (Multi-protocol Test Suite) is a multi-protocol testing tool specially designed for telecom IP-based architectures (see above "Features" section for more details).
 
