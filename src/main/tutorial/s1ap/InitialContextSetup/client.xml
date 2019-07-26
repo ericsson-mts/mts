@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!--  name="Send 3GPP Cx/Dx User-Authorization request (UAR)" -->
+
+<scenario>
+
+    <call name="s1ap.openChannel_SendCER_RecCEA"/>
+
+    <function name="s1ap.openChannel_SendCER_RecCEA">
+        <input>
+            <!--parameter name="[destScenario]" type="string" default="server"/-->
+        </input>
+
+        <do>
+                    <!-- open a channel -->
+            <openChannelS1AP name="channel_client" localHost="[localHostS1AP]" localPort="[localPortS1AP]"
+                                         remoteHost="[remoteHostS1AP]" remotePort="[remotePortS1AP]"
+                                         transport="[transport]"/>
+
+            
+            <!--parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/-->
+            <sendMessageS1AP name="Send Notify1" channel="channel_client">
+                <S1AP-PDU>
+                    <initiatingMessage>
+                        <procedureCode>9</procedureCode>
+                        <criticality>reject</criticality>
+                        <value>
+                            <InitialContextSetupRequest>
+                                <protocolIEs>
+                                    <protocolIEs>
+                                        <id>0</id>
+                                        <criticality>reject</criticality>
+                                        <value>
+                                            <MME-UE-S1AP-ID>37</MME-UE-S1AP-ID>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>8</id>
+                                        <criticality>reject</criticality>
+                                        <value>
+                                            <ENB-UE-S1AP-ID>36</ENB-UE-S1AP-ID>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>66</id>
+                                        <criticality>reject</criticality>
+                                        <value>
+                                            <UEAggregateMaximumBitrate>
+                                                <uEaggregateMaximumBitRateDL>101711872</uEaggregateMaximumBitRateDL>
+                                                <uEaggregateMaximumBitRateUL>101711872</uEaggregateMaximumBitRateUL>
+                                            </UEAggregateMaximumBitrate>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>24</id>
+                                        <criticality>reject</criticality>
+                                        <value>
+                                            <E-RABToBeSetupListCtxtSUReq>
+                                                <E-RABToBeSetupListCtxtSUReq>
+                                                    <id>52</id>
+                                                    <criticality>reject</criticality>
+                                                    <value>
+                                                        <E-RABToBeSetupItemCtxtSUReq>
+                                                            <e-RAB-ID>5</e-RAB-ID>
+                                                            <e-RABlevelQoSParameters>
+                                                                <qCI>7</qCI>
+                                                                <allocationRetentionPriority>
+                                                                    <priorityLevel>2</priorityLevel>
+                                                                    <pre-emptionCapability>shall-not-trigger-pre-emption
+                                                                    </pre-emptionCapability>
+                                                                    <pre-emptionVulnerability>not-pre-emptable
+                                                                    </pre-emptionVulnerability>
+                                                                </allocationRetentionPriority>
+                                                            </e-RABlevelQoSParameters>
+                                                            <transportLayerAddress>00001010111111001111011000010111
+                                                            </transportLayerAddress>
+                                                            <gTP-TEID>4B000000</gTP-TEID>
+                                                            <nAS-PDU>
+                                                                272EB753B30207420125062000F110002600605201C101071D08696E7465726E6574066D6E63303031036D636303303031046770727305010AFFF69A5D010030100A111F7396FFFF4629FFFF10000000003203813401005E04FEFE9F9F271480802110030000108106AC110001830600000000500BF600F110033552C0000024
+                                                            </nAS-PDU>
+                                                        </E-RABToBeSetupItemCtxtSUReq>
+                                                    </value>
+                                                </E-RABToBeSetupListCtxtSUReq>
+                                                <E-RABToBeSetupListCtxtSUReq>
+                                                    <id>52</id>
+                                                    <criticality>reject</criticality>
+                                                    <value>
+                                                        <E-RABToBeSetupItemCtxtSUReq>
+                                                            <e-RAB-ID>6</e-RAB-ID>
+                                                            <e-RABlevelQoSParameters>
+                                                                <qCI>7</qCI>
+                                                                <allocationRetentionPriority>
+                                                                    <priorityLevel>4</priorityLevel>
+                                                                    <pre-emptionCapability>shall-not-trigger-pre-emption
+                                                                    </pre-emptionCapability>
+                                                                    <pre-emptionVulnerability>not-pre-emptable
+                                                                    </pre-emptionVulnerability>
+                                                                </allocationRetentionPriority>
+                                                            </e-RABlevelQoSParameters>
+                                                            <transportLayerAddress>00001010111111001111011000010111
+                                                            </transportLayerAddress>
+                                                            <gTP-TEID>4C000000</gTP-TEID>
+                                                            <nAS-PDU>
+                                                                27E86ECBDD036200C50501071922208009100A989A81FFFFFFFF118109100A989A81FFFFFFFF5D019030100A111F7396FFFF4629FFFF1000000000320381340100271480802110030000108106AC110001830600000000
+                                                            </nAS-PDU>
+                                                        </E-RABToBeSetupItemCtxtSUReq>
+                                                    </value>
+                                                </E-RABToBeSetupListCtxtSUReq>
+                                            </E-RABToBeSetupListCtxtSUReq>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>107</id>
+                                        <criticality>reject</criticality>
+                                        <value>
+                                            <UESecurityCapabilities>
+                                                <encryptionAlgorithms>1100000000000000</encryptionAlgorithms>
+                                                <integrityProtectionAlgorithms>1100000000000000</integrityProtectionAlgorithms>
+                                            </UESecurityCapabilities>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>73</id>
+                                        <criticality>reject</criticality>
+                                        <value>
+                                            <SecurityKey>
+                                                0001110110001111010010111100000011010000100001111110100010100001011101001111100010110110110111110010100101111111011101101001110000110010000010111110001011010010001110101010011011110100110000001101101000100100000001100000100101111110100101101010111010111010
+                                            </SecurityKey>
+                                        </value>
+                                    </protocolIEs>
+                                </protocolIEs>
+                            </InitialContextSetupRequest>
+                        </value>
+                    </initiatingMessage>
+                </S1AP-PDU>
+            </sendMessageS1AP>
+
+            <receiveMessageS1AP name="Receive Request RFC3588 CER" channel="channel_client">
+            </receiveMessageS1AP>
+        </do>
+    </function>
+</scenario>

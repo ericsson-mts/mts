@@ -67,8 +67,8 @@ public abstract class Msg extends MsgLight implements Removable
     private RetransmissionId retransmissionId;
     private boolean isRetransmissionIdSet;
     private Trans transaction;
-    private boolean isSessionIdSet;
-    private SessionId sessionId;
+    protected boolean isSessionIdSet;
+    protected SessionId sessionId;
     private LinkedList<String> scenarioName = null; 
     private ScenarioRunner destScenario = null;
     
@@ -210,7 +210,6 @@ public abstract class Msg extends MsgLight implements Removable
     /** Get the transaction Identifier of the message */
     public TransactionId getTransactionId() throws Exception
     {
-
         if (!this.isTransactionIdSet)
         {
             // read from config files
@@ -254,7 +253,7 @@ public abstract class Msg extends MsgLight implements Removable
         this.isTransactionIdSet = true;
     }
 
-    /** Get the retyransmission Identifier of the message */
+    /** Get the retransmission Identifier of the message */
     public RetransmissionId getRetransmissionId() throws Exception
     {
         if (!this.isRetransmissionIdSet)
@@ -288,7 +287,6 @@ public abstract class Msg extends MsgLight implements Removable
                 throw new ExecutionException("Can't get retransmissionID information " + this, e);
             }
         }
-
         return this.retransmissionId;
     }
 
@@ -1078,7 +1076,7 @@ public abstract class Msg extends MsgLight implements Removable
     /**
 	 * @return the transportInfos
 	 */
-	public TransportInfos getTransportInfos() {
+	public TransportInfos getTransportInfos() throws Exception {
 		return transportInfos;
 	}
 

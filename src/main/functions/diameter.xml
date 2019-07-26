@@ -240,7 +240,6 @@ diameter.RecCER_SendCEA
         </input>
 
         <do>
-
             <parameter name="[stackDiameter]" operation="file.readproperty" value="tester.properties" value2="protocol.STACK_CLASS_NAME_DIAMETER"/>
             <if>
               <condition>
@@ -253,11 +252,11 @@ diameter.RecCER_SendCEA
                   
                   <receiveMessageDIAMETER name="Receive Request RFC3588 CER" request="true" type="Capabilities-Exchange:257">
                       <parameter name="[commandCode]" operation="protocol.setFromMessage" value="header.command"/>
-                      <parameter name="[applicationID]" operation="protocol.setFromMessage" value="header.applicationID"/>                          
+                      <parameter name="[applicationID]" operation="protocol.setFromMessage" value="header.applicationID"/>
                       <parameter name="[hopByHop]" operation="protocol.setFromMessage" value="header.hopByHop"/>
                       <parameter name="[endToEnd]" operation="protocol.setFromMessage" value="header.endToEnd"/>
                   </receiveMessageDIAMETER>
-      
+
                   <!--
                   From RFC 3588 September 2003 :
                   Capabilities-Exchange-Answer ::= < Diameter Header: 257 >

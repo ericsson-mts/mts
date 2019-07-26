@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
+import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.diameter.dictionary.*;
 
 import com.devoteam.srit.xmlloader.core.Parameter;
@@ -34,10 +35,6 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.log.TextEvent.Topic;
 import com.devoteam.srit.xmlloader.core.operations.basic.operators.PluggableParameterOperatorBinary;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
-import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import dk.i1.diameter.*;
@@ -84,8 +81,8 @@ public class MsgDiamCommon extends Msg
 	//-----------------------------------------------------------------------------------------
 	// generic methods for protocol request type result retransmission, transaction and session
 	//-----------------------------------------------------------------------------------------
-    
-    /** 
+
+    /**
      * Get the protocol acronym of the message 
      */
     @Override

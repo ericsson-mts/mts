@@ -84,7 +84,7 @@ public class MsgSigtran extends Msg
     }
 
     /** Creates a new instance of MsgSigtran */
-    public MsgSigtran(Stack  stack, int protocolIdentifier) throws Exception 
+    public MsgSigtran(Stack stack, int protocolIdentifier) throws Exception
     {
     	this(stack);
     	this._tlvProtocol = protocolIdentifier;
