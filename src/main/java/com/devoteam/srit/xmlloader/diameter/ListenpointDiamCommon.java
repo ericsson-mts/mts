@@ -23,34 +23,18 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-import java.util.Iterator;
-
-import org.dom4j.Element;
-
-import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.Runner;
-import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.newstats.StatPool;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
-import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
-
-import dk.i1.diameter.AVP;
-import dk.i1.diameter.AVP_Grouped;
-import dk.i1.diameter.AVP_Integer32;
-import dk.i1.diameter.AVP_OctetString;
-import dk.i1.diameter.Message;
+import dk.i1.diameter.*;
 import dk.i1.diameter.node.Capability;
-import dk.i1.diameter.node.ConnectionKey;
 import dk.i1.diameter.node.NodeSettings;
-import dk.i1.diameter.node.Peer;
-import dk.i1.diameter.node.Peer.TransportProtocol;
+import org.dom4j.Element;
+
+import java.util.Iterator;
 
 /**
  *
@@ -107,7 +91,7 @@ public class ListenpointDiamCommon extends Listenpoint
     }
     
     /**
-     * Create the node settingds object.
+     * Create the node settings object.
      * @return
      */
     protected NodeSettings createNodeSettings(Capability capability, Message capabilityMessage, Element nodeSettingsElement) throws Exception {

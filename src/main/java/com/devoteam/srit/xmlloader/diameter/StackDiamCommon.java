@@ -23,18 +23,13 @@
 
 package com.devoteam.srit.xmlloader.diameter;
 
-import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.protocol.Channel;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-
 import dk.i1.diameter.node.Node;
 import gp.utils.arrays.Array;
 import gp.utils.arrays.DefaultArray;
@@ -43,8 +38,6 @@ import gp.utils.arrays.SupArray;
 import java.io.InputStream;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-
-import org.dom4j.Element;
 
 /**
  *

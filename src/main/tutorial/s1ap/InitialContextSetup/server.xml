@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Related XMLSchema file: conf/schemas/scenario.xsd -->
+<!-- name="Send 3GPP Cx/Dx User-Authorization answer (UAA)" -->
+
+<scenario>
+
+    <call name="s1ap.RecCER_SendCEA"/>
+
+    <function name="s1ap.RecCER_SendCEA">
+        <input>
+            <!--parameter name="[destScenario]" type="string" default="client"/-->
+        </input>
+
+        <do>
+
+            <!--createListenpointS1AP name="lp_server" localHost="[localHostS1AP]" localPort="[remotePortS1AP]"/-->
+            <receiveMessageS1AP name="Wait Notify1">
+                <parameter name="[listenpointName]" operation="protocol.setFromMessage" value="listenpoint.name"/>
+                <parameter name="[channelName]" operation="protocol.setFromMessage" value="channel.name"/>
+                <parameter name="[remoteHost]" operation="protocol.setFromMessage" value="channel.remoteHost"/>
+                <parameter name="[remotePort]" operation="protocol.setFromMessage" value="channel.remotePort"/>
+            </receiveMessageS1AP>
+
+            <parameter name="[localHosts]" operation="system.ipaddress" value2="[IPVersion]"/>
+            <sendMessageS1AP channel="[channelName]" destScenario="client" name="Send Request RFC3588 CER" remoteHost="[remoteHost]" remotePort="[remotePort]">
+                <S1AP-PDU>
+                    <successfulOutcome>
+                        <procedureCode>9</procedureCode>
+                        <criticality>reject</criticality>
+                        <value>
+                            <InitialContextSetupResponse>
+                                <protocolIEs>
+                                    <protocolIEs>
+                                        <id>0</id>
+                                        <criticality>ignore</criticality>
+                                        <value>
+                                            <MME-UE-S1AP-ID>37</MME-UE-S1AP-ID>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>8</id>
+                                        <criticality>ignore</criticality>
+                                        <value>
+                                            <ENB-UE-S1AP-ID>36</ENB-UE-S1AP-ID>
+                                        </value>
+                                    </protocolIEs>
+                                    <protocolIEs>
+                                        <id>51</id>
+                                        <criticality>ignore</criticality>
+                                        <value>
+                                            <E-RABSetupListCtxtSURes>
+                                                <E-RABSetupListCtxtSURes>
+                                                    <id>50</id>
+                                                    <criticality>ignore</criticality>
+                                                    <value>
+                                                        <E-RABSetupItemCtxtSURes>
+                                                            <e-RAB-ID>5</e-RAB-ID>
+                                                            <transportLayerAddress>00001010111110111111110000001000
+                                                            </transportLayerAddress>
+                                                            <gTP-TEID>4B000000</gTP-TEID>
+                                                        </E-RABSetupItemCtxtSURes>
+                                                    </value>
+                                                </E-RABSetupListCtxtSURes>
+                                                <E-RABSetupListCtxtSURes>
+                                                    <id>50</id>
+                                                    <criticality>ignore</criticality>
+                                                    <value>
+                                                        <E-RABSetupItemCtxtSURes>
+                                                            <e-RAB-ID>6</e-RAB-ID>
+                                                            <transportLayerAddress>00001010111110111111110000001000
+                                                            </transportLayerAddress>
+                                                            <gTP-TEID>4C000000</gTP-TEID>
+                                                        </E-RABSetupItemCtxtSURes>
+                                                    </value>
+                                                </E-RABSetupListCtxtSURes>
+                                            </E-RABSetupListCtxtSURes>
+                                        </value>
+                                    </protocolIEs>
+                                </protocolIEs>
+                            </InitialContextSetupResponse>
+                        </value>
+                    </successfulOutcome>
+                </S1AP-PDU>
+            </sendMessageS1AP>
+        </do>
+        </function>
+</scenario>

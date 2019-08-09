@@ -735,7 +735,7 @@ public class MsgDiameterParser
     /** 
      * Parses the AVP Vendor Id from XML element and perform dictionary change 
      */
-    protected TypeDef parse_AVPType(String typeAttr, String applicationId) throws Exception
+    public TypeDef parse_AVPType(String typeAttr, String applicationId) throws Exception
     {    
     	if (typeAttr == null)
     	{

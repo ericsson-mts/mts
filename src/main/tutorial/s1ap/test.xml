@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+
+<test description="S1AP regression tests" name="S1AP">
+
+    <!-- NOTE : If you will run the test suite on LUNIX platform then you have to change 
+         the following parameter in the s1ap.properties file :
+         DEFAULT_SERVER_URL = aaa://<your IP address> :3871 
+    -->
+
+    <parameter name="[IPVersion]" operation="set" value="ipv4" description="version of the IP protocol" editable="true" />
+    
+    <parameter name="[localHostS1AP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <parameter name="[localHostS1AP]" operation="set" value="[localHostS1AP(0)]" description="local address of the MTS host" editable="true"/>
+    <!--parameter name="[localPortS1AP]" operation="file.readproperty" value="s1ap.properties" value2="listenpoint.LOCAL_PORT"/-->
+    <parameter name="[localPortS1AP]" operation="set" value="40000"/>
+    <parameter name="[localPortS1AP]" operation="set" value="[localPortS1AP]" description="local port of the MTS host" editable="true"/>
+    <parameter name="[localS1AP]" operation="set" value="[localHostS1AP]:[localPortS1AP]"/>
+    <parameter name="[localRealmS1AP]" operation="set" value="client.fr"/>
+    <parameter name="[localClient]" operation="set" value="true" description="flag to activate the client scenario" editable="true" />
+    
+    <parameter name="[remoteHostS1AP]" operation="system.ipaddress" value2="[IPVersion]"/>
+    <!--parameter name="[remoteHostS1AP]" operation="set" value="FR00115331"/-->
+    <!--parameter name="[remoteHostS1AP]" operation="set" value="172.16.21.32"/-->
+    <!--parameter name="[remoteHostS1AP]" operation="set" value="2a01:cf00:33:5::6e01"/-->
+    <parameter name="[remoteHostS1AP]" operation="set" value="[remoteHostS1AP(0)]" description="remote address of the SUT host" editable="true"/>
+    <parameter name="[remotePortS1AP]" operation="file.readproperty" value="s1ap.properties" value2="listenpoint.LOCAL_PORT"/>
+    <!--parameter name="[remotePortS1AP]" operation="set" value="3868"/-->
+    <parameter name="[remotePortS1AP]" operation="set" value="[remotePortS1AP]" description="remote port of the SUT host" editable="true"/>
+    <parameter name="[remoteS1AP]" operation="set" value="[remoteHostS1AP]:[remotePortS1AP]"/>
+    <!--parameter name="[remoteRealmS1AP]" operation="set" value="client.fr"/>
+    <parameter name="[remoteServer]" operation="set" value="true" description="flag to activate the server scenario" editable="true"/-->
+    
+    <parameter name="[iterations]" operation="set" value="1" description="iterations number" editable="true"/>
+    <parameter name="[timeout]" operation="set" value="30" description="timeout duration for message receipt : 0 mean always" editable="true"/>
+    
+    <parameter name="[transport]" operation="file.readproperty" value="s1ap.properties" value2="listenpoint.TRANSPORT"/>
+
+    <testcase name="S1AP_InitialContextSetup" state="true" number="[iterations]" description="S1APeter" >
+        <scenario name="client" file="InitialContextSetup/client.xml" routingName="[localPortS1AP]"/>
+        <scenario name="server" file="InitialContextSetup/server.xml" routingName="[remotePortS1AP]"/>
+    </testcase>
+</test>
