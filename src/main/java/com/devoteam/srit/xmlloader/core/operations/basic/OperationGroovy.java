@@ -179,6 +179,9 @@ public class OperationGroovy extends Operation {
             //remove last '/'
             first += 1;
         }
+        
+        groovyFilename = groovyFilename.substring(first, groovyFilename.length());
+        
         int last = groovyFilename.indexOf('.');
         if (last >= first) {
             String propertyName = MTSBinding.GROOVY_VAR_PREFIX + groovyFilename.substring(first, last);
