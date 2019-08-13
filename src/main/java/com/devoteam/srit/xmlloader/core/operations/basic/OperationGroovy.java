@@ -171,7 +171,7 @@ public class OperationGroovy extends Operation {
         // the property name is prefixed by "groovy_" followed by the script filename
         // without suffix
         // ie if we load Toto.groovy, the script instance property will be groovy_Toto
-
+        
         int first = groovyFilename.lastIndexOf('/');
         if (first == -1) {
             first = 0;
@@ -183,8 +183,8 @@ public class OperationGroovy extends Operation {
         groovyFilename = groovyFilename.substring(first, groovyFilename.length());
         
         int last = groovyFilename.indexOf('.');
-        if (last >= first) {
-            String propertyName = MTSBinding.GROOVY_VAR_PREFIX + groovyFilename.substring(first, last);
+        if (last > 0) {
+            String propertyName = MTSBinding.GROOVY_VAR_PREFIX + groovyFilename.substring(0, last);
             injectedScripts.put(propertyName, script);
             GlobalLogger.instance().getSessionLogger().debug(runner, TextEvent.Topic.CORE, "injecting " + propertyName + " object for script " + groovyFilename);
         } else {
