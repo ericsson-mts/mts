@@ -35,7 +35,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.apache.hc.core5.http.config.H1Config;
 import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 
 /**

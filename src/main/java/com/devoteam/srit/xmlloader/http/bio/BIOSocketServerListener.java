@@ -24,7 +24,7 @@
 package com.devoteam.srit.xmlloader.http.bio;
 import com.devoteam.srit.xmlloader.core.ThreadPool;
 
-import org.apache.hc.core5.http.config.H1Config;
+import org.apache.hc.core5.http.config.Http1Config;
 import org.apache.hc.core5.http.impl.io.DefaultBHttpServerConnection;
 
 import java.net.ServerSocket;
@@ -90,7 +90,7 @@ public class BIOSocketServerListener extends SocketServerListener implements Run
                 Socket socket = serverSocket.accept();
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "SocketServerListener secure=", secure, "got a connection");
                 
-                H1Config h1c = H1Config.custom()
+                Http1Config h1c = Http1Config.custom()
                 		.build();
                 
                 DefaultBHttpServerConnection serverConnection = null;

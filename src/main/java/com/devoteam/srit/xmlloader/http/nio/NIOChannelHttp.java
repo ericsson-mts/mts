@@ -32,7 +32,7 @@ import com.devoteam.srit.xmlloader.http.StackHttp;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.apache.hc.core5.http.config.H1Config;
+import org.apache.hc.core5.http.config.Http1Config;
 import org.apache.hc.core5.http.impl.io.DefaultBHttpClientConnection;
 
 /**
@@ -75,8 +75,8 @@ public class NIOChannelHttp extends ChannelHttp
 
             String host = this.getRemoteHost();
             int port = this.getRemotePort();
-            
-            H1Config h1c = H1Config.custom()
+
+            Http1Config h1c = Http1Config.custom()
             		.build();
             
             DefaultBHttpClientConnection defaultHttpClientConnection = new DefaultBHttpClientConnection(h1c);

@@ -36,10 +36,10 @@ import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.Message;
 import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncRequester;
 import org.apache.hc.core5.http.nio.AsyncClientEndpoint;
-import org.apache.hc.core5.http.nio.BasicRequestProducer;
-import org.apache.hc.core5.http.nio.BasicResponseConsumer;
 import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityProducer;
 import org.apache.hc.core5.http.nio.entity.StringAsyncEntityConsumer;
+import org.apache.hc.core5.http.nio.support.BasicRequestProducer;
+import org.apache.hc.core5.http.nio.support.BasicResponseConsumer;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.H2RequesterBootstrap;
@@ -118,7 +118,7 @@ public class ChannelHttp2 extends Channel {
 		requester.start();
 
 		if(secure) {
-			target = new HttpHost(hostname, port, "https");
+			target = new HttpHost("https", hostname, port);
 		}
 		else {
 			target = new HttpHost(hostname, port);

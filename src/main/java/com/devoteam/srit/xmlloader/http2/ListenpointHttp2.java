@@ -42,16 +42,17 @@ import org.apache.hc.core5.http.Message;
 import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncServer;
 import org.apache.hc.core5.http.nio.AsyncEntityConsumer;
 import org.apache.hc.core5.http.nio.AsyncRequestConsumer;
+import org.apache.hc.core5.http.nio.AsyncResponseProducer;
 import org.apache.hc.core5.http.nio.AsyncServerRequestHandler;
-import org.apache.hc.core5.http.nio.BasicRequestConsumer;
-import org.apache.hc.core5.http.nio.BasicResponseProducer;
 import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityConsumer;
 import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityProducer;
 import org.apache.hc.core5.http.nio.ssl.BasicServerTlsStrategy;
+import org.apache.hc.core5.http.nio.support.BasicRequestConsumer;
+import org.apache.hc.core5.http.nio.support.BasicResponseProducer;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.frame.RawFrame;
-import org.apache.hc.core5.http2.impl.nio.Http2StreamListener;
+import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.H2ServerBootstrap;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.net.URIAuthority;
@@ -101,7 +102,7 @@ public class ListenpointHttp2 extends Listenpoint {
 				.setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
 				.setCanonicalHostName("localhost")
 				.setTlsStrategy(secure ? new BasicServerTlsStrategy(StackHttp2.createServerSSLContext(),SecureAllPortsStrategy.INSTANCE) : null)
-				.setStreamListener(new Http2StreamListener() {
+				.setStreamListener(new H2StreamListener() {
 					@Override
 					public void onHeaderInput(final HttpConnection connection, final int streamId,
 							final List<? extends Header> headers) {
