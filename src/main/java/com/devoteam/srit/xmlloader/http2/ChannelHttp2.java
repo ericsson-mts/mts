@@ -150,8 +150,13 @@ public class ChannelHttp2 extends Channel {
 		}
 	
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Channel: sendMessage() ", msg);
-		
-		BasicAsyncEntityProducer entityProducer = new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes());
+
+		BasicAsyncEntityProducer entityProducer;
+		if(msgHttp2.getMessageContent() == null){
+			entityProducer = new BasicAsyncEntityProducer(new byte[0]);
+		} else {
+			entityProducer = new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes());
+		}
 		BasicRequestProducer requestProducer = new BasicRequestProducer(msgRequest, entityProducer);
 		
 		clientEndpoint.execute(requestProducer,		

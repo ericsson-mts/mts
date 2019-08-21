@@ -498,9 +498,6 @@ public class MsgHttp extends Msg {
                 entity = null;
             }
         } else {
-//            if(!currentMessage.containsHeader("Content-Length")){
-//                currentMessage.addHeader("Content-Length", Integer.toString(0));
-//            }
             if (contentLengthPresent) {
                 currentMessage.addHeader("Content-Length", Integer.toString(0));
             }

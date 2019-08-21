@@ -169,10 +169,13 @@ public class ListenpointHttp2 extends Listenpoint {
 		msgHttp2.setType(beginMsg.getType());
 		msgHttp2.setListenpoint(beginMsg.getListenpoint());
 		HttpResponse msgResponse = (HttpResponse) msgHttp2.getMessage();
-		
-		beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse,
-				new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes())), beginMsg.getContext());
-
+		if(msgHttp2.getMessageContent() == null){
+			beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse,
+					new BasicAsyncEntityProducer(new byte[0])), beginMsg.getContext());
+		} else {
+			beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse,
+					new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes())), beginMsg.getContext());
+		}
 		GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "Listenpoint: sendMessage() ",
 				msgHttp2);
 		return true;

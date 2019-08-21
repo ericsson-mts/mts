@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<scenario>
+    
+    <receiveMessageHTTP name="Wait PUT" request="true" type="PUT">
+        <parameter name="transaction_id" operation="protocol.setFromMessage" value="message.transactionId"/>
+    </receiveMessageHTTP>
+
+    <sendMessageHTTP name="Send PUT_RESPONSE" transactionId="[transaction_id]">
+<![CDATA[HTTP/1.1 201 Created
+Content-Location: /new.html
+
+]]>
+	</sendMessageHTTP>
+
+
+</scenario>
