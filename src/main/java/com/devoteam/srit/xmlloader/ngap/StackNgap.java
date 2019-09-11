@@ -4,6 +4,8 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
+import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.sctp.DataSctp;
 import com.ericsson.mts.asn1.ASN1Translator;
 import com.ericsson.mts.asn1.PERTranslatorFactory;
@@ -15,6 +17,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
 public class StackNgap extends Stack {
+
     private final ASN1Translator asn1Translator = new ASN1Translator(new PERTranslatorFactory(true), Arrays.asList(
             StackNgap.class.getResourceAsStream("/asn1/grammar/NGAP/NGAP-Common-Definitions.asn"),
             StackNgap.class.getResourceAsStream("/asn1/grammar/NGAP/NGAP-Constant-Definitions.asn"),
@@ -52,6 +55,10 @@ public class StackNgap extends Stack {
         MsgNgap msg = new MsgNgap(this);
         msg.decode(array.getBytes());
         return msg;
+    }
+
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementAVPParser.instance();
     }
 
     /**

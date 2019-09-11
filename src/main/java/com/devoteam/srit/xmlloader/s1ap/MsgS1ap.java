@@ -5,35 +5,32 @@ import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.sctp.MsgTransportInfosSctp;
+import com.ericsson.mts.asn1.ASN1Translator;
 import com.ericsson.mts.asn1.BitArray;
 import com.ericsson.mts.asn1.XMLFormatReader;
 import com.ericsson.mts.asn1.XMLFormatWriter;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.XPath;
-import org.w3c.dom.Document;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
-import java.util.List;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.DOMWriter;
+import org.w3c.dom.NodeList;
 
 public class MsgS1ap extends Msg {
-    private Element dom4jNode;
-    private byte[] binaryData;
-    private final String XMLRootNodeName = "S1AP-PDU";
-    private String S1APPDUType;
-    private String S1APType;
 
+    private Element element;
+    private byte[] binaryData;
+    private String pduType;
 
     /**
      * Creates a new instance
@@ -42,14 +39,21 @@ public class MsgS1ap extends Msg {
         super(stack);
     }
 
-    public MsgS1ap() {
-        super();
+    protected String getXmlRootNodeName(){
+        return "S1AP-PDU";
     }
-
+    
+    protected ASN1Translator getASN1Translator(){
+        return ((StackS1ap) this.stack).getAsn1Translator();
+    }
+    
+    protected int getPpid(){
+        return 18;
+    }
+    
     //-----------------------------------------------------------------------------------------
     // generic methods for protocol request type result retransmission, transaction and session
     //-----------------------------------------------------------------------------------------
-
     /**
      * @return null if it's a request without answer
      * @throws Exception
@@ -69,7 +73,6 @@ public class MsgS1ap extends Msg {
         return null;
     }
 
-
     /**
      * Return true if the message is a request else return false
      */
@@ -79,15 +82,15 @@ public class MsgS1ap extends Msg {
     }
 
     /**
-     * Get the type of the message
-     * Used for message filtering with "type" attribute and for statistic counters
+     * Get the type of the message Used for message filtering with "type"
+     * attribute and for statistic counters
      */
     @Override
     public String getType() throws Exception {
-        if (null == S1APType) {
-            S1APType = (String) getParameter(XMLRootNodeName + "." + getS1APPDUType() + ".value.*[1]").get(0);
+        if (null == type) {
+            type = (String) getParameter(getXmlRootNodeName() + "." + getPduType() + ".value.*[1]").get(0);
         }
-        return S1APType;
+        return type;
     }
 
     /**
@@ -96,23 +99,23 @@ public class MsgS1ap extends Msg {
      * @return (initiatingMessage | successfuloutcome | unsuccessfuloutcome)
      * @throws Exception exception
      */
-    private String getS1APPDUType() throws Exception {
-        if (null == S1APPDUType) {
-            S1APPDUType = (String) getParameter(XMLRootNodeName + ".*[1]").get(0);
+    private String getPduType() throws Exception {
+        if (null == pduType) {
+            pduType = (String) getParameter(getXmlRootNodeName() + ".*[1]").get(0);
         }
-        return S1APPDUType;
+        return pduType;
     }
 
     /**
-     * Get the result of the message (null if request)
-     * Used for message filtering with "result" attribute and for statistic counters
+     * Get the result of the message (null if request) Used for message
+     * filtering with "result" attribute and for statistic counters
      */
     @Override
     public String getResult() throws Exception {
-        if (getS1APPDUType().equalsIgnoreCase("successfuloutcome")) {
-            return "S1AP_SUCCESS";
-        } else if(getS1APPDUType().equalsIgnoreCase("unsuccessfulOutcome")){
-            return "S1AP_FAILURE";
+        if (getPduType().equalsIgnoreCase("successfulOutcome")) {
+            return "SUCCESS";
+        } else if (getPduType().equalsIgnoreCase("unsuccessfulOutcome")) {
+            return "FAILURE";
         }
         return null;
     }
@@ -130,105 +133,74 @@ public class MsgS1ap extends Msg {
             if (transportInfos instanceof MsgTransportInfosSctp) {
                 msgTransportInfosSctp = (MsgTransportInfosSctp) transportInfos;
             } else {
-                throw new RuntimeException("Only SCTP is supported for S1AP protocol");
+                throw new RuntimeException("Only SCTP is supported for " + protocol + " protocol");
             }
         } else {
             msgTransportInfosSctp = new MsgTransportInfosSctp();
         }
-        msgTransportInfosSctp.getInfoSctp().setPpid(18);
+        msgTransportInfosSctp.getInfoSctp().setPpid(getPpid());
         return msgTransportInfosSctp;
     }
 
     //-------------------------------------------------
     // methods for the encoding / decoding of the message
     //-------------------------------------------------
-
     /**
      * encode the message to binary data
      */
     @Override
     public byte[] encode() throws Exception {
-        if (binaryData == null) {
-            XMLFormatReader xmlFormatReader = new XMLFormatReader(convertToW3CElement(dom4jNode), XMLRootNodeName);
-            BitArray bitArray = new BitArray();
-            ((StackS1ap) StackFactory.getStack(StackFactory.PROTOCOL_S1AP)).getAsn1Translator().encode(XMLRootNodeName, bitArray, xmlFormatReader);
-            binaryData = bitArray.getBinaryArray();
-            return binaryData;
-        } else {
-            return binaryData;
-        }
+        return binaryData;
     }
-
 
     /**
      * decode the message from binary data
      */
     @Override
     public void decode(byte[] data) throws Exception {
-        if (dom4jNode == null) {
-            XMLFormatWriter formatWriter = new XMLFormatWriter();
-            InputStream binaryInputStream = new ByteArrayInputStream(data);
-            ((StackS1ap) StackFactory.getStack(StackFactory.PROTOCOL_S1AP)).getAsn1Translator().decode(XMLRootNodeName, binaryInputStream, formatWriter);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            StringWriter writer = new StringWriter();
-            transformer.transform(new DOMSource(formatWriter.getResult()), new StreamResult(writer));
-            dom4jNode = DocumentHelper.parseText(writer.toString()).getRootElement();
-        }
+        binaryData = data;
+        XMLFormatWriter formatWriter = new XMLFormatWriter();
+        InputStream binaryInputStream = new ByteArrayInputStream(data);
+        getASN1Translator().decode(getXmlRootNodeName(), binaryInputStream, formatWriter);
+        element = formatWriter.getResult();
     }
 
     @Override
     public int getLength() throws Exception {
-        return this.toXml().length();
+        return binaryData.length;
     }
 
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message
     //---------------------------------------------------------------------
-
     /**
      * Convert the message to XML document
      */
     @Override
     public String toXml() throws Exception {
-        return dom4jNode.asXML();
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(element), new StreamResult(writer));
+        return writer.toString();
     }
 
     /**
      * Parse the message from XML element
      */
     @Override
-    public void parseFromXml(ParseFromXmlContext context, Element root, Runner runner) throws Exception {
+    public void parseFromXml(ParseFromXmlContext context, org.dom4j.Element root, Runner runner) throws Exception {
         super.parseFromXml(context, root, runner);
-        dom4jNode = root.element(XMLRootNodeName);
+        this.element = (Element) new DOMWriter().write(DocumentHelper.createDocument(root.elementIterator().next())).getDocumentElement();
+        XMLFormatReader xmlFormatReader = new XMLFormatReader(element, getXmlRootNodeName());
+        BitArray bitArray = new BitArray();
+        getASN1Translator().encode(getXmlRootNodeName(), bitArray, xmlFormatReader);
+        this.binaryData = bitArray.getBinaryArray();
     }
-
-    private org.w3c.dom.Element convertToW3CElement(Element element) throws IOException, SAXException, ParserConfigurationException {
-        org.w3c.dom.Element element1 = stringToDom(element.asXML()).getDocumentElement();
-        if (element1.getNodeType() == Node.ELEMENT_NODE) {
-            if (!XMLRootNodeName.equals(element1.getNodeName())) {
-                throw new RuntimeException("Error during XML parsing: no " + XMLRootNodeName + " found");
-            }
-            return element1;
-        }
-        throw new RuntimeException("Error during XML parsing : no " + XMLRootNodeName + " found");
-    }
-
-    private static Document stringToDom(String xmlSource)
-            throws SAXException, ParserConfigurationException, IOException {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        return builder.parse(new InputSource(new StringReader(xmlSource)));
-    }
-
-    //------------------------------------------------------
-    // method for the "setFromMessage" <parameter> operation
-    //------------------------------------------------------
-
 
     /**
      * Get a parameter from the message
@@ -250,18 +222,15 @@ public class MsgS1ap extends Msg {
             return null;
         }
 
-        if (params[0].equalsIgnoreCase(XMLRootNodeName)) {
-            path = String.format("/%s", path.replaceAll("\\.", "/"));
-            org.dom4j.Document document = DocumentHelper.parseText(dom4jNode.asXML());
-            XPath xpath = DocumentHelper.createXPath(path);
-            List<org.dom4j.Node> nodeList = xpath.selectNodes(document);
-
-            for (int i = 0; i < nodeList.size(); i++) {
-                org.dom4j.Node node = nodeList.get(i);
-                if (node.getNodeType() == org.dom4j.Node.ELEMENT_NODE) {
-                    parameter.add(node.getName());
-                } else if (node.getNodeType() == org.dom4j.Node.TEXT_NODE) {
-                    parameter.add(node.getStringValue());
+        if (params[0].equalsIgnoreCase(getXmlRootNodeName())) {
+            path = "/" + path.replace('.', '/');
+            NodeList nodeList = (NodeList) XPathFactory.newInstance().newXPath().evaluate(path, element, XPathConstants.NODESET);
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    parameter.add(node.getNodeName());
+                } else if (node.getNodeType() == Node.TEXT_NODE) {
+                    parameter.add(node.getTextContent());
                 }
             }
             return parameter;

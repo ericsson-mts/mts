@@ -4,6 +4,8 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
+import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
+import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.sctp.DataSctp;
 import com.ericsson.mts.asn1.ASN1Translator;
 import com.ericsson.mts.asn1.PERTranslatorFactory;
@@ -15,6 +17,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
 public class StackS1ap extends Stack {
+
     private final ASN1Translator asn1Translator = new ASN1Translator(new PERTranslatorFactory(true),
             Collections.singletonList(StackS1ap.class.getResourceAsStream("/asn1/grammar/S1AP/S1AP.asn")));
 
@@ -38,7 +41,6 @@ public class StackS1ap extends Stack {
 
     @Override
     public Msg readFromSCTPData(DataSctp chunk) throws Exception {
-
         DefaultArray array = new DefaultArray(chunk.getData());
         if (18 != (chunk.getInfo().getPpid())) {
             throw new RuntimeException("Not a S1AP message");
@@ -46,6 +48,10 @@ public class StackS1ap extends Stack {
         MsgS1ap msg = new MsgS1ap(this);
         msg.decode(array.getBytes());
         return msg;
+    }
+
+    public XMLElementReplacer getElementReplacer() {
+        return XMLElementAVPParser.instance();
     }
 
     /**
