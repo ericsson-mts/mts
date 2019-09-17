@@ -349,7 +349,7 @@ public class StackRadius extends Stack
             if(1 == radiusMessage.getCode())
             {
                 GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL , "ChannelRadius, encode user-password avps");
-                radiusMessage.encodeUserPasswordAvps();
+                radiusMessage.encodeUserPasswordAvp();
             }
         }
 

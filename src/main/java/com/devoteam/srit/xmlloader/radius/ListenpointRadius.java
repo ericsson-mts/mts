@@ -160,7 +160,7 @@ public class ListenpointRadius extends Listenpoint implements Runnable
 
                 if (1 == radiusMessage.getCode())
                 {
-                    radiusMessage.decodeUserPasswordAvps();
+                    radiusMessage.decodeUserPasswordAvp();
                 }
 
                 if (msgRadius.hasValidAuthenticator())
