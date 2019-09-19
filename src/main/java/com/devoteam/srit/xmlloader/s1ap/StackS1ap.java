@@ -8,6 +8,7 @@ import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.sctp.DataSctp;
 import com.ericsson.mts.asn1.ASN1Translator;
+import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.PERTranslatorFactory;
 import dk.i1.diameter.node.Node;
 import gp.utils.arrays.DefaultArray;
@@ -18,7 +19,7 @@ import java.util.logging.Level;
 
 public class StackS1ap extends Stack {
 
-    private final ASN1Translator asn1Translator = new ASN1Translator(new PERTranslatorFactory(true),
+    private final ASN1Translator asn1Translator = new ASN1Translator(new PERTranslatorFactory(new PERTranscoder(true, true)),
             Collections.singletonList(StackS1ap.class.getResourceAsStream("/asn1/grammar/S1AP/S1AP.asn")));
 
     /**
