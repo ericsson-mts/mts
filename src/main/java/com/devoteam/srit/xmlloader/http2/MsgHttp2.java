@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package com.devoteam.srit.xmlloader.http2;
 
 import org.apache.hc.core5.http.HttpMessage;
@@ -38,61 +37,61 @@ import com.devoteam.srit.xmlloader.http.MsgHttp;
  * @author qqin
  */
 public class MsgHttp2 extends MsgHttp {
-	
-	private ResponseTrigger responseTrigger;
-	private HttpContext context = null;
-	
-	/** Creates a new instance */
-	public MsgHttp2(Stack stack) {
-		super(stack);
-	}
 
-	/** Creates a new instance */
-	public MsgHttp2(Stack stack, HttpMessage aMessage) throws Exception {
-		super(stack, aMessage);
-		
-	}
+    private ResponseTrigger responseTrigger;
+    private HttpContext context = null;
+
+    /**
+     * Creates a new instance
+     */
+    public MsgHttp2(Stack stack) {
+        super(stack);
+    }
+
+    /**
+     * Creates a new instance
+     */
+    public MsgHttp2(Stack stack, HttpMessage aMessage) throws Exception {
+        super(stack, aMessage);
+
+    }
 
     @Override
     public HttpVersion retrieveHttpVersion(String[] parts, boolean response) throws ParsingException {
-    	HttpVersion httpVersion = HttpVersion.HTTP_2_0; 	
+        HttpVersion httpVersion = HttpVersion.HTTP_2_0;
 
-    	// Message is a response
-    	if (response)
-    	{
-    		if(parts[0].endsWith("HTTP/1.0") || parts[0].endsWith("HTTP/1.1"))
-    			throw new ParsingException("Bad HTTP Version in message (should be HTTP/2.0) : \"version:" + parts[0]);
-    	} // Message is a request
-    	else
-    	{
-    		if ((parts.length == 3) && (parts[2].endsWith("HTTP/1.0") || parts[2].endsWith("HTTP/1.1") ) )
-    		{
-    			throw new ParsingException("Bad HTTP Version in message (should be HTTP/2.0) : \"version:" + parts[2]);
-    		}
-    	}
-    	return httpVersion;
-    }
-    
-	public ResponseTrigger getResponseTrigger() {
-		return responseTrigger;
-	}
-
-	public void setResponseTrigger(ResponseTrigger responseTrigger) {
-		this.responseTrigger = responseTrigger;
-	}
-
-	public HttpContext getContext() {
-		return context;
-	}
-
-	public void setContext(HttpContext context) {
-		this.context = context;
-	}
-	
-
-	@Override
-	public boolean getConfig() {
-    	return Config.getConfigByName("http2.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
+        // Message is a response
+        if (response) {
+            if (parts[0].endsWith("HTTP/1.0") || parts[0].endsWith("HTTP/1.1")) {
+                throw new ParsingException("Bad HTTP Version in message (should be HTTP/2.0) : \"version:" + parts[0]);
+            }
+        } // Message is a request
+        else {
+            if ((parts.length == 3) && (parts[2].endsWith("HTTP/1.0") || parts[2].endsWith("HTTP/1.1"))) {
+                throw new ParsingException("Bad HTTP Version in message (should be HTTP/2.0) : \"version:" + parts[2]);
+            }
+        }
+        return httpVersion;
     }
 
+    public ResponseTrigger getResponseTrigger() {
+        return responseTrigger;
+    }
+
+    public void setResponseTrigger(ResponseTrigger responseTrigger) {
+        this.responseTrigger = responseTrigger;
+    }
+
+    public HttpContext getContext() {
+        return context;
+    }
+
+    public void setContext(HttpContext context) {
+        this.context = context;
+    }
+
+    @Override
+    public boolean getConfig() {
+        return Config.getConfigByName("http2.properties").getBoolean("message.IGNORE_RECEIVED_CONTENTS", false);
+    }
 }
