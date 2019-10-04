@@ -195,7 +195,7 @@ public class MsgS1ap extends Msg {
     @Override
     public void parseFromXml(ParseFromXmlContext context, org.dom4j.Element root, Runner runner) throws Exception {
         super.parseFromXml(context, root, runner);
-        this.element = (Element) new DOMWriter().write(DocumentHelper.createDocument(root.elementIterator().next())).getDocumentElement();
+        this.element = (Element) new DOMWriter().write(DocumentHelper.createDocument(root.elementIterator().next().createCopy())).getDocumentElement();
         XMLFormatReader xmlFormatReader = new XMLFormatReader(element, getXmlRootNodeName());
         BitArray bitArray = new BitArray();
         getASN1Translator().encode(getXmlRootNodeName(), bitArray, xmlFormatReader);
