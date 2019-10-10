@@ -262,10 +262,10 @@ public class TesterGui {
         // redirect the output in a file
         //
         try {
-            File file = new File("../logs/stdout.log");
-            PrintStream print = new PrintStream(file);
-            System.setOut(print);
-            System.setErr(print);
+//            File file = new File("../logs/stdout.log");
+//            PrintStream print = new PrintStream(file);
+//            System.setOut(print);
+//            System.setErr(print);
         }
         catch (Exception e) {
             e.printStackTrace();

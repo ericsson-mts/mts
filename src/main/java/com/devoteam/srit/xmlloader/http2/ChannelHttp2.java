@@ -120,7 +120,9 @@ public class ChannelHttp2 extends Channel {
                             request.setAuthority(new URIAuthority(request.getHeader(HttpHeaders.HOST).getValue()));
                             request.removeHeaders(HttpHeaders.HOST);
                         }
-                ).build())
+                )
+                .build())
+                .setExceptionCallback(e -> GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Error in HTTP channel " + ChannelHttp2.this.getName()))
                 .setH2Config(h2Config);
 
         if (secure) {
@@ -155,7 +157,6 @@ public class ChannelHttp2 extends Channel {
     @Override
     public boolean close() {
         try {
-            System.out.println("ChannelHttp2.close()");
             clientEndpoint.releaseAndDiscard();
             requester.initiateShutdown();
             requester.awaitShutdown(TimeValue.MAX_VALUE);

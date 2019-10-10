@@ -1,7 +1,5 @@
 package com.devoteam.srit.xmlloader.s1ap;
 
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
@@ -10,12 +8,9 @@ import com.devoteam.srit.xmlloader.sctp.DataSctp;
 import com.ericsson.mts.asn1.ASN1Translator;
 import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.PERTranslatorFactory;
-import dk.i1.diameter.node.Node;
 import gp.utils.arrays.DefaultArray;
 
 import java.util.*;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 
 public class StackS1ap extends Stack {
 
@@ -29,15 +24,6 @@ public class StackS1ap extends Stack {
      */
     public StackS1ap() throws Exception {
         super();
-        // configure stack trace parameters
-        FileHandler fh = new FileHandler("../logs/s1apStack.log");
-        // logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-        Node.logger.addHandler(fh);
-        String stringLevel = getConfig().getString("TRACE_LEVEL");
-        Level traceLevel = Level.parse(stringLevel);
-        Node.logger.setLevel(traceLevel);
-        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, "traceLevel : ", traceLevel);
-        Node.logger.warning("traceLevel = " + traceLevel);
     }
 
     @Override

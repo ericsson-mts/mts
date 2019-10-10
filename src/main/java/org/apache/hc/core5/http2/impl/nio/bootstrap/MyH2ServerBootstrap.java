@@ -1,0 +1,357 @@
+/*
+ * ====================================================================
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ *
+ */
+package org.apache.hc.core5.http2.impl.nio.bootstrap;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.hc.core5.function.Callback;
+import org.apache.hc.core5.function.Decorator;
+import org.apache.hc.core5.function.Supplier;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpRequestMapper;
+import org.apache.hc.core5.http.config.CharCodingConfig;
+import org.apache.hc.core5.http.config.Http1Config;
+import org.apache.hc.core5.http.config.NamedElementChain;
+import org.apache.hc.core5.http.impl.DefaultConnectionReuseStrategy;
+import org.apache.hc.core5.http.impl.DefaultContentLengthStrategy;
+import org.apache.hc.core5.http.impl.Http1StreamListener;
+import org.apache.hc.core5.http.impl.HttpProcessors;
+import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncServer;
+import org.apache.hc.core5.http.impl.bootstrap.StandardFilters;
+import org.apache.hc.core5.http.impl.nio.DefaultHttpRequestParserFactory;
+import org.apache.hc.core5.http.impl.nio.DefaultHttpResponseWriterFactory;
+import org.apache.hc.core5.http.impl.nio.ServerHttp1StreamDuplexerFactory;
+import org.apache.hc.core5.http.nio.AsyncFilterHandler;
+import org.apache.hc.core5.http.nio.AsyncServerExchangeHandler;
+import org.apache.hc.core5.http.nio.AsyncServerRequestHandler;
+import org.apache.hc.core5.http.nio.HandlerFactory;
+import org.apache.hc.core5.http.nio.ssl.TlsStrategy;
+import org.apache.hc.core5.http.nio.support.AsyncServerExpectationFilter;
+import org.apache.hc.core5.http.nio.support.AsyncServerFilterChainElement;
+import org.apache.hc.core5.http.nio.support.AsyncServerFilterChainExchangeHandlerFactory;
+import org.apache.hc.core5.http.nio.support.BasicAsyncServerExpectationDecorator;
+import org.apache.hc.core5.http.nio.support.BasicServerExchangeHandler;
+import org.apache.hc.core5.http.nio.support.DefaultAsyncResponseExchangeHandlerFactory;
+import org.apache.hc.core5.http.nio.support.TerminalAsyncServerFilter;
+import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.http.protocol.HttpProcessor;
+import org.apache.hc.core5.http2.HttpVersionPolicy;
+import org.apache.hc.core5.http2.config.H2Config;
+import org.apache.hc.core5.http2.impl.H2Processors;
+import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
+import org.apache.hc.core5.http2.impl.nio.ServerH2StreamMultiplexerFactory;
+import org.apache.hc.core5.http2.impl.nio.ServerHttpProtocolNegotiatorFactory;
+import org.apache.hc.core5.http2.ssl.H2ServerTlsStrategy;
+import org.apache.hc.core5.reactor.IOEventHandlerFactory;
+import org.apache.hc.core5.reactor.IOReactorConfig;
+import org.apache.hc.core5.reactor.IOSession;
+import org.apache.hc.core5.reactor.IOSessionListener;
+import org.apache.hc.core5.util.Args;
+import org.apache.hc.core5.util.Timeout;
+
+/**
+ * HTTP/2 capable {@link HttpAsyncServer} bootstrap.
+ *
+ * @since 5.0
+ */
+public class MyH2ServerBootstrap {
+
+    private final List<FilterEntry<AsyncFilterHandler>> filters;
+    private IOReactorConfig ioReactorConfig;
+    private HttpProcessor httpProcessor;
+    private CharCodingConfig charCodingConfig;
+    private HttpVersionPolicy versionPolicy;
+    private H2Config h2Config;
+    private Http1Config http1Config;
+    private TlsStrategy tlsStrategy;
+    private Timeout handshakeTimeout;
+    private Decorator<IOSession> ioSessionDecorator;
+    private Callback<Exception> exceptionCallback;
+    private IOSessionListener sessionListener;
+    private H2StreamListener h2StreamListener;
+    private Http1StreamListener http1StreamListener;
+    private AsyncServerRequestHandler asyncServerRequestHandler;
+    
+    private MyH2ServerBootstrap() {
+        this.filters = new ArrayList<>();
+    }
+
+    public static MyH2ServerBootstrap bootstrap() {
+        return new MyH2ServerBootstrap();
+    }
+
+    public final MyH2ServerBootstrap setAsyncServerRequestHandler(final AsyncServerRequestHandler asyncServerRequestHandler) {
+        this.asyncServerRequestHandler = asyncServerRequestHandler;
+        return this;
+    }
+    
+
+    /**
+     * Sets I/O reactor configuration.
+     */
+    public final MyH2ServerBootstrap setIOReactorConfig(final IOReactorConfig ioReactorConfig) {
+        this.ioReactorConfig = ioReactorConfig;
+        return this;
+    }
+
+    /**
+     * Assigns {@link HttpProcessor} instance.
+     */
+    public final MyH2ServerBootstrap setHttpProcessor(final HttpProcessor httpProcessor) {
+        this.httpProcessor = httpProcessor;
+        return this;
+    }
+
+    /**
+     * Sets HTTP protocol version policy
+     */
+    public final MyH2ServerBootstrap setVersionPolicy(final HttpVersionPolicy versionPolicy) {
+        this.versionPolicy = versionPolicy;
+        return this;
+    }
+
+    /**
+     * Sets HTTP/2 protocol parameters
+     */
+    public final MyH2ServerBootstrap setH2Config(final H2Config h2Config) {
+        this.h2Config = h2Config;
+        return this;
+    }
+
+    /**
+     * Sets HTTP/1.1 protocol parameters
+     */
+    public final MyH2ServerBootstrap setHttp1Config(final Http1Config http1Config) {
+        this.http1Config = http1Config;
+        return this;
+    }
+
+    /**
+     * @deprecated Use {@link #setHttp1Config(Http1Config)}
+     */
+    @Deprecated
+    public final MyH2ServerBootstrap sethttp1Config(final Http1Config http1Config) {
+        return setHttp1Config(http1Config);
+    }
+
+    /**
+     * Sets message char coding.
+     */
+    public final MyH2ServerBootstrap setCharset(final CharCodingConfig charCodingConfig) {
+        this.charCodingConfig = charCodingConfig;
+        return this;
+    }
+
+    /**
+     * Assigns {@link TlsStrategy} instance.
+     */
+    public final MyH2ServerBootstrap setTlsStrategy(final TlsStrategy tlsStrategy) {
+        this.tlsStrategy = tlsStrategy;
+        return this;
+    }
+
+    public final MyH2ServerBootstrap setHandshakeTimeout(final Timeout handshakeTimeout) {
+        this.handshakeTimeout = handshakeTimeout;
+        return this;
+    }
+
+    /**
+     * Assigns {@link IOSession} {@link Decorator} instance.
+     */
+    public final MyH2ServerBootstrap setIOSessionDecorator(final Decorator<IOSession> ioSessionDecorator) {
+        this.ioSessionDecorator = ioSessionDecorator;
+        return this;
+    }
+
+    /**
+     * Assigns {@link Exception} {@link Callback} instance.
+     */
+    public final MyH2ServerBootstrap setExceptionCallback(final Callback<Exception> exceptionCallback) {
+        this.exceptionCallback = exceptionCallback;
+        return this;
+    }
+
+    /**
+     * Assigns {@link IOSessionListener} instance.
+     */
+    public final MyH2ServerBootstrap setIOSessionListener(final IOSessionListener sessionListener) {
+        this.sessionListener = sessionListener;
+        return this;
+    }
+
+    /**
+     * Assigns {@link H2StreamListener} instance.
+     */
+    public final MyH2ServerBootstrap setStreamListener(final H2StreamListener h2StreamListener) {
+        this.h2StreamListener = h2StreamListener;
+        return this;
+    }
+
+    /**
+     * Assigns {@link Http1StreamListener} instance.
+     */
+    public final MyH2ServerBootstrap setStreamListener(final Http1StreamListener http1StreamListener) {
+        this.http1StreamListener = http1StreamListener;
+        return this;
+    }
+
+    /**
+     * Adds the filter before the filter with the given name.
+     */
+    public final MyH2ServerBootstrap addFilterBefore(final String existing, final String name, final AsyncFilterHandler filterHandler) {
+        Args.notBlank(existing, "Existing");
+        Args.notBlank(name, "Name");
+        Args.notNull(filterHandler, "Filter handler");
+        filters.add(new FilterEntry<>(FilterEntry.Postion.BEFORE, name, filterHandler, existing));
+        return this;
+    }
+
+    /**
+     * Adds the filter after the filter with the given name.
+     */
+    public final MyH2ServerBootstrap addFilterAfter(final String existing, final String name, final AsyncFilterHandler filterHandler) {
+        Args.notBlank(existing, "Existing");
+        Args.notBlank(name, "Name");
+        Args.notNull(filterHandler, "Filter handler");
+        filters.add(new FilterEntry<>(FilterEntry.Postion.AFTER, name, filterHandler, existing));
+        return this;
+    }
+
+    /**
+     * Replace an existing filter with the given name with new filter.
+     */
+    public final MyH2ServerBootstrap replaceFilter(final String existing, final AsyncFilterHandler filterHandler) {
+        Args.notBlank(existing, "Existing");
+        Args.notNull(filterHandler, "Filter handler");
+        filters.add(new FilterEntry<>(FilterEntry.Postion.REPLACE, existing, filterHandler, existing));
+        return this;
+    }
+
+    /**
+     * Add an filter to the head of the processing list.
+     */
+    public final MyH2ServerBootstrap addFilterFirst(final String name, final AsyncFilterHandler filterHandler) {
+        Args.notNull(name, "Name");
+        Args.notNull(filterHandler, "Filter handler");
+        filters.add(new FilterEntry<>(FilterEntry.Postion.FIRST, name, filterHandler, null));
+        return this;
+    }
+
+    /**
+     * Add an filter to the tail of the processing list.
+     */
+    public final MyH2ServerBootstrap addFilterLast(final String name, final AsyncFilterHandler filterHandler) {
+        Args.notNull(name, "Name");
+        Args.notNull(filterHandler, "Filter handler");
+        filters.add(new FilterEntry<>(FilterEntry.Postion.LAST, name, filterHandler, null));
+        return this;
+    }
+
+    public HttpAsyncServer create() {
+        
+        final HttpRequestMapper<Supplier<AsyncServerExchangeHandler>> registry = (final HttpRequest request, final HttpContext context) -> {
+            return () -> new BasicServerExchangeHandler(asyncServerRequestHandler);
+        };
+
+        final HandlerFactory<AsyncServerExchangeHandler> handlerFactory;
+        if (!filters.isEmpty()) {
+            final NamedElementChain<AsyncFilterHandler> filterChainDefinition = new NamedElementChain<>();
+            filterChainDefinition.addLast(
+                    new TerminalAsyncServerFilter(new DefaultAsyncResponseExchangeHandlerFactory(registry)),
+                    StandardFilters.MAIN_HANDLER.name());
+            filterChainDefinition.addFirst(
+                    new AsyncServerExpectationFilter(),
+                    StandardFilters.EXPECT_CONTINUE.name());
+
+            for (final FilterEntry<AsyncFilterHandler> entry : filters) {
+                switch (entry.postion) {
+                    case AFTER:
+                        filterChainDefinition.addAfter(entry.existing, entry.filterHandler, entry.name);
+                        break;
+                    case BEFORE:
+                        filterChainDefinition.addBefore(entry.existing, entry.filterHandler, entry.name);
+                        break;
+                    case REPLACE:
+                        filterChainDefinition.replace(entry.existing, entry.filterHandler);
+                        break;
+                    case FIRST:
+                        filterChainDefinition.addFirst(entry.filterHandler, entry.name);
+                        break;
+                    case LAST:
+                        filterChainDefinition.addLast(entry.filterHandler, entry.name);
+                        break;
+                }
+            }
+
+            NamedElementChain<AsyncFilterHandler>.Node current = filterChainDefinition.getLast();
+            AsyncServerFilterChainElement execChain = null;
+            while (current != null) {
+                execChain = new AsyncServerFilterChainElement(current.getValue(), execChain);
+                current = current.getPrevious();
+            }
+
+            handlerFactory = new AsyncServerFilterChainExchangeHandlerFactory(execChain);
+        } else {
+            handlerFactory = new DefaultAsyncResponseExchangeHandlerFactory(registry, new Decorator<AsyncServerExchangeHandler>() {
+
+                @Override
+                public AsyncServerExchangeHandler decorate(final AsyncServerExchangeHandler handler) {
+                    return new BasicAsyncServerExpectationDecorator(handler);
+                }
+
+            });
+        }
+
+        final ServerH2StreamMultiplexerFactory http2StreamHandlerFactory = new ServerH2StreamMultiplexerFactory(
+                httpProcessor != null ? httpProcessor : H2Processors.server(),
+                handlerFactory,
+                h2Config != null ? h2Config : H2Config.DEFAULT,
+                charCodingConfig != null ? charCodingConfig : CharCodingConfig.DEFAULT,
+                h2StreamListener);
+        final ServerHttp1StreamDuplexerFactory http1StreamHandlerFactory = new ServerHttp1StreamDuplexerFactory(
+                httpProcessor != null ? httpProcessor : HttpProcessors.server(),
+                handlerFactory,
+                http1Config != null ? http1Config : Http1Config.DEFAULT,
+                charCodingConfig != null ? charCodingConfig : CharCodingConfig.DEFAULT,
+                DefaultConnectionReuseStrategy.INSTANCE,
+                DefaultHttpRequestParserFactory.INSTANCE,
+                DefaultHttpResponseWriterFactory.INSTANCE,
+                DefaultContentLengthStrategy.INSTANCE,
+                DefaultContentLengthStrategy.INSTANCE,
+                http1StreamListener);
+        final IOEventHandlerFactory ioEventHandlerFactory = new ServerHttpProtocolNegotiatorFactory(
+                http1StreamHandlerFactory,
+                http2StreamHandlerFactory,
+                versionPolicy != null ? versionPolicy : HttpVersionPolicy.NEGOTIATE,
+                tlsStrategy != null ? tlsStrategy : new H2ServerTlsStrategy(443, 8443),
+                handshakeTimeout);
+        return new HttpAsyncServer(ioEventHandlerFactory, ioReactorConfig, ioSessionDecorator, exceptionCallback,
+                sessionListener);
+    }
+
+}
