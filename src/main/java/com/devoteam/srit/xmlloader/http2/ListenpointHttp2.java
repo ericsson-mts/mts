@@ -24,14 +24,10 @@ package com.devoteam.srit.xmlloader.http2;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.hc.core5.http.EntityDetails;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpConnection;
 import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpResponse;
@@ -46,11 +42,7 @@ import org.apache.hc.core5.http.nio.support.BasicRequestConsumer;
 import org.apache.hc.core5.http.nio.support.BasicResponseProducer;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
-import org.apache.hc.core5.http2.frame.RawFrame;
-import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
-import org.apache.hc.core5.http2.impl.nio.bootstrap.H2ServerBootstrap;
 import org.apache.hc.core5.io.CloseMode;
-import org.apache.hc.core5.net.URIAuthority;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
@@ -62,7 +54,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
-import org.apache.hc.core5.http.message.BasicHeader;
+import org.apache.hc.core5.http.protocol.HttpProcessorBuilder;
 import org.apache.hc.core5.http2.impl.nio.bootstrap.MyH2ServerBootstrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +94,7 @@ public class ListenpointHttp2 extends Listenpoint {
                         .setSoTimeout(timeout, TimeUnit.SECONDS)
                         .build()
                 )
+                .setHttpProcessor(HttpProcessorBuilder.create().build())
                 .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
                 .setAsyncServerRequestHandler(serverRequestHandler)
                 .setExceptionCallback(e -> GlobalLogger.instance().getApplicationLogger().error(Topic.PROTOCOL, e, "Error in HTTP listenpoint " + ListenpointHttp2.this.getName()));

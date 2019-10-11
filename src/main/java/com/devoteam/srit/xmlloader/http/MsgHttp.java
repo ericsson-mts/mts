@@ -20,7 +20,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
 package com.devoteam.srit.xmlloader.http;
 
 import java.io.InputStream;
@@ -102,7 +101,9 @@ public class MsgHttp extends Msg {
 
                 while ((l = inputStream.read(tmp)) != -1) {
                     byte[] bytes = new byte[l];
-                    for (int i = 0; i < l; i++) bytes[i] = tmp[i];
+                    for (int i = 0; i < l; i++) {
+                        bytes[i] = tmp[i];
+                    }
                     array.addLast(new DefaultArray(bytes));
 
                 }
@@ -165,7 +166,9 @@ public class MsgHttp extends Msg {
     public void setTransactionId(TransactionId transactionId) {
         super.setTransactionId(transactionId);
 
-        if (isRequest() && null != getType()) return;
+        if (isRequest() && null != getType()) {
+            return;
+        }
 
         try {
             Trans trans = this.stack.getInTransaction(transactionId);
@@ -191,8 +194,8 @@ public class MsgHttp extends Msg {
     }
 
     /**
-     * Get the type of the message
-     * Used for message filtering with "type" attribute and for statistic counters
+     * Get the type of the message Used for message filtering with "type"
+     * attribute and for statistic counters
      */
     @Override
     public String getType() {
@@ -209,8 +212,8 @@ public class MsgHttp extends Msg {
     }
 
     /**
-     * Get the result of the message (null if request)
-     * Used for message filtering with "result" attribute and for statistic counters
+     * Get the result of the message (null if request) Used for message
+     * filtering with "result" attribute and for statistic counters
      */
     @Override
     public String getResult() {
@@ -260,11 +263,9 @@ public class MsgHttp extends Msg {
         }
     }
 
-
     //-------------------------------------------------
     // methods for the encoding / decoding of the message
     //-------------------------------------------------
-
     /**
      * encode the message to binary data
      */
@@ -281,12 +282,13 @@ public class MsgHttp extends Msg {
         // nothing to do : we use external Tomcat HTTP stack to transport messages
     }
 
-
     //---------------------------------------------------------------------
     // methods for the XML display / parsing of the message
     //---------------------------------------------------------------------
-
-    /** Returns a short description of the message. Used for logging as INFO level */
+    /**
+     * Returns a short description of the message. Used for logging as INFO
+     * level
+     */
     /**
      * This methods HAS TO be quick to execute for performance reason
      */
@@ -338,16 +340,23 @@ public class MsgHttp extends Msg {
 
         String headers = text.split("[\\r]?[\\n][\\r]?[\\n]")[0];
         String datas = text.substring(headers.length());
-        if (datas.startsWith("\r")) datas = datas.substring(1);
-        if (datas.startsWith("\n")) datas = datas.substring(1);
-        if (datas.startsWith("\r")) datas = datas.substring(1);
-        if (datas.startsWith("\n")) datas = datas.substring(1);
+        if (datas.startsWith("\r")) {
+            datas = datas.substring(1);
+        }
+        if (datas.startsWith("\n")) {
+            datas = datas.substring(1);
+        }
+        if (datas.startsWith("\r")) {
+            datas = datas.substring(1);
+        }
+        if (datas.startsWith("\n")) {
+            datas = datas.substring(1);
+        }
 
         //
         // Use only \n: remove \r
         //
         headers = headers.replace("\r", "");
-
 
         //
         // Whatever the message is, it seems it should end with a new line
@@ -435,8 +444,8 @@ public class MsgHttp extends Msg {
             // Check if we are allowed to have an entity in this message
             //
             if (null != requestMessage) {
-                if (requestMessage.getMethod().toLowerCase().equals("get") ||
-                        requestMessage.getMethod().toLowerCase().equals("head")) {
+                if (requestMessage.getMethod().toLowerCase().equals("get")
+                        || requestMessage.getMethod().toLowerCase().equals("head")) {
                     GlobalLogger.instance().getApplicationLogger().warn(TextEvent.Topic.PROTOCOL, "Request ", requestMessage.getMethod(), " is not allowed to contain an entity");
                 }
             }
@@ -459,18 +468,15 @@ public class MsgHttp extends Msg {
 
             String contentType = contentTypeHeaders[0].getValue();
             int semicolonIndex = contentType.indexOf(";");
-            if(-1 != semicolonIndex) {
+            if (-1 != semicolonIndex) {
                 contentType = contentType.substring(0, semicolonIndex);
-            }
-
-            /**
-             * Do not add CRLF at the end of the content in case Content-Encoding is GZIP
-             * This is a (bad) patch :/
+            } /**
+             * Do not add CRLF at the end of the content in case
+             * Content-Encoding is GZIP This is a (bad) patch :/
              *
-             * @Todo Must be re-think and fixed. 
-             *       We should not add CRLF except in case of chunked feature (at least)
-             *       But if I try to delete this additional CRLF, most of tutorials tests does not
-             *       work anymore.   
+             * @Todo Must be re-think and fixed. We should not add CRLF except
+             * in case of chunked feature (at least) But if I try to delete this
+             * additional CRLF, most of tutorials tests does not work anymore.
              */
             else if (contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip")) {
                 messageContent += "\r\n"; // it seems necessary to end the data by a CRLF (???)
@@ -508,7 +514,6 @@ public class MsgHttp extends Msg {
     //------------------------------------------------------
     // method for the "setFromMessage" <parameter> operation
     //------------------------------------------------------
-
     /**
      * Get a parameter from the message
      */
@@ -528,6 +533,14 @@ public class MsgHttp extends Msg {
             for (int i = 0; i < listhead.length; i++) {
                 var.add(listhead[i].getValue());
             }
+        } else if (params.length == 1 && params[0].equalsIgnoreCase("scheme") && message instanceof HttpRequest) {
+            var.add(((HttpRequest) message).getScheme());
+        } else if (params.length == 1 && params[0].equalsIgnoreCase("path") && message instanceof HttpRequest) {
+            var.add(((HttpRequest) message).getPath());
+        } else if (params.length == 1 && params[0].equalsIgnoreCase("authority") && message instanceof HttpRequest) {
+            var.add(((HttpRequest) message).getAuthority().toString());
+        } else if (params.length == 1 && params[0].equalsIgnoreCase("method") && message instanceof HttpRequest) {
+            var.add(((HttpRequest) message).getMethod());
         } else if (params.length == 1 && params[0].equalsIgnoreCase("firstline")) {
             //---------------------------------------------------------------------- firstline -
             if (message instanceof HttpRequest) {
@@ -541,19 +554,15 @@ public class MsgHttp extends Msg {
             //---------------------------------------------------------------------- firstline:Version -
             if (params[1].equalsIgnoreCase("version")) {
                 var.add(message.getVersion().toString());
-            }
-            //---------------------------------------------------------------------- firstline:Method -
+            } //---------------------------------------------------------------------- firstline:Method -
             else if (params[1].equalsIgnoreCase("method")) {
                 if (message instanceof HttpRequest) {
                     var.add(((HttpRequest) message).getMethod());
                 }
-            }
-            //---------------------------------------------------------------------- firstline:URI -
+            } //---------------------------------------------------------------------- firstline:URI -
             else if (params[1].equalsIgnoreCase("uri")) {
                 if (message instanceof HttpRequest) {
-
                     var.add(((HttpRequest) message).getScheme() + "://" + ((HttpRequest) message).getAuthority().toString());
-
                 }
             } else if (params[1].equalsIgnoreCase("reasonPhrase")) {
                 if (message instanceof HttpResponse) {
@@ -579,8 +588,7 @@ public class MsgHttp extends Msg {
                 } else {
                     Parameter.throwBadPathKeywordException(path);
                 }
-            }
-            // not documented features
+            } // not documented features
             else if (path.equalsIgnoreCase("content:xml:operation")) {
                 //
                 // Read name of method
