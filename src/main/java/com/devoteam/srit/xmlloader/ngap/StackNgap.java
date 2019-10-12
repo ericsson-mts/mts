@@ -30,6 +30,7 @@ public class StackNgap extends Stack {
 
     private  Registry commonRegistryNasTranslator = new Registry();
     private  Registry registry5GSNasTranslator = new Registry();
+    private  Registry registry5gsSessionManagementMessages = new Registry();
     private  AbstractMessage nasTraslator = null;
 
     /**
@@ -73,7 +74,14 @@ public class StackNgap extends Stack {
 
         registry5GSNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSMobilityManagementMessages.yaml"));
         registry5GSNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSMobilityManagementInformationElements.yaml"));
+
+        registry5gsSessionManagementMessages.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSSesionManagementMessages.yaml"));
+        registry5gsSessionManagementMessages.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSSesionManagementInformationElements.yaml"));
+
+
         registry5GSNasTranslator.mergeRegistry(commonRegistryNasTranslator);
+        registry5GSNasTranslator.mergeRegistry(registry5gsSessionManagementMessages);
+
         registry5GSNasTranslator.init();
 
         nasTraslator = registry5GSNasTranslator.getMessage("L3MessageWrapper");

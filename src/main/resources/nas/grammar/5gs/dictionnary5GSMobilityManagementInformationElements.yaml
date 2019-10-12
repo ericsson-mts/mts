@@ -5,12 +5,19 @@ elements:
         name: "Spare"
         length: 4
         value: 0
+  - name: "Spare half octet 3"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare half octet 3"
+        length: 4
+        value: 3
 
   - name: "Message authentication code"
     pdu:
       - "@type": "HEXA"
         name: "Message authentication code value"
         length: 32
+
   - name: "Sequence number"
     pdu:
       - "@type": "BIN"
@@ -103,14 +110,13 @@ elements:
           namedValue:
             0: "No identity"
             1: "SUCI"
-            2: "5G-GUTI"
+            6: "5G-GUTI"
             3: "IMEI"
             4: "5G-S-TMSI"
             5: "IMEISV"
         pdus:
           - keys:
               - 1
-              - 2
               - 3
               - 4
               - 5
@@ -124,6 +130,13 @@ elements:
               - "@type": "BIN"
                 name: "Contents"
                 length: 168
+          - keys:
+              - 6
+            pdu:
+              - "@type": "BIN"
+                name: "Content"
+                length: -1
+
   - name: "UE security capability"
     pdu:
       - name: "5GS encryption algorithm 5G-EA0 supported"
@@ -343,6 +356,8 @@ elements:
 
   - name: "5GS registration result"
     pdu:
+      - name: "Length"
+        length: 8
       - "@type": "SPARE"
         name: "Spare"
         length: 1
@@ -365,7 +380,7 @@ elements:
           0: "SMS over NAS not allowed"
           1: "SMS over NAS allowed"
       - name: "5GS registration result value"
-        length: 1
+        length: 3
         namedValue:
           1: "3GPP access"
           2: "Non-3GPP access"
@@ -375,6 +390,53 @@ elements:
           6: "3GPP access"
           7: "reserved"
 
+  - name: "Payload container type"
+    pdu:
+      - "@type": "CHOICE"
+        name : "Payload container type"
+        field:
+          name: "Payload container type"
+          length: 4
+          namedValue:
+            1: "N1 SM information"
+            2: "SMS"
+            3: "LTE Positioning Protocol (LPP) message container"
+            4: "Transparent container"
+            5: "UE policy container"
+        pdus:
+          - keys:
+              - 1
+            pdu:
+              - name: "Length"
+                length: 16
+          - keys:
+              - 2
+              - 3
+              - 4
+              - 5
+            pdu:
+              - name: IEI
+                length: 8
+              - "@type" : "BIN"
+                name : "Payload container contents"
 
+  - name: "deregistration type"
+    pdu :
+      - name : "Switch off"
+        length: 1
+        namedValue:
+          0: "Normal de-registration"
+          1: "Switch off"
+      - name : "Re-registration required"
+        length: 1
+        namedValue:
+          1: "re-registration not required"
+          2: "re-registration required"
+      - name: "Access type"
+        length : 2
+        namedValue:
+          1: "3GPP access"
+          2: "Non-3GPP access"
+          3: "3GPP access and non-3GPP access"
 
 
