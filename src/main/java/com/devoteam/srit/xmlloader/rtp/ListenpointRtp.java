@@ -27,27 +27,18 @@ import java.io.UnsupportedEncodingException;
 
 import gp.utils.arrays.Array;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
-import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
-import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
-import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.diameter.MsgDiameterParser;
 import com.devoteam.srit.xmlloader.rtp.srtp.RawPacket;
-import com.devoteam.srit.xmlloader.rtp.srtp.SRTPCryptoContext;
 import com.devoteam.srit.xmlloader.rtp.srtp.SRTPPolicy;
 import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformEngine;
 import com.devoteam.srit.xmlloader.rtp.srtp.SRTPTransformer;
 
-import dk.i1.diameter.Message;
-import dk.i1.diameter.node.Capability;
 
 /**
  * @author bbouvier

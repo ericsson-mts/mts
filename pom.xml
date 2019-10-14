@@ -61,12 +61,12 @@
                             <tasks>
                                 <mkdir dir="${basedir}/src/main/groovy"/>
                                 <taskdef name="groovyc"
-                                    classname="org.codehaus.groovy.ant.Groovyc">
+                                         classname="org.codehaus.groovy.ant.Groovyc">
                                     <classpath refid="maven.compile.classpath"/>
                                 </taskdef>
                                 <mkdir dir="${project.build.outputDirectory}"/>
                                 <groovyc destdir="${project.build.outputDirectory}"
-                                    srcdir="${basedir}/src/main/groovy/" listfiles="true">
+                                         srcdir="${basedir}/src/main/groovy/" listfiles="true">
                                     <classpath refid="maven.compile.classpath"/>
                                 </groovyc>
                             </tasks>
@@ -82,12 +82,12 @@
                             <tasks>
                                 <mkdir dir="${basedir}/src/test/groovy"/>
                                 <taskdef name="groovyc"
-                                    classname="org.codehaus.groovy.ant.Groovyc">
+                                         classname="org.codehaus.groovy.ant.Groovyc">
                                     <classpath refid="maven.test.classpath"/>
                                 </taskdef>
                                 <mkdir dir="${project.build.testOutputDirectory}"/>
                                 <groovyc destdir="${project.build.testOutputDirectory}"
-                                    srcdir="${basedir}/src/test/groovy/" listfiles="true">
+                                         srcdir="${basedir}/src/test/groovy/" listfiles="true">
                                     <classpath refid="maven.test.classpath"/>
                                 </groovyc>
                             </tasks>
@@ -348,20 +348,14 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
-      		<groupId>org.apache.httpcomponents.core5</groupId>
-      		<artifactId>httpcore5</artifactId>
-      		<version>5.0-beta8</version>
-    	</dependency>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5</artifactId>
+            <version>5.0-beta9</version>
+        </dependency>
         <dependency>
-      		<groupId>org.apache.httpcomponents.core5</groupId>
-      		<artifactId>httpcore5-h2</artifactId>
-      		<version>5.0-beta8</version>
-    	</dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-            <scope>provided</scope>
+            <groupId>org.apache.httpcomponents.core5</groupId>
+            <artifactId>httpcore5-h2</artifactId>
+            <version>5.0-beta9</version>
         </dependency>
         <dependency>
             <groupId>net.sf.opencsv</groupId>
@@ -439,9 +433,24 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>1.7.27</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.13</version>
+        </dependency> 
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.12</version>
+            <version>1.7.13</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -458,7 +467,7 @@
             <artifactId>groovy-all</artifactId>
             <version>2.4.7</version>
         </dependency>
-       <dependency>
+        <dependency>
             <groupId>com.github.gege-fr</groupId>
             <artifactId>gege-fr-radius</artifactId>
             <version>1.0.11</version>
@@ -508,6 +517,11 @@
             <scope>system</scope> 
             <systemPath>${basedir}/lib/mibble-parser-2.9.2.jar</systemPath>   
         </dependency>
+        <!-- https://repo.opennms.org/maven2/ dependency>
+            <groupId>net.percederberg.mibble</groupId>
+            <artifactId>mibble</artifactId>
+            <version>2.9.3</version>
+        </dependency-->
         <dependency>
             <groupId>Charset-SMS</groupId>
             <artifactId>Charset-SMS</artifactId>

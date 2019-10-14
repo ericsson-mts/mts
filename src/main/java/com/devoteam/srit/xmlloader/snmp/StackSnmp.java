@@ -23,15 +23,11 @@
 
 package com.devoteam.srit.xmlloader.snmp;
 
-import com.devoteam.srit.xmlloader.core.ParameterPool;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.protocol.*;
 import com.devoteam.srit.xmlloader.core.protocol.Msg.ParseFromXmlContext;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
@@ -48,12 +44,10 @@ import net.percederberg.mibble.MibMacroSymbol;
 import net.percederberg.mibble.MibTypeSymbol;
 import net.percederberg.mibble.MibValueSymbol;
 import net.percederberg.mibble.snmp.SnmpObjectType;
-import org.apache.log4j.PropertyConfigurator;
 import org.dom4j.Element;
+import org.slf4j.LoggerFactory;
 import org.snmp4j.PDU;
 import org.snmp4j.PDUv1;
-import org.snmp4j.log.Log4jLogFactory;
-import org.snmp4j.log.LogFactory;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.smi.Counter32;
 import org.snmp4j.smi.Counter64;
@@ -114,7 +108,8 @@ public class StackSnmp extends Stack
                 	GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "ERROR : loading the MIBS files");
                 	if (e instanceof MibLoaderException)
                 	{
-                		((MibLoaderException)e).getLog().printTo(new PrintStream("../logs/snmpStack.log"));
+                            
+                		//MibLoaderException)e).getLog().printTo(new PrintStream("../logs/snmpStack.log"));
                 	}
                 }
             }
