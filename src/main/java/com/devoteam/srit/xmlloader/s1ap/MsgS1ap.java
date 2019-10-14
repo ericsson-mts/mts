@@ -4,6 +4,7 @@ import com.devoteam.srit.xmlloader.core.Parameter;
 import com.devoteam.srit.xmlloader.core.ParameterKey;
 import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.*;
+import com.devoteam.srit.xmlloader.ngap.StackNgap;
 import com.devoteam.srit.xmlloader.sctp.MsgTransportInfosSctp;
 import com.ericsson.mts.asn1.ASN1Translator;
 import com.ericsson.mts.asn1.BitArray;
@@ -13,14 +14,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+
+import com.ericsson.mts.nas.message.AbstractMessage;
+import com.ericsson.mts.nas.registry.Registry;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.DOMWriter;
@@ -28,8 +35,8 @@ import org.w3c.dom.NodeList;
 
 public class MsgS1ap extends Msg {
 
-    private Element element;
-    private byte[] binaryData;
+    protected Element element;
+    protected byte[] binaryData;
     private String pduType;
 
     /**
@@ -42,15 +49,19 @@ public class MsgS1ap extends Msg {
     protected String getXmlRootNodeName(){
         return "S1AP-PDU";
     }
-    
+
     protected ASN1Translator getASN1Translator(){
         return ((StackS1ap) this.stack).getAsn1Translator();
     }
-    
+
+    protected AbstractMessage getNASTranslator() throws IOException { return ((StackNgap) this.stack).getNASTranslator(); }
+
+    protected Registry getRegistryNas() throws IOException { return ((StackNgap) this.stack).getRegistry5GSNasTranslator(); }
+
     protected int getPpid(){
         return 18;
     }
-    
+
     //-----------------------------------------------------------------------------------------
     // generic methods for protocol request type result retransmission, transaction and session
     //-----------------------------------------------------------------------------------------
@@ -196,11 +207,60 @@ public class MsgS1ap extends Msg {
     public void parseFromXml(ParseFromXmlContext context, org.dom4j.Element root, Runner runner) throws Exception {
         super.parseFromXml(context, root, runner);
         this.element = (Element) new DOMWriter().write(DocumentHelper.createDocument(root.elementIterator().next().createCopy())).getDocumentElement();
+
+        //Decode the NAS part of the binary message
+        XPathFactory xpathfactory = XPathFactory.newInstance();
+        XPath xpath = xpathfactory.newXPath();
+        XPathExpression expr = xpath.compile("//NAS-PDU");
+        NodeList nodes = (NodeList) expr.evaluate(element, XPathConstants.NODESET);
+
+        if(nodes.getLength() > 0) {
+            for (int i = 0; i < nodes.getLength(); i++) {
+
+                Element nasPDUElement = (Element) nodes.item(i);
+                NodeList childList = nasPDUElement.getChildNodes();
+
+                for(int j = 0; j < childList.getLength(); j++){
+
+                    if(childList.item(j).getNodeType() == Node.ELEMENT_NODE){
+
+                        if(nasPDUElement.getFirstChild().getNextSibling() != null){
+                            if(nasPDUElement.getFirstChild().getNextSibling().getNodeType() == Node.ELEMENT_NODE){
+                                com.ericsson.mts.nas.reader.XMLFormatReader formatReader = new com.ericsson.mts.nas.reader.XMLFormatReader((Element) nasPDUElement.getFirstChild().getNextSibling(),"xml");
+                                byte[] resultDecode = getNASTranslator().encode(getRegistryNas(),formatReader);
+
+                                //delete the existing child of the node
+                                while (nasPDUElement.hasChildNodes()){
+                                    nasPDUElement.removeChild(nasPDUElement.getFirstChild());
+                                }
+
+                                //set the value of PDU to the NAS-PDU node
+                                nasPDUElement.setTextContent(bytesToHex(resultDecode));
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
         XMLFormatReader xmlFormatReader = new XMLFormatReader(element, getXmlRootNodeName());
         BitArray bitArray = new BitArray();
         getASN1Translator().encode(getXmlRootNodeName(), bitArray, xmlFormatReader);
         this.binaryData = bitArray.getBinaryArray();
     }
+
+    private static String bytesToHex(byte[] bytes) {
+        char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
 
     /**
      * Get a parameter from the message

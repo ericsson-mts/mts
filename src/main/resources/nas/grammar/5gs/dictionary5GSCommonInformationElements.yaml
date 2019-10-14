@@ -1,0 +1,75 @@
+elements:
+  - name: "Extended protocol discriminator"
+    pdu:
+      - name: "Extended protocol discriminator"
+        length: 8
+        namedValue:
+          14: "reserved"
+          30: "reserved"
+          46: "5GS session management messages"
+          62: "reserved"
+          78: "reserved"
+          94: "reserved"
+          110: "reserved"
+          126: "5GS mobility management messages"
+          142: "reserved"
+          158: "reserved"
+          174: "reserved"
+          190: "reserved"
+          206: "reserved"
+          222: "reserved"
+          238: "reserved"
+          254: "reserved"
+  - name: "Security header type"
+    pdu:
+      - "@type": "MESSAGE_WRAPPER"
+        name: "Security header type"
+        length: 4
+        namedValue:
+          0: "Plain 5GS NAS message not security protected"
+          1: "Integrity protected"
+          2: "Integrity protected and ciphered"
+          3: "Integrity protected with new 5G NAS security context"
+          4: "Integrity protected and ciphered with new 5G NAS security context"
+          5: "Security protected NAS message: Integrity protected and partially ciphered NAS message"
+
+  - name: "Message type"
+    pdu:
+      - "@type": "MESSAGE_WRAPPER"
+        name: "Message type"
+        length: 8
+        namedValue:
+          65: "Registration request"
+          66: "Registration accept"
+          67: "Registration complete"
+          68: "Registration reject"
+          69: "Deregistration request"
+          70: "Deregistration accept"
+          71: "Deregistration request"
+          72: "Deregistration accept"
+          76: "Service request"
+          77: "Service reject"
+          78: "Service accept"
+          84: "Configuration update command"
+          85: "Configuration update complete"
+          86: "Authentication request"
+          87: "Authentication response"
+          88: "Authentication reject"
+          89: "Authentication failure"
+          90: "Authentication result"
+          91: "Identity request"
+          92: "Identity response"
+          93: "Security mode command"
+          94: "Security mode complete"
+          95: "Security mode reject"
+          100: "5GMM status"
+          101: "Notification"
+          102: "Notification response"
+          103: "UL NAS transport"
+          104: "DL NAS transport"
+  - name: "Spare half octet header"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 4
+        value: 0

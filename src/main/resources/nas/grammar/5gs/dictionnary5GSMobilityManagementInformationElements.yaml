@@ -1,0 +1,380 @@
+elements:
+  - name: "Spare half octet"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 4
+        value: 0
+
+  - name: "Message authentication code"
+    pdu:
+      - "@type": "HEXA"
+        name: "Message authentication code value"
+        length: 32
+  - name: "Sequence number"
+    pdu:
+      - "@type": "BIN"
+        name: "Sequence number value"
+        length: 8
+
+  - name: "5GS registration type" #9.11.3.7
+    pdu:
+      - name: Length
+        length: 8
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - name: "FOR"
+        length: 1
+        namedValue:
+          0: "No follow-on request pending"
+          1: "Follow-on request pending"
+      - name: "SMS requested"
+        length: 1
+        namedValue:
+          0: "SMS over NAS not supported"
+          1: "SMS over NAS supported"
+      - name: "5GS registration type value"
+        length: 3
+        namedValue:
+          1: "initial registration"
+          2: "mobility registration updating"
+          3: "periodic registration updating"
+          4: "emergency registration"
+          5: "initial registration"
+          6: "initial registration"
+          7: "reserved"
+
+  - name: "NAS key set identifier"
+    pdu:
+      - name: IEI
+        length: 4
+      - name: "TSC"
+        length: 1
+        namedValue:
+          0: "native security context (for KSIAMF)"
+          1: "mapped security context (for KSIASME)"
+      - name: "NAS key set identifier value"
+        length: 3
+        namedValue:
+          0: "possible values for the NAS key set identifier"
+          6: "no key is available"
+          7: "reserved"
+
+  - name: "NAS key set identifier1"
+    pdu:
+        - name: IEI
+          length: 4
+        - name: "TSC"
+          length: 1
+          namedValue:
+            0: "native security context (for KSIAMF)"
+            1: "mapped security context (for KSIASME)"
+        - name: "NAS key set identifier"
+          length: 3
+          namedValue:
+            0: "possible values for the NAS key set identifier"
+            6: "no key is available"
+            7: "reserved"
+
+  - name: "5GS mobile identity"
+    pdu:
+      - name: "digit"
+        length: 4
+      - name: "odd even indication"
+        length: 1
+        namedValue:
+          0: "even number of identity digits"
+          1: "odd number of identity digits"
+      - "@type": "CHOICE"
+        name: "Type of identity"
+        field:
+          name: "Type of identity"
+          length: 3
+          namedValue:
+            0: "No identity"
+            1: "SUCI"
+            2: "5G-GUTI"
+            3: "IMEI"
+            4: "5G-S-TMSI"
+            5: "IMEISV"
+        pdus:
+          - keys:
+              - 1
+              - 2
+              - 3
+              - 4
+              - 5
+            pdu:
+              - "@type": "BIN"
+                name: "Content"
+                length: 168
+          - keys:
+              - 0
+            pdu:
+              - "@type": "BIN"
+                name: "Contents"
+                length: 168
+  - name: "UE security capability"
+    pdu:
+      - name: "5GS encryption algorithm 5G-EA0 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 5G-EA0 not supported"
+          1: "5GS encryption algorithm 5G-EA0 supported"
+      - name: "5GS encryption algorithm 128-5G-EA1 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA1 not supported"
+          1: "5GS encryption algorithm 128-5G-EA1 supported"
+      - name: "5GS encryption algorithm 128-5G-EA2 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA2 not supported"
+          1: "5GS encryption algorithm 128-5G-EA2 supported"
+      - name: "5GS encryption algorithm 128-5G-EA3 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA3 not supported"
+          1: "5GS encryption algorithm 128-5G-EA3 supported"
+      - name: "5GS encryption algorithm 128-5G-EA4 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA4 not supported"
+          1: "5GS encryption algorithm 128-5G-EA4 supported"
+      - name: "5GS encryption algorithm 128-5G-EA5 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA5 not supported"
+          1: "5GS encryption algorithm 128-5G-EA5 supported"
+      - name: "5GS encryption algorithm 128-5G-EA6 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA6 not supported"
+          1: "5GS encryption algorithm 128-5G-EA6 supported"
+      - name: "5GS encryption algorithm 128-5G-EA7 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-EA7 not supported"
+          1: "5GS encryption algorithm 128-5G-EA7 supported"
+      - name: "5GS integrity algorithm 5G-IA0 supported"
+        length: 1
+        namedValue:
+          0: "5GS integrity algorithm 5G-IA0 not supported"
+          1: "5GS integrity algorithm 5G-IA0 supported"
+      - name: "5GS encryption algorithm 128-5G-IA1 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA1 not supported"
+          1: "5GS encryption algorithm 128-5G-IA1 supported"
+      - name: "5GS encryption algorithm 128-5G-IA2 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA2 not supported"
+          1: "5GS encryption algorithm 128-5G-IA2 supported"
+      - name: "5GS encryption algorithm 128-5G-IA3 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA3 not supported"
+          1: "5GS encryption algorithm 128-5G-IA3 supported"
+      - name: "5GS encryption algorithm 128-5G-IA4 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA4 not supported"
+          1: "5GS encryption algorithm 128-5G-IA4 supported"
+      - name: "5GS encryption algorithm 128-5G-IA5 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA5 not supported"
+          1: "5GS encryption algorithm 128-5G-IA5 supported"
+      - name: "5GS encryption algorithm 128-5G-IA6 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA6 not supported"
+          1: "5GS encryption algorithm 128-5G-IA6 supported"
+      - name: "5GS encryption algorithm 128-5G-IA7 supported"
+        length: 1
+        namedValue:
+          0: "5GS encryption algorithm 128-5G-IA7 not supported"
+          1: "5GS encryption algorithm 128-5G-IA7 supported"
+      - name: "EPS encryption algorithm EEA0 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA0 not supported"
+          1: "EPS encryption algorithm EEA0 supported"
+      - name: "EPS encryption algorithm EEA1 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA1 not supported"
+          1: "EPS encryption algorithm EEA1 supported"
+      - name: "EPS encryption algorithm EEA2 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA2 not supported"
+          1: "EPS encryption algorithm EEA2 supported"
+      - name: "EPS encryption algorithm EEA3 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA3 not supported"
+          1: "EPS encryption algorithm EEA3 supported"
+      - name: "EPS encryption algorithm EEA4 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA4 not supported"
+          1: "EPS encryption algorithm EEA4 supported"
+      - name: "EPS encryption algorithm EEA5 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA5 not supported"
+          1: "EPS encryption algorithm EEA5 supported"
+      - name: "EPS encryption algorithm EEA6 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA6 not supported"
+          1: "EPS encryption algorithm EEA6 supported"
+      - name: "EPS encryption algorithm EEA7 supported"
+        length: 1
+        namedValue:
+          0: "EPS encryption algorithm EEA7 not supported"
+          1: "EPS encryption algorithm EEA7 supported"
+      - name: "EPS integrity algorithm EIA0 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA0 not supported"
+          1: "EPS integrity algorithm EIA0 supported"
+      - name: "EPS integrity algorithm EIA1 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA1 not supported"
+          1: "EPS integrity algorithm EIA1 supported"
+      - name: "EPS integrity algorithm EIA2 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA2 not supported"
+          1: "EPS integrity algorithm EIA2 supported"
+      - name: "EPS integrity algorithm EIA3 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA3 not supported"
+          1: "EPS integrity algorithm EIA3 supported"
+      - name: "EPS integrity algorithm EIA4 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA4 not supported"
+          1: "EPS integrity algorithm EIA4 supported"
+      - name: "EPS integrity algorithm EIA5 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA5 not supported"
+          1: "EPS integrity algorithm EIA5 supported"
+      - name: "EPS integrity algorithm EIA6 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA6 not supported"
+          1: "EPS integrity algorithm EIA6 supported"
+      - name: "EPS integrity algorithm EIA7 supported"
+        length: 1
+        namedValue:
+          0: "EPS integrity algorithm EIA7 not supported"
+          1: "EPS integrity algorithm EIA7 supported"
+
+  - name: "Authentication parameter RAND"
+    pdu:
+      - "@type" : BIN
+        name: "AUTN"
+        length: 128
+  - name: "Authentication Parameter AUTN"
+    pdu:
+      - name: "Length"
+        length : 8
+      - "@type": BIN
+        name: "SQN xor AK"
+        length: 48
+      - "@type": BIN
+        name: "AMF"
+        length: 16
+      - "@type": BIN
+        name: "MAC"
+        length: 64
+
+  - name: "Authentication response parameter"
+    pdu:
+      - "@type" : BIN
+        name: "RES"
+
+  - name: "EAP message"
+    pdu:
+      - name: "EAP message"
+        "@type": BIN
+
+  - name: "NAS security algorithms"
+    pdu:
+      - name: "Type of ciphering algorithm"
+        length: 4
+        namedValue:
+          0: "5GS encryption algorithm 5G-EA0 (null ciphering algorithm)"
+          1: "5GS encryption algorithm 128-5G-EA1"
+          2: "5GS encryption algorithm 128-5G-EA2"
+          3: "5GS encryption algorithm 128-5G-EA3"
+          4: "5GS encryption algorithm 5G-EA4"
+          5: "5GS encryption algorithm 5G-EA5"
+          6: "5GS encryption algorithm 5G-EA6"
+          7: "5GS encryption algorithm 5G-EA7"
+      - name: "Type of integrity protection algorithm"
+        length: 4
+        namedValue:
+          0: "5GS integrity algorithm 5G-IA0 (null integrity protection algorithm)"
+          1: "5GS integrity algorithm 128-5G-IA1"
+          2: "5GS integrity algorithm 128-5G-IA2"
+          3: "5GS integrity algorithm 128-5G-IA3"
+          4: "5GS integrity algorithm 5G-IA4"
+          5: "5GS integrity algorithm 5G-IA5"
+          6: "5GS integrity algorithm 5G-IA6"
+          7: "5GS integrity algorithm 5G-IA7"
+
+  - name: "5GS registration result"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - name: "SMS over NAS transport allowed"
+        length: 1
+        namedValue:
+          0: "SMS over NAS not allowed"
+          1: "SMS over NAS allowed"
+      - name: "5GS registration result value"
+        length: 1
+        namedValue:
+          1: "3GPP access"
+          2: "Non-3GPP access"
+          3: "3GPP access and non-3GPP access"
+          4: "3GPP access"
+          5: "3GPP access"
+          6: "3GPP access"
+          7: "reserved"
+
+
+
+

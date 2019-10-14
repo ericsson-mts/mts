@@ -1,0 +1,73 @@
+messages:
+  - name: "Plain 5GS NAS message not security protected"
+    mandatory:
+      - type: "Message type"
+        length: -1
+  - name: "Integrity protected with new 5G NAS security context"
+    mandatory:
+      - type: "Message authentication code"
+        length: 32
+      - type: "Sequence number"
+        name: "Sequence number"
+        length: 8
+  - name: "Registration request"
+    mandatory:
+      - type: "5GS registration type"
+        name: "5GS registration type"
+        length: -1
+      - type: "NAS key set identifier"
+        name: "ngKSI"
+        length: 8
+      - type: "5GS mobile identity"
+    optional:
+         C:
+             type: "NAS key set identifier1"
+             name: "Non-current native NAS key set identifier"
+             length: 8
+         10:
+             type: 5GMM capability
+         2E:
+             type: UE security capability
+  - name: "Authentication request"
+    mandatory:
+      - name: "ngKSI"
+        type: "NAS key set identifier"
+        length: 8
+    optional:
+      21:
+        type: "Authentication parameter RAND"
+        length: 128
+      20:
+        type: "Authentication parameter AUTN"
+        length: 136
+      78:
+        type: "EAP message"
+  - name: "Authentication response"
+    optional:
+      2D:
+        type: "Authentication response parameter"
+        length: -1
+      78:
+        type: "EAP message"
+  - name: "Security mode command"
+    mandatory:
+      - name: "Selected NAS security algorithms"
+        type: "NAS security algorithms"
+        length: 8
+      - name: "ngKSI"
+        type: "NAS key set identifier"
+        length: 4
+      - name: "Spare half octet"
+        type: "Spare half octet"
+        length: 4
+      - name: "Replayed UE security capabilities"
+        type: "UE security capability"
+  - name: "Registration accept"
+    mandatory:
+      - type: "5GS registration result"
+        length: 16
+    optional:
+      2C:
+        type: "5GS mobile identity"
+        name: "5G-GUTI"
+
