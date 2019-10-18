@@ -50,11 +50,12 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import java.util.Optional;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpRequestInterceptor;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.http.protocol.HttpProcessorBuilder;
-import org.apache.hc.core5.http2.protocol.H2RequestConnControl;
-import org.apache.hc.core5.http2.protocol.H2RequestContent;
-import org.apache.hc.core5.http2.protocol.H2RequestTargetHost;
 import org.apache.hc.core5.net.URIAuthority;
 import org.apache.hc.core5.util.TimeValue;
 
@@ -90,13 +91,13 @@ public class ChannelHttp2 extends Channel {
     @Override
     public boolean open() throws Exception {
         Config config = Config.getConfigByName("http2.properties");
-        
+
         String hostname = this.getRemoteHost();
         int port = this.getRemotePort();
         int timeout = Integer.parseInt(config.getString("SOCKET_TIMEOUT", "30"));
         int initialWindowSize = Integer.parseInt(config.getString("client.INITIAL_WINDOW_SIZE", "1073741824"));
         int maxConcurrentStreams = Integer.parseInt(config.getString("client.MAX_CONCURRENT_STREAMS", "100"));
-        
+
         IOReactorConfig ioReactorConfig = IOReactorConfig.custom()
                 .setSoTimeout(timeout, TimeUnit.SECONDS)
                 .build();
@@ -106,22 +107,28 @@ public class ChannelHttp2 extends Channel {
                 .setPushEnabled(false)
                 .setMaxConcurrentStreams(maxConcurrentStreams)
                 .build();
-        
+
         H2RequesterBootstrap bootstrap = H2RequesterBootstrap
                 .bootstrap()
                 .setIOReactorConfig(ioReactorConfig)
                 .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
                 .setHttpProcessor(HttpProcessorBuilder.create().addAll(
-                        new H2RequestContent(true),
-                        new H2RequestTargetHost(),
-                        new H2RequestConnControl(),
-                        (request, entity, context) -> {
-                            // transform legacy "Host" header to authority header
-                            request.setAuthority(new URIAuthority(request.getHeader(HttpHeaders.HOST).getValue()));
-                            request.removeHeaders(HttpHeaders.HOST);
-                        }
-                )
-                .build())
+                        (HttpRequestInterceptor) (request, entity, context) -> {
+                            // transform legacy "Host" header (if present) to authority pseudo-header
+                            Optional.ofNullable(request.getHeader(HttpHeaders.HOST)).ifPresent(header -> {
+                                request.setAuthority(new URIAuthority(header.getValue()));
+                                request.removeHeader(header);
+                            });
+                            
+                            // fix Content-Length header if present and if there is any content
+                            Optional.ofNullable(request.getHeader(HttpHeaders.CONTENT_LENGTH)).ifPresent(header -> {
+                                request.removeHeader(header);
+                                long contentLength = entity.getContentLength();
+                                if(contentLength > 0 ){
+                                    request.addHeader(new BasicHeader(HttpHeaders.CONTENT_LENGTH, contentLength));
+                                }
+                            });
+                        }).build())
                 .setExceptionCallback(e -> GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Error in HTTP channel " + ChannelHttp2.this.getName()))
                 .setH2Config(h2Config);
 

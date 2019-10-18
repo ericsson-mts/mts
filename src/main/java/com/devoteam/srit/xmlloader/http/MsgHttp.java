@@ -43,6 +43,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Trans;
 import com.devoteam.srit.xmlloader.core.protocol.TransactionId;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
+import com.devoteam.srit.xmlloader.http2.MsgHttp2;
 
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.SupArray;
@@ -466,11 +467,16 @@ public class MsgHttp extends Msg {
                 // do nothing, we should not add a CRLF at the end of the data when multipart
             }
 
-            String contentType = contentTypeHeaders[0].getValue();
-            int semicolonIndex = contentType.indexOf(";");
-            if (-1 != semicolonIndex) {
-                contentType = contentType.substring(0, semicolonIndex);
-            } /**
+            ContentType contentType = null;
+            if (contentTypeHeaders.length > 0 && contentTypeHeaders[0].getValue().toLowerCase().contains("multipart")) {
+                String contentTypeHeaderValue = contentTypeHeaders[0].getValue();
+                int semicolonIndex = contentTypeHeaderValue.indexOf(";");
+                if (-1 != semicolonIndex) {
+                    contentType = ContentType.create(contentTypeHeaderValue.substring(0, semicolonIndex));
+                }
+            }
+            
+            /**
              * Do not add CRLF at the end of the content in case
              * Content-Encoding is GZIP This is a (bad) patch :/
              *
@@ -478,12 +484,12 @@ public class MsgHttp extends Msg {
              * in case of chunked feature (at least) But if I try to delete this
              * additional CRLF, most of tutorials tests does not work anymore.
              */
-            else if (contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip")) {
+            if (contentEncoding.length == 0 || !contentEncoding[0].getValue().toLowerCase().contains("gzip")) {
                 messageContent += "\r\n"; // it seems necessary to end the data by a CRLF (???)
             }
 
             if (transferEncoding.length == 0 || !transferEncoding[0].getValue().contains("chunked")) {
-                if (contentLength.length == 0) {
+                if (contentLength.length == 0 && !(this instanceof MsgHttp2)) {
                     if (null != messageContent) {
                         currentMessage.addHeader("Content-Length", Integer.toString(messageContent.length()));
                     } else {
@@ -494,7 +500,7 @@ public class MsgHttp extends Msg {
                 messageContent += "\r\n"; // when chunked, there must be a double CRLF after the last chunk size
             }
 
-            HttpEntity entity = new ByteArrayEntity(messageContent.getBytes(), ContentType.create(contentType));
+            HttpEntity entity = new ByteArrayEntity(messageContent.getBytes(), contentType);
 
             if (null != responseMessage) {
                 responseMessage.setEntity(entity);
@@ -504,7 +510,7 @@ public class MsgHttp extends Msg {
                 entity = null;
             }
         } else {
-            if (contentLengthPresent) {
+            if (contentLengthPresent && !(this instanceof MsgHttp2)) {
                 currentMessage.addHeader("Content-Length", Integer.toString(0));
             }
         }
