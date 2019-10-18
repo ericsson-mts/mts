@@ -127,7 +127,7 @@ public class ListenpointHttp2 extends Listenpoint {
         msgHttp2.setListenpoint(beginMsg.getListenpoint());
         HttpResponse msgResponse = (HttpResponse) msgHttp2.getMessage();
         if (msgHttp2.getMessageContent() == null) {
-            beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse, new BasicAsyncEntityProducer(new byte[0])), beginMsg.getContext());
+            beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse), beginMsg.getContext());
         } else {
             beginMsg.getResponseTrigger().submitResponse(new BasicResponseProducer(msgResponse, new BasicAsyncEntityProducer(msgHttp2.getMessageContent().getBytes())), beginMsg.getContext());
         }
@@ -154,9 +154,7 @@ public class ListenpointHttp2 extends Listenpoint {
     }
 
     public boolean remove() {
-        System.out.println("ListenpointHttp2.close() ");
         server.close(CloseMode.GRACEFUL);
-
         return true;
     }
 
