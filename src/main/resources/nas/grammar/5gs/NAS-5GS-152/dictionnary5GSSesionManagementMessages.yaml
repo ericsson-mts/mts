@@ -1,0 +1,75 @@
+messages :
+  - name: "UL NAS transport"
+    mandatory:
+      - type: "Spare half octet"
+        length: 4
+      - type: "Payload container type"
+        length: -1
+    optional:
+      12:
+        type: "PDU session identity 2"
+        name: "PDU session ID"
+        length: 8
+      59:
+        type: "PDU session identity 2"
+        name: "Old PDU session ID"
+        length: 8
+      8:
+        type: "Request type"
+        length: 4
+      22:
+        type: "S-NSSAI"
+      25:
+        type: "DNN"
+        length: -1
+      24:
+        type: "Additional information"
+
+  - name: "DL NAS transport"
+    mandatory:
+        - type: "Spare half octet"
+          length: 4
+        - type: "Payload container type"
+          length: -1
+    optional:
+        12:
+          type: "PDU session identity 2"
+          name: "PDU session ID"
+          length: 8
+        24:
+          type: "Additional information"
+        58:
+          type: "5GSM cause"
+          length: 8
+
+  - name: "PDU session establishment request"
+    mandatory:
+      - type: "Integrity protection maximum data rate"
+        length: 16
+
+  - name: "PDU session establishment accept"
+    mandatory:
+      - type: "SSC mode"
+        length: 4
+      - type: "PDU session type"
+        length: 4
+      - type: "Authorized QoS rules"
+        name: "QoSRules"
+        length: -1
+      - type: "Session-AMBR"
+    optional:
+        29:
+          type: "PDU address"
+        25:
+          type: "DNN"
+          length: -1
+
+  - name: "PDU session release command"
+    mandatory:
+      - type: "5GSM cause"
+        length: 8
+
+
+
+
+

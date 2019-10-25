@@ -1,0 +1,180 @@
+messages:
+#-------------------- header type --------------------------------------
+  - name: "Plain 5GS NAS message not security protected"
+    mandatory:
+      - type: "Message type"
+        length: -1
+  - name: "Integrity protected with new 5G NAS security context"
+    mandatory:
+      - type: "Message authentication code"
+        length: 32
+      - type: "Sequence number"
+        name: "Sequence number"
+        length: 8
+  - name : "Integrity protected and ciphered"
+    mandatory:
+      - type: "Message authentication code"
+        length: 32
+      - type: "Sequence number"
+        name: "Sequence number"
+        length: 8
+
+  - name : "Integrity protected"
+    mandatory:
+      - type: "Message authentication code"
+        length: 32
+      - type: "Sequence number"
+        name: "Sequence number"
+        length: 8
+
+#----------------------- request type ---------------------------------
+
+  - name: "Registration request"
+    mandatory:
+      - type: "NAS key set identifier"
+        name: "ngKSI"
+        length: 4
+      - type: "5GS registration type"
+        name: "5GS registration type"
+        length: 4
+      - type: "5GS mobile identity"
+        nBitLength: 16
+    optional:
+         C:
+             type: "NAS key set identifier"
+             name: "Non-current native NAS key set identifier"
+             length: 8
+         10:
+             type: "5GMM capability"
+         2E:
+             type: "UE security capability"
+         2F:
+             type: "NSSAI"
+             name: "Requested NSSAI"
+             length: -1
+         52:
+             type: "5GS tracking area identity"
+             name: "Last visited registered TAI"
+             length: 48
+         70:
+             type: "EPS NAS message container"
+             length: -1
+
+  - name: "Authentication request"
+    mandatory:
+      - type: "Spare half octet"
+        length: 4
+      - name: "ngKSI"
+        type: "NAS key set identifier"
+        length: 4
+      - type: "ABBA"
+        length: -1
+    optional:
+      21:
+        type: "Authentication parameter RAND"
+        length: 128
+      20:
+        type: "Authentication parameter AUTN"
+        length: 136
+      78:
+        type: "EAP message"
+  - name: "Authentication response"
+    optional:
+      2D:
+        type: "Authentication response parameter"
+        length: -1
+      78:
+        type: "EAP message"
+  - name: "Security mode command"
+    mandatory:
+      - name: "Selected NAS security algorithms"
+        type: "NAS security algorithms"
+        length: 8
+      - name: "Spare half octet"
+        type: "Spare half octet"
+        length: 4
+      - name: "ngKSI"
+        type: "NAS key set identifier"
+        length: 4
+      - name: "Replayed UE security capabilities"
+        type: "UE security capability"
+    optional:
+      E:
+        type: "IMEISV request"
+        length: 4
+      57:
+        type: "NAS security algorithms"
+        name: "Selected EPS NAS security algorithms"
+        length: 16
+      36:
+        type: "Additional 5G security information"
+      78:
+        type: "EAP message"
+      38:
+        type: "ABBA"
+        length: -1
+
+  - name: "Security mode complete"
+    optional:
+      77:
+        type: "5GS mobile identity"
+        name: "IMEISV"
+        nBitLength: 16
+      71:
+        type: "NAS message container"
+        nBitLength: 16
+
+  - name: "Registration accept"
+    mandatory:
+      - type: "5GS registration result"
+        length: 16
+    optional:
+      77:
+        type: "5GS mobile identity"
+        name: "5G-GUTI"
+        nBitLength: 16
+      54:
+        type: "5GS tracking area identity list"
+        name: "TAI list"
+      15:
+        type: "NSSAI"
+        name: "Allowed NSSAI"
+        length: -1
+
+  - name: "Deregistration request"
+    mandatory:
+      - type: "Spare half octet 3"
+        length: 4
+      - type: "deregistration type"
+        length: 4
+      - type: "5GS mobile identity"
+
+  - name: "Service request"
+    mandatory:
+      - type: "Service type"
+        length: 4
+      - type: "NAS key set identifier"
+        length: 4
+      - type: "5GS mobile identity"
+        name: "5G-S-TMSI"
+        nBitLength: 16
+    optional:
+      40:
+        type: "Uplink data status"
+      50:
+        type: "PDU session status"
+      71:
+        type: "NAS message container"
+        nBitLength: 16
+
+  - name: "Service accept"
+    optional:
+      50:
+        type: "PDU session status"
+      26:
+        type: "PDU session reactivation result"
+
+
+
+
+

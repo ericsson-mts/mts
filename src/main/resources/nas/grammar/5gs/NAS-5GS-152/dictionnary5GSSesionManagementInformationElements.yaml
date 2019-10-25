@@ -1,0 +1,390 @@
+elements:
+  - name: "PDU Session Identity"
+    pdu:
+      - name: "PDU session identity"
+        length: 8
+        namedValue:
+          0: "No PDU session identity assigned"
+          1: "PDU session identity value 1"
+          2: "PDU session identity value 2"
+          3: "PDU session identity value 3"
+          4: "PDU session identity value 4"
+          5: "PDU session identity value 5"
+          6: "PDU session identity value 6"
+          7: "PDU session identity value 7"
+          8: "PDU session identity value 8"
+          9: "PDU session identity value 9"
+          10: "PDU session identity value 10"
+          11: "PDU session identity value 11"
+          12: "PDU session identity value 12"
+          13: "PDU session identity value 13"
+          14: "PDU session identity value 14"
+          15: "PDU session identity value 15"
+  - name: "Procedure transaction identity"
+    pdu:
+      - "@type": "BIN"
+        name: "Procedure transaction identity"
+        length: 8
+
+  - name: "PDU session identity 2"
+    pdu:
+      - name: "PDU session identity 2"
+        length: 8
+        namedValue:
+          0: "No PDU session identity assigned"
+          1: "PDU session identity value 1"
+          2: "PDU session identity value 2"
+          3: "PDU session identity value 3"
+          4: "PDU session identity value 4"
+          5: "PDU session identity value 5"
+          6: "PDU session identity value 6"
+          7: "PDU session identity value 7"
+          8: "PDU session identity value 8"
+          9: "PDU session identity value 9"
+          10: "PDU session identity value 10"
+          11: "PDU session identity value 11"
+          12: "PDU session identity value 12"
+          13: "PDU session identity value 13"
+          14: "PDU session identity value 14"
+          15: "PDU session identity value 15"
+
+  - name: "Request type"
+    pdu:
+      - name : "Request type value"
+        length: 4
+        namedValue:
+          1: "initial request"
+          2: "existing PDU session"
+          3: "initial emergency request"
+          4: "existing emergency PDU session"
+          5: "reserved"
+
+  - name: "S-NSSAI"
+    pdu:
+      - "@type": BIN
+        name: "SST"
+        length: 8
+      - "@type": BIN
+        name: "SD"
+        length: 24
+
+  - name: "DNN"
+    pdu:
+      - "@type": BIN
+        name: "DNN value"
+
+  - name: "Additional information"
+    pdu:
+      - "@type": BIN
+        name: "Additional information value"
+
+  - name: "SSC mode"
+    pdu:
+      - name: "SSC mode value"
+        length: 4
+        namedValue:
+          1: "SSC mode 1"
+          2: "SSC mode 2"
+          3: "SSC mode 3"
+          4: "SSC mode 1"
+          5: "SSC mode 2"
+          6: "SSC mode 3"
+
+  - name: "PDU session type"
+    pdu:
+      - name: "PDU session type value"
+        length: 4
+        namedValue:
+          1: "IPv4"
+          2: "IPv6"
+          3: "IPv4v6"
+          4: "Unstructured"
+          5: "Ethernet"
+          7: "reserved"
+
+  - name: "Authorized QoS rules"
+    pdu:
+      - "@type": "MULTI"
+        name: QoS rule
+        contentLength: "Length"
+        nBit: 16
+        pdu:
+          - "@type": "DIGITS"
+            name: "QoS rule identifier"
+            length: 8
+          - "@type": "BINLENGTH"
+            name: "content"
+            pdu:
+              - "@type": "DIGITS"
+                name: "Length"
+                length: 16
+              - "@type": "CHOICE"
+                name: "Rule operation code"
+                field:
+                  name: "Rule operation code value"
+                  length: 3
+                  namedValue:
+                    0: "Reserved"
+                    1: "Create new QoS rule"
+                    2: "Delete existing QoS rule"
+                    3: "Modify existing QoS rule and add packet filters"
+                    4: "Modify existing QoS rule and replace all packet filters"
+                    5: "Modify existing QoS rule and delete packet filters"
+                    6: "Modify existing QoS rule without modifying packet filters"
+                    7: "Reserved"
+                pdus:
+                  - keys:
+                      - 1
+                      - 3
+                      - 4
+                    pdu:
+                      - name: "DQR bit"
+                        length: 1
+                        namedValue:
+                          0: "the QoS rule is not the default QoS rule"
+                          1: "the QoS rule is the default QoS rule"
+                      - "@type": "MULTI"
+                        name: "Packet filter"
+                        contentLength: "Number"
+                        pdu:
+                          - "@type": "DIGITS"
+                            name: "Number of packet filters"
+                            length: 4
+                          - "@type": "SPARE"
+                            name: "Spare"
+                            length: 2
+                            value: 0
+                          - name: "Packet filter direction"
+                            length: 2
+                            namedValue:
+                              0: "reserved"
+                              1: "downlink only"
+                              2: "uplink only"
+                              3: "bidirectional"
+                          - "@type": "DIGITS"
+                            name: "packet filter identifier"
+                            length: 4
+                          - "@type": "BINLENGTH"
+                            name: "packet filter container"
+                            pdu:
+                              - "@type": "DIGITS"
+                                name: "Length"
+                                length: 8
+                              - name: "Packet filter component type"
+                                length: 8
+                                namedValue:
+                                  1: "Match-all type"
+                                  16: "IPv4 remote address type"
+                                  17: "IPv4 local address type"
+                                  33: "IPv6 remote address/prefix length type"
+                                  35: "IPv6 local address/prefix length type"
+                                  48: "Protocol identifier/Next header type"
+                                  64: "Single local port type"
+                                  65: "Local port range type"
+                                  80: "Single remote port type"
+                                  81: "Remote port range type"
+                                  96: "Security parameter index type"
+                                  112: "Type of service/Traffic class type"
+                                  128: "Flow label type"
+                                  129: "Destination MAC address type"
+                                  130: "Source MAC address type"
+                                  131: "802.1Q C-TAG VID type"
+                                  132: "802.1Q S-TAG VID type"
+                                  133: "802.1Q C-TAG PCP/DEI type"
+                                  134: "802.1Q S-TAG PCP/DEI type"
+                                  135: "Ethertype type"
+                              - "@type": "BIN"
+                                name: "Packet filter content"
+                                length: -1
+                      - "@type": "DIGITS"
+                        name: "Qos rule preference"
+                        length: 8
+                      - "@type": "SPARE"
+                        name: "Spare"
+                        length: 1
+                        value: 0
+                      - name: "E bit"
+                        length: 1
+                        namedValue:
+                          0: "Segregation not requested"
+                          1: "Segregation requested"
+                      - "@type": "DIGITS"
+                        name: "Qos flow identifier"
+                        length: 6
+                  - keys:
+                      - 5
+                    pdu:
+                      - "@type": "MULTI"
+                        name: "Packet filter"
+                        contentLength: "Number"
+                        pdu:
+                          - name: "Number of packet filters"
+                            length: 4
+                          - "@type": "SPARE"
+                            name: "Spare"
+                            length: 4
+                            value: 0
+                          - name: "Packet filter identifier"
+                            length: 4
+
+  - name: "Session-AMBR"
+    pdu:
+      - name: "Unit for Session-AMBR for downlink"
+        length: 8
+        namedValue:
+            0: "value is not used"
+            1: "value is incremented in multiples of 1 Kbps"
+            2: "value is incremented in multiples of 4 Kbps"
+            3: "value is incremented in multiples of 16 Kbps"
+            4: "value is incremented in multiples of 64 Kbps"
+            5: "value is incremented in multiples of 256 kbps"
+            6: "value is incremented in multiples of 1 Mbps"
+            7: "value is incremented in multiples of 4 Mbps"
+            8: "value is incremented in multiples of 16 Mbps"
+            9: "value is incremented in multiples of 64 Mbps"
+            10: "value is incremented in multiples of 256 Mbps"
+            11: "value is incremented in multiples of 1 Gbps"
+            12: "value is incremented in multiples of 4 Gbps"
+            13: "value is incremented in multiples of 16 Gbps"
+            14: "value is incremented in multiples of 64 Gbps"
+            15: "value is incremented in multiples of 256 Gbps"
+            16: "value is incremented in multiples of 1 Tbps"
+            17: "value is incremented in multiples of 4 Tbps"
+            18: "value is incremented in multiples of 16 Tbps"
+            19: "value is incremented in multiples of 64 Tbps"
+            20: "value is incremented in multiples of 256 Tbps"
+            21: "value is incremented in multiples of 1 Pbps"
+            22: "value is incremented in multiples of 4 Pbps"
+            23: "value is incremented in multiples of 16 Pbps"
+            24: "value is incremented in multiples of 64 Pbps"
+            25: "value is incremented in multiples of 256 Pbps"
+      - "@type": "BIN"
+        name: "Session-AMBR for downlink"
+        length: 16
+      - name: "Unit for Session-AMBR for uplink"
+        length: 8
+        namedValue:
+            0: "value is not used"
+            1: "value is incremented in multiples of 1 Kbps"
+            2: "value is incremented in multiples of 4 Kbps"
+            3: "value is incremented in multiples of 16 Kbps"
+            4: "value is incremented in multiples of 64 Kbps"
+            5: "value is incremented in multiples of 256 kbps"
+            6: "value is incremented in multiples of 1 Mbps"
+            7: "value is incremented in multiples of 4 Mbps"
+            8: "value is incremented in multiples of 16 Mbps"
+            9: "value is incremented in multiples of 64 Mbps"
+            10: "value is incremented in multiples of 256 Mbps"
+            11: "value is incremented in multiples of 1 Gbps"
+            12: "value is incremented in multiples of 4 Gbps"
+            13: "value is incremented in multiples of 16 Gbps"
+            14: "value is incremented in multiples of 64 Gbps"
+            15: "value is incremented in multiples of 256 Gbps"
+            16: "value is incremented in multiples of 1 Tbps"
+            17: "value is incremented in multiples of 4 Tbps"
+            18: "value is incremented in multiples of 16 Tbps"
+            19: "value is incremented in multiples of 64 Tbps"
+            20: "value is incremented in multiples of 256 Tbps"
+            21: "value is incremented in multiples of 1 Pbps"
+            22: "value is incremented in multiples of 4 Pbps"
+            23: "value is incremented in multiples of 16 Pbps"
+            24: "value is incremented in multiples of 64 Pbps"
+            25: "value is incremented in multiples of 256 Pbps"
+      - "@type": "BIN"
+        name: "Session-AMBR for uplink"
+        length: 16
+
+  - name: "PDU address"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 5
+        value: 0
+      - name: "PDU session type value"
+        length: 3
+        namedValue:
+          1: "IPv4"
+          2: "IPv6"
+          3: "IPv4v6"
+      - "@type": "BIN"
+        name: "PDU address information"
+        length: -1
+
+  - name: "Integrity protection maximum data rate"
+    pdu:
+      - "@type": BIN
+        name: "Maximum data rate per UE for user-plane integrity protection for uplink"
+        length: 8
+      - "@type": BIN
+        name: "Maximum data rate per UE for user-plane integrity protection for downlink"
+        length: 8
+
+  - name: "5GSM cause"
+    pdu:
+      - name: "Cause value"
+        length: 8
+        namedValue:
+          26: "Insufficient resources"
+          27: "Missing or unknown DNN"
+          28: "Unknown PDU session type"
+          29: "User authentication or authorization failed"
+          31: "Request rejected, unspecified"
+          34: "Service option temporarily out of order"
+          35: "PTI already in use"
+          36: "Regular deactivation"
+          39: "Reactivation requested"
+          43: "Invalid PDU session identity"
+          44: "Semantic errors in packet filter"
+          45: "Syntactical error in packet filter(s)"
+          38: "Out of LADN service area"
+          47: "PTI mismatch"
+          50: "PDU session type IPv4 only allowed"
+          41: "PDU session type IPv6 only allowed"
+          54: "PDU session does not exist"
+          67: "Insufficient resources for specific slice and DNN"
+          68: "Not supported SSC mode"
+          73: "Insufficient resources for specific slice"
+          70: "Missing or unknown DNN in a slice"
+          81: "Invalid PTI value"
+          82: "Maximum data rate per UE for user-plane integrity protection is too low"
+          83: "Semantic error in the QoS operation"
+          84: "Syntactical error in the QoS operation"
+          95: "Semantically incorrect message"
+          96: "Invalid mandatory information"
+          97: "Message type non-existent or not implemented"
+          98: "Message type not compatible with the protocol state"
+          99: "Information element non-existent or not implemented"
+          100: "Conditional IE error"
+          101: "Message not compatible with the protocol state"
+          111: "Protocol error, unspecified"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

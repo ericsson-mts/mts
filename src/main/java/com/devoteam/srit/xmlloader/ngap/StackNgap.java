@@ -69,14 +69,23 @@ public class StackNgap extends Stack {
 
     public AbstractMessage getNASTranslator() throws IOException {
 
-        commonRegistryNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionary5GSCommonMessages.yaml"));
-        commonRegistryNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionary5GSCommonInformationElements.yaml"));
+//        commonRegistryNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionary5GSCommonMessages.yaml"));
+//        commonRegistryNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionary5GSCommonInformationElements.yaml"));
+//
+//        registry5GSNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionnary5GSMobilityManagementMessages.yaml"));
+//        registry5GSNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionnary5GSMobilityManagementInformationElements.yaml"));
+//
+//        registry5gsSessionManagementMessages.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionnary5GSSesionManagementMessages.yaml"));
+//        registry5gsSessionManagementMessages.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionnary5GSSesionManagementInformationElements.yaml"));
 
-        registry5GSNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSMobilityManagementMessages.yaml"));
-        registry5GSNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSMobilityManagementInformationElements.yaml"));
+        commonRegistryNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS-152/dictionary5GSCommonMessages.yaml"));
+        commonRegistryNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS-152/dictionary5GSCommonInformationElements.yaml"));
 
-        registry5gsSessionManagementMessages.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSSesionManagementMessages.yaml"));
-        registry5gsSessionManagementMessages.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/dictionnary5GSSesionManagementInformationElements.yaml"));
+        registry5GSNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS-152/dictionnary5GSMobilityManagementMessages.yaml"));
+        registry5GSNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS-152/dictionnary5GSMobilityManagementInformationElements.yaml"));
+
+        registry5gsSessionManagementMessages.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS-152/dictionnary5GSSesionManagementMessages.yaml"));
+        registry5gsSessionManagementMessages.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS-152/dictionnary5GSSesionManagementInformationElements.yaml"));
 
 
         registry5GSNasTranslator.mergeRegistry(commonRegistryNasTranslator);
