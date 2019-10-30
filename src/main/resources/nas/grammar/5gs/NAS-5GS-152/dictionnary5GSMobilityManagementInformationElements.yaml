@@ -38,8 +38,8 @@ elements:
           2: "mobility registration updating"
           3: "periodic registration updating"
           4: "emergency registration"
-          5: "initial registration"
-          6: "initial registration"
+          5: "5initial registration"
+          6: "6initial registration"
           7: "reserved"
 
   - name: "NAS key set identifier"
@@ -483,9 +483,6 @@ elements:
           1: "3GPP access"
           2: "Non-3GPP access"
           3: "3GPP access and non-3GPP access"
-          4: "3GPP access"
-          5: "3GPP access"
-          6: "3GPP access"
           7: "reserved"
 
   - name: "Payload container type"
@@ -587,7 +584,6 @@ elements:
                   2: "SST and mapped HPLMN SST"
                   4: "SST and SD"
                   5: "SST, SD and mapped HPLMN SST"
-                  7: "SST"
                   8: "SST, SD, mapped HPLMN SST and mapped HPLMN SD"
               pdus:
                 - keys:
@@ -653,8 +649,8 @@ elements:
       - name : "Re-registration required"
         length: 1
         namedValue:
-          1: "re-registration not required"
-          2: "re-registration required"
+          0: "re-registration not required"
+          1: "re-registration required"
       - name: "Access type"
         length : 2
         namedValue:
@@ -673,12 +669,12 @@ elements:
           3: "emergency services"
           4: "emergency services fallback"
           5: "high priority access"
-          6: "signalling"
-          7: "signalling"
-          8: "signalling"
-          9: "data"
-          10: "data"
-          11: "data"
+          6: "6signalling"
+          7: "7signalling"
+          8: "8signalling"
+          9: "9data"
+          10: "10data"
+          11: "11data"
 
   - name: "Uplink data status"
     pdu:
@@ -926,6 +922,157 @@ elements:
           0: "PDU session was not requested in the Uplink data"
           1: "PDU session was requested in the Uplink data"
 
+  - name: "Allowed PDU session status"
+    pdu:
+      - name: "PSI7"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI6"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI5"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI4"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI3"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI2"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI1"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI0"
+        length: 1
+        namedValue:
+          0: "Spare"
+      - name: "PSI15"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI714"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI13"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI12"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI11"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI10"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI9"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
+      - name: "PSI8"
+        length: 1
+        namedValue:
+          0: "indicates that the user-plane resources of corresponding PDU session is not allowed to be re-established over 3GPP access"
+          1: "indicates that the user-plane resources of corresponding PDU session can be re-established over 3GPP access"
 
+
+  - name: "Service area list"
+    pdu:
+      - "@type": "MULTI"
+        name: "Partial service area list"
+        contentLength: "Length"
+        pdu:
+          - name: "Allowed type"
+            length: 1
+            namedValue:
+              0: "TAIs in the list are in the allowed area"
+              1: "TAIs in the list are in the non-allowed area"
+          - "@type": "CHOICE"
+            name: "Type of list"
+            field:
+              name: "Type of list value"
+              length: 2
+              namedValue:
+                  0: "list of TACs belonging to one PLMN, with non-consecutive TAC values"
+                  1: "list of TACs belonging to one PLMN, with consecutive TAC values"
+                  2: "list of TAIs belonging to different PLMNs"
+                  3: "All TAIs belonging to the PLMNs in the registration area are in the allowed area"
+            pdus:
+              - keys:
+                  - 0
+                  - 1
+                  - 2
+                  - 3
+                pdu:
+                  - "@type": "DIGITS"
+                    name: "Number of elements"
+                    length: 5
+                  - "@type": "DIGITS"
+                    name: "MCC digit 2"
+                    length: 4
+                  - "@type": "DIGITS"
+                    name: "MCC digit 1"
+                    length: 4
+                  - "@type": "DIGITS"
+                    name: "MNC digit 3"
+                    length: 4
+                  - "@type": "DIGITS"
+                    name: "MCC digit 3"
+                    length: 4
+                  - "@type": "DIGITS"
+                    name: "MNC digit 2"
+                    length: 4
+                  - "@type": "DIGITS"
+                    name: "MNC digit 1"
+                    length: 4
+                  - "@type": BIN
+                    name: "TAC"
+                    length: -1
+
+  - name: "GPRS timer 3"
+    pdu:
+      - name: "Unit"
+        length: 3
+        namedValue:
+          0: "value is incremented in multiples of 10 minutes"
+          1: "value is incremented in multiples of 1 hour"
+          2: "value is incremented in multiples of 10 hours"
+          3: "value is incremented in multiples of 2 seconds"
+          4: "value is incremented in multiples of 30 seconds"
+          5: "value is incremented in multiples of 1 minute"
+          6: "value is incremented in multiples of 320 hours"
+          7: "value indicates that the timer is deactivated"
+      - "@type": "DIGITS"
+        name: "Timer value"
+        length: 5
 
 

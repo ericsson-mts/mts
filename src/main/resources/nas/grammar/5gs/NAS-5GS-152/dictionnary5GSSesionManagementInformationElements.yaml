@@ -61,12 +61,70 @@ elements:
 
   - name: "S-NSSAI"
     pdu:
-      - "@type": BIN
-        name: "SST"
-        length: 8
-      - "@type": BIN
-        name: "SD"
-        length: 24
+          - "@type": "CHOICE"
+            name: "S-NSSAI"
+            field:
+              name: "Length of S-NSSAI contents"
+              length: 8
+              namedValue:
+                1: "SST"
+                2: "SST and mapped HPLMN SST"
+                4: "SST and SD"
+                5: "SST, SD and mapped HPLMN SST"
+                8: "SST, SD, mapped HPLMN SST and mapped HPLMN SD"
+            pdus:
+              - keys:
+                  - 1
+                  - 7
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+              - keys:
+                  - 2
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "mapped HPLMN SST"
+                    length: 8
+              - keys:
+                  - 4
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "SD"
+                    length: 24
+              - keys:
+                  - 5
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "SD"
+                    length: 24
+                  - "@type": BIN
+                    name: "mapped HPLMN SST"
+                    length: 8
+              - keys:
+                  - 8
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "SD"
+                    length: 24
+                  - "@type": BIN
+                    name: "mapped HPLMN SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "mapped HPLMN SD"
+                    length: 24
 
   - name: "DNN"
     pdu:
@@ -86,9 +144,6 @@ elements:
           1: "SSC mode 1"
           2: "SSC mode 2"
           3: "SSC mode 3"
-          4: "SSC mode 1"
-          5: "SSC mode 2"
-          6: "SSC mode 3"
 
   - name: "PDU session type"
     pdu:
@@ -131,7 +186,6 @@ elements:
                     4: "Modify existing QoS rule and replace all packet filters"
                     5: "Modify existing QoS rule and delete packet filters"
                     6: "Modify existing QoS rule without modifying packet filters"
-                    7: "Reserved"
                 pdus:
                   - keys:
                       - 1
@@ -357,6 +411,97 @@ elements:
           100: "Conditional IE error"
           101: "Message not compatible with the protocol state"
           111: "Protocol error, unspecified"
+
+  - name: "5GSM capability"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 6
+        value: 0
+      - name: "Multi-homed IPv6 PDU session"
+        length: 1
+        namedValue:
+          0: "Multi-homed IPv6 PDU session not supported"
+          1: "Multi-homed IPv6 PDU session supported"
+      - name: "RqoS"
+        length: 1
+        namedValue:
+          0: "Reflective QoS not supported"
+          1: "Reflective QoS supported"
+
+  - name: "QoS flow descriptions"
+    pdu:
+      - "@type": "MULTI"
+        name: "QoS flow description"
+        contentLength: "Length"
+        nBit: 16
+        pdu:
+          - "@type": "SPARE"
+            name: "Spare"
+            length: 2
+            value: 0
+          - "@type": "DIGITS"
+            name: "QFI"
+            length: 6
+          - "@type": "CHOICE"
+            name: "Operation code"
+            field:
+              name: "Operation code value"
+              length: 3
+              namedValue:
+                1: "Create new QoS rule"
+                2: "Delete existing QoS rule"
+                3: "Modify existing QoS flow description"
+            pdus:
+              - keys:
+                  - 1
+                pdu:
+                  - "@type": "SPARE"
+                    name: "Spare"
+                    length: 6
+                    value: 0
+                  - name: "DQR bit"
+                    length: 1
+                    namedValue:
+                      0: "reserved"
+                      1: "parameters list is included"
+              - keys:
+                  - 2
+                pdu:
+                  - "@type": "SPARE"
+                    name: "Spare"
+                    length: 6
+                    value: 0
+                  - name: "DQR bit"
+                    length: 1
+                    namedValue:
+                      0: "parameters list is not included"
+                      1: "reserved"
+              - keys:
+                  - 3
+                pdu:
+                  - "@type": "SPARE"
+                    name: "Spare"
+                    length: 6
+                    value: 0
+                  - name: "DQR bit"
+                    length: 1
+                    namedValue:
+                      0: "extension of previously provided parameters"
+                      1: "replacement of all previously provided parameters"
+          - "@type": "MULTI"
+            name: "Parameter list"
+            contentLength: "Number"
+            pdu:
+              - "@type": "DIGITS"
+                name: "Number of parameters"
+                length: 6
+              - "@type": "DIGITS"
+                name: "Parameter identifier"
+                length: 8
+              - "@type": "BIN"
+                name: "Parameter contents"
+
 
 
 

@@ -31,7 +31,7 @@ public class StackNgap extends Stack {
     private  Registry commonRegistryNasTranslator = new Registry();
     private  Registry registry5GSNasTranslator = new Registry();
     private  Registry registry5gsSessionManagementMessages = new Registry();
-    private  AbstractMessage nasTraslator = null;
+    private  AbstractMessage nasTraslator = createNASTranslator();
 
     /**
      * Create a new StackNgap instance
@@ -67,8 +67,7 @@ public class StackNgap extends Stack {
         return asn1Translator;
     }
 
-    public AbstractMessage getNASTranslator() throws IOException {
-
+    public AbstractMessage createNASTranslator() throws IOException {
 //        commonRegistryNasTranslator.loadMessages(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionary5GSCommonMessages.yaml"));
 //        commonRegistryNasTranslator.loadInformationElements(this.getClass().getResourceAsStream("/nas/grammar/5gs/NAS-5GS/dictionary5GSCommonInformationElements.yaml"));
 //
@@ -93,13 +92,14 @@ public class StackNgap extends Stack {
 
         registry5GSNasTranslator.init();
 
-        nasTraslator = registry5GSNasTranslator.getMessage("L3MessageWrapper");
+        return registry5GSNasTranslator.getMessage("L3MessageWrapper");
+    }
 
-
+    public AbstractMessage getNASTranslator() {
         return nasTraslator;
     }
 
-    public Registry getRegistry5GSNasTranslator() throws IOException {
+    public Registry getRegistry5GSNasTranslator() {
         return registry5GSNasTranslator;
     }
 }

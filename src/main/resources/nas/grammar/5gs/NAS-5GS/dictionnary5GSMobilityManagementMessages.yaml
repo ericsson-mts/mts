@@ -4,6 +4,7 @@ messages:
     mandatory:
       - type: "Message type"
         length: -1
+
   - name: "Integrity protected with new 5G NAS security context"
     mandatory:
       - type: "Message authentication code"
@@ -11,7 +12,16 @@ messages:
       - type: "Sequence number"
         name: "Sequence number"
         length: 8
+
   - name : "Integrity protected and ciphered"
+    mandatory:
+      - type: "Message authentication code"
+        length: 32
+      - type: "Sequence number"
+        name: "Sequence number"
+        length: 8
+
+  - name: "Integrity protected and ciphered with new 5G NAS security context"
     mandatory:
       - type: "Message authentication code"
         length: 32
@@ -82,7 +92,7 @@ messages:
         type: "5GS mobile identity"
         name: "5G-GUTI"
 
-  - name: "Deregistration request"
+  - name: "Deregistration request UE originating"
     mandatory:
       - type: "Spare half octet 3"
         length: 4
