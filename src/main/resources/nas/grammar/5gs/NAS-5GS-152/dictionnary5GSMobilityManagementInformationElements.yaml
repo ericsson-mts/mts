@@ -187,18 +187,18 @@ elements:
       - name: "LPP"
         length: 1
         namedValue:
-            0: "LPP in N1 mode not supported"
-            1: "LPP in N1 mode supported "
+          0: "LPP in N1 mode not supported"
+          1: "LPP in N1 mode supported "
       - name: "HO attach"
         length: 1
         namedValue:
-            0: "ATTACH REQUEST message containing PDN CONNECTIVITY REQUEST message with request type set to \"handover\" or \"handover of emergency bearer services\" to transfer PDU session from N1 mode to S1 mode not supported"
-            1: "ATTACH REQUEST message containing PDN CONNECTIVITY REQUEST message with request type set to \"handover\" or \"handover of emergency bearer services\" to transfer PDU session from N1 mode to S1 mode supported"
+          0: "ATTACH REQUEST message containing PDN CONNECTIVITY REQUEST message with request type set to \"handover\" or \"handover of emergency bearer services\" to transfer PDU session from N1 mode to S1 mode not supported"
+          1: "ATTACH REQUEST message containing PDN CONNECTIVITY REQUEST message with request type set to \"handover\" or \"handover of emergency bearer services\" to transfer PDU session from N1 mode to S1 mode supported"
       - name: "S1 mode"
         length: 1
         namedValue:
-            0: "S1 mode not supported"
-            1: "S1 mode supported"
+          0: "S1 mode not supported"
+          1: "S1 mode supported"
 
   - name: "UE security capability"
     pdu:
@@ -407,13 +407,23 @@ elements:
   - name: "Authentication parameter RAND"
     pdu:
       - "@type" : BIN
-        name: "AUTN"
+        name: "RAND"
         length: 128
+        
   - name: "Authentication Parameter AUTN"
     pdu:
-      - "@type" : BIN
-        name: "AUTN"
-        length: 136
+      - "@type": "DIGITS"
+        name: "Length"
+        length : 8
+      - "@type": BIN
+        name: "SQN xor AK"
+        length: 48
+      - "@type": BIN
+        name: "AMF"
+        length: 16
+      - "@type": BIN
+        name: "MAC"
+        length: 64
 
   - name: "Authentication response parameter"
     pdu:
@@ -574,70 +584,70 @@ elements:
         contentLength: "Length"
         nBit: 8
         pdu:
-            - "@type": "CHOICE"
-              name: "S-NSSAI"
-              field:
-                name: "Length of S-NSSAI contents"
-                length: 8
-                namedValue:
-                  1: "SST"
-                  2: "SST and mapped HPLMN SST"
-                  4: "SST and SD"
-                  5: "SST, SD and mapped HPLMN SST"
-                  8: "SST, SD, mapped HPLMN SST and mapped HPLMN SD"
-              pdus:
-                - keys:
-                    - 1
-                    - 7
-                  pdu:
-                    - "@type": BIN
-                      name: "SST"
-                      length: 8
-                - keys:
-                    - 2
-                  pdu:
-                    - "@type": BIN
-                      name: "SST"
-                      length: 8
-                    - "@type": BIN
-                      name: "mapped HPLMN SST"
-                      length: 8
-                - keys:
-                    - 4
-                  pdu:
-                    - "@type": BIN
-                      name: "SST"
-                      length: 8
-                    - "@type": BIN
-                      name: "SD"
-                      length: 24
-                - keys:
-                    - 5
-                  pdu:
-                    - "@type": BIN
-                      name: "SST"
-                      length: 8
-                    - "@type": BIN
-                      name: "SD"
-                      length: 24
-                    - "@type": BIN
-                      name: "mapped HPLMN SST"
-                      length: 8
-                - keys:
-                    - 8
-                  pdu:
-                    - "@type": BIN
-                      name: "SST"
-                      length: 8
-                    - "@type": BIN
-                      name: "SD"
-                      length: 24
-                    - "@type": BIN
-                      name: "mapped HPLMN SST"
-                      length: 8
-                    - "@type": BIN
-                      name: "mapped HPLMN SD"
-                      length: 24
+          - "@type": "CHOICE"
+            name: "S-NSSAI"
+            field:
+              name: "Length of S-NSSAI contents"
+              length: 8
+              namedValue:
+                1: "SST"
+                2: "SST and mapped HPLMN SST"
+                4: "SST and SD"
+                5: "SST, SD and mapped HPLMN SST"
+                8: "SST, SD, mapped HPLMN SST and mapped HPLMN SD"
+            pdus:
+              - keys:
+                  - 1
+                  - 7
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+              - keys:
+                  - 2
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "mapped HPLMN SST"
+                    length: 8
+              - keys:
+                  - 4
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "SD"
+                    length: 24
+              - keys:
+                  - 5
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "SD"
+                    length: 24
+                  - "@type": BIN
+                    name: "mapped HPLMN SST"
+                    length: 8
+              - keys:
+                  - 8
+                pdu:
+                  - "@type": BIN
+                    name: "SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "SD"
+                    length: 24
+                  - "@type": BIN
+                    name: "mapped HPLMN SST"
+                    length: 8
+                  - "@type": BIN
+                    name: "mapped HPLMN SD"
+                    length: 24
 
   - name: "deregistration type"
     pdu :
@@ -760,85 +770,85 @@ elements:
 
   - name: "PDU session status"
     pdu:
-        - name: "PSI7"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI6"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI5"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI4"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI3"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI2"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI1"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI0"
-          length: 1
-          namedValue:
-            0: "Spare"
-        - name: "PSI15"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI714"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI13"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI12"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI11"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI10"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI9"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
-        - name: "PSI8"
-          length: 1
-          namedValue:
-            0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
-            1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI7"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI6"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI5"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI4"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI3"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI2"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI1"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI0"
+        length: 1
+        namedValue:
+          0: "Spare"
+      - name: "PSI15"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI714"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI13"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI12"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI11"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI10"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI9"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
+      - name: "PSI8"
+        length: 1
+        namedValue:
+          0: "indicates that the 5GSM state of the corresponding PDU session is PDU SESSION INACTIVE"
+          1: "indicates that the 5GSM state of the corresponding PDU session is not PDU SESSION INACTIVE"
 
   - name: "PDU session reactivation result"
     pdu:
@@ -1022,10 +1032,10 @@ elements:
               name: "Type of list value"
               length: 2
               namedValue:
-                  0: "list of TACs belonging to one PLMN, with non-consecutive TAC values"
-                  1: "list of TACs belonging to one PLMN, with consecutive TAC values"
-                  2: "list of TAIs belonging to different PLMNs"
-                  3: "All TAIs belonging to the PLMNs in the registration area are in the allowed area"
+                0: "list of TACs belonging to one PLMN, with non-consecutive TAC values"
+                1: "list of TACs belonging to one PLMN, with consecutive TAC values"
+                2: "list of TAIs belonging to different PLMNs"
+                3: "All TAIs belonging to the PLMNs in the registration area are in the allowed area"
             pdus:
               - keys:
                   - 0
