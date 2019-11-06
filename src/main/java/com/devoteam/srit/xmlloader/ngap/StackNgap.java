@@ -46,9 +46,9 @@ public class StackNgap extends Stack {
     public Msg readFromSCTPData(DataSctp chunk) throws Exception {
 
         DefaultArray array = new DefaultArray(chunk.getData());
-        if (60 != (chunk.getInfo().getPpid())) {
-            throw new RuntimeException("Not a NGAP message");
-        }
+//        if (60 != (chunk.getInfo().getPpid())) {
+//            throw new RuntimeException("Not a NGAP message");
+//        }
         MsgNgap msg = new MsgNgap(this);
         msg.decode(array.getBytes());
         return msg;
