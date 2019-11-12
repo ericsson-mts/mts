@@ -42,6 +42,23 @@ elements:
           6: "6initial registration"
           7: "reserved"
 
+  - name: "5GS update type"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare half octet"
+        length: 6
+        value: 0
+      - name: "NG-RAN-RCU"
+        length: 1
+        namedValue:
+          0: "NG-RAN radio capability update not needed"
+          1: "NG-RAN radio capability update needed"
+      - name: "SMS requested"
+        length: 1
+        namedValue:
+          0: "SMS over NAS not supported"
+          1: "SMS over NAS supported"
+
   - name: "NAS key set identifier"
     pdu:
       - name: "TSC"
@@ -409,7 +426,6 @@ elements:
       - "@type" : BIN
         name: "RAND"
         length: 128
-
   - name: "Authentication Parameter AUTN"
     pdu:
       - "@type": "DIGITS"
@@ -1084,5 +1100,19 @@ elements:
       - "@type": "DIGITS"
         name: "Timer value"
         length: 5
+
+  - name: "Payload container"
+    pdu:
+      - "@type": "MULTI"
+        name: "Payload container entry"
+        contentLength: "Number"
+        pdu:
+          - "@type": "DIGITS"
+            name: "Number of entries"
+            length: 8
+          - "@type": "HEXA"
+            name: "Payload container entry content"
+
+
 
 
