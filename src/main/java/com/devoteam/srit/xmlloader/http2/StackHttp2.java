@@ -112,6 +112,7 @@ public class StackHttp2 extends Stack {
         String localHost = root.attributeValue("localHost");
         String localPort = root.attributeValue("localPort");
         String remoteUrl = root.attributeValue("remoteURL");
+        String streamId = root.attributeValue("streamId");
         String remoteHost = null;
         String remotePort = null;
 
@@ -147,10 +148,14 @@ public class StackHttp2 extends Stack {
             }
         }
 
+        if(streamId != null && (Integer.parseInt(streamId) % 2 == 0)){
+            throw new ExecutionException("Stream ID need to be odd");
+        }
+
         if (existsChannel(channelName)) {
             return getChannel(channelName);
         } else {
-            return new ChannelHttp2(channelName, localHost, localPort, remoteHost, remotePort, protocol, secure);
+            return new ChannelHttp2(channelName, localHost, localPort, remoteHost, remotePort, protocol, secure, streamId);
         }
 
     }

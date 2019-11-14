@@ -25,10 +25,7 @@ package com.devoteam.srit.xmlloader.http2;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.hc.core5.concurrent.FutureCallback;
-import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.core5.http.HttpRequest;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.Message;
+import org.apache.hc.core5.http.*;
 import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncRequester;
 import org.apache.hc.core5.http.nio.AsyncClientEndpoint;
 import org.apache.hc.core5.http.nio.entity.BasicAsyncEntityProducer;
@@ -37,7 +34,8 @@ import org.apache.hc.core5.http.nio.support.BasicRequestProducer;
 import org.apache.hc.core5.http.nio.support.BasicResponseConsumer;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
-import org.apache.hc.core5.http2.impl.nio.bootstrap.H2RequesterBootstrap;
+import org.apache.hc.core5.http2.frame.StreamIdGenerator;
+import org.apache.hc.core5.http2.impl.nio.bootstrap.MyH2RequesterBootstrap;
 import org.apache.hc.core5.http2.ssl.H2ClientTlsStrategy;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
@@ -51,9 +49,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
 import java.util.Optional;
-import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.hc.core5.http.HttpRequestInterceptor;
+
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.http.protocol.HttpProcessorBuilder;
 import org.apache.hc.core5.net.URIAuthority;
@@ -67,6 +63,7 @@ public class ChannelHttp2 extends Channel {
 
     private HttpAsyncRequester requester = null;
     private boolean secure;
+    private String streamId;
     private AsyncClientEndpoint clientEndpoint;
     private HttpHost target;
 
@@ -80,9 +77,10 @@ public class ChannelHttp2 extends Channel {
     /**
      * Creates a new instance of Channel
      */
-    public ChannelHttp2(String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol, boolean secure) throws Exception {
+    public ChannelHttp2(String name, String localHost, String localPort, String remoteHost, String remotePort, String aProtocol, boolean secure, String streamId) throws Exception {
         super(name, localHost, localPort, remoteHost, remotePort, aProtocol);
         this.secure = secure;
+        this.streamId = streamId;
     }
 
     // ---------------------------------------------------------------------
@@ -108,7 +106,11 @@ public class ChannelHttp2 extends Channel {
                 .setMaxConcurrentStreams(maxConcurrentStreams)
                 .build();
 
-        H2RequesterBootstrap bootstrap = H2RequesterBootstrap
+        if(streamId != null){
+            StreamIdGenerator.ODD.nextStreamId(Integer.parseInt(streamId));
+        }
+
+        MyH2RequesterBootstrap bootstrap = MyH2RequesterBootstrap
                 .bootstrap()
                 .setIOReactorConfig(ioReactorConfig)
                 .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
@@ -130,7 +132,9 @@ public class ChannelHttp2 extends Channel {
                             });
                         }).build())
                 .setExceptionCallback(e -> GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "Error in HTTP channel " + ChannelHttp2.this.getName()))
-                .setH2Config(h2Config);
+                .setH2Config(h2Config)
+                .setStreamIdGenerator(StreamIdGenerator.ODD);
+
 
         if (secure) {
             bootstrap.setTlsStrategy(new H2ClientTlsStrategy(StackHttp2.createClientSSLContext()));

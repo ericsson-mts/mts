@@ -62,15 +62,12 @@ import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.http.protocol.HttpProcessor;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
+import org.apache.hc.core5.http2.frame.DefaultFrameFactory;
+import org.apache.hc.core5.http2.frame.StreamIdGenerator;
 import org.apache.hc.core5.http2.impl.H2Processors;
-import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
-import org.apache.hc.core5.http2.impl.nio.ServerH2StreamMultiplexerFactory;
-import org.apache.hc.core5.http2.impl.nio.ServerHttpProtocolNegotiatorFactory;
+import org.apache.hc.core5.http2.impl.nio.*;
 import org.apache.hc.core5.http2.ssl.H2ServerTlsStrategy;
-import org.apache.hc.core5.reactor.IOEventHandlerFactory;
-import org.apache.hc.core5.reactor.IOReactorConfig;
-import org.apache.hc.core5.reactor.IOSession;
-import org.apache.hc.core5.reactor.IOSessionListener;
+import org.apache.hc.core5.reactor.*;
 import org.apache.hc.core5.util.Args;
 import org.apache.hc.core5.util.Timeout;
 
@@ -96,6 +93,7 @@ public class MyH2ServerBootstrap {
     private H2StreamListener h2StreamListener;
     private Http1StreamListener http1StreamListener;
     private AsyncServerRequestHandler asyncServerRequestHandler;
+    private StreamIdGenerator streamIdGenerator;
     
     private MyH2ServerBootstrap() {
         this.filters = new ArrayList<>();
@@ -172,6 +170,11 @@ public class MyH2ServerBootstrap {
      */
     public final MyH2ServerBootstrap setTlsStrategy(final TlsStrategy tlsStrategy) {
         this.tlsStrategy = tlsStrategy;
+        return this;
+    }
+
+    public final MyH2ServerBootstrap setStreamIdGenerator(final StreamIdGenerator streamIdGenerator) {
+        this.streamIdGenerator = streamIdGenerator;
         return this;
     }
 
@@ -332,7 +335,8 @@ public class MyH2ServerBootstrap {
                 handlerFactory,
                 h2Config != null ? h2Config : H2Config.DEFAULT,
                 charCodingConfig != null ? charCodingConfig : CharCodingConfig.DEFAULT,
-                h2StreamListener);
+                h2StreamListener,
+                streamIdGenerator);
         final ServerHttp1StreamDuplexerFactory http1StreamHandlerFactory = new ServerHttp1StreamDuplexerFactory(
                 httpProcessor != null ? httpProcessor : HttpProcessors.server(),
                 handlerFactory,

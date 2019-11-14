@@ -42,6 +42,7 @@ import org.apache.hc.core5.http.nio.support.BasicRequestConsumer;
 import org.apache.hc.core5.http.nio.support.BasicResponseProducer;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.http2.HttpVersionPolicy;
+import org.apache.hc.core5.http2.frame.StreamIdGenerator;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 
@@ -97,7 +98,8 @@ public class ListenpointHttp2 extends Listenpoint {
                 .setHttpProcessor(HttpProcessorBuilder.create().build())
                 .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
                 .setAsyncServerRequestHandler(serverRequestHandler)
-                .setExceptionCallback(e -> GlobalLogger.instance().getApplicationLogger().error(Topic.PROTOCOL, e, "Error in HTTP listenpoint " + ListenpointHttp2.this.getName()));
+                .setExceptionCallback(e -> GlobalLogger.instance().getApplicationLogger().error(Topic.PROTOCOL, e, "Error in HTTP listenpoint " + ListenpointHttp2.this.getName()))
+                .setStreamIdGenerator(StreamIdGenerator.EVEN);
 
         if (secure) {
             bootstrap.setTlsStrategy(new BasicServerTlsStrategy(StackHttp2.createServerSSLContext(), socket -> true));
