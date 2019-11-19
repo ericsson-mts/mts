@@ -1,5 +1,5 @@
 messages:
-  #-------------------- header type --------------------------------------
+#-------------------- header type --------------------------------------
   - name: "Plain 5GS NAS message not security protected"
     mandatory:
       - type: "Message type"
@@ -35,7 +35,7 @@ messages:
         name: "Sequence number"
         length: 8
 
-  #----------------------- request type ---------------------------------
+#----------------------- request type ---------------------------------
 
   - name: "Registration request"
     mandatory:
@@ -48,43 +48,43 @@ messages:
       - type: "5GS mobile identity"
         nBitLength: 16
     optional:
-      C:
-        type: "NAS key set identifier"
-        name: "Non-current native NAS key set identifier"
-        length: 8
-      10:
-        type: "5GMM capability"
-      2E:
-        type: "UE security capability"
-      2F:
-        type: "NSSAI"
-        name: "Requested NSSAI"
-        length: -1
-      52:
-        type: "5GS tracking area identity"
-        name: "Last visited registered TAI"
-        length: 48
-      40:
-        type: "Uplink data status"
-      50:
-        type: "PDU session status"
-      77:
-        type: "5GS mobile identity"
-        name: "Additional GUTI"
-        nBitLength: 16
-      25:
-        type: "Allowed PDU session status"
-      70:
-        type: "EPS NAS message container"
-        length: -1
-      7B:
-        type: "Payload container"
-        nBitLength: 16
-      53:
-        type: "5GS update type"
-      71:
-        type: "NAS message container"
-        nBitLength: 16
+         C:
+             type: "NAS key set identifier"
+             name: "Non-current native NAS key set identifier"
+             length: 8
+         10:
+             type: "5GMM capability"
+         2E:
+             type: "UE security capability"
+         2F:
+             type: "NSSAI"
+             name: "Requested NSSAI"
+             length: -1
+         52:
+             type: "5GS tracking area identity"
+             name: "Last visited registered TAI"
+             length: 48
+         40:
+           type: "Uplink data status"
+         50:
+           type: "PDU session status"
+         77:
+           type: "5GS mobile identity"
+           name: "Additional GUTI"
+           nBitLength: 16
+         25:
+           type: "Allowed PDU session status"
+         70:
+             type: "EPS NAS message container"
+             length: -1
+         7B:
+           type: "Payload container Optional"
+           nBitLength: 16
+         53:
+           type: "5GS update type"
+         71:
+           type: "NAS message container"
+           nBitLength: 16
 
   - name: "Authentication request"
     mandatory:

@@ -502,6 +502,56 @@ elements:
               - "@type": "BIN"
                 name: "Parameter contents"
 
+  - name: "Payload container"
+    pdu:
+      - name: "Extended protocol discriminator"
+        length : 8
+        namedValue:
+          46: "5GS session management messages"
+          126: "5GS mobility management messages"
+      - name: "PDU Session Identity"
+        length: 8
+        namedValue:
+          0: "No PDU session identity assigned"
+          1: "PDU session identity value 1"
+          2: "PDU session identity value 2"
+          3: "PDU session identity value 3"
+          4: "PDU session identity value 4"
+          5: "PDU session identity value 5"
+          6: "PDU session identity value 6"
+          7: "PDU session identity value 7"
+          8: "PDU session identity value 8"
+          9: "PDU session identity value 9"
+          10: "PDU session identity value 10"
+          11: "PDU session identity value 11"
+          12: "PDU session identity value 12"
+          13: "PDU session identity value 13"
+          14: "PDU session identity value 14"
+          15: "PDU session identity value 15"
+      - "@type": "DIGITS"
+        name: "PTI"
+        length: 8
+      - "@type": "MESSAGE_WRAPPER"
+        name: "Message type"
+        length: 8
+        namedValue:
+          193: "PDU session establishment request"
+          194: "PDU session establishment accept"
+          195: "PDU session establishment reject"
+          197: "PDU session authentication command"
+          198: "PDU session authentication complete"
+          199: "PDU session authentication result"
+          201: "PDU session modification request"
+          202: "PDU session modification reject"
+          203: "PDU session modification command"
+          204: "PDU session modification complete"
+          205: "PDU session modification command reject"
+          209: "PDU session release request"
+          210: "PDU session release reject"
+          211: "PDU session release command"
+          212: "PDU session release complete"
+          214: "5GSM status"
+
 
 
 
