@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.stun;
 
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -36,7 +38,7 @@ import java.util.HashMap;
 public class DictionnaryStun {
 
     public static HashMap readProperties() {
-        String fichier = "../conf/stun/typeStun.properties";
+        String fichier = FileReader.checkFileExist("stun/typeStun.properties");
         HashMap hash = new HashMap();
         try {
             InputStream ips = new FileInputStream(fichier);

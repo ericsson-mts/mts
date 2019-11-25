@@ -26,11 +26,7 @@ package com.devoteam.srit.xmlloader.diameter.dictionary;
 import com.devoteam.srit.xmlloader.core.exception.ParsingException;
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.URIFactory;
-import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
+import com.devoteam.srit.xmlloader.core.utils.*;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -51,7 +47,7 @@ public class Dictionary
     static private Dictionary _dictionary ;
     
     // harcoded path of dictionary.xml
-    static private String DICTIONARY_PATH = "../conf/diameter/dictionary.xml" ;
+    static private String DICTIONARY_PATH = FileReader.checkFileExist("diameter/dictionary.xml");
     
     // hashmaps
     private HashMap<String, Application>  applicationByName ;
@@ -105,7 +101,7 @@ public class Dictionary
     private void parseFromFile(URI filePathURI) throws Exception
     {
         XMLDocument dictionaryDocument = new XMLDocument();
-        dictionaryDocument.setXMLSchema(URIFactory.newURI("../conf/schemas/diameter-dictionary.xsd"));
+        dictionaryDocument.setXMLSchema(URIFactory.newURI(FileReader.checkFileExist("schemas/diameter-dictionary.xsd")));
         dictionaryDocument.setXMLFile(filePathURI);
         dictionaryDocument.parse();
         

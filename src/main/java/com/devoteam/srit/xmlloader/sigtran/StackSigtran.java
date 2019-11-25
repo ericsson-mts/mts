@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.sigtran;
 
+import com.devoteam.srit.xmlloader.core.utils.*;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
@@ -36,11 +37,6 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.tlv.TlvDictionary;
@@ -70,7 +66,7 @@ public class StackSigtran extends Stack
     {
         if(!tlvDictionaries.containsKey(name))
         {
-            tlvDictionaries.put(name, new TlvDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/sigtran/"+name)), this));
+            tlvDictionaries.put(name, new TlvDictionary(SingletonFSInterface.instance().getInputStream(new URI(FileReader.checkFileExist("sigtran/"+name))), this));
         }
         return tlvDictionaries.get(name);
     }
@@ -80,7 +76,7 @@ public class StackSigtran extends Stack
     {
         if(!fvoDictionaries.containsKey(name))
         {
-            fvoDictionaries.put(name, new FvoDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/sigtran/"+name))));
+            fvoDictionaries.put(name, new FvoDictionary(SingletonFSInterface.instance().getInputStream(new URI(FileReader.checkFileExist("sigtran/"+name)))));
         }
         return fvoDictionaries.get(name);
     }

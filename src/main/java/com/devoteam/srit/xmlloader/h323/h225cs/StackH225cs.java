@@ -30,10 +30,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
-import com.devoteam.srit.xmlloader.core.utils.Config;
-import com.devoteam.srit.xmlloader.core.utils.Utils;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
-import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
+import com.devoteam.srit.xmlloader.core.utils.*;
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.coding.tpkt.TPKTPacket;
@@ -60,7 +57,7 @@ public class StackH225cs extends Stack
         super();
 
         // initialise dictionary
-        String file = "../conf/sigtran/q931.xml";
+        String file = FileReader.checkFileExist("sigtran/q931.xml");
         this.dictionary = new Dictionary(file);
     }
 

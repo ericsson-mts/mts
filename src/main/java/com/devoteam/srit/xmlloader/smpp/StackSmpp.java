@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.smpp;
 
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import com.devoteam.srit.xmlloader.smpp.data.SmppAttribute;
 import com.devoteam.srit.xmlloader.smpp.data.SmppMessage;
 import com.devoteam.srit.xmlloader.core.ParameterPool;
@@ -73,11 +74,11 @@ public class StackSmpp extends Stack
 
         if(dictionaryVersion.equalsIgnoreCase("3.4"))
         {
-            dictionaryVersion = "../conf/smpp/dictionary_v3.4.xml";
+            dictionaryVersion = FileReader.checkFileExist("smpp/dictionary_v3.4.xml");
         }
         else if(dictionaryVersion.equalsIgnoreCase("5.0"))
         {
-            dictionaryVersion = "../conf/smpp/dictionary_v5.0.xml";
+            dictionaryVersion = FileReader.checkFileExist("smpp/dictionary_v5.0.xml");
         }
         else
         {

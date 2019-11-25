@@ -3,6 +3,7 @@ package com.devoteam.srit.xmlloader.ngap;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementAVPParser;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.sctp.DataSctp;
@@ -11,14 +12,10 @@ import com.ericsson.mts.asn1.PERTranscoder;
 import com.ericsson.mts.asn1.PERTranslatorFactory;
 import com.ericsson.mts.nas.message.AbstractMessage;
 import com.ericsson.mts.nas.registry.Registry;
-import dk.i1.diameter.node.Node;
 import gp.utils.arrays.DefaultArray;
 
 //import java.rmi.registry.Registry;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Arrays;
 
 public class StackNgap extends Stack {
@@ -74,9 +71,7 @@ public class StackNgap extends Stack {
     private AbstractMessage createNASTranslator() throws Exception {
 
         Config config = Config.getConfigByName("ngap.properties");
-        String directory = "../conf/nas/grammar/5gs/NAS-5GS-"+config.getString("nas.VERSION","152");
-
-
+        String directory = FileReader.checkFileExist("nas/grammar/5gs/NAS-5GS-"+config.getString("nas.VERSION","152"));
 
         commonRegistryNasTranslator.loadMessages(new FileInputStream(directory+"/dictionary5GSCommonMessages.yaml"));
         commonRegistryNasTranslator.loadInformationElements(new FileInputStream(directory+"/dictionary5GSCommonInformationElements.yaml"));

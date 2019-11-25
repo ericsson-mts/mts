@@ -31,6 +31,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
 import com.devoteam.srit.xmlloader.core.utils.Config;
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
@@ -60,7 +61,7 @@ public class StackStun extends Stack
         super();
         
         this.prop = new Properties();
-        InputStream in = SingletonFSInterface.instance().getInputStream(new URI("../conf/stun/typeStun.properties"));
+        InputStream in = SingletonFSInterface.instance().getInputStream(new URI(FileReader.checkFileExist("stun/typeStun.properties")));
         this.prop.load(in);
     }
 

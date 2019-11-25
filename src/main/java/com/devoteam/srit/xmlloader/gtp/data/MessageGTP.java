@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.coding.binary.EnumLongField;
 import com.devoteam.srit.xmlloader.core.coding.binary.HeaderAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.XMLDoc;
 import com.devoteam.srit.xmlloader.core.exception.ExecutionException;
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 
 import gp.utils.arrays.Array;
@@ -328,7 +329,7 @@ public class MessageGTP
 		this.dictionary = MessageGTP.dictionaries.get(syntax);
 		if (this.dictionary == null)
 		{
-	        String file = "../conf/gtp/dictionary_GTP" + syntax + ".xml";
+	        String file = FileReader.checkFileExist("gtp/dictionary_GTP" + syntax + ".xml");
 	        this.dictionary = new Dictionary(file);
 	        dictionaries.put(syntax, dictionary);
 		}

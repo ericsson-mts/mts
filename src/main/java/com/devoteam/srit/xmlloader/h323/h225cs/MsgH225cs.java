@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.Runner;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import com.devoteam.srit.xmlloader.core.utils.Utils;
 import com.devoteam.srit.xmlloader.core.coding.binary.ElementAbstract;
 import com.devoteam.srit.xmlloader.core.coding.binary.q931.MessageQ931;
@@ -120,7 +121,7 @@ public class MsgH225cs extends Msg {
     public void decode(byte[] data) throws Exception
     {
     	Array array = new DefaultArray(data);
-        this.msgQ931 = new MessageQ931(array, "../conf/sigtran/q931.xml");
+        this.msgQ931 = new MessageQ931(array, FileReader.checkFileExist("sigtran/q931.xml"));
     }
 
 

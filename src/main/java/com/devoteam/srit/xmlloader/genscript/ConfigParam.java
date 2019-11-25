@@ -25,6 +25,8 @@ package com.devoteam.srit.xmlloader.genscript;
 
 import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +45,7 @@ public class ConfigParam {
 
     private static ConfigParam instance = null;
     private Map<String, List<Param>> parametresMap;
-    private String repertoireConfigParam = "../conf/genscript/";
+    private String repertoireConfigParam = FileReader.checkFileExist("genscript/");
 
     // Constructeur
     private ConfigParam() {

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import org.dom4j.Element;
 import org.mobicents.protocols.asn.AsnInputStream;
 import org.mobicents.protocols.asn.AsnOutputStream;
@@ -103,11 +104,11 @@ public class MsgSigtranHybrid extends Msg
 	    		Array ieArray = Array.fromHexString(ieStr);
 	    		if (_tlvProtocol == 1)
 	    		{
-	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/q931.xml");
+	    			_ieMessage = new MessageQ931(ieArray, FileReader.checkFileExist("sigtran/q931.xml"));
 	    		} 
 	    		else if (_tlvProtocol == 6)
 	    		{
-	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/v5x.xml");
+	    			_ieMessage = new MessageQ931(ieArray, FileReader.checkFileExist("sigtran/v5x.xml"));
 	    		}
     		}
     	}

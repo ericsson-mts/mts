@@ -29,6 +29,7 @@ import com.devoteam.srit.xmlloader.core.protocol.Listenpoint;
 import com.devoteam.srit.xmlloader.core.protocol.Msg;
 import com.devoteam.srit.xmlloader.core.protocol.Stack;
 import com.devoteam.srit.xmlloader.core.protocol.StackFactory;
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementReplacer;
 import com.devoteam.srit.xmlloader.core.utils.XMLElementTextMsgParser;
 
@@ -59,7 +60,7 @@ public class StackUcp extends Stack
     {
         super();
     
-        this.ucpDictionary = new UcpDictionary(SingletonFSInterface.instance().getInputStream(new URI("../conf/ucp/dictionary.xml")));
+        this.ucpDictionary = new UcpDictionary(SingletonFSInterface.instance().getInputStream(new URI(FileReader.checkFileExist("ucp/dictionary.xml"))));
     }
 
     /** 

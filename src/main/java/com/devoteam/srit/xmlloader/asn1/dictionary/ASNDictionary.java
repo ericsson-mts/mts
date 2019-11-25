@@ -27,6 +27,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import org.dom4j.Element;
 
 import com.devoteam.srit.xmlloader.core.coding.binary.Dictionary;
@@ -76,7 +77,7 @@ public class ASNDictionary extends Dictionary
     {
     	this();
 		XMLDoc xml = new XMLDoc();
-		String path = "../conf/asn1/" + file;
+		String path = FileReader.checkFileExist("asn1/" + file);
 	    xml.setXMLFile(new URI(path));
 	    xml.parse();
 	    Element rootDico = xml.getDocument().getRootElement();

@@ -26,6 +26,7 @@ package com.devoteam.srit.xmlloader.sigtran;
 import java.util.Collection;
 import java.util.List;
 
+import com.devoteam.srit.xmlloader.core.utils.FileReader;
 import org.dom4j.Element;
 
 import gp.utils.arrays.Array;
@@ -414,11 +415,11 @@ public class MsgSigtran extends Msg
 	    		Array ieArray = Array.fromHexString(ieStr);
 	    		if (_tlvProtocol == 1)
 	    		{
-	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/q931.xml");
+	    			_ieMessage = new MessageQ931(ieArray, FileReader.checkFileExist("sigtran/q931.xml"));
 	    		} 
 	    		else if (_tlvProtocol == 6)
 	    		{
-	    			_ieMessage = new MessageQ931(ieArray, "../conf/sigtran/v5x.xml");
+	    			_ieMessage = new MessageQ931(ieArray, FileReader.checkFileExist("sigtran/v5x.xml"));
 	    		}
     		}
     	}
