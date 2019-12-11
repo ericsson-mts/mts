@@ -640,7 +640,7 @@ public abstract class Stack
      */
     public Msg readFromDatas(byte[] data, int length) throws Exception
     {
-    	byte[] copyData = new byte[length];
+        byte[] copyData = new byte[length];
         System.arraycopy(data, 0, copyData, 0, length);
 
     	Class<?> clStack = this.getClass();

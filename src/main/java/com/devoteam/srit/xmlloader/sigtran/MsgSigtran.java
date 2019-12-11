@@ -23,9 +23,14 @@
 
 package com.devoteam.srit.xmlloader.sigtran;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import com.devoteam.srit.xmlloader.core.log.FileTextListenerProvider;
+import com.devoteam.srit.xmlloader.core.log.TextListenerProviderRegistry;
+import com.devoteam.srit.xmlloader.core.utils.filesystem.LocalFSInterface;
+import com.devoteam.srit.xmlloader.core.utils.filesystem.SingletonFSInterface;
 import org.dom4j.Element;
 
 import gp.utils.arrays.Array;
@@ -53,6 +58,8 @@ import com.devoteam.srit.xmlloader.sigtran.ap.BN_TCAPMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoDictionary;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoMessage;
 import com.devoteam.srit.xmlloader.sigtran.fvo.FvoParameter;
+
+import javax.xml.bind.DatatypeConverter;
 
 public class MsgSigtran extends Msg 
 {
@@ -440,6 +447,7 @@ public class MsgSigtran extends Msg
 	    		catch (Exception e)
 	    		{
 	    			// nothing to do : man not an AP layer (ASN1)
+                    GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e, "MsgSigtran decode _tcapMessage=null");
 	    			_tcapMessage = null;
 	    			//e.printStackTrace();
 	    		}
@@ -454,7 +462,7 @@ public class MsgSigtran extends Msg
 			        }
 		            GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL,"ACN=", ACN);
 					_apMessage = new BN_APMessage();
-					Array arrayAP = ((BN_TCAPMessage) _tcapMessage).getTCAPBinary();					
+					Array arrayAP = _tcapMessage.getTCAPBinary();
 		    		try
 		    		{
 		    			if (ACN != null && ACN.startsWith("CAP-"))
@@ -475,6 +483,7 @@ public class MsgSigtran extends Msg
 		    		catch (Exception e)
 		    		{
 		    			// nothing to do : man not an AP layer (ASN1)
+                        GlobalLogger.instance().getApplicationLogger().error(TextEvent.Topic.PROTOCOL, e,"MsgSigtran decode _apMessage=null");
 		    			_apMessage = null;
 		    			//e.printStackTrace();
 		    		}
@@ -679,4 +688,21 @@ public class MsgSigtran extends Msg
         return var;
     }
 
+    public static void main(String[] args) throws Exception {
+
+        /*
+         * Set the FSInterface to LocalFS.
+         */
+        SingletonFSInterface.setInstance(new LocalFSInterface());
+
+        /*
+         * Register the File logger provider
+         */
+        TextListenerProviderRegistry.instance().register(new FileTextListenerProvider());
+        MsgSigtran msgSigtran = new MsgSigtran(StackFactory.getStack("SIGTRAN"),3);
+
+        byte[] data = DatatypeConverter.parseHexBinary("01000101000000800210007600001c4100001c52030300050981030e190b12920011043307002753000b12920011043307002753014864804904890001ff6b2a2828060700118605010101a01d611b80020780a109060704000001003200a203020100a305a1030201006c80a180020100020116040282a90000000000000000");
+        msgSigtran.decode(data);
+        System.out.println(msgSigtran.toXml());
+    }
 }

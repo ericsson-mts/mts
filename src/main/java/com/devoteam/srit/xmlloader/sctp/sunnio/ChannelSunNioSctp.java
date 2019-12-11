@@ -483,7 +483,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 		    	//assert(payloadLength<=ChannelSunNioSctp.MTU);
 		
 		        DataSunNioSctp dataSctp = new DataSunNioSctp( payloadByteBuffer,messageInfo );
-		        
+
 		        //unserialize
 		        Stack channelStack = StackFactory.getStack(this.getProtocol());
 		        assert(channelStack!=null);
@@ -503,8 +503,7 @@ public class ChannelSunNioSctp extends ChannelSctp implements IOHandler
 			        msg.setTransportInfos( transportInfos );
 		        }
 		
-		        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" RECEIVE the SCTP message :\n", msg);                       
-		        
+		        GlobalLogger.instance().getApplicationLogger().debug(TextEvent.Topic.PROTOCOL, ""+this.getName()+":ChannelSunNioSctp#pollReceivedData"+" RECEIVE the SCTP message :\n", msg);
 		        //dispatch
 		        this.receiveMessage(msg);
 	    	}

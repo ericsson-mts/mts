@@ -40,6 +40,9 @@ public class BERDecoder extends Decoder {
         if (bt < 128 ) {
             result = bt ;
         }
+        else if(bt == 128){
+            result = -1;
+        }
         else {
             //for (int i = 256 - bt ; i > 0 ; i--) {
             // Decode length bug fix. Thanks to John 

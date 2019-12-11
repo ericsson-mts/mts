@@ -23,6 +23,8 @@
 
 package com.devoteam.srit.xmlloader.sigtran;
 
+import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
+import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import gp.utils.arrays.DefaultArray;
 import gp.utils.arrays.Integer32Array;
 import gp.utils.arrays.SupArray;
@@ -159,7 +161,6 @@ public class StackSigtranHybrid extends Stack
         else{
             // TODO throw some exception
         }
-        
 
         return msgSigtran;
     }
@@ -222,6 +223,7 @@ public class StackSigtranHybrid extends Stack
         //create the message
         int ppidInt = defaultPayloadProtocolID;
         MsgSigtranHybrid msg = new MsgSigtranHybrid(array, ppidInt);
+
         return msg;
 
     }
