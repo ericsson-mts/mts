@@ -68,12 +68,17 @@ messages:
            type: "Uplink data status"
          50:
            type: "PDU session status"
+         B:
+           type: "MICO indication"
+           length: 4
          77:
            type: "5GS mobile identity"
            name: "Additional GUTI"
            nBitLength: 16
          25:
            type: "Allowed PDU session status"
+         18:
+           type: "UEs usage setting"
          70:
              type: "EPS NAS message container"
              length: -1
@@ -174,6 +179,8 @@ messages:
         type: "NSSAI"
         name: "Configured NSSAI"
         length: -1
+      21:
+        type: "5GS network feature support"
       50:
         type: "PDU session status"
       26:
@@ -184,8 +191,14 @@ messages:
       5E:
         type: "GPRS timer 3"
         name: "T3512 value"
+      16:
+        type: "GPRS timer 2"
+        name: "T3502 value"
       78:
         type: "EAP message"
+      A:
+        type: "NSSAI inclusion mode"
+        length: 4
 
   - name: "Deregistration request UE originating"
     mandatory:

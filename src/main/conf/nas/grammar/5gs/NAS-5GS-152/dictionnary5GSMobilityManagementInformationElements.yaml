@@ -139,16 +139,65 @@ elements:
               - "@type": "DIGITS"
                 name: "AMF Pointer"
                 length: 6
-              - "@type": "DIGITS"
+              - "@type": "BIN"
                 name: "5G-TMSI"
                 length: 32
           - keys:
-              - 1
               - 4
             pdu:
               - "@type": "BIN"
                 name: "Content"
                 length: -1
+          - keys:
+              - 1
+            pdu:
+              - "@type": "DIGITS"
+                name: "MCC digit 2"
+                length: 4
+              - "@type": "DIGITS"
+                name: "MCC digit 1"
+                length: 4
+              - "@type": "DIGITS"
+                name: "MNC digit 3"
+                length: 4
+              - "@type": "DIGITS"
+                name: "MCC digit 3"
+                length: 4
+              - "@type": "DIGITS"
+                name: "MNC digit 2"
+                length: 4
+              - "@type": "DIGITS"
+                name: "MNC digit 1"
+                length: 4
+              - "@type": "DIGITS"
+                name: "Routing indicator digit 2"
+                length: 4
+              - "@type": "DIGITS"
+                name: "Routing indicator digit 1"
+                length: 4
+              - "@type": "DIGITS"
+                name: "Routing indicator digit 4"
+                length: 4
+              - "@type": "DIGITS"
+                name: "Routing indicator digit 3"
+                length: 4
+              - "@type": "SPARE"
+                name: "Spare half octet"
+                length: 4
+                value: 0
+              - "@type": "DIGITS"
+                name: "Protection scheme id"
+                length: 4
+              - name: "Home network public key identifier"
+                length: 8
+                namedValue:
+                  0: "Null scheme"
+                  1: "ECIES scheme profile A"
+                  2: "ECIES scheme profile B"
+              - "@type": "BIN"
+                name: "Scheme output"
+                length: -1
+
 
   - name: "5GS tracking area identity"
     pdu:
@@ -1080,8 +1129,110 @@ elements:
           - "@type": "HEXA"
             name: "Payload container entry content"
 
+  - name: "MICO indication"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 1
+        value: 0
+      - name: "RAAI"
+        length: 1
+        namedValue:
+          0: "all PLMN registration area not allocated"
+          1: "all PLMN registration area allocated"
 
+  - name: "UEs usage setting"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 7
+        value: 0
+      - name: "UEs usage setting"
+        length: 1
+        namedValue:
+          0: "voice centric"
+          1: "data centric"
 
+  - name: "5GS network feature support"
+    pdu:
+      - name: "MPSI"
+        length: 1
+        namedValue:
+          0: "Access identity 1 not valid in RPLMN or equivalent PLMN"
+          1: "Access identity 1 valid in RPLMN or equivalent PLMN"
+      - name: "IWK N26"
+        length: 1
+        namedValue:
+          0: "Interworking without N26 interface not supported"
+          1: "Interworking without N26 interface supported"
+      - name: "EMF"
+        length: 2
+        namedValue:
+          0: "Emergency services fallback not supported"
+          1: "Emergency services fallback supported in NR connected to 5GCN only"
+          2: "Emergency services fallback supported in E-UTRA connected to 5GCN only"
+          3: "Emergency services fallback supported in NR connected to 5GCN and E-UTRA connected to 5GCN"
+      - name: "EMC"
+        length: 2
+        namedValue:
+          0: "Emergency services not supported"
+          1: "Emergency services supported in NR connected to 5GCN only"
+          2: "Emergency services supported in E-UTRA connected to 5GCN only"
+          3: "Emergency services supported in NR connected to 5GCN and E-UTRA connected to 5GCN"
+      - name: "IMSVoPSN3GPP"
+        length: 1
+        namedValue:
+          0: "IMS voice over PS session not supported over non-3GPP access"
+          1: "IMS voice over PS session supported over non-3GPP access"
+      - name: "IMSVoPS3GPP"
+        length: 1
+        namedValue:
+          0: "IMS voice over PS session not supported over 3GPP access"
+          1: "IMS voice over PS session supported over 3GPP access"
+#      - "@type": "SPARE"
+#        name: "Spare"
+#        length: 6
+#        value: 0
+#      - name: "MCSI"
+#        length: 1
+#        namedValue:
+#          0: "Access identity 2 not valid in RPLMN or equivalent PLMN"
+#          1: "Access identity 2 valid in RPLMN or equivalent PLMN"
+#      - name: "EMCN"
+#        length: 1
+#        namedValue:
+#          0: "Emergency services not supported over non-3GPP access"
+#          1: "Emergency services supported over non-3GPP access"
+#      - name: "Spare"
+#        length: 8
+
+  - name: "NSSAI inclusion mode"
+    pdu:
+      - "@type": "SPARE"
+        name: "Spare"
+        length: 2
+        value: 0
+      - name: "NSSAI inclusion mode"
+        length: 2
+        namedValue:
+          0: "NSSAI inclusion mode A"
+          1: "NSSAI inclusion mode B"
+          2: "NSSAI inclusion mode C"
+          3: "NSSAI inclusion mode D"
+
+  - name: "GPRS timer 2"
+    pdu:
+      - "@type": "BIN"
+        name: "GPRS Timer 2 value"
+        length: -1
 
 
 
