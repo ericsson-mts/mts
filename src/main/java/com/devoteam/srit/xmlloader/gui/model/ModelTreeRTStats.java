@@ -248,7 +248,7 @@ public class ModelTreeRTStats extends DefaultTreeModel {
         boolean alreadyExist = false;
 
         // We get all children of node parent
-        Enumeration<DefaultMutableTreeNode> allChildren = nodeParent.children();
+        Enumeration<DefaultMutableTreeNode> allChildren = (Enumeration<DefaultMutableTreeNode>)(Object)nodeParent.children();
 
         // For each child
         while (allChildren.hasMoreElements()) {
@@ -298,7 +298,7 @@ public class ModelTreeRTStats extends DefaultTreeModel {
         DefaultMutableTreeNode node = null;
 
         // We get all children of node parent
-        Enumeration<DefaultMutableTreeNode> allChildren = nodeParent.children();
+        Enumeration<DefaultMutableTreeNode> allChildren = (Enumeration<DefaultMutableTreeNode>)(Object)nodeParent.children();
 
         // For each child
         while (allChildren.hasMoreElements()) {
