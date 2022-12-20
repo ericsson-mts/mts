@@ -69,6 +69,13 @@ public class OperationFunction extends Operation {
     }
 
     public static void importFile(String file, URI relativeTo) throws Exception {
+
+        // Solve user_home value
+        if (file.contains("[user_home]")) {
+            String userHome = System.getProperty("user.home");
+            file = file.replace("[user_home]", userHome);
+        }
+
         // parse the xml file
         XMLDocument scenarioDocument = Cache.getXMLDocument(relativeTo.resolve(file), URIFactory.newURI("../conf/schemas/scenario.xsd"));
 
