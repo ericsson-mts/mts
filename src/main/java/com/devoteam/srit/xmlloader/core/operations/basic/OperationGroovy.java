@@ -91,6 +91,12 @@ public class OperationGroovy extends Operation {
         // retrieve the list of groovy files to load
         String groovyFiles = getRootElement().attributeValue("name");
 
+        // Solve user_home value
+        if (groovyFiles.contains("[user_home]")) {
+            String userHome = System.getProperty("user.home");
+            groovyFiles = groovyFiles.replace("[user_home]", userHome);
+        }
+
         // retrieve the groovy operation script source
         String scriptSource = getRootElement().getText();
 
