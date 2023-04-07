@@ -1,0 +1,32 @@
+name: Publish Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Java Setup
+        uses: actions/setup-java@v3
+        with: # running setup-java again overwrites the settings.xml
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Set version from tag
+        run: |
+          echo ${{ github.event.release.tag_name }}
+          mvn versions:set -DnewVersion=${{ github.event.release.tag_name }}
+
+      - name: Install and Update release
+        run: |
+          mvn -B clean install
+          gh release upload ${{ github.event.release.tag_name }} target/*-installer.jar
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
