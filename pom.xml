@@ -9,7 +9,6 @@
     <url>http://mts.arm-tool.com</url>
 
     <properties>
-        <antlr4.version>4.7.2</antlr4.version>
         <project.build.sourceEncoding>ISO-8859-15</project.build.sourceEncoding>
 
         <target.mts.dir>${project.build.directory}/mts</target.mts.dir>
@@ -18,6 +17,39 @@
         <izpack.version>4.3.5</izpack.version>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+
+        <!-- MTS libraries versions-->
+        <mts-nas.version>0.0.15</mts-nas.version>
+        <mts-ans1.version>0.0.8</mts-ans1.version>
+
+        <!-- 3rth party libraries versions-->
+        <log4j-to-slf4j.version>2.20.0</log4j-to-slf4j.version>
+        <slf4j.version>2.0.6</slf4j.version>
+        <dom4j.version>2.1.3</dom4j.version>
+        <jaxen.version>2.0.0</jaxen.version>
+        <snakeyaml.version>2.0</snakeyaml.version>
+        <httpcore5.version>5.0-beta9</httpcore5.version>
+        <opencsv.version>2.3</opencsv.version>
+        <jain-sip-api.version>1.2.1.4</jain-sip-api.version>
+        <jain-sip-ri.version>1.3.0-32</jain-sip-ri.version>
+        <jfreechart.version>1.0.9</jfreechart.version>
+        <javolution.version>5.5.1</javolution.version>
+        <diameter.version>0.9.6.2</diameter.version>
+        <jmf.version>2.1.1e</jmf.version>
+        <swing-layout.version>1.0.3</swing-layout.version>
+        <snmp4j.version>1.10.1</snmp4j.version>
+        <mysql-connector-java.version>5.1.41</mysql-connector-java.version>
+        <tcap-impl.version>3.0.1337</tcap-impl.version>
+        <binarynotes.version>1.6.0</binarynotes.version>
+        <asn.version>2.0.2.FINAL</asn.version>
+        <json-path.version>2.7.0</json-path.version>
+        <json-smart.version>2.4.9</json-smart.version>
+        <jsr305.version>[3.0.0,)</jsr305.version>
+        <jmustache.version>1.14</jmustache.version>
+        <groovy-all.version>2.4.21</groovy-all.version>
+        <gege-fr-radius.version>1.0.11</gege-fr-radius.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <junit.version>4.13.2</junit.version>
 
         <!--
         <sonar.host.url>defined in ~/.m2/settings.xml</sonar.host.url>
@@ -345,147 +377,176 @@
         <dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
-            <version>2.1.0</version>
+            <version>${dom4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>${jaxen.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents.core5</groupId>
             <artifactId>httpcore5</artifactId>
-            <version>5.0-beta9</version>
+            <version>${httpcore5.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents.core5</groupId>
             <artifactId>httpcore5-h2</artifactId>
-            <version>5.0-beta9</version>
+            <version>${httpcore5.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>2.3</version>
+            <version>${opencsv.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.sip</groupId>
             <artifactId>jain-sip-api</artifactId>
-            <version>1.2.1.4</version>
+            <version>${jain-sip-api.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.sip</groupId>
             <artifactId>jain-sip-ri</artifactId>
-            <version>1.3.0-32</version>
+            <version>${jain-sip-ri.version}</version>
         </dependency>
         <dependency>
             <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.9</version>
+            <version>${jfreechart.version}</version>
         </dependency>
         <dependency>
             <groupId>javolution</groupId>
             <artifactId>javolution</artifactId>
-            <version>5.5.1</version>
+            <version>${javolution.version}</version>
         </dependency>
         <dependency>
             <groupId>dk.i1.diameter</groupId>
             <artifactId>diameter</artifactId>
-            <version>0.9.6.2</version>
+            <version>${diameter.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.media</groupId>
             <artifactId>jmf</artifactId>
-            <version>2.1.1e</version>
+            <version>${jmf.version}</version>
         </dependency>
         <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swing-layout</artifactId>
-            <version>1.0.3</version>
+            <version>${swing-layout.version}</version>
         </dependency>
         <dependency>
             <groupId>org.snmp4j</groupId>
             <artifactId>snmp4j</artifactId>
-            <version>1.10.1</version>
+            <version>${snmp4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.18</version>
+            <version>${mysql-connector-java.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>${junit.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mobicents.protocols.ss7.tcap</groupId>
             <artifactId>tcap-impl</artifactId>
-            <version>3.0.1337</version>
-        </dependency>        
+            <version>${tcap-impl.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>org.codejuicer</groupId>
             <artifactId>binarynotes</artifactId>
-            <version>1.6.0</version>
+            <version>${binarynotes.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mobicents.protocols.asn</groupId>
             <artifactId>asn</artifactId>
-            <version>2.0.2.FINAL</version>
+            <version>${asn.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-            <version>2.1.0</version>
+            <version>${json-path.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
-            <version>2.12.1</version>
+            <version>${log4j-to-slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.27</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.13</version>
+            <version>${slf4j.version}</version>
         </dependency> 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.13</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <version>[3.0.0,)</version>
+            <version>${jsr305.version}</version>
         </dependency>
         <dependency>
             <groupId>com.samskivert</groupId>
             <artifactId>jmustache</artifactId>
-            <version>1.14</version>
+            <version>${jmustache.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>2.4.7</version>
+            <version>${groovy-all.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.gege-fr</groupId>
             <artifactId>gege-fr-radius</artifactId>
-            <version>1.0.11</version>
+            <version>${gege-fr-radius.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.ericsson-mts</groupId>
             <artifactId>mts-asn1-per</artifactId>
-            <version>0.0.7</version>
+            <version>${mts-ans1.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.ericsson-mts</groupId>
             <artifactId>mts-asn1-xml</artifactId>
-            <version>0.0.7</version>
+           <version>${mts-ans1.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.ericsson-mts</groupId>
             <artifactId>mts-nas</artifactId>
-            <version>0.0.14</version>
+            <version>${mts-nas.version}</version>
         </dependency>
                 
         <!-- DEPENDENCIES THAT ARE NOT IN PUBLIC REPOS -->        
@@ -557,10 +618,25 @@
             <scope>system</scope> 
             <systemPath>${basedir}/lib/jpcap.jar</systemPath>   
         </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
-        </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.minidev</groupId>
+                <artifactId>json-smart</artifactId>
+                <version>${json-smart.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
