@@ -30,6 +30,7 @@ import com.devoteam.srit.xmlloader.core.log.GlobalLogger;
 import com.devoteam.srit.xmlloader.core.log.TextEvent;
 import com.devoteam.srit.xmlloader.core.operations.Operation;
 import com.devoteam.srit.xmlloader.core.operations.functions.FunctionsRegistry;
+import com.devoteam.srit.xmlloader.core.utils.EnvUtils;
 import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import com.devoteam.srit.xmlloader.core.utils.URIRegistry;
 import com.devoteam.srit.xmlloader.core.utils.XMLDocument;
@@ -70,14 +71,15 @@ public class OperationFunction extends Operation {
 
     public static void importFile(String file, URI relativeTo) throws Exception {
         // parse the xml file
-        XMLDocument scenarioDocument = Cache.getXMLDocument(relativeTo.resolve(file), URIFactory.newURI("../conf/schemas/scenario.xsd"));
+        URI resolvedURI = URIFactory.resolveURI(EnvUtils.resolveSystemOrEnvProperties(file), relativeTo);
+        XMLDocument scenarioDocument = Cache.getXMLDocument(resolvedURI, URIFactory.newURI("../conf/schemas/scenario.xsd"));
 
         // get all <function> element
         for (Object object : scenarioDocument.getDocument().selectNodes("//function")) {
             Element element = (Element) object;
             // create operation function for each (that will register them or go into files again)
             
-            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "adding function from file ", relativeTo.resolve(file));
+            GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "adding function from file ", resolvedURI);
             OperationFunction temp = new OperationFunction(element);
         }
 
@@ -86,7 +88,7 @@ public class OperationFunction extends Operation {
 
     public static void importDir(String dir, URI relativeTo) throws Exception {
         // try to add all files from a dir; should only contain xml files
-        URI dirUri = relativeTo.resolve(dir);
+        URI dirUri = URIFactory.resolveURI(EnvUtils.resolveSystemOrEnvProperties(dir), relativeTo);
         GlobalLogger.instance().getApplicationLogger().info(TextEvent.Topic.CORE, "adding function from dir ", dirUri);
         if (SingletonFSInterface.instance().exists(dirUri)) {
             String[] files = SingletonFSInterface.instance().list(dirUri);

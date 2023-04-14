@@ -26,6 +26,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.devoteam.srit.xmlloader.core.utils.EnvUtils;
+import com.devoteam.srit.xmlloader.core.utils.URIFactory;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.dom4j.Element;
 
@@ -89,7 +91,7 @@ public class OperationGroovy extends Operation {
         }
 
         // retrieve the list of groovy files to load
-        String groovyFiles = getRootElement().attributeValue("name");
+        String groovyFiles = EnvUtils.resolveSystemOrEnvProperties(getRootElement().attributeValue("name"));
 
         // retrieve the groovy operation script source
         String scriptSource = getRootElement().getText();
@@ -111,7 +113,7 @@ public class OperationGroovy extends Operation {
                 StringTokenizer st = new StringTokenizer(groovyFiles, ";");
                 while (st.hasMoreTokens()) {
                     String scriptName = st.nextToken();
-                    File file = new File(URIRegistry.MTS_TEST_HOME.resolve(scriptName));
+                    File file = new File(URIFactory.resolveURI(scriptName, URIRegistry.MTS_TEST_HOME));
                     if (file.exists() && file.getName().endsWith(".groovy")) {
                         Class groovyClass = groovyClassLoader.parseClass(file);
                         Object obj = groovyClass.newInstance();

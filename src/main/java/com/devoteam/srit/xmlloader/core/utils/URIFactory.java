@@ -23,6 +23,7 @@
 
 package com.devoteam.srit.xmlloader.core.utils;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -56,5 +57,16 @@ public class URIFactory
     public static URI resolve(URI uri, String string)
     {
         return uri.resolve(doPath(string));
+    }
+
+    /**
+     * Make URI resolution regarding the type of the file path (absolute/relative)
+     * @param filePath the path of the file
+     * @param relativeTo reference URI for relative path
+     * @return the new URI
+     */
+    public static URI resolveURI(String filePath, URI relativeTo) {
+        File file = new File(filePath);
+        return file.isAbsolute() ? file.toURI() : relativeTo.resolve(filePath);
     }
 }
