@@ -224,9 +224,9 @@ abstract class MTSScript extends Script {
     protected void setMTSParam(String name, Object value) {
         try {
             //println "MTSBinder.setMTSParam($name)"
-            Parameter groovyParameter
-            if (value != null && value instanceof List) {
-                value.each{groovyParameter= parseParameter(it)}
+            Parameter groovyParameter = new Parameter();
+	    if (value != null && value instanceof List) {
+                value.each{groovyParameter.add(parseParameter(it))}
             } else {
                 groovyParameter= parseParameter(value);
             }
